@@ -1,5 +1,7 @@
 import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
+import 'package:democracy/app/bloc/repository/app_repository.dart';
+import 'package:democracy/app/bloc/survey/survey_bloc.dart';
 import 'package:democracy/app/bloc/theme/theme_cubit.dart';
 import 'package:democracy/app/view/dashboard.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
@@ -37,6 +39,9 @@ void main() async {
       providers: [
         RepositoryProvider.value(
           value: AuthRepository(authProvider: AuthProvider(dio: dio)),
+        ),
+        RepositoryProvider.value(
+          value: AppRepository(appProvider: AppProvider(dio: dio)),
         ),
       ],
       child: MultiBlocProvider(
@@ -81,6 +86,11 @@ void main() async {
           ),
           BlocProvider(create: (context) => BottomNavBarCubit()),
           BlocProvider(create: (context) => OTPCounterBloc()),
+          BlocProvider(
+            create:
+                (context) =>
+                    SurveyBloc(appRepository: context.read<AppRepository>()),
+          ),
         ],
         child: const MyApp(),
       ),

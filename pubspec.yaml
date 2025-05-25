@@ -52,6 +52,10 @@ dependencies:
   flutter_secure_storage: ^9.2.4
   connectivity_plus: ^6.1.4
   flex_color_scheme: ^8.2.0
+  google_fonts: ^6.2.1
+  equatable: ^2.0.7
+  bloc_concurrency: ^0.3.0
+  stream_transform: ^2.1.1
 
 dev_dependencies:
   flutter_test:

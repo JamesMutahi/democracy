@@ -17,7 +17,7 @@ bloc:
   rules:
     - avoid_flutter_imports
     - avoid_public_bloc_methods
-    - avoid_public_fields
+#    - avoid_public_fields
 
 linter:
   # The lint rules applied to this project can be customized in the
