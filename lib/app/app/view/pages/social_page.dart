@@ -1,3 +1,4 @@
+import 'package:democracy/app/social/view/posts.dart';
 import 'package:flutter/material.dart';
 
 class SocialPage extends StatelessWidget {
@@ -5,6 +6,6 @@ class SocialPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Posts();
   }
 }

@@ -8,6 +8,7 @@ import 'package:democracy/app/auth/bloc/otp_counter/otp_counter_bloc.dart';
 import 'package:democracy/app/auth/bloc/password_change/password_change_cubit.dart';
 import 'package:democracy/app/auth/bloc/password_reset/password_reset_cubit.dart';
 import 'package:democracy/app/auth/bloc/registration/registration_cubit.dart';
+import 'package:democracy/app/social/bloc/post/post_bloc.dart';
 import 'package:democracy/app/survey/bloc/survey/survey_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -38,7 +39,10 @@ void main() async {
           value: AuthRepository(authProvider: AuthProvider(dio: dio)),
         ),
         RepositoryProvider.value(
-          value: AppRepository(appProvider: AppProvider(dio: dio)),
+          value: SurveyRepository(surveyProvider: SurveyProvider(dio: dio)),
+        ),
+        RepositoryProvider.value(
+          value: PostRepository(postProvider: PostProvider(dio: dio)),
         ),
       ],
       child: MultiBlocProvider(
@@ -85,8 +89,14 @@ void main() async {
           BlocProvider(create: (context) => OTPCounterBloc()),
           BlocProvider(
             create:
+                (context) => SurveyBloc(
+                  surveyRepository: context.read<SurveyRepository>(),
+                ),
+          ),
+          BlocProvider(
+            create:
                 (context) =>
-                    SurveyBloc(appRepository: context.read<AppRepository>()),
+                    PostBloc(postRepository: context.read<PostRepository>()),
           ),
         ],
         child: const MyApp(),
