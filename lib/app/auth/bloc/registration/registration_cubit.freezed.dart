@@ -12,33 +12,33 @@ part of 'registration_cubit.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
+
 /// @nodoc
 mixin _$RegistrationState {
 
 
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is RegistrationState);
+  }
 
 
+  @override
+  int get hashCode => runtimeType.hashCode;
 
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RegistrationState);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'RegistrationState()';
-}
+  @override
+  String toString() {
+    return 'RegistrationState()';
+  }
 
 
 }
 
 /// @nodoc
-class $RegistrationStateCopyWith<$Res>  {
-$RegistrationStateCopyWith(RegistrationState _, $Res Function(RegistrationState) __);
+class $RegistrationStateCopyWith<$Res> {
+  $RegistrationStateCopyWith(RegistrationState _,
+      $Res Function(RegistrationState) __);
 }
 
 
@@ -47,31 +47,25 @@ $RegistrationStateCopyWith(RegistrationState _, $Res Function(RegistrationState)
 
 class RegistrationInitial implements RegistrationState {
   const RegistrationInitial();
-  
 
 
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is RegistrationInitial);
+  }
 
 
+  @override
+  int get hashCode => runtimeType.hashCode;
 
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RegistrationInitial);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'RegistrationState.initial()';
-}
+  @override
+  String toString() {
+    return 'RegistrationState.initial()';
+  }
 
 
 }
-
-
 
 
 /// @nodoc
@@ -79,31 +73,25 @@ String toString() {
 
 class RegistrationLoading implements RegistrationState {
   const RegistrationLoading();
-  
 
 
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is RegistrationLoading);
+  }
 
 
+  @override
+  int get hashCode => runtimeType.hashCode;
 
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RegistrationLoading);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'RegistrationState.loading()';
-}
+  @override
+  String toString() {
+    return 'RegistrationState.loading()';
+  }
 
 
 }
-
-
 
 
 /// @nodoc
@@ -111,31 +99,25 @@ String toString() {
 
 class RegistrationUnverified implements RegistrationState {
   const RegistrationUnverified();
-  
 
 
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is RegistrationUnverified);
+  }
 
 
+  @override
+  int get hashCode => runtimeType.hashCode;
 
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RegistrationUnverified);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'RegistrationState.unverified()';
-}
+  @override
+  String toString() {
+    return 'RegistrationState.unverified()';
+  }
 
 
 }
-
-
 
 
 /// @nodoc
@@ -143,31 +125,25 @@ String toString() {
 
 class RegistrationVerified implements RegistrationState {
   const RegistrationVerified();
-  
 
 
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is RegistrationVerified);
+  }
 
 
+  @override
+  int get hashCode => runtimeType.hashCode;
 
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RegistrationVerified);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'RegistrationState.verified()';
-}
+  @override
+  String toString() {
+    return 'RegistrationState.verified()';
+  }
 
 
 }
-
-
 
 
 /// @nodoc
@@ -175,47 +151,51 @@ String toString() {
 
 class RegistrationFailure implements RegistrationState {
   const RegistrationFailure({required this.error});
-  
-
- final  String error;
-
-/// Create a copy of RegistrationState
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$RegistrationFailureCopyWith<RegistrationFailure> get copyWith => _$RegistrationFailureCopyWithImpl<RegistrationFailure>(this, _$identity);
 
 
+  final String error;
 
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RegistrationFailure&&(identical(other.error, error) || other.error == error));
-}
+  /// Create a copy of RegistrationState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $RegistrationFailureCopyWith<RegistrationFailure> get copyWith =>
+      _$RegistrationFailureCopyWithImpl<RegistrationFailure>(this, _$identity);
 
 
-@override
-int get hashCode => Object.hash(runtimeType,error);
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is RegistrationFailure &&
+            (identical(other.error, error) || other.error == error));
+  }
 
-@override
-String toString() {
-  return 'RegistrationState.failure(error: $error)';
-}
+
+  @override
+  int get hashCode => Object.hash(runtimeType, error);
+
+  @override
+  String toString() {
+    return 'RegistrationState.failure(error: $error)';
+  }
 
 
 }
 
 /// @nodoc
-abstract mixin class $RegistrationFailureCopyWith<$Res> implements $RegistrationStateCopyWith<$Res> {
-  factory $RegistrationFailureCopyWith(RegistrationFailure value, $Res Function(RegistrationFailure) _then) = _$RegistrationFailureCopyWithImpl;
-@useResult
-$Res call({
- String error
-});
+abstract mixin class $RegistrationFailureCopyWith<$Res>
+    implements $RegistrationStateCopyWith<$Res> {
+  factory $RegistrationFailureCopyWith(RegistrationFailure value,
+      $Res Function(RegistrationFailure) _then) = _$RegistrationFailureCopyWithImpl;
 
-
+  @useResult
+  $Res call({
+    String error
+  });
 
 
 }
+
 /// @nodoc
 class _$RegistrationFailureCopyWithImpl<$Res>
     implements $RegistrationFailureCopyWith<$Res> {
@@ -224,14 +204,16 @@ class _$RegistrationFailureCopyWithImpl<$Res>
   final RegistrationFailure _self;
   final $Res Function(RegistrationFailure) _then;
 
-/// Create a copy of RegistrationState
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? error = null,}) {
-  return _then(RegistrationFailure(
-error: null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
+  /// Create a copy of RegistrationState
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline') $Res call({Object? error = null,}) {
+    return _then(RegistrationFailure(
+      error: null == error
+          ? _self.error
+          : error // ignore: cast_nullable_to_non_nullable
+      as String,
+    ));
+  }
 
 
 }

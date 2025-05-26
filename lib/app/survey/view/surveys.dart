@@ -17,6 +17,7 @@ class PublicParticipation extends StatefulWidget {
 
 class _PublicParticipationState extends State<PublicParticipation> {
   final _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();

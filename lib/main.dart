@@ -1,23 +1,20 @@
+import 'package:democracy/app/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
+import 'package:democracy/app/app/bloc/connectivity/connectivity_bloc.dart';
+import 'package:democracy/app/app/bloc/theme/theme_cubit.dart';
+import 'package:democracy/app/app/view/app.dart';
 import 'package:democracy/app/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/app/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/app/auth/bloc/otp_counter/otp_counter_bloc.dart';
 import 'package:democracy/app/auth/bloc/password_change/password_change_cubit.dart';
 import 'package:democracy/app/auth/bloc/password_reset/password_reset_cubit.dart';
 import 'package:democracy/app/auth/bloc/registration/registration_cubit.dart';
-import 'package:democracy/app/dashboard/dashboard.dart';
-import 'package:democracy/app/survey/bloc/repository/app_repository.dart';
 import 'package:democracy/app/survey/bloc/survey/survey_bloc.dart';
-import 'package:democracy/app/utils/bloc/bottom_nav/bottom_navbar_cubit.dart';
-import 'package:democracy/app/utils/bloc/connectivity/connectivity_bloc.dart';
-import 'package:democracy/app/utils/bloc/theme/theme_cubit.dart';
-import 'package:democracy/utils/app_bloc_observer.dart';
-import 'package:democracy/utils/app_theme.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env");
@@ -98,40 +95,32 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class AppBlocObserver extends BlocObserver {
+  final _toIgnore = [BottomNavBarCubit];
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<ThemeCubit, ThemeState>(
-      builder: (context, state) {
-        ThemeMode themeMode = ThemeMode.system;
-        switch (state) {
-          case ThemeLoaded(themeMode: final mode):
-            themeMode = mode;
-        }
-        return MaterialApp(
-          builder:
-              (context, child) => ResponsiveBreakpoints.builder(
-                child: child!,
-                breakpoints: [
-                  const Breakpoint(start: 0, end: 450, name: MOBILE),
-                  const Breakpoint(start: 451, end: 800, name: TABLET),
-                  const Breakpoint(start: 801, end: 1920, name: DESKTOP),
-                  const Breakpoint(
-                    start: 1921,
-                    end: double.infinity,
-                    name: '4K',
-                  ),
-                ],
-              ),
-          title: 'Democracy',
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          themeMode: themeMode,
-          home: const Dashboard(),
-        );
-      },
-    );
+  void onChange(BlocBase bloc, Change change) {
+    super.onChange(bloc, change);
+    if (kDebugMode) {
+      if (!_toIgnore.contains(bloc.runtimeType)) {
+        print('onChange(${bloc.runtimeType}, $change)');
+      }
+    }
+  }
+
+  @override
+  void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
+    if (kDebugMode) {
+      print('onError(${bloc.runtimeType}, $error, $stackTrace)');
+    }
+    super.onError(bloc, error, stackTrace);
+  }
+
+  @override
+  void onEvent(Bloc bloc, Object? event) {
+    if (kDebugMode) {
+      print('onEvent(${bloc.runtimeType}, $event)');
+    }
+    super.onEvent(bloc, event);
   }
 }

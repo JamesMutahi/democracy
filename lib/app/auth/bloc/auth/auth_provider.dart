@@ -5,9 +5,7 @@ class AuthProvider {
 
   final Dio dio;
   final _storage = const FlutterSecureStorage(
-    aOptions: AndroidOptions(
-      encryptedSharedPreferences: true,
-    ),
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
   );
 
   Future<String?> saveToken({required String token}) async {
@@ -72,17 +70,11 @@ class AuthProvider {
     await preferences.remove("isStaff");
   }
 
-  Future<User> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<User> login({required String email, required String password}) async {
     try {
       Response response = await dio.post(
         '/auth/login/',
-        data: {
-          'email': email,
-          'password': password,
-        },
+        data: {'email': email, 'password': password},
       );
       if (response.statusCode == 200) {
         await saveToken(token: response.data['token']);
@@ -92,7 +84,8 @@ class AuthProvider {
       }
     } on DioException {
       return Future.error(
-          'Unable to login at this time. Please try again later');
+        'Unable to login at this time. Please try again later',
+      );
     }
   }
 
@@ -109,7 +102,8 @@ class AuthProvider {
       }
     } on DioException {
       return Future.error(
-          'Unable to logout at this time. Please try again later');
+        'Unable to logout at this time. Please try again later',
+      );
     }
   }
 
@@ -139,7 +133,8 @@ class AuthProvider {
       }
     } on DioException {
       return Future.error(
-          'Unable to register at this time. Please try again later');
+        'Unable to register at this time. Please try again later',
+      );
     }
   }
 
@@ -156,7 +151,8 @@ class AuthProvider {
       }
     } on DioException {
       return Future.error(
-          'Unable to resend at this time. Please try again later');
+        'Unable to resend at this time. Please try again later',
+      );
     }
   }
 
@@ -167,9 +163,7 @@ class AuthProvider {
     try {
       Response response = await dio.post(
         '/auth/register/verify/',
-        data: {
-          'code': code,
-        },
+        data: {'code': code},
         options: Options(
           headers: <String, String>{'Authorization': 'Token $token'},
         ),
@@ -181,7 +175,8 @@ class AuthProvider {
       }
     } on DioException {
       return Future.error(
-          'Unable to verify at this time. Please try again later');
+        'Unable to verify at this time. Please try again later',
+      );
     }
   }
 
@@ -208,7 +203,8 @@ class AuthProvider {
       }
     } on DioException {
       return Future.error(
-          'Unable to change password at this time. Please try again later');
+        'Unable to change password at this time. Please try again later',
+      );
     }
   }
 
@@ -227,26 +223,24 @@ class AuthProvider {
       }
     } on DioException {
       return Future.error(
-          'Unable to login at this time. Please try again later');
+        'Unable to login at this time. Please try again later',
+      );
     }
   }
 
-  Future<void> verifyEmail({
-    required String email,
-  }) async {
+  Future<void> verifyEmail({required String email}) async {
     try {
       Response response = await dio.post(
         '/auth/password-reset/verify-email/',
-        data: {
-          'email': email,
-        },
+        data: {'email': email},
       );
       if (response.statusCode != 200) {
         return Future.error(response.data['error'][0]);
       }
     } on DioException {
       return Future.error(
-          'Unable to change password at this time. Please try again later');
+        'Unable to change password at this time. Please try again later',
+      );
     }
   }
 
@@ -257,10 +251,7 @@ class AuthProvider {
     try {
       Response response = await dio.post(
         '/auth/password-reset/verify-code/',
-        data: {
-          'email': email,
-          'code': code,
-        },
+        data: {'email': email, 'code': code},
       );
       if (response.statusCode == 200) {
         await saveToken(token: response.data['token']);
@@ -270,7 +261,8 @@ class AuthProvider {
       }
     } on DioException {
       return Future.error(
-          'Unable to change password at this time. Please try again later');
+        'Unable to change password at this time. Please try again later',
+      );
     }
   }
 
@@ -282,10 +274,7 @@ class AuthProvider {
     try {
       Response response = await dio.post(
         '/auth/password-reset/',
-        data: {
-          'new_password1': password1,
-          'new_password2': password2,
-        },
+        data: {'new_password1': password1, 'new_password2': password2},
         options: Options(
           headers: <String, String>{'Authorization': 'Token $token'},
         ),
@@ -295,13 +284,12 @@ class AuthProvider {
       }
     } on DioException {
       return Future.error(
-          'Unable to change password at this time. Please try again later');
+        'Unable to change password at this time. Please try again later',
+      );
     }
   }
 
-  Future<List<User>> getMutedAccounts({
-    required String token,
-  }) async {
+  Future<List<User>> getMutedAccounts({required String token}) async {
     try {
       Response response = await dio.get(
         '/api/muted-accounts/',
@@ -319,9 +307,7 @@ class AuthProvider {
     }
   }
 
-  Future<List<User>> getBlockedAccounts({
-    required String token,
-  }) async {
+  Future<List<User>> getBlockedAccounts({required String token}) async {
     try {
       Response response = await dio.get(
         '/api/blocked-accounts/',

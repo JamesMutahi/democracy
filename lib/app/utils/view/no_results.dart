@@ -8,13 +8,7 @@ class NoResults extends StatelessWidget {
     return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.info_rounded,
-            size: 50,
-          ),
-          Text('No results'),
-        ],
+        children: [Icon(Icons.info_rounded, size: 50), Text('No results')],
       ),
     );
   }

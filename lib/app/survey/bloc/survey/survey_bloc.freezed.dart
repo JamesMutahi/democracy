@@ -12,33 +12,32 @@ part of 'survey_bloc.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
+
 /// @nodoc
 mixin _$SurveyEvent {
 
 
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is SurveyEvent);
+  }
 
 
+  @override
+  int get hashCode => runtimeType.hashCode;
 
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SurveyEvent);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'SurveyEvent()';
-}
+  @override
+  String toString() {
+    return 'SurveyEvent()';
+  }
 
 
 }
 
 /// @nodoc
-class $SurveyEventCopyWith<$Res>  {
-$SurveyEventCopyWith(SurveyEvent _, $Res Function(SurveyEvent) __);
+class $SurveyEventCopyWith<$Res> {
+  $SurveyEventCopyWith(SurveyEvent _, $Res Function(SurveyEvent) __);
 }
 
 
@@ -47,31 +46,25 @@ $SurveyEventCopyWith(SurveyEvent _, $Res Function(SurveyEvent) __);
 
 class _Initialize implements SurveyEvent {
   const _Initialize();
-  
 
 
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _Initialize);
+  }
 
 
+  @override
+  int get hashCode => runtimeType.hashCode;
 
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initialize);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'SurveyEvent.initialize()';
-}
+  @override
+  String toString() {
+    return 'SurveyEvent.initialize()';
+  }
 
 
 }
-
-
 
 
 /// @nodoc
@@ -79,81 +72,84 @@ String toString() {
 
 class GetSurveys implements SurveyEvent {
   const GetSurveys();
-  
 
 
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is GetSurveys);
+  }
 
 
+  @override
+  int get hashCode => runtimeType.hashCode;
 
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetSurveys);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'SurveyEvent.getSurveys()';
-}
+  @override
+  String toString() {
+    return 'SurveyEvent.getSurveys()';
+  }
 
 
 }
-
-
 
 
 /// @nodoc
 
 
 class _Filter implements SurveyEvent {
-  const _Filter({required this.searchTerm, required this.startDate, required this.endDate});
-  
-
- final  String? searchTerm;
- final  DateTime? startDate;
- final  DateTime? endDate;
-
-/// Create a copy of SurveyEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$FilterCopyWith<_Filter> get copyWith => __$FilterCopyWithImpl<_Filter>(this, _$identity);
+  const _Filter(
+      {required this.searchTerm, required this.startDate, required this.endDate});
 
 
+  final String? searchTerm;
+  final DateTime? startDate;
+  final DateTime? endDate;
 
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Filter&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate));
-}
+  /// Create a copy of SurveyEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$FilterCopyWith<_Filter> get copyWith =>
+      __$FilterCopyWithImpl<_Filter>(this, _$identity);
 
 
-@override
-int get hashCode => Object.hash(runtimeType,searchTerm,startDate,endDate);
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _Filter &&
+            (identical(other.searchTerm, searchTerm) ||
+                other.searchTerm == searchTerm) &&
+            (identical(other.startDate, startDate) ||
+                other.startDate == startDate) &&
+            (identical(other.endDate, endDate) || other.endDate == endDate));
+  }
 
-@override
-String toString() {
-  return 'SurveyEvent.filter(searchTerm: $searchTerm, startDate: $startDate, endDate: $endDate)';
-}
+
+  @override
+  int get hashCode => Object.hash(runtimeType, searchTerm, startDate, endDate);
+
+  @override
+  String toString() {
+    return 'SurveyEvent.filter(searchTerm: $searchTerm, startDate: $startDate, endDate: $endDate)';
+  }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$FilterCopyWith<$Res> implements $SurveyEventCopyWith<$Res> {
-  factory _$FilterCopyWith(_Filter value, $Res Function(_Filter) _then) = __$FilterCopyWithImpl;
-@useResult
-$Res call({
- String? searchTerm, DateTime? startDate, DateTime? endDate
-});
+abstract mixin class _$FilterCopyWith<$Res>
+    implements $SurveyEventCopyWith<$Res> {
+  factory _$FilterCopyWith(_Filter value,
+      $Res Function(_Filter) _then) = __$FilterCopyWithImpl;
 
-
+  @useResult
+  $Res call({
+    String? searchTerm, DateTime? startDate, DateTime? endDate
+  });
 
 
 }
+
 /// @nodoc
 class __$FilterCopyWithImpl<$Res>
     implements _$FilterCopyWith<$Res> {
@@ -162,16 +158,25 @@ class __$FilterCopyWithImpl<$Res>
   final _Filter _self;
   final $Res Function(_Filter) _then;
 
-/// Create a copy of SurveyEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? searchTerm = freezed,Object? startDate = freezed,Object? endDate = freezed,}) {
-  return _then(_Filter(
-searchTerm: freezed == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
-as String?,startDate: freezed == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
-as DateTime?,endDate: freezed == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
-as DateTime?,
-  ));
-}
+  /// Create a copy of SurveyEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline') $Res call(
+      {Object? searchTerm = freezed, Object? startDate = freezed, Object? endDate = freezed,}) {
+    return _then(_Filter(
+      searchTerm: freezed == searchTerm
+          ? _self.searchTerm
+          : searchTerm // ignore: cast_nullable_to_non_nullable
+      as String?,
+      startDate: freezed == startDate
+          ? _self.startDate
+          : startDate // ignore: cast_nullable_to_non_nullable
+      as DateTime?,
+      endDate: freezed == endDate
+          ? _self.endDate
+          : endDate // ignore: cast_nullable_to_non_nullable
+      as DateTime?,
+    ));
+  }
 
 
 }
@@ -181,31 +186,25 @@ as DateTime?,
 
 class _Reload implements SurveyEvent {
   const _Reload();
-  
 
 
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _Reload);
+  }
 
 
+  @override
+  int get hashCode => runtimeType.hashCode;
 
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Reload);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'SurveyEvent.reload()';
-}
+  @override
+  String toString() {
+    return 'SurveyEvent.reload()';
+  }
 
 
 }
-
-
 
 
 // dart format on

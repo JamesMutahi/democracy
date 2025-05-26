@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-part 'theme_state.dart';
 part 'theme_cubit.freezed.dart';
+part 'theme_state.dart';
 
 String themeModeKey = 'themeMode';
 

@@ -1,14 +1,14 @@
 import 'package:bloc/bloc.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:democracy/app/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/app/auth/models/user.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'registration_state.dart';
 part 'registration_cubit.freezed.dart';
+part 'registration_state.dart';
 
 class RegistrationCubit extends Cubit<RegistrationState> {
   RegistrationCubit({required this.authRepository})
-      : super(const RegistrationState.initial());
+    : super(const RegistrationState.initial());
 
   void register({
     required String firstName,

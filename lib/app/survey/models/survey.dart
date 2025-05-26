@@ -1,7 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'survey.freezed.dart';
-
 part 'survey.g.dart';
 
 @freezed

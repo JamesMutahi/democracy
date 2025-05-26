@@ -1,13 +1,15 @@
 import 'package:bloc/bloc.dart';
-import 'package:democracy/app/survey/bloc/repository/app_repository.dart';
-import 'package:democracy/app/utils/bloc/transformers.dart';
 import 'package:democracy/app/survey/models/survey.dart';
+import 'package:democracy/app/utils/bloc/transformers.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'survey_event.dart';
-part 'survey_state.dart';
 part 'survey_bloc.freezed.dart';
+part 'survey_event.dart';
+part 'survey_provider.dart';
+part 'survey_repository.dart';
+part 'survey_state.dart';
 
 class SurveyBloc extends Bloc<SurveyEvent, SurveyState> {
   SurveyBloc({required this.appRepository}) : super(const SurveyState()) {

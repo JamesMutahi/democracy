@@ -1,4 +1,4 @@
-part of 'app_repository.dart';
+part of 'survey_bloc.dart';
 
 class AppProvider {
   AppProvider({required this.dio});

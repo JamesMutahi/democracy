@@ -2,6 +2,7 @@ part of 'auth_bloc.dart';
 
 class AuthRepository {
   AuthRepository({required this.authProvider});
+
   final AuthProvider authProvider;
 
   Future<User> register({
@@ -24,8 +25,10 @@ class AuthRepository {
     await authProvider.resendRegistrationOTP(token: token);
   }
 
-  Future<User> verifyRegistrationOTP(
-      {required String token, required String code}) async {
+  Future<User> verifyRegistrationOTP({
+    required String token,
+    required String code,
+  }) async {
     return await authProvider.verifyRegistrationOTP(token: token, code: code);
   }
 
@@ -78,8 +81,10 @@ class AuthRepository {
     return email;
   }
 
-  Future<User> verifyPasswordResetOTP(
-      {required String email, required String code}) async {
+  Future<User> verifyPasswordResetOTP({
+    required String email,
+    required String code,
+  }) async {
     return await authProvider.verifyPasswordResetOTP(email: email, code: code);
   }
 
@@ -107,21 +112,13 @@ class AuthRepository {
     await authProvider.saveUserToSharedPreferences(user: user);
   }
 
-  Future<List<User>> getMutedAccounts({
-    required String token,
-  }) async {
-    List<User> muted = await authProvider.getMutedAccounts(
-      token: token,
-    );
+  Future<List<User>> getMutedAccounts({required String token}) async {
+    List<User> muted = await authProvider.getMutedAccounts(token: token);
     return muted;
   }
 
-  Future<List<User>> getBlockedAccounts({
-    required String token,
-  }) async {
-    List<User> blocked = await authProvider.getBlockedAccounts(
-      token: token,
-    );
+  Future<List<User>> getBlockedAccounts({required String token}) async {
+    List<User> blocked = await authProvider.getBlockedAccounts(token: token);
     return blocked;
   }
 }

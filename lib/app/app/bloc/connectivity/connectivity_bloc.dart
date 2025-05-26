@@ -5,9 +5,9 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'connectivity_bloc.freezed.dart';
 part 'connectivity_event.dart';
 part 'connectivity_state.dart';
-part 'connectivity_bloc.freezed.dart';
 
 class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
   ConnectivityBloc() : super(const ConnectivityInitial()) {
@@ -22,9 +22,9 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
     Emitter<ConnectivityState> emit,
   ) async {
     try {
-      _connectivitySubscription = Connectivity()
-          .onConnectivityChanged
-          .listen((List<ConnectivityResult> result) async {
+      _connectivitySubscription = Connectivity().onConnectivityChanged.listen((
+        List<ConnectivityResult> result,
+      ) async {
         if (result.contains(ConnectivityResult.none)) {
           add(const _ChangeConnection(ConnectivityFailure()));
         } else {

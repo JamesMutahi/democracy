@@ -1,8 +1,8 @@
-import 'package:democracy/app/utils/bloc/bottom_nav/bottom_navbar_cubit.dart';
+import 'package:democracy/app/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});

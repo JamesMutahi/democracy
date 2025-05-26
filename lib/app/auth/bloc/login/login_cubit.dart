@@ -1,14 +1,14 @@
 import 'package:bloc/bloc.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:democracy/app/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/app/auth/models/user.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'login_state.dart';
 part 'login_cubit.freezed.dart';
+part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
   LoginCubit({required this.authRepository})
-      : super(const LoginState.initial());
+    : super(const LoginState.initial());
 
   void login({required String email, required String password}) async {
     try {

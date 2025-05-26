@@ -1,14 +1,14 @@
 import 'package:bloc/bloc.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:democracy/app/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/app/auth/models/user.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'password_reset_state.dart';
 part 'password_reset_cubit.freezed.dart';
+part 'password_reset_state.dart';
 
 class PasswordResetCubit extends Cubit<PasswordResetState> {
   PasswordResetCubit({required this.authRepository})
-      : super(const PasswordResetState.initial());
+    : super(const PasswordResetState.initial());
 
   void verifyEmail({required String email}) async {
     try {

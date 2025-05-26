@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/app/auth/bloc/otp_counter/otp_counter_bloc.dart';
 import 'package:democracy/app/auth/bloc/password_reset/password_reset_cubit.dart';
 import 'package:democracy/app/auth/bloc/registration/registration_cubit.dart';
 import 'package:democracy/app/auth/view/password_reset.dart';
+import 'package:democracy/app/utils/view/snack_bar_content.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class CodePage extends StatefulWidget {

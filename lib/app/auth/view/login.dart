@@ -1,12 +1,12 @@
+import 'package:democracy/app/auth/bloc/login/login_cubit.dart';
+import 'package:democracy/app/auth/view/email.dart';
+import 'package:democracy/app/auth/view/registration.dart';
+import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:democracy/app/utils/view/snack_bar_content.dart';
-import 'package:democracy/app/auth/bloc/login/login_cubit.dart';
-import 'package:democracy/app/auth/view/email.dart';
-import 'package:democracy/app/auth/view/registration.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

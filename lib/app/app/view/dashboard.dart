@@ -1,13 +1,13 @@
+import 'package:democracy/app/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
+import 'package:democracy/app/app/bloc/connectivity/connectivity_bloc.dart';
+import 'package:democracy/app/app/view/pages/index.dart';
 import 'package:democracy/app/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/app/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/app/auth/bloc/registration/registration_cubit.dart';
-import 'package:democracy/app/utils/bloc/bottom_nav/bottom_navbar_cubit.dart';
-import 'package:democracy/app/utils/bloc/connectivity/connectivity_bloc.dart';
-import 'package:democracy/app/dashboard/pages/index.dart';
 import 'package:democracy/app/utils/view/bottom_nav_bar.dart';
+import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:democracy/app/utils/view/snack_bar_content.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});

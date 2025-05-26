@@ -1,19 +1,19 @@
 import 'package:bloc/bloc.dart';
+import 'package:democracy/app/auth/models/user.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:democracy/app/auth/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-part 'auth_event.dart';
-part 'auth_state.dart';
 part 'auth_bloc.freezed.dart';
-part 'auth_repository.dart';
+part 'auth_event.dart';
 part 'auth_provider.dart';
+part 'auth_repository.dart';
+part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({required this.authRepository})
-      : super(const AuthState.unAuthenticated()) {
+    : super(const AuthState.unAuthenticated()) {
     on<_Authenticate>((event, emit) async {
       await _authenticate(emit);
     });

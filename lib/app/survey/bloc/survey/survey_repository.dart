@@ -1,9 +1,8 @@
-import 'package:dio/dio.dart';
-
-part 'app_provider.dart';
+part of 'survey_bloc.dart';
 
 class AppRepository {
   AppRepository({required this.appProvider});
+
   final AppProvider appProvider;
 
   Future<Map<String, dynamic>> getSurveys({
