@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
+import 'package:democracy/app/utils/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:flutter/foundation.dart';
 
 class AppBlocObserver extends BlocObserver {

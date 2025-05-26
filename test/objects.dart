@@ -1,4 +1,4 @@
-import 'package:democracy/auth/models/user.dart';
+import 'package:democracy/app/auth/models/user.dart';
 
 User user1 = const User(
   id: 1,

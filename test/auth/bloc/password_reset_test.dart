@@ -1,6 +1,6 @@
 import 'package:mocktail/mocktail.dart';
-import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
-import 'package:democracy/auth/bloc/password_reset/password_reset_cubit.dart';
+import 'package:democracy/app/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/app/auth/bloc/password_reset/password_reset_cubit.dart';
 import 'package:test/test.dart';
 import 'package:bloc_test/bloc_test.dart';
 

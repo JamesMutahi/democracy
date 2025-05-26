@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 import 'package:bloc_test/bloc_test.dart';
-import 'package:democracy/auth/bloc/otp_counter/otp_counter_bloc.dart';
+import 'package:democracy/app/auth/bloc/otp_counter/otp_counter_bloc.dart';
 
 void main() {
   group(OTPCounterBloc, () {
