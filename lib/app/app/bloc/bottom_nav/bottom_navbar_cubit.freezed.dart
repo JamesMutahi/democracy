@@ -12,53 +12,47 @@ part of 'bottom_navbar_cubit.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
-
 /// @nodoc
 mixin _$BottomNavBarState {
 
-  int get page;
-
-  /// Create a copy of BottomNavBarState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $BottomNavBarStateCopyWith<BottomNavBarState> get copyWith =>
-      _$BottomNavBarStateCopyWithImpl<BottomNavBarState>(
-          this as BottomNavBarState, _$identity);
+ int get page;
+/// Create a copy of BottomNavBarState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$BottomNavBarStateCopyWith<BottomNavBarState> get copyWith => _$BottomNavBarStateCopyWithImpl<BottomNavBarState>(this as BottomNavBarState, _$identity);
 
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is BottomNavBarState &&
-            (identical(other.page, page) || other.page == page));
-  }
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BottomNavBarState&&(identical(other.page, page) || other.page == page));
+}
 
 
-  @override
-  int get hashCode => Object.hash(runtimeType, page);
+@override
+int get hashCode => Object.hash(runtimeType,page);
 
-  @override
-  String toString() {
-    return 'BottomNavBarState(page: $page)';
-  }
+@override
+String toString() {
+  return 'BottomNavBarState(page: $page)';
+}
 
 
 }
 
 /// @nodoc
-abstract mixin class $BottomNavBarStateCopyWith<$Res> {
-  factory $BottomNavBarStateCopyWith(BottomNavBarState value,
-      $Res Function(BottomNavBarState) _then) = _$BottomNavBarStateCopyWithImpl;
+abstract mixin class $BottomNavBarStateCopyWith<$Res>  {
+  factory $BottomNavBarStateCopyWith(BottomNavBarState value, $Res Function(BottomNavBarState) _then) = _$BottomNavBarStateCopyWithImpl;
+@useResult
+$Res call({
+ int page
+});
 
-  @useResult
-  $Res call({
-    int page
-  });
+
 
 
 }
-
 /// @nodoc
 class _$BottomNavBarStateCopyWithImpl<$Res>
     implements $BottomNavBarStateCopyWith<$Res> {
@@ -67,18 +61,14 @@ class _$BottomNavBarStateCopyWithImpl<$Res>
   final BottomNavBarState _self;
   final $Res Function(BottomNavBarState) _then;
 
-  /// Create a copy of BottomNavBarState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? page = null,}) {
-    return _then(_self.copyWith(
-      page: null == page
-          ? _self.page
-          : page // ignore: cast_nullable_to_non_nullable
-      as int,
-    ));
-  }
+/// Create a copy of BottomNavBarState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? page = null,}) {
+  return _then(_self.copyWith(
+page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
 
 }
 
@@ -88,54 +78,47 @@ class _$BottomNavBarStateCopyWithImpl<$Res>
 
 class BottomNavBarPageChanged implements BottomNavBarState {
   const BottomNavBarPageChanged(this.page);
+  
+
+@override final  int page;
+
+/// Create a copy of BottomNavBarState
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$BottomNavBarPageChangedCopyWith<BottomNavBarPageChanged> get copyWith => _$BottomNavBarPageChangedCopyWithImpl<BottomNavBarPageChanged>(this, _$identity);
 
 
-  @override final int page;
 
-  /// Create a copy of BottomNavBarState
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $BottomNavBarPageChangedCopyWith<BottomNavBarPageChanged> get copyWith =>
-      _$BottomNavBarPageChangedCopyWithImpl<BottomNavBarPageChanged>(
-          this, _$identity);
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BottomNavBarPageChanged&&(identical(other.page, page) || other.page == page));
+}
 
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is BottomNavBarPageChanged &&
-            (identical(other.page, page) || other.page == page));
-  }
+@override
+int get hashCode => Object.hash(runtimeType,page);
 
-
-  @override
-  int get hashCode => Object.hash(runtimeType, page);
-
-  @override
-  String toString() {
-    return 'BottomNavBarState.pageChanged(page: $page)';
-  }
+@override
+String toString() {
+  return 'BottomNavBarState.pageChanged(page: $page)';
+}
 
 
 }
 
 /// @nodoc
-abstract mixin class $BottomNavBarPageChangedCopyWith<$Res>
-    implements $BottomNavBarStateCopyWith<$Res> {
-  factory $BottomNavBarPageChangedCopyWith(BottomNavBarPageChanged value,
-      $Res Function(BottomNavBarPageChanged) _then) = _$BottomNavBarPageChangedCopyWithImpl;
+abstract mixin class $BottomNavBarPageChangedCopyWith<$Res> implements $BottomNavBarStateCopyWith<$Res> {
+  factory $BottomNavBarPageChangedCopyWith(BottomNavBarPageChanged value, $Res Function(BottomNavBarPageChanged) _then) = _$BottomNavBarPageChangedCopyWithImpl;
+@override @useResult
+$Res call({
+ int page
+});
 
-  @override
-  @useResult
-  $Res call({
-    int page
-  });
+
 
 
 }
-
 /// @nodoc
 class _$BottomNavBarPageChangedCopyWithImpl<$Res>
     implements $BottomNavBarPageChangedCopyWith<$Res> {
@@ -144,16 +127,14 @@ class _$BottomNavBarPageChangedCopyWithImpl<$Res>
   final BottomNavBarPageChanged _self;
   final $Res Function(BottomNavBarPageChanged) _then;
 
-  /// Create a copy of BottomNavBarState
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $Res call({Object? page = null,}) {
-    return _then(BottomNavBarPageChanged(
-      null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
-      as int,
-    ));
-  }
+/// Create a copy of BottomNavBarState
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? page = null,}) {
+  return _then(BottomNavBarPageChanged(
+null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
 
 
 }

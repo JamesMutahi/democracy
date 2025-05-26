@@ -1,7 +1,7 @@
 part of 'survey_bloc.dart';
 
-class AppProvider {
-  AppProvider({required this.dio});
+class SurveyProvider {
+  SurveyProvider({required this.dio});
 
   final Dio dio;
 

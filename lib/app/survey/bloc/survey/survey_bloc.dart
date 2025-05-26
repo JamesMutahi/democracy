@@ -12,7 +12,7 @@ part 'survey_repository.dart';
 part 'survey_state.dart';
 
 class SurveyBloc extends Bloc<SurveyEvent, SurveyState> {
-  SurveyBloc({required this.appRepository}) : super(const SurveyState()) {
+  SurveyBloc({required this.surveyRepository}) : super(const SurveyState()) {
     on<_Initialize>((event, emit) async {
       emit(SurveyState());
       add(GetSurveys());
@@ -48,7 +48,7 @@ class SurveyBloc extends Bloc<SurveyEvent, SurveyState> {
   Future _getSurveys(Emitter<SurveyState> emit) async {
     if (state.next == null) return;
     try {
-      final data = await appRepository.getSurveys(next: state.next);
+      final data = await surveyRepository.getSurveys(next: state.next);
       final List<Survey> surveys = List.from(
         data['results'].map((e) => Survey.fromJson(e)),
       );
@@ -67,7 +67,7 @@ class SurveyBloc extends Bloc<SurveyEvent, SurveyState> {
   Future _onFilterSurveys(Emitter<SurveyState> emit, _Filter event) async {
     emit(state.copyWith(status: SurveyStatus.loading));
     try {
-      final data = await appRepository.getSurveys(
+      final data = await surveyRepository.getSurveys(
         next: null,
         searchTerm: event.searchTerm,
         startDate: event.startDate,
@@ -88,5 +88,5 @@ class SurveyBloc extends Bloc<SurveyEvent, SurveyState> {
     }
   }
 
-  final AppRepository appRepository;
+  final SurveyRepository surveyRepository;
 }

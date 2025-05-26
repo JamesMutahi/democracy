@@ -12,33 +12,33 @@ part of 'password_reset_cubit.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
-
 /// @nodoc
 mixin _$PasswordResetState {
 
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is PasswordResetState);
-  }
 
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  String toString() {
-    return 'PasswordResetState()';
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PasswordResetState);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'PasswordResetState()';
+}
 
 
 }
 
 /// @nodoc
-class $PasswordResetStateCopyWith<$Res> {
-  $PasswordResetStateCopyWith(PasswordResetState _,
-      $Res Function(PasswordResetState) __);
+class $PasswordResetStateCopyWith<$Res>  {
+$PasswordResetStateCopyWith(PasswordResetState _, $Res Function(PasswordResetState) __);
 }
 
 
@@ -47,25 +47,31 @@ class $PasswordResetStateCopyWith<$Res> {
 
 class PasswordResetInitial implements PasswordResetState {
   const PasswordResetInitial();
+  
 
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is PasswordResetInitial);
-  }
 
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  String toString() {
-    return 'PasswordResetState.initial()';
-  }
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PasswordResetInitial);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'PasswordResetState.initial()';
+}
 
 
 }
+
+
 
 
 /// @nodoc
@@ -73,25 +79,31 @@ class PasswordResetInitial implements PasswordResetState {
 
 class PasswordResetLoading implements PasswordResetState {
   const PasswordResetLoading();
+  
 
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is PasswordResetLoading);
-  }
 
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  String toString() {
-    return 'PasswordResetState.loading()';
-  }
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PasswordResetLoading);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'PasswordResetState.loading()';
+}
 
 
 }
+
+
 
 
 /// @nodoc
@@ -99,53 +111,47 @@ class PasswordResetLoading implements PasswordResetState {
 
 class PasswordResetEmailVerified implements PasswordResetState {
   const PasswordResetEmailVerified({required this.email});
+  
+
+ final  String email;
+
+/// Create a copy of PasswordResetState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PasswordResetEmailVerifiedCopyWith<PasswordResetEmailVerified> get copyWith => _$PasswordResetEmailVerifiedCopyWithImpl<PasswordResetEmailVerified>(this, _$identity);
 
 
-  final String email;
 
-  /// Create a copy of PasswordResetState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $PasswordResetEmailVerifiedCopyWith<
-      PasswordResetEmailVerified> get copyWith =>
-      _$PasswordResetEmailVerifiedCopyWithImpl<PasswordResetEmailVerified>(
-          this, _$identity);
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PasswordResetEmailVerified&&(identical(other.email, email) || other.email == email));
+}
 
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType &&
-        other is PasswordResetEmailVerified &&
-        (identical(other.email, email) || other.email == email));
-  }
+@override
+int get hashCode => Object.hash(runtimeType,email);
 
-
-  @override
-  int get hashCode => Object.hash(runtimeType, email);
-
-  @override
-  String toString() {
-    return 'PasswordResetState.emailVerified(email: $email)';
-  }
+@override
+String toString() {
+  return 'PasswordResetState.emailVerified(email: $email)';
+}
 
 
 }
 
 /// @nodoc
-abstract mixin class $PasswordResetEmailVerifiedCopyWith<$Res>
-    implements $PasswordResetStateCopyWith<$Res> {
-  factory $PasswordResetEmailVerifiedCopyWith(PasswordResetEmailVerified value,
-      $Res Function(PasswordResetEmailVerified) _then) = _$PasswordResetEmailVerifiedCopyWithImpl;
+abstract mixin class $PasswordResetEmailVerifiedCopyWith<$Res> implements $PasswordResetStateCopyWith<$Res> {
+  factory $PasswordResetEmailVerifiedCopyWith(PasswordResetEmailVerified value, $Res Function(PasswordResetEmailVerified) _then) = _$PasswordResetEmailVerifiedCopyWithImpl;
+@useResult
+$Res call({
+ String email
+});
 
-  @useResult
-  $Res call({
-    String email
-  });
+
 
 
 }
-
 /// @nodoc
 class _$PasswordResetEmailVerifiedCopyWithImpl<$Res>
     implements $PasswordResetEmailVerifiedCopyWith<$Res> {
@@ -154,16 +160,14 @@ class _$PasswordResetEmailVerifiedCopyWithImpl<$Res>
   final PasswordResetEmailVerified _self;
   final $Res Function(PasswordResetEmailVerified) _then;
 
-  /// Create a copy of PasswordResetState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline') $Res call({Object? email = null,}) {
-    return _then(PasswordResetEmailVerified(
-      email: null == email
-          ? _self.email
-          : email // ignore: cast_nullable_to_non_nullable
-      as String,
-    ));
-  }
+/// Create a copy of PasswordResetState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? email = null,}) {
+  return _then(PasswordResetEmailVerified(
+email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
 
 
 }
@@ -173,25 +177,31 @@ class _$PasswordResetEmailVerifiedCopyWithImpl<$Res>
 
 class PasswordResetCodeVerified implements PasswordResetState {
   const PasswordResetCodeVerified();
+  
 
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType &&
-        other is PasswordResetCodeVerified);
-  }
 
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  String toString() {
-    return 'PasswordResetState.codeVerified()';
-  }
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PasswordResetCodeVerified);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'PasswordResetState.codeVerified()';
+}
 
 
 }
+
+
 
 
 /// @nodoc
@@ -199,25 +209,31 @@ class PasswordResetCodeVerified implements PasswordResetState {
 
 class PasswordResetComplete implements PasswordResetState {
   const PasswordResetComplete();
+  
 
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is PasswordResetComplete);
-  }
 
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  String toString() {
-    return 'PasswordResetState.resetComplete()';
-  }
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PasswordResetComplete);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'PasswordResetState.resetComplete()';
+}
 
 
 }
+
+
 
 
 /// @nodoc
@@ -225,52 +241,47 @@ class PasswordResetComplete implements PasswordResetState {
 
 class PasswordResetFailure implements PasswordResetState {
   const PasswordResetFailure({required this.error});
+  
+
+ final  String error;
+
+/// Create a copy of PasswordResetState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PasswordResetFailureCopyWith<PasswordResetFailure> get copyWith => _$PasswordResetFailureCopyWithImpl<PasswordResetFailure>(this, _$identity);
 
 
-  final String error;
 
-  /// Create a copy of PasswordResetState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $PasswordResetFailureCopyWith<PasswordResetFailure> get copyWith =>
-      _$PasswordResetFailureCopyWithImpl<PasswordResetFailure>(
-          this, _$identity);
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PasswordResetFailure&&(identical(other.error, error) || other.error == error));
+}
 
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is PasswordResetFailure &&
-            (identical(other.error, error) || other.error == error));
-  }
+@override
+int get hashCode => Object.hash(runtimeType,error);
 
-
-  @override
-  int get hashCode => Object.hash(runtimeType, error);
-
-  @override
-  String toString() {
-    return 'PasswordResetState.failure(error: $error)';
-  }
+@override
+String toString() {
+  return 'PasswordResetState.failure(error: $error)';
+}
 
 
 }
 
 /// @nodoc
-abstract mixin class $PasswordResetFailureCopyWith<$Res>
-    implements $PasswordResetStateCopyWith<$Res> {
-  factory $PasswordResetFailureCopyWith(PasswordResetFailure value,
-      $Res Function(PasswordResetFailure) _then) = _$PasswordResetFailureCopyWithImpl;
+abstract mixin class $PasswordResetFailureCopyWith<$Res> implements $PasswordResetStateCopyWith<$Res> {
+  factory $PasswordResetFailureCopyWith(PasswordResetFailure value, $Res Function(PasswordResetFailure) _then) = _$PasswordResetFailureCopyWithImpl;
+@useResult
+$Res call({
+ String error
+});
 
-  @useResult
-  $Res call({
-    String error
-  });
+
 
 
 }
-
 /// @nodoc
 class _$PasswordResetFailureCopyWithImpl<$Res>
     implements $PasswordResetFailureCopyWith<$Res> {
@@ -279,16 +290,14 @@ class _$PasswordResetFailureCopyWithImpl<$Res>
   final PasswordResetFailure _self;
   final $Res Function(PasswordResetFailure) _then;
 
-  /// Create a copy of PasswordResetState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline') $Res call({Object? error = null,}) {
-    return _then(PasswordResetFailure(
-      error: null == error
-          ? _self.error
-          : error // ignore: cast_nullable_to_non_nullable
-      as String,
-    ));
-  }
+/// Create a copy of PasswordResetState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? error = null,}) {
+  return _then(PasswordResetFailure(
+error: null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
 
 
 }

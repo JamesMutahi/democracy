@@ -1,9 +1,9 @@
 part of 'survey_bloc.dart';
 
-class AppRepository {
-  AppRepository({required this.appProvider});
+class SurveyRepository {
+  SurveyRepository({required this.surveyProvider});
 
-  final AppProvider appProvider;
+  final SurveyProvider surveyProvider;
 
   Future<Map<String, dynamic>> getSurveys({
     required String? next,
@@ -11,7 +11,7 @@ class AppRepository {
     DateTime? startDate,
     DateTime? endDate,
   }) async {
-    final data = await appProvider.getSurveys(
+    final data = await surveyProvider.getSurveys(
       next: next,
       searchTerm: searchTerm,
       startDate: startDate,

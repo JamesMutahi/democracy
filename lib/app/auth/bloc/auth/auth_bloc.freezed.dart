@@ -12,32 +12,33 @@ part of 'auth_bloc.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
-
 /// @nodoc
 mixin _$AuthEvent {
 
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is AuthEvent);
-  }
 
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  String toString() {
-    return 'AuthEvent()';
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthEvent);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'AuthEvent()';
+}
 
 
 }
 
 /// @nodoc
-class $AuthEventCopyWith<$Res> {
-  $AuthEventCopyWith(AuthEvent _, $Res Function(AuthEvent) __);
+class $AuthEventCopyWith<$Res>  {
+$AuthEventCopyWith(AuthEvent _, $Res Function(AuthEvent) __);
 }
 
 
@@ -46,52 +47,60 @@ class $AuthEventCopyWith<$Res> {
 
 class _Authenticate implements AuthEvent {
   const _Authenticate();
+  
 
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _Authenticate);
-  }
 
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  String toString() {
-    return 'AuthEvent.authenticate()';
-  }
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Authenticate);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'AuthEvent.authenticate()';
+}
 
 
 }
+
+
 
 
 /// @nodoc
 mixin _$AuthState {
 
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is AuthState);
-  }
 
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  String toString() {
-    return 'AuthState()';
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthState);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'AuthState()';
+}
 
 
 }
 
 /// @nodoc
-class $AuthStateCopyWith<$Res> {
-  $AuthStateCopyWith(AuthState _, $Res Function(AuthState) __);
+class $AuthStateCopyWith<$Res>  {
+$AuthStateCopyWith(AuthState _, $Res Function(AuthState) __);
 }
 
 
@@ -100,25 +109,31 @@ class $AuthStateCopyWith<$Res> {
 
 class Unauthenticated implements AuthState {
   const Unauthenticated();
+  
 
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is Unauthenticated);
-  }
 
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  String toString() {
-    return 'AuthState.unAuthenticated()';
-  }
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Unauthenticated);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'AuthState.unAuthenticated()';
+}
 
 
 }
+
+
 
 
 /// @nodoc
@@ -126,25 +141,31 @@ class Unauthenticated implements AuthState {
 
 class Authenticating implements AuthState {
   const Authenticating();
+  
 
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is Authenticating);
-  }
 
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  String toString() {
-    return 'AuthState.authenticating()';
-  }
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Authenticating);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'AuthState.authenticating()';
+}
 
 
 }
+
+
 
 
 /// @nodoc
@@ -152,53 +173,47 @@ class Authenticating implements AuthState {
 
 class Authenticated implements AuthState {
   const Authenticated({required this.user});
+  
+
+ final  User user;
+
+/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AuthenticatedCopyWith<Authenticated> get copyWith => _$AuthenticatedCopyWithImpl<Authenticated>(this, _$identity);
 
 
-  final User user;
 
-  /// Create a copy of AuthState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $AuthenticatedCopyWith<Authenticated> get copyWith =>
-      _$AuthenticatedCopyWithImpl<Authenticated>(this, _$identity);
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Authenticated&&(identical(other.user, user) || other.user == user));
+}
 
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is Authenticated &&
-            (identical(other.user, user) || other.user == user));
-  }
+@override
+int get hashCode => Object.hash(runtimeType,user);
 
-
-  @override
-  int get hashCode => Object.hash(runtimeType, user);
-
-  @override
-  String toString() {
-    return 'AuthState.authenticated(user: $user)';
-  }
+@override
+String toString() {
+  return 'AuthState.authenticated(user: $user)';
+}
 
 
 }
 
 /// @nodoc
-abstract mixin class $AuthenticatedCopyWith<$Res>
-    implements $AuthStateCopyWith<$Res> {
-  factory $AuthenticatedCopyWith(Authenticated value,
-      $Res Function(Authenticated) _then) = _$AuthenticatedCopyWithImpl;
-
-  @useResult
-  $Res call({
-    User user
-  });
+abstract mixin class $AuthenticatedCopyWith<$Res> implements $AuthStateCopyWith<$Res> {
+  factory $AuthenticatedCopyWith(Authenticated value, $Res Function(Authenticated) _then) = _$AuthenticatedCopyWithImpl;
+@useResult
+$Res call({
+ User user
+});
 
 
-  $UserCopyWith<$Res> get user;
+$UserCopyWith<$Res> get user;
 
 }
-
 /// @nodoc
 class _$AuthenticatedCopyWithImpl<$Res>
     implements $AuthenticatedCopyWith<$Res> {
@@ -207,26 +222,25 @@ class _$AuthenticatedCopyWithImpl<$Res>
   final Authenticated _self;
   final $Res Function(Authenticated) _then;
 
-  /// Create a copy of AuthState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
-    return _then(Authenticated(
-      user: null == user
-          ? _self.user
-          : user // ignore: cast_nullable_to_non_nullable
-      as User,
-    ));
-  }
+/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
+  return _then(Authenticated(
+user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as User,
+  ));
+}
 
-  /// Create a copy of AuthState
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $UserCopyWith<$Res> get user {
-    return $UserCopyWith<$Res>(_self.user, (value) {
-      return _then(_self.copyWith(user: value));
-    });
-  }
+/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$UserCopyWith<$Res> get user {
+  
+  return $UserCopyWith<$Res>(_self.user, (value) {
+    return _then(_self.copyWith(user: value));
+  });
+}
 }
 
 // dart format on

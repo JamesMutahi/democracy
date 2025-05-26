@@ -12,32 +12,33 @@ part of 'login_cubit.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
-
 /// @nodoc
 mixin _$LoginState {
 
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is LoginState);
-  }
 
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  String toString() {
-    return 'LoginState()';
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginState);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'LoginState()';
+}
 
 
 }
 
 /// @nodoc
-class $LoginStateCopyWith<$Res> {
-  $LoginStateCopyWith(LoginState _, $Res Function(LoginState) __);
+class $LoginStateCopyWith<$Res>  {
+$LoginStateCopyWith(LoginState _, $Res Function(LoginState) __);
 }
 
 
@@ -46,25 +47,31 @@ class $LoginStateCopyWith<$Res> {
 
 class LoginInitial implements LoginState {
   const LoginInitial();
+  
 
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is LoginInitial);
-  }
 
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  String toString() {
-    return 'LoginState.initial()';
-  }
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginInitial);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'LoginState.initial()';
+}
 
 
 }
+
+
 
 
 /// @nodoc
@@ -72,25 +79,31 @@ class LoginInitial implements LoginState {
 
 class LoginLoading implements LoginState {
   const LoginLoading();
+  
 
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is LoginLoading);
-  }
 
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  String toString() {
-    return 'LoginState.loading()';
-  }
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginLoading);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'LoginState.loading()';
+}
 
 
 }
+
+
 
 
 /// @nodoc
@@ -98,25 +111,31 @@ class LoginLoading implements LoginState {
 
 class LoggedIn implements LoginState {
   const LoggedIn();
+  
 
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is LoggedIn);
-  }
 
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  String toString() {
-    return 'LoginState.loggedIn()';
-  }
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoggedIn);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'LoginState.loggedIn()';
+}
 
 
 }
+
+
 
 
 /// @nodoc
@@ -124,25 +143,31 @@ class LoggedIn implements LoginState {
 
 class LoggedOut implements LoginState {
   const LoggedOut();
+  
 
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is LoggedOut);
-  }
 
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  String toString() {
-    return 'LoginState.loggedOut()';
-  }
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoggedOut);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'LoginState.loggedOut()';
+}
 
 
 }
+
+
 
 
 /// @nodoc
@@ -150,51 +175,47 @@ class LoggedOut implements LoginState {
 
 class LoginFailure implements LoginState {
   const LoginFailure({required this.error});
+  
+
+ final  String error;
+
+/// Create a copy of LoginState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$LoginFailureCopyWith<LoginFailure> get copyWith => _$LoginFailureCopyWithImpl<LoginFailure>(this, _$identity);
 
 
-  final String error;
 
-  /// Create a copy of LoginState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $LoginFailureCopyWith<LoginFailure> get copyWith =>
-      _$LoginFailureCopyWithImpl<LoginFailure>(this, _$identity);
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginFailure&&(identical(other.error, error) || other.error == error));
+}
 
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is LoginFailure &&
-            (identical(other.error, error) || other.error == error));
-  }
+@override
+int get hashCode => Object.hash(runtimeType,error);
 
-
-  @override
-  int get hashCode => Object.hash(runtimeType, error);
-
-  @override
-  String toString() {
-    return 'LoginState.failure(error: $error)';
-  }
+@override
+String toString() {
+  return 'LoginState.failure(error: $error)';
+}
 
 
 }
 
 /// @nodoc
-abstract mixin class $LoginFailureCopyWith<$Res>
-    implements $LoginStateCopyWith<$Res> {
-  factory $LoginFailureCopyWith(LoginFailure value,
-      $Res Function(LoginFailure) _then) = _$LoginFailureCopyWithImpl;
+abstract mixin class $LoginFailureCopyWith<$Res> implements $LoginStateCopyWith<$Res> {
+  factory $LoginFailureCopyWith(LoginFailure value, $Res Function(LoginFailure) _then) = _$LoginFailureCopyWithImpl;
+@useResult
+$Res call({
+ String error
+});
 
-  @useResult
-  $Res call({
-    String error
-  });
+
 
 
 }
-
 /// @nodoc
 class _$LoginFailureCopyWithImpl<$Res>
     implements $LoginFailureCopyWith<$Res> {
@@ -203,16 +224,14 @@ class _$LoginFailureCopyWithImpl<$Res>
   final LoginFailure _self;
   final $Res Function(LoginFailure) _then;
 
-  /// Create a copy of LoginState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline') $Res call({Object? error = null,}) {
-    return _then(LoginFailure(
-      error: null == error
-          ? _self.error
-          : error // ignore: cast_nullable_to_non_nullable
-      as String,
-    ));
-  }
+/// Create a copy of LoginState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? error = null,}) {
+  return _then(LoginFailure(
+error: null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
 
 
 }
