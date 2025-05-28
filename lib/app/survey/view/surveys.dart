@@ -1,5 +1,6 @@
 import 'package:democracy/app/survey/bloc/survey/survey_bloc.dart';
 import 'package:democracy/app/survey/models/survey.dart';
+import 'package:democracy/app/survey/view/survey_process/survey_page.dart';
 import 'package:democracy/app/utils/view/bottom_loader.dart';
 import 'package:democracy/app/utils/view/failure_retry_button.dart';
 import 'package:democracy/app/utils/view/loading_indicator.dart';
@@ -101,7 +102,16 @@ class SurveyTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: () {},
+      onTap: () {
+        (survey.isPoll)
+            ? null
+            : Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SurveyPage(survey: survey),
+              ),
+            );
+      },
       title: Text(survey.name),
       trailing: Icon(Icons.arrow_forward_ios),
       leading: Container(

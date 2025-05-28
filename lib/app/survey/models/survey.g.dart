@@ -13,7 +13,14 @@ _Survey _$SurveyFromJson(Map<String, dynamic> json) => _Survey(
   isPoll: json['is_poll'] as bool,
   start: DateTime.parse(json['start'] as String),
   end: DateTime.parse(json['end'] as String),
-  options: json['options'] as List<dynamic>,
+  options:
+      (json['options'] as List<dynamic>)
+          .map((e) => Option.fromJson(e as Map<String, dynamic>))
+          .toList(),
+  questions:
+      (json['questions'] as List<dynamic>)
+          .map((e) => Question.fromJson(e as Map<String, dynamic>))
+          .toList(),
 );
 
 Map<String, dynamic> _$SurveyToJson(_Survey instance) => <String, dynamic>{
@@ -24,4 +31,5 @@ Map<String, dynamic> _$SurveyToJson(_Survey instance) => <String, dynamic>{
   'start': instance.start.toIso8601String(),
   'end': instance.end.toIso8601String(),
   'options': instance.options,
+  'questions': instance.questions,
 };

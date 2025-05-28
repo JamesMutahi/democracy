@@ -47,7 +47,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   Future _getPosts(Emitter<PostState> emit) async {
     if (state.next == null) return;
-    // try {
+    try {
       final data = await postRepository.getPosts(next: state.next);
       final List<Post> posts = List.from(
         data['results'].map((e) => Post.fromJson(e)),
@@ -59,9 +59,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           next: data['next'],
         ),
       );
-    // } catch (e) {
-    //   emit(state.copyWith(status: PostStatus.failure));
-    // }
+    } catch (e) {
+      emit(state.copyWith(status: PostStatus.failure));
+    }
   }
 
   Future _onFilterPosts(Emitter<PostState> emit, _Filter event) async {
