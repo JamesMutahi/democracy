@@ -1,7 +1,7 @@
 import 'package:democracy/app/survey/bloc/survey-process/page/page_bloc.dart';
 import 'package:democracy/app/survey/models/question.dart';
 import 'package:democracy/app/survey/models/survey.dart';
-import 'package:democracy/app/survey/view/survey_process/bottom_navigation.dart';
+import 'package:democracy/app/survey/view/survey_process/widgets/index.dart';
 import 'package:democracy/app/utils/view/loading_indicator.dart';
 import 'package:democracy/app/utils/view/no_results.dart';
 import 'package:flutter/material.dart';
@@ -38,10 +38,14 @@ class _SurveyPageState extends State<SurveyPage> {
                     padding: const EdgeInsets.only(
                       left: 20.0,
                       right: 20.0,
+                      top: 20.0,
                       bottom: 160,
                     ),
                     itemBuilder: (BuildContext context, int index) {
-                      return ListTile(title: Text(questions[index].text));
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 20),
+                        child: QuestionTile(question: questions[index]),
+                      );
                     },
                     itemCount: questions.length,
                   )
@@ -53,5 +57,25 @@ class _SurveyPageState extends State<SurveyPage> {
       ),
       bottomNavigationBar: BottomNavBar(),
     );
+  }
+}
+
+class QuestionTile extends StatelessWidget {
+  const QuestionTile({super.key, required this.question});
+
+  final Question question;
+
+  @override
+  Widget build(BuildContext context) {
+    switch (question.type) {
+      case QuestionType.number:
+        return NumberWidget(question: question);
+      case QuestionType.text:
+        return TextWidget(question: question);
+      case QuestionType.singleChoice:
+        return SingleChoiceWidget(question: question);
+      case QuestionType.multipleChoice:
+        return MultipleChoiceWidget(question: question);
+    }
   }
 }

@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Question {
 
- int get id; int get survey; int get page; int get number; String get text; Choice? get dependency; List<Choice> get choices;
+ int get id; int get survey; int get page; int get number;@QuestionTypeConverter() QuestionType get type; String get text; String? get hint; Choice? get dependency; List<Choice> get choices;
 /// Create a copy of Question
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $QuestionCopyWith<Question> get copyWith => _$QuestionCopyWithImpl<Question>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Question&&(identical(other.id, id) || other.id == id)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.page, page) || other.page == page)&&(identical(other.number, number) || other.number == number)&&(identical(other.text, text) || other.text == text)&&(identical(other.dependency, dependency) || other.dependency == dependency)&&const DeepCollectionEquality().equals(other.choices, choices));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Question&&(identical(other.id, id) || other.id == id)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.page, page) || other.page == page)&&(identical(other.number, number) || other.number == number)&&(identical(other.type, type) || other.type == type)&&(identical(other.text, text) || other.text == text)&&(identical(other.hint, hint) || other.hint == hint)&&(identical(other.dependency, dependency) || other.dependency == dependency)&&const DeepCollectionEquality().equals(other.choices, choices));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,survey,page,number,text,dependency,const DeepCollectionEquality().hash(choices));
+int get hashCode => Object.hash(runtimeType,id,survey,page,number,type,text,hint,dependency,const DeepCollectionEquality().hash(choices));
 
 @override
 String toString() {
-  return 'Question(id: $id, survey: $survey, page: $page, number: $number, text: $text, dependency: $dependency, choices: $choices)';
+  return 'Question(id: $id, survey: $survey, page: $page, number: $number, type: $type, text: $text, hint: $hint, dependency: $dependency, choices: $choices)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $QuestionCopyWith<$Res>  {
   factory $QuestionCopyWith(Question value, $Res Function(Question) _then) = _$QuestionCopyWithImpl;
 @useResult
 $Res call({
- int id, int survey, int page, int number, String text, Choice? dependency, List<Choice> choices
+ int id, int survey, int page, int number,@QuestionTypeConverter() QuestionType type, String text, String? hint, Choice? dependency, List<Choice> choices
 });
 
 
@@ -66,14 +66,16 @@ class _$QuestionCopyWithImpl<$Res>
 
 /// Create a copy of Question
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? survey = null,Object? page = null,Object? number = null,Object? text = null,Object? dependency = freezed,Object? choices = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? survey = null,Object? page = null,Object? number = null,Object? type = null,Object? text = null,Object? hint = freezed,Object? dependency = freezed,Object? choices = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,survey: null == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
 as int,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
 as int,number: null == number ? _self.number : number // ignore: cast_nullable_to_non_nullable
-as int,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
-as String,dependency: freezed == dependency ? _self.dependency : dependency // ignore: cast_nullable_to_non_nullable
+as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as QuestionType,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
+as String,hint: freezed == hint ? _self.hint : hint // ignore: cast_nullable_to_non_nullable
+as String?,dependency: freezed == dependency ? _self.dependency : dependency // ignore: cast_nullable_to_non_nullable
 as Choice?,choices: null == choices ? _self.choices : choices // ignore: cast_nullable_to_non_nullable
 as List<Choice>,
   ));
@@ -98,14 +100,16 @@ $ChoiceCopyWith<$Res>? get dependency {
 @JsonSerializable()
 
 class _Question implements Question {
-  const _Question({required this.id, required this.survey, required this.page, required this.number, required this.text, required this.dependency, required final  List<Choice> choices}): _choices = choices;
+  const _Question({required this.id, required this.survey, required this.page, required this.number, @QuestionTypeConverter() required this.type, required this.text, required this.hint, required this.dependency, required final  List<Choice> choices}): _choices = choices;
   factory _Question.fromJson(Map<String, dynamic> json) => _$QuestionFromJson(json);
 
 @override final  int id;
 @override final  int survey;
 @override final  int page;
 @override final  int number;
+@override@QuestionTypeConverter() final  QuestionType type;
 @override final  String text;
+@override final  String? hint;
 @override final  Choice? dependency;
  final  List<Choice> _choices;
 @override List<Choice> get choices {
@@ -128,16 +132,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Question&&(identical(other.id, id) || other.id == id)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.page, page) || other.page == page)&&(identical(other.number, number) || other.number == number)&&(identical(other.text, text) || other.text == text)&&(identical(other.dependency, dependency) || other.dependency == dependency)&&const DeepCollectionEquality().equals(other._choices, _choices));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Question&&(identical(other.id, id) || other.id == id)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.page, page) || other.page == page)&&(identical(other.number, number) || other.number == number)&&(identical(other.type, type) || other.type == type)&&(identical(other.text, text) || other.text == text)&&(identical(other.hint, hint) || other.hint == hint)&&(identical(other.dependency, dependency) || other.dependency == dependency)&&const DeepCollectionEquality().equals(other._choices, _choices));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,survey,page,number,text,dependency,const DeepCollectionEquality().hash(_choices));
+int get hashCode => Object.hash(runtimeType,id,survey,page,number,type,text,hint,dependency,const DeepCollectionEquality().hash(_choices));
 
 @override
 String toString() {
-  return 'Question(id: $id, survey: $survey, page: $page, number: $number, text: $text, dependency: $dependency, choices: $choices)';
+  return 'Question(id: $id, survey: $survey, page: $page, number: $number, type: $type, text: $text, hint: $hint, dependency: $dependency, choices: $choices)';
 }
 
 
@@ -148,7 +152,7 @@ abstract mixin class _$QuestionCopyWith<$Res> implements $QuestionCopyWith<$Res>
   factory _$QuestionCopyWith(_Question value, $Res Function(_Question) _then) = __$QuestionCopyWithImpl;
 @override @useResult
 $Res call({
- int id, int survey, int page, int number, String text, Choice? dependency, List<Choice> choices
+ int id, int survey, int page, int number,@QuestionTypeConverter() QuestionType type, String text, String? hint, Choice? dependency, List<Choice> choices
 });
 
 
@@ -165,14 +169,16 @@ class __$QuestionCopyWithImpl<$Res>
 
 /// Create a copy of Question
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? survey = null,Object? page = null,Object? number = null,Object? text = null,Object? dependency = freezed,Object? choices = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? survey = null,Object? page = null,Object? number = null,Object? type = null,Object? text = null,Object? hint = freezed,Object? dependency = freezed,Object? choices = null,}) {
   return _then(_Question(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,survey: null == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
 as int,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
 as int,number: null == number ? _self.number : number // ignore: cast_nullable_to_non_nullable
-as int,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
-as String,dependency: freezed == dependency ? _self.dependency : dependency // ignore: cast_nullable_to_non_nullable
+as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as QuestionType,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
+as String,hint: freezed == hint ? _self.hint : hint // ignore: cast_nullable_to_non_nullable
+as String?,dependency: freezed == dependency ? _self.dependency : dependency // ignore: cast_nullable_to_non_nullable
 as Choice?,choices: null == choices ? _self._choices : choices // ignore: cast_nullable_to_non_nullable
 as List<Choice>,
   ));
