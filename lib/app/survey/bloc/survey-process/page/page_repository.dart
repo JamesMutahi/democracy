@@ -13,8 +13,4 @@ class PageRepository {
     bool isLastPage = questions.last.page == page;
     return isLastPage;
   }
-
-  int getLastPage({required List<Question> questions}) {
-    return questions.last.page;
-  }
 }

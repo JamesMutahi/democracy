@@ -12,15 +12,7 @@ part 'survey_bottom_navigation_bloc.freezed.dart';
 class SurveyBottomNavigationBloc
     extends Bloc<SurveyBottomNavigationEvent, SurveyBottomNavigationState> {
   SurveyBottomNavigationBloc({required this.pageRepository})
-    : super(
-        const SurveyBottomNavigationState(
-          status: SurveyBottomNavigationStatus.initial,
-          isFirst: true,
-          isLast: true,
-          page: 0,
-          lastPage: 0,
-        ),
-      ) {
+    : super(const SurveyBottomNavigationState()) {
     on<_Started>((event, emit) async {
       await _onStarted(event, emit);
     });
@@ -44,7 +36,7 @@ class SurveyBottomNavigationBloc
       page: 0,
     );
     bool isLast = pageRepository.checkIsLastPage(questions: questions, page: 0);
-    int lastPage = pageRepository.getLastPage(questions: questions);
+    int lastPage = questions.last.page;
     emit(
       SurveyBottomNavigationState(
         status: SurveyBottomNavigationStatus.loaded,
@@ -72,7 +64,7 @@ class SurveyBottomNavigationBloc
       questions: questions,
       page: nextPage,
     );
-    int lastPage = pageRepository.getLastPage(questions: questions);
+    int lastPage = questions.last.page;
     emit(
       SurveyBottomNavigationState(
         status: SurveyBottomNavigationStatus.loaded,
@@ -100,7 +92,7 @@ class SurveyBottomNavigationBloc
       questions: questions,
       page: prevPage,
     );
-    int lastPage = pageRepository.getLastPage(questions: questions);
+    int lastPage = questions.last.page;
     emit(
       SurveyBottomNavigationState(
         status: SurveyBottomNavigationStatus.loaded,

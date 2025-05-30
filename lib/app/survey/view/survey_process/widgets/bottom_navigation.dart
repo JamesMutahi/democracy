@@ -13,6 +13,7 @@ class BottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+      color: Theme.of(context).canvasColor,
       child:
           BlocBuilder<SurveyBottomNavigationBloc, SurveyBottomNavigationState>(
             builder: (context, state) {
@@ -40,6 +41,10 @@ class BottomNavBar extends StatelessWidget {
                       ),
                     ),
                     child: Text('PREV'),
+                  ),
+                  Text(
+                    'Page ${state.page + 1} of ${state.lastPage + 1}',
+                    style: TextStyle(color: Theme.of(context).disabledColor),
                   ),
                   ElevatedButton(
                     onPressed: () {
