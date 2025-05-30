@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PageEvent {
 
- Survey get survey;
+ Survey get survey; int get page;
 /// Create a copy of PageEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +26,16 @@ $PageEventCopyWith<PageEvent> get copyWith => _$PageEventCopyWithImpl<PageEvent>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PageEvent&&(identical(other.survey, survey) || other.survey == survey));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PageEvent&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.page, page) || other.page == page));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,survey);
+int get hashCode => Object.hash(runtimeType,survey,page);
 
 @override
 String toString() {
-  return 'PageEvent(survey: $survey)';
+  return 'PageEvent(survey: $survey, page: $page)';
 }
 
 
@@ -46,7 +46,7 @@ abstract mixin class $PageEventCopyWith<$Res>  {
   factory $PageEventCopyWith(PageEvent value, $Res Function(PageEvent) _then) = _$PageEventCopyWithImpl;
 @useResult
 $Res call({
- Survey survey
+ Survey survey, int page
 });
 
 
@@ -63,10 +63,11 @@ class _$PageEventCopyWithImpl<$Res>
 
 /// Create a copy of PageEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? survey = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? survey = null,Object? page = null,}) {
   return _then(_self.copyWith(
 survey: null == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
-as Survey,
+as Survey,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 /// Create a copy of PageEvent
@@ -85,43 +86,44 @@ $SurveyCopyWith<$Res> get survey {
 /// @nodoc
 
 
-class _Started implements PageEvent {
-  const _Started({required this.survey});
+class _PageLoaded implements PageEvent {
+  const _PageLoaded({required this.survey, required this.page});
   
 
 @override final  Survey survey;
+@override final  int page;
 
 /// Create a copy of PageEvent
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$StartedCopyWith<_Started> get copyWith => __$StartedCopyWithImpl<_Started>(this, _$identity);
+_$PageLoadedCopyWith<_PageLoaded> get copyWith => __$PageLoadedCopyWithImpl<_PageLoaded>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Started&&(identical(other.survey, survey) || other.survey == survey));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PageLoaded&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.page, page) || other.page == page));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,survey);
+int get hashCode => Object.hash(runtimeType,survey,page);
 
 @override
 String toString() {
-  return 'PageEvent.started(survey: $survey)';
+  return 'PageEvent.pageLoaded(survey: $survey, page: $page)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$StartedCopyWith<$Res> implements $PageEventCopyWith<$Res> {
-  factory _$StartedCopyWith(_Started value, $Res Function(_Started) _then) = __$StartedCopyWithImpl;
+abstract mixin class _$PageLoadedCopyWith<$Res> implements $PageEventCopyWith<$Res> {
+  factory _$PageLoadedCopyWith(_PageLoaded value, $Res Function(_PageLoaded) _then) = __$PageLoadedCopyWithImpl;
 @override @useResult
 $Res call({
- Survey survey
+ Survey survey, int page
 });
 
 
@@ -129,19 +131,20 @@ $Res call({
 
 }
 /// @nodoc
-class __$StartedCopyWithImpl<$Res>
-    implements _$StartedCopyWith<$Res> {
-  __$StartedCopyWithImpl(this._self, this._then);
+class __$PageLoadedCopyWithImpl<$Res>
+    implements _$PageLoadedCopyWith<$Res> {
+  __$PageLoadedCopyWithImpl(this._self, this._then);
 
-  final _Started _self;
-  final $Res Function(_Started) _then;
+  final _PageLoaded _self;
+  final $Res Function(_PageLoaded) _then;
 
 /// Create a copy of PageEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? survey = null,}) {
-  return _then(_Started(
+@override @pragma('vm:prefer-inline') $Res call({Object? survey = null,Object? page = null,}) {
+  return _then(_PageLoaded(
 survey: null == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
-as Survey,
+as Survey,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

@@ -1,3 +1,4 @@
+import 'package:democracy/app/survey/bloc/survey-process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
 import 'package:democracy/app/survey/bloc/survey-process/page/page_bloc.dart';
 import 'package:democracy/app/survey/models/question.dart';
 import 'package:democracy/app/survey/models/survey.dart';
@@ -19,43 +20,98 @@ class SurveyPage extends StatefulWidget {
 class _SurveyPageState extends State<SurveyPage> {
   @override
   void initState() {
-    context.read<PageBloc>().add(PageEvent.started(survey: widget.survey));
+    context.read<SurveyBottomNavigationBloc>().add(
+      SurveyBottomNavigationEvent.started(survey: widget.survey),
+    );
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.survey.name)),
-      body: BlocBuilder<PageBloc, PageState>(
-        builder: (context, state) {
-          switch (state) {
-            case PageLoaded():
-              List<Question> questions = state.questions;
-              return (questions.isNotEmpty)
-                  ? ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    padding: const EdgeInsets.only(
-                      left: 20.0,
-                      right: 20.0,
-                      top: 20.0,
-                      bottom: 160,
-                    ),
-                    itemBuilder: (BuildContext context, int index) {
-                      return Container(
-                        margin: EdgeInsets.only(bottom: 20),
-                        child: QuestionTile(question: questions[index]),
-                      );
-                    },
-                    itemCount: questions.length,
-                  )
-                  : const NoResults();
-            default:
-              return const LoadingIndicator();
+    return BlocListener<
+      SurveyBottomNavigationBloc,
+      SurveyBottomNavigationState
+    >(
+      listener: (context, state) {
+        if (state.status == SurveyBottomNavigationStatus.loaded) {
+          context.read<PageBloc>().add(
+            PageEvent.pageLoaded(survey: widget.survey, page: state.page),
+          );
+        }
+      },
+      child: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) {
+            return;
           }
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Leave survey?', textAlign: TextAlign.center),
+                content: Text(
+                  'Progress is not saved',
+                  textAlign: TextAlign.center,
+                ),
+                actions: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Yes'),
+                      ),
+                      SizedBox(width: 10),
+                      OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('No'),
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            },
+          );
         },
+        child: Scaffold(
+          appBar: AppBar(title: Text(widget.survey.name)),
+          body: BlocBuilder<PageBloc, PageState>(
+            builder: (context, state) {
+              switch (state) {
+                case PageLoaded():
+                  List<Question> questions = state.questions;
+                  return (questions.isNotEmpty)
+                      ? ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        padding: const EdgeInsets.only(
+                          left: 20.0,
+                          right: 20.0,
+                          top: 20.0,
+                          bottom: 160,
+                        ),
+                        itemBuilder: (BuildContext context, int index) {
+                          return Container(
+                            margin: EdgeInsets.only(bottom: 20),
+                            child: QuestionTile(question: questions[index]),
+                          );
+                        },
+                        itemCount: questions.length,
+                      )
+                      : const NoResults();
+                default:
+                  return const LoadingIndicator();
+              }
+            },
+          ),
+          bottomNavigationBar: BottomNavBar(survey: widget.survey),
+        ),
       ),
-      bottomNavigationBar: BottomNavBar(),
     );
   }
 }

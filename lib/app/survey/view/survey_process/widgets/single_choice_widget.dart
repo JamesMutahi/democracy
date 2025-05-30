@@ -20,7 +20,7 @@ class SingleChoiceWidget extends StatelessWidget {
           name: question.text,
           key: ValueKey(question),
           decoration: InputDecoration(
-            hintText: (question.hint == '') ? 'Select option' : question.hint,
+            hintText: (question.hint == null) ? 'Select option' : question.hint,
           ),
           items:
               question.choices

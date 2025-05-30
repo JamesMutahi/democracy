@@ -10,6 +10,7 @@ import 'package:democracy/app/auth/bloc/password_reset/password_reset_cubit.dart
 import 'package:democracy/app/auth/bloc/registration/registration_cubit.dart';
 import 'package:democracy/app/social/bloc/post/post_bloc.dart';
 import 'package:democracy/app/survey/bloc/survey-process/page/page_bloc.dart';
+import 'package:democracy/app/survey/bloc/survey-process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
 import 'package:democracy/app/survey/bloc/survey/survey_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -45,6 +46,7 @@ void main() async {
         RepositoryProvider.value(
           value: PostRepository(postProvider: PostProvider(dio: dio)),
         ),
+        RepositoryProvider.value(value: PageRepository()),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -94,7 +96,22 @@ void main() async {
                   surveyRepository: context.read<SurveyRepository>(),
                 ),
           ),
-          BlocProvider(create: (context) => PageBloc()),
+          BlocProvider(
+            create:
+                (context) =>
+                    PageBloc(pageRepository: context.read<PageRepository>()),
+          ),
+          BlocProvider(
+            create:
+                (context) =>
+                    PageBloc(pageRepository: context.read<PageRepository>()),
+          ),
+          BlocProvider(
+            create:
+                (context) => SurveyBottomNavigationBloc(
+                  pageRepository: context.read<PageRepository>(),
+                ),
+          ),
           BlocProvider(
             create:
                 (context) =>
