@@ -1,5 +1,7 @@
+import 'package:democracy/app/survey/bloc/survey-process/response/response_bloc.dart';
 import 'package:democracy/app/survey/models/question.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class NumberWidget extends StatelessWidget {
   const NumberWidget({super.key, required this.question});
@@ -19,6 +21,11 @@ class NumberWidget extends StatelessWidget {
             FocusScope.of(context).unfocus();
           },
           keyboardType: TextInputType.number,
+          onChanged: (value) {
+            context.read<ResponseBloc>().add(
+              ResponseEvent.textAnswerAdded(question: question, answer: value),
+            );
+          },
         ),
       ],
     );

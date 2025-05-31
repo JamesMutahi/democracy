@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Question {
 
- int get id; int get survey; int get page; int get number;@QuestionTypeConverter() QuestionType get type; String get text; String? get hint; Choice? get dependency; List<Choice> get choices;
+ int get id; int get survey; int get page; int get number;@QuestionTypeConverter() QuestionType get type; String get text; String? get hint; int? get dependency; List<Choice> get choices;
 /// Create a copy of Question
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,11 +49,11 @@ abstract mixin class $QuestionCopyWith<$Res>  {
   factory $QuestionCopyWith(Question value, $Res Function(Question) _then) = _$QuestionCopyWithImpl;
 @useResult
 $Res call({
- int id, int survey, int page, int number,@QuestionTypeConverter() QuestionType type, String text, String? hint, Choice? dependency, List<Choice> choices
+ int id, int survey, int page, int number,@QuestionTypeConverter() QuestionType type, String text, String? hint, int? dependency, List<Choice> choices
 });
 
 
-$ChoiceCopyWith<$Res>? get dependency;
+
 
 }
 /// @nodoc
@@ -76,23 +76,11 @@ as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nu
 as QuestionType,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,hint: freezed == hint ? _self.hint : hint // ignore: cast_nullable_to_non_nullable
 as String?,dependency: freezed == dependency ? _self.dependency : dependency // ignore: cast_nullable_to_non_nullable
-as Choice?,choices: null == choices ? _self.choices : choices // ignore: cast_nullable_to_non_nullable
+as int?,choices: null == choices ? _self.choices : choices // ignore: cast_nullable_to_non_nullable
 as List<Choice>,
   ));
 }
-/// Create a copy of Question
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ChoiceCopyWith<$Res>? get dependency {
-    if (_self.dependency == null) {
-    return null;
-  }
 
-  return $ChoiceCopyWith<$Res>(_self.dependency!, (value) {
-    return _then(_self.copyWith(dependency: value));
-  });
-}
 }
 
 
@@ -110,7 +98,7 @@ class _Question implements Question {
 @override@QuestionTypeConverter() final  QuestionType type;
 @override final  String text;
 @override final  String? hint;
-@override final  Choice? dependency;
+@override final  int? dependency;
  final  List<Choice> _choices;
 @override List<Choice> get choices {
   if (_choices is EqualUnmodifiableListView) return _choices;
@@ -152,11 +140,11 @@ abstract mixin class _$QuestionCopyWith<$Res> implements $QuestionCopyWith<$Res>
   factory _$QuestionCopyWith(_Question value, $Res Function(_Question) _then) = __$QuestionCopyWithImpl;
 @override @useResult
 $Res call({
- int id, int survey, int page, int number,@QuestionTypeConverter() QuestionType type, String text, String? hint, Choice? dependency, List<Choice> choices
+ int id, int survey, int page, int number,@QuestionTypeConverter() QuestionType type, String text, String? hint, int? dependency, List<Choice> choices
 });
 
 
-@override $ChoiceCopyWith<$Res>? get dependency;
+
 
 }
 /// @nodoc
@@ -179,24 +167,12 @@ as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nu
 as QuestionType,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,hint: freezed == hint ? _self.hint : hint // ignore: cast_nullable_to_non_nullable
 as String?,dependency: freezed == dependency ? _self.dependency : dependency // ignore: cast_nullable_to_non_nullable
-as Choice?,choices: null == choices ? _self._choices : choices // ignore: cast_nullable_to_non_nullable
+as int?,choices: null == choices ? _self._choices : choices // ignore: cast_nullable_to_non_nullable
 as List<Choice>,
   ));
 }
 
-/// Create a copy of Question
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ChoiceCopyWith<$Res>? get dependency {
-    if (_self.dependency == null) {
-    return null;
-  }
 
-  return $ChoiceCopyWith<$Res>(_self.dependency!, (value) {
-    return _then(_self.copyWith(dependency: value));
-  });
-}
 }
 
 // dart format on

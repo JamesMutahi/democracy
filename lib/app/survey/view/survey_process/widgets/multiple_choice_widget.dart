@@ -1,6 +1,8 @@
+import 'package:democracy/app/survey/bloc/survey-process/response/response_bloc.dart';
 import 'package:democracy/app/survey/models/choice.dart';
 import 'package:democracy/app/survey/models/question.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class MultipleChoiceWidget extends StatelessWidget {
@@ -28,7 +30,14 @@ class MultipleChoiceWidget extends StatelessWidget {
                     ),
                   )
                   .toList(),
-          onChanged: (choices) {},
+          onChanged: (choices) {
+            context.read<ResponseBloc>().add(
+              ResponseEvent.multipleChoiceAnswerAdded(
+                question: question,
+                choices: choices!,
+              ),
+            );
+          },
           separator: const VerticalDivider(width: 10, thickness: 5),
         ),
       ],

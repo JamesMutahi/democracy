@@ -1,5 +1,7 @@
+import 'package:democracy/app/survey/bloc/survey-process/response/response_bloc.dart';
 import 'package:democracy/app/survey/models/question.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TextWidget extends StatelessWidget {
   const TextWidget({super.key, required this.question});
@@ -17,6 +19,11 @@ class TextWidget extends StatelessWidget {
         TextFormField(
           onTapOutside: (event) {
             FocusScope.of(context).unfocus();
+          },
+          onChanged: (value) {
+            context.read<ResponseBloc>().add(
+              ResponseEvent.textAnswerAdded(question: question, answer: value),
+            );
           },
         ),
       ],

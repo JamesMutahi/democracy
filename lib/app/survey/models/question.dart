@@ -16,7 +16,7 @@ sealed class Question with _$Question {
     @QuestionTypeConverter() required QuestionType type,
     required String text,
     required String? hint,
-    required Choice? dependency,
+    required int? dependency,
     required List<Choice> choices,
   }) = _Question;
 

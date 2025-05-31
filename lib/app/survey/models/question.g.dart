@@ -14,10 +14,7 @@ _Question _$QuestionFromJson(Map<String, dynamic> json) => _Question(
   type: const QuestionTypeConverter().fromJson(json['type'] as String),
   text: json['text'] as String,
   hint: json['hint'] as String?,
-  dependency:
-      json['dependency'] == null
-          ? null
-          : Choice.fromJson(json['dependency'] as Map<String, dynamic>),
+  dependency: (json['dependency'] as num?)?.toInt(),
   choices:
       (json['choices'] as List<dynamic>)
           .map((e) => Choice.fromJson(e as Map<String, dynamic>))

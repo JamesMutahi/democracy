@@ -1,3 +1,4 @@
+import 'package:democracy/app/survey/bloc/survey-process/response/response_bloc.dart';
 import 'package:democracy/app/survey/bloc/survey-process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
 import 'package:democracy/app/survey/bloc/survey-process/page/page_bloc.dart';
 import 'package:democracy/app/survey/models/question.dart';
@@ -22,6 +23,9 @@ class _SurveyPageState extends State<SurveyPage> {
   void initState() {
     context.read<SurveyBottomNavigationBloc>().add(
       SurveyBottomNavigationEvent.started(survey: widget.survey),
+    );
+    context.read<ResponseBloc>().add(
+      ResponseEvent.started(survey: widget.survey),
     );
     super.initState();
   }

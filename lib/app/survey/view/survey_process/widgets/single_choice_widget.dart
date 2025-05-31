@@ -1,6 +1,8 @@
+import 'package:democracy/app/survey/bloc/survey-process/response/response_bloc.dart';
 import 'package:democracy/app/survey/models/choice.dart';
 import 'package:democracy/app/survey/models/question.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class SingleChoiceWidget extends StatelessWidget {
@@ -29,7 +31,14 @@ class SingleChoiceWidget extends StatelessWidget {
                         DropdownMenuItem<Choice>(value: e, child: Text(e.text)),
                   )
                   .toList(),
-          onChanged: (choice) {},
+          onChanged: (choice) {
+            context.read<ResponseBloc>().add(
+              ResponseEvent.singleChoiceAnswerAdded(
+                question: question,
+                choice: choice!,
+              ),
+            );
+          },
         ),
       ],
     );
