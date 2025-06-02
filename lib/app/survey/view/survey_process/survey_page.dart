@@ -127,15 +127,56 @@ class QuestionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    switch (question.type) {
-      case QuestionType.number:
-        return NumberWidget(question: question);
-      case QuestionType.text:
-        return TextWidget(question: question);
-      case QuestionType.singleChoice:
-        return SingleChoiceWidget(question: question);
-      case QuestionType.multipleChoice:
-        return MultipleChoiceWidget(question: question);
-    }
+    return BlocBuilder<ResponseBloc, ResponseState>(
+      builder: (context, state) {
+        bool textAnswerExists = state.textAnswers!.any(
+          (e) => e.question.id == question.id,
+        );
+        bool choiceAnswerExists = state.choiceAnswers!.any(
+          (e) => e.question.id == question.id,
+        );
+        return switch (question.type) {
+          QuestionType.number => NumberWidget(
+            question: question,
+            textAnswer:
+                (textAnswerExists)
+                    ? state.textAnswers?.firstWhere(
+                      (textAnswer) => textAnswer.question.id == question.id,
+                    )
+                    : null,
+          ),
+          QuestionType.text => TextWidget(
+            question: question,
+            textAnswer:
+                (textAnswerExists)
+                    ? state.textAnswers?.firstWhere(
+                      (textAnswer) => textAnswer.question.id == question.id,
+                    )
+                    : null,
+          ),
+          QuestionType.singleChoice => SingleChoiceWidget(
+            question: question,
+            choiceAnswer:
+                (choiceAnswerExists)
+                    ? state.choiceAnswers!.firstWhere(
+                      (choiceAnswer) => choiceAnswer.question.id == question.id,
+                    )
+                    : null,
+          ),
+          QuestionType.multipleChoice => MultipleChoiceWidget(
+            question: question,
+            choiceAnswers:
+                (choiceAnswerExists)
+                    ? state.choiceAnswers!
+                        .where(
+                          (choiceAnswer) =>
+                              choiceAnswer.question.id == question.id,
+                        )
+                        .toList()
+                    : [],
+          ),
+        };
+      },
+    );
   }
 }

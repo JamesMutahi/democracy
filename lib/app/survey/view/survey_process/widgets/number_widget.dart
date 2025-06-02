@@ -1,12 +1,18 @@
 import 'package:democracy/app/survey/bloc/survey-process/response/response_bloc.dart';
 import 'package:democracy/app/survey/models/question.dart';
+import 'package:democracy/app/survey/models/text_answer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class NumberWidget extends StatelessWidget {
-  const NumberWidget({super.key, required this.question});
+  const NumberWidget({
+    super.key,
+    required this.question,
+    required this.textAnswer,
+  });
 
   final Question question;
+  final TextAnswer? textAnswer;
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +23,7 @@ class NumberWidget extends StatelessWidget {
         Text(question.text),
         SizedBox(height: 10),
         TextFormField(
+          initialValue: textAnswer?.answer,
           onTapOutside: (event) {
             FocusScope.of(context).unfocus();
           },

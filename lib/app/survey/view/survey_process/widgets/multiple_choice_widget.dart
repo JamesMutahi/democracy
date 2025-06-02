@@ -1,17 +1,27 @@
 import 'package:democracy/app/survey/bloc/survey-process/response/response_bloc.dart';
 import 'package:democracy/app/survey/models/choice.dart';
+import 'package:democracy/app/survey/models/choice_answer.dart';
 import 'package:democracy/app/survey/models/question.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class MultipleChoiceWidget extends StatelessWidget {
-  const MultipleChoiceWidget({super.key, required this.question});
+  const MultipleChoiceWidget({
+    super.key,
+    required this.question,
+    required this.choiceAnswers,
+  });
 
   final Question question;
+  final List<ChoiceAnswer> choiceAnswers;
 
   @override
   Widget build(BuildContext context) {
+    List<Choice> selectedChoices = [];
+    for (ChoiceAnswer choiceAnswer in choiceAnswers) {
+      selectedChoices.add(choiceAnswer.choice);
+    }
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -19,8 +29,9 @@ class MultipleChoiceWidget extends StatelessWidget {
         Text(question.text),
         SizedBox(height: 10),
         FormBuilderCheckboxGroup<Choice>(
-          decoration: InputDecoration(hintText: question.hint),
           name: question.text,
+          initialValue: selectedChoices,
+          decoration: InputDecoration(hintText: question.hint),
           options:
               question.choices
                   .map(
