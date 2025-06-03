@@ -1,27 +1,27 @@
-part of 'response_bloc.dart';
+part of 'answer_bloc.dart';
 
-enum ResponseStatus { initial, loading, loaded }
+enum AnswerStatus { initial, loading, loaded }
 
-final class ResponseState extends Equatable {
-  const ResponseState({
-    this.status = ResponseStatus.initial,
+final class AnswerState extends Equatable {
+  const AnswerState({
+    this.status = AnswerStatus.initial,
     this.survey,
     this.textAnswers,
     this.choiceAnswers,
   });
 
-  final ResponseStatus status;
+  final AnswerStatus status;
   final Survey? survey;
   final List<TextAnswer>? textAnswers;
   final List<ChoiceAnswer>? choiceAnswers;
 
-  ResponseState copyWith({
-    ResponseStatus? status,
+  AnswerState copyWith({
+    AnswerStatus? status,
     Survey? survey,
     List<TextAnswer>? textAnswers,
     List<ChoiceAnswer>? choiceAnswers,
   }) {
-    return ResponseState(
+    return AnswerState(
       status: status ?? this.status,
       survey: survey ?? this.survey,
       textAnswers: textAnswers ?? this.textAnswers,
@@ -31,7 +31,7 @@ final class ResponseState extends Equatable {
 
   @override
   String toString() {
-    return '''ResponseState { status: $status, response: $survey }''';
+    return '''AnswerState { status: $status, text answers: ${textAnswers?.length} }''';
   }
 
   @override

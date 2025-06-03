@@ -1,4 +1,4 @@
-import 'package:democracy/app/survey/bloc/survey-process/response/response_bloc.dart';
+import 'package:democracy/app/survey/bloc/survey-process/answer/answer_bloc.dart';
 import 'package:democracy/app/survey/bloc/survey-process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
 import 'package:democracy/app/survey/bloc/survey-process/page/page_bloc.dart';
 import 'package:democracy/app/survey/models/question.dart';
@@ -24,9 +24,7 @@ class _SurveyPageState extends State<SurveyPage> {
     context.read<SurveyBottomNavigationBloc>().add(
       SurveyBottomNavigationEvent.started(survey: widget.survey),
     );
-    context.read<ResponseBloc>().add(
-      ResponseEvent.started(survey: widget.survey),
-    );
+    context.read<AnswerBloc>().add(AnswerEvent.started(survey: widget.survey));
     super.initState();
   }
 
@@ -100,9 +98,9 @@ class _SurveyPageState extends State<SurveyPage> {
                           bottom: 160,
                         ),
                         itemBuilder: (BuildContext context, int index) {
-                          return Container(
-                            margin: EdgeInsets.only(bottom: 20),
-                            child: QuestionTile(question: questions[index]),
+                          return QuestionTile(
+                            questions: state.questions,
+                            question: questions[index],
                           );
                         },
                         itemCount: questions.length,
@@ -121,13 +119,18 @@ class _SurveyPageState extends State<SurveyPage> {
 }
 
 class QuestionTile extends StatelessWidget {
-  const QuestionTile({super.key, required this.question});
+  const QuestionTile({
+    super.key,
+    required this.questions,
+    required this.question,
+  });
 
+  final List<Question> questions;
   final Question question;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ResponseBloc, ResponseState>(
+    return BlocBuilder<AnswerBloc, AnswerState>(
       builder: (context, state) {
         bool textAnswerExists = state.textAnswers!.any(
           (e) => e.question.id == question.id,
@@ -135,47 +138,73 @@ class QuestionTile extends StatelessWidget {
         bool choiceAnswerExists = state.choiceAnswers!.any(
           (e) => e.question.id == question.id,
         );
-        return switch (question.type) {
-          QuestionType.number => NumberWidget(
-            question: question,
-            textAnswer:
-                (textAnswerExists)
-                    ? state.textAnswers?.firstWhere(
-                      (textAnswer) => textAnswer.question.id == question.id,
-                    )
-                    : null,
-          ),
-          QuestionType.text => TextWidget(
-            question: question,
-            textAnswer:
-                (textAnswerExists)
-                    ? state.textAnswers?.firstWhere(
-                      (textAnswer) => textAnswer.question.id == question.id,
-                    )
-                    : null,
-          ),
-          QuestionType.singleChoice => SingleChoiceWidget(
-            question: question,
-            choiceAnswer:
-                (choiceAnswerExists)
-                    ? state.choiceAnswers!.firstWhere(
-                      (choiceAnswer) => choiceAnswer.question.id == question.id,
-                    )
-                    : null,
-          ),
-          QuestionType.multipleChoice => MultipleChoiceWidget(
-            question: question,
-            choiceAnswers:
-                (choiceAnswerExists)
-                    ? state.choiceAnswers!
-                        .where(
-                          (choiceAnswer) =>
-                              choiceAnswer.question.id == question.id,
-                        )
-                        .toList()
-                    : [],
-          ),
-        };
+        bool hideDependencyQuestion = question.dependency != null;
+        if (state.choiceAnswers!.any(
+          (e) => e.choice.id == question.dependency,
+        )) {
+          hideDependencyQuestion = false;
+        }
+        if (hideDependencyQuestion) {
+          state.textAnswers!.removeWhere(
+            (textAnswer) => textAnswer.question.id == question.id,
+          );
+          state.choiceAnswers!.removeWhere(
+            (choiceAnswer) => choiceAnswer.question.id == question.id,
+          );
+        }
+        return hideDependencyQuestion
+            ? SizedBox.shrink()
+            : Container(
+              margin: EdgeInsets.only(bottom: 20),
+              child: switch (question.type) {
+                QuestionType.number => NumberWidget(
+                  key: ValueKey(question),
+                  question: question,
+                  textAnswer:
+                      (textAnswerExists)
+                          ? state.textAnswers?.firstWhere(
+                            (textAnswer) =>
+                                textAnswer.question.id == question.id,
+                          )
+                          : null,
+                ),
+                QuestionType.text => TextWidget(
+                  key: ValueKey(question),
+                  question: question,
+                  textAnswer:
+                      (textAnswerExists)
+                          ? state.textAnswers?.firstWhere(
+                            (textAnswer) =>
+                                textAnswer.question.id == question.id,
+                          )
+                          : null,
+                ),
+                QuestionType.singleChoice => SingleChoiceWidget(
+                  key: ValueKey(question),
+                  question: question,
+                  choiceAnswer:
+                      (choiceAnswerExists)
+                          ? state.choiceAnswers!.firstWhere(
+                            (choiceAnswer) =>
+                                choiceAnswer.question.id == question.id,
+                          )
+                          : null,
+                ),
+                QuestionType.multipleChoice => MultipleChoiceWidget(
+                  key: ValueKey(question),
+                  question: question,
+                  choiceAnswers:
+                      (choiceAnswerExists)
+                          ? state.choiceAnswers!
+                              .where(
+                                (choiceAnswer) =>
+                                    choiceAnswer.question.id == question.id,
+                              )
+                              .toList()
+                          : [],
+                ),
+              },
+            );
       },
     );
   }

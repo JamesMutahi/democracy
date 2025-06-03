@@ -1,4 +1,4 @@
-import 'package:democracy/app/survey/bloc/survey-process/response/response_bloc.dart';
+import 'package:democracy/app/survey/bloc/survey-process/answer/answer_bloc.dart';
 import 'package:democracy/app/survey/models/question.dart';
 import 'package:democracy/app/survey/models/text_answer.dart';
 import 'package:flutter/material.dart';
@@ -28,8 +28,8 @@ class TextWidget extends StatelessWidget {
             FocusScope.of(context).unfocus();
           },
           onChanged: (value) {
-            context.read<ResponseBloc>().add(
-              ResponseEvent.textAnswerAdded(question: question, answer: value),
+            context.read<AnswerBloc>().add(
+              AnswerEvent.textAnswerAdded(question: question, answer: value),
             );
           },
         ),

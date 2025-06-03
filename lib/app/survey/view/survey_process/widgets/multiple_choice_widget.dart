@@ -1,4 +1,4 @@
-import 'package:democracy/app/survey/bloc/survey-process/response/response_bloc.dart';
+import 'package:democracy/app/survey/bloc/survey-process/answer/answer_bloc.dart';
 import 'package:democracy/app/survey/models/choice.dart';
 import 'package:democracy/app/survey/models/choice_answer.dart';
 import 'package:democracy/app/survey/models/question.dart';
@@ -42,8 +42,8 @@ class MultipleChoiceWidget extends StatelessWidget {
                   )
                   .toList(),
           onChanged: (choices) {
-            context.read<ResponseBloc>().add(
-              ResponseEvent.multipleChoiceAnswerAdded(
+            context.read<AnswerBloc>().add(
+              AnswerEvent.multipleChoiceAnswerAdded(
                 question: question,
                 choices: choices!,
               ),

@@ -10,7 +10,7 @@ import 'package:democracy/app/auth/bloc/password_reset/password_reset_cubit.dart
 import 'package:democracy/app/auth/bloc/registration/registration_cubit.dart';
 import 'package:democracy/app/social/bloc/post/post_bloc.dart';
 import 'package:democracy/app/survey/bloc/survey-process/page/page_bloc.dart';
-import 'package:democracy/app/survey/bloc/survey-process/response/response_bloc.dart';
+import 'package:democracy/app/survey/bloc/survey-process/answer/answer_bloc.dart';
 import 'package:democracy/app/survey/bloc/survey-process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
 import 'package:democracy/app/survey/bloc/survey/survey_bloc.dart';
 import 'package:dio/dio.dart';
@@ -113,7 +113,7 @@ void main() async {
                   pageRepository: context.read<PageRepository>(),
                 ),
           ),
-          BlocProvider(create: (context) => ResponseBloc()),
+          BlocProvider(create: (context) => AnswerBloc()),
           BlocProvider(
             create:
                 (context) =>

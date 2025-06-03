@@ -4,7 +4,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'response_bloc.dart';
+part of 'answer_bloc.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -13,7 +13,7 @@ part of 'response_bloc.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$ResponseEvent {
+mixin _$AnswerEvent {
 
 
 
@@ -21,7 +21,7 @@ mixin _$ResponseEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ResponseEvent);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AnswerEvent);
 }
 
 
@@ -30,28 +30,28 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ResponseEvent()';
+  return 'AnswerEvent()';
 }
 
 
 }
 
 /// @nodoc
-class $ResponseEventCopyWith<$Res>  {
-$ResponseEventCopyWith(ResponseEvent _, $Res Function(ResponseEvent) __);
+class $AnswerEventCopyWith<$Res>  {
+$AnswerEventCopyWith(AnswerEvent _, $Res Function(AnswerEvent) __);
 }
 
 
 /// @nodoc
 
 
-class _Started implements ResponseEvent {
+class _Started implements AnswerEvent {
   const _Started({required this.survey});
   
 
  final  Survey survey;
 
-/// Create a copy of ResponseEvent
+/// Create a copy of AnswerEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -70,14 +70,14 @@ int get hashCode => Object.hash(runtimeType,survey);
 
 @override
 String toString() {
-  return 'ResponseEvent.started(survey: $survey)';
+  return 'AnswerEvent.started(survey: $survey)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$StartedCopyWith<$Res> implements $ResponseEventCopyWith<$Res> {
+abstract mixin class _$StartedCopyWith<$Res> implements $AnswerEventCopyWith<$Res> {
   factory _$StartedCopyWith(_Started value, $Res Function(_Started) _then) = __$StartedCopyWithImpl;
 @useResult
 $Res call({
@@ -96,7 +96,7 @@ class __$StartedCopyWithImpl<$Res>
   final _Started _self;
   final $Res Function(_Started) _then;
 
-/// Create a copy of ResponseEvent
+/// Create a copy of AnswerEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? survey = null,}) {
   return _then(_Started(
@@ -105,7 +105,7 @@ as Survey,
   ));
 }
 
-/// Create a copy of ResponseEvent
+/// Create a copy of AnswerEvent
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -120,14 +120,14 @@ $SurveyCopyWith<$Res> get survey {
 /// @nodoc
 
 
-class _TextAnswerAdded implements ResponseEvent {
+class _TextAnswerAdded implements AnswerEvent {
   const _TextAnswerAdded({required this.question, required this.answer});
   
 
  final  Question question;
  final  String answer;
 
-/// Create a copy of ResponseEvent
+/// Create a copy of AnswerEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -146,14 +146,14 @@ int get hashCode => Object.hash(runtimeType,question,answer);
 
 @override
 String toString() {
-  return 'ResponseEvent.textAnswerAdded(question: $question, answer: $answer)';
+  return 'AnswerEvent.textAnswerAdded(question: $question, answer: $answer)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$TextAnswerAddedCopyWith<$Res> implements $ResponseEventCopyWith<$Res> {
+abstract mixin class _$TextAnswerAddedCopyWith<$Res> implements $AnswerEventCopyWith<$Res> {
   factory _$TextAnswerAddedCopyWith(_TextAnswerAdded value, $Res Function(_TextAnswerAdded) _then) = __$TextAnswerAddedCopyWithImpl;
 @useResult
 $Res call({
@@ -172,7 +172,7 @@ class __$TextAnswerAddedCopyWithImpl<$Res>
   final _TextAnswerAdded _self;
   final $Res Function(_TextAnswerAdded) _then;
 
-/// Create a copy of ResponseEvent
+/// Create a copy of AnswerEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? question = null,Object? answer = null,}) {
   return _then(_TextAnswerAdded(
@@ -182,7 +182,7 @@ as String,
   ));
 }
 
-/// Create a copy of ResponseEvent
+/// Create a copy of AnswerEvent
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -197,14 +197,14 @@ $QuestionCopyWith<$Res> get question {
 /// @nodoc
 
 
-class _SingleChoiceAnswerAdded implements ResponseEvent {
+class _SingleChoiceAnswerAdded implements AnswerEvent {
   const _SingleChoiceAnswerAdded({required this.question, required this.choice});
   
 
  final  Question question;
  final  Choice choice;
 
-/// Create a copy of ResponseEvent
+/// Create a copy of AnswerEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -223,14 +223,14 @@ int get hashCode => Object.hash(runtimeType,question,choice);
 
 @override
 String toString() {
-  return 'ResponseEvent.singleChoiceAnswerAdded(question: $question, choice: $choice)';
+  return 'AnswerEvent.singleChoiceAnswerAdded(question: $question, choice: $choice)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$SingleChoiceAnswerAddedCopyWith<$Res> implements $ResponseEventCopyWith<$Res> {
+abstract mixin class _$SingleChoiceAnswerAddedCopyWith<$Res> implements $AnswerEventCopyWith<$Res> {
   factory _$SingleChoiceAnswerAddedCopyWith(_SingleChoiceAnswerAdded value, $Res Function(_SingleChoiceAnswerAdded) _then) = __$SingleChoiceAnswerAddedCopyWithImpl;
 @useResult
 $Res call({
@@ -249,7 +249,7 @@ class __$SingleChoiceAnswerAddedCopyWithImpl<$Res>
   final _SingleChoiceAnswerAdded _self;
   final $Res Function(_SingleChoiceAnswerAdded) _then;
 
-/// Create a copy of ResponseEvent
+/// Create a copy of AnswerEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? question = null,Object? choice = null,}) {
   return _then(_SingleChoiceAnswerAdded(
@@ -259,7 +259,7 @@ as Choice,
   ));
 }
 
-/// Create a copy of ResponseEvent
+/// Create a copy of AnswerEvent
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -268,7 +268,7 @@ $QuestionCopyWith<$Res> get question {
   return $QuestionCopyWith<$Res>(_self.question, (value) {
     return _then(_self.copyWith(question: value));
   });
-}/// Create a copy of ResponseEvent
+}/// Create a copy of AnswerEvent
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -283,7 +283,7 @@ $ChoiceCopyWith<$Res> get choice {
 /// @nodoc
 
 
-class _MultipleChoiceAnswerAdded implements ResponseEvent {
+class _MultipleChoiceAnswerAdded implements AnswerEvent {
   const _MultipleChoiceAnswerAdded({required this.question, required final  List<Choice> choices}): _choices = choices;
   
 
@@ -296,7 +296,7 @@ class _MultipleChoiceAnswerAdded implements ResponseEvent {
 }
 
 
-/// Create a copy of ResponseEvent
+/// Create a copy of AnswerEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -315,14 +315,14 @@ int get hashCode => Object.hash(runtimeType,question,const DeepCollectionEqualit
 
 @override
 String toString() {
-  return 'ResponseEvent.multipleChoiceAnswerAdded(question: $question, choices: $choices)';
+  return 'AnswerEvent.multipleChoiceAnswerAdded(question: $question, choices: $choices)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$MultipleChoiceAnswerAddedCopyWith<$Res> implements $ResponseEventCopyWith<$Res> {
+abstract mixin class _$MultipleChoiceAnswerAddedCopyWith<$Res> implements $AnswerEventCopyWith<$Res> {
   factory _$MultipleChoiceAnswerAddedCopyWith(_MultipleChoiceAnswerAdded value, $Res Function(_MultipleChoiceAnswerAdded) _then) = __$MultipleChoiceAnswerAddedCopyWithImpl;
 @useResult
 $Res call({
@@ -341,7 +341,7 @@ class __$MultipleChoiceAnswerAddedCopyWithImpl<$Res>
   final _MultipleChoiceAnswerAdded _self;
   final $Res Function(_MultipleChoiceAnswerAdded) _then;
 
-/// Create a copy of ResponseEvent
+/// Create a copy of AnswerEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? question = null,Object? choices = null,}) {
   return _then(_MultipleChoiceAnswerAdded(
@@ -351,7 +351,7 @@ as List<Choice>,
   ));
 }
 
-/// Create a copy of ResponseEvent
+/// Create a copy of AnswerEvent
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')

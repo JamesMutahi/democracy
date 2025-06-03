@@ -7,12 +7,12 @@ import 'package:democracy/app/survey/models/text_answer.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'response_event.dart';
-part 'response_state.dart';
-part 'response_bloc.freezed.dart';
+part 'answer_event.dart';
+part 'answer_state.dart';
+part 'answer_bloc.freezed.dart';
 
-class ResponseBloc extends Bloc<ResponseEvent, ResponseState> {
-  ResponseBloc() : super(const ResponseState()) {
+class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
+  AnswerBloc() : super(const AnswerState()) {
     on<_Started>((event, emit) {
       _onStarted(emit, event);
     });
@@ -27,11 +27,11 @@ class ResponseBloc extends Bloc<ResponseEvent, ResponseState> {
     });
   }
 
-  void _onStarted(Emitter<ResponseState> emit, _Started event) {
-    emit(state.copyWith(status: ResponseStatus.loading));
+  void _onStarted(Emitter<AnswerState> emit, _Started event) {
+    emit(state.copyWith(status: AnswerStatus.loading));
     emit(
       state.copyWith(
-        status: ResponseStatus.loaded,
+        status: AnswerStatus.loaded,
         survey: event.survey,
         textAnswers: [],
         choiceAnswers: [],
@@ -39,8 +39,8 @@ class ResponseBloc extends Bloc<ResponseEvent, ResponseState> {
     );
   }
 
-  void _onTextAnswerAdded(Emitter<ResponseState> emit, _TextAnswerAdded event) {
-    emit(state.copyWith(status: ResponseStatus.loading));
+  void _onTextAnswerAdded(Emitter<AnswerState> emit, _TextAnswerAdded event) {
+    emit(state.copyWith(status: AnswerStatus.loading));
     state.textAnswers!.removeWhere(
       (textAnswer) => textAnswer.question.id == event.question.id,
     );
@@ -51,35 +51,29 @@ class ResponseBloc extends Bloc<ResponseEvent, ResponseState> {
       );
       state.textAnswers!.add(textAnswer);
     }
-    emit(state.copyWith(status: ResponseStatus.loaded));
+    emit(state.copyWith(status: AnswerStatus.loaded));
   }
 
   void _onSingleChoiceAnswerAdded(
-    Emitter<ResponseState> emit,
+    Emitter<AnswerState> emit,
     _SingleChoiceAnswerAdded event,
   ) {
-    emit(state.copyWith(status: ResponseStatus.loading));
+    emit(state.copyWith(status: AnswerStatus.loading));
     ChoiceAnswer choiceAnswer = ChoiceAnswer(
       question: event.question,
       choice: event.choice,
     );
-    if (event.question.type == QuestionType.singleChoice) {
-      state.choiceAnswers!.removeWhere(
-        (choiceAnswer) => choiceAnswer.question.id == event.question.id,
-      );
-    }
+    state.choiceAnswers!.removeWhere((e) => e.question.id == event.question.id);
     state.choiceAnswers!.add(choiceAnswer);
-    emit(state.copyWith(status: ResponseStatus.loaded));
+    emit(state.copyWith(status: AnswerStatus.loaded));
   }
 
   void _onMultipleChoiceAnswerAdded(
-    Emitter<ResponseState> emit,
+    Emitter<AnswerState> emit,
     _MultipleChoiceAnswerAdded event,
   ) {
-    emit(state.copyWith(status: ResponseStatus.loading));
-    state.choiceAnswers!.removeWhere(
-      (choiceAnswer) => choiceAnswer.question.id == event.question.id,
-    );
+    emit(state.copyWith(status: AnswerStatus.loading));
+    state.choiceAnswers!.removeWhere((e) => e.question.id == event.question.id);
     for (Choice choice in event.choices) {
       ChoiceAnswer choiceAnswer = ChoiceAnswer(
         question: event.question,
@@ -87,6 +81,6 @@ class ResponseBloc extends Bloc<ResponseEvent, ResponseState> {
       );
       state.choiceAnswers!.add(choiceAnswer);
     }
-    emit(state.copyWith(status: ResponseStatus.loaded));
+    emit(state.copyWith(status: AnswerStatus.loaded));
   }
 }
