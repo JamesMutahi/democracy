@@ -25,6 +25,9 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
     on<_MultipleChoiceAnswerAdded>((event, emit) {
       _onMultipleChoiceAnswerAdded(emit, event);
     });
+    on<_Validate>((event, emit) {
+      _onValidate(emit, event);
+    });
   }
 
   void _onStarted(Emitter<AnswerState> emit, _Started event) {
@@ -82,5 +85,33 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
       state.choiceAnswers!.add(choiceAnswer);
     }
     emit(state.copyWith(status: AnswerStatus.loaded));
+  }
+
+  void _onValidate(Emitter<AnswerState> emit, _Validate event) {
+    emit(state.copyWith(status: AnswerStatus.loading));
+    List<Question> required = [];
+    for (Question question
+        in event.questions.where((e) => e.isRequired == true).toList()) {
+      if (!state.textAnswers!.any((e) => e.question.id == question.id) &&
+          !state.choiceAnswers!.any((e) => e.question.id == question.id)) {
+        required.add(question);
+      }
+      if (question.dependency != null &&
+          !state.choiceAnswers!.any(
+            (e) => e.choice.id == question.dependency,
+          )) {
+        required.remove(question);
+      }
+    }
+    if (required.isEmpty) {
+      emit(state.copyWith(status: AnswerStatus.validated, required: []));
+    } else {
+      emit(
+        state.copyWith(
+          status: AnswerStatus.validationFailure,
+          required: required,
+        ),
+      );
+    }
   }
 }

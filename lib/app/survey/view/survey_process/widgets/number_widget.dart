@@ -4,7 +4,7 @@ import 'package:democracy/app/survey/models/text_answer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class NumberWidget extends StatelessWidget {
+class NumberWidget extends StatefulWidget {
   const NumberWidget({
     super.key,
     required this.question,
@@ -15,26 +15,67 @@ class NumberWidget extends StatelessWidget {
   final TextAnswer? textAnswer;
 
   @override
+  State<NumberWidget> createState() => _NumberWidgetState();
+}
+
+class _NumberWidgetState extends State<NumberWidget> {
+  String? errorText;
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(question.text),
-        SizedBox(height: 10),
-        TextFormField(
-          initialValue: textAnswer?.answer,
-          onTapOutside: (event) {
-            FocusScope.of(context).unfocus();
-          },
-          keyboardType: TextInputType.number,
-          onChanged: (value) {
-            context.read<AnswerBloc>().add(
-              AnswerEvent.textAnswerAdded(question: question, answer: value),
-            );
-          },
-        ),
-      ],
+    return BlocListener<AnswerBloc, AnswerState>(
+      listener: (context, state) {
+        if (state.status == AnswerStatus.validationFailure) {
+          if (state.required!.any((e) => e.id == widget.question.id)) {
+            setState(() {
+              errorText = 'This field is required';
+            });
+          }
+        }
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(widget.question.text),
+              SizedBox(width: 5),
+              (widget.question.isRequired)
+                  ? Text(
+                    '*',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  )
+                  : SizedBox.shrink(),
+            ],
+          ),
+          SizedBox(height: 10),
+          TextFormField(
+            initialValue: widget.textAnswer?.answer,
+            onTapOutside: (event) {
+              FocusScope.of(context).unfocus();
+            },
+            keyboardType: TextInputType.number,
+            onChanged: (value) {
+              context.read<AnswerBloc>().add(
+                AnswerEvent.textAnswerAdded(
+                  question: widget.question,
+                  answer: value,
+                ),
+              );
+            },
+            decoration: InputDecoration(
+              errorText: errorText,
+              errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Theme.of(context).colorScheme.error,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

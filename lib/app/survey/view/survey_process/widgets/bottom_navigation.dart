@@ -1,3 +1,4 @@
+import 'package:democracy/app/survey/bloc/survey_process/answer/answer_bloc.dart';
 import 'package:democracy/app/survey/bloc/survey_process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
 import 'package:democracy/app/survey/models/survey.dart';
 import 'package:democracy/app/survey/view/survey_process/completion_page.dart';
@@ -46,29 +47,43 @@ class BottomNavBar extends StatelessWidget {
                     'Page ${state.page + 1} of ${state.lastPage + 1}',
                     style: TextStyle(color: Theme.of(context).disabledColor),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      (state.isLast)
-                          ? Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CompletionPage(),
-                            ),
-                          )
-                          : context.read<SurveyBottomNavigationBloc>().add(
-                            SurveyBottomNavigationEvent.loadNextPage(
-                              survey: survey,
-                            ),
-                          );
+                  BlocListener<AnswerBloc, AnswerState>(
+                    listener: (context, answerState) {
+                      if (answerState.status == AnswerStatus.validated) {
+                        (state.isLast)
+                            ? Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CompletionPage(),
+                              ),
+                            )
+                            : context.read<SurveyBottomNavigationBloc>().add(
+                              SurveyBottomNavigationEvent.loadNextPage(
+                                survey: survey,
+                              ),
+                            );
+                      }
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          Theme.of(context).colorScheme.tertiaryContainer,
-                      shape: BeveledRectangleBorder(
-                        borderRadius: BorderRadius.circular(2),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        context.read<AnswerBloc>().add(
+                          AnswerEvent.validate(
+                            questions:
+                                survey.questions
+                                    .where((e) => e.page == state.page)
+                                    .toList(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            Theme.of(context).colorScheme.tertiaryContainer,
+                        shape: BeveledRectangleBorder(
+                          borderRadius: BorderRadius.circular(2),
+                        ),
                       ),
+                      child: Text('NEXT'),
                     ),
-                    child: Text('NEXT'),
                   ),
                 ],
               );

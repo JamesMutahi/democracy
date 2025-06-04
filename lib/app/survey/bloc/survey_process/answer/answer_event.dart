@@ -15,4 +15,6 @@ class AnswerEvent with _$AnswerEvent {
     required Question question,
     required List<Choice> choices,
   }) = _MultipleChoiceAnswerAdded;
+  const factory AnswerEvent.validate({required List<Question> questions}) =
+      _Validate;
 }

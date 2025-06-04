@@ -363,4 +363,76 @@ $QuestionCopyWith<$Res> get question {
 }
 }
 
+/// @nodoc
+
+
+class _Validate implements AnswerEvent {
+  const _Validate({required final  List<Question> questions}): _questions = questions;
+  
+
+ final  List<Question> _questions;
+ List<Question> get questions {
+  if (_questions is EqualUnmodifiableListView) return _questions;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_questions);
+}
+
+
+/// Create a copy of AnswerEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ValidateCopyWith<_Validate> get copyWith => __$ValidateCopyWithImpl<_Validate>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Validate&&const DeepCollectionEquality().equals(other._questions, _questions));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_questions));
+
+@override
+String toString() {
+  return 'AnswerEvent.validate(questions: $questions)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ValidateCopyWith<$Res> implements $AnswerEventCopyWith<$Res> {
+  factory _$ValidateCopyWith(_Validate value, $Res Function(_Validate) _then) = __$ValidateCopyWithImpl;
+@useResult
+$Res call({
+ List<Question> questions
+});
+
+
+
+
+}
+/// @nodoc
+class __$ValidateCopyWithImpl<$Res>
+    implements _$ValidateCopyWith<$Res> {
+  __$ValidateCopyWithImpl(this._self, this._then);
+
+  final _Validate _self;
+  final $Res Function(_Validate) _then;
+
+/// Create a copy of AnswerEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? questions = null,}) {
+  return _then(_Validate(
+questions: null == questions ? _self._questions : questions // ignore: cast_nullable_to_non_nullable
+as List<Question>,
+  ));
+}
+
+
+}
+
 // dart format on
