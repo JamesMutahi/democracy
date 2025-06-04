@@ -1,6 +1,6 @@
-import 'package:democracy/app/survey/bloc/survey-process/answer/answer_bloc.dart';
-import 'package:democracy/app/survey/bloc/survey-process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
-import 'package:democracy/app/survey/bloc/survey-process/page/page_bloc.dart';
+import 'package:democracy/app/survey/bloc/survey_process/answer/answer_bloc.dart';
+import 'package:democracy/app/survey/bloc/survey_process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
+import 'package:democracy/app/survey/bloc/survey_process/page/page_bloc.dart';
 import 'package:democracy/app/survey/models/question.dart';
 import 'package:democracy/app/survey/models/survey.dart';
 import 'package:democracy/app/survey/view/survey_process/widgets/index.dart';

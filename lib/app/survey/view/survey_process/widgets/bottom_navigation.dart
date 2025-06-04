@@ -1,4 +1,4 @@
-import 'package:democracy/app/survey/bloc/survey-process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
+import 'package:democracy/app/survey/bloc/survey_process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
 import 'package:democracy/app/survey/models/survey.dart';
 import 'package:democracy/app/survey/view/survey_process/completion_page.dart';
 import 'package:flutter/material.dart';

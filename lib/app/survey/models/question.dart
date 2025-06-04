@@ -16,6 +16,7 @@ sealed class Question with _$Question {
     @QuestionTypeConverter() required QuestionType type,
     required String text,
     required String? hint,
+    @JsonKey(name: 'is_required') required bool isRequired,
     required int? dependency,
     required List<Choice> choices,
   }) = _Question;

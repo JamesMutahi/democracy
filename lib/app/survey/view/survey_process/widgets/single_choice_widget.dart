@@ -1,4 +1,4 @@
-import 'package:democracy/app/survey/bloc/survey-process/answer/answer_bloc.dart';
+import 'package:democracy/app/survey/bloc/survey_process/answer/answer_bloc.dart';
 import 'package:democracy/app/survey/models/choice.dart';
 import 'package:democracy/app/survey/models/choice_answer.dart';
 import 'package:democracy/app/survey/models/question.dart';

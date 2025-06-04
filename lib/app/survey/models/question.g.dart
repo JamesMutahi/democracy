@@ -14,6 +14,7 @@ _Question _$QuestionFromJson(Map<String, dynamic> json) => _Question(
   type: const QuestionTypeConverter().fromJson(json['type'] as String),
   text: json['text'] as String,
   hint: json['hint'] as String?,
+  isRequired: json['is_required'] as bool,
   dependency: (json['dependency'] as num?)?.toInt(),
   choices:
       (json['choices'] as List<dynamic>)
@@ -29,6 +30,7 @@ Map<String, dynamic> _$QuestionToJson(_Question instance) => <String, dynamic>{
   'type': const QuestionTypeConverter().toJson(instance.type),
   'text': instance.text,
   'hint': instance.hint,
+  'is_required': instance.isRequired,
   'dependency': instance.dependency,
   'choices': instance.choices,
 };
