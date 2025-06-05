@@ -15,70 +15,30 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SurveyBottomNavigationEvent {
 
- Survey get survey;
-/// Create a copy of SurveyBottomNavigationEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$SurveyBottomNavigationEventCopyWith<SurveyBottomNavigationEvent> get copyWith => _$SurveyBottomNavigationEventCopyWithImpl<SurveyBottomNavigationEvent>(this as SurveyBottomNavigationEvent, _$identity);
+
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SurveyBottomNavigationEvent&&(identical(other.survey, survey) || other.survey == survey));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SurveyBottomNavigationEvent);
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,survey);
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SurveyBottomNavigationEvent(survey: $survey)';
+  return 'SurveyBottomNavigationEvent()';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $SurveyBottomNavigationEventCopyWith<$Res>  {
-  factory $SurveyBottomNavigationEventCopyWith(SurveyBottomNavigationEvent value, $Res Function(SurveyBottomNavigationEvent) _then) = _$SurveyBottomNavigationEventCopyWithImpl;
-@useResult
-$Res call({
- Survey survey
-});
-
-
-$SurveyCopyWith<$Res> get survey;
-
-}
-/// @nodoc
-class _$SurveyBottomNavigationEventCopyWithImpl<$Res>
-    implements $SurveyBottomNavigationEventCopyWith<$Res> {
-  _$SurveyBottomNavigationEventCopyWithImpl(this._self, this._then);
-
-  final SurveyBottomNavigationEvent _self;
-  final $Res Function(SurveyBottomNavigationEvent) _then;
-
-/// Create a copy of SurveyBottomNavigationEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? survey = null,}) {
-  return _then(_self.copyWith(
-survey: null == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
-as Survey,
-  ));
-}
-/// Create a copy of SurveyBottomNavigationEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$SurveyCopyWith<$Res> get survey {
-  
-  return $SurveyCopyWith<$Res>(_self.survey, (value) {
-    return _then(_self.copyWith(survey: value));
-  });
-}
+class $SurveyBottomNavigationEventCopyWith<$Res>  {
+$SurveyBottomNavigationEventCopyWith(SurveyBottomNavigationEvent _, $Res Function(SurveyBottomNavigationEvent) __);
 }
 
 
@@ -89,11 +49,11 @@ class _Started implements SurveyBottomNavigationEvent {
   const _Started({required this.survey});
   
 
-@override final  Survey survey;
+ final  Survey survey;
 
 /// Create a copy of SurveyBottomNavigationEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
+@JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 _$StartedCopyWith<_Started> get copyWith => __$StartedCopyWithImpl<_Started>(this, _$identity);
 
@@ -119,13 +79,13 @@ String toString() {
 /// @nodoc
 abstract mixin class _$StartedCopyWith<$Res> implements $SurveyBottomNavigationEventCopyWith<$Res> {
   factory _$StartedCopyWith(_Started value, $Res Function(_Started) _then) = __$StartedCopyWithImpl;
-@override @useResult
+@useResult
 $Res call({
  Survey survey
 });
 
 
-@override $SurveyCopyWith<$Res> get survey;
+$SurveyCopyWith<$Res> get survey;
 
 }
 /// @nodoc
@@ -138,7 +98,7 @@ class __$StartedCopyWithImpl<$Res>
 
 /// Create a copy of SurveyBottomNavigationEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? survey = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? survey = null,}) {
   return _then(_Started(
 survey: null == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
 as Survey,
@@ -164,11 +124,11 @@ class _LoadNextPage implements SurveyBottomNavigationEvent {
   const _LoadNextPage({required this.survey});
   
 
-@override final  Survey survey;
+ final  Survey survey;
 
 /// Create a copy of SurveyBottomNavigationEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
+@JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 _$LoadNextPageCopyWith<_LoadNextPage> get copyWith => __$LoadNextPageCopyWithImpl<_LoadNextPage>(this, _$identity);
 
@@ -194,13 +154,13 @@ String toString() {
 /// @nodoc
 abstract mixin class _$LoadNextPageCopyWith<$Res> implements $SurveyBottomNavigationEventCopyWith<$Res> {
   factory _$LoadNextPageCopyWith(_LoadNextPage value, $Res Function(_LoadNextPage) _then) = __$LoadNextPageCopyWithImpl;
-@override @useResult
+@useResult
 $Res call({
  Survey survey
 });
 
 
-@override $SurveyCopyWith<$Res> get survey;
+$SurveyCopyWith<$Res> get survey;
 
 }
 /// @nodoc
@@ -213,7 +173,7 @@ class __$LoadNextPageCopyWithImpl<$Res>
 
 /// Create a copy of SurveyBottomNavigationEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? survey = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? survey = null,}) {
   return _then(_LoadNextPage(
 survey: null == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
 as Survey,
@@ -239,11 +199,11 @@ class _LoadPrevPage implements SurveyBottomNavigationEvent {
   const _LoadPrevPage({required this.survey});
   
 
-@override final  Survey survey;
+ final  Survey survey;
 
 /// Create a copy of SurveyBottomNavigationEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
+@JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 _$LoadPrevPageCopyWith<_LoadPrevPage> get copyWith => __$LoadPrevPageCopyWithImpl<_LoadPrevPage>(this, _$identity);
 
@@ -269,13 +229,13 @@ String toString() {
 /// @nodoc
 abstract mixin class _$LoadPrevPageCopyWith<$Res> implements $SurveyBottomNavigationEventCopyWith<$Res> {
   factory _$LoadPrevPageCopyWith(_LoadPrevPage value, $Res Function(_LoadPrevPage) _then) = __$LoadPrevPageCopyWithImpl;
-@override @useResult
+@useResult
 $Res call({
  Survey survey
 });
 
 
-@override $SurveyCopyWith<$Res> get survey;
+$SurveyCopyWith<$Res> get survey;
 
 }
 /// @nodoc
@@ -288,7 +248,7 @@ class __$LoadPrevPageCopyWithImpl<$Res>
 
 /// Create a copy of SurveyBottomNavigationEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? survey = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? survey = null,}) {
   return _then(_LoadPrevPage(
 survey: null == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
 as Survey,
@@ -306,5 +266,37 @@ $SurveyCopyWith<$Res> get survey {
   });
 }
 }
+
+/// @nodoc
+
+
+class _ReturnToSurvey implements SurveyBottomNavigationEvent {
+  const _ReturnToSurvey();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReturnToSurvey);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'SurveyBottomNavigationEvent.returnToSurvey()';
+}
+
+
+}
+
+
+
 
 // dart format on

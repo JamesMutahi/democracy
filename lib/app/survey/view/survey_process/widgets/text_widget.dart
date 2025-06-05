@@ -53,7 +53,7 @@ class _TextWidgetState extends State<TextWidget> {
           ),
           SizedBox(height: 10),
           TextFormField(
-            initialValue: widget.textAnswer?.answer,
+            initialValue: widget.textAnswer?.text,
             onTapOutside: (event) {
               FocusScope.of(context).unfocus();
             },
@@ -61,7 +61,7 @@ class _TextWidgetState extends State<TextWidget> {
               context.read<AnswerBloc>().add(
                 AnswerEvent.textAnswerAdded(
                   question: widget.question,
-                  answer: value,
+                  text: value,
                 ),
               );
             },

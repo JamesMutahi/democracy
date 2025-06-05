@@ -15,71 +15,30 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PageEvent {
 
- Survey get survey; int get page;
-/// Create a copy of PageEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$PageEventCopyWith<PageEvent> get copyWith => _$PageEventCopyWithImpl<PageEvent>(this as PageEvent, _$identity);
+
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PageEvent&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.page, page) || other.page == page));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PageEvent);
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,survey,page);
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'PageEvent(survey: $survey, page: $page)';
+  return 'PageEvent()';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $PageEventCopyWith<$Res>  {
-  factory $PageEventCopyWith(PageEvent value, $Res Function(PageEvent) _then) = _$PageEventCopyWithImpl;
-@useResult
-$Res call({
- Survey survey, int page
-});
-
-
-$SurveyCopyWith<$Res> get survey;
-
-}
-/// @nodoc
-class _$PageEventCopyWithImpl<$Res>
-    implements $PageEventCopyWith<$Res> {
-  _$PageEventCopyWithImpl(this._self, this._then);
-
-  final PageEvent _self;
-  final $Res Function(PageEvent) _then;
-
-/// Create a copy of PageEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? survey = null,Object? page = null,}) {
-  return _then(_self.copyWith(
-survey: null == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
-as Survey,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
-as int,
-  ));
-}
-/// Create a copy of PageEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$SurveyCopyWith<$Res> get survey {
-  
-  return $SurveyCopyWith<$Res>(_self.survey, (value) {
-    return _then(_self.copyWith(survey: value));
-  });
-}
+class $PageEventCopyWith<$Res>  {
+$PageEventCopyWith(PageEvent _, $Res Function(PageEvent) __);
 }
 
 
@@ -90,12 +49,12 @@ class _PageLoaded implements PageEvent {
   const _PageLoaded({required this.survey, required this.page});
   
 
-@override final  Survey survey;
-@override final  int page;
+ final  Survey survey;
+ final  int page;
 
 /// Create a copy of PageEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
+@JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 _$PageLoadedCopyWith<_PageLoaded> get copyWith => __$PageLoadedCopyWithImpl<_PageLoaded>(this, _$identity);
 
@@ -121,13 +80,13 @@ String toString() {
 /// @nodoc
 abstract mixin class _$PageLoadedCopyWith<$Res> implements $PageEventCopyWith<$Res> {
   factory _$PageLoadedCopyWith(_PageLoaded value, $Res Function(_PageLoaded) _then) = __$PageLoadedCopyWithImpl;
-@override @useResult
+@useResult
 $Res call({
  Survey survey, int page
 });
 
 
-@override $SurveyCopyWith<$Res> get survey;
+$SurveyCopyWith<$Res> get survey;
 
 }
 /// @nodoc
@@ -140,7 +99,7 @@ class __$PageLoadedCopyWithImpl<$Res>
 
 /// Create a copy of PageEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? survey = null,Object? page = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? survey = null,Object? page = null,}) {
   return _then(_PageLoaded(
 survey: null == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
 as Survey,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
@@ -159,6 +118,38 @@ $SurveyCopyWith<$Res> get survey {
   });
 }
 }
+
+/// @nodoc
+
+
+class _PageCompleted implements PageEvent {
+  const _PageCompleted();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PageCompleted);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'PageEvent.completed()';
+}
+
+
+}
+
+
+
 
 /// @nodoc
 mixin _$PageState {
@@ -325,5 +316,37 @@ as List<Question>,
 
 
 }
+
+/// @nodoc
+
+
+class PageComplete implements PageState {
+  const PageComplete();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PageComplete);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'PageState.complete()';
+}
+
+
+}
+
+
+
 
 // dart format on

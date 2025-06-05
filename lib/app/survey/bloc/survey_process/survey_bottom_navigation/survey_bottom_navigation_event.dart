@@ -10,4 +10,5 @@ sealed class SurveyBottomNavigationEvent with _$SurveyBottomNavigationEvent {
   const factory SurveyBottomNavigationEvent.loadPrevPage({
     required Survey survey,
   }) = _LoadPrevPage;
+  const factory SurveyBottomNavigationEvent.returnToSurvey() = _ReturnToSurvey;
 }

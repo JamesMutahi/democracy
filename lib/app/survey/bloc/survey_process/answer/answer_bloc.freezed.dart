@@ -121,11 +121,11 @@ $SurveyCopyWith<$Res> get survey {
 
 
 class _TextAnswerAdded implements AnswerEvent {
-  const _TextAnswerAdded({required this.question, required this.answer});
+  const _TextAnswerAdded({required this.question, required this.text});
   
 
  final  Question question;
- final  String answer;
+ final  String text;
 
 /// Create a copy of AnswerEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -137,16 +137,16 @@ _$TextAnswerAddedCopyWith<_TextAnswerAdded> get copyWith => __$TextAnswerAddedCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TextAnswerAdded&&(identical(other.question, question) || other.question == question)&&(identical(other.answer, answer) || other.answer == answer));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TextAnswerAdded&&(identical(other.question, question) || other.question == question)&&(identical(other.text, text) || other.text == text));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,question,answer);
+int get hashCode => Object.hash(runtimeType,question,text);
 
 @override
 String toString() {
-  return 'AnswerEvent.textAnswerAdded(question: $question, answer: $answer)';
+  return 'AnswerEvent.textAnswerAdded(question: $question, text: $text)';
 }
 
 
@@ -157,7 +157,7 @@ abstract mixin class _$TextAnswerAddedCopyWith<$Res> implements $AnswerEventCopy
   factory _$TextAnswerAddedCopyWith(_TextAnswerAdded value, $Res Function(_TextAnswerAdded) _then) = __$TextAnswerAddedCopyWithImpl;
 @useResult
 $Res call({
- Question question, String answer
+ Question question, String text
 });
 
 
@@ -174,10 +174,10 @@ class __$TextAnswerAddedCopyWithImpl<$Res>
 
 /// Create a copy of AnswerEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? question = null,Object? answer = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? question = null,Object? text = null,}) {
   return _then(_TextAnswerAdded(
 question: null == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
-as Question,answer: null == answer ? _self.answer : answer // ignore: cast_nullable_to_non_nullable
+as Question,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -434,5 +434,37 @@ as List<Question>,
 
 
 }
+
+/// @nodoc
+
+
+class _Submit implements AnswerEvent {
+  const _Submit();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Submit);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'AnswerEvent.submit()';
+}
+
+
+}
+
+
+
 
 // dart format on

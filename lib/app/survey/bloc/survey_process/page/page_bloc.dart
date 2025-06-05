@@ -5,13 +5,15 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'page_event.dart';
 part 'page_state.dart';
-part 'page_repository.dart';
 part 'page_bloc.freezed.dart';
 
 class PageBloc extends Bloc<PageEvent, PageState> {
-  PageBloc({required this.pageRepository}) : super(const PageState.initial()) {
+  PageBloc() : super(const PageState.initial()) {
     on<_PageLoaded>((event, emit) async {
       await _onPageLoaded(emit, event);
+    });
+    on<_PageCompleted>((event, emit) async {
+      await _onCompleted(emit);
     });
   }
 
@@ -24,5 +26,8 @@ class PageBloc extends Bloc<PageEvent, PageState> {
     emit(PageLoaded(questions: questions));
   }
 
-  final PageRepository pageRepository;
+  Future _onCompleted(Emitter<PageState> emit) async {
+    emit(PageLoading());
+    emit(PageComplete());
+  }
 }

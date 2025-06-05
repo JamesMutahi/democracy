@@ -20,7 +20,6 @@ class PostProvider {
         response = await dio.get(next);
       }
       if (response.statusCode == 200) {
-        print(response.data);
         return response.data;
       } else {
         return Future.error('Unable to get posts at this time');

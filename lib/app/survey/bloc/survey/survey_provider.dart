@@ -34,4 +34,51 @@ class SurveyProvider {
       return Future.error('Unable to get surveys at this time');
     }
   }
+
+  Future<void> postResponse({
+    required String token,
+    required Survey survey,
+    required DateTime startTime,
+    required DateTime endTime,
+    required List<TextAnswer> textAnswers,
+    required List<ChoiceAnswer> choiceAnswers,
+  }) async {
+    // try {
+    //   print(token);
+    //   print(survey);
+    List<Map<String, dynamic>> textAnswersAsJson = [];
+    List<Map<String, dynamic>> choiceAnswersAsJson = [];
+    for (TextAnswer textAnswer in textAnswers) {
+      textAnswersAsJson.add({
+        'question': textAnswer.question.id,
+        'text': textAnswer.text,
+      });
+    }
+    for (ChoiceAnswer choiceAnswer in choiceAnswers) {
+      choiceAnswersAsJson.add({
+        'question': choiceAnswer.question.id,
+        'choice': choiceAnswer.choice.id,
+      });
+    }
+    Response response = await dio.post(
+      '/api/response/',
+      data: {
+        'survey': survey.id,
+        'start_time': startTime.toString(),
+        'end_time': endTime.toString(),
+        'text_answers': textAnswersAsJson,
+        'choice_answers': choiceAnswersAsJson,
+      },
+      options: Options(
+        headers: <String, String>{'Authorization': 'Token $token'},
+      ),
+    );
+    print('RESPONSE ${response.data}');
+    if (response.statusCode != 201) {
+      return Future.error('Unable to post responses at this time');
+    }
+    // } on DioException {
+    //   return Future.error('Unable to post responses at this time');
+    // }
+  }
 }

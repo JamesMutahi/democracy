@@ -19,4 +19,22 @@ class SurveyRepository {
     );
     return data;
   }
+
+  Future<void> postResponse({
+    required String token,
+    required Survey survey,
+    required DateTime startTime,
+    required DateTime endTime,
+    required List<TextAnswer> textAnswers,
+    required List<ChoiceAnswer> choiceAnswers,
+  }) async {
+    await surveyProvider.postResponse(
+      token: token,
+      survey: survey,
+      startTime: startTime,
+      endTime: endTime,
+      textAnswers: textAnswers,
+      choiceAnswers: choiceAnswers,
+    );
+  }
 }

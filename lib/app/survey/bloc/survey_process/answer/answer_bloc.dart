@@ -1,4 +1,6 @@
 import 'package:bloc/bloc.dart';
+import 'package:democracy/app/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/app/survey/bloc/survey/survey_bloc.dart';
 import 'package:democracy/app/survey/models/choice.dart';
 import 'package:democracy/app/survey/models/choice_answer.dart';
 import 'package:democracy/app/survey/models/question.dart';
@@ -12,7 +14,8 @@ part 'answer_state.dart';
 part 'answer_bloc.freezed.dart';
 
 class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
-  AnswerBloc() : super(const AnswerState()) {
+  AnswerBloc({required this.surveyRepository, required this.authRepository})
+    : super(const AnswerState()) {
     on<_Started>((event, emit) {
       _onStarted(emit, event);
     });
@@ -28,6 +31,9 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
     on<_Validate>((event, emit) {
       _onValidate(emit, event);
     });
+    on<_Submit>((event, emit) async {
+      await _onSubmit(emit);
+    });
   }
 
   void _onStarted(Emitter<AnswerState> emit, _Started event) {
@@ -36,6 +42,7 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
       state.copyWith(
         status: AnswerStatus.loaded,
         survey: event.survey,
+        startTime: DateTime.now(),
         textAnswers: [],
         choiceAnswers: [],
       ),
@@ -47,10 +54,10 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
     state.textAnswers!.removeWhere(
       (textAnswer) => textAnswer.question.id == event.question.id,
     );
-    if (event.answer.isNotEmpty) {
+    if (event.text.isNotEmpty) {
       TextAnswer textAnswer = TextAnswer(
         question: event.question,
-        answer: event.answer,
+        text: event.text,
       );
       state.textAnswers!.add(textAnswer);
     }
@@ -104,7 +111,13 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
       }
     }
     if (required.isEmpty) {
-      emit(state.copyWith(status: AnswerStatus.validated, required: []));
+      emit(
+        state.copyWith(
+          status: AnswerStatus.validated,
+          required: [],
+          endTime: DateTime.now(),
+        ),
+      );
     } else {
       emit(
         state.copyWith(
@@ -114,4 +127,25 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
       );
     }
   }
+
+  Future _onSubmit(Emitter<AnswerState> emit) async {
+    emit(state.copyWith(status: AnswerStatus.loading));
+    // try {
+    String? token = await authRepository.getToken();
+    await surveyRepository.postResponse(
+      token: token!,
+      survey: state.survey!,
+      startTime: state.startTime!,
+      endTime: state.endTime!,
+      textAnswers: state.textAnswers!,
+      choiceAnswers: state.choiceAnswers!,
+    );
+    emit(state.copyWith(status: AnswerStatus.submitted));
+    // } catch (e) {
+    //   emit(state.copyWith(status: AnswerStatus.submissionFailure));
+    // }
+  }
+
+  final SurveyRepository surveyRepository;
+  final AuthRepository authRepository;
 }

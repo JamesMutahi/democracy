@@ -8,8 +8,8 @@ part of 'text_answer.dart';
 
 _TextAnswer _$TextAnswerFromJson(Map<String, dynamic> json) => _TextAnswer(
   question: Question.fromJson(json['question'] as Map<String, dynamic>),
-  answer: json['answer'] as String,
+  text: json['text'] as String,
 );
 
 Map<String, dynamic> _$TextAnswerToJson(_TextAnswer instance) =>
-    <String, dynamic>{'question': instance.question, 'answer': instance.answer};
+    <String, dynamic>{'question': instance.question, 'text': instance.text};

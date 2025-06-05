@@ -5,7 +5,7 @@ class AnswerEvent with _$AnswerEvent {
   const factory AnswerEvent.started({required Survey survey}) = _Started;
   const factory AnswerEvent.textAnswerAdded({
     required Question question,
-    required String answer,
+    required String text,
   }) = _TextAnswerAdded;
   const factory AnswerEvent.singleChoiceAnswerAdded({
     required Question question,
@@ -17,4 +17,5 @@ class AnswerEvent with _$AnswerEvent {
   }) = _MultipleChoiceAnswerAdded;
   const factory AnswerEvent.validate({required List<Question> questions}) =
       _Validate;
+  const factory AnswerEvent.submit() = _Submit;
 }

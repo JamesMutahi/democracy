@@ -1,6 +1,6 @@
 part of 'survey_bottom_navigation_bloc.dart';
 
-enum SurveyBottomNavigationStatus { initial, loading, loaded }
+enum SurveyBottomNavigationStatus { initial, loading, loaded, completed }
 
 final class SurveyBottomNavigationState extends Equatable {
   const SurveyBottomNavigationState({

@@ -47,7 +47,6 @@ void main() async {
         RepositoryProvider.value(
           value: PostRepository(postProvider: PostProvider(dio: dio)),
         ),
-        RepositoryProvider.value(value: PageRepository()),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -97,23 +96,16 @@ void main() async {
                   surveyRepository: context.read<SurveyRepository>(),
                 ),
           ),
+          BlocProvider(create: (context) => PageBloc()),
+          BlocProvider(create: (context) => PageBloc()),
+          BlocProvider(create: (context) => SurveyBottomNavigationBloc()),
           BlocProvider(
             create:
-                (context) =>
-                    PageBloc(pageRepository: context.read<PageRepository>()),
-          ),
-          BlocProvider(
-            create:
-                (context) =>
-                    PageBloc(pageRepository: context.read<PageRepository>()),
-          ),
-          BlocProvider(
-            create:
-                (context) => SurveyBottomNavigationBloc(
-                  pageRepository: context.read<PageRepository>(),
+                (context) => AnswerBloc(
+                  surveyRepository: context.read<SurveyRepository>(),
+                  authRepository: context.read<AuthRepository>(),
                 ),
           ),
-          BlocProvider(create: (context) => AnswerBloc()),
           BlocProvider(
             create:
                 (context) =>

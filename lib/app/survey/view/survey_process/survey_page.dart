@@ -6,6 +6,7 @@ import 'package:democracy/app/survey/models/survey.dart';
 import 'package:democracy/app/survey/view/survey_process/widgets/index.dart';
 import 'package:democracy/app/utils/view/loading_indicator.dart';
 import 'package:democracy/app/utils/view/no_results.dart';
+import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,17 +31,48 @@ class _SurveyPageState extends State<SurveyPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<
-      SurveyBottomNavigationBloc,
-      SurveyBottomNavigationState
-    >(
-      listener: (context, state) {
-        if (state.status == SurveyBottomNavigationStatus.loaded) {
-          context.read<PageBloc>().add(
-            PageEvent.pageLoaded(survey: widget.survey, page: state.page),
-          );
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<SurveyBottomNavigationBloc, SurveyBottomNavigationState>(
+          listener: (context, state) {
+            if (state.status == SurveyBottomNavigationStatus.loaded) {
+              context.read<PageBloc>().add(
+                PageEvent.pageLoaded(survey: widget.survey, page: state.page),
+              );
+            }
+            if (state.status == SurveyBottomNavigationStatus.completed) {
+              context.read<PageBloc>().add(PageEvent.completed());
+            }
+          },
+        ),
+        BlocListener<AnswerBloc, AnswerState>(
+          listener: (context, state) {
+            if (state.status == AnswerStatus.submitted) {
+              Navigator.of(context).pop();
+              final snackBar = SnackBar(
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Theme.of(context).cardColor,
+                content: SnackBarContent(
+                  message: 'Submitted',
+                  status: SnackBarStatus.success,
+                ),
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+            if (state.status == AnswerStatus.submissionFailure) {
+              final snackBar = SnackBar(
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Theme.of(context).cardColor,
+                content: SnackBarContent(
+                  message: 'Something went wrong.',
+                  status: SnackBarStatus.error,
+                ),
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+          },
+        ),
+      ],
       child: PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, result) {
@@ -106,6 +138,52 @@ class _SurveyPageState extends State<SurveyPage> {
                         itemCount: questions.length,
                       )
                       : const NoResults();
+                case PageComplete():
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text('Survey complete', style: TextStyle(fontSize: 20)),
+                        SizedBox(height: 10),
+                        RichText(
+                          text: TextSpan(
+                            text: 'Tap ',
+                            style: TextStyle(color: Colors.grey),
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: 'submit ',
+                                style: TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              TextSpan(
+                                text: 'to submit your response',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: () {
+                            context.read<AnswerBloc>().add(
+                              AnswerEvent.submit(),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.tertiaryContainer,
+                            shape: BeveledRectangleBorder(
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                          child: Text('SUBMIT'),
+                        ),
+                      ],
+                    ),
+                  );
                 default:
                   return const LoadingIndicator();
               }

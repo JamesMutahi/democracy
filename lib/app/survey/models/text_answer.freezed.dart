@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$TextAnswer {
 
- Question get question; String get answer;
+ Question get question; String get text;
 /// Create a copy of TextAnswer
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $TextAnswerCopyWith<TextAnswer> get copyWith => _$TextAnswerCopyWithImpl<TextAns
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TextAnswer&&(identical(other.question, question) || other.question == question)&&(identical(other.answer, answer) || other.answer == answer));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TextAnswer&&(identical(other.question, question) || other.question == question)&&(identical(other.text, text) || other.text == text));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,question,answer);
+int get hashCode => Object.hash(runtimeType,question,text);
 
 @override
 String toString() {
-  return 'TextAnswer(question: $question, answer: $answer)';
+  return 'TextAnswer(question: $question, text: $text)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $TextAnswerCopyWith<$Res>  {
   factory $TextAnswerCopyWith(TextAnswer value, $Res Function(TextAnswer) _then) = _$TextAnswerCopyWithImpl;
 @useResult
 $Res call({
- Question question, String answer
+ Question question, String text
 });
 
 
@@ -66,10 +66,10 @@ class _$TextAnswerCopyWithImpl<$Res>
 
 /// Create a copy of TextAnswer
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? question = null,Object? answer = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? question = null,Object? text = null,}) {
   return _then(_self.copyWith(
 question: null == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
-as Question,answer: null == answer ? _self.answer : answer // ignore: cast_nullable_to_non_nullable
+as Question,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -90,11 +90,11 @@ $QuestionCopyWith<$Res> get question {
 @JsonSerializable()
 
 class _TextAnswer implements TextAnswer {
-  const _TextAnswer({required this.question, required this.answer});
+  const _TextAnswer({required this.question, required this.text});
   factory _TextAnswer.fromJson(Map<String, dynamic> json) => _$TextAnswerFromJson(json);
 
 @override final  Question question;
-@override final  String answer;
+@override final  String text;
 
 /// Create a copy of TextAnswer
 /// with the given fields replaced by the non-null parameter values.
@@ -109,16 +109,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TextAnswer&&(identical(other.question, question) || other.question == question)&&(identical(other.answer, answer) || other.answer == answer));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TextAnswer&&(identical(other.question, question) || other.question == question)&&(identical(other.text, text) || other.text == text));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,question,answer);
+int get hashCode => Object.hash(runtimeType,question,text);
 
 @override
 String toString() {
-  return 'TextAnswer(question: $question, answer: $answer)';
+  return 'TextAnswer(question: $question, text: $text)';
 }
 
 
@@ -129,7 +129,7 @@ abstract mixin class _$TextAnswerCopyWith<$Res> implements $TextAnswerCopyWith<$
   factory _$TextAnswerCopyWith(_TextAnswer value, $Res Function(_TextAnswer) _then) = __$TextAnswerCopyWithImpl;
 @override @useResult
 $Res call({
- Question question, String answer
+ Question question, String text
 });
 
 
@@ -146,10 +146,10 @@ class __$TextAnswerCopyWithImpl<$Res>
 
 /// Create a copy of TextAnswer
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? question = null,Object? answer = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? question = null,Object? text = null,}) {
   return _then(_TextAnswer(
 question: null == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
-as Question,answer: null == answer ? _self.answer : answer // ignore: cast_nullable_to_non_nullable
+as Question,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

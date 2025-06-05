@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
+import 'package:democracy/app/survey/models/choice_answer.dart';
 import 'package:democracy/app/survey/models/survey.dart';
+import 'package:democracy/app/survey/models/text_answer.dart';
 import 'package:democracy/app/utils/bloc/transformers.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';

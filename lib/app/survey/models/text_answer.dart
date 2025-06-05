@@ -8,7 +8,7 @@ part 'text_answer.g.dart';
 sealed class TextAnswer with _$TextAnswer {
   const factory TextAnswer({
     required Question question,
-    required String answer,
+    required String text,
   }) = _TextAnswer;
 
   factory TextAnswer.fromJson(Map<String, Object?> json) =>
