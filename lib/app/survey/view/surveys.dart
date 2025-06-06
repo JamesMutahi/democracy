@@ -9,14 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PublicParticipation extends StatefulWidget {
-  const PublicParticipation({super.key});
+class Surveys extends StatefulWidget {
+  const Surveys({super.key});
 
   @override
-  State<PublicParticipation> createState() => _PublicParticipationState();
+  State<Surveys> createState() => _SurveysState();
 }
 
-class _PublicParticipationState extends State<PublicParticipation> {
+class _SurveysState extends State<Surveys> {
   final _scrollController = ScrollController();
 
   @override
@@ -103,14 +103,10 @@ class SurveyTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () {
-        (survey.isPoll)
-            ? null
-            : Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SurveyPage(survey: survey),
-              ),
-            );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SurveyPage(survey: survey)),
+        );
       },
       title: Text(survey.name),
       trailing: Icon(Icons.arrow_forward_ios),

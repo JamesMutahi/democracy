@@ -43,9 +43,7 @@ class SurveyProvider {
     required List<TextAnswer> textAnswers,
     required List<ChoiceAnswer> choiceAnswers,
   }) async {
-    // try {
-    //   print(token);
-    //   print(survey);
+    try {
     List<Map<String, dynamic>> textAnswersAsJson = [];
     List<Map<String, dynamic>> choiceAnswersAsJson = [];
     for (TextAnswer textAnswer in textAnswers) {
@@ -73,12 +71,11 @@ class SurveyProvider {
         headers: <String, String>{'Authorization': 'Token $token'},
       ),
     );
-    print('RESPONSE ${response.data}');
     if (response.statusCode != 201) {
       return Future.error('Unable to post responses at this time');
     }
-    // } on DioException {
-    //   return Future.error('Unable to post responses at this time');
-    // }
+    } on DioException {
+      return Future.error('Unable to post responses at this time');
+    }
   }
 }

@@ -14,9 +14,9 @@ class HomePage extends StatelessWidget {
           color: Theme.of(context).disabledColor,
           child: InkWell(
             onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => PublicParticipation()),
-              );
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (context) => Surveys()));
             },
             child: Padding(
               padding: const EdgeInsets.all(10.0),

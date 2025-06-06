@@ -1,4 +1,3 @@
-import 'package:democracy/app/survey/models/option.dart';
 import 'package:democracy/app/survey/models/question.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -11,10 +10,8 @@ sealed class Survey with _$Survey {
     required final int id,
     required String name,
     required String description,
-    @JsonKey(name: 'is_poll') required bool isPoll,
-    required DateTime start,
-    required DateTime end,
-    required List<Option> options,
+    @JsonKey(name: 'start_time') required DateTime startTime,
+    @JsonKey(name: 'end_time') required DateTime endTime,
     required List<Question> questions,
   }) = _Survey;
 
