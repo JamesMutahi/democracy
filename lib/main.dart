@@ -8,6 +8,7 @@ import 'package:democracy/app/auth/bloc/otp_counter/otp_counter_bloc.dart';
 import 'package:democracy/app/auth/bloc/password_change/password_change_cubit.dart';
 import 'package:democracy/app/auth/bloc/password_reset/password_reset_cubit.dart';
 import 'package:democracy/app/auth/bloc/registration/registration_cubit.dart';
+import 'package:democracy/app/poll/bloc/poll/poll_bloc.dart';
 import 'package:democracy/app/social/bloc/post/post_bloc.dart';
 import 'package:democracy/app/survey/bloc/survey_process/page/page_bloc.dart';
 import 'package:democracy/app/survey/bloc/survey_process/answer/answer_bloc.dart';
@@ -43,6 +44,9 @@ void main() async {
         ),
         RepositoryProvider.value(
           value: SurveyRepository(surveyProvider: SurveyProvider(dio: dio)),
+        ),
+        RepositoryProvider.value(
+          value: PollRepository(pollProvider: PollProvider(dio: dio)),
         ),
         RepositoryProvider.value(
           value: PostRepository(postProvider: PostProvider(dio: dio)),
@@ -105,6 +109,11 @@ void main() async {
                   surveyRepository: context.read<SurveyRepository>(),
                   authRepository: context.read<AuthRepository>(),
                 ),
+          ),
+          BlocProvider(
+            create:
+                (context) =>
+                    PollBloc(pollRepository: context.read<PollRepository>()),
           ),
           BlocProvider(
             create:

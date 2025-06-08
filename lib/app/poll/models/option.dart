@@ -7,8 +7,9 @@ part 'option.g.dart';
 sealed class Option with _$Option {
   const factory Option({
     required final int id,
-    required int survey,
+    required int poll,
     required String text,
+    required int votes,
   }) = _Option;
 
   factory Option.fromJson(Map<String, Object?> json) => _$OptionFromJson(json);

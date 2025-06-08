@@ -1,3 +1,4 @@
+import 'package:democracy/app/poll/view/polls.dart';
 import 'package:democracy/app/survey/view/surveys.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +21,21 @@ class HomePage extends StatelessWidget {
             },
             child: Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Text('Public Participation'),
+              child: Text('Public Participation: Surveys'),
+            ),
+          ),
+        ),
+        Card.outlined(
+          color: Theme.of(context).disabledColor,
+          child: InkWell(
+            onTap: () {
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (context) => Polls()));
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text('Public Participation: Polls'),
             ),
           ),
         ),
