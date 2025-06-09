@@ -19,4 +19,15 @@ class PollRepository {
     );
     return data;
   }
+
+  Future<Poll> vote({
+    required String token,
+    required Option option,
+  }) async {
+    final poll = await pollProvider.vote(
+      token: token,
+      option: option,
+    );
+    return poll;
+  }
 }

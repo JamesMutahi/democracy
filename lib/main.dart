@@ -9,6 +9,7 @@ import 'package:democracy/app/auth/bloc/password_change/password_change_cubit.da
 import 'package:democracy/app/auth/bloc/password_reset/password_reset_cubit.dart';
 import 'package:democracy/app/auth/bloc/registration/registration_cubit.dart';
 import 'package:democracy/app/poll/bloc/poll/poll_bloc.dart';
+import 'package:democracy/app/poll/bloc/vote/vote_cubit.dart';
 import 'package:democracy/app/social/bloc/post/post_bloc.dart';
 import 'package:democracy/app/survey/bloc/survey_process/page/page_bloc.dart';
 import 'package:democracy/app/survey/bloc/survey_process/answer/answer_bloc.dart';
@@ -114,6 +115,13 @@ void main() async {
             create:
                 (context) =>
                     PollBloc(pollRepository: context.read<PollRepository>()),
+          ),
+          BlocProvider(
+            create:
+                (context) => VoteCubit(
+                  pollRepository: context.read<PollRepository>(),
+                  authRepository: context.read<AuthRepository>(),
+                ),
           ),
           BlocProvider(
             create:

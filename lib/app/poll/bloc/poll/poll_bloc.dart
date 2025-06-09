@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:democracy/app/poll/models/option.dart';
 import 'package:democracy/app/poll/models/poll.dart';
 import 'package:democracy/app/utils/bloc/transformers.dart';
 import 'package:dio/dio.dart';
