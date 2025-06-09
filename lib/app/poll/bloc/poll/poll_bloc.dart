@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:democracy/app/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/app/poll/models/option.dart';
 import 'package:democracy/app/poll/models/poll.dart';
 import 'package:democracy/app/utils/bloc/transformers.dart';
@@ -13,7 +14,8 @@ part 'poll_provider.dart';
 part 'poll_bloc.freezed.dart';
 
 class PollBloc extends Bloc<PollEvent, PollState> {
-  PollBloc({required this.pollRepository}) : super(const PollState()) {
+  PollBloc({required this.pollRepository, required this.authRepository})
+    : super(const PollState()) {
     on<_Initialize>((event, emit) async {
       emit(PollState());
       add(GetPolls());
@@ -49,7 +51,11 @@ class PollBloc extends Bloc<PollEvent, PollState> {
   Future _onGetPolls(Emitter<PollState> emit) async {
     if (state.next == null) return;
     try {
-      final data = await pollRepository.getPolls(next: state.next);
+      String? token = await authRepository.getToken();
+      final data = await pollRepository.getPolls(
+        token: token,
+        next: state.next,
+      );
       final List<Poll> polls = List.from(
         data['results'].map((e) => Poll.fromJson(e)),
       );
@@ -68,7 +74,9 @@ class PollBloc extends Bloc<PollEvent, PollState> {
   Future _onFilterPolls(Emitter<PollState> emit, _Filter event) async {
     emit(state.copyWith(status: PollStatus.loading));
     try {
+      String? token = await authRepository.getToken();
       final data = await pollRepository.getPolls(
+        token: token,
         next: null,
         searchTerm: event.searchTerm,
         startDate: event.startDate,
@@ -90,4 +98,5 @@ class PollBloc extends Bloc<PollEvent, PollState> {
   }
 
   final PollRepository pollRepository;
+  final AuthRepository authRepository;
 }

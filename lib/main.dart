@@ -113,8 +113,10 @@ void main() async {
           ),
           BlocProvider(
             create:
-                (context) =>
-                    PollBloc(pollRepository: context.read<PollRepository>()),
+                (context) => PollBloc(
+                  pollRepository: context.read<PollRepository>(),
+                  authRepository: context.read<AuthRepository>(),
+                ),
           ),
           BlocProvider(
             create:

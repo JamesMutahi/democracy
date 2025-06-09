@@ -6,6 +6,7 @@ class PollProvider {
   final Dio dio;
 
   Future<Map<String, dynamic>> getPolls({
+    required String? token,
     required String? next,
     required String? searchTerm,
     required DateTime? startDate,
@@ -13,6 +14,12 @@ class PollProvider {
   }) async {
     try {
       late Response response;
+      var options = Options();
+      if (token != null) {
+        options = Options(
+          headers: <String, String>{'Authorization': 'Token $token'},
+        );
+      }
       if (next == null) {
         response = await dio.get(
           '/api/polls/',
@@ -21,9 +28,10 @@ class PollProvider {
             'date__lte': startDate,
             'date__gte': endDate,
           },
+          options: options,
         );
       } else {
-        response = await dio.get(next);
+        response = await dio.get(next, options: options);
       }
       if (response.statusCode == 200) {
         return response.data;

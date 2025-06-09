@@ -6,12 +6,14 @@ class PollRepository {
   final PollProvider pollProvider;
 
   Future<Map<String, dynamic>> getPolls({
+    required String? token,
     required String? next,
     String? searchTerm,
     DateTime? startDate,
     DateTime? endDate,
   }) async {
     final data = await pollProvider.getPolls(
+      token: token,
       next: next,
       searchTerm: searchTerm,
       startDate: startDate,

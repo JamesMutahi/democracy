@@ -108,6 +108,7 @@ class _PollTileState extends State<PollTile> {
         _poll.endTime.difference(DateTime.now()) < Duration(seconds: 0);
     bool userHasVoted = _poll.votedOption != null;
     double optionHeight = 40;
+    print(_poll.votedOption);
     return BlocListener<VoteCubit, VoteState>(
       listener: (context, state) {
         if (state is PollVoted) {
