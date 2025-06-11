@@ -50,6 +50,9 @@ class PollBloc extends Bloc<PollEvent, PollState> {
 
   Future _onGetPolls(Emitter<PollState> emit) async {
     if (state.next == null) return;
+    if (state.status == PollStatus.failure) {
+      emit(state.copyWith(status: PollStatus.loading));
+    }
     try {
       String? token = await authRepository.getToken();
       final data = await pollRepository.getPolls(

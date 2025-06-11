@@ -19,7 +19,7 @@ final class PollState extends Equatable {
     return PollState(
       status: status ?? this.status,
       polls: polls ?? this.polls,
-      next: next,
+      next: next ?? this.next,
     );
   }
 

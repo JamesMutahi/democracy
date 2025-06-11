@@ -49,6 +49,9 @@ class SurveyBloc extends Bloc<SurveyEvent, SurveyState> {
 
   Future _getSurveys(Emitter<SurveyState> emit) async {
     if (state.next == null) return;
+    if (state.status == SurveyStatus.failure) {
+      emit(state.copyWith(status: SurveyStatus.loading));
+    }
     try {
       final data = await surveyRepository.getSurveys(next: state.next);
       final List<Survey> surveys = List.from(

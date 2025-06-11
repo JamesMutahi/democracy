@@ -47,6 +47,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   Future _getPosts(Emitter<PostState> emit) async {
     if (state.next == null) return;
+    if (state.status == PostStatus.failure) {
+      emit(state.copyWith(status: PostStatus.loading));
+    }
     try {
       final data = await postRepository.getPosts(next: state.next);
       final List<Post> posts = List.from(

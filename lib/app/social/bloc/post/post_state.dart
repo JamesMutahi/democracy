@@ -23,7 +23,7 @@ final class PostState extends Equatable {
     return PostState(
       status: status ?? this.status,
       posts: posts ?? this.posts,
-      next: next,
+      next: next ?? this.next,
     );
   }
 

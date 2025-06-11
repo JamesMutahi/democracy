@@ -23,7 +23,7 @@ final class SurveyState extends Equatable {
     return SurveyState(
       status: status ?? this.status,
       surveys: surveys ?? this.surveys,
-      next: next,
+      next: next ?? this.next,
     );
   }
 
