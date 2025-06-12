@@ -19,6 +19,13 @@ class _BottomNavBarState extends State<BottomNavBar> {
         final currentPage = switch (state) {
           BottomNavBarPageChanged(:final page) => page,
         };
+        List items = [
+          {'name': 'Home', 'iconData': Symbols.home_rounded},
+          {'name': 'Explore', 'iconData': Symbols.search_check_2_rounded},
+          {'name': 'Ballot', 'iconData': Symbols.ballot_rounded},
+          {'name': 'Messages', 'iconData': Symbols.message_rounded},
+          {'name': 'Profile', 'iconData': Symbols.person_edit_rounded},
+        ];
         return BottomAppBar(
           padding: const EdgeInsets.all(0.0),
           height: 65.0,
@@ -29,30 +36,17 @@ class _BottomNavBarState extends State<BottomNavBar> {
                     ? MainAxisAlignment.spaceEvenly
                     : MainAxisAlignment.center,
             children: [
-              NavBarItem(
-                iconData: Symbols.assured_workload_rounded,
-                label: 'Home',
-                isActive: currentPage == 0,
-                onPressed: () {
-                  context.read<BottomNavBarCubit>().changePage(0);
-                },
-              ),
-              NavBarItem(
-                iconData: Symbols.social_distance_rounded,
-                label: 'Social',
-                isActive: currentPage == 1,
-                onPressed: () {
-                  context.read<BottomNavBarCubit>().changePage(1);
-                },
-              ),
-              NavBarItem(
-                iconData: Symbols.person_edit_rounded,
-                label: 'Profile',
-                isActive: currentPage == 2,
-                onPressed: () {
-                  context.read<BottomNavBarCubit>().changePage(2);
-                },
-              ),
+              ...items.map((item) {
+                int index = items.indexOf(item);
+                return NavBarItem(
+                  iconData: item['iconData'],
+                  label: item['name'],
+                  isActive: currentPage == index,
+                  onPressed: () {
+                    context.read<BottomNavBarCubit>().changePage(index);
+                  },
+                );
+              }),
             ],
           ),
         );

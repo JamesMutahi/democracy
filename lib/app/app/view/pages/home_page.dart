@@ -1,5 +1,5 @@
-import 'package:democracy/app/poll/view/polls.dart';
-import 'package:democracy/app/survey/view/surveys.dart';
+import 'package:democracy/app/social/view/post_create.dart';
+import 'package:democracy/app/social/view/posts.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -7,36 +7,20 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Stack(
       children: [
-        Card.outlined(
-          color: Theme.of(context).disabledColor,
-          child: InkWell(
-            onTap: () {
-              Navigator.of(
+        Posts(),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
                 context,
-              ).push(MaterialPageRoute(builder: (context) => Surveys()));
+                MaterialPageRoute(builder: (context) => PostCreate()),
+              );
             },
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Text('Public Participation: Surveys'),
-            ),
-          ),
-        ),
-        Card.outlined(
-          color: Theme.of(context).disabledColor,
-          child: InkWell(
-            onTap: () {
-              Navigator.of(
-                context,
-              ).push(MaterialPageRoute(builder: (context) => Polls()));
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Text('Public Participation: Polls'),
-            ),
+            mini: true,
+            child: Icon(Icons.add),
           ),
         ),
       ],
