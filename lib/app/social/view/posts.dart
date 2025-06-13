@@ -69,7 +69,7 @@ class _PostsState extends State<Posts> {
   }
 
   void _onScroll() {
-    if (_isBottom) context.read<PostBloc>().add(GetPosts());
+    if (_isBottom) context.read<PostBloc>().add(PostEvent.bottomReached());
   }
 
   bool get _isBottom {
@@ -85,9 +85,10 @@ class _PostsState extends State<Posts> {
 }
 
 class PostTile extends StatelessWidget {
-  const PostTile({super.key, required this.post});
+  const PostTile({super.key, required this.post, this.hidePostButtons = false});
 
   final Post post;
+  final bool hidePostButtons;
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +96,7 @@ class PostTile extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => PostDetail()),
+          MaterialPageRoute(builder: (context) => PostDetail(post: post)),
         );
       },
       child: Container(
@@ -118,33 +119,66 @@ class PostTile extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    '${post.author.firstName} ${post.author.lastName}',
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                  Text(post.body),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      PostTileButton(
-                        iconData: Symbols.message_rounded,
-                        trailing: post.replies.toString(),
+                      Text(
+                        '${post.author.firstName} ${post.author.lastName}',
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
-                      PostTileButton(
-                        iconData: Symbols.sync_rounded,
-                        trailing: '734',
-                      ),
-                      PostTileButton(
-                        iconData: Symbols.favorite_rounded,
-                        trailing: post.likes.toString(),
-                      ),
-                      PostTileButton(
-                        iconData: Symbols.poll_rounded,
-                        trailing: post.views.toString(),
-                      ),
-                      PostTileButton(iconData: Symbols.share_rounded),
+                      hidePostButtons
+                          ? SizedBox.shrink()
+                          : Row(
+                            children: [
+                              TimeDifferenceInfo(publishedAt: post.publishedAt),
+                              PostTileButton(
+                                iconData: Symbols.more_vert_rounded,
+                              ),
+                            ],
+                          ),
                     ],
                   ),
+                  Text(post.body),
+                  (post.repostOf == null)
+                      ? SizedBox.shrink()
+                      : Container(
+                        margin: EdgeInsets.symmetric(vertical: 5),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(
+                              context,
+                            ).disabledColor.withAlpha(10),
+                          ),
+                        ),
+                        child: PostTile(
+                          post: post.repostOf!,
+                          hidePostButtons: true,
+                        ),
+                      ),
+                  hidePostButtons
+                      ? SizedBox.shrink()
+                      : Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          PostTileButton(
+                            iconData: Symbols.message_rounded,
+                            trailing: post.replies.toString(),
+                          ),
+                          PostTileButton(
+                            iconData: Symbols.sync_rounded,
+                            trailing: post.reposts.toString(),
+                          ),
+                          PostTileButton(
+                            iconData: Symbols.favorite_rounded,
+                            trailing: post.likes.toString(),
+                          ),
+                          PostTileButton(
+                            iconData: Symbols.poll_rounded,
+                            trailing: post.views.toString(),
+                          ),
+                          PostTileButton(iconData: Symbols.share_rounded),
+                        ],
+                      ),
                 ],
               ),
             ),
@@ -179,7 +213,6 @@ class PostTileButton extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(width: 3),
         (trailing == null)
             ? SizedBox.shrink()
             : Text(
@@ -187,6 +220,69 @@ class PostTileButton extends StatelessWidget {
               style: TextStyle(color: Theme.of(context).disabledColor),
             ),
       ],
+    );
+  }
+}
+
+class TimeDifferenceInfo extends StatelessWidget {
+  const TimeDifferenceInfo({super.key, required this.publishedAt});
+
+  final DateTime publishedAt;
+
+  @override
+  Widget build(BuildContext context) {
+    var currentTime = DateTime.now();
+    var diff = currentTime.difference(publishedAt);
+    final diffSeconds = diff.inSeconds;
+    var unit = 's';
+    var difference = diffSeconds;
+    if (diffSeconds > 1 || diffSeconds < 1) {
+      unit = 's';
+    }
+    if (diffSeconds > 60) {
+      final diffMinutes = diff.inMinutes;
+      difference = diffMinutes;
+      unit = 'min';
+      if (diffMinutes > 1) {
+        unit = 'min';
+      }
+      if (diffMinutes > 60) {
+        final diffHours = diff.inHours;
+        difference = diffHours;
+        unit = 'h';
+        if (diffHours > 1) {
+          unit = 'h';
+        }
+        if (diffHours > 24) {
+          final diffDays = diff.inDays;
+          difference = diffDays;
+          unit = 'd';
+          if (diffDays > 1) {
+            unit = 'd';
+          }
+          if (diffDays > 30) {
+            final diffMonths = (diffDays / 30).floor();
+            difference = diffMonths;
+            unit = 'm';
+            if (diffMonths > 1) {
+              unit = 'm';
+            }
+            if (diffDays > 365) {
+              final diffYears = (diffDays / 365).floor();
+              difference = diffYears;
+              unit = 'y';
+              if (diffYears > 1) {
+                unit = 'yrs';
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return Text(
+      '$difference$unit',
+      style: TextStyle(color: Theme.of(context).disabledColor),
     );
   }
 }

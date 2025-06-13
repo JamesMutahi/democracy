@@ -143,8 +143,8 @@ as PostState,
 /// @nodoc
 
 
-class GetPosts implements PostEvent {
-  const GetPosts();
+class _BottomReached implements PostEvent {
+  const _BottomReached();
   
 
 
@@ -154,7 +154,7 @@ class GetPosts implements PostEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetPosts);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BottomReached);
 }
 
 
@@ -163,105 +163,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'PostEvent.getPosts()';
-}
-
-
-}
-
-
-
-
-/// @nodoc
-
-
-class _Filter implements PostEvent {
-  const _Filter({required this.searchTerm});
-  
-
- final  String? searchTerm;
-
-/// Create a copy of PostEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$FilterCopyWith<_Filter> get copyWith => __$FilterCopyWithImpl<_Filter>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Filter&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,searchTerm);
-
-@override
-String toString() {
-  return 'PostEvent.filter(searchTerm: $searchTerm)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$FilterCopyWith<$Res> implements $PostEventCopyWith<$Res> {
-  factory _$FilterCopyWith(_Filter value, $Res Function(_Filter) _then) = __$FilterCopyWithImpl;
-@useResult
-$Res call({
- String? searchTerm
-});
-
-
-
-
-}
-/// @nodoc
-class __$FilterCopyWithImpl<$Res>
-    implements _$FilterCopyWith<$Res> {
-  __$FilterCopyWithImpl(this._self, this._then);
-
-  final _Filter _self;
-  final $Res Function(_Filter) _then;
-
-/// Create a copy of PostEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? searchTerm = freezed,}) {
-  return _then(_Filter(
-searchTerm: freezed == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
-as String?,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class _Reload implements PostEvent {
-  const _Reload();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Reload);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'PostEvent.reload()';
+  return 'PostEvent.bottomReached()';
 }
 
 

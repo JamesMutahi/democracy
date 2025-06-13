@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/social/models/post.dart';
+import 'package:democracy/app/utils/bloc/transformers.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -21,6 +22,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       _onInitialize(emit);
     });
     on<_ChangeState>((event, emit) => emit(event.state));
+    on<_BottomReached>(
+      (event, emit) async {},
+      transformer: throttleDroppable(
+        duration: const Duration(milliseconds: 100),
+      ),
+    );
   }
 
   Future _onInitialize(Emitter<PostState> emit) async {
