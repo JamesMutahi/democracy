@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:democracy/app/social/models/post.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -17,13 +18,13 @@ part 'post_state.dart';
 class PostBloc extends Bloc<PostEvent, PostState> {
   PostBloc({required this.postRepository}) : super(const PostState()) {
     on<_Initialize>((event, emit) async {
-      _initialize(emit);
+      _onInitialize(emit);
     });
     on<_ChangeState>((event, emit) => emit(event.state));
   }
 
-  Future _initialize(Emitter<PostState> emit) async {
-    final wsUrl = Uri.parse('ws://192.168.185.84:8000/posts/');
+  Future _onInitialize(Emitter<PostState> emit) async {
+    final wsUrl = Uri.parse('${dotenv.env['WEBSOCKET_URL']}/posts/');
     final channel = WebSocketChannel.connect(wsUrl);
     await channel.ready;
     channel.sink.add(jsonEncode({"action": "list", "request_id": 42}));
