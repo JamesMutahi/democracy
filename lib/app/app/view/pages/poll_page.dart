@@ -2,8 +2,8 @@ import 'package:democracy/app/poll/view/polls.dart';
 import 'package:democracy/app/survey/view/surveys.dart';
 import 'package:flutter/material.dart';
 
-class BallotPage extends StatelessWidget {
-  const BallotPage({super.key});
+class PollPage extends StatelessWidget {
+  const PollPage({super.key});
 
   @override
   Widget build(BuildContext context) {

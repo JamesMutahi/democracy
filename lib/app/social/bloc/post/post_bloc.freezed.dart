@@ -77,6 +77,72 @@ String toString() {
 /// @nodoc
 
 
+class _ChangeState implements PostEvent {
+  const _ChangeState({required this.state});
+  
+
+ final  PostState state;
+
+/// Create a copy of PostEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ChangeStateCopyWith<_ChangeState> get copyWith => __$ChangeStateCopyWithImpl<_ChangeState>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChangeState&&(identical(other.state, state) || other.state == state));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,state);
+
+@override
+String toString() {
+  return 'PostEvent.changeState(state: $state)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ChangeStateCopyWith<$Res> implements $PostEventCopyWith<$Res> {
+  factory _$ChangeStateCopyWith(_ChangeState value, $Res Function(_ChangeState) _then) = __$ChangeStateCopyWithImpl;
+@useResult
+$Res call({
+ PostState state
+});
+
+
+
+
+}
+/// @nodoc
+class __$ChangeStateCopyWithImpl<$Res>
+    implements _$ChangeStateCopyWith<$Res> {
+  __$ChangeStateCopyWithImpl(this._self, this._then);
+
+  final _ChangeState _self;
+  final $Res Function(_ChangeState) _then;
+
+/// Create a copy of PostEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? state = null,}) {
+  return _then(_ChangeState(
+state: null == state ? _self.state : state // ignore: cast_nullable_to_non_nullable
+as PostState,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
 class GetPosts implements PostEvent {
   const GetPosts();
   

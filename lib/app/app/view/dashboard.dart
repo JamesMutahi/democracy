@@ -75,7 +75,7 @@ class _DashboardState extends State<Dashboard> {
               children: [
                 HomePage(),
                 ExplorePage(),
-                BallotPage(),
+                PollPage(),
                 MessagePage(),
                 ProfilePage(),
               ],

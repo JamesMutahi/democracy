@@ -22,7 +22,6 @@ class _PostsState extends State<Posts> {
   @override
   void initState() {
     super.initState();
-    context.read<PostBloc>().add(PostEvent.initialize());
     _scrollController.addListener(_onScroll);
   }
 
@@ -54,7 +53,7 @@ class _PostsState extends State<Posts> {
           case PostStatus.failure:
             return FailureRetryButton(
               onPressed: () {
-                context.read<PostBloc>().add(const PostEvent.reload());
+                context.read<PostBloc>().add(const PostEvent.initialize());
               },
             );
           default:

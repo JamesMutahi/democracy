@@ -128,7 +128,9 @@ void main() async {
           BlocProvider(
             create:
                 (context) =>
-                    PostBloc(postRepository: context.read<PostRepository>()),
+                    PostBloc(postRepository: context.read<PostRepository>())
+                      ..add(PostEvent.initialize()),
+            lazy: false,
           ),
         ],
         child: const MyApp(),
