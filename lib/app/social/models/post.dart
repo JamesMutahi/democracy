@@ -20,6 +20,7 @@ sealed class Post with _$Post {
     required String? video2Url,
     required String? video3Url,
     required int likes,
+    required int bookmarks,
     required int views,
     required int replies,
     required int reposts,
@@ -27,8 +28,6 @@ sealed class Post with _$Post {
     @JsonKey(name: 'is_deleted') required bool isDeleted,
     @JsonKey(name: 'is_active') required bool isActive,
     @JsonKey(name: 'published_at') required DateTime publishedAt,
-    @JsonKey(name: 'created_at') required DateTime createdAt,
-    @JsonKey(name: 'updated_at') required DateTime updatedAt,
     @JsonKey(name: 'reply_to') required Post? replyTo,
     @JsonKey(name: 'repost_of') required Post? repostOf,
   }) = _Post;

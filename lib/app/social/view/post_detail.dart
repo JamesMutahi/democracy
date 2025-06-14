@@ -22,7 +22,7 @@ class PostDetail extends StatelessWidget {
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
-                  color: Theme.of(context).disabledColor.withAlpha(10),
+                  color: Theme.of(context).disabledColor.withAlpha(30),
                 ),
               ),
             ),
@@ -49,33 +49,51 @@ class PostDetail extends StatelessWidget {
                 SizedBox(height: 5),
                 Text(post.body),
                 SizedBox(height: 5),
-                Row(
-                  children: [
-                    Text(
-                      '${timeFormat.format(post.publishedAt)} • '
-                      '${dateFormat.format(post.publishedAt)} • '
-                      '${post.views} ${(post.views == 1) ? 'View' : 'Views'}',
-                      style: TextStyle(color: Theme.of(context).disabledColor),
-                    ),
-                  ],
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Text(
+                    '${(post.views > 0) ? '${post.views} ${(post.views == 1) ? 'View' : 'Views'} • ' : ''}'
+                    '${timeFormat.format(post.publishedAt)} • '
+                    '${dateFormat.format(post.publishedAt)}',
+                    style: TextStyle(color: Theme.of(context).disabledColor),
+                  ),
                 ),
-
+                (post.repostOf == null)
+                    ? SizedBox.shrink()
+                    : Container(
+                      margin: EdgeInsets.symmetric(vertical: 5),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Theme.of(context).disabledColor.withAlpha(30),
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      child: PostTile(post: post.repostOf!, isRepost: true),
+                    ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     PostTileButton(
                       iconData: Symbols.message_rounded,
-                      trailing: post.replies.toString(),
+                      trailing:
+                          (post.replies > 0) ? post.replies.toString() : null,
                     ),
                     PostTileButton(
                       iconData: Symbols.sync_rounded,
-                      trailing: post.reposts.toString(),
+                      trailing:
+                          (post.reposts > 0) ? post.reposts.toString() : null,
                     ),
                     PostTileButton(
                       iconData: Symbols.favorite_rounded,
-                      trailing: post.likes.toString(),
+                      trailing: (post.likes > 0) ? post.likes.toString() : null,
                     ),
-                    PostTileButton(iconData: Symbols.bookmark_rounded),
+                    PostTileButton(
+                      iconData: Symbols.bookmark_rounded,
+                      trailing:
+                          (post.bookmarks > 0)
+                              ? post.bookmarks.toString()
+                              : null,
+                    ),
                     PostTileButton(iconData: Symbols.share_rounded),
                   ],
                 ),

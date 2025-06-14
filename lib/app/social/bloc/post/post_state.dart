@@ -2,36 +2,24 @@ part of 'post_bloc.dart';
 
 enum PostStatus { initial, loading, success, failure }
 
-const String postUrl = '/api/posts/';
-
 final class PostState extends Equatable {
-  const PostState({
-    this.status = PostStatus.initial,
-    this.posts = const <Post>[],
-    this.next = '/api/posts/',
-  });
+  const PostState({this.status = PostStatus.initial, this.message = const {}});
 
   final PostStatus status;
-  final List<Post> posts;
-  final String? next;
+  final Map<String, dynamic> message;
 
-  PostState copyWith({
-    PostStatus? status,
-    List<Post>? posts,
-    String? next,
-  }) {
+  PostState copyWith({PostStatus? status, Map<String, dynamic>? message}) {
     return PostState(
       status: status ?? this.status,
-      posts: posts ?? this.posts,
-      next: next ?? this.next,
+      message: message ?? this.message,
     );
   }
 
   @override
   String toString() {
-    return '''PostState { status: $status, next: $next, posts: ${posts.length} }''';
+    return '''PostState { status: $status, message: $message }''';
   }
 
   @override
-  List<Object> get props => [status, posts];
+  List<Object> get props => [status, message];
 }

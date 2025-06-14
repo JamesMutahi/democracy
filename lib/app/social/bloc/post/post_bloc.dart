@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
-import 'package:democracy/app/social/models/post.dart';
-import 'package:democracy/app/utils/bloc/transformers.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -22,35 +20,31 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       _onInitialize(emit);
     });
     on<_ChangeState>((event, emit) => emit(event.state));
-    on<_BottomReached>(
-      (event, emit) async {},
-      transformer: throttleDroppable(
-        duration: const Duration(milliseconds: 100),
-      ),
-    );
+    on<_SendMessage>((event, emit) {
+      _onSendMessage(emit, event);
+    });
   }
 
   Future _onInitialize(Emitter<PostState> emit) async {
     final wsUrl = Uri.parse('${dotenv.env['WEBSOCKET_URL']}/posts/');
-    final channel = WebSocketChannel.connect(wsUrl);
-    await channel.ready;
-    channel.sink.add(jsonEncode({"action": "list", "request_id": 42}));
-    _websocketSubscription = channel.stream.listen((message) async {
-      dynamic decoded = jsonDecode(message);
-      if (decoded['response_status'] == 200) {
-        final List<Post> posts = List.from(
-          decoded['data'].map((e) => Post.fromJson(e)),
-        );
-        add(
-          _ChangeState(
-            state: state.copyWith(
-              status: PostStatus.success,
-              posts: [...state.posts, ...posts],
-            ),
+    _channel = WebSocketChannel.connect(wsUrl);
+    await _channel.ready;
+    _websocketSubscription = _channel.stream.listen((message) async {
+      // Keys: (errors, data, action, response_status, request_id)
+      add(
+        _ChangeState(
+          state: state.copyWith(
+            status: PostStatus.success,
+            message: jsonDecode(message),
           ),
-        );
-      }
+        ),
+      );
     });
+    add(_SendMessage(message: {"action": "list", "request_id": 0}));
+  }
+
+  Future _onSendMessage(Emitter<PostState> emit, _SendMessage event) async {
+    _channel.sink.add(jsonEncode(event.message));
   }
 
   @override
@@ -59,6 +53,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     return super.close();
   }
 
+  late final WebSocketChannel _channel;
   late StreamSubscription _websocketSubscription;
   final PostRepository postRepository;
 }

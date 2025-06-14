@@ -5,5 +5,6 @@ class PostEvent with _$PostEvent {
   const factory PostEvent.initialize() = _Initialize;
   const factory PostEvent.changeState({required PostState state}) =
       _ChangeState;
-  const factory PostEvent.bottomReached() = _BottomReached;
+  const factory PostEvent.sendMessage({required Map<String, dynamic> message}) =
+      _SendMessage;
 }

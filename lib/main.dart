@@ -11,6 +11,8 @@ import 'package:democracy/app/auth/bloc/registration/registration_cubit.dart';
 import 'package:democracy/app/poll/bloc/poll/poll_bloc.dart';
 import 'package:democracy/app/poll/bloc/vote/vote_cubit.dart';
 import 'package:democracy/app/social/bloc/post/post_bloc.dart';
+import 'package:democracy/app/social/bloc/post_detail/post_detail_cubit.dart';
+import 'package:democracy/app/social/bloc/post_list/post_list_cubit.dart';
 import 'package:democracy/app/survey/bloc/survey_process/page/page_bloc.dart';
 import 'package:democracy/app/survey/bloc/survey_process/answer/answer_bloc.dart';
 import 'package:democracy/app/survey/bloc/survey_process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
@@ -132,6 +134,8 @@ void main() async {
                       ..add(PostEvent.initialize()),
             lazy: false,
           ),
+          BlocProvider(create: (context) => PostListCubit()),
+          BlocProvider(create: (context) => PostDetailCubit()),
         ],
         child: const MyApp(),
       ),

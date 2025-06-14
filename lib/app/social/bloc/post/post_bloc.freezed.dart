@@ -143,33 +143,73 @@ as PostState,
 /// @nodoc
 
 
-class _BottomReached implements PostEvent {
-  const _BottomReached();
+class _SendMessage implements PostEvent {
+  const _SendMessage({required final  Map<String, dynamic> message}): _message = message;
   
 
+ final  Map<String, dynamic> _message;
+ Map<String, dynamic> get message {
+  if (_message is EqualUnmodifiableMapView) return _message;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_message);
+}
 
 
+/// Create a copy of PostEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SendMessageCopyWith<_SendMessage> get copyWith => __$SendMessageCopyWithImpl<_SendMessage>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BottomReached);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SendMessage&&const DeepCollectionEquality().equals(other._message, _message));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_message));
 
 @override
 String toString() {
-  return 'PostEvent.bottomReached()';
+  return 'PostEvent.sendMessage(message: $message)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class _$SendMessageCopyWith<$Res> implements $PostEventCopyWith<$Res> {
+  factory _$SendMessageCopyWith(_SendMessage value, $Res Function(_SendMessage) _then) = __$SendMessageCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, dynamic> message
+});
 
 
+
+
+}
+/// @nodoc
+class __$SendMessageCopyWithImpl<$Res>
+    implements _$SendMessageCopyWith<$Res> {
+  __$SendMessageCopyWithImpl(this._self, this._then);
+
+  final _SendMessage _self;
+  final $Res Function(_SendMessage) _then;
+
+/// Create a copy of PostEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(_SendMessage(
+message: null == message ? _self._message : message // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
+  ));
+}
+
+
+}
 
 // dart format on

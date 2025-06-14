@@ -1,4 +1,5 @@
 import 'package:democracy/app/social/bloc/post/post_bloc.dart';
+import 'package:democracy/app/social/bloc/post_list/post_list_cubit.dart';
 import 'package:democracy/app/social/models/post.dart';
 import 'package:democracy/app/social/view/post_detail.dart';
 import 'package:democracy/app/utils/view/bottom_loader.dart';
@@ -28,37 +29,43 @@ class _PostsState extends State<Posts> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PostBloc, PostState>(
-      builder: (context, state) {
-        switch (state.status) {
-          case PostStatus.success:
-            List<Post> posts = state.posts;
-            return (posts.isNotEmpty)
-                ? ListView.builder(
-                  controller: _scrollController,
-                  scrollDirection: Axis.vertical,
-                  padding: const EdgeInsets.only(bottom: 160),
-                  itemBuilder: (BuildContext context, int index) {
-                    return index >= posts.length
-                        ? (posts.length > 2)
-                            ? const BottomLoader()
-                            : SizedBox.shrink()
-                        : PostTile(key: ValueKey(index), post: posts[index]);
-                  },
-                  itemCount:
-                      state.next == null ? posts.length : posts.length + 1,
-                )
-                : const NoResults();
-          case PostStatus.failure:
-            return FailureRetryButton(
-              onPressed: () {
-                context.read<PostBloc>().add(const PostEvent.initialize());
-              },
-            );
-          default:
-            return const LoadingIndicator();
+    return BlocListener<PostBloc, PostState>(
+      listener: (context, state) {
+        if (state.message['action'] == 'list') {
+          context.read<PostListCubit>().loadPosts(message: state.message);
         }
       },
+      child: BlocBuilder<PostListCubit, PostListState>(
+        builder: (context, state) {
+          switch (state) {
+            case PostListLoaded():
+              List<Post> posts = state.posts;
+              return (posts.isNotEmpty)
+                  ? ListView.builder(
+                    controller: _scrollController,
+                    scrollDirection: Axis.vertical,
+                    padding: const EdgeInsets.only(bottom: 160),
+                    itemBuilder: (BuildContext context, int index) {
+                      return index >= posts.length
+                          ? (posts.length > 2)
+                              ? const BottomLoader()
+                              : SizedBox.shrink()
+                          : PostTile(key: ValueKey(index), post: posts[index]);
+                    },
+                    itemCount: posts.length,
+                  )
+                  : const NoResults();
+            case PostListFailure():
+              return FailureRetryButton(
+                onPressed: () {
+                  context.read<PostBloc>().add(const PostEvent.initialize());
+                },
+              );
+            default:
+              return const LoadingIndicator();
+          }
+        },
+      ),
     );
   }
 
@@ -69,7 +76,7 @@ class _PostsState extends State<Posts> {
   }
 
   void _onScroll() {
-    if (_isBottom) context.read<PostBloc>().add(PostEvent.bottomReached());
+    // if (_isBottom) context.read<PostBloc>().add(PostEvent.bottomReached());
   }
 
   bool get _isBottom {
@@ -85,10 +92,10 @@ class _PostsState extends State<Posts> {
 }
 
 class PostTile extends StatelessWidget {
-  const PostTile({super.key, required this.post, this.hidePostButtons = false});
+  const PostTile({super.key, required this.post, this.isRepost = false});
 
   final Post post;
-  final bool hidePostButtons;
+  final bool isRepost;
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +111,10 @@ class PostTile extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: Theme.of(context).disabledColor.withAlpha(10),
+              color:
+                  (isRepost)
+                      ? Colors.transparent
+                      : Theme.of(context).disabledColor.withAlpha(30),
             ),
           ),
         ),
@@ -126,7 +136,7 @@ class PostTile extends StatelessWidget {
                         '${post.author.firstName} ${post.author.lastName}',
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
-                      hidePostButtons
+                      isRepost
                           ? SizedBox.shrink()
                           : Row(
                             children: [
@@ -138,7 +148,16 @@ class PostTile extends StatelessWidget {
                           ),
                     ],
                   ),
-                  Text(post.body),
+                  Text(
+                    post.body,
+                    overflow: isRepost ? TextOverflow.ellipsis : null,
+                    maxLines:
+                        isRepost
+                            ? 4
+                            : (post.image1Url == null)
+                            ? 20
+                            : 10,
+                  ),
                   (post.repostOf == null)
                       ? SizedBox.shrink()
                       : Container(
@@ -147,34 +166,40 @@ class PostTile extends StatelessWidget {
                           border: Border.all(
                             color: Theme.of(
                               context,
-                            ).disabledColor.withAlpha(10),
+                            ).disabledColor.withAlpha(30),
                           ),
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
                         ),
-                        child: PostTile(
-                          post: post.repostOf!,
-                          hidePostButtons: true,
-                        ),
+                        child: PostTile(post: post.repostOf!, isRepost: true),
                       ),
-                  hidePostButtons
+                  isRepost
                       ? SizedBox.shrink()
                       : Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           PostTileButton(
                             iconData: Symbols.message_rounded,
-                            trailing: post.replies.toString(),
+                            trailing:
+                                (post.replies > 0)
+                                    ? post.replies.toString()
+                                    : null,
                           ),
                           PostTileButton(
                             iconData: Symbols.sync_rounded,
-                            trailing: post.reposts.toString(),
+                            trailing:
+                                (post.reposts > 0)
+                                    ? post.reposts.toString()
+                                    : null,
                           ),
                           PostTileButton(
                             iconData: Symbols.favorite_rounded,
-                            trailing: post.likes.toString(),
+                            trailing:
+                                (post.likes > 0) ? post.likes.toString() : null,
                           ),
                           PostTileButton(
                             iconData: Symbols.poll_rounded,
-                            trailing: post.views.toString(),
+                            trailing:
+                                (post.views > 0) ? post.views.toString() : null,
                           ),
                           PostTileButton(iconData: Symbols.share_rounded),
                         ],

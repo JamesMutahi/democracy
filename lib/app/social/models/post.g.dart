@@ -20,6 +20,7 @@ _Post _$PostFromJson(Map<String, dynamic> json) => _Post(
   video2Url: json['video2Url'] as String?,
   video3Url: json['video3Url'] as String?,
   likes: (json['likes'] as num).toInt(),
+  bookmarks: (json['bookmarks'] as num).toInt(),
   views: (json['views'] as num).toInt(),
   replies: (json['replies'] as num).toInt(),
   reposts: (json['reposts'] as num).toInt(),
@@ -27,8 +28,6 @@ _Post _$PostFromJson(Map<String, dynamic> json) => _Post(
   isDeleted: json['is_deleted'] as bool,
   isActive: json['is_active'] as bool,
   publishedAt: DateTime.parse(json['published_at'] as String),
-  createdAt: DateTime.parse(json['created_at'] as String),
-  updatedAt: DateTime.parse(json['updated_at'] as String),
   replyTo:
       json['reply_to'] == null
           ? null
@@ -53,6 +52,7 @@ Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
   'video2Url': instance.video2Url,
   'video3Url': instance.video3Url,
   'likes': instance.likes,
+  'bookmarks': instance.bookmarks,
   'views': instance.views,
   'replies': instance.replies,
   'reposts': instance.reposts,
@@ -60,8 +60,6 @@ Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
   'is_deleted': instance.isDeleted,
   'is_active': instance.isActive,
   'published_at': instance.publishedAt.toIso8601String(),
-  'created_at': instance.createdAt.toIso8601String(),
-  'updated_at': instance.updatedAt.toIso8601String(),
   'reply_to': instance.replyTo,
   'repost_of': instance.repostOf,
 };
