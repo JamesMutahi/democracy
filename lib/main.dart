@@ -130,9 +130,7 @@ void main() async {
           BlocProvider(
             create:
                 (context) =>
-                    PostBloc(postRepository: context.read<PostRepository>())
-                      ..add(PostEvent.initialize()),
-            lazy: false,
+                    PostBloc(postRepository: context.read<PostRepository>()),
           ),
           BlocProvider(create: (context) => PostListCubit()),
           BlocProvider(create: (context) => PostDetailCubit()),

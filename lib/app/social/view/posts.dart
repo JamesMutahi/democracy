@@ -201,7 +201,14 @@ class PostTile extends StatelessWidget {
                             trailing:
                                 (post.views > 0) ? post.views.toString() : null,
                           ),
-                          PostTileButton(iconData: Symbols.share_rounded),
+                          Row(
+                            children: [
+                              PostTileButton(
+                                iconData: Symbols.bookmark_rounded,
+                              ),
+                              PostTileButton(iconData: Symbols.share_rounded),
+                            ],
+                          ),
                         ],
                       ),
                 ],

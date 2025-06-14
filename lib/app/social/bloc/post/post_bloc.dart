@@ -53,7 +53,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     return super.close();
   }
 
-  late final WebSocketChannel _channel;
+  late WebSocketChannel _channel;
   late StreamSubscription _websocketSubscription;
   final PostRepository postRepository;
 }

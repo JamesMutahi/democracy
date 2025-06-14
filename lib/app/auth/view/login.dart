@@ -27,7 +27,6 @@ class _LoginPageState extends State<LoginPage> {
       listener: (context, state) {
         switch (state) {
           case LoggedIn():
-            Navigator.of(context).pop();
             final snackBar = SnackBar(
               behavior: SnackBarBehavior.floating,
               backgroundColor: Theme.of(context).cardColor,
@@ -37,7 +36,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
           case LoginFailure(:final error):
             final snackBar = SnackBar(
               behavior: SnackBarBehavior.floating,

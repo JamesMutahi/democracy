@@ -1,4 +1,5 @@
 import 'package:democracy/app/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/app/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/app/auth/view/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +15,12 @@ class ProfilePage extends StatelessWidget {
           builder: (context, state) {
             switch (state) {
               case Authenticated():
-                return ListTile(title: Text('Logout'));
+                return ListTile(
+                  onTap: () {
+                    context.read<LoginCubit>().logout();
+                  },
+                  title: Text('Logout'),
+                );
               case Unauthenticated():
                 return ListTile(
                   onTap: () {
