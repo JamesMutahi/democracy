@@ -1,6 +1,7 @@
 import 'package:democracy/app/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:democracy/app/app/bloc/connectivity/connectivity_bloc.dart';
 import 'package:democracy/app/app/bloc/theme/theme_cubit.dart';
+import 'package:democracy/app/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/app/view/app.dart';
 import 'package:democracy/app/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/app/auth/bloc/login/login_cubit.dart';
@@ -10,7 +11,6 @@ import 'package:democracy/app/auth/bloc/password_reset/password_reset_cubit.dart
 import 'package:democracy/app/auth/bloc/registration/registration_cubit.dart';
 import 'package:democracy/app/poll/bloc/poll/poll_bloc.dart';
 import 'package:democracy/app/poll/bloc/vote/vote_cubit.dart';
-import 'package:democracy/app/social/bloc/post/post_bloc.dart';
 import 'package:democracy/app/social/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/app/social/bloc/post_list/post_list_cubit.dart';
 import 'package:democracy/app/survey/bloc/survey_process/page/page_bloc.dart';
@@ -51,9 +51,6 @@ void main() async {
         RepositoryProvider.value(
           value: PollRepository(pollProvider: PollProvider(dio: dio)),
         ),
-        RepositoryProvider.value(
-          value: PostRepository(postProvider: PostProvider(dio: dio)),
-        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -72,6 +69,7 @@ void main() async {
                       ..add(const AuthEvent.authenticate()),
             lazy: false,
           ),
+          BlocProvider(create: (context) => WebsocketBloc()),
           BlocProvider(
             create:
                 (context) => RegistrationCubit(
@@ -126,11 +124,6 @@ void main() async {
                   pollRepository: context.read<PollRepository>(),
                   authRepository: context.read<AuthRepository>(),
                 ),
-          ),
-          BlocProvider(
-            create:
-                (context) =>
-                    PostBloc(postRepository: context.read<PostRepository>()),
           ),
           BlocProvider(create: (context) => PostListCubit()),
           BlocProvider(create: (context) => PostDetailCubit()),

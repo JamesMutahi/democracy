@@ -4,7 +4,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'post_bloc.dart';
+part of 'websocket_bloc.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -13,7 +13,7 @@ part of 'post_bloc.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$PostEvent {
+mixin _$WebsocketEvent {
 
 
 
@@ -21,7 +21,7 @@ mixin _$PostEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostEvent);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WebsocketEvent);
 }
 
 
@@ -30,23 +30,23 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'PostEvent()';
+  return 'WebsocketEvent()';
 }
 
 
 }
 
 /// @nodoc
-class $PostEventCopyWith<$Res>  {
-$PostEventCopyWith(PostEvent _, $Res Function(PostEvent) __);
+class $WebsocketEventCopyWith<$Res>  {
+$WebsocketEventCopyWith(WebsocketEvent _, $Res Function(WebsocketEvent) __);
 }
 
 
 /// @nodoc
 
 
-class _Initialize implements PostEvent {
-  const _Initialize();
+class _Connect implements WebsocketEvent {
+  const _Connect();
   
 
 
@@ -56,7 +56,7 @@ class _Initialize implements PostEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initialize);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Connect);
 }
 
 
@@ -65,7 +65,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'PostEvent.initialize()';
+  return 'WebsocketEvent.connect()';
 }
 
 
@@ -77,13 +77,13 @@ String toString() {
 /// @nodoc
 
 
-class _ChangeState implements PostEvent {
+class _ChangeState implements WebsocketEvent {
   const _ChangeState({required this.state});
   
 
- final  PostState state;
+ final  WebsocketState state;
 
-/// Create a copy of PostEvent
+/// Create a copy of WebsocketEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -102,18 +102,18 @@ int get hashCode => Object.hash(runtimeType,state);
 
 @override
 String toString() {
-  return 'PostEvent.changeState(state: $state)';
+  return 'WebsocketEvent.changeState(state: $state)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$ChangeStateCopyWith<$Res> implements $PostEventCopyWith<$Res> {
+abstract mixin class _$ChangeStateCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
   factory _$ChangeStateCopyWith(_ChangeState value, $Res Function(_ChangeState) _then) = __$ChangeStateCopyWithImpl;
 @useResult
 $Res call({
- PostState state
+ WebsocketState state
 });
 
 
@@ -128,12 +128,12 @@ class __$ChangeStateCopyWithImpl<$Res>
   final _ChangeState _self;
   final $Res Function(_ChangeState) _then;
 
-/// Create a copy of PostEvent
+/// Create a copy of WebsocketEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? state = null,}) {
   return _then(_ChangeState(
 state: null == state ? _self.state : state // ignore: cast_nullable_to_non_nullable
-as PostState,
+as WebsocketState,
   ));
 }
 
@@ -143,7 +143,7 @@ as PostState,
 /// @nodoc
 
 
-class _SendMessage implements PostEvent {
+class _SendMessage implements WebsocketEvent {
   const _SendMessage({required final  Map<String, dynamic> message}): _message = message;
   
 
@@ -155,7 +155,7 @@ class _SendMessage implements PostEvent {
 }
 
 
-/// Create a copy of PostEvent
+/// Create a copy of WebsocketEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -174,14 +174,14 @@ int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(
 
 @override
 String toString() {
-  return 'PostEvent.sendMessage(message: $message)';
+  return 'WebsocketEvent.sendMessage(message: $message)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$SendMessageCopyWith<$Res> implements $PostEventCopyWith<$Res> {
+abstract mixin class _$SendMessageCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
   factory _$SendMessageCopyWith(_SendMessage value, $Res Function(_SendMessage) _then) = __$SendMessageCopyWithImpl;
 @useResult
 $Res call({
@@ -200,7 +200,7 @@ class __$SendMessageCopyWithImpl<$Res>
   final _SendMessage _self;
   final $Res Function(_SendMessage) _then;
 
-/// Create a copy of PostEvent
+/// Create a copy of WebsocketEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
   return _then(_SendMessage(

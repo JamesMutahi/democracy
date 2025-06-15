@@ -1,4 +1,4 @@
-import 'package:democracy/app/social/bloc/post/post_bloc.dart';
+import 'package:democracy/app/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/social/bloc/post_list/post_list_cubit.dart';
 import 'package:democracy/app/social/models/post.dart';
 import 'package:democracy/app/social/view/post_detail.dart';
@@ -29,43 +29,43 @@ class _PostsState extends State<Posts> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<PostBloc, PostState>(
-      listener: (context, state) {
-        if (state.message['action'] == 'list') {
-          context.read<PostListCubit>().loadPosts(message: state.message);
+    return BlocBuilder<PostListCubit, PostListState>(
+      builder: (context, state) {
+        switch (state) {
+          case PostListLoaded():
+            List<Post> posts = state.posts;
+            return (posts.isNotEmpty)
+                ? ListView.builder(
+                  controller: _scrollController,
+                  scrollDirection: Axis.vertical,
+                  padding: const EdgeInsets.only(bottom: 160),
+                  itemBuilder: (BuildContext context, int index) {
+                    return index >= posts.length
+                        ? (posts.length > 2)
+                            ? const BottomLoader()
+                            : SizedBox.shrink()
+                        : PostTile(key: ValueKey(index), post: posts[index]);
+                  },
+                  itemCount: posts.length,
+                )
+                : const NoResults();
+          case PostListFailure():
+            return FailureRetryButton(
+              onPressed: () {
+                context.read<WebsocketBloc>().add(
+                  WebsocketEvent.sendMessage(
+                    message: {
+                      "action": actions[Act.list],
+                      "request_id": requests[Request.posts],
+                    },
+                  ),
+                );
+              },
+            );
+          default:
+            return const LoadingIndicator();
         }
       },
-      child: BlocBuilder<PostListCubit, PostListState>(
-        builder: (context, state) {
-          switch (state) {
-            case PostListLoaded():
-              List<Post> posts = state.posts;
-              return (posts.isNotEmpty)
-                  ? ListView.builder(
-                    controller: _scrollController,
-                    scrollDirection: Axis.vertical,
-                    padding: const EdgeInsets.only(bottom: 160),
-                    itemBuilder: (BuildContext context, int index) {
-                      return index >= posts.length
-                          ? (posts.length > 2)
-                              ? const BottomLoader()
-                              : SizedBox.shrink()
-                          : PostTile(key: ValueKey(index), post: posts[index]);
-                    },
-                    itemCount: posts.length,
-                  )
-                  : const NoResults();
-            case PostListFailure():
-              return FailureRetryButton(
-                onPressed: () {
-                  context.read<PostBloc>().add(const PostEvent.initialize());
-                },
-              );
-            default:
-              return const LoadingIndicator();
-          }
-        },
-      ),
     );
   }
 
@@ -172,6 +172,7 @@ class PostTile extends StatelessWidget {
                         ),
                         child: PostTile(post: post.repostOf!, isRepost: true),
                       ),
+                  SizedBox(height: 5),
                   isRepost
                       ? SizedBox.shrink()
                       : Row(

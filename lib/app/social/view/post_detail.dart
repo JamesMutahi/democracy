@@ -49,15 +49,6 @@ class PostDetail extends StatelessWidget {
                 SizedBox(height: 5),
                 Text(post.body),
                 SizedBox(height: 5),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Text(
-                    '${(post.views > 0) ? '${post.views} ${(post.views == 1) ? 'View' : 'Views'} • ' : ''}'
-                    '${timeFormat.format(post.publishedAt)} • '
-                    '${dateFormat.format(post.publishedAt)}',
-                    style: TextStyle(color: Theme.of(context).disabledColor),
-                  ),
-                ),
                 (post.repostOf == null)
                     ? SizedBox.shrink()
                     : Container(
@@ -70,6 +61,17 @@ class PostDetail extends StatelessWidget {
                       ),
                       child: PostTile(post: post.repostOf!, isRepost: true),
                     ),
+                SizedBox(height: 5),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Text(
+                    '${(post.views > 0) ? '${post.views} ${(post.views == 1) ? 'View' : 'Views'} • ' : ''}'
+                        '${timeFormat.format(post.publishedAt)} • '
+                        '${dateFormat.format(post.publishedAt)}',
+                    style: TextStyle(color: Theme.of(context).disabledColor),
+                  ),
+                ),
+                SizedBox(height: 5),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

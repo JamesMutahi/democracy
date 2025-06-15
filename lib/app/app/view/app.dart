@@ -1,12 +1,13 @@
 import 'package:democracy/app/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:democracy/app/app/bloc/connectivity/connectivity_bloc.dart';
 import 'package:democracy/app/app/bloc/theme/theme_cubit.dart';
+import 'package:democracy/app/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/app/view/dashboard.dart';
 import 'package:democracy/app/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/app/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/app/auth/bloc/registration/registration_cubit.dart';
 import 'package:democracy/app/auth/view/login.dart';
-import 'package:democracy/app/social/bloc/post/post_bloc.dart';
+import 'package:democracy/app/social/bloc/post_list/post_list_cubit.dart';
 import 'package:democracy/app/utils/view/app_theme.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/app/utils/view/splash_page.dart';
@@ -110,8 +111,7 @@ class _Listeners extends StatelessWidget {
         BlocListener<AuthBloc, AuthState>(
           listener: (context, state) {
             if (state is Authenticated) {
-              context.read<PostBloc>().add(PostEvent.initialize());
-              context.read<BottomNavBarCubit>().changePage(0);
+              context.read<WebsocketBloc>().add(WebsocketEvent.connect());
             }
           },
         ),
@@ -131,6 +131,7 @@ class _Listeners extends StatelessWidget {
               case LoggedIn():
                 context.read<AuthBloc>().add(const AuthEvent.authenticate());
               case LoggedOut():
+                context.read<BottomNavBarCubit>().changePage(0);
                 context.read<AuthBloc>().add(const AuthEvent.authenticate());
                 final snackBar = SnackBar(
                   behavior: SnackBarBehavior.floating,
@@ -141,6 +142,17 @@ class _Listeners extends StatelessWidget {
                   ),
                 );
                 showSnackBar(snackBar: snackBar);
+            }
+          },
+        ),
+        BlocListener<WebsocketBloc, WebsocketState>(
+          listener: (context, state) {
+            if (state.message['stream'] == streams[Stream.posts]) {
+              if (state.message['payload']['action'] == actions[Act.list]) {
+                context.read<PostListCubit>().loadPosts(
+                  payload: state.message['payload'],
+                );
+              }
             }
           },
         ),
