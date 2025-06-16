@@ -23,7 +23,7 @@ final class WebsocketState extends Equatable {
 
   @override
   String toString() {
-    return '''WebsocketState { status: $status, stream: ${message['stream']} }''';
+    return '''WebsocketState { status: $status, message: $message }''';
   }
 
   @override

@@ -81,7 +81,7 @@ class PostDetail extends StatelessWidget {
                           (post.replies > 0) ? post.replies.toString() : null,
                     ),
                     PostTileButton(
-                      iconData: Symbols.sync_rounded,
+                      iconData: Symbols.loop_rounded,
                       trailing:
                           (post.reposts > 0) ? post.reposts.toString() : null,
                     ),

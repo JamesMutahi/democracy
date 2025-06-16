@@ -11,16 +11,19 @@ class HomePage extends StatelessWidget {
       children: [
         Posts(),
         Align(
-          alignment: Alignment.bottomCenter,
-          child: FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => PostCreate()),
-              );
-            },
-            mini: true,
-            child: Icon(Icons.add),
+          alignment: Alignment.bottomRight,
+          child: Container(
+            margin: EdgeInsets.only(right: 10, bottom: 10),
+            child: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PostCreate()),
+                );
+              },
+              mini: true,
+              child: Icon(Icons.add),
+            ),
           ),
         ),
       ],

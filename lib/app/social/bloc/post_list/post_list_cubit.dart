@@ -15,7 +15,7 @@ class PostListCubit extends Cubit<PostListState> {
       );
       emit(PostListLoaded(posts: posts));
     } else {
-      emit(PostListFailure(error: payload['errors']));
+      emit(PostListFailure(error: payload['errors'].toString()));
     }
   }
 }

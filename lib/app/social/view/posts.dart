@@ -52,14 +52,7 @@ class _PostsState extends State<Posts> {
           case PostListFailure():
             return FailureRetryButton(
               onPressed: () {
-                context.read<WebsocketBloc>().add(
-                  WebsocketEvent.sendMessage(
-                    message: {
-                      "action": actions[Act.list],
-                      "request_id": requests[Request.posts],
-                    },
-                  ),
-                );
+                context.read<WebsocketBloc>().add(WebsocketEvent.getPosts());
               },
             );
           default:
@@ -186,7 +179,7 @@ class PostTile extends StatelessWidget {
                                     : null,
                           ),
                           PostTileButton(
-                            iconData: Symbols.sync_rounded,
+                            iconData: Symbols.loop_rounded,
                             trailing:
                                 (post.reposts > 0)
                                     ? post.reposts.toString()

@@ -23,7 +23,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           {'name': 'Home', 'iconData': Symbols.home_rounded},
           {'name': 'Explore', 'iconData': Symbols.search_check_2_rounded},
           {'name': 'Poll', 'iconData': Symbols.how_to_vote},
-          {'name': 'Messages', 'iconData': Symbols.message_rounded},
+          {'name': 'Messages', 'iconData': Symbols.email_rounded},
           {'name': 'Profile', 'iconData': Symbols.person_edit_rounded},
         ];
         return BottomAppBar(
@@ -73,6 +73,7 @@ class NavBarItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       customBorder: const CircleBorder(),
+      splashColor: Theme.of(context).colorScheme.secondaryFixedDim,
       onTap: onPressed,
       child: SizedBox(
         width: 80,

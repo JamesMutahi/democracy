@@ -69,7 +69,12 @@ void main() async {
                       ..add(const AuthEvent.authenticate()),
             lazy: false,
           ),
-          BlocProvider(create: (context) => WebsocketBloc()),
+          BlocProvider(
+            create:
+                (context) => WebsocketBloc(
+                  authRepository: context.read<AuthRepository>(),
+                ),
+          ),
           BlocProvider(
             create:
                 (context) => RegistrationCubit(

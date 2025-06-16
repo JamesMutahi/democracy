@@ -143,49 +143,75 @@ as WebsocketState,
 /// @nodoc
 
 
-class _SendMessage implements WebsocketEvent {
-  const _SendMessage({required final  Map<String, dynamic> message}): _message = message;
+class _GetPosts implements WebsocketEvent {
+  const _GetPosts();
   
 
- final  Map<String, dynamic> _message;
- Map<String, dynamic> get message {
-  if (_message is EqualUnmodifiableMapView) return _message;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_message);
-}
 
 
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$SendMessageCopyWith<_SendMessage> get copyWith => __$SendMessageCopyWithImpl<_SendMessage>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SendMessage&&const DeepCollectionEquality().equals(other._message, _message));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetPosts);
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_message));
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'WebsocketEvent.sendMessage(message: $message)';
+  return 'WebsocketEvent.getPosts()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _CreatePost implements WebsocketEvent {
+  const _CreatePost({required this.body});
+  
+
+ final  String body;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CreatePostCopyWith<_CreatePost> get copyWith => __$CreatePostCopyWithImpl<_CreatePost>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreatePost&&(identical(other.body, body) || other.body == body));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,body);
+
+@override
+String toString() {
+  return 'WebsocketEvent.createPost(body: $body)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$SendMessageCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
-  factory _$SendMessageCopyWith(_SendMessage value, $Res Function(_SendMessage) _then) = __$SendMessageCopyWithImpl;
+abstract mixin class _$CreatePostCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
+  factory _$CreatePostCopyWith(_CreatePost value, $Res Function(_CreatePost) _then) = __$CreatePostCopyWithImpl;
 @useResult
 $Res call({
- Map<String, dynamic> message
+ String body
 });
 
 
@@ -193,19 +219,19 @@ $Res call({
 
 }
 /// @nodoc
-class __$SendMessageCopyWithImpl<$Res>
-    implements _$SendMessageCopyWith<$Res> {
-  __$SendMessageCopyWithImpl(this._self, this._then);
+class __$CreatePostCopyWithImpl<$Res>
+    implements _$CreatePostCopyWith<$Res> {
+  __$CreatePostCopyWithImpl(this._self, this._then);
 
-  final _SendMessage _self;
-  final $Res Function(_SendMessage) _then;
+  final _CreatePost _self;
+  final $Res Function(_CreatePost) _then;
 
 /// Create a copy of WebsocketEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
-  return _then(_SendMessage(
-message: null == message ? _self._message : message // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>,
+@pragma('vm:prefer-inline') $Res call({Object? body = null,}) {
+  return _then(_CreatePost(
+body: null == body ? _self.body : body // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

@@ -5,9 +5,10 @@ class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.connect() = _Connect;
   const factory WebsocketEvent.changeState({required WebsocketState state}) =
       _ChangeState;
-  const factory WebsocketEvent.sendMessage({
-    required Map<String, dynamic> message,
-  }) = _SendMessage;
+  const factory WebsocketEvent.getPosts() = _GetPosts;
+  const factory WebsocketEvent.createPost({
+    required String body,
+  }) = _CreatePost;
 }
 
 /*

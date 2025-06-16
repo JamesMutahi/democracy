@@ -4,6 +4,7 @@ import 'package:democracy/app/utils/view/bottom_nav_bar.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -57,34 +58,58 @@ class _DashboardState extends State<Dashboard> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        child: PopScope(
-          canPop: canPopNow,
-          onPopInvokedWithResult: (didPop, __) {
-            onPopInvoked(didPop);
-          },
-          child: BlocListener<BottomNavBarCubit, BottomNavBarState>(
-            listener: (context, state) {
-              switch (state) {
-                case BottomNavBarPageChanged(:final page):
-                  pageController.animateToPage(
-                    page,
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.decelerate,
-                  );
-              }
-            },
-            child: PageView(
-              physics: const NeverScrollableScrollPhysics(),
-              controller: pageController,
-              children: [
-                HomePage(),
-                ExplorePage(),
-                PollPage(),
-                MessagePage(),
-                ProfilePage(),
-              ],
+      appBar: AppBar(
+        leading: Icon(Icons.person),
+        actions: [
+          Container(
+            margin: EdgeInsets.only(right: 15),
+            child: InkWell(
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+              splashColor: Theme.of(context).colorScheme.secondaryFixedDim,
+              onTap: () {},
+              child: Container(
+                padding: EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  // color: Theme.of(context).canvasColor,
+                  border: Border.all(color: Theme.of(context).disabledColor),
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                child: Icon(
+                  Symbols.notifications_rounded,
+                  color: Theme.of(context).disabledColor,
+                  size: 20,
+                ),
+              ),
             ),
+          ),
+        ],
+      ),
+      body: PopScope(
+        canPop: canPopNow,
+        onPopInvokedWithResult: (didPop, __) {
+          onPopInvoked(didPop);
+        },
+        child: BlocListener<BottomNavBarCubit, BottomNavBarState>(
+          listener: (context, state) {
+            switch (state) {
+              case BottomNavBarPageChanged(:final page):
+                pageController.animateToPage(
+                  page,
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.decelerate,
+                );
+            }
+          },
+          child: PageView(
+            physics: const NeverScrollableScrollPhysics(),
+            controller: pageController,
+            children: [
+              HomePage(),
+              ExplorePage(),
+              PollPage(),
+              MessagePage(),
+              ProfilePage(),
+            ],
           ),
         ),
       ),
