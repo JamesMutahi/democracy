@@ -7,6 +7,7 @@ import 'package:democracy/app/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/app/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/app/auth/bloc/registration/registration_cubit.dart';
 import 'package:democracy/app/auth/view/login.dart';
+import 'package:democracy/app/social/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/app/social/bloc/post_list/post_list_cubit.dart';
 import 'package:democracy/app/utils/view/app_theme.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
@@ -147,11 +148,78 @@ class _Listeners extends StatelessWidget {
         ),
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
-            if (state.message['stream'] == streams[Stream.posts]) {
-              if (state.message['payload']['action'] == actions[Act.list]) {
-                context.read<PostListCubit>().loadPosts(
-                  payload: state.message['payload'],
+            if (state.message['stream'] == postsStream) {
+              switch (state.message['payload']['action']) {
+                case 'list':
+                  context.read<PostListCubit>().loadPosts(
+                    payload: state.message['payload'],
+                  );
+                case 'create':
+                  context.read<PostDetailCubit>().created(
+                    payload: state.message['payload'],
+                  );
+                case 'update':
+                  context.read<PostDetailCubit>().updated(
+                    payload: state.message['payload'],
+                  );
+                case 'like':
+                  context.read<PostDetailCubit>().liked(
+                    payload: state.message['payload'],
+                  );
+                case 'bookmark':
+                  context.read<PostDetailCubit>().bookmarked(
+                    payload: state.message['payload'],
+                  );
+                case 'delete':
+                  context.read<PostDetailCubit>().deleted(
+                    payload: state.message['payload'],
+                  );
+                case 'report':
+                  context.read<PostDetailCubit>().reported(
+                    payload: state.message['payload'],
+                  );
+              }
+            }
+            if (state.status == WebsocketStatus.failure) {
+              String error = 'Something went wrong';
+              context.read<PostDetailCubit>().websocketFailure(error: error);
+              context.read<PostListCubit>().websocketFailure(error: error);
+              final snackBar = SnackBar(
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Theme.of(context).cardColor,
+                content: SnackBarContent(
+                  message: error,
+                  status: SnackBarStatus.error,
+                ),
+              );
+              showSnackBar(snackBar: snackBar);
+            }
+          },
+        ),
+        BlocListener<PostDetailCubit, PostDetailState>(
+          listener: (context, state) {
+            if (state is PostUpdated) {
+              final snackBar = SnackBar(
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Theme.of(context).cardColor,
+                content: SnackBarContent(
+                  message: 'Post updated',
+                  status: SnackBarStatus.success,
+                ),
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+            if (state is PostBookmarked) {
+              if (state.post.bookmarked) {
+                final snackBar = SnackBar(
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: Theme.of(context).cardColor,
+                  content: SnackBarContent(
+                    message: 'Post bookmarked',
+                    status: SnackBarStatus.success,
+                  ),
                 );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
               }
             }
           },

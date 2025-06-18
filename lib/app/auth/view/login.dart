@@ -176,7 +176,6 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Colors.green.shade900,
                               ),
                             );
-
                           default:
                             return FilledButton(
                               onPressed: () {

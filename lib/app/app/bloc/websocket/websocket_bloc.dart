@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/app/social/models/post.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -13,6 +14,8 @@ part 'websocket_event.dart';
 part 'websocket_state.dart';
 part 'websocket_bloc.freezed.dart';
 
+var postsStream = 'posts';
+
 class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   WebsocketBloc({required this.authRepository})
     : super(const WebsocketState()) {
@@ -20,11 +23,26 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       _onConnect(emit);
     });
     on<_ChangeState>((event, emit) => emit(event.state));
-    on<_GetPosts>((event, emit) {
-      _onGetPosts(emit, event);
+    on<_GetPosts>((event, emit) async {
+      await _onGetPosts(emit, event);
     });
     on<_CreatePost>((event, emit) {
       _onCreatePost(emit, event);
+    });
+    on<_UpdatePost>((event, emit) {
+      _onUpdatePost(emit, event);
+    });
+    on<_LikePost>((event, emit) {
+      _onLikePost(emit, event);
+    });
+    on<_BookmarkPost>((event, emit) {
+      _onBookmarkPost(emit, event);
+    });
+    on<_DeletePost>((event, emit) {
+      _onDeletePost(emit, event);
+    });
+    on<_ReportPost>((event, emit) {
+      _onReportPost(emit, event);
     });
   }
 
@@ -36,6 +54,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       _channel = IOWebSocketChannel.connect(
         wsUrl,
         headers: {'Authorization': 'Token $token'},
+        connectTimeout: Duration(seconds: 5),
       );
       await _channel.ready;
       _websocketSubscription = _channel.stream.listen((message) async {
@@ -48,40 +67,119 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
           ),
         );
       });
-      _channel.sink.add(
-        jsonEncode({
-          'stream': streams[Stream.posts],
-          'payload': {
-            'action': actions[Act.list],
-            'request_id': requests[Request.posts],
-          },
-        }),
-      );
+      add(_GetPosts());
     } catch (e) {
       add(_ChangeState(state: state.copyWith(status: WebsocketStatus.failure)));
     }
   }
 
   Future _onGetPosts(Emitter<WebsocketState> emit, _GetPosts event) async {
+    if (state.status == WebsocketStatus.failure) {
+      add(_Connect());
+    } else {
+      emit(state.copyWith(status: WebsocketStatus.loading));
+      Map<String, dynamic> message = {
+        'stream': postsStream,
+        'payload': {"action": 'list', "request_id": 1},
+      };
+      _channel.sink.add(jsonEncode(message));
+    }
+  }
+
+  Future _onCreatePost(Emitter<WebsocketState> emit, _CreatePost event) async {
+    if (state.status == WebsocketStatus.failure) {
+      await _onConnect(emit);
+    }
     emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
-      'stream': streams[Stream.posts],
+      'stream': postsStream,
       'payload': {
-        "action": actions[Act.list],
-        "request_id": requests[Request.posts],
+        'action': 'create',
+        'request_id': 2,
+        'data': {'body': event.body},
       },
     };
     _channel.sink.add(jsonEncode(message));
   }
 
-  Future _onCreatePost(Emitter<WebsocketState> emit, _CreatePost event) async {
+  Future _onUpdatePost(Emitter<WebsocketState> emit, _UpdatePost event) async {
+    if (state.status == WebsocketStatus.failure) {
+      await _onConnect(emit);
+    }
     emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
-      'stream': streams[Stream.posts],
+      'stream': postsStream,
       'payload': {
-        'action': actions[Act.create],
-        'request_id': requests[Request.posts],
-        'data': {'body': event.body},
+        'action': 'update',
+        'request_id': 3,
+        'data': {'id': event.id, 'body': event.body},
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onLikePost(Emitter<WebsocketState> emit, _LikePost event) async {
+    if (state.status == WebsocketStatus.failure) {
+      await _onConnect(emit);
+    }
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    Map<String, dynamic> message = {
+      'stream': postsStream,
+      'payload': {
+        'action': 'like',
+        'request_id': 4,
+        'data': {'id': event.post.id},
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onBookmarkPost(
+    Emitter<WebsocketState> emit,
+    _BookmarkPost event,
+  ) async {
+    if (state.status == WebsocketStatus.failure) {
+      await _onConnect(emit);
+    }
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    Map<String, dynamic> message = {
+      'stream': postsStream,
+      'payload': {
+        'action': 'bookmark',
+        'request_id': 5,
+        'data': {'id': event.post.id},
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onDeletePost(Emitter<WebsocketState> emit, _DeletePost event) async {
+    if (state.status == WebsocketStatus.failure) {
+      await _onConnect(emit);
+    }
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    Map<String, dynamic> message = {
+      'stream': postsStream,
+      'payload': {
+        'action': 'delete',
+        'request_id': 6,
+        'data': {'id': event.post.id},
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onReportPost(Emitter<WebsocketState> emit, _ReportPost event) async {
+    if (state.status == WebsocketStatus.failure) {
+      await _onConnect(emit);
+    }
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    Map<String, dynamic> message = {
+      'stream': postsStream,
+      'payload': {
+        'action': 'report',
+        'request_id': 7,
+        'data': {'id': event.post.id},
       },
     };
     _channel.sink.add(jsonEncode(message));

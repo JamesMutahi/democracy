@@ -6,27 +6,15 @@ class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.changeState({required WebsocketState state}) =
       _ChangeState;
   const factory WebsocketEvent.getPosts() = _GetPosts;
-  const factory WebsocketEvent.createPost({
+  const factory WebsocketEvent.createPost({required String body}) = _CreatePost;
+  const factory WebsocketEvent.updatePost({
+    required int id,
     required String body,
-  }) = _CreatePost;
+  }) = _UpdatePost;
+  const factory WebsocketEvent.likePost({required Post post}) =
+      _LikePost;
+  const factory WebsocketEvent.bookmarkPost({required Post post}) =
+      _BookmarkPost;
+  const factory WebsocketEvent.deletePost({required Post post}) = _DeletePost;
+  const factory WebsocketEvent.reportPost({required Post post}) = _ReportPost;
 }
-
-/*
-{
-  "stream": "posts",
-  "payload": {"errors": [], data: [], action: 'list', response_status: 200, request_id: 42}
-}
-*/
-
-
-enum Stream { posts, polls }
-
-Map<Stream, String> streams = {Stream.posts: 'posts', Stream.polls: 'polls'};
-
-enum Act { list, create }
-
-Map<Act, String> actions = {Act.list: 'list', Act.create: 'create'};
-
-enum Request { posts, polls }
-
-Map<Request, int> requests = {Request.posts: 1, Request.polls: 2};

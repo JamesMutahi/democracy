@@ -1,88 +1,9 @@
 import 'package:democracy/app/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/social/bloc/post_list/post_list_cubit.dart';
 import 'package:democracy/app/social/models/post.dart';
 import 'package:democracy/app/social/view/post_detail.dart';
-import 'package:democracy/app/utils/view/bottom_loader.dart';
-import 'package:democracy/app/utils/view/failure_retry_button.dart';
-import 'package:democracy/app/utils/view/loading_indicator.dart';
-import 'package:democracy/app/utils/view/no_results.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
-
-class Posts extends StatefulWidget {
-  const Posts({super.key});
-
-  @override
-  State<Posts> createState() => _PostsState();
-}
-
-class _PostsState extends State<Posts> {
-  final _scrollController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<PostListCubit, PostListState>(
-      builder: (context, state) {
-        switch (state) {
-          case PostListLoaded():
-            List<Post> posts = state.posts;
-            return (posts.isNotEmpty)
-                ? ListView.builder(
-                  controller: _scrollController,
-                  scrollDirection: Axis.vertical,
-                  padding: const EdgeInsets.only(bottom: 160),
-                  itemBuilder: (BuildContext context, int index) {
-                    return index >= posts.length
-                        ? (posts.length > 2)
-                            ? const BottomLoader()
-                            : SizedBox.shrink()
-                        : PostTile(key: ValueKey(index), post: posts[index]);
-                  },
-                  itemCount: posts.length,
-                )
-                : const NoResults();
-          case PostListFailure():
-            return FailureRetryButton(
-              onPressed: () {
-                context.read<WebsocketBloc>().add(WebsocketEvent.getPosts());
-              },
-            );
-          default:
-            return const LoadingIndicator();
-        }
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _onScroll() {
-    // if (_isBottom) context.read<PostBloc>().add(PostEvent.bottomReached());
-  }
-
-  bool get _isBottom {
-    if (!_scrollController.hasClients) return false;
-    if (_scrollController.position.userScrollDirection ==
-        ScrollDirection.forward) {
-      return false;
-    }
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.offset;
-    return currentScroll >= (maxScroll * 0.9);
-  }
-}
 
 class PostTile extends StatelessWidget {
   const PostTile({super.key, required this.post, this.isRepost = false});
@@ -135,7 +56,12 @@ class PostTile extends StatelessWidget {
                             children: [
                               TimeDifferenceInfo(publishedAt: post.publishedAt),
                               PostTileButton(
-                                iconData: Symbols.more_vert_rounded,
+                                onTap: () {},
+                                icon: Icon(
+                                  Symbols.more_vert_rounded,
+                                  size: 20,
+                                  color: Theme.of(context).disabledColor,
+                                ),
                               ),
                             ],
                           ),
@@ -171,36 +97,14 @@ class PostTile extends StatelessWidget {
                       : Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          PostTileButton(
-                            iconData: Symbols.message_rounded,
-                            trailing:
-                                (post.replies > 0)
-                                    ? post.replies.toString()
-                                    : null,
-                          ),
-                          PostTileButton(
-                            iconData: Symbols.loop_rounded,
-                            trailing:
-                                (post.reposts > 0)
-                                    ? post.reposts.toString()
-                                    : null,
-                          ),
-                          PostTileButton(
-                            iconData: Symbols.favorite_rounded,
-                            trailing:
-                                (post.likes > 0) ? post.likes.toString() : null,
-                          ),
-                          PostTileButton(
-                            iconData: Symbols.poll_rounded,
-                            trailing:
-                                (post.views > 0) ? post.views.toString() : null,
-                          ),
+                          ReplyButton(post: post),
+                          RepostButton(post: post),
+                          LikeButton(post: post),
+                          ViewsButton(post: post),
                           Row(
                             children: [
-                              PostTileButton(
-                                iconData: Symbols.bookmark_rounded,
-                              ),
-                              PostTileButton(iconData: Symbols.share_rounded),
+                              BookmarkButton(post: post, showTrailing: false),
+                              ShareButton(post: post),
                             ],
                           ),
                         ],
@@ -216,28 +120,27 @@ class PostTile extends StatelessWidget {
 }
 
 class PostTileButton extends StatelessWidget {
-  const PostTileButton({super.key, required this.iconData, this.trailing});
+  const PostTileButton({
+    super.key,
+    required this.icon,
+    this.trailing,
+    required this.onTap,
+  });
 
-  final IconData iconData;
+  final Icon icon;
   final String? trailing;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         InkWell(
-          onTap: () {},
+          onTap: onTap,
           customBorder: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(7.5),
-            child: Icon(
-              iconData,
-              size: 20,
-              color: Theme.of(context).disabledColor,
-            ),
-          ),
+          child: Padding(padding: const EdgeInsets.all(7.5), child: icon),
         ),
         (trailing == null)
             ? SizedBox.shrink()
@@ -246,6 +149,143 @@ class PostTileButton extends StatelessWidget {
               style: TextStyle(color: Theme.of(context).disabledColor),
             ),
       ],
+    );
+  }
+}
+
+class LikeButton extends StatelessWidget {
+  const LikeButton({super.key, required this.post});
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context) {
+    return PostTileButton(
+      onTap: () {
+        context.read<WebsocketBloc>().add(WebsocketEvent.likePost(post: post));
+      },
+      icon: Icon(
+        Symbols.favorite_rounded,
+        size: 20,
+        color:
+            post.liked
+                ? Theme.of(context).colorScheme.error
+                : Theme.of(context).disabledColor,
+        fill: post.liked ? 1 : 0,
+      ),
+      trailing: (post.likes > 0) ? post.likes.toString() : null,
+    );
+  }
+}
+
+class RepostButton extends StatelessWidget {
+  const RepostButton({super.key, required this.post});
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context) {
+    return PostTileButton(
+      onTap: () {},
+      icon: Icon(
+        Symbols.loop_rounded,
+        size: 20,
+        color: Theme.of(context).disabledColor,
+      ),
+      trailing: (post.reposts > 0) ? post.reposts.toString() : null,
+    );
+  }
+}
+
+class ReplyButton extends StatelessWidget {
+  const ReplyButton({super.key, required this.post});
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context) {
+    return PostTileButton(
+      onTap: () {},
+      icon: Icon(
+        Symbols.message_rounded,
+        size: 20,
+        color: Theme.of(context).disabledColor,
+      ),
+      trailing: (post.replies > 0) ? post.replies.toString() : null,
+    );
+  }
+}
+
+class ViewsButton extends StatelessWidget {
+  const ViewsButton({super.key, required this.post});
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context) {
+    return PostTileButton(
+      onTap: () {},
+      icon: Icon(
+        Symbols.poll_rounded,
+        size: 20,
+        color: Theme.of(context).disabledColor,
+      ),
+      trailing: (post.views > 0) ? post.views.toString() : null,
+    );
+  }
+}
+
+class BookmarkButton extends StatelessWidget {
+  const BookmarkButton({
+    super.key,
+    required this.post,
+    this.showTrailing = true,
+  });
+
+  final Post post;
+  final bool showTrailing;
+
+  @override
+  Widget build(BuildContext context) {
+    return PostTileButton(
+      onTap: () {
+        context.read<WebsocketBloc>().add(
+          WebsocketEvent.bookmarkPost(post: post),
+        );
+      },
+      icon: Icon(
+        Symbols.bookmark_rounded,
+        size: 20,
+        color:
+            post.bookmarked
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).disabledColor,
+        fill: post.bookmarked ? 1 : 0,
+      ),
+      trailing:
+          showTrailing
+              ? (post.bookmarks > 0)
+                  ? post.bookmarks.toString()
+                  : null
+              : null,
+    );
+  }
+}
+
+class ShareButton extends StatelessWidget {
+  const ShareButton({super.key, required this.post});
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context) {
+    return PostTileButton(
+      onTap: () {},
+      icon: Icon(
+        Symbols.share_rounded,
+        size: 20,
+        color: Theme.of(context).disabledColor,
+      ),
     );
   }
 }

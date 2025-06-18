@@ -8,6 +8,16 @@ part 'post_list_cubit.freezed.dart';
 class PostListCubit extends Cubit<PostListState> {
   PostListCubit() : super(const PostListState.initial());
 
+  void websocketFailure({required String error}) {
+    if (state is PostListInitial || state is PostListLoading) {
+      emit(PostListFailure(error: error));
+    }
+  }
+
+  void retryButtonPressed() {
+    emit(PostListInitial());
+  }
+
   void loadPosts({required Map<String, dynamic> payload}) {
     if (payload['response_status'] == 200) {
       final List<Post> posts = List.from(

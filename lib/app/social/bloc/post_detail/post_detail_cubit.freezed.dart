@@ -77,8 +77,8 @@ String toString() {
 /// @nodoc
 
 
-class _Loading implements PostDetailState {
-  const _Loading();
+class PostDetailLoading implements PostDetailState {
+  const PostDetailLoading();
   
 
 
@@ -88,7 +88,7 @@ class _Loading implements PostDetailState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostDetailLoading);
 }
 
 
@@ -109,8 +109,8 @@ String toString() {
 /// @nodoc
 
 
-class _Created implements PostDetailState {
-  const _Created({required this.post});
+class PostCreated implements PostDetailState {
+  const PostCreated({required this.post});
   
 
  final  Post post;
@@ -119,13 +119,13 @@ class _Created implements PostDetailState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$CreatedCopyWith<_Created> get copyWith => __$CreatedCopyWithImpl<_Created>(this, _$identity);
+$PostCreatedCopyWith<PostCreated> get copyWith => _$PostCreatedCopyWithImpl<PostCreated>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Created&&(identical(other.post, post) || other.post == post));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostCreated&&(identical(other.post, post) || other.post == post));
 }
 
 
@@ -141,8 +141,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class _$CreatedCopyWith<$Res> implements $PostDetailStateCopyWith<$Res> {
-  factory _$CreatedCopyWith(_Created value, $Res Function(_Created) _then) = __$CreatedCopyWithImpl;
+abstract mixin class $PostCreatedCopyWith<$Res> implements $PostDetailStateCopyWith<$Res> {
+  factory $PostCreatedCopyWith(PostCreated value, $Res Function(PostCreated) _then) = _$PostCreatedCopyWithImpl;
 @useResult
 $Res call({
  Post post
@@ -153,17 +153,17 @@ $PostCopyWith<$Res> get post;
 
 }
 /// @nodoc
-class __$CreatedCopyWithImpl<$Res>
-    implements _$CreatedCopyWith<$Res> {
-  __$CreatedCopyWithImpl(this._self, this._then);
+class _$PostCreatedCopyWithImpl<$Res>
+    implements $PostCreatedCopyWith<$Res> {
+  _$PostCreatedCopyWithImpl(this._self, this._then);
 
-  final _Created _self;
-  final $Res Function(_Created) _then;
+  final PostCreated _self;
+  final $Res Function(PostCreated) _then;
 
 /// Create a copy of PostDetailState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? post = null,}) {
-  return _then(_Created(
+  return _then(PostCreated(
 post: null == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
 as Post,
   ));
@@ -184,8 +184,8 @@ $PostCopyWith<$Res> get post {
 /// @nodoc
 
 
-class _Edited implements PostDetailState {
-  const _Edited({required this.post});
+class PostUpdated implements PostDetailState {
+  const PostUpdated({required this.post});
   
 
  final  Post post;
@@ -194,13 +194,13 @@ class _Edited implements PostDetailState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$EditedCopyWith<_Edited> get copyWith => __$EditedCopyWithImpl<_Edited>(this, _$identity);
+$PostUpdatedCopyWith<PostUpdated> get copyWith => _$PostUpdatedCopyWithImpl<PostUpdated>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Edited&&(identical(other.post, post) || other.post == post));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostUpdated&&(identical(other.post, post) || other.post == post));
 }
 
 
@@ -209,15 +209,15 @@ int get hashCode => Object.hash(runtimeType,post);
 
 @override
 String toString() {
-  return 'PostDetailState.edited(post: $post)';
+  return 'PostDetailState.updated(post: $post)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$EditedCopyWith<$Res> implements $PostDetailStateCopyWith<$Res> {
-  factory _$EditedCopyWith(_Edited value, $Res Function(_Edited) _then) = __$EditedCopyWithImpl;
+abstract mixin class $PostUpdatedCopyWith<$Res> implements $PostDetailStateCopyWith<$Res> {
+  factory $PostUpdatedCopyWith(PostUpdated value, $Res Function(PostUpdated) _then) = _$PostUpdatedCopyWithImpl;
 @useResult
 $Res call({
  Post post
@@ -228,17 +228,17 @@ $PostCopyWith<$Res> get post;
 
 }
 /// @nodoc
-class __$EditedCopyWithImpl<$Res>
-    implements _$EditedCopyWith<$Res> {
-  __$EditedCopyWithImpl(this._self, this._then);
+class _$PostUpdatedCopyWithImpl<$Res>
+    implements $PostUpdatedCopyWith<$Res> {
+  _$PostUpdatedCopyWithImpl(this._self, this._then);
 
-  final _Edited _self;
-  final $Res Function(_Edited) _then;
+  final PostUpdated _self;
+  final $Res Function(PostUpdated) _then;
 
 /// Create a copy of PostDetailState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? post = null,}) {
-  return _then(_Edited(
+  return _then(PostUpdated(
 post: null == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
 as Post,
   ));
@@ -259,8 +259,158 @@ $PostCopyWith<$Res> get post {
 /// @nodoc
 
 
-class _Deleted implements PostDetailState {
-  const _Deleted();
+class PostLiked implements PostDetailState {
+  const PostLiked({required this.post});
+  
+
+ final  Post post;
+
+/// Create a copy of PostDetailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PostLikedCopyWith<PostLiked> get copyWith => _$PostLikedCopyWithImpl<PostLiked>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostLiked&&(identical(other.post, post) || other.post == post));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,post);
+
+@override
+String toString() {
+  return 'PostDetailState.liked(post: $post)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $PostLikedCopyWith<$Res> implements $PostDetailStateCopyWith<$Res> {
+  factory $PostLikedCopyWith(PostLiked value, $Res Function(PostLiked) _then) = _$PostLikedCopyWithImpl;
+@useResult
+$Res call({
+ Post post
+});
+
+
+$PostCopyWith<$Res> get post;
+
+}
+/// @nodoc
+class _$PostLikedCopyWithImpl<$Res>
+    implements $PostLikedCopyWith<$Res> {
+  _$PostLikedCopyWithImpl(this._self, this._then);
+
+  final PostLiked _self;
+  final $Res Function(PostLiked) _then;
+
+/// Create a copy of PostDetailState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? post = null,}) {
+  return _then(PostLiked(
+post: null == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
+as Post,
+  ));
+}
+
+/// Create a copy of PostDetailState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PostCopyWith<$Res> get post {
+  
+  return $PostCopyWith<$Res>(_self.post, (value) {
+    return _then(_self.copyWith(post: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class PostBookmarked implements PostDetailState {
+  const PostBookmarked({required this.post});
+  
+
+ final  Post post;
+
+/// Create a copy of PostDetailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PostBookmarkedCopyWith<PostBookmarked> get copyWith => _$PostBookmarkedCopyWithImpl<PostBookmarked>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostBookmarked&&(identical(other.post, post) || other.post == post));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,post);
+
+@override
+String toString() {
+  return 'PostDetailState.bookmarked(post: $post)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $PostBookmarkedCopyWith<$Res> implements $PostDetailStateCopyWith<$Res> {
+  factory $PostBookmarkedCopyWith(PostBookmarked value, $Res Function(PostBookmarked) _then) = _$PostBookmarkedCopyWithImpl;
+@useResult
+$Res call({
+ Post post
+});
+
+
+$PostCopyWith<$Res> get post;
+
+}
+/// @nodoc
+class _$PostBookmarkedCopyWithImpl<$Res>
+    implements $PostBookmarkedCopyWith<$Res> {
+  _$PostBookmarkedCopyWithImpl(this._self, this._then);
+
+  final PostBookmarked _self;
+  final $Res Function(PostBookmarked) _then;
+
+/// Create a copy of PostDetailState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? post = null,}) {
+  return _then(PostBookmarked(
+post: null == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
+as Post,
+  ));
+}
+
+/// Create a copy of PostDetailState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PostCopyWith<$Res> get post {
+  
+  return $PostCopyWith<$Res>(_self.post, (value) {
+    return _then(_self.copyWith(post: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class PostDeleted implements PostDetailState {
+  const PostDeleted();
   
 
 
@@ -270,7 +420,7 @@ class _Deleted implements PostDetailState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Deleted);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostDeleted);
 }
 
 
@@ -291,8 +441,8 @@ String toString() {
 /// @nodoc
 
 
-class _Reported implements PostDetailState {
-  const _Reported();
+class PostReported implements PostDetailState {
+  const PostReported();
   
 
 
@@ -302,7 +452,7 @@ class _Reported implements PostDetailState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Reported);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostReported);
 }
 
 
@@ -323,8 +473,8 @@ String toString() {
 /// @nodoc
 
 
-class _Failure implements PostDetailState {
-  const _Failure({required this.error});
+class PostDetailFailure implements PostDetailState {
+  const PostDetailFailure({required this.error});
   
 
  final  String error;
@@ -333,13 +483,13 @@ class _Failure implements PostDetailState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$FailureCopyWith<_Failure> get copyWith => __$FailureCopyWithImpl<_Failure>(this, _$identity);
+$PostDetailFailureCopyWith<PostDetailFailure> get copyWith => _$PostDetailFailureCopyWithImpl<PostDetailFailure>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostDetailFailure&&(identical(other.error, error) || other.error == error));
 }
 
 
@@ -355,8 +505,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class _$FailureCopyWith<$Res> implements $PostDetailStateCopyWith<$Res> {
-  factory _$FailureCopyWith(_Failure value, $Res Function(_Failure) _then) = __$FailureCopyWithImpl;
+abstract mixin class $PostDetailFailureCopyWith<$Res> implements $PostDetailStateCopyWith<$Res> {
+  factory $PostDetailFailureCopyWith(PostDetailFailure value, $Res Function(PostDetailFailure) _then) = _$PostDetailFailureCopyWithImpl;
 @useResult
 $Res call({
  String error
@@ -367,17 +517,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$FailureCopyWithImpl<$Res>
-    implements _$FailureCopyWith<$Res> {
-  __$FailureCopyWithImpl(this._self, this._then);
+class _$PostDetailFailureCopyWithImpl<$Res>
+    implements $PostDetailFailureCopyWith<$Res> {
+  _$PostDetailFailureCopyWithImpl(this._self, this._then);
 
-  final _Failure _self;
-  final $Res Function(_Failure) _then;
+  final PostDetailFailure _self;
+  final $Res Function(PostDetailFailure) _then;
 
 /// Create a copy of PostDetailState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? error = null,}) {
-  return _then(_Failure(
+  return _then(PostDetailFailure(
 error: null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String,
   ));

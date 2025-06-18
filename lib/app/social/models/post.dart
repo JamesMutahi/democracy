@@ -4,11 +4,14 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'post.freezed.dart';
 part 'post.g.dart';
 
+enum PostStatus { draft, published }
+
 @freezed
 sealed class Post with _$Post {
   const factory Post({
     required final int id,
     required final User author,
+    @PostStatusConverter() required PostStatus status,
     required String body,
     required String? image1Url,
     required String? image2Url,
@@ -20,7 +23,9 @@ sealed class Post with _$Post {
     required String? video2Url,
     required String? video3Url,
     required int likes,
+    required bool liked,
     required int bookmarks,
+    required bool bookmarked,
     required int views,
     required int replies,
     required int reposts,
@@ -33,4 +38,24 @@ sealed class Post with _$Post {
   }) = _Post;
 
   factory Post.fromJson(Map<String, Object?> json) => _$PostFromJson(json);
+}
+
+class PostStatusConverter implements JsonConverter<PostStatus, String> {
+  const PostStatusConverter();
+
+  @override
+  PostStatus fromJson(String data) {
+    PostStatus type = PostStatus.draft;
+    switch (data) {
+      case 'published':
+        type = PostStatus.published;
+        break;
+    }
+    return type;
+  }
+
+  @override
+  String toJson(PostStatus object) {
+    throw UnimplementedError();
+  }
 }
