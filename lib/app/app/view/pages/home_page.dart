@@ -1,8 +1,8 @@
 import 'package:democracy/app/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/social/bloc/post_list/post_list_cubit.dart';
-import 'package:democracy/app/social/models/post.dart';
-import 'package:democracy/app/social/view/post_create.dart';
-import 'package:democracy/app/social/view/post_list.dart';
+import 'package:democracy/app/post/bloc/post_list/post_list_cubit.dart';
+import 'package:democracy/app/post/models/post.dart';
+import 'package:democracy/app/post/view/post_create.dart';
+import 'package:democracy/app/post/view/post_list.dart';
 import 'package:democracy/app/utils/view/failure_retry_button.dart';
 import 'package:democracy/app/utils/view/loading_indicator.dart';
 import 'package:democracy/app/utils/view/no_results.dart';
@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage>
             return FailureRetryButton(
               onPressed: () {
                 context.read<PostListCubit>().retryButtonPressed();
-                context.read<WebsocketBloc>().add(WebsocketEvent.getPosts());
+                context.read<WebsocketBloc>().add(WebsocketEvent.connect());
               },
             );
           default:

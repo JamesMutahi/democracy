@@ -1,6 +1,6 @@
 import 'package:democracy/app/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/social/bloc/post_detail/post_detail_cubit.dart';
-import 'package:democracy/app/social/models/post.dart';
+import 'package:democracy/app/post/bloc/post_detail/post_detail_cubit.dart';
+import 'package:democracy/app/post/models/post.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

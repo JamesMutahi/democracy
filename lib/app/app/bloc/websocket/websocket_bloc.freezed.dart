@@ -143,38 +143,6 @@ as WebsocketState,
 /// @nodoc
 
 
-class _GetPosts implements WebsocketEvent {
-  const _GetPosts();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetPosts);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'WebsocketEvent.getPosts()';
-}
-
-
-}
-
-
-
-
-/// @nodoc
-
-
 class _CreatePost implements WebsocketEvent {
   const _CreatePost({required this.body});
   

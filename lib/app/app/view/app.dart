@@ -7,8 +7,8 @@ import 'package:democracy/app/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/app/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/app/auth/bloc/registration/registration_cubit.dart';
 import 'package:democracy/app/auth/view/login.dart';
-import 'package:democracy/app/social/bloc/post_detail/post_detail_cubit.dart';
-import 'package:democracy/app/social/bloc/post_list/post_list_cubit.dart';
+import 'package:democracy/app/post/bloc/post_detail/post_detail_cubit.dart';
+import 'package:democracy/app/post/bloc/post_list/post_list_cubit.dart';
 import 'package:democracy/app/utils/view/app_theme.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/app/utils/view/splash_page.dart';
@@ -148,36 +148,38 @@ class _Listeners extends StatelessWidget {
         ),
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
-            if (state.message['stream'] == postsStream) {
-              switch (state.message['payload']['action']) {
-                case 'list':
-                  context.read<PostListCubit>().loadPosts(
-                    payload: state.message['payload'],
-                  );
-                case 'create':
-                  context.read<PostDetailCubit>().created(
-                    payload: state.message['payload'],
-                  );
-                case 'update':
-                  context.read<PostDetailCubit>().updated(
-                    payload: state.message['payload'],
-                  );
-                case 'like':
-                  context.read<PostDetailCubit>().liked(
-                    payload: state.message['payload'],
-                  );
-                case 'bookmark':
-                  context.read<PostDetailCubit>().bookmarked(
-                    payload: state.message['payload'],
-                  );
-                case 'delete':
-                  context.read<PostDetailCubit>().deleted(
-                    payload: state.message['payload'],
-                  );
-                case 'report':
-                  context.read<PostDetailCubit>().reported(
-                    payload: state.message['payload'],
-                  );
+            if (state.status == WebsocketStatus.success) {
+              if (state.message['stream'] == postsStream) {
+                switch (state.message['payload']['action']) {
+                  case 'list':
+                    context.read<PostListCubit>().loadPosts(
+                      payload: state.message['payload'],
+                    );
+                  case 'create':
+                    context.read<PostDetailCubit>().created(
+                      payload: state.message['payload'],
+                    );
+                  case 'update':
+                    context.read<PostDetailCubit>().updated(
+                      payload: state.message['payload'],
+                    );
+                  case 'like':
+                    context.read<PostDetailCubit>().liked(
+                      payload: state.message['payload'],
+                    );
+                  case 'bookmark':
+                    context.read<PostDetailCubit>().bookmarked(
+                      payload: state.message['payload'],
+                    );
+                  case 'delete':
+                    context.read<PostDetailCubit>().deleted(
+                      payload: state.message['payload'],
+                    );
+                  case 'report':
+                    context.read<PostDetailCubit>().reported(
+                      payload: state.message['payload'],
+                    );
+                }
               }
             }
             if (state.status == WebsocketStatus.failure) {
@@ -210,17 +212,18 @@ class _Listeners extends StatelessWidget {
               ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
             if (state is PostBookmarked) {
-              if (state.post.bookmarked) {
-                final snackBar = SnackBar(
-                  behavior: SnackBarBehavior.floating,
-                  backgroundColor: Theme.of(context).cardColor,
-                  content: SnackBarContent(
-                    message: 'Post bookmarked',
-                    status: SnackBarStatus.success,
-                  ),
-                );
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              }
+              final snackBar = SnackBar(
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Theme.of(context).cardColor,
+                content: SnackBarContent(
+                  message:
+                      (state.post.bookmarked == true)
+                          ? 'Bookmark added'
+                          : 'Bookmark removed',
+                  status: SnackBarStatus.success,
+                ),
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
           },
         ),

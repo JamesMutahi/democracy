@@ -23,8 +23,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
           {'name': 'Home', 'iconData': Symbols.home_rounded},
           {'name': 'Explore', 'iconData': Symbols.search_check_2_rounded},
           {'name': 'Poll', 'iconData': Symbols.how_to_vote},
+          {'name': 'Projects', 'iconData': Symbols.construction_rounded},
           {'name': 'Messages', 'iconData': Symbols.email_rounded},
-          {'name': 'Profile', 'iconData': Symbols.person_edit_rounded},
         ];
         return BottomAppBar(
           padding: const EdgeInsets.all(0.0),

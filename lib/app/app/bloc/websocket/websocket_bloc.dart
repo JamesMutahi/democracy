@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/auth/bloc/auth/auth_bloc.dart';
-import 'package:democracy/app/social/models/post.dart';
+import 'package:democracy/app/post/models/post.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -23,9 +23,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       _onConnect(emit);
     });
     on<_ChangeState>((event, emit) => emit(event.state));
-    on<_GetPosts>((event, emit) async {
-      await _onGetPosts(emit, event);
-    });
     on<_CreatePost>((event, emit) {
       _onCreatePost(emit, event);
     });
@@ -35,8 +32,8 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_LikePost>((event, emit) {
       _onLikePost(emit, event);
     });
-    on<_BookmarkPost>((event, emit) {
-      _onBookmarkPost(emit, event);
+    on<_BookmarkPost>((event, emit) async {
+      await _onBookmarkPost(emit, event);
     });
     on<_DeletePost>((event, emit) {
       _onDeletePost(emit, event);
@@ -67,22 +64,13 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
           ),
         );
       });
-      add(_GetPosts());
-    } catch (e) {
-      add(_ChangeState(state: state.copyWith(status: WebsocketStatus.failure)));
-    }
-  }
-
-  Future _onGetPosts(Emitter<WebsocketState> emit, _GetPosts event) async {
-    if (state.status == WebsocketStatus.failure) {
-      add(_Connect());
-    } else {
-      emit(state.copyWith(status: WebsocketStatus.loading));
       Map<String, dynamic> message = {
         'stream': postsStream,
         'payload': {"action": 'list', "request_id": 1},
       };
       _channel.sink.add(jsonEncode(message));
+    } catch (e) {
+      add(_ChangeState(state: state.copyWith(status: WebsocketStatus.failure)));
     }
   }
 
@@ -187,6 +175,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
 
   @override
   Future<void> close() {
+    _channel.sink.close();
     _websocketSubscription.cancel();
     return super.close();
   }

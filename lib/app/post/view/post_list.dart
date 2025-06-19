@@ -1,6 +1,6 @@
-import 'package:democracy/app/social/bloc/post_detail/post_detail_cubit.dart';
-import 'package:democracy/app/social/models/post.dart';
-import 'package:democracy/app/social/view/post_tile.dart';
+import 'package:democracy/app/post/bloc/post_detail/post_detail_cubit.dart';
+import 'package:democracy/app/post/models/post.dart';
+import 'package:democracy/app/post/view/post_tile.dart';
 import 'package:democracy/app/utils/view/bottom_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

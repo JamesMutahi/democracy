@@ -1,5 +1,8 @@
 import 'package:democracy/app/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:democracy/app/app/view/pages/index.dart';
+import 'package:democracy/app/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/app/auth/bloc/login/login_cubit.dart';
+import 'package:democracy/app/auth/view/login.dart';
 import 'package:democracy/app/utils/view/bottom_nav_bar.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:flutter/material.dart';
@@ -55,11 +58,19 @@ class _DashboardState extends State<Dashboard> {
         });
       }
     }
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        leading: Icon(Icons.person),
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              icon: Icon(Icons.person),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
+          }
+        ),
         actions: [
           Container(
             margin: EdgeInsets.only(right: 15),
@@ -84,6 +95,41 @@ class _DashboardState extends State<Dashboard> {
           ),
         ],
       ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary),
+              child: Text('Democracy'),
+            ),
+            BlocBuilder<AuthBloc, AuthState>(
+              builder: (context, state) {
+                switch (state) {
+                  case Authenticated():
+                    return ListTile(
+                      onTap: () {
+                        context.read<LoginCubit>().logout();
+                      },
+                      title: Text('Logout'),
+                    );
+                  case Unauthenticated():
+                    return ListTile(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => LoginPage()),
+                        );
+                      },
+                      title: Text('Login'),
+                    );
+                  default:
+                    return SizedBox.shrink();
+                }
+              },
+            ),
+          ],
+        ),
+      ),
       body: PopScope(
         canPop: canPopNow,
         onPopInvokedWithResult: (didPop, __) {
@@ -107,8 +153,8 @@ class _DashboardState extends State<Dashboard> {
               HomePage(),
               ExplorePage(),
               PollPage(),
+              ProjectsPage(),
               MessagePage(),
-              ProfilePage(),
             ],
           ),
         ),

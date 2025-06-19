@@ -1,6 +1,6 @@
 import 'package:democracy/app/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/social/models/post.dart';
-import 'package:democracy/app/social/view/post_detail.dart';
+import 'package:democracy/app/post/models/post.dart';
+import 'package:democracy/app/post/view/post_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -17,7 +17,10 @@ class PostTile extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => PostDetail(post: post)),
+          MaterialPageRoute(
+            builder:
+                (context) => PostDetail(post: post, key: ValueKey(post.id)),
+          ),
         );
       },
       child: Container(
