@@ -18,31 +18,31 @@ class _PostListState extends State<PostList> {
   final _scrollController = ScrollController();
   late final List<Post> _posts = widget.posts.toList();
 
+  void _setPostState(post) {
+    if (_posts.any((element) => element.id == post.id)) {
+      setState(() {
+        _posts[_posts.indexWhere((element) => element.id == post.id)] = post;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<PostDetailCubit, PostDetailState>(
       listener: (context, state) {
         switch (state) {
           case PostUpdated(post: final post):
-            setState(() {
-              _posts[_posts.indexWhere((element) => element.id == post.id)] =
-                  post;
-            });
+            _setPostState(post);
           case PostLiked(post: final post):
-            setState(() {
-              _posts[_posts.indexWhere((element) => element.id == post.id)] =
-                  post;
-            });
+            _setPostState(post);
           case PostBookmarked(post: final post):
-            setState(() {
-              _posts[_posts.indexWhere((element) => element.id == post.id)] =
-                  post;
-            });
+            _setPostState(post);
         }
       },
       child: ListView.builder(
         controller: _scrollController,
         scrollDirection: Axis.vertical,
+        shrinkWrap: true,
         itemBuilder: (BuildContext context, int index) {
           return index >= _posts.length
               ? (_posts.length > 2)

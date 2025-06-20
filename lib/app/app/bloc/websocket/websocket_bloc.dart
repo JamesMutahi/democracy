@@ -41,6 +41,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_ReportPost>((event, emit) {
       _onReportPost(emit, event);
     });
+    on<_GetReplies>((event, emit) {
+      _onGetReplies(emit, event);
+    });
   }
 
   Future _onConnect(Emitter<WebsocketState> emit) async {
@@ -100,7 +103,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'update',
         'request_id': 3,
-        'data': {'id': event.id, 'body': event.body},
+        'data': {'pk': event.id, 'body': event.body},
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -116,7 +119,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'like',
         'request_id': 4,
-        'data': {'id': event.post.id},
+        'data': {'pk': event.post.id},
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -135,7 +138,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'bookmark',
         'request_id': 5,
-        'data': {'id': event.post.id},
+        'data': {'pk': event.post.id},
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -151,7 +154,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'delete',
         'request_id': 6,
-        'data': {'id': event.post.id},
+        'data': {'pk': event.post.id},
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -167,8 +170,20 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'report',
         'request_id': 7,
-        'data': {'id': event.post.id},
+        'data': {'pk': event.post.id},
       },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onGetReplies(Emitter<WebsocketState> emit, _GetReplies event) async {
+    if (state.status == WebsocketStatus.failure) {
+      await _onConnect(emit);
+    }
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    Map<String, dynamic> message = {
+      'stream': postsStream,
+      'payload': {'action': 'replies', 'request_id': 8, 'pk': event.post.id},
     };
     _channel.sink.add(jsonEncode(message));
   }

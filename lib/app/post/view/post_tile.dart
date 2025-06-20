@@ -15,13 +15,15 @@ class PostTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder:
-                (context) => PostDetail(post: post, key: ValueKey(post.id)),
-          ),
-        );
+        (post.replyTo == null)
+            ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) => PostDetail(post: post, key: ValueKey(post.id)),
+              ),
+            )
+            : null;
       },
       child: Container(
         padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 5),

@@ -58,6 +58,7 @@ class _DashboardState extends State<Dashboard> {
         });
       }
     }
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -69,7 +70,7 @@ class _DashboardState extends State<Dashboard> {
                 Scaffold.of(context).openDrawer();
               },
             );
-          }
+          },
         ),
         actions: [
           Container(
@@ -99,10 +100,7 @@ class _DashboardState extends State<Dashboard> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            DrawerHeader(
-              decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary),
-              child: Text('Democracy'),
-            ),
+            DrawerHeader(child: Text('Democracy')),
             BlocBuilder<AuthBloc, AuthState>(
               builder: (context, state) {
                 switch (state) {

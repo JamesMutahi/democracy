@@ -574,4 +574,79 @@ $PostCopyWith<$Res> get post {
 }
 }
 
+/// @nodoc
+
+
+class _GetReplies implements WebsocketEvent {
+  const _GetReplies({required this.post});
+  
+
+ final  Post post;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$GetRepliesCopyWith<_GetReplies> get copyWith => __$GetRepliesCopyWithImpl<_GetReplies>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetReplies&&(identical(other.post, post) || other.post == post));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,post);
+
+@override
+String toString() {
+  return 'WebsocketEvent.getReplies(post: $post)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$GetRepliesCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
+  factory _$GetRepliesCopyWith(_GetReplies value, $Res Function(_GetReplies) _then) = __$GetRepliesCopyWithImpl;
+@useResult
+$Res call({
+ Post post
+});
+
+
+$PostCopyWith<$Res> get post;
+
+}
+/// @nodoc
+class __$GetRepliesCopyWithImpl<$Res>
+    implements _$GetRepliesCopyWith<$Res> {
+  __$GetRepliesCopyWithImpl(this._self, this._then);
+
+  final _GetReplies _self;
+  final $Res Function(_GetReplies) _then;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? post = null,}) {
+  return _then(_GetReplies(
+post: null == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
+as Post,
+  ));
+}
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PostCopyWith<$Res> get post {
+  
+  return $PostCopyWith<$Res>(_self.post, (value) {
+    return _then(_self.copyWith(post: value));
+  });
+}
+}
+
 // dart format on

@@ -9,6 +9,7 @@ import 'package:democracy/app/auth/bloc/registration/registration_cubit.dart';
 import 'package:democracy/app/auth/view/login.dart';
 import 'package:democracy/app/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/app/post/bloc/post_list/post_list_cubit.dart';
+import 'package:democracy/app/post/bloc/replies/replies_cubit.dart';
 import 'package:democracy/app/utils/view/app_theme.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/app/utils/view/splash_page.dart';
@@ -179,6 +180,10 @@ class _Listeners extends StatelessWidget {
                     context.read<PostDetailCubit>().reported(
                       payload: state.message['payload'],
                     );
+                  case 'replies':
+                    context.read<RepliesCubit>().loadReplies(
+                      payload: state.message['payload'],
+                    );
                 }
               }
             }
@@ -220,7 +225,7 @@ class _Listeners extends StatelessWidget {
                       (state.post.bookmarked == true)
                           ? 'Bookmark added'
                           : 'Bookmark removed',
-                  status: SnackBarStatus.success,
+                  status: SnackBarStatus.info,
                 ),
               );
               ScaffoldMessenger.of(context).showSnackBar(snackBar);

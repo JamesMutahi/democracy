@@ -15,4 +15,5 @@ class WebsocketEvent with _$WebsocketEvent {
       _BookmarkPost;
   const factory WebsocketEvent.deletePost({required Post post}) = _DeletePost;
   const factory WebsocketEvent.reportPost({required Post post}) = _ReportPost;
+  const factory WebsocketEvent.getReplies({required Post post}) = _GetReplies;
 }
