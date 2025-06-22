@@ -12,6 +12,8 @@ sealed class User with _$User {
     required String email,
     required String image,
     required String status,
+    required int following,
+    required int followers,
     @JsonKey(name: 'is_active') required bool isActive,
     @JsonKey(name: 'is_staff') required bool isStaff,
     @JsonKey(name: 'date_joined') required DateTime dateJoined,

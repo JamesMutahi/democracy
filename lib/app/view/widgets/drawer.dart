@@ -47,9 +47,6 @@ class AppDrawer extends StatelessWidget {
               ),
               ListTile(
                 onTap: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.loadProfile(user: user),
-                  );
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => ProfilePage(user: user),

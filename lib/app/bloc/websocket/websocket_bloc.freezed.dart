@@ -652,8 +652,8 @@ $PostCopyWith<$Res> get post {
 /// @nodoc
 
 
-class _LoadProfile implements WebsocketEvent {
-  const _LoadProfile({required this.user});
+class _LoadUserPosts implements WebsocketEvent {
+  const _LoadUserPosts({required this.user});
   
 
  final  User user;
@@ -662,13 +662,13 @@ class _LoadProfile implements WebsocketEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$LoadProfileCopyWith<_LoadProfile> get copyWith => __$LoadProfileCopyWithImpl<_LoadProfile>(this, _$identity);
+_$LoadUserPostsCopyWith<_LoadUserPosts> get copyWith => __$LoadUserPostsCopyWithImpl<_LoadUserPosts>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoadProfile&&(identical(other.user, user) || other.user == user));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoadUserPosts&&(identical(other.user, user) || other.user == user));
 }
 
 
@@ -677,15 +677,15 @@ int get hashCode => Object.hash(runtimeType,user);
 
 @override
 String toString() {
-  return 'WebsocketEvent.loadProfile(user: $user)';
+  return 'WebsocketEvent.loadUserPosts(user: $user)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$LoadProfileCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
-  factory _$LoadProfileCopyWith(_LoadProfile value, $Res Function(_LoadProfile) _then) = __$LoadProfileCopyWithImpl;
+abstract mixin class _$LoadUserPostsCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
+  factory _$LoadUserPostsCopyWith(_LoadUserPosts value, $Res Function(_LoadUserPosts) _then) = __$LoadUserPostsCopyWithImpl;
 @useResult
 $Res call({
  User user
@@ -696,17 +696,17 @@ $UserCopyWith<$Res> get user;
 
 }
 /// @nodoc
-class __$LoadProfileCopyWithImpl<$Res>
-    implements _$LoadProfileCopyWith<$Res> {
-  __$LoadProfileCopyWithImpl(this._self, this._then);
+class __$LoadUserPostsCopyWithImpl<$Res>
+    implements _$LoadUserPostsCopyWith<$Res> {
+  __$LoadUserPostsCopyWithImpl(this._self, this._then);
 
-  final _LoadProfile _self;
-  final $Res Function(_LoadProfile) _then;
+  final _LoadUserPosts _self;
+  final $Res Function(_LoadUserPosts) _then;
 
 /// Create a copy of WebsocketEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
-  return _then(_LoadProfile(
+  return _then(_LoadUserPosts(
 user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as User,
   ));
@@ -782,6 +782,156 @@ class __$LoadBookmarksCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
   return _then(_LoadBookmarks(
+user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as User,
+  ));
+}
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$UserCopyWith<$Res> get user {
+  
+  return $UserCopyWith<$Res>(_self.user, (value) {
+    return _then(_self.copyWith(user: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _LoadLikedPosts implements WebsocketEvent {
+  const _LoadLikedPosts({required this.user});
+  
+
+ final  User user;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$LoadLikedPostsCopyWith<_LoadLikedPosts> get copyWith => __$LoadLikedPostsCopyWithImpl<_LoadLikedPosts>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoadLikedPosts&&(identical(other.user, user) || other.user == user));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,user);
+
+@override
+String toString() {
+  return 'WebsocketEvent.loadLikedPosts(user: $user)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$LoadLikedPostsCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
+  factory _$LoadLikedPostsCopyWith(_LoadLikedPosts value, $Res Function(_LoadLikedPosts) _then) = __$LoadLikedPostsCopyWithImpl;
+@useResult
+$Res call({
+ User user
+});
+
+
+$UserCopyWith<$Res> get user;
+
+}
+/// @nodoc
+class __$LoadLikedPostsCopyWithImpl<$Res>
+    implements _$LoadLikedPostsCopyWith<$Res> {
+  __$LoadLikedPostsCopyWithImpl(this._self, this._then);
+
+  final _LoadLikedPosts _self;
+  final $Res Function(_LoadLikedPosts) _then;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
+  return _then(_LoadLikedPosts(
+user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as User,
+  ));
+}
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$UserCopyWith<$Res> get user {
+  
+  return $UserCopyWith<$Res>(_self.user, (value) {
+    return _then(_self.copyWith(user: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _LoadUserReplies implements WebsocketEvent {
+  const _LoadUserReplies({required this.user});
+  
+
+ final  User user;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$LoadUserRepliesCopyWith<_LoadUserReplies> get copyWith => __$LoadUserRepliesCopyWithImpl<_LoadUserReplies>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoadUserReplies&&(identical(other.user, user) || other.user == user));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,user);
+
+@override
+String toString() {
+  return 'WebsocketEvent.loadUserReplies(user: $user)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$LoadUserRepliesCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
+  factory _$LoadUserRepliesCopyWith(_LoadUserReplies value, $Res Function(_LoadUserReplies) _then) = __$LoadUserRepliesCopyWithImpl;
+@useResult
+$Res call({
+ User user
+});
+
+
+$UserCopyWith<$Res> get user;
+
+}
+/// @nodoc
+class __$LoadUserRepliesCopyWithImpl<$Res>
+    implements _$LoadUserRepliesCopyWith<$Res> {
+  __$LoadUserRepliesCopyWithImpl(this._self, this._then);
+
+  final _LoadUserReplies _self;
+  final $Res Function(_LoadUserReplies) _then;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
+  return _then(_LoadUserReplies(
 user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as User,
   ));

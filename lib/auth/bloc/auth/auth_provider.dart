@@ -36,6 +36,8 @@ class AuthProvider {
     await preferences.setString("email", user.email);
     await preferences.setString("image", user.image);
     await preferences.setString("status", user.status);
+    await preferences.setInt("following", user.following);
+    await preferences.setInt("followers", user.followers);
     await preferences.setBool("isActive", user.isActive);
     await preferences.setBool("isStaff", user.isStaff);
     await preferences.setString("dateJoined", user.dateJoined.toString());
@@ -49,6 +51,8 @@ class AuthProvider {
     String email = preferences.getString("email")!;
     String image = preferences.getString("image")!;
     String status = preferences.getString("status")!;
+    int following = preferences.getInt("following")!;
+    int followers = preferences.getInt("followers")!;
     bool isActive = preferences.getBool("isActive")!;
     bool isStaff = preferences.getBool("isStaff")!;
     DateTime dateJoined =
@@ -60,6 +64,8 @@ class AuthProvider {
       email: email,
       image: image,
       status: status,
+      following: following,
+      followers: followers,
       isActive: isActive,
       isStaff: isStaff,
       dateJoined: dateJoined,
@@ -73,8 +79,10 @@ class AuthProvider {
     await preferences.remove("lastName");
     await preferences.remove("email");
     await preferences.remove("image");
+    await preferences.remove("status");
+    await preferences.remove("following");
+    await preferences.remove("followers");
     await preferences.remove("isActive");
-    await preferences.remove("isVerified");
     await preferences.remove("isStaff");
   }
 

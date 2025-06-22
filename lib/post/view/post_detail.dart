@@ -79,7 +79,18 @@ class _PostDetailState extends State<PostDetail> {
                       children: [
                         Row(
                           children: [
-                            CircleAvatar(),
+                            CircleAvatar(
+                              radius: 20,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: NetworkImage(_post.author.image),
+                                      fit: BoxFit.cover,
+                                    ),
+                                    borderRadius: BorderRadius.circular(100)
+                                ),
+                              ),
+                            ),
                             SizedBox(width: 10),
                             Text(
                               '${_post.author.firstName} ${_post.author.lastName}',

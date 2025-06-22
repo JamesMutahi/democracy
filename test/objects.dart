@@ -10,6 +10,8 @@ User user1 = User(
   isStaff: false,
   dateJoined: '1944-06-06 02:00:00.000' as DateTime,
   image: '',
+  following: 2,
+  followers: 0,
 );
 
 User user2 = User(
@@ -22,4 +24,6 @@ User user2 = User(
   isStaff: true,
   dateJoined: '1944-06-06 02:00:00.000' as DateTime,
   image: '',
+  following: 2,
+  followers: 0,
 );

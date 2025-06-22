@@ -1,6 +1,5 @@
 import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
-import 'package:democracy/app/bloc/profile/profile_cubit.dart';
 import 'package:democracy/app/bloc/theme/theme_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/view/app.dart';
@@ -13,9 +12,12 @@ import 'package:democracy/auth/bloc/registration/registration_cubit.dart';
 import 'package:democracy/poll/bloc/poll/poll_bloc.dart';
 import 'package:democracy/poll/bloc/vote/vote_cubit.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
+import 'package:democracy/post/bloc/likes/likes_cubit.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/bloc/post_list/post_list_cubit.dart';
 import 'package:democracy/post/bloc/replies/replies_cubit.dart';
+import 'package:democracy/post/bloc/user_posts/user_posts_cubit.dart';
+import 'package:democracy/post/bloc/user_replies/user_replies_cubit.dart';
 import 'package:democracy/survey/bloc/survey_process/page/page_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
@@ -136,8 +138,10 @@ void main() async {
           BlocProvider(create: (context) => PostListCubit()),
           BlocProvider(create: (context) => PostDetailCubit()),
           BlocProvider(create: (context) => RepliesCubit()),
-          BlocProvider(create: (context) => ProfileCubit()),
+          BlocProvider(create: (context) => UserPostsCubit()),
           BlocProvider(create: (context) => BookmarksCubit()),
+          BlocProvider(create: (context) => LikesCubit()),
+          BlocProvider(create: (context) => UserRepliesCubit()),
         ],
         child: const MyApp(),
       ),

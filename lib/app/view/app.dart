@@ -1,6 +1,5 @@
 import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
-import 'package:democracy/app/bloc/profile/profile_cubit.dart';
 import 'package:democracy/app/bloc/theme/theme_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/view/dashboard.dart';
@@ -9,12 +8,15 @@ import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/auth/bloc/registration/registration_cubit.dart';
 import 'package:democracy/auth/view/login.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
+import 'package:democracy/post/bloc/likes/likes_cubit.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/bloc/post_list/post_list_cubit.dart';
 import 'package:democracy/post/bloc/replies/replies_cubit.dart';
 import 'package:democracy/app/utils/view/app_theme.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/app/utils/view/splash_page.dart';
+import 'package:democracy/post/bloc/user_posts/user_posts_cubit.dart';
+import 'package:democracy/post/bloc/user_replies/user_replies_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -186,12 +188,20 @@ class _Listeners extends StatelessWidget {
                     context.read<RepliesCubit>().loadReplies(
                       payload: state.message['payload'],
                     );
-                  case 'profile':
-                    context.read<ProfileCubit>().loaded(
+                  case 'user_posts':
+                    context.read<UserPostsCubit>().loaded(
                       payload: state.message['payload'],
                     );
                   case 'bookmarks':
                     context.read<BookmarksCubit>().loaded(
+                      payload: state.message['payload'],
+                    );
+                  case 'liked_posts':
+                    context.read<LikesCubit>().loaded(
+                      payload: state.message['payload'],
+                    );
+                  case 'user_replies':
+                    context.read<UserRepliesCubit>().loaded(
                       payload: state.message['payload'],
                     );
                 }
@@ -201,7 +211,10 @@ class _Listeners extends StatelessWidget {
               String error = 'Something went wrong';
               context.read<PostDetailCubit>().websocketFailure(error: error);
               context.read<PostListCubit>().websocketFailure(error: error);
-              context.read<ProfileCubit>().websocketFailure(error: error);
+              context.read<UserPostsCubit>().websocketFailure(error: error);
+              context.read<BookmarksCubit>().websocketFailure(error: error);
+              context.read<LikesCubit>().websocketFailure(error: error);
+              context.read<UserRepliesCubit>().websocketFailure(error: error);
               final snackBar = SnackBar(
                 behavior: SnackBarBehavior.floating,
                 backgroundColor: Theme.of(context).cardColor,

@@ -16,7 +16,12 @@ class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.deletePost({required Post post}) = _DeletePost;
   const factory WebsocketEvent.reportPost({required Post post}) = _ReportPost;
   const factory WebsocketEvent.getReplies({required Post post}) = _GetReplies;
-  const factory WebsocketEvent.loadProfile({required User user}) = _LoadProfile;
+  const factory WebsocketEvent.loadUserPosts({required User user}) =
+      _LoadUserPosts;
   const factory WebsocketEvent.loadBookmarks({required User user}) =
       _LoadBookmarks;
+  const factory WebsocketEvent.loadLikedPosts({required User user}) =
+      _LoadLikedPosts;
+  const factory WebsocketEvent.loadUserReplies({required User user}) =
+      _LoadUserReplies;
 }
