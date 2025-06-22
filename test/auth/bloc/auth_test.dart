@@ -1,5 +1,5 @@
 import 'package:mocktail/mocktail.dart';
-import 'package:democracy/app/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:test/test.dart';
 import 'package:bloc_test/bloc_test.dart';
 

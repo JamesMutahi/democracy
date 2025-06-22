@@ -1,23 +1,25 @@
-import 'package:democracy/app/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
-import 'package:democracy/app/app/bloc/connectivity/connectivity_bloc.dart';
-import 'package:democracy/app/app/bloc/theme/theme_cubit.dart';
-import 'package:democracy/app/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/app/view/app.dart';
-import 'package:democracy/app/auth/bloc/auth/auth_bloc.dart';
-import 'package:democracy/app/auth/bloc/login/login_cubit.dart';
-import 'package:democracy/app/auth/bloc/otp_counter/otp_counter_bloc.dart';
-import 'package:democracy/app/auth/bloc/password_change/password_change_cubit.dart';
-import 'package:democracy/app/auth/bloc/password_reset/password_reset_cubit.dart';
-import 'package:democracy/app/auth/bloc/registration/registration_cubit.dart';
-import 'package:democracy/app/poll/bloc/poll/poll_bloc.dart';
-import 'package:democracy/app/poll/bloc/vote/vote_cubit.dart';
-import 'package:democracy/app/post/bloc/post_detail/post_detail_cubit.dart';
-import 'package:democracy/app/post/bloc/post_list/post_list_cubit.dart';
-import 'package:democracy/app/post/bloc/replies/replies_cubit.dart';
-import 'package:democracy/app/survey/bloc/survey_process/page/page_bloc.dart';
-import 'package:democracy/app/survey/bloc/survey_process/answer/answer_bloc.dart';
-import 'package:democracy/app/survey/bloc/survey_process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
-import 'package:democracy/app/survey/bloc/survey/survey_bloc.dart';
+import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
+import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
+import 'package:democracy/app/bloc/profile/profile_cubit.dart';
+import 'package:democracy/app/bloc/theme/theme_cubit.dart';
+import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/view/app.dart';
+import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/auth/bloc/login/login_cubit.dart';
+import 'package:democracy/auth/bloc/otp_counter/otp_counter_bloc.dart';
+import 'package:democracy/auth/bloc/password_change/password_change_cubit.dart';
+import 'package:democracy/auth/bloc/password_reset/password_reset_cubit.dart';
+import 'package:democracy/auth/bloc/registration/registration_cubit.dart';
+import 'package:democracy/poll/bloc/poll/poll_bloc.dart';
+import 'package:democracy/poll/bloc/vote/vote_cubit.dart';
+import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
+import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
+import 'package:democracy/post/bloc/post_list/post_list_cubit.dart';
+import 'package:democracy/post/bloc/replies/replies_cubit.dart';
+import 'package:democracy/survey/bloc/survey_process/page/page_bloc.dart';
+import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
+import 'package:democracy/survey/bloc/survey_process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
+import 'package:democracy/survey/bloc/survey/survey_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -134,6 +136,8 @@ void main() async {
           BlocProvider(create: (context) => PostListCubit()),
           BlocProvider(create: (context) => PostDetailCubit()),
           BlocProvider(create: (context) => RepliesCubit()),
+          BlocProvider(create: (context) => ProfileCubit()),
+          BlocProvider(create: (context) => BookmarksCubit()),
         ],
         child: const MyApp(),
       ),
