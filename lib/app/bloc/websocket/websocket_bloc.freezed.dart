@@ -949,4 +949,185 @@ $UserCopyWith<$Res> get user {
 }
 }
 
+/// @nodoc
+
+
+class _LoadRooms implements WebsocketEvent {
+  const _LoadRooms();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoadRooms);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'WebsocketEvent.loadRooms()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _CreateRoom implements WebsocketEvent {
+  const _CreateRoom({required final  List<User> users}): _users = users;
+  
+
+ final  List<User> _users;
+ List<User> get users {
+  if (_users is EqualUnmodifiableListView) return _users;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_users);
+}
+
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CreateRoomCopyWith<_CreateRoom> get copyWith => __$CreateRoomCopyWithImpl<_CreateRoom>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateRoom&&const DeepCollectionEquality().equals(other._users, _users));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_users));
+
+@override
+String toString() {
+  return 'WebsocketEvent.createRoom(users: $users)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CreateRoomCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
+  factory _$CreateRoomCopyWith(_CreateRoom value, $Res Function(_CreateRoom) _then) = __$CreateRoomCopyWithImpl;
+@useResult
+$Res call({
+ List<User> users
+});
+
+
+
+
+}
+/// @nodoc
+class __$CreateRoomCopyWithImpl<$Res>
+    implements _$CreateRoomCopyWith<$Res> {
+  __$CreateRoomCopyWithImpl(this._self, this._then);
+
+  final _CreateRoom _self;
+  final $Res Function(_CreateRoom) _then;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? users = null,}) {
+  return _then(_CreateRoom(
+users: null == users ? _self._users : users // ignore: cast_nullable_to_non_nullable
+as List<User>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _CreateMessage implements WebsocketEvent {
+  const _CreateMessage({required this.room, required this.message});
+  
+
+ final  Room room;
+ final  String message;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CreateMessageCopyWith<_CreateMessage> get copyWith => __$CreateMessageCopyWithImpl<_CreateMessage>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateMessage&&(identical(other.room, room) || other.room == room)&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,room,message);
+
+@override
+String toString() {
+  return 'WebsocketEvent.createMessage(room: $room, message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CreateMessageCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
+  factory _$CreateMessageCopyWith(_CreateMessage value, $Res Function(_CreateMessage) _then) = __$CreateMessageCopyWithImpl;
+@useResult
+$Res call({
+ Room room, String message
+});
+
+
+$RoomCopyWith<$Res> get room;
+
+}
+/// @nodoc
+class __$CreateMessageCopyWithImpl<$Res>
+    implements _$CreateMessageCopyWith<$Res> {
+  __$CreateMessageCopyWithImpl(this._self, this._then);
+
+  final _CreateMessage _self;
+  final $Res Function(_CreateMessage) _then;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? room = null,Object? message = null,}) {
+  return _then(_CreateMessage(
+room: null == room ? _self.room : room // ignore: cast_nullable_to_non_nullable
+as Room,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RoomCopyWith<$Res> get room {
+  
+  return $RoomCopyWith<$Res>(_self.room, (value) {
+    return _then(_self.copyWith(room: value));
+  });
+}
+}
+
 // dart format on

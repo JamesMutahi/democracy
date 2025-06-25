@@ -3,6 +3,7 @@ import 'package:democracy/app/view/pages/index.dart';
 import 'package:democracy/app/view/widgets/bottom_nav_bar.dart';
 import 'package:democracy/app/view/widgets/drawer.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
+import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/models/user.dart';
 import 'package:flutter/material.dart';
@@ -74,33 +75,23 @@ class _DashboardState extends State<Dashboard> {
           key: _key,
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
-            leading: InkWell(
-              borderRadius: BorderRadius.all(Radius.circular(50)),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(user.image),
-                      fit: BoxFit.cover,
-                    ),
-                    borderRadius: BorderRadius.circular(50),
-                  ),
+            automaticallyImplyLeading: false,
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                InkWell(
+                  borderRadius: BorderRadius.all(Radius.circular(50)),
+                  child: ProfileImage(user: user),
+                  onTap: () {
+                    _key.currentState!.openDrawer();
+                  },
                 ),
-              ),
-              onTap: () {
-                _key.currentState!.openDrawer();
-              },
-            ),
-            actions: [
-              Container(
-                margin: EdgeInsets.only(right: 15),
-                child: InkWell(
+                InkWell(
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                   splashColor: Theme.of(context).colorScheme.secondaryFixedDim,
                   onTap: () {},
                   child: Container(
-                    padding: EdgeInsets.all(7.5),
+                    padding: EdgeInsets.all(8.5),
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: Theme.of(context).disabledColor,
@@ -114,8 +105,8 @@ class _DashboardState extends State<Dashboard> {
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           drawer: AppDrawer(user: user),
           body: PopScope(
@@ -141,7 +132,7 @@ class _DashboardState extends State<Dashboard> {
                   HomePage(),
                   ExplorePage(),
                   PollPage(),
-                  ProjectsPage(),
+                  SurveyPage(),
                   MessagePage(),
                 ],
               ),

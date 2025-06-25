@@ -1,6 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/failure_retry_button.dart';
 import 'package:democracy/app/utils/view/loading_indicator.dart';
+import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/models/user.dart';
 import 'package:democracy/post/bloc/likes/likes_cubit.dart';
 import 'package:democracy/post/bloc/user_posts/user_posts_cubit.dart';
@@ -46,15 +47,38 @@ class ProfilePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    InkWell(
-                      borderRadius: BorderRadius.all(Radius.circular(50)),
-                      onTap: () {
-                        //   TODO:
+                    BlocBuilder<AuthBloc, AuthState>(
+                      builder: (context, state) {
+                        late User currentUser;
+                        if (state is Authenticated) {
+                          currentUser = state.user;
+                        }
+                        return (currentUser.id == user.id)
+                            ? InkWell(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(50),
+                              ),
+                              onTap: () {
+                                //   TODO:
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Icon(Symbols.edit_rounded),
+                              ),
+                            )
+                            : InkWell(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(50),
+                              ),
+                              onTap: () {
+                                //   TODO:
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Icon(Symbols.message_rounded),
+                              ),
+                            );
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Icon(Symbols.edit_rounded),
-                      ),
                     ),
                   ],
                 ),

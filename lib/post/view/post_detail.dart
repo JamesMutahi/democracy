@@ -1,4 +1,5 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/post_tile.dart';
@@ -79,18 +80,7 @@ class _PostDetailState extends State<PostDetail> {
                       children: [
                         Row(
                           children: [
-                            CircleAvatar(
-                              radius: 20,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(_post.author.image),
-                                      fit: BoxFit.cover,
-                                    ),
-                                    borderRadius: BorderRadius.circular(100)
-                                ),
-                              ),
-                            ),
+                            ProfileImage(user: _post.author),
                             SizedBox(width: 10),
                             Text(
                               '${_post.author.firstName} ${_post.author.lastName}',

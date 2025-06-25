@@ -1,0 +1,216 @@
+// dart format width=80
+// coverage:ignore-file
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
+
+part of 'room_detail_cubit.dart';
+
+// **************************************************************************
+// FreezedGenerator
+// **************************************************************************
+
+// dart format off
+T _$identity<T>(T value) => value;
+/// @nodoc
+mixin _$RoomDetailState {
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RoomDetailState);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'RoomDetailState()';
+}
+
+
+}
+
+/// @nodoc
+class $RoomDetailStateCopyWith<$Res>  {
+$RoomDetailStateCopyWith(RoomDetailState _, $Res Function(RoomDetailState) __);
+}
+
+
+/// @nodoc
+
+
+class RoomDetailInitial implements RoomDetailState {
+  const RoomDetailInitial();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RoomDetailInitial);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'RoomDetailState.initial()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class RoomDetailLoading implements RoomDetailState {
+  const RoomDetailLoading();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RoomDetailLoading);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'RoomDetailState.loading()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class RoomCreated implements RoomDetailState {
+  const RoomCreated({required this.room});
+  
+
+ final  Room room;
+
+/// Create a copy of RoomDetailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$RoomCreatedCopyWith<RoomCreated> get copyWith => _$RoomCreatedCopyWithImpl<RoomCreated>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RoomCreated&&(identical(other.room, room) || other.room == room));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,room);
+
+@override
+String toString() {
+  return 'RoomDetailState.created(room: $room)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $RoomCreatedCopyWith<$Res> implements $RoomDetailStateCopyWith<$Res> {
+  factory $RoomCreatedCopyWith(RoomCreated value, $Res Function(RoomCreated) _then) = _$RoomCreatedCopyWithImpl;
+@useResult
+$Res call({
+ Room room
+});
+
+
+$RoomCopyWith<$Res> get room;
+
+}
+/// @nodoc
+class _$RoomCreatedCopyWithImpl<$Res>
+    implements $RoomCreatedCopyWith<$Res> {
+  _$RoomCreatedCopyWithImpl(this._self, this._then);
+
+  final RoomCreated _self;
+  final $Res Function(RoomCreated) _then;
+
+/// Create a copy of RoomDetailState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? room = null,}) {
+  return _then(RoomCreated(
+room: null == room ? _self.room : room // ignore: cast_nullable_to_non_nullable
+as Room,
+  ));
+}
+
+/// Create a copy of RoomDetailState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RoomCopyWith<$Res> get room {
+  
+  return $RoomCopyWith<$Res>(_self.room, (value) {
+    return _then(_self.copyWith(room: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class RoomDetailFailure implements RoomDetailState {
+  const RoomDetailFailure();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RoomDetailFailure);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'RoomDetailState.failure()';
+}
+
+
+}
+
+
+
+
+// dart format on

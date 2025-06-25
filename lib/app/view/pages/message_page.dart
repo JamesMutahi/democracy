@@ -1,3 +1,4 @@
+import 'package:democracy/chat/view/rooms.dart';
 import 'package:flutter/material.dart';
 
 class MessagePage extends StatelessWidget {
@@ -5,6 +6,6 @@ class MessagePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Rooms();
   }
 }

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/models/user.dart';
+import 'package:democracy/chat/models/room.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -16,6 +17,7 @@ part 'websocket_state.dart';
 part 'websocket_bloc.freezed.dart';
 
 var postsStream = 'posts';
+var roomsStream = 'rooms';
 
 class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   WebsocketBloc({required this.authRepository})
@@ -56,6 +58,15 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     });
     on<_LoadUserReplies>((event, emit) {
       _onLoadUserReplies(emit, event);
+    });
+    on<_LoadRooms>((event, emit) {
+      _onLoadRooms(emit, event);
+    });
+    on<_CreateRoom>((event, emit) {
+      _onCreateRoom(emit, event);
+    });
+    on<_CreateMessage>((event, emit) {
+      _onCreateMessage(emit, event);
     });
   }
 
@@ -264,6 +275,54 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'action': 'user_replies',
         'request_id': 12,
         'pk': event.user.id,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onLoadRooms(Emitter<WebsocketState> emit, _LoadRooms event) async {
+    if (state.status == WebsocketStatus.failure) {
+      await _onConnect(emit);
+    }
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    Map<String, dynamic> message = {
+      'stream': roomsStream,
+      'payload': {'action': 'list', 'request_id': 13},
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onCreateRoom(Emitter<WebsocketState> emit, _CreateRoom event) async {
+    if (state.status == WebsocketStatus.failure) {
+      await _onConnect(emit);
+    }
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    Map<String, dynamic> message = {
+      'stream': roomsStream,
+      'payload': {
+        'action': 'create',
+        'request_id': 14,
+        'data': {'users': event.users},
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onCreateMessage(
+    Emitter<WebsocketState> emit,
+    _CreateMessage event,
+  ) async {
+    if (state.status == WebsocketStatus.failure) {
+      await _onConnect(emit);
+    }
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    Map<String, dynamic> message = {
+      'stream': roomsStream,
+      'payload': {
+        'action': 'create',
+        'request_id': 14,
+        'room': event.room.id,
+        'message': event.message,
       },
     };
     _channel.sink.add(jsonEncode(message));

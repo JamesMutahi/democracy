@@ -7,6 +7,8 @@ import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/auth/bloc/registration/registration_cubit.dart';
 import 'package:democracy/auth/view/login.dart';
+import 'package:democracy/chat/bloc/rooms/rooms_cubit.dart';
+import 'package:democracy/chat/bloc/room_detail/room_detail_cubit.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
 import 'package:democracy/post/bloc/likes/likes_cubit.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
@@ -202,6 +204,17 @@ class _Listeners extends StatelessWidget {
                     );
                   case 'user_replies':
                     context.read<UserRepliesCubit>().loaded(
+                      payload: state.message['payload'],
+                    );
+                }
+              } else if (state.message['stream'] == roomsStream) {
+                switch (state.message['payload']['action']) {
+                  case 'list':
+                    context.read<RoomsCubit>().loadRooms(
+                      payload: state.message['payload'],
+                    );
+                  case 'create':
+                    context.read<RoomDetailCubit>().created(
                       payload: state.message['payload'],
                     );
                 }

@@ -1,4 +1,5 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/post_detail.dart';
 import 'package:flutter/material.dart';
@@ -41,18 +42,7 @@ class PostTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CircleAvatar(
-              radius: 20,
-              child: Container(
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(post.author.image),
-                      fit: BoxFit.cover,
-                    ),
-                    borderRadius: BorderRadius.circular(100)
-                ),
-              ),
-            ),
+            ProfileImage(user: post.author),
             SizedBox(width: 10),
             Expanded(
               child: Column(

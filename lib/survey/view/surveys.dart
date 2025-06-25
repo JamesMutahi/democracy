@@ -28,47 +28,42 @@ class _SurveysState extends State<Surveys> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: BlocBuilder<SurveyBloc, SurveyState>(
-        builder: (context, state) {
-          switch (state.status) {
-            case SurveyStatus.success:
-              List<Survey> surveys = state.surveys;
-              return (surveys.isNotEmpty)
-                  ? ListView.builder(
-                    controller: _scrollController,
-                    scrollDirection: Axis.vertical,
-                    padding: const EdgeInsets.only(
-                      left: 20.0,
-                      right: 20.0,
-                      bottom: 160,
-                    ),
-                    itemBuilder: (BuildContext context, int index) {
-                      return index >= surveys.length
-                          ? const BottomLoader()
-                          : SurveyTile(
-                            key: ValueKey(index),
-                            survey: surveys[index],
-                          );
-                    },
-                    itemCount:
-                        state.next == null
-                            ? surveys.length
-                            : surveys.length + 1,
-                  )
-                  : const NoResults();
-            case SurveyStatus.failure:
-              return FailureRetryButton(
-                onPressed: () {
-                  context.read<SurveyBloc>().add(const SurveyEvent.reload());
-                },
-              );
-            default:
-              return const LoadingIndicator();
-          }
-        },
-      ),
+    return BlocBuilder<SurveyBloc, SurveyState>(
+      builder: (context, state) {
+        switch (state.status) {
+          case SurveyStatus.success:
+            List<Survey> surveys = state.surveys;
+            return (surveys.isNotEmpty)
+                ? ListView.builder(
+                  controller: _scrollController,
+                  scrollDirection: Axis.vertical,
+                  padding: const EdgeInsets.only(
+                    left: 20.0,
+                    right: 20.0,
+                    bottom: 160,
+                  ),
+                  itemBuilder: (BuildContext context, int index) {
+                    return index >= surveys.length
+                        ? const BottomLoader()
+                        : SurveyTile(
+                          key: ValueKey(index),
+                          survey: surveys[index],
+                        );
+                  },
+                  itemCount:
+                      state.next == null ? surveys.length : surveys.length + 1,
+                )
+                : const NoResults();
+          case SurveyStatus.failure:
+            return FailureRetryButton(
+              onPressed: () {
+                context.read<SurveyBloc>().add(const SurveyEvent.reload());
+              },
+            );
+          default:
+            return const LoadingIndicator();
+        }
+      },
     );
   }
 

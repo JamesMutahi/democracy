@@ -29,42 +29,39 @@ class _PollsState extends State<Polls> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: BlocBuilder<PollBloc, PollState>(
-        builder: (context, state) {
-          switch (state.status) {
-            case PollStatus.success:
-              List<Poll> polls = state.polls;
-              return (polls.isNotEmpty)
-                  ? ListView.builder(
-                    controller: _scrollController,
-                    scrollDirection: Axis.vertical,
-                    padding: const EdgeInsets.only(
-                      left: 20.0,
-                      right: 20.0,
-                      bottom: 160,
-                    ),
-                    itemBuilder: (BuildContext context, int index) {
-                      return index >= polls.length
-                          ? const BottomLoader()
-                          : PollTile(key: ValueKey(index), poll: polls[index]);
-                    },
-                    itemCount:
-                        state.next == null ? polls.length : polls.length + 1,
-                  )
-                  : const NoResults();
-            case PollStatus.failure:
-              return FailureRetryButton(
-                onPressed: () {
-                  context.read<PollBloc>().add(const PollEvent.reload());
-                },
-              );
-            default:
-              return const LoadingIndicator();
-          }
-        },
-      ),
+    return BlocBuilder<PollBloc, PollState>(
+      builder: (context, state) {
+        switch (state.status) {
+          case PollStatus.success:
+            List<Poll> polls = state.polls;
+            return (polls.isNotEmpty)
+                ? ListView.builder(
+                  controller: _scrollController,
+                  scrollDirection: Axis.vertical,
+                  padding: const EdgeInsets.only(
+                    left: 20.0,
+                    right: 20.0,
+                    bottom: 160,
+                  ),
+                  itemBuilder: (BuildContext context, int index) {
+                    return index >= polls.length
+                        ? const BottomLoader()
+                        : PollTile(key: ValueKey(index), poll: polls[index]);
+                  },
+                  itemCount:
+                      state.next == null ? polls.length : polls.length + 1,
+                )
+                : const NoResults();
+          case PollStatus.failure:
+            return FailureRetryButton(
+              onPressed: () {
+                context.read<PollBloc>().add(const PollEvent.reload());
+              },
+            );
+          default:
+            return const LoadingIndicator();
+        }
+      },
     );
   }
 

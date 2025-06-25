@@ -24,4 +24,11 @@ class WebsocketEvent with _$WebsocketEvent {
       _LoadLikedPosts;
   const factory WebsocketEvent.loadUserReplies({required User user}) =
       _LoadUserReplies;
+  const factory WebsocketEvent.loadRooms() = _LoadRooms;
+  const factory WebsocketEvent.createRoom({required List<User> users}) =
+      _CreateRoom;
+  const factory WebsocketEvent.createMessage({
+    required Room room,
+    required String message,
+  }) = _CreateMessage;
 }
