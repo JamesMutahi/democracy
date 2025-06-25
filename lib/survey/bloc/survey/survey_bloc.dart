@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/survey/models/choice_answer.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/models/text_answer.dart';
@@ -14,7 +15,8 @@ part 'survey_repository.dart';
 part 'survey_state.dart';
 
 class SurveyBloc extends Bloc<SurveyEvent, SurveyState> {
-  SurveyBloc({required this.surveyRepository}) : super(const SurveyState()) {
+  SurveyBloc({required this.surveyRepository, required this.authRepository})
+    : super(const SurveyState()) {
     on<_Initialize>((event, emit) async {
       emit(SurveyState());
       add(GetSurveys());
@@ -53,7 +55,11 @@ class SurveyBloc extends Bloc<SurveyEvent, SurveyState> {
       emit(state.copyWith(status: SurveyStatus.loading));
     }
     try {
-      final data = await surveyRepository.getSurveys(next: state.next);
+      String? token = await authRepository.getToken();
+      final data = await surveyRepository.getSurveys(
+        token: token!,
+        next: state.next,
+      );
       final List<Survey> surveys = List.from(
         data['results'].map((e) => Survey.fromJson(e)),
       );
@@ -72,7 +78,9 @@ class SurveyBloc extends Bloc<SurveyEvent, SurveyState> {
   Future _onFilterSurveys(Emitter<SurveyState> emit, _Filter event) async {
     emit(state.copyWith(status: SurveyStatus.loading));
     try {
+      String? token = await authRepository.getToken();
       final data = await surveyRepository.getSurveys(
+        token: token!,
         next: null,
         searchTerm: event.searchTerm,
         startDate: event.startDate,
@@ -94,4 +102,5 @@ class SurveyBloc extends Bloc<SurveyEvent, SurveyState> {
   }
 
   final SurveyRepository surveyRepository;
+  final AuthRepository authRepository;
 }

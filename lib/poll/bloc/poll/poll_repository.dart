@@ -6,7 +6,7 @@ class PollRepository {
   final PollProvider pollProvider;
 
   Future<Map<String, dynamic>> getPolls({
-    required String? token,
+    required String token,
     required String? next,
     String? searchTerm,
     DateTime? startDate,

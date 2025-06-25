@@ -111,6 +111,7 @@ void main() async {
             create:
                 (context) => SurveyBloc(
                   surveyRepository: context.read<SurveyRepository>(),
+                  authRepository: context.read<AuthRepository>(),
                 ),
           ),
           BlocProvider(create: (context) => PageBloc()),

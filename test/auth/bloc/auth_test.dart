@@ -29,7 +29,7 @@ void main() {
     blocTest(
       'emits page [_Unauthenticated] when authenticate is added without token',
       build: () {
-        when(() => mockAuthRepository.getToken()).thenAnswer((_) async => null);
+        when(() => mockAuthRepository.getToken()).thenAnswer((_) async => '');
         return authBloc;
       },
       act: (bloc) => bloc.add(const AuthEvent.authenticate()),

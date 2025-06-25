@@ -6,12 +6,14 @@ class SurveyRepository {
   final SurveyProvider surveyProvider;
 
   Future<Map<String, dynamic>> getSurveys({
+    required String token,
     required String? next,
     String? searchTerm,
     DateTime? startDate,
     DateTime? endDate,
   }) async {
     final data = await surveyProvider.getSurveys(
+      token: token,
       next: next,
       searchTerm: searchTerm,
       startDate: startDate,

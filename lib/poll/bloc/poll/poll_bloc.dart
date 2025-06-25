@@ -56,7 +56,7 @@ class PollBloc extends Bloc<PollEvent, PollState> {
     try {
       String? token = await authRepository.getToken();
       final data = await pollRepository.getPolls(
-        token: token,
+        token: token!,
         next: state.next,
       );
       final List<Poll> polls = List.from(
@@ -79,7 +79,7 @@ class PollBloc extends Bloc<PollEvent, PollState> {
     try {
       String? token = await authRepository.getToken();
       final data = await pollRepository.getPolls(
-        token: token,
+        token: token!,
         next: null,
         searchTerm: event.searchTerm,
         startDate: event.startDate,
