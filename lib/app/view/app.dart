@@ -213,8 +213,8 @@ class _Listeners extends StatelessWidget {
                     context.read<RoomsCubit>().loadRooms(
                       payload: state.message['payload'],
                     );
-                  case 'create':
-                    context.read<RoomDetailCubit>().created(
+                  case 'create_message':
+                    context.read<RoomDetailCubit>().messageCreated(
                       payload: state.message['payload'],
                     );
                 }

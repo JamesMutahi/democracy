@@ -14,11 +14,21 @@ class RoomDetailCubit extends Cubit<RoomDetailState> {
     }
   }
 
-  void created({required Map<String, dynamic> payload}) {
+  void roomCreated({required Map<String, dynamic> payload}) {
     emit(RoomDetailLoading());
     if (payload['response_status'] == 201) {
       final Room room = Room.fromJson(payload['data']);
       emit(RoomCreated(room: room));
+    } else {
+      emit(RoomDetailFailure());
+    }
+  }
+
+  void messageCreated({required Map<String, dynamic> payload}) {
+    emit(RoomDetailLoading());
+    if (payload['response_status'] == 201) {
+      final Room room = Room.fromJson(payload['data']);
+      emit(MessageCreated(room: room));
     } else {
       emit(RoomDetailFailure());
     }

@@ -11,7 +11,9 @@ sealed class Message with _$Message {
     required final int room,
     required final User user,
     required final String text,
+    @JsonKey(name: 'is_read') required final bool isRead,
   }) = _Message;
 
-  factory Message.fromJson(Map<String, Object?> json) => _$MessageFromJson(json);
+  factory Message.fromJson(Map<String, Object?> json) =>
+      _$MessageFromJson(json);
 }

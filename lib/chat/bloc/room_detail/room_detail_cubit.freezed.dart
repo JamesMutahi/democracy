@@ -134,7 +134,7 @@ int get hashCode => Object.hash(runtimeType,room);
 
 @override
 String toString() {
-  return 'RoomDetailState.created(room: $room)';
+  return 'RoomDetailState.roomCreated(room: $room)';
 }
 
 
@@ -164,6 +164,81 @@ class _$RoomCreatedCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? room = null,}) {
   return _then(RoomCreated(
+room: null == room ? _self.room : room // ignore: cast_nullable_to_non_nullable
+as Room,
+  ));
+}
+
+/// Create a copy of RoomDetailState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RoomCopyWith<$Res> get room {
+  
+  return $RoomCopyWith<$Res>(_self.room, (value) {
+    return _then(_self.copyWith(room: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class MessageCreated implements RoomDetailState {
+  const MessageCreated({required this.room});
+  
+
+ final  Room room;
+
+/// Create a copy of RoomDetailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MessageCreatedCopyWith<MessageCreated> get copyWith => _$MessageCreatedCopyWithImpl<MessageCreated>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MessageCreated&&(identical(other.room, room) || other.room == room));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,room);
+
+@override
+String toString() {
+  return 'RoomDetailState.messageCreated(room: $room)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $MessageCreatedCopyWith<$Res> implements $RoomDetailStateCopyWith<$Res> {
+  factory $MessageCreatedCopyWith(MessageCreated value, $Res Function(MessageCreated) _then) = _$MessageCreatedCopyWithImpl;
+@useResult
+$Res call({
+ Room room
+});
+
+
+$RoomCopyWith<$Res> get room;
+
+}
+/// @nodoc
+class _$MessageCreatedCopyWithImpl<$Res>
+    implements $MessageCreatedCopyWith<$Res> {
+  _$MessageCreatedCopyWithImpl(this._self, this._then);
+
+  final MessageCreated _self;
+  final $Res Function(MessageCreated) _then;
+
+/// Create a copy of RoomDetailState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? room = null,}) {
+  return _then(MessageCreated(
 room: null == room ? _self.room : room // ignore: cast_nullable_to_non_nullable
 as Room,
   ));

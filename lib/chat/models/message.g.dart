@@ -11,6 +11,7 @@ _Message _$MessageFromJson(Map<String, dynamic> json) => _Message(
   room: (json['room'] as num).toInt(),
   user: User.fromJson(json['user'] as Map<String, dynamic>),
   text: json['text'] as String,
+  isRead: json['is_read'] as bool,
 );
 
 Map<String, dynamic> _$MessageToJson(_Message instance) => <String, dynamic>{
@@ -18,4 +19,5 @@ Map<String, dynamic> _$MessageToJson(_Message instance) => <String, dynamic>{
   'room': instance.room,
   'user': instance.user,
   'text': instance.text,
+  'is_read': instance.isRead,
 };

@@ -4,6 +4,8 @@ part of 'room_detail_cubit.dart';
 class RoomDetailState with _$RoomDetailState {
   const factory RoomDetailState.initial() = RoomDetailInitial;
   const factory RoomDetailState.loading() = RoomDetailLoading;
-  const factory RoomDetailState.created({required Room room}) = RoomCreated;
+  const factory RoomDetailState.roomCreated({required Room room}) = RoomCreated;
+  const factory RoomDetailState.messageCreated({required Room room}) =
+      MessageCreated;
   const factory RoomDetailState.failure() = RoomDetailFailure;
 }

@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Room {
 
- int get id; List<User> get users;@JsonKey(name: 'last_message') Message? get lastMessage;
+ int get id; List<User> get users;@JsonKey(name: 'last_message') Message get lastMessage; List<Message> get messages;
 /// Create a copy of Room
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $RoomCopyWith<Room> get copyWith => _$RoomCopyWithImpl<Room>(this as Room, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Room&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other.users, users)&&(identical(other.lastMessage, lastMessage) || other.lastMessage == lastMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Room&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other.users, users)&&(identical(other.lastMessage, lastMessage) || other.lastMessage == lastMessage)&&const DeepCollectionEquality().equals(other.messages, messages));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(users),lastMessage);
+int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(users),lastMessage,const DeepCollectionEquality().hash(messages));
 
 @override
 String toString() {
-  return 'Room(id: $id, users: $users, lastMessage: $lastMessage)';
+  return 'Room(id: $id, users: $users, lastMessage: $lastMessage, messages: $messages)';
 }
 
 
@@ -49,11 +49,11 @@ abstract mixin class $RoomCopyWith<$Res>  {
   factory $RoomCopyWith(Room value, $Res Function(Room) _then) = _$RoomCopyWithImpl;
 @useResult
 $Res call({
- int id, List<User> users,@JsonKey(name: 'last_message') Message? lastMessage
+ int id, List<User> users,@JsonKey(name: 'last_message') Message lastMessage, List<Message> messages
 });
 
 
-$MessageCopyWith<$Res>? get lastMessage;
+$MessageCopyWith<$Res> get lastMessage;
 
 }
 /// @nodoc
@@ -66,24 +66,22 @@ class _$RoomCopyWithImpl<$Res>
 
 /// Create a copy of Room
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? users = null,Object? lastMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? users = null,Object? lastMessage = null,Object? messages = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,users: null == users ? _self.users : users // ignore: cast_nullable_to_non_nullable
-as List<User>,lastMessage: freezed == lastMessage ? _self.lastMessage : lastMessage // ignore: cast_nullable_to_non_nullable
-as Message?,
+as List<User>,lastMessage: null == lastMessage ? _self.lastMessage : lastMessage // ignore: cast_nullable_to_non_nullable
+as Message,messages: null == messages ? _self.messages : messages // ignore: cast_nullable_to_non_nullable
+as List<Message>,
   ));
 }
 /// Create a copy of Room
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$MessageCopyWith<$Res>? get lastMessage {
-    if (_self.lastMessage == null) {
-    return null;
-  }
-
-  return $MessageCopyWith<$Res>(_self.lastMessage!, (value) {
+$MessageCopyWith<$Res> get lastMessage {
+  
+  return $MessageCopyWith<$Res>(_self.lastMessage, (value) {
     return _then(_self.copyWith(lastMessage: value));
   });
 }
@@ -94,7 +92,7 @@ $MessageCopyWith<$Res>? get lastMessage {
 @JsonSerializable()
 
 class _Room implements Room {
-  const _Room({required this.id, required final  List<User> users, @JsonKey(name: 'last_message') required this.lastMessage}): _users = users;
+  const _Room({required this.id, required final  List<User> users, @JsonKey(name: 'last_message') required this.lastMessage, required final  List<Message> messages}): _users = users,_messages = messages;
   factory _Room.fromJson(Map<String, dynamic> json) => _$RoomFromJson(json);
 
 @override final  int id;
@@ -105,7 +103,14 @@ class _Room implements Room {
   return EqualUnmodifiableListView(_users);
 }
 
-@override@JsonKey(name: 'last_message') final  Message? lastMessage;
+@override@JsonKey(name: 'last_message') final  Message lastMessage;
+ final  List<Message> _messages;
+@override List<Message> get messages {
+  if (_messages is EqualUnmodifiableListView) return _messages;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_messages);
+}
+
 
 /// Create a copy of Room
 /// with the given fields replaced by the non-null parameter values.
@@ -120,16 +125,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Room&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other._users, _users)&&(identical(other.lastMessage, lastMessage) || other.lastMessage == lastMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Room&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other._users, _users)&&(identical(other.lastMessage, lastMessage) || other.lastMessage == lastMessage)&&const DeepCollectionEquality().equals(other._messages, _messages));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(_users),lastMessage);
+int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(_users),lastMessage,const DeepCollectionEquality().hash(_messages));
 
 @override
 String toString() {
-  return 'Room(id: $id, users: $users, lastMessage: $lastMessage)';
+  return 'Room(id: $id, users: $users, lastMessage: $lastMessage, messages: $messages)';
 }
 
 
@@ -140,11 +145,11 @@ abstract mixin class _$RoomCopyWith<$Res> implements $RoomCopyWith<$Res> {
   factory _$RoomCopyWith(_Room value, $Res Function(_Room) _then) = __$RoomCopyWithImpl;
 @override @useResult
 $Res call({
- int id, List<User> users,@JsonKey(name: 'last_message') Message? lastMessage
+ int id, List<User> users,@JsonKey(name: 'last_message') Message lastMessage, List<Message> messages
 });
 
 
-@override $MessageCopyWith<$Res>? get lastMessage;
+@override $MessageCopyWith<$Res> get lastMessage;
 
 }
 /// @nodoc
@@ -157,12 +162,13 @@ class __$RoomCopyWithImpl<$Res>
 
 /// Create a copy of Room
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? users = null,Object? lastMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? users = null,Object? lastMessage = null,Object? messages = null,}) {
   return _then(_Room(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,users: null == users ? _self._users : users // ignore: cast_nullable_to_non_nullable
-as List<User>,lastMessage: freezed == lastMessage ? _self.lastMessage : lastMessage // ignore: cast_nullable_to_non_nullable
-as Message?,
+as List<User>,lastMessage: null == lastMessage ? _self.lastMessage : lastMessage // ignore: cast_nullable_to_non_nullable
+as Message,messages: null == messages ? _self._messages : messages // ignore: cast_nullable_to_non_nullable
+as List<Message>,
   ));
 }
 
@@ -170,12 +176,9 @@ as Message?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$MessageCopyWith<$Res>? get lastMessage {
-    if (_self.lastMessage == null) {
-    return null;
-  }
-
-  return $MessageCopyWith<$Res>(_self.lastMessage!, (value) {
+$MessageCopyWith<$Res> get lastMessage {
+  
+  return $MessageCopyWith<$Res>(_self.lastMessage, (value) {
     return _then(_self.copyWith(lastMessage: value));
   });
 }

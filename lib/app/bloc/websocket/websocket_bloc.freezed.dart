@@ -1130,4 +1130,79 @@ $RoomCopyWith<$Res> get room {
 }
 }
 
+/// @nodoc
+
+
+class _ListMessages implements WebsocketEvent {
+  const _ListMessages({required this.room});
+  
+
+ final  Room room;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ListMessagesCopyWith<_ListMessages> get copyWith => __$ListMessagesCopyWithImpl<_ListMessages>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ListMessages&&(identical(other.room, room) || other.room == room));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,room);
+
+@override
+String toString() {
+  return 'WebsocketEvent.loadMessages(room: $room)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ListMessagesCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
+  factory _$ListMessagesCopyWith(_ListMessages value, $Res Function(_ListMessages) _then) = __$ListMessagesCopyWithImpl;
+@useResult
+$Res call({
+ Room room
+});
+
+
+$RoomCopyWith<$Res> get room;
+
+}
+/// @nodoc
+class __$ListMessagesCopyWithImpl<$Res>
+    implements _$ListMessagesCopyWith<$Res> {
+  __$ListMessagesCopyWithImpl(this._self, this._then);
+
+  final _ListMessages _self;
+  final $Res Function(_ListMessages) _then;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? room = null,}) {
+  return _then(_ListMessages(
+room: null == room ? _self.room : room // ignore: cast_nullable_to_non_nullable
+as Room,
+  ));
+}
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RoomCopyWith<$Res> get room {
+  
+  return $RoomCopyWith<$Res>(_self.room, (value) {
+    return _then(_self.copyWith(room: value));
+  });
+}
+}
+
 // dart format on
