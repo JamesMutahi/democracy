@@ -68,9 +68,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_CreateMessage>((event, emit) {
       _onCreateMessage(emit, event);
     });
-    on<_ListMessages>((event, emit) {
-      _onListMessages(emit, event);
-    });
   }
 
   Future _onConnect(Emitter<WebsocketState> emit) async {
@@ -326,25 +323,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'request_id': 14,
         'room': event.room.id,
         'message': event.message,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onListMessages(
-    Emitter<WebsocketState> emit,
-    _ListMessages event,
-  ) async {
-    if (state.status == WebsocketStatus.failure) {
-      await _onConnect(emit);
-    }
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': roomsStream,
-      'payload': {
-        'action': 'list_messages',
-        'request_id': 15,
-        'pk': event.room.id,
       },
     };
     _channel.sink.add(jsonEncode(message));

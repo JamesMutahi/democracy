@@ -31,6 +31,4 @@ class WebsocketEvent with _$WebsocketEvent {
     required Room room,
     required String message,
   }) = _CreateMessage;
-  const factory WebsocketEvent.loadMessages({required Room room}) =
-      _ListMessages;
 }

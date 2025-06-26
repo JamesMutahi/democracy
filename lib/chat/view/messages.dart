@@ -22,6 +22,7 @@ class _MessagesState extends State<Messages> {
         if (state is MessageCreated) {
           setState(() {
             _messages.add(state.room.lastMessage);
+            _messages.sort((a, b) => b.id.compareTo(a.id));
           });
         }
       },

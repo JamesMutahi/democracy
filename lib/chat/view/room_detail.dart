@@ -27,13 +27,6 @@ class _RoomDetailState extends State<RoomDetail> {
   final focusNode = FocusNode();
   bool _disableSendButton = true;
 
-  @override
-  void initState() {
-    context.read<WebsocketBloc>().add(
-      WebsocketEvent.loadMessages(room: widget.room),
-    );
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +70,9 @@ class _RoomDetailState extends State<RoomDetail> {
                     ),
                   );
                   _controller.clear();
+                  setState(() {
+                    _disableSendButton = true;
+                  });
                 },
       ),
     );
@@ -113,11 +109,7 @@ class BottomContainer extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(
-            //                    <--- top side
-            color: Theme.of(context).canvasColor,
-            width: 1.0,
-          ),
+          top: BorderSide(color: Theme.of(context).canvasColor, width: 1.0),
         ),
       ),
       child: Row(
