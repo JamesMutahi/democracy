@@ -31,7 +31,8 @@ class _RoomsState extends State<Rooms> {
         if (state is MessageCreated) {
           if (_rooms.any((element) => element.id == state.room.id)) {
             setState(() {
-              _rooms[_rooms.indexWhere((room) => room.id == state.room.id)] = state.room;
+              _rooms[_rooms.indexWhere((room) => room.id == state.room.id)] =
+                  state.room;
             });
           }
         }
@@ -40,7 +41,12 @@ class _RoomsState extends State<Rooms> {
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
         itemBuilder: (BuildContext context, int index) {
-          return RoomTile(currentUser: widget.currentUser, room: _rooms[index]);
+          Room room = _rooms[index];
+          return RoomTile(
+            key: ValueKey(room.id),
+            currentUser: widget.currentUser,
+            room: _rooms[index],
+          );
         },
         itemCount: _rooms.length,
       ),

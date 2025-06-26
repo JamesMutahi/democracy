@@ -27,7 +27,6 @@ class _RoomDetailState extends State<RoomDetail> {
   final focusNode = FocusNode();
   bool _disableSendButton = true;
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,11 +35,17 @@ class _RoomDetailState extends State<RoomDetail> {
           children: [
             ProfileImage(user: widget.otherUser),
             SizedBox(width: 10),
-            Text(widget.title),
+            Text(
+              widget.title,
+              style: TextStyle(overflow: TextOverflow.ellipsis),
+            ),
           ],
         ),
       ),
-      body: Messages(messages: widget.room.messages),
+      body: Messages(
+        otherUser: widget.otherUser,
+        messages: widget.room.messages,
+      ),
       bottomNavigationBar: BottomContainer(
         showCursor: true,
         readOnly: false,
