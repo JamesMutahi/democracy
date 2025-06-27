@@ -1130,4 +1130,144 @@ $RoomCopyWith<$Res> get room {
 }
 }
 
+/// @nodoc
+
+
+class _EditMessage implements WebsocketEvent {
+  const _EditMessage({required this.messageId, required this.text});
+  
+
+ final  int messageId;
+ final  String text;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$EditMessageCopyWith<_EditMessage> get copyWith => __$EditMessageCopyWithImpl<_EditMessage>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EditMessage&&(identical(other.messageId, messageId) || other.messageId == messageId)&&(identical(other.text, text) || other.text == text));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,messageId,text);
+
+@override
+String toString() {
+  return 'WebsocketEvent.editMessage(messageId: $messageId, text: $text)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$EditMessageCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
+  factory _$EditMessageCopyWith(_EditMessage value, $Res Function(_EditMessage) _then) = __$EditMessageCopyWithImpl;
+@useResult
+$Res call({
+ int messageId, String text
+});
+
+
+
+
+}
+/// @nodoc
+class __$EditMessageCopyWithImpl<$Res>
+    implements _$EditMessageCopyWith<$Res> {
+  __$EditMessageCopyWithImpl(this._self, this._then);
+
+  final _EditMessage _self;
+  final $Res Function(_EditMessage) _then;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? messageId = null,Object? text = null,}) {
+  return _then(_EditMessage(
+messageId: null == messageId ? _self.messageId : messageId // ignore: cast_nullable_to_non_nullable
+as int,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _DeleteMessage implements WebsocketEvent {
+  const _DeleteMessage({required final  List<Message> messages}): _messages = messages;
+  
+
+ final  List<Message> _messages;
+ List<Message> get messages {
+  if (_messages is EqualUnmodifiableListView) return _messages;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_messages);
+}
+
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DeleteMessageCopyWith<_DeleteMessage> get copyWith => __$DeleteMessageCopyWithImpl<_DeleteMessage>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DeleteMessage&&const DeepCollectionEquality().equals(other._messages, _messages));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_messages));
+
+@override
+String toString() {
+  return 'WebsocketEvent.deleteMessage(messages: $messages)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DeleteMessageCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
+  factory _$DeleteMessageCopyWith(_DeleteMessage value, $Res Function(_DeleteMessage) _then) = __$DeleteMessageCopyWithImpl;
+@useResult
+$Res call({
+ List<Message> messages
+});
+
+
+
+
+}
+/// @nodoc
+class __$DeleteMessageCopyWithImpl<$Res>
+    implements _$DeleteMessageCopyWith<$Res> {
+  __$DeleteMessageCopyWithImpl(this._self, this._then);
+
+  final _DeleteMessage _self;
+  final $Res Function(_DeleteMessage) _then;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? messages = null,}) {
+  return _then(_DeleteMessage(
+messages: null == messages ? _self._messages : messages // ignore: cast_nullable_to_non_nullable
+as List<Message>,
+  ));
+}
+
+
+}
+
 // dart format on

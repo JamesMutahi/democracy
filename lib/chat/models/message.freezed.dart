@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Message {
 
- int get id; int get room; User get user; String get text;@JsonKey(name: 'is_read') bool get isRead;@JsonKey(name: 'is_deleted') bool get isDeleted;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt;
+ int get id; int get room; User get user; String get text;@JsonKey(name: 'is_read') bool get isRead;@JsonKey(name: 'is_edited') bool get isEdited;@JsonKey(name: 'is_deleted') bool get isDeleted;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt;
 /// Create a copy of Message
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $MessageCopyWith<Message> get copyWith => _$MessageCopyWithImpl<Message>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Message&&(identical(other.id, id) || other.id == id)&&(identical(other.room, room) || other.room == room)&&(identical(other.user, user) || other.user == user)&&(identical(other.text, text) || other.text == text)&&(identical(other.isRead, isRead) || other.isRead == isRead)&&(identical(other.isDeleted, isDeleted) || other.isDeleted == isDeleted)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Message&&(identical(other.id, id) || other.id == id)&&(identical(other.room, room) || other.room == room)&&(identical(other.user, user) || other.user == user)&&(identical(other.text, text) || other.text == text)&&(identical(other.isRead, isRead) || other.isRead == isRead)&&(identical(other.isEdited, isEdited) || other.isEdited == isEdited)&&(identical(other.isDeleted, isDeleted) || other.isDeleted == isDeleted)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,room,user,text,isRead,isDeleted,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,id,room,user,text,isRead,isEdited,isDeleted,createdAt,updatedAt);
 
 @override
 String toString() {
-  return 'Message(id: $id, room: $room, user: $user, text: $text, isRead: $isRead, isDeleted: $isDeleted, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'Message(id: $id, room: $room, user: $user, text: $text, isRead: $isRead, isEdited: $isEdited, isDeleted: $isDeleted, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $MessageCopyWith<$Res>  {
   factory $MessageCopyWith(Message value, $Res Function(Message) _then) = _$MessageCopyWithImpl;
 @useResult
 $Res call({
- int id, int room, User user, String text,@JsonKey(name: 'is_read') bool isRead,@JsonKey(name: 'is_deleted') bool isDeleted,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt
+ int id, int room, User user, String text,@JsonKey(name: 'is_read') bool isRead,@JsonKey(name: 'is_edited') bool isEdited,@JsonKey(name: 'is_deleted') bool isDeleted,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt
 });
 
 
@@ -66,13 +66,14 @@ class _$MessageCopyWithImpl<$Res>
 
 /// Create a copy of Message
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? room = null,Object? user = null,Object? text = null,Object? isRead = null,Object? isDeleted = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? room = null,Object? user = null,Object? text = null,Object? isRead = null,Object? isEdited = null,Object? isDeleted = null,Object? createdAt = null,Object? updatedAt = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,room: null == room ? _self.room : room // ignore: cast_nullable_to_non_nullable
 as int,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as User,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,isRead: null == isRead ? _self.isRead : isRead // ignore: cast_nullable_to_non_nullable
+as bool,isEdited: null == isEdited ? _self.isEdited : isEdited // ignore: cast_nullable_to_non_nullable
 as bool,isDeleted: null == isDeleted ? _self.isDeleted : isDeleted // ignore: cast_nullable_to_non_nullable
 as bool,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
@@ -96,7 +97,7 @@ $UserCopyWith<$Res> get user {
 @JsonSerializable()
 
 class _Message implements Message {
-  const _Message({required this.id, required this.room, required this.user, required this.text, @JsonKey(name: 'is_read') required this.isRead, @JsonKey(name: 'is_deleted') required this.isDeleted, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt});
+  const _Message({required this.id, required this.room, required this.user, required this.text, @JsonKey(name: 'is_read') required this.isRead, @JsonKey(name: 'is_edited') required this.isEdited, @JsonKey(name: 'is_deleted') required this.isDeleted, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt});
   factory _Message.fromJson(Map<String, dynamic> json) => _$MessageFromJson(json);
 
 @override final  int id;
@@ -104,6 +105,7 @@ class _Message implements Message {
 @override final  User user;
 @override final  String text;
 @override@JsonKey(name: 'is_read') final  bool isRead;
+@override@JsonKey(name: 'is_edited') final  bool isEdited;
 @override@JsonKey(name: 'is_deleted') final  bool isDeleted;
 @override@JsonKey(name: 'created_at') final  DateTime createdAt;
 @override@JsonKey(name: 'updated_at') final  DateTime updatedAt;
@@ -121,16 +123,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Message&&(identical(other.id, id) || other.id == id)&&(identical(other.room, room) || other.room == room)&&(identical(other.user, user) || other.user == user)&&(identical(other.text, text) || other.text == text)&&(identical(other.isRead, isRead) || other.isRead == isRead)&&(identical(other.isDeleted, isDeleted) || other.isDeleted == isDeleted)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Message&&(identical(other.id, id) || other.id == id)&&(identical(other.room, room) || other.room == room)&&(identical(other.user, user) || other.user == user)&&(identical(other.text, text) || other.text == text)&&(identical(other.isRead, isRead) || other.isRead == isRead)&&(identical(other.isEdited, isEdited) || other.isEdited == isEdited)&&(identical(other.isDeleted, isDeleted) || other.isDeleted == isDeleted)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,room,user,text,isRead,isDeleted,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,id,room,user,text,isRead,isEdited,isDeleted,createdAt,updatedAt);
 
 @override
 String toString() {
-  return 'Message(id: $id, room: $room, user: $user, text: $text, isRead: $isRead, isDeleted: $isDeleted, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'Message(id: $id, room: $room, user: $user, text: $text, isRead: $isRead, isEdited: $isEdited, isDeleted: $isDeleted, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -141,7 +143,7 @@ abstract mixin class _$MessageCopyWith<$Res> implements $MessageCopyWith<$Res> {
   factory _$MessageCopyWith(_Message value, $Res Function(_Message) _then) = __$MessageCopyWithImpl;
 @override @useResult
 $Res call({
- int id, int room, User user, String text,@JsonKey(name: 'is_read') bool isRead,@JsonKey(name: 'is_deleted') bool isDeleted,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt
+ int id, int room, User user, String text,@JsonKey(name: 'is_read') bool isRead,@JsonKey(name: 'is_edited') bool isEdited,@JsonKey(name: 'is_deleted') bool isDeleted,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt
 });
 
 
@@ -158,13 +160,14 @@ class __$MessageCopyWithImpl<$Res>
 
 /// Create a copy of Message
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? room = null,Object? user = null,Object? text = null,Object? isRead = null,Object? isDeleted = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? room = null,Object? user = null,Object? text = null,Object? isRead = null,Object? isEdited = null,Object? isDeleted = null,Object? createdAt = null,Object? updatedAt = null,}) {
   return _then(_Message(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,room: null == room ? _self.room : room // ignore: cast_nullable_to_non_nullable
 as int,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as User,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,isRead: null == isRead ? _self.isRead : isRead // ignore: cast_nullable_to_non_nullable
+as bool,isEdited: null == isEdited ? _self.isEdited : isEdited // ignore: cast_nullable_to_non_nullable
 as bool,isDeleted: null == isDeleted ? _self.isDeleted : isDeleted // ignore: cast_nullable_to_non_nullable
 as bool,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable

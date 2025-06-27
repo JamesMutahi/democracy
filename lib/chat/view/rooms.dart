@@ -36,6 +36,14 @@ class _RoomsState extends State<Rooms> {
             });
           }
         }
+        if (state is MessageDeleted) {
+          if (_rooms.any((element) => element.id == state.room.id)) {
+            setState(() {
+              _rooms[_rooms.indexWhere((room) => room.id == state.room.id)] =
+                  state.room;
+            });
+          }
+        }
       },
       child: ListView.builder(
         scrollDirection: Axis.vertical,
@@ -69,7 +77,15 @@ class RoomTile extends StatelessWidget {
       title: Text(title),
       subtitle: Text(
         room.lastMessage.text,
-        style: TextStyle(overflow: TextOverflow.ellipsis),
+        style: TextStyle(
+          overflow: TextOverflow.ellipsis,
+          color:
+              room.lastMessage.isDeleted
+                  ? Theme.of(context).disabledColor
+                  : Theme.of(context).hintColor,
+          fontStyle:
+              room.lastMessage.isDeleted ? FontStyle.italic : FontStyle.normal,
+        ),
       ),
       trailing:
           room.lastMessage.isRead

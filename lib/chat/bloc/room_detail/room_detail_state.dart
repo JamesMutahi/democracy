@@ -7,5 +7,11 @@ class RoomDetailState with _$RoomDetailState {
   const factory RoomDetailState.roomCreated({required Room room}) = RoomCreated;
   const factory RoomDetailState.messageCreated({required Room room}) =
       MessageCreated;
+  const factory RoomDetailState.messageEdited({required Message message}) =
+      MessageEdited;
+  const factory RoomDetailState.messageDeleted({
+    required Room room,
+    required Message message,
+  }) = MessageDeleted;
   const factory RoomDetailState.failure() = RoomDetailFailure;
 }

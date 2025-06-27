@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/models/user.dart';
+import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/models/room.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:equatable/equatable.dart';
@@ -68,6 +69,12 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_CreateMessage>((event, emit) {
       _onCreateMessage(emit, event);
     });
+    on<_EditMessage>((event, emit) {
+      _onEditMessage(emit, event);
+    });
+    on<_DeleteMessage>((event, emit) {
+      _onDeleteMessage(emit, event);
+    });
   }
 
   Future _onConnect(Emitter<WebsocketState> emit) async {
@@ -96,6 +103,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'payload': {"action": 'list', "request_id": 1},
       };
       _channel.sink.add(jsonEncode(message));
+      add(WebsocketEvent.loadRooms());
     } catch (e) {
       add(_ChangeState(state: state.copyWith(status: WebsocketStatus.failure)));
     }
@@ -326,6 +334,43 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       },
     };
     _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onEditMessage(
+    Emitter<WebsocketState> emit,
+    _EditMessage event,
+  ) async {
+    if (state.status == WebsocketStatus.failure) {
+      await _onConnect(emit);
+    }
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    Map<String, dynamic> message = {
+      'stream': roomsStream,
+      'payload': {
+        'action': 'delete_message',
+        'request_id': 15,
+        'pk': event.messageId,
+        'data': {'text': event.text},
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onDeleteMessage(
+    Emitter<WebsocketState> emit,
+    _DeleteMessage event,
+  ) async {
+    if (state.status == WebsocketStatus.failure) {
+      await _onConnect(emit);
+    }
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    for (Message msg in event.messages) {
+      Map<String, dynamic> message = {
+        'stream': roomsStream,
+        'payload': {'action': 'delete_message', 'request_id': 15, 'pk': msg.id},
+      };
+      _channel.sink.add(jsonEncode(message));
+    }
   }
 
   @override

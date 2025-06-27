@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/models/room.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -29,6 +30,29 @@ class RoomDetailCubit extends Cubit<RoomDetailState> {
     if (payload['response_status'] == 201) {
       final Room room = Room.fromJson(payload['data']);
       emit(MessageCreated(room: room));
+    } else {
+      emit(RoomDetailFailure());
+    }
+  }
+
+  void messageEdited({required Map<String, dynamic> payload}) {
+    emit(RoomDetailLoading());
+    if (payload['response_status'] == 200) {
+      final Message message = Message.fromJson(payload['data']);
+      emit(MessageEdited(message: message));
+    } else {
+      emit(RoomDetailFailure());
+    }
+  }
+
+  void messageDeleted({required Map<String, dynamic> payload}) {
+    if (payload['response_status'] == 204) {
+      emit(
+        MessageDeleted(
+          room: Room.fromJson(payload['data']['room']),
+          message: Message.fromJson(payload['data']['message']),
+        ),
+      );
     } else {
       emit(RoomDetailFailure());
     }

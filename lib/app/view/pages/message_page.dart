@@ -15,15 +15,14 @@ class MessagePage extends StatefulWidget {
   State<MessagePage> createState() => _MessagePageState();
 }
 
-class _MessagePageState extends State<MessagePage> {
+class _MessagePageState extends State<MessagePage>
+    with AutomaticKeepAliveClientMixin {
   @override
-  void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.loadRooms());
-    super.initState();
-  }
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BlocBuilder<RoomsCubit, RoomsState>(
       builder: (context, state) {
         switch (state) {
@@ -41,7 +40,7 @@ class _MessagePageState extends State<MessagePage> {
             return FailureRetryButton(
               onPressed: () {
                 context.read<RoomsCubit>().retryButtonPressed();
-                context.read<WebsocketBloc>().add(WebsocketEvent.loadRooms());
+                context.read<WebsocketBloc>().add(WebsocketEvent.connect());
               },
             );
           default:

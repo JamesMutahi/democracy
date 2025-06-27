@@ -217,6 +217,10 @@ class _Listeners extends StatelessWidget {
                     context.read<RoomDetailCubit>().messageCreated(
                       payload: state.message['payload'],
                     );
+                  case 'delete_message':
+                    context.read<RoomDetailCubit>().messageDeleted(
+                      payload: state.message['payload'],
+                    );
                 }
               }
             }

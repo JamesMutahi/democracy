@@ -31,4 +31,11 @@ class WebsocketEvent with _$WebsocketEvent {
     required Room room,
     required String message,
   }) = _CreateMessage;
+  const factory WebsocketEvent.editMessage({
+    required int messageId,
+    required String text,
+  }) = _EditMessage;
+  const factory WebsocketEvent.deleteMessage({
+    required List<Message> messages,
+  }) = _DeleteMessage;
 }

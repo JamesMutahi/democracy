@@ -9,6 +9,7 @@ import 'package:democracy/auth/bloc/otp_counter/otp_counter_bloc.dart';
 import 'package:democracy/auth/bloc/password_change/password_change_cubit.dart';
 import 'package:democracy/auth/bloc/password_reset/password_reset_cubit.dart';
 import 'package:democracy/auth/bloc/registration/registration_cubit.dart';
+import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/rooms/rooms_cubit.dart';
 import 'package:democracy/chat/bloc/room_detail/room_detail_cubit.dart';
 import 'package:democracy/poll/bloc/poll/poll_bloc.dart';
@@ -147,6 +148,7 @@ void main() async {
           BlocProvider(create: (context) => UserRepliesCubit()),
           BlocProvider(create: (context) => RoomsCubit()),
           BlocProvider(create: (context) => RoomDetailCubit()),
+          BlocProvider(create: (context) => MessageActionsCubit()),
         ],
         child: const MyApp(),
       ),
