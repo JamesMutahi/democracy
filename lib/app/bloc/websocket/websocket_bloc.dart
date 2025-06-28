@@ -347,10 +347,10 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Map<String, dynamic> message = {
       'stream': roomsStream,
       'payload': {
-        'action': 'delete_message',
+        'action': 'edit_message',
         'request_id': 15,
         'pk': event.messageId,
-        'data': {'text': event.text},
+        'text': event.text,
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -367,7 +367,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     for (Message msg in event.messages) {
       Map<String, dynamic> message = {
         'stream': roomsStream,
-        'payload': {'action': 'delete_message', 'request_id': 15, 'pk': msg.id},
+        'payload': {'action': 'delete_message', 'request_id': 16, 'pk': msg.id},
       };
       _channel.sink.add(jsonEncode(message));
     }

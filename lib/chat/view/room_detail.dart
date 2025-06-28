@@ -4,6 +4,7 @@ import 'package:democracy/auth/models/user.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/models/room.dart';
+import 'package:democracy/chat/view/edit_message.dart';
 import 'package:democracy/chat/view/messages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,28 +30,32 @@ class RoomDetail extends StatefulWidget {
 
 class _RoomDetailState extends State<RoomDetail> {
   final _controller = TextEditingController();
-  final focusNode = FocusNode();
+  final _focusNode = FocusNode();
   bool _disableSendButton = true;
   bool showMessageActions = false;
   Set<Message> messages = {};
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<MessageActionsCubit, MessageActionsState>(
-      listener: (context, state) {
-        if (state.status == MessageActionsStatus.actionButtonsOpened) {
-          setState(() {
-            showMessageActions = true;
-            messages = state.messages;
-          });
-        }
-        if (state.status == MessageActionsStatus.actionButtonsClosed) {
-          setState(() {
-            showMessageActions = false;
-            messages = {};
-          });
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<MessageActionsCubit, MessageActionsState>(
+          listener: (context, state) {
+            if (state.status == MessageActionsStatus.actionButtonsOpened) {
+              setState(() {
+                showMessageActions = true;
+                messages = state.messages;
+              });
+            }
+            if (state.status == MessageActionsStatus.actionButtonsClosed) {
+              setState(() {
+                showMessageActions = false;
+                messages = {};
+              });
+            }
+          },
+        ),
+      ],
       child: PopScope(
         canPop: !showMessageActions,
         onPopInvokedWithResult: (didPop, __) {
@@ -59,8 +64,7 @@ class _RoomDetailState extends State<RoomDetail> {
         child: Scaffold(
           appBar: AppBar(
             title:
-                showMessageActions &&
-                        !messages.any((message) => message.isDeleted == true)
+                showMessageActions
                     ? Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -74,13 +78,31 @@ class _RoomDetailState extends State<RoomDetail> {
                                     ) <
                                     Duration(minutes: 15))
                                 ? IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) => EditMessage(
+                                              message: messages.first,
+                                            ),
+                                      ),
+                                    ).then((value) {
+                                      if (mounted) {
+                                        context
+                                            .read<MessageActionsCubit>()
+                                            .closeActionButtons();
+                                      }
+                                    });
+                                  },
                                   icon: Icon(Symbols.edit_rounded),
                                 )
                                 : SizedBox.shrink()
                             : SizedBox.shrink(),
                         IconButton(
                           onPressed: () async {
+                            context
+                                .read<MessageActionsCubit>()
+                                .closeActionButtons();
                             await Clipboard.setData(
                               ClipboardData(
                                 text:
@@ -88,13 +110,7 @@ class _RoomDetailState extends State<RoomDetail> {
                                         ? messages.first.text
                                         : copyMultiple(forCopy: messages),
                               ),
-                            ).whenComplete(() {
-                              if (mounted) {
-                                context
-                                    .read<MessageActionsCubit>()
-                                    .closeActionButtons();
-                              }
-                            });
+                            );
                           },
                           icon: Icon(Symbols.content_copy),
                         ),
@@ -128,11 +144,9 @@ class _RoomDetailState extends State<RoomDetail> {
                       ],
                     ),
           ),
-          body: Messages(
-            otherUser: widget.otherUser,
-            messages: widget.room.messages,
-          ),
+          body: Messages(messages: widget.room.messages),
           bottomNavigationBar: BottomContainer(
+            focusNode: _focusNode,
             showCursor: true,
             readOnly: false,
             controller: _controller,
@@ -227,8 +241,10 @@ class DeleteDialog extends StatelessWidget {
 class BottomContainer extends StatelessWidget {
   const BottomContainer({
     super.key,
+    required this.focusNode,
     required this.showCursor,
     required this.readOnly,
+    this.autoFocus = false,
     required this.controller,
     required this.onTap,
     required this.onChanged,
@@ -237,8 +253,10 @@ class BottomContainer extends StatelessWidget {
     this.onSend,
   });
 
+  final FocusNode focusNode;
   final bool showCursor;
   final bool readOnly;
+  final bool autoFocus;
   final TextEditingController controller;
   final VoidCallback onTap;
   final void Function(String) onChanged;
@@ -262,8 +280,10 @@ class BottomContainer extends StatelessWidget {
           Flexible(
             flex: 6,
             child: TextFormField(
+              focusNode: focusNode,
               showCursor: showCursor,
               readOnly: readOnly,
+              autofocus: autoFocus,
               keyboardType: TextInputType.multiline,
               minLines: 1,
               maxLines: 4,

@@ -7,8 +7,6 @@ enum MessageActionsStatus {
   actionButtonsClosed,
 }
 
-const String pollUrl = '/api/polls/';
-
 final class MessageActionsState extends Equatable {
   const MessageActionsState({
     this.status = MessageActionsStatus.initial,

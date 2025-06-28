@@ -36,6 +36,14 @@ class _RoomsState extends State<Rooms> {
             });
           }
         }
+        if (state is MessageEdited) {
+          if (_rooms.any((element) => element.id == state.room.id)) {
+            setState(() {
+              _rooms[_rooms.indexWhere((room) => room.id == state.room.id)] =
+                  state.room;
+            });
+          }
+        }
         if (state is MessageDeleted) {
           if (_rooms.any((element) => element.id == state.room.id)) {
             setState(() {

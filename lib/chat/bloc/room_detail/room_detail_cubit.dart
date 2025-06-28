@@ -38,14 +38,19 @@ class RoomDetailCubit extends Cubit<RoomDetailState> {
   void messageEdited({required Map<String, dynamic> payload}) {
     emit(RoomDetailLoading());
     if (payload['response_status'] == 200) {
-      final Message message = Message.fromJson(payload['data']);
-      emit(MessageEdited(message: message));
+      emit(
+        MessageEdited(
+          room: Room.fromJson(payload['data']['room']),
+          message: Message.fromJson(payload['data']['message']),
+        ),
+      );
     } else {
       emit(RoomDetailFailure());
     }
   }
 
   void messageDeleted({required Map<String, dynamic> payload}) {
+    emit(RoomDetailLoading());
     if (payload['response_status'] == 204) {
       emit(
         MessageDeleted(

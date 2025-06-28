@@ -260,9 +260,10 @@ $RoomCopyWith<$Res> get room {
 
 
 class MessageEdited implements RoomDetailState {
-  const MessageEdited({required this.message});
+  const MessageEdited({required this.room, required this.message});
   
 
+ final  Room room;
  final  Message message;
 
 /// Create a copy of RoomDetailState
@@ -275,16 +276,16 @@ $MessageEditedCopyWith<MessageEdited> get copyWith => _$MessageEditedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MessageEdited&&(identical(other.message, message) || other.message == message));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MessageEdited&&(identical(other.room, room) || other.room == room)&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode => Object.hash(runtimeType,room,message);
 
 @override
 String toString() {
-  return 'RoomDetailState.messageEdited(message: $message)';
+  return 'RoomDetailState.messageEdited(room: $room, message: $message)';
 }
 
 
@@ -295,11 +296,11 @@ abstract mixin class $MessageEditedCopyWith<$Res> implements $RoomDetailStateCop
   factory $MessageEditedCopyWith(MessageEdited value, $Res Function(MessageEdited) _then) = _$MessageEditedCopyWithImpl;
 @useResult
 $Res call({
- Message message
+ Room room, Message message
 });
 
 
-$MessageCopyWith<$Res> get message;
+$RoomCopyWith<$Res> get room;$MessageCopyWith<$Res> get message;
 
 }
 /// @nodoc
@@ -312,14 +313,24 @@ class _$MessageEditedCopyWithImpl<$Res>
 
 /// Create a copy of RoomDetailState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? room = null,Object? message = null,}) {
   return _then(MessageEdited(
-message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+room: null == room ? _self.room : room // ignore: cast_nullable_to_non_nullable
+as Room,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as Message,
   ));
 }
 
 /// Create a copy of RoomDetailState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RoomCopyWith<$Res> get room {
+  
+  return $RoomCopyWith<$Res>(_self.room, (value) {
+    return _then(_self.copyWith(room: value));
+  });
+}/// Create a copy of RoomDetailState
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
