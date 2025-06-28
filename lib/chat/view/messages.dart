@@ -79,10 +79,7 @@ class _MessagesState extends State<Messages> {
 }
 
 class MessageCard extends StatefulWidget {
-  const MessageCard({
-    super.key,
-    required this.message,
-  });
+  const MessageCard({super.key, required this.message});
 
   final Message message;
 

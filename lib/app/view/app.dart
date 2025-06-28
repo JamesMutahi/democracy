@@ -225,6 +225,10 @@ class _Listeners extends StatelessWidget {
                     context.read<RoomDetailCubit>().messageDeleted(
                       payload: state.message['payload'],
                     );
+                  case 'mark_as_read':
+                    context.read<RoomDetailCubit>().markedAsRead(
+                      payload: state.message['payload'],
+                    );
                 }
               }
             }

@@ -1270,4 +1270,79 @@ as List<Message>,
 
 }
 
+/// @nodoc
+
+
+class _MarkAsRead implements WebsocketEvent {
+  const _MarkAsRead({required this.room});
+  
+
+ final  Room room;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$MarkAsReadCopyWith<_MarkAsRead> get copyWith => __$MarkAsReadCopyWithImpl<_MarkAsRead>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MarkAsRead&&(identical(other.room, room) || other.room == room));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,room);
+
+@override
+String toString() {
+  return 'WebsocketEvent.markAsRead(room: $room)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$MarkAsReadCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
+  factory _$MarkAsReadCopyWith(_MarkAsRead value, $Res Function(_MarkAsRead) _then) = __$MarkAsReadCopyWithImpl;
+@useResult
+$Res call({
+ Room room
+});
+
+
+$RoomCopyWith<$Res> get room;
+
+}
+/// @nodoc
+class __$MarkAsReadCopyWithImpl<$Res>
+    implements _$MarkAsReadCopyWith<$Res> {
+  __$MarkAsReadCopyWithImpl(this._self, this._then);
+
+  final _MarkAsRead _self;
+  final $Res Function(_MarkAsRead) _then;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? room = null,}) {
+  return _then(_MarkAsRead(
+room: null == room ? _self.room : room // ignore: cast_nullable_to_non_nullable
+as Room,
+  ));
+}
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RoomCopyWith<$Res> get room {
+  
+  return $RoomCopyWith<$Res>(_self.room, (value) {
+    return _then(_self.copyWith(room: value));
+  });
+}
+}
+
 // dart format on

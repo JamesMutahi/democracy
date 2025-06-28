@@ -38,4 +38,5 @@ class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.deleteMessage({
     required List<Message> messages,
   }) = _DeleteMessage;
+  const factory WebsocketEvent.markAsRead({required Room room}) = _MarkAsRead;
 }

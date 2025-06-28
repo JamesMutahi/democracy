@@ -21,13 +21,14 @@ class _EditMessageState extends State<EditMessage> {
 
   @override
   void initState() {
-    _controller.text=widget.message.text;
+    _controller.text = widget.message.text;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.5),
       appBar: AppBar(title: Text('Edit message')),
       body: Messages(messages: [widget.message]),
       bottomNavigationBar: BottomContainer(

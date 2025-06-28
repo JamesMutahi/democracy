@@ -75,6 +75,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_DeleteMessage>((event, emit) {
       _onDeleteMessage(emit, event);
     });
+    on<_MarkAsRead>((event, emit) {
+      _onMarkAsRead(emit, event);
+    });
   }
 
   Future _onConnect(Emitter<WebsocketState> emit) async {
@@ -371,6 +374,22 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       };
       _channel.sink.add(jsonEncode(message));
     }
+  }
+
+  Future _onMarkAsRead(Emitter<WebsocketState> emit, _MarkAsRead event) async {
+    if (state.status == WebsocketStatus.failure) {
+      await _onConnect(emit);
+    }
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    Map<String, dynamic> message = {
+      'stream': roomsStream,
+      'payload': {
+        'action': 'mark_as_read',
+        'request_id': 17,
+        'pk': event.room.id,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
   }
 
   @override

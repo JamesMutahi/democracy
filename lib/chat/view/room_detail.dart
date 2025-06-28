@@ -2,6 +2,7 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/auth/models/user.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
+import 'package:democracy/chat/bloc/room_detail/room_detail_cubit.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/models/room.dart';
 import 'package:democracy/chat/view/edit_message.dart';
@@ -34,11 +35,23 @@ class _RoomDetailState extends State<RoomDetail> {
   bool _disableSendButton = true;
   bool showMessageActions = false;
   Set<Message> messages = {};
+  late Room _room = widget.room;
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
+        BlocListener<RoomDetailCubit, RoomDetailState>(
+          listener: (context, state) {
+            if (state is MarkedAsRead) {
+              if (_room.id == state.room.id) {
+                setState(() {
+                  _room = state.room;
+                });
+              }
+            }
+          },
+        ),
         BlocListener<MessageActionsCubit, MessageActionsState>(
           listener: (context, state) {
             if (state.status == MessageActionsStatus.actionButtonsOpened) {
@@ -59,7 +72,9 @@ class _RoomDetailState extends State<RoomDetail> {
       child: PopScope(
         canPop: !showMessageActions,
         onPopInvokedWithResult: (didPop, __) {
-          context.read<MessageActionsCubit>().closeActionButtons();
+          if (showMessageActions) {
+            context.read<MessageActionsCubit>().closeActionButtons();
+          }
         },
         child: Scaffold(
           appBar: AppBar(
@@ -79,20 +94,23 @@ class _RoomDetailState extends State<RoomDetail> {
                                     Duration(minutes: 15))
                                 ? IconButton(
                                   onPressed: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder:
-                                            (context) => EditMessage(
-                                              message: messages.first,
-                                            ),
-                                      ),
-                                    ).then((value) {
-                                      if (mounted) {
-                                        context
-                                            .read<MessageActionsCubit>()
-                                            .closeActionButtons();
-                                      }
-                                    });
+                                    Navigator.of(context)
+                                        .push(
+                                          PageRouteBuilder(
+                                            opaque: false, // set to false
+                                            pageBuilder:
+                                                (_, __, ___) => EditMessage(
+                                                  message: messages.first,
+                                                ),
+                                          ),
+                                        )
+                                        .whenComplete(() {
+                                          if (mounted) {
+                                            context
+                                                .read<MessageActionsCubit>()
+                                                .closeActionButtons();
+                                          }
+                                        });
                                   },
                                   icon: Icon(Symbols.edit_rounded),
                                 )
@@ -144,7 +162,7 @@ class _RoomDetailState extends State<RoomDetail> {
                       ],
                     ),
           ),
-          body: Messages(messages: widget.room.messages),
+          body: Messages(messages: _room.messages),
           bottomNavigationBar: BottomContainer(
             focusNode: _focusNode,
             showCursor: true,
@@ -170,7 +188,7 @@ class _RoomDetailState extends State<RoomDetail> {
                     : () {
                       context.read<WebsocketBloc>().add(
                         WebsocketEvent.createMessage(
-                          room: widget.room,
+                          room: _room,
                           message: _controller.text,
                         ),
                       );

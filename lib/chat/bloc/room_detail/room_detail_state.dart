@@ -15,5 +15,8 @@ class RoomDetailState with _$RoomDetailState {
     required Room room,
     required Message message,
   }) = MessageDeleted;
+  const factory RoomDetailState.markedAsRead({
+    required Room room,
+  }) = MarkedAsRead;
   const factory RoomDetailState.failure() = RoomDetailFailure;
 }

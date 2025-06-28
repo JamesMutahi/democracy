@@ -62,4 +62,13 @@ class RoomDetailCubit extends Cubit<RoomDetailState> {
       emit(RoomDetailFailure());
     }
   }
+
+  void markedAsRead({required Map<String, dynamic> payload}) {
+    emit(RoomDetailLoading());
+    if (payload['response_status'] == 200) {
+      emit(MarkedAsRead(room: Room.fromJson(payload['data'])));
+    } else {
+      emit(RoomDetailFailure());
+    }
+  }
 }

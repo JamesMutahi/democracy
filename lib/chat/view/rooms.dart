@@ -1,3 +1,4 @@
+import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/auth/models/user.dart';
 import 'package:democracy/chat/bloc/room_detail/room_detail_cubit.dart';
@@ -52,6 +53,15 @@ class _RoomsState extends State<Rooms> {
             });
           }
         }
+        if (state is MarkedAsRead) {
+          if (_rooms.any((element) => element.id == state.room.id)) {
+            print(state.room.lastMessage.isRead);
+            setState(() {
+              _rooms[_rooms.indexWhere((room) => room.id == state.room.id)] =
+                  state.room;
+            });
+          }
+        }
       },
       child: ListView.builder(
         scrollDirection: Axis.vertical,
@@ -100,6 +110,12 @@ class RoomTile extends StatelessWidget {
               ? SizedBox.shrink()
               : Icon(Icons.circle_rounded, size: 5, color: Colors.greenAccent),
       onTap: () {
+        if (!room.lastMessage.isRead &&
+            room.lastMessage.user.id != currentUser.id) {
+          context.read<WebsocketBloc>().add(
+            WebsocketEvent.markAsRead(room: room),
+          );
+        }
         Navigator.of(context).push(
           MaterialPageRoute(
             builder:
