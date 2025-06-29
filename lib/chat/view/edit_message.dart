@@ -1,7 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/view/messages.dart';
-import 'package:democracy/chat/view/room_detail.dart';
+import 'package:democracy/chat/view/chat_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

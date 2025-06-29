@@ -8,7 +8,7 @@ part 'message.g.dart';
 sealed class Message with _$Message {
   const factory Message({
     required final int id,
-    required final int room,
+    required final int chat,
     required final User user,
     required final String text,
     @JsonKey(name: 'is_read') required final bool isRead,

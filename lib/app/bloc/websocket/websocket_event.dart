@@ -24,12 +24,12 @@ class WebsocketEvent with _$WebsocketEvent {
       _LoadLikedPosts;
   const factory WebsocketEvent.loadUserReplies({required User user}) =
       _LoadUserReplies;
-  const factory WebsocketEvent.loadRooms() = _LoadRooms;
-  const factory WebsocketEvent.createRoom({required List<User> users}) =
-      _CreateRoom;
+  const factory WebsocketEvent.loadChats() = _LoadChats;
+  const factory WebsocketEvent.createChat({required List<User> users}) =
+      _CreateChat;
   const factory WebsocketEvent.createMessage({
-    required Room room,
-    required String message,
+    required Chat chat,
+    required String text,
   }) = _CreateMessage;
   const factory WebsocketEvent.editMessage({
     required int messageId,
@@ -38,5 +38,5 @@ class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.deleteMessage({
     required List<Message> messages,
   }) = _DeleteMessage;
-  const factory WebsocketEvent.markAsRead({required Room room}) = _MarkAsRead;
+  const factory WebsocketEvent.markAsRead({required Chat chat}) = _MarkAsRead;
 }

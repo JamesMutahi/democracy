@@ -5,7 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/models/user.dart';
 import 'package:democracy/chat/models/message.dart';
-import 'package:democracy/chat/models/room.dart';
+import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -18,7 +18,8 @@ part 'websocket_state.dart';
 part 'websocket_bloc.freezed.dart';
 
 var postsStream = 'posts';
-var roomsStream = 'rooms';
+var chatsStream = 'chats';
+int messageRequestId = 2;
 
 class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   WebsocketBloc({required this.authRepository})
@@ -60,11 +61,11 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_LoadUserReplies>((event, emit) {
       _onLoadUserReplies(emit, event);
     });
-    on<_LoadRooms>((event, emit) {
-      _onLoadRooms(emit, event);
+    on<_LoadChats>((event, emit) {
+      _onLoadChats(emit, event);
     });
-    on<_CreateRoom>((event, emit) {
-      _onCreateRoom(emit, event);
+    on<_CreateChat>((event, emit) {
+      _onCreateChat(emit, event);
     });
     on<_CreateMessage>((event, emit) {
       _onCreateMessage(emit, event);
@@ -106,7 +107,11 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'payload': {"action": 'list', "request_id": 1},
       };
       _channel.sink.add(jsonEncode(message));
-      add(WebsocketEvent.loadRooms());
+      message = {
+        'stream': chatsStream,
+        'payload': {"action": 'join_chats', "request_id": 1},
+      };
+      _channel.sink.add(jsonEncode(message));
     } catch (e) {
       add(_ChangeState(state: state.copyWith(status: WebsocketStatus.failure)));
     }
@@ -291,25 +296,25 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
-  Future _onLoadRooms(Emitter<WebsocketState> emit, _LoadRooms event) async {
+  Future _onLoadChats(Emitter<WebsocketState> emit, _LoadChats event) async {
     if (state.status == WebsocketStatus.failure) {
       await _onConnect(emit);
     }
     emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
-      'stream': roomsStream,
+      'stream': chatsStream,
       'payload': {'action': 'list', 'request_id': 13},
     };
     _channel.sink.add(jsonEncode(message));
   }
 
-  Future _onCreateRoom(Emitter<WebsocketState> emit, _CreateRoom event) async {
+  Future _onCreateChat(Emitter<WebsocketState> emit, _CreateChat event) async {
     if (state.status == WebsocketStatus.failure) {
       await _onConnect(emit);
     }
     emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
-      'stream': roomsStream,
+      'stream': chatsStream,
       'payload': {
         'action': 'create',
         'request_id': 14,
@@ -328,12 +333,12 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     }
     emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
-      'stream': roomsStream,
+      'stream': chatsStream,
       'payload': {
         'action': 'create_message',
-        'request_id': 14,
-        'room': event.room.id,
-        'message': event.message,
+        'request_id': messageRequestId,
+        'chat': event.chat.id,
+        'text': event.text,
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -348,7 +353,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     }
     emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
-      'stream': roomsStream,
+      'stream': chatsStream,
       'payload': {
         'action': 'edit_message',
         'request_id': 15,
@@ -369,7 +374,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     emit(state.copyWith(status: WebsocketStatus.loading));
     for (Message msg in event.messages) {
       Map<String, dynamic> message = {
-        'stream': roomsStream,
+        'stream': chatsStream,
         'payload': {'action': 'delete_message', 'request_id': 16, 'pk': msg.id},
       };
       _channel.sink.add(jsonEncode(message));
@@ -382,11 +387,11 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     }
     emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
-      'stream': roomsStream,
+      'stream': chatsStream,
       'payload': {
         'action': 'mark_as_read',
         'request_id': 17,
-        'pk': event.room.id,
+        'pk': event.chat.id,
       },
     };
     _channel.sink.add(jsonEncode(message));

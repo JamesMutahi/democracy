@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/models/user.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
-import 'package:democracy/chat/bloc/room_detail/room_detail_cubit.dart';
+import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -50,14 +50,14 @@ class _MessagesState extends State<Messages> {
       widgets.add(SizedBox(height: messageMargin));
     });
 
-    return BlocListener<RoomDetailCubit, RoomDetailState>(
+    return BlocListener<ChatDetailCubit, ChatDetailState>(
       listener: (context, state) {
         if (state is MessageCreated) {
           setState(() {
-            _messages.add(state.room.lastMessage);
+            _messages.add(state.message);
           });
         }
-        if (state is MessageEdited) {
+        if (state is MessageUpdated) {
           if (_messages.any((element) => element.id == state.message.id)) {
             setState(() {
               _messages[_messages.indexWhere(

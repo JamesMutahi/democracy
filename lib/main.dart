@@ -6,8 +6,8 @@ import 'package:democracy/app/view/app.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
-import 'package:democracy/chat/bloc/rooms/rooms_cubit.dart';
-import 'package:democracy/chat/bloc/room_detail/room_detail_cubit.dart';
+import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
+import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/poll/bloc/poll/poll_bloc.dart';
 import 'package:democracy/poll/bloc/vote/vote_cubit.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
@@ -123,8 +123,8 @@ void main() async {
           BlocProvider(create: (context) => BookmarksCubit()),
           BlocProvider(create: (context) => LikesCubit()),
           BlocProvider(create: (context) => UserRepliesCubit()),
-          BlocProvider(create: (context) => RoomsCubit()),
-          BlocProvider(create: (context) => RoomDetailCubit()),
+          BlocProvider(create: (context) => ChatsCubit(), lazy: false),
+          BlocProvider(create: (context) => ChatDetailCubit(), lazy: false),
           BlocProvider(create: (context) => MessageActionsCubit()),
         ],
         child: const MyApp(),

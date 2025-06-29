@@ -6,8 +6,8 @@ import 'package:democracy/app/view/dashboard.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/auth/view/login.dart';
-import 'package:democracy/chat/bloc/rooms/rooms_cubit.dart';
-import 'package:democracy/chat/bloc/room_detail/room_detail_cubit.dart';
+import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
+import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
 import 'package:democracy/post/bloc/likes/likes_cubit.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
@@ -196,26 +196,32 @@ class _Listeners extends StatelessWidget {
                       payload: state.message['payload'],
                     );
                 }
-              } else if (state.message['stream'] == roomsStream) {
+              } else if (state.message['stream'] == chatsStream) {
                 switch (state.message['payload']['action']) {
                   case 'list':
-                    context.read<RoomsCubit>().loadRooms(
+                    context.read<ChatsCubit>().loadChats(
                       payload: state.message['payload'],
                     );
-                  case 'create_message':
-                    context.read<RoomDetailCubit>().messageCreated(
-                      payload: state.message['payload'],
-                    );
-                  case 'edit_message':
-                    context.read<RoomDetailCubit>().messageEdited(
-                      payload: state.message['payload'],
-                    );
+                  case 'create':
+                    if (state.message['payload']['request_id'] ==
+                        messageRequestId) {
+                      context.read<ChatDetailCubit>().messageCreated(
+                        payload: state.message['payload'],
+                      );
+                    }
+                  case 'update':
+                    if (state.message['payload']['request_id'] ==
+                        messageRequestId) {
+                      context.read<ChatDetailCubit>().messageUpdated(
+                        payload: state.message['payload'],
+                      );
+                    }
                   case 'delete_message':
-                    context.read<RoomDetailCubit>().messageDeleted(
+                    context.read<ChatDetailCubit>().messageDeleted(
                       payload: state.message['payload'],
                     );
                   case 'mark_as_read':
-                    context.read<RoomDetailCubit>().markedAsRead(
+                    context.read<ChatDetailCubit>().markedAsRead(
                       payload: state.message['payload'],
                     );
                 }

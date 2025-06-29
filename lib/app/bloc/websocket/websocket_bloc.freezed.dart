@@ -952,8 +952,8 @@ $UserCopyWith<$Res> get user {
 /// @nodoc
 
 
-class _LoadRooms implements WebsocketEvent {
-  const _LoadRooms();
+class _LoadChats implements WebsocketEvent {
+  const _LoadChats();
   
 
 
@@ -963,7 +963,7 @@ class _LoadRooms implements WebsocketEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoadRooms);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoadChats);
 }
 
 
@@ -972,7 +972,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'WebsocketEvent.loadRooms()';
+  return 'WebsocketEvent.loadChats()';
 }
 
 
@@ -984,8 +984,8 @@ String toString() {
 /// @nodoc
 
 
-class _CreateRoom implements WebsocketEvent {
-  const _CreateRoom({required final  List<User> users}): _users = users;
+class _CreateChat implements WebsocketEvent {
+  const _CreateChat({required final  List<User> users}): _users = users;
   
 
  final  List<User> _users;
@@ -1000,13 +1000,13 @@ class _CreateRoom implements WebsocketEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$CreateRoomCopyWith<_CreateRoom> get copyWith => __$CreateRoomCopyWithImpl<_CreateRoom>(this, _$identity);
+_$CreateChatCopyWith<_CreateChat> get copyWith => __$CreateChatCopyWithImpl<_CreateChat>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateRoom&&const DeepCollectionEquality().equals(other._users, _users));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateChat&&const DeepCollectionEquality().equals(other._users, _users));
 }
 
 
@@ -1015,15 +1015,15 @@ int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(
 
 @override
 String toString() {
-  return 'WebsocketEvent.createRoom(users: $users)';
+  return 'WebsocketEvent.createChat(users: $users)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$CreateRoomCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
-  factory _$CreateRoomCopyWith(_CreateRoom value, $Res Function(_CreateRoom) _then) = __$CreateRoomCopyWithImpl;
+abstract mixin class _$CreateChatCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
+  factory _$CreateChatCopyWith(_CreateChat value, $Res Function(_CreateChat) _then) = __$CreateChatCopyWithImpl;
 @useResult
 $Res call({
  List<User> users
@@ -1034,17 +1034,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$CreateRoomCopyWithImpl<$Res>
-    implements _$CreateRoomCopyWith<$Res> {
-  __$CreateRoomCopyWithImpl(this._self, this._then);
+class __$CreateChatCopyWithImpl<$Res>
+    implements _$CreateChatCopyWith<$Res> {
+  __$CreateChatCopyWithImpl(this._self, this._then);
 
-  final _CreateRoom _self;
-  final $Res Function(_CreateRoom) _then;
+  final _CreateChat _self;
+  final $Res Function(_CreateChat) _then;
 
 /// Create a copy of WebsocketEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? users = null,}) {
-  return _then(_CreateRoom(
+  return _then(_CreateChat(
 users: null == users ? _self._users : users // ignore: cast_nullable_to_non_nullable
 as List<User>,
   ));
@@ -1057,11 +1057,11 @@ as List<User>,
 
 
 class _CreateMessage implements WebsocketEvent {
-  const _CreateMessage({required this.room, required this.message});
+  const _CreateMessage({required this.chat, required this.text});
   
 
- final  Room room;
- final  String message;
+ final  Chat chat;
+ final  String text;
 
 /// Create a copy of WebsocketEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -1073,16 +1073,16 @@ _$CreateMessageCopyWith<_CreateMessage> get copyWith => __$CreateMessageCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateMessage&&(identical(other.room, room) || other.room == room)&&(identical(other.message, message) || other.message == message));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateMessage&&(identical(other.chat, chat) || other.chat == chat)&&(identical(other.text, text) || other.text == text));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,room,message);
+int get hashCode => Object.hash(runtimeType,chat,text);
 
 @override
 String toString() {
-  return 'WebsocketEvent.createMessage(room: $room, message: $message)';
+  return 'WebsocketEvent.createMessage(chat: $chat, text: $text)';
 }
 
 
@@ -1093,11 +1093,11 @@ abstract mixin class _$CreateMessageCopyWith<$Res> implements $WebsocketEventCop
   factory _$CreateMessageCopyWith(_CreateMessage value, $Res Function(_CreateMessage) _then) = __$CreateMessageCopyWithImpl;
 @useResult
 $Res call({
- Room room, String message
+ Chat chat, String text
 });
 
 
-$RoomCopyWith<$Res> get room;
+$ChatCopyWith<$Res> get chat;
 
 }
 /// @nodoc
@@ -1110,10 +1110,10 @@ class __$CreateMessageCopyWithImpl<$Res>
 
 /// Create a copy of WebsocketEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? room = null,Object? message = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? chat = null,Object? text = null,}) {
   return _then(_CreateMessage(
-room: null == room ? _self.room : room // ignore: cast_nullable_to_non_nullable
-as Room,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+chat: null == chat ? _self.chat : chat // ignore: cast_nullable_to_non_nullable
+as Chat,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -1122,10 +1122,10 @@ as String,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$RoomCopyWith<$Res> get room {
+$ChatCopyWith<$Res> get chat {
   
-  return $RoomCopyWith<$Res>(_self.room, (value) {
-    return _then(_self.copyWith(room: value));
+  return $ChatCopyWith<$Res>(_self.chat, (value) {
+    return _then(_self.copyWith(chat: value));
   });
 }
 }
@@ -1274,10 +1274,10 @@ as List<Message>,
 
 
 class _MarkAsRead implements WebsocketEvent {
-  const _MarkAsRead({required this.room});
+  const _MarkAsRead({required this.chat});
   
 
- final  Room room;
+ final  Chat chat;
 
 /// Create a copy of WebsocketEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -1289,16 +1289,16 @@ _$MarkAsReadCopyWith<_MarkAsRead> get copyWith => __$MarkAsReadCopyWithImpl<_Mar
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MarkAsRead&&(identical(other.room, room) || other.room == room));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MarkAsRead&&(identical(other.chat, chat) || other.chat == chat));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,room);
+int get hashCode => Object.hash(runtimeType,chat);
 
 @override
 String toString() {
-  return 'WebsocketEvent.markAsRead(room: $room)';
+  return 'WebsocketEvent.markAsRead(chat: $chat)';
 }
 
 
@@ -1309,11 +1309,11 @@ abstract mixin class _$MarkAsReadCopyWith<$Res> implements $WebsocketEventCopyWi
   factory _$MarkAsReadCopyWith(_MarkAsRead value, $Res Function(_MarkAsRead) _then) = __$MarkAsReadCopyWithImpl;
 @useResult
 $Res call({
- Room room
+ Chat chat
 });
 
 
-$RoomCopyWith<$Res> get room;
+$ChatCopyWith<$Res> get chat;
 
 }
 /// @nodoc
@@ -1326,10 +1326,10 @@ class __$MarkAsReadCopyWithImpl<$Res>
 
 /// Create a copy of WebsocketEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? room = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? chat = null,}) {
   return _then(_MarkAsRead(
-room: null == room ? _self.room : room // ignore: cast_nullable_to_non_nullable
-as Room,
+chat: null == chat ? _self.chat : chat // ignore: cast_nullable_to_non_nullable
+as Chat,
   ));
 }
 
@@ -1337,10 +1337,10 @@ as Room,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$RoomCopyWith<$Res> get room {
+$ChatCopyWith<$Res> get chat {
   
-  return $RoomCopyWith<$Res>(_self.room, (value) {
-    return _then(_self.copyWith(room: value));
+  return $ChatCopyWith<$Res>(_self.chat, (value) {
+    return _then(_self.copyWith(chat: value));
   });
 }
 }

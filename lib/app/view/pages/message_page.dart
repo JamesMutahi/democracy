@@ -3,8 +3,8 @@ import 'package:democracy/app/utils/view/failure_retry_button.dart';
 import 'package:democracy/app/utils/view/loading_indicator.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/models/user.dart';
-import 'package:democracy/chat/bloc/rooms/rooms_cubit.dart';
-import 'package:democracy/chat/view/rooms.dart';
+import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
+import 'package:democracy/chat/view/chats.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,25 +21,31 @@ class _MessagePageState extends State<MessagePage>
   bool get wantKeepAlive => true;
 
   @override
+  void initState() {
+    context.read<WebsocketBloc>().add(WebsocketEvent.loadChats());
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocBuilder<RoomsCubit, RoomsState>(
+    return BlocBuilder<ChatsCubit, ChatsState>(
       builder: (context, state) {
         switch (state) {
-          case RoomsLoaded(:final rooms):
+          case ChatsLoaded(:final chats):
             return BlocBuilder<AuthBloc, AuthState>(
               builder: (context, state) {
                 late User user;
                 if (state is Authenticated) {
                   user = state.user;
                 }
-                return Rooms(rooms: rooms, currentUser: user);
+                return Chats(chats: chats, currentUser: user);
               },
             );
-          case RoomsFailure():
+          case ChatsFailure():
             return FailureRetryButton(
               onPressed: () {
-                context.read<RoomsCubit>().retryButtonPressed();
+                context.read<ChatsCubit>().retryButtonPressed();
                 context.read<WebsocketBloc>().add(WebsocketEvent.connect());
               },
             );

@@ -1,10 +1,10 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/auth/models/user.dart';
+import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
-import 'package:democracy/chat/bloc/room_detail/room_detail_cubit.dart';
+import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
-import 'package:democracy/chat/models/room.dart';
 import 'package:democracy/chat/view/edit_message.dart';
 import 'package:democracy/chat/view/messages.dart';
 import 'package:flutter/material.dart';
@@ -13,40 +13,45 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-class RoomDetail extends StatefulWidget {
-  const RoomDetail({
+class ChatDetail extends StatefulWidget {
+  const ChatDetail({
     super.key,
     required this.title,
-    required this.room,
+    required this.chat,
     required this.otherUser,
   });
 
   final String title;
-  final Room room;
+  final Chat chat;
   final User otherUser;
 
   @override
-  State<RoomDetail> createState() => _RoomDetailState();
+  State<ChatDetail> createState() => _ChatDetailState();
 }
 
-class _RoomDetailState extends State<RoomDetail> {
+class _ChatDetailState extends State<ChatDetail> {
   final _controller = TextEditingController();
   final _focusNode = FocusNode();
   bool _disableSendButton = true;
   bool showMessageActions = false;
   Set<Message> messages = {};
-  late Room _room = widget.room;
+  late Chat _chat = widget.chat;
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<RoomDetailCubit, RoomDetailState>(
+        BlocListener<ChatDetailCubit, ChatDetailState>(
           listener: (context, state) {
             if (state is MarkedAsRead) {
-              if (_room.id == state.room.id) {
+              if (_chat.id == state.messages.first.chat) {
+                List<Message> newMessages = state.messages.toList();
                 setState(() {
-                  _room = state.room;
+                  for (Message message in state.messages) {
+                    newMessages.removeWhere((m) => m.id== message.id);
+                    newMessages.add(message);
+                    _chat = _chat.copyWith(messages: newMessages);
+                  }
                 });
               }
             }
@@ -162,7 +167,7 @@ class _RoomDetailState extends State<RoomDetail> {
                       ],
                     ),
           ),
-          body: Messages(messages: _room.messages),
+          body: Messages(messages: _chat.messages),
           bottomNavigationBar: BottomContainer(
             focusNode: _focusNode,
             showCursor: true,
@@ -188,8 +193,8 @@ class _RoomDetailState extends State<RoomDetail> {
                     : () {
                       context.read<WebsocketBloc>().add(
                         WebsocketEvent.createMessage(
-                          room: _room,
-                          message: _controller.text,
+                          chat: _chat,
+                          text: _controller.text,
                         ),
                       );
                       _controller.clear();

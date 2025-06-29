@@ -2,17 +2,17 @@ import 'package:democracy/auth/models/user.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'room.freezed.dart';
-part 'room.g.dart';
+part 'chat.freezed.dart';
+part 'chat.g.dart';
 
 @freezed
-sealed class Room with _$Room {
-  const factory Room({
+sealed class Chat with _$Chat {
+  const factory Chat({
     required final int id,
     required final List<User> users,
-    @JsonKey(name: 'last_message') required final Message lastMessage,
+    @JsonKey(name: 'last_message') required final Message? lastMessage,
     required final List<Message> messages,
-  }) = _Room;
+  }) = _Chat;
 
-  factory Room.fromJson(Map<String, Object?> json) => _$RoomFromJson(json);
+  factory Chat.fromJson(Map<String, Object?> json) => _$ChatFromJson(json);
 }
