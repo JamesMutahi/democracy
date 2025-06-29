@@ -44,7 +44,7 @@ void main() {
       build: () {
         when(() => mockAuthRepository.getToken())
             .thenAnswer((_) async => 'test');
-        when(() => mockAuthRepository.getUserFromSharedPreferences())
+        when(() => mockAuthRepository.getUserFromAPI(token: 'test'))
             .thenAnswer((_) async => user1);
         return authBloc;
       },

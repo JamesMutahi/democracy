@@ -39,6 +39,11 @@ class _MessagesState extends State<Messages> {
       }
       if (DateFormat.yMMMMd().format(DateTime.now()) == date) {
         widgets.add(Center(child: Text('Today')));
+      } else if (DateFormat.yMMMMd().format(
+            DateTime.now().subtract(Duration(days: 1)),
+          ) ==
+          date) {
+        widgets.add(Center(child: Text('Yesterday')));
       } else {
         widgets.add(Center(child: Text(date)));
       }

@@ -5,7 +5,6 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/view/dashboard.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
-import 'package:democracy/auth/bloc/registration/registration_cubit.dart';
 import 'package:democracy/auth/view/login.dart';
 import 'package:democracy/chat/bloc/rooms/rooms_cubit.dart';
 import 'package:democracy/chat/bloc/room_detail/room_detail_cubit.dart';
@@ -120,16 +119,6 @@ class _Listeners extends StatelessWidget {
           listener: (context, state) {
             if (state is Authenticated) {
               context.read<WebsocketBloc>().add(WebsocketEvent.connect());
-            }
-          },
-        ),
-        BlocListener<RegistrationCubit, RegistrationState>(
-          listener: (context, state) {
-            switch (state) {
-              case RegistrationUnverified():
-                context.read<AuthBloc>().add(const AuthEvent.authenticate());
-              case RegistrationVerified():
-                context.read<AuthBloc>().add(const AuthEvent.authenticate());
             }
           },
         ),

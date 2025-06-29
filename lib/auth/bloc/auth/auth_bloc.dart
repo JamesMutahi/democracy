@@ -3,7 +3,6 @@ import 'package:democracy/auth/models/user.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'auth_bloc.freezed.dart';
 part 'auth_event.dart';
@@ -25,7 +24,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (token == null) {
       emit(const AuthState.unAuthenticated());
     } else {
-      User user = await authRepository.getUserFromSharedPreferences();
+      User user = await authRepository.getUserFromAPI(token: token);
       emit(AuthState.authenticated(user: user));
     }
   }

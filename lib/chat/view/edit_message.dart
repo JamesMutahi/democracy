@@ -28,7 +28,9 @@ class _EditMessageState extends State<EditMessage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.5),
+      backgroundColor: Theme.of(
+        context,
+      ).scaffoldBackgroundColor.withValues(alpha: 0.75),
       appBar: AppBar(title: Text('Edit message')),
       body: Messages(messages: [widget.message]),
       bottomNavigationBar: BottomContainer(

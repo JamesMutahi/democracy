@@ -31,9 +31,7 @@ void main() {
       'emits page [_LoggedIn] when login is added',
       build: () {
         when(() => mockAuthRepository.login(email: 'test', password: 'test'))
-            .thenAnswer((_) async => user1);
-        when(() => mockAuthRepository.saveUserToSharedPreferences(user: user1))
-            .thenAnswer((_) async => user1);
+            .thenAnswer((_) async => 'test');
         return loginCubit;
       },
       act: (cubit) => cubit.login(email: 'test', password: 'test'),
@@ -51,7 +49,6 @@ void main() {
         when(() => mockAuthRepository.logout(token: 'test'))
             .thenAnswer((_) async => user1);
         when(() => mockAuthRepository.deleteToken()).thenAnswer((_) async {});
-        when(() => mockAuthRepository.deleteUser()).thenAnswer((_) async {});
         return loginCubit;
       },
       act: (cubit) => cubit.logout(),

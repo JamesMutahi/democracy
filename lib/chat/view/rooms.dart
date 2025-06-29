@@ -106,7 +106,7 @@ class RoomTile extends StatelessWidget {
         ),
       ),
       trailing:
-          room.lastMessage.isRead
+          room.lastMessage.isRead || currentUser.id == room.lastMessage.user.id
               ? SizedBox.shrink()
               : Icon(Icons.circle_rounded, size: 5, color: Colors.greenAccent),
       onTap: () {
