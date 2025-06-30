@@ -19,6 +19,7 @@ class ChatsCubit extends Cubit<ChatsState> {
   }
 
   void loadChats({required Map<String, dynamic> payload}) {
+    emit(ChatsLoading());
     if (payload['response_status'] == 200) {
       final List<Chat> chats = List.from(
         payload['data'].map((e) => Chat.fromJson(e)),

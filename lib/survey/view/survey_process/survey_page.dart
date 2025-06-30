@@ -65,7 +65,7 @@ class _SurveyPageState extends State<SurveyPage> {
                 backgroundColor: Theme.of(context).cardColor,
                 content: SnackBarContent(
                   message: 'Something went wrong.',
-                  status: SnackBarStatus.error,
+                  status: SnackBarStatus.failure,
                 ),
               );
               ScaffoldMessenger.of(context).showSnackBar(snackBar);

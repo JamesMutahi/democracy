@@ -54,12 +54,11 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     }
   }
 
-  void markedAsRead({required Map<String, dynamic> payload}) {
+  void chatUpdated({required Map<String, dynamic> payload}) {
     emit(ChatDetailLoading());
     if (payload['response_status'] == 200) {
-      emit(MarkedAsRead(messages: List.from(
-        payload['data'].map((e) => Message.fromJson(e)),
-      )));
+      final Chat chat = Chat.fromJson(payload['data']);
+      emit(ChatUpdated(chat: chat));
     } else {
       emit(ChatDetailFailure());
     }

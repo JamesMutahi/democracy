@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum SnackBarStatus { success, info, error }
+enum SnackBarStatus { success, info, failure }
 
 class SnackBarContent extends StatelessWidget {
   const SnackBarContent({
@@ -25,7 +25,7 @@ class SnackBarContent extends StatelessWidget {
       case SnackBarStatus.info:
         icon = const Icon(Icons.info_rounded, color: Colors.indigo);
         break;
-      case SnackBarStatus.error:
+      case SnackBarStatus.failure:
         icon = Icon(
           Icons.error_rounded,
           color: Theme.of(context).colorScheme.error,

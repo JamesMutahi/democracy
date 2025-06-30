@@ -1,15 +1,10 @@
 part of 'message_actions_cubit.dart';
 
-enum MessageActionsStatus {
-  initial,
-  loading,
-  actionButtonsOpened,
-  actionButtonsClosed,
-}
+enum MessageActionsStatus { loading, actionButtonsOpened, actionButtonsClosed }
 
 final class MessageActionsState extends Equatable {
   const MessageActionsState({
-    this.status = MessageActionsStatus.initial,
+    this.status = MessageActionsStatus.actionButtonsClosed,
     this.messages = const <Message>{},
   });
 

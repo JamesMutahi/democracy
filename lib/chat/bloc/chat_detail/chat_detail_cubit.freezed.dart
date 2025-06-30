@@ -184,6 +184,81 @@ $ChatCopyWith<$Res> get chat {
 /// @nodoc
 
 
+class ChatUpdated implements ChatDetailState {
+  const ChatUpdated({required this.chat});
+  
+
+ final  Chat chat;
+
+/// Create a copy of ChatDetailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ChatUpdatedCopyWith<ChatUpdated> get copyWith => _$ChatUpdatedCopyWithImpl<ChatUpdated>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatUpdated&&(identical(other.chat, chat) || other.chat == chat));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,chat);
+
+@override
+String toString() {
+  return 'ChatDetailState.chatUpdated(chat: $chat)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ChatUpdatedCopyWith<$Res> implements $ChatDetailStateCopyWith<$Res> {
+  factory $ChatUpdatedCopyWith(ChatUpdated value, $Res Function(ChatUpdated) _then) = _$ChatUpdatedCopyWithImpl;
+@useResult
+$Res call({
+ Chat chat
+});
+
+
+$ChatCopyWith<$Res> get chat;
+
+}
+/// @nodoc
+class _$ChatUpdatedCopyWithImpl<$Res>
+    implements $ChatUpdatedCopyWith<$Res> {
+  _$ChatUpdatedCopyWithImpl(this._self, this._then);
+
+  final ChatUpdated _self;
+  final $Res Function(ChatUpdated) _then;
+
+/// Create a copy of ChatDetailState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? chat = null,}) {
+  return _then(ChatUpdated(
+chat: null == chat ? _self.chat : chat // ignore: cast_nullable_to_non_nullable
+as Chat,
+  ));
+}
+
+/// Create a copy of ChatDetailState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ChatCopyWith<$Res> get chat {
+  
+  return $ChatCopyWith<$Res>(_self.chat, (value) {
+    return _then(_self.copyWith(chat: value));
+  });
+}
+}
+
+/// @nodoc
+
+
 class MessageCreated implements ChatDetailState {
   const MessageCreated({required this.message});
   
@@ -404,78 +479,6 @@ $MessageCopyWith<$Res> get message {
     return _then(_self.copyWith(message: value));
   });
 }
-}
-
-/// @nodoc
-
-
-class MarkedAsRead implements ChatDetailState {
-  const MarkedAsRead({required final  List<Message> messages}): _messages = messages;
-  
-
- final  List<Message> _messages;
- List<Message> get messages {
-  if (_messages is EqualUnmodifiableListView) return _messages;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_messages);
-}
-
-
-/// Create a copy of ChatDetailState
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$MarkedAsReadCopyWith<MarkedAsRead> get copyWith => _$MarkedAsReadCopyWithImpl<MarkedAsRead>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MarkedAsRead&&const DeepCollectionEquality().equals(other._messages, _messages));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_messages));
-
-@override
-String toString() {
-  return 'ChatDetailState.markedAsRead(messages: $messages)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $MarkedAsReadCopyWith<$Res> implements $ChatDetailStateCopyWith<$Res> {
-  factory $MarkedAsReadCopyWith(MarkedAsRead value, $Res Function(MarkedAsRead) _then) = _$MarkedAsReadCopyWithImpl;
-@useResult
-$Res call({
- List<Message> messages
-});
-
-
-
-
-}
-/// @nodoc
-class _$MarkedAsReadCopyWithImpl<$Res>
-    implements $MarkedAsReadCopyWith<$Res> {
-  _$MarkedAsReadCopyWithImpl(this._self, this._then);
-
-  final MarkedAsRead _self;
-  final $Res Function(MarkedAsRead) _then;
-
-/// Create a copy of ChatDetailState
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? messages = null,}) {
-  return _then(MarkedAsRead(
-messages: null == messages ? _self._messages : messages // ignore: cast_nullable_to_non_nullable
-as List<Message>,
-  ));
-}
-
-
 }
 
 /// @nodoc

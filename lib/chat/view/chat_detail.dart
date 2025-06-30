@@ -14,14 +14,8 @@ import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class ChatDetail extends StatefulWidget {
-  const ChatDetail({
-    super.key,
-    required this.title,
-    required this.chat,
-    required this.otherUser,
-  });
+  const ChatDetail({super.key, required this.chat, required this.otherUser});
 
-  final String title;
   final Chat chat;
   final User otherUser;
 
@@ -39,19 +33,16 @@ class _ChatDetailState extends State<ChatDetail> {
 
   @override
   Widget build(BuildContext context) {
+    String title = '${widget.otherUser.firstName} ${widget.otherUser.lastName}';
     return MultiBlocListener(
       listeners: [
         BlocListener<ChatDetailCubit, ChatDetailState>(
           listener: (context, state) {
-            if (state is MarkedAsRead) {
-              if (_chat.id == state.messages.first.chat) {
-                List<Message> newMessages = state.messages.toList();
+            if (state is ChatUpdated) {
+              print(state.chat.blocker);
+              if (_chat.id == state.chat.id) {
                 setState(() {
-                  for (Message message in state.messages) {
-                    newMessages.removeWhere((m) => m.id== message.id);
-                    newMessages.add(message);
-                    _chat = _chat.copyWith(messages: newMessages);
-                  }
+                  _chat = state.chat;
                 });
               }
             }
@@ -161,17 +152,25 @@ class _ChatDetailState extends State<ChatDetail> {
                         ProfileImage(user: widget.otherUser),
                         SizedBox(width: 10),
                         Text(
-                          widget.title,
+                          title,
                           style: TextStyle(overflow: TextOverflow.ellipsis),
                         ),
                       ],
                     ),
           ),
-          body: Messages(messages: _chat.messages),
+          body:
+              _chat.blocker == null
+                  ? Messages(messages: _chat.messages)
+                  : Center(
+                    child: Text(
+                      'Blocked',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  ),
           bottomNavigationBar: BottomContainer(
             focusNode: _focusNode,
-            showCursor: true,
-            readOnly: false,
+            showCursor: _chat.blocker == null ? true : false,
+            readOnly: _chat.blocker == null ? false : true,
             controller: _controller,
             onTap: () {},
             onChanged: (value) {

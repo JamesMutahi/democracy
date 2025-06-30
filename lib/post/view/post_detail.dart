@@ -1,5 +1,6 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
+import 'package:democracy/app/view/widgets/profile_page.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/post_tile.dart';
@@ -78,15 +79,29 @@ class _PostDetailState extends State<PostDetail> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            ProfileImage(user: _post.author),
-                            SizedBox(width: 10),
-                            Text(
-                              '${_post.author.firstName} ${_post.author.lastName}',
-                              style: Theme.of(context).textTheme.bodyLarge,
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder:
+                                    (context) =>
+                                        ProfilePage(user: _post.author),
+                              ),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Row(
+                              children: [
+                                ProfileImage(user: _post.author),
+                                SizedBox(width: 10),
+                                Text(
+                                  '${_post.author.firstName} ${_post.author.lastName}',
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                         PostTileButton(
                           onTap: () {},

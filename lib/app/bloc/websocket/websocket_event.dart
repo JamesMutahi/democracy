@@ -25,8 +25,7 @@ class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.loadUserReplies({required User user}) =
       _LoadUserReplies;
   const factory WebsocketEvent.loadChats() = _LoadChats;
-  const factory WebsocketEvent.createChat({required List<User> users}) =
-      _CreateChat;
+  const factory WebsocketEvent.createChat({required User user}) = _CreateChat;
   const factory WebsocketEvent.createMessage({
     required Chat chat,
     required String text,
@@ -39,4 +38,5 @@ class WebsocketEvent with _$WebsocketEvent {
     required List<Message> messages,
   }) = _DeleteMessage;
   const factory WebsocketEvent.markAsRead({required Chat chat}) = _MarkAsRead;
+  const factory WebsocketEvent.userBlocked({required User user}) = _UserBlocked;
 }

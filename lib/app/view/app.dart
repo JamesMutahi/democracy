@@ -92,24 +92,22 @@ class _Listeners extends StatelessWidget {
             switch (state) {
               case ConnectivitySuccess():
                 final snackBar = SnackBar(
-                  backgroundColor: Theme.of(context).cardColor,
                   behavior: SnackBarBehavior.floating,
-                  content: ConnSnackBarContent(
-                    text: 'You are online',
-                    iconColor: Theme.of(context).primaryColor,
+                  backgroundColor: Theme.of(context).cardColor,
+                  content: const SnackBarContent(
+                    message: 'You are online',
+                    status: SnackBarStatus.success,
                   ),
-                  width: 170.0,
                 );
                 showSnackBar(snackBar: snackBar);
               case ConnectivityFailure():
                 final snackBar = SnackBar(
-                  backgroundColor: Theme.of(context).cardColor,
                   behavior: SnackBarBehavior.floating,
-                  content: ConnSnackBarContent(
-                    text: 'You are offline',
-                    iconColor: Theme.of(context).colorScheme.error,
+                  backgroundColor: Theme.of(context).cardColor,
+                  content: const SnackBarContent(
+                    message: 'You are offline',
+                    status: SnackBarStatus.failure,
                   ),
-                  width: 170.0,
                 );
                 showSnackBar(snackBar: snackBar);
             }
@@ -204,6 +202,12 @@ class _Listeners extends StatelessWidget {
                     );
                   case 'create':
                     if (state.message['payload']['request_id'] ==
+                        chatRequestId) {
+                      context.read<ChatDetailCubit>().chatCreated(
+                        payload: state.message['payload'],
+                      );
+                    }
+                    if (state.message['payload']['request_id'] ==
                         messageRequestId) {
                       context.read<ChatDetailCubit>().messageCreated(
                         payload: state.message['payload'],
@@ -216,12 +220,22 @@ class _Listeners extends StatelessWidget {
                         payload: state.message['payload'],
                       );
                     }
+                    if (state.message['payload']['request_id'] ==
+                        chatRequestId) {
+                      context.read<ChatDetailCubit>().chatUpdated(
+                        payload: state.message['payload'],
+                      );
+                    }
                   case 'delete_message':
                     context.read<ChatDetailCubit>().messageDeleted(
                       payload: state.message['payload'],
                     );
-                  case 'mark_as_read':
-                    context.read<ChatDetailCubit>().markedAsRead(
+                  case 'block_user':
+                    context.read<ChatDetailCubit>().chatUpdated(
+                      payload: state.message['payload'],
+                    );
+                  case 'unblock_user':
+                    context.read<ChatDetailCubit>().chatUpdated(
                       payload: state.message['payload'],
                     );
                 }
@@ -240,7 +254,7 @@ class _Listeners extends StatelessWidget {
                 backgroundColor: Theme.of(context).cardColor,
                 content: SnackBarContent(
                   message: error,
-                  status: SnackBarStatus.error,
+                  status: SnackBarStatus.failure,
                 ),
               );
               showSnackBar(snackBar: snackBar);

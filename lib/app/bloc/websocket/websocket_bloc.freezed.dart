@@ -985,16 +985,10 @@ String toString() {
 
 
 class _CreateChat implements WebsocketEvent {
-  const _CreateChat({required final  List<User> users}): _users = users;
+  const _CreateChat({required this.user});
   
 
- final  List<User> _users;
- List<User> get users {
-  if (_users is EqualUnmodifiableListView) return _users;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_users);
-}
-
+ final  User user;
 
 /// Create a copy of WebsocketEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -1006,16 +1000,16 @@ _$CreateChatCopyWith<_CreateChat> get copyWith => __$CreateChatCopyWithImpl<_Cre
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateChat&&const DeepCollectionEquality().equals(other._users, _users));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateChat&&(identical(other.user, user) || other.user == user));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_users));
+int get hashCode => Object.hash(runtimeType,user);
 
 @override
 String toString() {
-  return 'WebsocketEvent.createChat(users: $users)';
+  return 'WebsocketEvent.createChat(user: $user)';
 }
 
 
@@ -1026,11 +1020,11 @@ abstract mixin class _$CreateChatCopyWith<$Res> implements $WebsocketEventCopyWi
   factory _$CreateChatCopyWith(_CreateChat value, $Res Function(_CreateChat) _then) = __$CreateChatCopyWithImpl;
 @useResult
 $Res call({
- List<User> users
+ User user
 });
 
 
-
+$UserCopyWith<$Res> get user;
 
 }
 /// @nodoc
@@ -1043,14 +1037,23 @@ class __$CreateChatCopyWithImpl<$Res>
 
 /// Create a copy of WebsocketEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? users = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
   return _then(_CreateChat(
-users: null == users ? _self._users : users // ignore: cast_nullable_to_non_nullable
-as List<User>,
+user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as User,
   ));
 }
 
-
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$UserCopyWith<$Res> get user {
+  
+  return $UserCopyWith<$Res>(_self.user, (value) {
+    return _then(_self.copyWith(user: value));
+  });
+}
 }
 
 /// @nodoc
@@ -1341,6 +1344,81 @@ $ChatCopyWith<$Res> get chat {
   
   return $ChatCopyWith<$Res>(_self.chat, (value) {
     return _then(_self.copyWith(chat: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _UserBlocked implements WebsocketEvent {
+  const _UserBlocked({required this.user});
+  
+
+ final  User user;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$UserBlockedCopyWith<_UserBlocked> get copyWith => __$UserBlockedCopyWithImpl<_UserBlocked>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserBlocked&&(identical(other.user, user) || other.user == user));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,user);
+
+@override
+String toString() {
+  return 'WebsocketEvent.userBlocked(user: $user)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$UserBlockedCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
+  factory _$UserBlockedCopyWith(_UserBlocked value, $Res Function(_UserBlocked) _then) = __$UserBlockedCopyWithImpl;
+@useResult
+$Res call({
+ User user
+});
+
+
+$UserCopyWith<$Res> get user;
+
+}
+/// @nodoc
+class __$UserBlockedCopyWithImpl<$Res>
+    implements _$UserBlockedCopyWith<$Res> {
+  __$UserBlockedCopyWithImpl(this._self, this._then);
+
+  final _UserBlocked _self;
+  final $Res Function(_UserBlocked) _then;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
+  return _then(_UserBlocked(
+user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as User,
+  ));
+}
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$UserCopyWith<$Res> get user {
+  
+  return $UserCopyWith<$Res>(_self.user, (value) {
+    return _then(_self.copyWith(user: value));
   });
 }
 }

@@ -20,6 +20,10 @@ _Chat _$ChatFromJson(Map<String, dynamic> json) => _Chat(
       (json['messages'] as List<dynamic>)
           .map((e) => Message.fromJson(e as Map<String, dynamic>))
           .toList(),
+  blocker:
+      json['blocker'] == null
+          ? null
+          : User.fromJson(json['blocker'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$ChatToJson(_Chat instance) => <String, dynamic>{
@@ -27,4 +31,5 @@ Map<String, dynamic> _$ChatToJson(_Chat instance) => <String, dynamic>{
   'users': instance.users,
   'last_message': instance.lastMessage,
   'messages': instance.messages,
+  'blocker': instance.blocker,
 };

@@ -13,10 +13,15 @@ _User _$UserFromJson(Map<String, dynamic> json) => _User(
   email: json['email'] as String,
   image: json['image'] as String,
   status: json['status'] as String,
+  muted:
+      (json['muted'] as List<dynamic>).map((e) => (e as num).toInt()).toList(),
+  blocked:
+      (json['blocked'] as List<dynamic>)
+          .map((e) => (e as num).toInt())
+          .toList(),
   following: (json['following'] as num).toInt(),
   followers: (json['followers'] as num).toInt(),
   isActive: json['is_active'] as bool,
-  isStaff: json['is_staff'] as bool,
   dateJoined: DateTime.parse(json['date_joined'] as String),
 );
 
@@ -27,9 +32,10 @@ Map<String, dynamic> _$UserToJson(_User instance) => <String, dynamic>{
   'email': instance.email,
   'image': instance.image,
   'status': instance.status,
+  'muted': instance.muted,
+  'blocked': instance.blocked,
   'following': instance.following,
   'followers': instance.followers,
   'is_active': instance.isActive,
-  'is_staff': instance.isStaff,
   'date_joined': instance.dateJoined.toIso8601String(),
 };

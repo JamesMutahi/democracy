@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
               backgroundColor: Theme.of(context).cardColor,
               content: SnackBarContent(
                 message: error,
-                status: SnackBarStatus.error,
+                status: SnackBarStatus.failure,
               ),
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
