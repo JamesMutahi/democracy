@@ -226,18 +226,6 @@ class _Listeners extends StatelessWidget {
                         payload: state.message['payload'],
                       );
                     }
-                  case 'delete_message':
-                    context.read<ChatDetailCubit>().messageDeleted(
-                      payload: state.message['payload'],
-                    );
-                  case 'block_user':
-                    context.read<ChatDetailCubit>().chatUpdated(
-                      payload: state.message['payload'],
-                    );
-                  case 'unblock_user':
-                    context.read<ChatDetailCubit>().chatUpdated(
-                      payload: state.message['payload'],
-                    );
                 }
               }
             }

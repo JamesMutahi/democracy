@@ -1,4 +1,5 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/view/messages.dart';
 import 'package:democracy/chat/view/chat_detail.dart';
@@ -22,6 +23,7 @@ class _EditMessageState extends State<EditMessage> {
   @override
   void initState() {
     _controller.text = widget.message.text;
+    context.read<MessageActionsCubit>().closeActionButtons();
     super.initState();
   }
 

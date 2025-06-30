@@ -67,16 +67,6 @@ class _MessagesState extends State<Messages> {
             });
           }
         }
-        if (state is MessageDeleted) {
-          if (_messages.any((element) => element.id == state.message.id)) {
-            setState(() {
-              _messages[_messages.indexWhere(
-                    (message) => message.id == state.message.id,
-                  )] =
-                  state.message;
-            });
-          }
-        }
       },
       child: ListView(reverse: true, children: widgets),
     );

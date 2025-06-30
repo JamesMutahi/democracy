@@ -22,51 +22,55 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var dateFormat = DateFormat('dd/MM/yyyy');
-    return BlocListener<ChatDetailCubit, ChatDetailState>(
-      listener: (context, state) {
-        if (state is ChatCreated) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder:
-                  (context) => ChatDetail(chat: state.chat, otherUser: user),
-            ),
-          );
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        late User currentUser;
+        if (state is Authenticated) {
+          currentUser = state.user;
         }
-      },
-      child: Scaffold(
-        appBar: AppBar(title: Text('Profile')),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      CircleAvatar(
-                        radius: 40,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage(user.image),
-                              fit: BoxFit.cover,
-                            ),
-                            borderRadius: BorderRadius.circular(100),
-                          ),
-                        ),
+        return BlocListener<ChatDetailCubit, ChatDetailState>(
+          listener: (context, state) {
+            if (state is ChatCreated) {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder:
+                      (context) => ChatDetail(
+                        chat: state.chat,
+                        currentUser: currentUser,
+                        otherUser: user,
                       ),
-                      BlocBuilder<AuthBloc, AuthState>(
-                        builder: (context, state) {
-                          late User currentUser;
-                          if (state is Authenticated) {
-                            currentUser = state.user;
-                          }
-                          return (currentUser.id == user.id)
+                ),
+              );
+            }
+          },
+          child: Scaffold(
+            appBar: AppBar(title: Text('Profile')),
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CircleAvatar(
+                            radius: 40,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: NetworkImage(user.image),
+                                  fit: BoxFit.cover,
+                                ),
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                            ),
+                          ),
+                          (currentUser.id == user.id)
                               ? InkWell(
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(50),
@@ -92,84 +96,84 @@ class ProfilePage extends StatelessWidget {
                                   padding: const EdgeInsets.all(15.0),
                                   child: Icon(Symbols.email_rounded),
                                 ),
-                              );
-                        },
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-                  Text('${user.firstName} ${user.lastName}'),
-                  SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Icon(
-                        Symbols.calendar_month_rounded,
-                        size: 17,
-                        color: Theme.of(context).disabledColor,
-                      ),
-                      SizedBox(width: 5),
-                      Text(
-                        'Joined ',
-                        style: TextStyle(
-                          color: Theme.of(context).disabledColor,
-                        ),
-                      ),
-                      Text(
-                        dateFormat.format(user.dateJoined),
-                        style: TextStyle(
-                          color: Theme.of(context).disabledColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                  (user.status.isNotEmpty)
-                      ? Column(
-                        children: [SizedBox(height: 10), Text(user.status)],
-                      )
-                      : SizedBox.shrink(),
-                  SizedBox(height: 10),
-                  Row(
-                    children: [
-                      // TODO: Open page to view following and followers
-                      Text('${user.following} Following'),
-                      SizedBox(width: 10),
-                      Text(
-                        '${user.followers} ${(user.followers == 1) ? 'Follower' : 'Followers'}',
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            DefaultTabController(
-              length: 3,
-              child: Expanded(
-                child: Column(
-                  children: [
-                    const TabBar(
-                      tabs: [
-                        Tab(text: 'Posts'),
-                        Tab(text: 'Replies'),
-                        Tab(text: 'Likes'),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Expanded(
-                      child: TabBarView(
-                        children: [
-                          UserPosts(key: UniqueKey(), user: user),
-                          UserReplies(key: UniqueKey(), user: user),
-                          Likes(key: UniqueKey(), user: user),
+                              ),
                         ],
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 10),
+                      Text('${user.firstName} ${user.lastName}'),
+                      SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Icon(
+                            Symbols.calendar_month_rounded,
+                            size: 17,
+                            color: Theme.of(context).disabledColor,
+                          ),
+                          SizedBox(width: 5),
+                          Text(
+                            'Joined ',
+                            style: TextStyle(
+                              color: Theme.of(context).disabledColor,
+                            ),
+                          ),
+                          Text(
+                            dateFormat.format(user.dateJoined),
+                            style: TextStyle(
+                              color: Theme.of(context).disabledColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      (user.status.isNotEmpty)
+                          ? Column(
+                            children: [SizedBox(height: 10), Text(user.status)],
+                          )
+                          : SizedBox.shrink(),
+                      SizedBox(height: 10),
+                      Row(
+                        children: [
+                          // TODO: Open page to view following and followers
+                          Text('${user.following} Following'),
+                          SizedBox(width: 10),
+                          Text(
+                            '${user.followers} ${(user.followers == 1) ? 'Follower' : 'Followers'}',
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+                DefaultTabController(
+                  length: 3,
+                  child: Expanded(
+                    child: Column(
+                      children: [
+                        const TabBar(
+                          tabs: [
+                            Tab(text: 'Posts'),
+                            Tab(text: 'Replies'),
+                            Tab(text: 'Likes'),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Expanded(
+                          child: TabBarView(
+                            children: [
+                              UserPosts(key: UniqueKey(), user: user),
+                              UserReplies(key: UniqueKey(), user: user),
+                              Likes(key: UniqueKey(), user: user),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

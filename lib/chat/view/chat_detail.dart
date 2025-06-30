@@ -1,6 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/auth/models/user.dart';
+import 'package:democracy/chat/bloc/chat_actions/chat_actions_cubit.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/models/chat.dart';
@@ -14,9 +15,15 @@ import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class ChatDetail extends StatefulWidget {
-  const ChatDetail({super.key, required this.chat, required this.otherUser});
+  const ChatDetail({
+    super.key,
+    required this.chat,
+    required this.currentUser,
+    required this.otherUser,
+  });
 
   final Chat chat;
+  final User currentUser;
   final User otherUser;
 
   @override
@@ -39,7 +46,6 @@ class _ChatDetailState extends State<ChatDetail> {
         BlocListener<ChatDetailCubit, ChatDetailState>(
           listener: (context, state) {
             if (state is ChatUpdated) {
-              print(state.chat.blocker);
               if (_chat.id == state.chat.id) {
                 setState(() {
                   _chat = state.chat;
@@ -76,76 +82,9 @@ class _ChatDetailState extends State<ChatDetail> {
           appBar: AppBar(
             title:
                 showMessageActions
-                    ? Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        (messages.length == 1 &&
-                                !messages.any(
-                                  (message) =>
-                                      message.user.id == widget.otherUser.id,
-                                ))
-                            ? (DateTime.now().difference(
-                                      messages.first.createdAt,
-                                    ) <
-                                    Duration(minutes: 15))
-                                ? IconButton(
-                                  onPressed: () {
-                                    Navigator.of(context)
-                                        .push(
-                                          PageRouteBuilder(
-                                            opaque: false, // set to false
-                                            pageBuilder:
-                                                (_, __, ___) => EditMessage(
-                                                  message: messages.first,
-                                                ),
-                                          ),
-                                        )
-                                        .whenComplete(() {
-                                          if (mounted) {
-                                            context
-                                                .read<MessageActionsCubit>()
-                                                .closeActionButtons();
-                                          }
-                                        });
-                                  },
-                                  icon: Icon(Symbols.edit_rounded),
-                                )
-                                : SizedBox.shrink()
-                            : SizedBox.shrink(),
-                        IconButton(
-                          onPressed: () async {
-                            context
-                                .read<MessageActionsCubit>()
-                                .closeActionButtons();
-                            await Clipboard.setData(
-                              ClipboardData(
-                                text:
-                                    (messages.length == 1)
-                                        ? messages.first.text
-                                        : copyMultiple(forCopy: messages),
-                              ),
-                            );
-                          },
-                          icon: Icon(Symbols.content_copy),
-                        ),
-                        (messages.any(
-                              (message) =>
-                                  message.user.id == widget.otherUser.id,
-                            ))
-                            ? SizedBox.shrink()
-                            : IconButton(
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  builder:
-                                      (context) => DeleteDialog(
-                                        messages: messages.toList(),
-                                      ),
-                                );
-                              },
-                              icon: Icon(Symbols.delete_rounded),
-                            ),
-                      ],
+                    ? _MessageActions(
+                      messages: messages,
+                      otherUser: widget.otherUser,
                     )
                     : Row(
                       children: [
@@ -157,51 +96,102 @@ class _ChatDetailState extends State<ChatDetail> {
                         ),
                       ],
                     ),
+            actions: [
+              PopupMenuButton(
+                padding: EdgeInsets.zero,
+                icon: Icon(Symbols.more_vert_rounded),
+                itemBuilder:
+                    (BuildContext context) => <PopupMenuEntry<Widget>>[
+                      PopupMenuItem(
+                        child: MaterialButton(
+                          onPressed: () {
+                            context.read<WebsocketBloc>().add(
+                              WebsocketEvent.userBlocked(
+                                user: widget.otherUser,
+                              ),
+                            );
+                            context
+                                .read<ChatActionsCubit>()
+                                .closeActionButtons();
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            _chat.blockers.isEmpty
+                                ? 'Block'
+                                : _chat.blockers.contains(widget.currentUser.id)
+                                ? 'Unblock'
+                                : 'Block',
+                          ),
+                        ),
+                      ),
+                    ],
+              ),
+            ],
           ),
           body:
-              _chat.blocker == null
+              _chat.blockers.isEmpty
                   ? Messages(messages: _chat.messages)
                   : Center(
-                    child: Text(
-                      'Blocked',
-                      style: Theme.of(context).textTheme.titleLarge,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Blocked',
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        _chat.blockers.contains(widget.currentUser.id)
+                            ? ElevatedButton(
+                              onPressed: () {
+                                context.read<WebsocketBloc>().add(
+                                  WebsocketEvent.userBlocked(
+                                    user: widget.otherUser,
+                                  ),
+                                );
+                              },
+                              child: Text('Unblock'),
+                            )
+                            : SizedBox.shrink(),
+                      ],
                     ),
                   ),
-          bottomNavigationBar: BottomContainer(
-            focusNode: _focusNode,
-            showCursor: _chat.blocker == null ? true : false,
-            readOnly: _chat.blocker == null ? false : true,
-            controller: _controller,
-            onTap: () {},
-            onChanged: (value) {
-              if (value == '') {
-                setState(() {
-                  _disableSendButton = true;
-                });
-              } else {
-                setState(() {
-                  _disableSendButton = false;
-                });
-              }
-            },
-            hintText: 'Message',
-            prefixIcon: null,
-            onSend:
-                _disableSendButton
-                    ? null
-                    : () {
-                      context.read<WebsocketBloc>().add(
-                        WebsocketEvent.createMessage(
-                          chat: _chat,
-                          text: _controller.text,
-                        ),
-                      );
-                      _controller.clear();
-                      setState(() {
-                        _disableSendButton = true;
-                      });
+          bottomNavigationBar:
+              _chat.blockers.isEmpty
+                  ? BottomContainer(
+                    focusNode: _focusNode,
+                    showCursor: true,
+                    readOnly: false,
+                    controller: _controller,
+                    onTap: () {},
+                    onChanged: (value) {
+                      if (value == '') {
+                        setState(() {
+                          _disableSendButton = true;
+                        });
+                      } else {
+                        setState(() {
+                          _disableSendButton = false;
+                        });
+                      }
                     },
-          ),
+                    hintText: 'Message',
+                    prefixIcon: null,
+                    onSend:
+                        _disableSendButton
+                            ? null
+                            : () {
+                              context.read<WebsocketBloc>().add(
+                                WebsocketEvent.createMessage(
+                                  chat: _chat,
+                                  text: _controller.text,
+                                ),
+                              );
+                              _controller.clear();
+                              setState(() {
+                                _disableSendButton = true;
+                              });
+                            },
+                  )
+                  : SizedBox.shrink(),
         ),
       ),
     );
@@ -220,6 +210,67 @@ String copyMultiple({required Set<Message> forCopy}) {
         '${message.text} ${(messages.last == message) ? '' : '\n'}';
   }
   return copiedText;
+}
+
+class _MessageActions extends StatelessWidget {
+  const _MessageActions({required this.otherUser, required this.messages});
+
+  final User otherUser;
+  final Set<Message> messages;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        (messages.length == 1 &&
+                !messages.any((message) => message.user.id == otherUser.id))
+            ? (DateTime.now().difference(messages.first.createdAt) <
+                    Duration(minutes: 15))
+                ? IconButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      PageRouteBuilder(
+                        opaque: false,
+                        pageBuilder:
+                            (_, __, ___) =>
+                                EditMessage(message: messages.first),
+                      ),
+                    );
+                  },
+                  icon: Icon(Symbols.edit_rounded),
+                )
+                : SizedBox.shrink()
+            : SizedBox.shrink(),
+        IconButton(
+          onPressed: () async {
+            context.read<MessageActionsCubit>().closeActionButtons();
+            await Clipboard.setData(
+              ClipboardData(
+                text:
+                    (messages.length == 1)
+                        ? messages.first.text
+                        : copyMultiple(forCopy: messages),
+              ),
+            );
+          },
+          icon: Icon(Symbols.content_copy),
+        ),
+        (messages.any((message) => message.user.id == otherUser.id))
+            ? SizedBox.shrink()
+            : IconButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder:
+                      (context) => DeleteDialog(messages: messages.toList()),
+                );
+              },
+              icon: Icon(Symbols.delete_rounded),
+            ),
+      ],
+    );
+  }
 }
 
 class DeleteDialog extends StatelessWidget {

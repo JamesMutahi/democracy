@@ -12,7 +12,7 @@ sealed class Chat with _$Chat {
     required final List<User> users,
     @JsonKey(name: 'last_message') required final Message? lastMessage,
     required final List<Message> messages,
-    required final User? blocker,
+    required final List<int> blockers,
   }) = _Chat;
 
   factory Chat.fromJson(Map<String, Object?> json) => _$ChatFromJson(json);

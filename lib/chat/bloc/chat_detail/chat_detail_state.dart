@@ -12,7 +12,5 @@ class ChatDetailState with _$ChatDetailState {
       MessageCreated;
   const factory ChatDetailState.messageUpdated({required Message message}) =
       MessageUpdated;
-  const factory ChatDetailState.messageDeleted({required Message message}) =
-      MessageDeleted;
   const factory ChatDetailState.failure() = ChatDetailFailure;
 }

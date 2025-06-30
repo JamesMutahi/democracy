@@ -76,26 +76,6 @@ class _ChatsState extends State<Chats> {
             });
           }
         }
-        if (state is MessageDeleted) {
-          if (_chats.any((element) => element.id == state.message.chat)) {
-            setState(() {
-              int chatIndex = _chats.indexWhere(
-                (chat) => chat.id == state.message.chat,
-              );
-              List<Message> newMessages = _chats[chatIndex].messages.toList();
-              newMessages.removeWhere((m) => m.id == state.message.id);
-              newMessages.add(state.message);
-              _chats[chatIndex] = _chats[chatIndex].copyWith(
-                messages: newMessages,
-              );
-              if (state.message.id == _chats[chatIndex].lastMessage!.id) {
-                _chats[chatIndex] = _chats[chatIndex].copyWith(
-                  lastMessage: state.message,
-                );
-              }
-            });
-          }
-        }
       },
       child: ListView.builder(
         scrollDirection: Axis.vertical,
@@ -208,6 +188,7 @@ class _ChatTileState extends State<ChatTile> {
                     (context) => ChatDetail(
                       key: ValueKey(widget.chat.id),
                       chat: widget.chat,
+                      currentUser: widget.currentUser,
                       otherUser: otherUser,
                     ),
               ),
