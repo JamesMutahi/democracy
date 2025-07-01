@@ -82,10 +82,7 @@ class _ChatDetailState extends State<ChatDetail> {
           appBar: AppBar(
             title:
                 showMessageActions
-                    ? _MessageActions(
-                      messages: messages,
-                      otherUser: widget.otherUser,
-                    )
+                    ? SizedBox.shrink()
                     : Row(
                       children: [
                         ProfileImage(user: widget.otherUser),
@@ -97,34 +94,16 @@ class _ChatDetailState extends State<ChatDetail> {
                       ],
                     ),
             actions: [
-              PopupMenuButton(
-                padding: EdgeInsets.zero,
-                icon: Icon(Symbols.more_vert_rounded),
-                itemBuilder:
-                    (BuildContext context) => <PopupMenuEntry<Widget>>[
-                      PopupMenuItem(
-                        child: MaterialButton(
-                          onPressed: () {
-                            context.read<WebsocketBloc>().add(
-                              WebsocketEvent.userBlocked(
-                                user: widget.otherUser,
-                              ),
-                            );
-                            context
-                                .read<ChatActionsCubit>()
-                                .closeActionButtons();
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            _chat.blockers.isEmpty
-                                ? 'Block'
-                                : _chat.blockers.contains(widget.currentUser.id)
-                                ? 'Unblock'
-                                : 'Block',
-                          ),
-                        ),
-                      ),
-                    ],
+              showMessageActions
+                  ? _MessageActions(
+                    messages: messages,
+                    otherUser: widget.otherUser,
+                  )
+                  : SizedBox.shrink(),
+              ChatPopUpMenu(
+                chat: _chat,
+                currentUser: widget.currentUser,
+                otherUser: widget.otherUser,
               ),
             ],
           ),
@@ -210,6 +189,48 @@ String copyMultiple({required Set<Message> forCopy}) {
         '${message.text} ${(messages.last == message) ? '' : '\n'}';
   }
   return copiedText;
+}
+
+class ChatPopUpMenu extends StatelessWidget {
+  const ChatPopUpMenu({
+    super.key,
+    required this.chat,
+    required this.currentUser,
+    required this.otherUser,
+  });
+
+  final Chat chat;
+  final User currentUser;
+  final User otherUser;
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton(
+      padding: EdgeInsets.zero,
+      icon: Icon(Symbols.more_vert_rounded),
+      itemBuilder:
+          (BuildContext context) => <PopupMenuEntry<Widget>>[
+            PopupMenuItem(
+              child: MaterialButton(
+                onPressed: () {
+                  context.read<WebsocketBloc>().add(
+                    WebsocketEvent.userBlocked(user: otherUser),
+                  );
+                  context.read<ChatActionsCubit>().closeActionButtons();
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  chat.blockers.isEmpty
+                      ? 'Block'
+                      : chat.blockers.contains(currentUser.id)
+                      ? 'Unblock'
+                      : 'Block',
+                ),
+              ),
+            ),
+          ],
+    );
+  }
 }
 
 class _MessageActions extends StatelessWidget {

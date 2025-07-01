@@ -87,7 +87,10 @@ class AppDrawer extends StatelessWidget {
                 case Authenticated():
                   return ListTile(
                     onTap: () {
-                      context.read<LoginCubit>().logout();
+                      showDialog(
+                        context: context,
+                        builder: (context) => LogoutDialog(),
+                      );
                     },
                     title: Text('Logout'),
                     leading: Icon(Symbols.logout),
@@ -99,6 +102,38 @@ class AppDrawer extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class LogoutDialog extends StatelessWidget {
+  const LogoutDialog({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      icon: const Icon(Icons.warning_amber_rounded, size: 40),
+      iconColor: Colors.amber,
+      title: Text('Log out'),
+      content: Text(
+        'Are you sure you want to log out?',
+        textAlign: TextAlign.center,
+      ),
+      actions: <Widget>[
+        OutlinedButton(
+          onPressed: () {
+            Navigator.pop(context);
+            context.read<LoginCubit>().logout();
+          },
+          child: const Text('Yes'),
+        ),
+        OutlinedButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('No'),
+        ),
+      ],
+      actionsAlignment: MainAxisAlignment.center,
+      buttonPadding: const EdgeInsets.all(20.0),
     );
   }
 }
