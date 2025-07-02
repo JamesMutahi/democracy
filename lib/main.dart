@@ -9,8 +9,8 @@ import 'package:democracy/chat/bloc/chat_actions/chat_actions_cubit.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
-import 'package:democracy/poll/bloc/poll/poll_bloc.dart';
-import 'package:democracy/poll/bloc/vote/vote_cubit.dart';
+import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
+import 'package:democracy/poll/bloc/polls/polls_cubit.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
 import 'package:democracy/post/bloc/likes/likes_cubit.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
@@ -52,9 +52,6 @@ void main() async {
         ),
         RepositoryProvider.value(
           value: SurveyRepository(surveyProvider: SurveyProvider(dio: dio)),
-        ),
-        RepositoryProvider.value(
-          value: PollRepository(pollProvider: PollProvider(dio: dio)),
         ),
       ],
       child: MultiBlocProvider(
@@ -103,20 +100,8 @@ void main() async {
                   authRepository: context.read<AuthRepository>(),
                 ),
           ),
-          BlocProvider(
-            create:
-                (context) => PollBloc(
-                  pollRepository: context.read<PollRepository>(),
-                  authRepository: context.read<AuthRepository>(),
-                ),
-          ),
-          BlocProvider(
-            create:
-                (context) => VoteCubit(
-                  pollRepository: context.read<PollRepository>(),
-                  authRepository: context.read<AuthRepository>(),
-                ),
-          ),
+          BlocProvider(create: (context) => PollsCubit()),
+          BlocProvider(create: (context) => PollDetailCubit()),
           BlocProvider(create: (context) => PostListCubit()),
           BlocProvider(create: (context) => PostDetailCubit()),
           BlocProvider(create: (context) => RepliesCubit()),

@@ -73,7 +73,6 @@ class NavBarItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       customBorder: const CircleBorder(),
-      splashColor: Theme.of(context).colorScheme.secondaryFixedDim,
       onTap: onPressed,
       child: SizedBox(
         width: 80,
@@ -85,7 +84,7 @@ class NavBarItem extends StatelessWidget {
                 data: Theme.of(context).iconTheme.copyWith(
                   color:
                       isActive
-                          ? Theme.of(context).colorScheme.tertiary
+                          ? Theme.of(context).colorScheme.primary
                           : Theme.of(context).colorScheme.outline,
                   fill: (isActive) ? 1 : null,
                 ),
@@ -98,7 +97,7 @@ class NavBarItem extends StatelessWidget {
                   fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
                   color:
                       isActive
-                          ? Theme.of(context).colorScheme.tertiary
+                          ? Theme.of(context).colorScheme.primary
                           : Theme.of(context).colorScheme.outline,
                 ),
               ),

@@ -117,7 +117,7 @@ $Res call({
 });
 
 
-
+$WebsocketStateCopyWith<$Res> get state;
 
 }
 /// @nodoc
@@ -137,7 +137,16 @@ as WebsocketState,
   ));
 }
 
-
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$WebsocketStateCopyWith<$Res> get state {
+  
+  return $WebsocketStateCopyWith<$Res>(_self.state, (value) {
+    return _then(_self.copyWith(state: value));
+  });
+}
 }
 
 /// @nodoc
@@ -1421,6 +1430,345 @@ $UserCopyWith<$Res> get user {
     return _then(_self.copyWith(user: value));
   });
 }
+}
+
+/// @nodoc
+
+
+class _GetPolls implements WebsocketEvent {
+  const _GetPolls();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetPolls);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'WebsocketEvent.getPolls()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _Vote implements WebsocketEvent {
+  const _Vote({required this.option});
+  
+
+ final  Option option;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$VoteCopyWith<_Vote> get copyWith => __$VoteCopyWithImpl<_Vote>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Vote&&(identical(other.option, option) || other.option == option));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,option);
+
+@override
+String toString() {
+  return 'WebsocketEvent.vote(option: $option)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$VoteCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
+  factory _$VoteCopyWith(_Vote value, $Res Function(_Vote) _then) = __$VoteCopyWithImpl;
+@useResult
+$Res call({
+ Option option
+});
+
+
+$OptionCopyWith<$Res> get option;
+
+}
+/// @nodoc
+class __$VoteCopyWithImpl<$Res>
+    implements _$VoteCopyWith<$Res> {
+  __$VoteCopyWithImpl(this._self, this._then);
+
+  final _Vote _self;
+  final $Res Function(_Vote) _then;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? option = null,}) {
+  return _then(_Vote(
+option: null == option ? _self.option : option // ignore: cast_nullable_to_non_nullable
+as Option,
+  ));
+}
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$OptionCopyWith<$Res> get option {
+  
+  return $OptionCopyWith<$Res>(_self.option, (value) {
+    return _then(_self.copyWith(option: value));
+  });
+}
+}
+
+/// @nodoc
+mixin _$WebsocketState {
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WebsocketState);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'WebsocketState()';
+}
+
+
+}
+
+/// @nodoc
+class $WebsocketStateCopyWith<$Res>  {
+$WebsocketStateCopyWith(WebsocketState _, $Res Function(WebsocketState) __);
+}
+
+
+/// @nodoc
+
+
+class WebsocketInitial implements WebsocketState {
+  const WebsocketInitial();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WebsocketInitial);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'WebsocketState.initial()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class WebsocketLoading implements WebsocketState {
+  const WebsocketLoading();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WebsocketLoading);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'WebsocketState.loading()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class WebsocketSuccess implements WebsocketState {
+  const WebsocketSuccess({required final  Map<String, dynamic> message}): _message = message;
+  
+
+ final  Map<String, dynamic> _message;
+ Map<String, dynamic> get message {
+  if (_message is EqualUnmodifiableMapView) return _message;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_message);
+}
+
+
+/// Create a copy of WebsocketState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$WebsocketSuccessCopyWith<WebsocketSuccess> get copyWith => _$WebsocketSuccessCopyWithImpl<WebsocketSuccess>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WebsocketSuccess&&const DeepCollectionEquality().equals(other._message, _message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_message));
+
+@override
+String toString() {
+  return 'WebsocketState.success(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $WebsocketSuccessCopyWith<$Res> implements $WebsocketStateCopyWith<$Res> {
+  factory $WebsocketSuccessCopyWith(WebsocketSuccess value, $Res Function(WebsocketSuccess) _then) = _$WebsocketSuccessCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, dynamic> message
+});
+
+
+
+
+}
+/// @nodoc
+class _$WebsocketSuccessCopyWithImpl<$Res>
+    implements $WebsocketSuccessCopyWith<$Res> {
+  _$WebsocketSuccessCopyWithImpl(this._self, this._then);
+
+  final WebsocketSuccess _self;
+  final $Res Function(WebsocketSuccess) _then;
+
+/// Create a copy of WebsocketState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(WebsocketSuccess(
+message: null == message ? _self._message : message // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class WebsocketFailure implements WebsocketState {
+  const WebsocketFailure({required this.error});
+  
+
+ final  String error;
+
+/// Create a copy of WebsocketState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$WebsocketFailureCopyWith<WebsocketFailure> get copyWith => _$WebsocketFailureCopyWithImpl<WebsocketFailure>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WebsocketFailure&&(identical(other.error, error) || other.error == error));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,error);
+
+@override
+String toString() {
+  return 'WebsocketState.failure(error: $error)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $WebsocketFailureCopyWith<$Res> implements $WebsocketStateCopyWith<$Res> {
+  factory $WebsocketFailureCopyWith(WebsocketFailure value, $Res Function(WebsocketFailure) _then) = _$WebsocketFailureCopyWithImpl;
+@useResult
+$Res call({
+ String error
+});
+
+
+
+
+}
+/// @nodoc
+class _$WebsocketFailureCopyWithImpl<$Res>
+    implements $WebsocketFailureCopyWith<$Res> {
+  _$WebsocketFailureCopyWithImpl(this._self, this._then);
+
+  final WebsocketFailure _self;
+  final $Res Function(WebsocketFailure) _then;
+
+/// Create a copy of WebsocketState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? error = null,}) {
+  return _then(WebsocketFailure(
+error: null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
 }
 
 // dart format on

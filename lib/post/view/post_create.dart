@@ -119,8 +119,8 @@ class PostButton extends StatelessWidget {
     final textColor = (disabled) ? Colors.white38 : Colors.white;
     return BlocBuilder<WebsocketBloc, WebsocketState>(
       builder: (context, state) {
-        switch (state.status) {
-          case WebsocketStatus.loading:
+        switch (state) {
+          case WebsocketLoading():
             return FilledButton.tonal(
               onPressed: null,
               child: SpinKitThreeBounce(size: 40, color: Colors.green.shade900),

@@ -39,4 +39,6 @@ class WebsocketEvent with _$WebsocketEvent {
   }) = _DeleteMessage;
   const factory WebsocketEvent.markAsRead({required Chat chat}) = _MarkAsRead;
   const factory WebsocketEvent.userBlocked({required User user}) = _UserBlocked;
+  const factory WebsocketEvent.getPolls() = _GetPolls;
+  const factory WebsocketEvent.vote({required Option option}) = _Vote;
 }

@@ -8,6 +8,8 @@ import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/auth/view/login.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
+import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
+import 'package:democracy/poll/bloc/polls/polls_cubit.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
 import 'package:democracy/post/bloc/likes/likes_cubit.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
@@ -142,94 +144,109 @@ class _Listeners extends StatelessWidget {
         ),
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
-            if (state.status == WebsocketStatus.success) {
-              if (state.message['stream'] == postsStream) {
-                switch (state.message['payload']['action']) {
-                  case 'list':
-                    context.read<PostListCubit>().loadPosts(
-                      payload: state.message['payload'],
-                    );
-                  case 'create':
-                    context.read<PostDetailCubit>().created(
-                      payload: state.message['payload'],
-                    );
-                  case 'update':
-                    context.read<PostDetailCubit>().updated(
-                      payload: state.message['payload'],
-                    );
-                  case 'like':
-                    context.read<PostDetailCubit>().liked(
-                      payload: state.message['payload'],
-                    );
-                  case 'bookmark':
-                    context.read<PostDetailCubit>().bookmarked(
-                      payload: state.message['payload'],
-                    );
-                  case 'delete':
-                    context.read<PostDetailCubit>().deleted(
-                      payload: state.message['payload'],
-                    );
-                  case 'report':
-                    context.read<PostDetailCubit>().reported(
-                      payload: state.message['payload'],
-                    );
-                  case 'replies':
-                    context.read<RepliesCubit>().loadReplies(
-                      payload: state.message['payload'],
-                    );
-                  case 'user_posts':
-                    context.read<UserPostsCubit>().loaded(
-                      payload: state.message['payload'],
-                    );
-                  case 'bookmarks':
-                    context.read<BookmarksCubit>().loaded(
-                      payload: state.message['payload'],
-                    );
-                  case 'liked_posts':
-                    context.read<LikesCubit>().loaded(
-                      payload: state.message['payload'],
-                    );
-                  case 'user_replies':
-                    context.read<UserRepliesCubit>().loaded(
-                      payload: state.message['payload'],
-                    );
+            switch (state) {
+              case WebsocketSuccess(:final message):
+                switch (message['stream']) {
+                  case postsStream:
+                    switch (message['payload']['action']) {
+                      case 'list':
+                        context.read<PostListCubit>().loadPosts(
+                          payload: message['payload'],
+                        );
+                      case 'create':
+                        context.read<PostDetailCubit>().created(
+                          payload: message['payload'],
+                        );
+                      case 'update':
+                        context.read<PostDetailCubit>().updated(
+                          payload: message['payload'],
+                        );
+                      case 'like':
+                        context.read<PostDetailCubit>().liked(
+                          payload: message['payload'],
+                        );
+                      case 'bookmark':
+                        context.read<PostDetailCubit>().bookmarked(
+                          payload: message['payload'],
+                        );
+                      case 'delete':
+                        context.read<PostDetailCubit>().deleted(
+                          payload: message['payload'],
+                        );
+                      case 'report':
+                        context.read<PostDetailCubit>().reported(
+                          payload: message['payload'],
+                        );
+                      case 'replies':
+                        context.read<RepliesCubit>().loadReplies(
+                          payload: message['payload'],
+                        );
+                      case 'user_posts':
+                        context.read<UserPostsCubit>().loaded(
+                          payload: message['payload'],
+                        );
+                      case 'bookmarks':
+                        context.read<BookmarksCubit>().loaded(
+                          payload: message['payload'],
+                        );
+                      case 'liked_posts':
+                        context.read<LikesCubit>().loaded(
+                          payload: message['payload'],
+                        );
+                      case 'user_replies':
+                        context.read<UserRepliesCubit>().loaded(
+                          payload: message['payload'],
+                        );
+                    }
+                  case chatsStream:
+                    switch (message['payload']['action']) {
+                      case 'list':
+                        context.read<ChatsCubit>().loadChats(
+                          payload: message['payload'],
+                        );
+                      case 'create':
+                        if (message['payload']['request_id'] == chatRequestId) {
+                          context.read<ChatDetailCubit>().chatCreated(
+                            payload: message['payload'],
+                          );
+                        }
+                        if (message['payload']['request_id'] ==
+                            messageRequestId) {
+                          context.read<ChatDetailCubit>().messageCreated(
+                            payload: message['payload'],
+                          );
+                        }
+                      case 'update':
+                        if (message['payload']['request_id'] ==
+                            messageRequestId) {
+                          context.read<ChatDetailCubit>().messageUpdated(
+                            payload: message['payload'],
+                          );
+                        }
+                        if (message['payload']['request_id'] == chatRequestId) {
+                          context.read<ChatDetailCubit>().chatUpdated(
+                            payload: message['payload'],
+                          );
+                        }
+                    }
+                  case pollsStream:
+                    switch (message['payload']['action']) {
+                      case 'list':
+                        context.read<PollsCubit>().loaded(
+                          payload: message['payload'],
+                        );
+                      case 'create':
+                        context.read<PollDetailCubit>().created(
+                          payload: message['payload'],
+                        );
+                      case 'update':
+                        context.read<PollDetailCubit>().updated(
+                          payload: message['payload'],
+                        );
+                    }
                 }
-              } else if (state.message['stream'] == chatsStream) {
-                switch (state.message['payload']['action']) {
-                  case 'list':
-                    context.read<ChatsCubit>().loadChats(
-                      payload: state.message['payload'],
-                    );
-                  case 'create':
-                    if (state.message['payload']['request_id'] ==
-                        chatRequestId) {
-                      context.read<ChatDetailCubit>().chatCreated(
-                        payload: state.message['payload'],
-                      );
-                    }
-                    if (state.message['payload']['request_id'] ==
-                        messageRequestId) {
-                      context.read<ChatDetailCubit>().messageCreated(
-                        payload: state.message['payload'],
-                      );
-                    }
-                  case 'update':
-                    if (state.message['payload']['request_id'] ==
-                        messageRequestId) {
-                      context.read<ChatDetailCubit>().messageUpdated(
-                        payload: state.message['payload'],
-                      );
-                    }
-                    if (state.message['payload']['request_id'] ==
-                        chatRequestId) {
-                      context.read<ChatDetailCubit>().chatUpdated(
-                        payload: state.message['payload'],
-                      );
-                    }
-                }
-              }
             }
-            if (state.status == WebsocketStatus.failure) {
+            if (state is WebsocketFailure) {
               String error = 'Something went wrong';
               context.read<PostDetailCubit>().websocketFailure(error: error);
               context.read<PostListCubit>().websocketFailure(error: error);
