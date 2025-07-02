@@ -4,6 +4,7 @@ import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/post_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class PostTile extends StatelessWidget {
@@ -14,6 +15,7 @@ class PostTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var numberFormat = NumberFormat.compact(locale: "en_UK");
     return InkWell(
       onTap: () {
         (post.replyTo == null)
@@ -103,13 +105,17 @@ class PostTile extends StatelessWidget {
                       : Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          ReplyButton(post: post),
-                          RepostButton(post: post),
-                          LikeButton(post: post),
-                          ViewsButton(post: post),
+                          ReplyButton(post: post, numberFormat: numberFormat),
+                          RepostButton(post: post, numberFormat: numberFormat),
+                          LikeButton(post: post, numberFormat: numberFormat),
+                          ViewsButton(post: post, numberFormat: numberFormat),
                           Row(
                             children: [
-                              BookmarkButton(post: post, showTrailing: false),
+                              BookmarkButton(
+                                post: post,
+                                showTrailing: false,
+                                numberFormat: numberFormat,
+                              ),
                               ShareButton(post: post),
                             ],
                           ),
@@ -160,9 +166,10 @@ class PostTileButton extends StatelessWidget {
 }
 
 class LikeButton extends StatelessWidget {
-  const LikeButton({super.key, required this.post});
+  const LikeButton({super.key, required this.post, required this.numberFormat});
 
   final Post post;
+  final NumberFormat numberFormat;
 
   @override
   Widget build(BuildContext context) {
@@ -179,15 +186,20 @@ class LikeButton extends StatelessWidget {
                 : Theme.of(context).disabledColor,
         fill: post.isLiked ? 1 : 0,
       ),
-      trailing: (post.likes > 0) ? post.likes.toString() : null,
+      trailing: (post.likes > 0) ? numberFormat.format(post.likes) : null,
     );
   }
 }
 
 class RepostButton extends StatelessWidget {
-  const RepostButton({super.key, required this.post});
+  const RepostButton({
+    super.key,
+    required this.post,
+    required this.numberFormat,
+  });
 
   final Post post;
+  final NumberFormat numberFormat;
 
   @override
   Widget build(BuildContext context) {
@@ -198,15 +210,20 @@ class RepostButton extends StatelessWidget {
         size: 20,
         color: Theme.of(context).disabledColor,
       ),
-      trailing: (post.reposts > 0) ? post.reposts.toString() : null,
+      trailing: (post.reposts > 0) ? numberFormat.format(post.reposts) : null,
     );
   }
 }
 
 class ReplyButton extends StatelessWidget {
-  const ReplyButton({super.key, required this.post});
+  const ReplyButton({
+    super.key,
+    required this.post,
+    required this.numberFormat,
+  });
 
   final Post post;
+  final NumberFormat numberFormat;
 
   @override
   Widget build(BuildContext context) {
@@ -217,15 +234,20 @@ class ReplyButton extends StatelessWidget {
         size: 20,
         color: Theme.of(context).disabledColor,
       ),
-      trailing: (post.replies > 0) ? post.replies.toString() : null,
+      trailing: (post.replies > 0) ? numberFormat.format(post.replies) : null,
     );
   }
 }
 
 class ViewsButton extends StatelessWidget {
-  const ViewsButton({super.key, required this.post});
+  const ViewsButton({
+    super.key,
+    required this.post,
+    required this.numberFormat,
+  });
 
   final Post post;
+  final NumberFormat numberFormat;
 
   @override
   Widget build(BuildContext context) {
@@ -236,7 +258,7 @@ class ViewsButton extends StatelessWidget {
         size: 20,
         color: Theme.of(context).disabledColor,
       ),
-      trailing: (post.views > 0) ? post.views.toString() : null,
+      trailing: (post.views > 0) ? numberFormat.format(post.views) : null,
     );
   }
 }
@@ -246,10 +268,12 @@ class BookmarkButton extends StatelessWidget {
     super.key,
     required this.post,
     this.showTrailing = true,
+    required this.numberFormat,
   });
 
   final Post post;
   final bool showTrailing;
+  final NumberFormat numberFormat;
 
   @override
   Widget build(BuildContext context) {
@@ -271,7 +295,7 @@ class BookmarkButton extends StatelessWidget {
       trailing:
           showTrailing
               ? (post.bookmarks > 0)
-                  ? post.bookmarks.toString()
+                  ? numberFormat.format(post.bookmarks)
                   : null
               : null,
     );

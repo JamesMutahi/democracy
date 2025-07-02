@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:democracy/poll/models/option.dart';
 import 'package:democracy/poll/models/poll.dart';
 import 'package:democracy/poll/view/poll_detail.dart';
@@ -12,8 +14,6 @@ class PollTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool pollHasEnded =
-        poll.endTime.difference(DateTime.now()) < Duration(seconds: 0);
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -36,47 +36,98 @@ class PollTile extends StatelessWidget {
           children: [
             Row(
               children: [
-                pollHasEnded
-                    ? SizedBox.shrink()
-                    : Row(
-                      children: [
-                        SpinKitPulse(
-                          color: Theme.of(context).primaryColor,
-                          size: 10.0,
-                        ),
-                        SizedBox(width: 10),
-                      ],
-                    ),
                 Text(poll.name, style: Theme.of(context).textTheme.titleMedium),
               ],
             ),
             SizedBox(height: 5),
+            TimeLeft(poll: poll),
+            SizedBox(height: 10),
             ...poll.options.map((option) {
               return PollPercentIndicator(poll: poll, option: option);
             }),
-            Row(
-              children: [
-                // TODO: Fill in the blanks
-                Text(
-                  'Total votes: ${poll.totalVotes}',
-                  style: TextStyle(color: Theme.of(context).disabledColor),
-                ),
-                SizedBox(width: 10),
-                Icon(
-                  Icons.circle_rounded,
-                  size: 3,
-                  color: Theme.of(context).disabledColor,
-                ),
-                SizedBox(width: 10),
-                Text(
-                  '5 days left',
-                  style: TextStyle(color: Theme.of(context).disabledColor),
-                ),
-              ],
-            ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class TimeLeft extends StatefulWidget {
+  const TimeLeft({super.key, required this.poll});
+
+  final Poll poll;
+
+  @override
+  State<TimeLeft> createState() => _TimeLeftState();
+}
+
+class _TimeLeftState extends State<TimeLeft> {
+  Timer? timer;
+  String timeLeft = '';
+  bool outOfTime = false;
+
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(Duration(seconds: 1), (Timer t) => getTimeLeft());
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+
+  void getTimeLeft() {
+    Duration difference = widget.poll.endTime.difference(DateTime.now());
+    setState(() {
+      if (difference.inSeconds < 0) {
+        outOfTime = true;
+        timeLeft = 'Closed';
+      } else if (difference.inHours > 24) {
+        timeLeft =
+            '${difference.inDays} ${difference.inDays == 1 ? 'day' : 'days'} left';
+      } else if (difference.inMinutes > 59) {
+        timeLeft =
+            '${difference.inHours} ${difference.inHours == 1 ? 'hour' : 'hours'} left';
+      } else if (difference.inSeconds > 59) {
+        timeLeft =
+            '${difference.inMinutes} ${difference.inMinutes == 1 ? 'minute' : 'minutes'} left';
+      } else {
+        timeLeft = '${difference.inSeconds}s left';
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            outOfTime
+                ? SizedBox.shrink()
+                : Row(
+                  children: [
+                    SpinKitPulse(
+                      color: Theme.of(context).primaryColor,
+                      size: 20.0,
+                    ),
+                    SizedBox(width: 5),
+                  ],
+                ),
+            Text(
+              timeLeft,
+              style: TextStyle(color: Theme.of(context).disabledColor),
+            ),
+          ],
+        ),
+        Text(
+          '${widget.poll.totalVotes} ${widget.poll.totalVotes == 1 ? 'vote' : 'votes'}',
+          style: TextStyle(color: Theme.of(context).disabledColor),
+        ),
+      ],
     );
   }
 }

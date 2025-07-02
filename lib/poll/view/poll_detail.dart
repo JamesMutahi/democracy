@@ -104,10 +104,9 @@ class OptionTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         child: Container(
           height: optionHeight,
-          // width: pollOptionsWidth,
           padding: EdgeInsets.all(9),
           decoration: BoxDecoration(
-            // color: Theme.of(context).primaryColor,
+            color: Theme.of(context).canvasColor,
             border: Border.all(color: Colors.black, width: 1),
             borderRadius: BorderRadius.circular(5),
           ),

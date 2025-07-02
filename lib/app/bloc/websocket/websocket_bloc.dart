@@ -8,7 +8,6 @@ import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/poll/models/option.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:web_socket_channel/io.dart';

@@ -42,6 +42,7 @@ class _PostDetailState extends State<PostDetail> {
   Widget build(BuildContext context) {
     var timeFormat = DateFormat('hh:mm a');
     var dateFormat = DateFormat('dd/MM/yyyy');
+    var numberFormat = NumberFormat.compact(locale: "en_UK");
     return BlocListener<PostDetailCubit, PostDetailState>(
       listener: (context, state) {
         switch (state) {
@@ -149,10 +150,10 @@ class _PostDetailState extends State<PostDetail> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        ReplyButton(post: _post),
-                        RepostButton(post: _post),
-                        LikeButton(post: _post),
-                        BookmarkButton(post: _post),
+                        ReplyButton(post: _post, numberFormat: numberFormat),
+                        RepostButton(post: _post, numberFormat: numberFormat),
+                        LikeButton(post: _post, numberFormat: numberFormat),
+                        BookmarkButton(post: _post, numberFormat: numberFormat),
                         ShareButton(post: _post),
                       ],
                     ),

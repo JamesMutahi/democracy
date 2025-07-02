@@ -213,10 +213,10 @@ class ChatPopUpMenu extends StatelessWidget {
             PopupMenuItem(
               child: MaterialButton(
                 onPressed: () {
+                  context.read<ChatActionsCubit>().closeActionButtons();
                   context.read<WebsocketBloc>().add(
                     WebsocketEvent.userBlocked(user: otherUser),
                   );
-                  context.read<ChatActionsCubit>().closeActionButtons();
                   Navigator.pop(context);
                 },
                 child: Text(
