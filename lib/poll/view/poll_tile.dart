@@ -79,22 +79,59 @@ class _TimeLeftState extends State<TimeLeft> {
   }
 
   void getTimeLeft() {
-    Duration difference = widget.poll.endTime.difference(DateTime.now());
+    Duration diff = widget.poll.endTime.difference(DateTime.now());
     setState(() {
-      if (difference.inSeconds < 0) {
+      var diffSeconds = diff.inSeconds;
+      var unit = 'second';
+      var difference = diffSeconds;
+      if (diffSeconds > 1 || diffSeconds < 1) {
+        unit = 'seconds';
+      }
+      if (diffSeconds > 59) {
+        final diffMinutes = diff.inMinutes;
+        difference = diffMinutes;
+        unit = 'minute';
+        if (diffMinutes > 1) {
+          unit = 'minutes';
+        }
+        if (diffMinutes > 59) {
+          final diffHours = diff.inHours;
+          difference = diffHours;
+          unit = 'hour';
+          if (diffHours > 1) {
+            unit = 'hours';
+          }
+          if (diffHours > 24) {
+            final diffDays = diff.inDays;
+            difference = diffDays;
+            unit = 'day';
+            if (diffDays > 1) {
+              unit = 'days';
+            }
+            if (diffDays > 30) {
+              final diffMonths = (diffDays / 30).floor();
+              difference = diffMonths;
+              unit = 'month';
+              if (diffMonths > 1) {
+                unit = 'months';
+              }
+              if (diffDays > 365) {
+                final diffYears = (diffDays / 365).floor();
+                difference = diffYears;
+                unit = 'year';
+                if (diffYears > 1) {
+                  unit = 'years';
+                }
+              }
+            }
+          }
+        }
+      }
+      if (diffSeconds < 0) {
         outOfTime = true;
         timeLeft = 'Closed';
-      } else if (difference.inHours > 24) {
-        timeLeft =
-            '${difference.inDays} ${difference.inDays == 1 ? 'day' : 'days'} left';
-      } else if (difference.inMinutes > 59) {
-        timeLeft =
-            '${difference.inHours} ${difference.inHours == 1 ? 'hour' : 'hours'} left';
-      } else if (difference.inSeconds > 59) {
-        timeLeft =
-            '${difference.inMinutes} ${difference.inMinutes == 1 ? 'minute' : 'minutes'} left';
       } else {
-        timeLeft = '${difference.inSeconds}s left';
+        timeLeft = '$difference $unit';
       }
     });
   }

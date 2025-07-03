@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/post/models/post.dart';
@@ -320,64 +322,88 @@ class ShareButton extends StatelessWidget {
   }
 }
 
-class TimeDifferenceInfo extends StatelessWidget {
+class TimeDifferenceInfo extends StatefulWidget {
   const TimeDifferenceInfo({super.key, required this.publishedAt});
 
   final DateTime publishedAt;
 
   @override
-  Widget build(BuildContext context) {
-    var currentTime = DateTime.now();
-    var diff = currentTime.difference(publishedAt);
-    final diffSeconds = diff.inSeconds;
-    var unit = 's';
-    var difference = diffSeconds;
-    if (diffSeconds > 1 || diffSeconds < 1) {
-      unit = 's';
-    }
-    if (diffSeconds > 60) {
-      final diffMinutes = diff.inMinutes;
-      difference = diffMinutes;
-      unit = 'min';
-      if (diffMinutes > 1) {
-        unit = 'min';
+  State<TimeDifferenceInfo> createState() => _TimeDifferenceInfoState();
+}
+
+class _TimeDifferenceInfoState extends State<TimeDifferenceInfo> {
+  Timer? timer;
+  String timeSince = '';
+
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(Duration(seconds: 1), (Timer t) => getTimeLeft());
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+
+  void getTimeLeft() {
+    Duration diff = DateTime.now().difference(widget.publishedAt);
+    setState(() {
+      var diffSeconds = diff.inSeconds;
+      var unit = 's';
+      var difference = diffSeconds;
+      if (diffSeconds > 1 || diffSeconds < 1) {
+        unit = 's';
       }
-      if (diffMinutes > 60) {
-        final diffHours = diff.inHours;
-        difference = diffHours;
-        unit = 'h';
-        if (diffHours > 1) {
-          unit = 'h';
+      if (diffSeconds > 59) {
+        final diffMinutes = diff.inMinutes;
+        difference = diffMinutes;
+        unit = 'min';
+        if (diffMinutes > 1) {
+          unit = 'min';
         }
-        if (diffHours > 24) {
-          final diffDays = diff.inDays;
-          difference = diffDays;
-          unit = 'd';
-          if (diffDays > 1) {
-            unit = 'd';
+        if (diffMinutes > 59) {
+          final diffHours = diff.inHours;
+          difference = diffHours;
+          unit = 'h';
+          if (diffHours > 1) {
+            unit = 'h';
           }
-          if (diffDays > 30) {
-            final diffMonths = (diffDays / 30).floor();
-            difference = diffMonths;
-            unit = 'm';
-            if (diffMonths > 1) {
-              unit = 'm';
+          if (diffHours > 24) {
+            final diffDays = diff.inDays;
+            difference = diffDays;
+            unit = 'd';
+            if (diffDays > 1) {
+              unit = 'd';
             }
-            if (diffDays > 365) {
-              final diffYears = (diffDays / 365).floor();
-              difference = diffYears;
-              unit = 'y';
-              if (diffYears > 1) {
-                unit = 'yrs';
+            if (diffDays > 30) {
+              final diffMonths = (diffDays / 30).floor();
+              difference = diffMonths;
+              unit = 'm';
+              if (diffMonths > 1) {
+                unit = 'm';
+              }
+              if (diffDays > 365) {
+                final diffYears = (diffDays / 365).floor();
+                difference = diffYears;
+                unit = 'y';
+                if (diffYears > 1) {
+                  unit = 'yrs';
+                }
               }
             }
           }
         }
       }
-    }
+      timeSince = '$difference$unit';
+    });
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Text(
-      '$difference$unit',
+      timeSince,
       style: TextStyle(color: Theme.of(context).disabledColor),
     );
   }
