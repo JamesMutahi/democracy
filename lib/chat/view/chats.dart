@@ -1,5 +1,6 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
+import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/auth/models/user.dart';
 import 'package:democracy/chat/bloc/chat_actions/chat_actions_cubit.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
@@ -75,6 +76,17 @@ class _ChatsState extends State<Chats> {
               }
             });
           }
+        }
+        if (state is ChatDetailFailure) {
+          final snackBar = SnackBar(
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Theme.of(context).cardColor,
+            content: SnackBarContent(
+              message: state.error,
+              status: SnackBarStatus.failure,
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
       },
       child: ListView.builder(

@@ -228,6 +228,13 @@ class _Listeners extends StatelessWidget {
                             payload: message['payload'],
                           );
                         }
+                      case 'delete':
+                        if (message['payload']['request_id'] ==
+                            messageRequestId) {
+                          context.read<ChatDetailCubit>().messageDeleted(
+                            payload: message['payload'],
+                          );
+                        }
                     }
                   case pollsStream:
                     switch (message['payload']['action']) {

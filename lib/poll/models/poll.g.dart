@@ -18,6 +18,10 @@ _Poll _$PollFromJson(Map<String, dynamic> json) => _Poll(
       (json['options'] as List<dynamic>)
           .map((e) => Option.fromJson(e as Map<String, dynamic>))
           .toList(),
+  reason:
+      json['reason'] == null
+          ? null
+          : Reason.fromJson(json['reason'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$PollToJson(_Poll instance) => <String, dynamic>{
@@ -29,4 +33,5 @@ Map<String, dynamic> _$PollToJson(_Poll instance) => <String, dynamic>{
   'total_votes': instance.totalVotes,
   'voted_option': instance.votedOption,
   'options': instance.options,
+  'reason': instance.reason,
 };

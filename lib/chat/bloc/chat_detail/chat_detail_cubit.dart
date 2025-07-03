@@ -11,7 +11,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
 
   void websocketFailure({required String error}) {
     if (state is ChatDetailInitial || state is ChatDetailLoading) {
-      emit(ChatDetailFailure());
+      emit(ChatDetailFailure(error: 'Connection failure'));
     }
   }
 
@@ -21,7 +21,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
       final Chat chat = Chat.fromJson(payload['data']);
       emit(ChatCreated(chat: chat));
     } else {
-      emit(ChatDetailFailure());
+      emit(ChatDetailFailure(error: payload['errors'][0]));
     }
   }
 
@@ -31,7 +31,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
       final Chat chat = Chat.fromJson(payload['data']);
       emit(ChatUpdated(chat: chat));
     } else {
-      emit(ChatDetailFailure());
+      emit(ChatDetailFailure(error: payload['errors'][0]));
     }
   }
 
@@ -41,7 +41,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
       Message message = Message.fromJson(payload['data']);
       emit(MessageCreated(message: message));
     } else {
-      emit(ChatDetailFailure());
+      emit(ChatDetailFailure(error: payload['errors'][0]));
     }
   }
 
@@ -51,7 +51,17 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
       Message message = Message.fromJson(payload['data']);
       emit(MessageUpdated(message: message));
     } else {
-      emit(ChatDetailFailure());
+      emit(ChatDetailFailure(error: payload['errors'][0]));
+    }
+  }
+
+  void messageDeleted({required Map<String, dynamic> payload}) {
+    emit(ChatDetailLoading());
+    if (payload['response_status'] == 204) {
+      Message message = Message.fromJson(payload['data']);
+      emit(MessageDeleted(message: message));
+    } else {
+      emit(ChatDetailFailure(error: payload['errors'][0]));
     }
   }
 }

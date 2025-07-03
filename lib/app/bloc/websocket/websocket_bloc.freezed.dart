@@ -1540,6 +1540,83 @@ $OptionCopyWith<$Res> get option {
 }
 
 /// @nodoc
+
+
+class _SubmitReason implements WebsocketEvent {
+  const _SubmitReason({required this.poll, required this.text});
+  
+
+ final  Poll poll;
+ final  String text;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SubmitReasonCopyWith<_SubmitReason> get copyWith => __$SubmitReasonCopyWithImpl<_SubmitReason>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubmitReason&&(identical(other.poll, poll) || other.poll == poll)&&(identical(other.text, text) || other.text == text));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,poll,text);
+
+@override
+String toString() {
+  return 'WebsocketEvent.submitReason(poll: $poll, text: $text)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SubmitReasonCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
+  factory _$SubmitReasonCopyWith(_SubmitReason value, $Res Function(_SubmitReason) _then) = __$SubmitReasonCopyWithImpl;
+@useResult
+$Res call({
+ Poll poll, String text
+});
+
+
+$PollCopyWith<$Res> get poll;
+
+}
+/// @nodoc
+class __$SubmitReasonCopyWithImpl<$Res>
+    implements _$SubmitReasonCopyWith<$Res> {
+  __$SubmitReasonCopyWithImpl(this._self, this._then);
+
+  final _SubmitReason _self;
+  final $Res Function(_SubmitReason) _then;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? poll = null,Object? text = null,}) {
+  return _then(_SubmitReason(
+poll: null == poll ? _self.poll : poll // ignore: cast_nullable_to_non_nullable
+as Poll,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PollCopyWith<$Res> get poll {
+  
+  return $PollCopyWith<$Res>(_self.poll, (value) {
+    return _then(_self.copyWith(poll: value));
+  });
+}
+}
+
+/// @nodoc
 mixin _$WebsocketState {
 
 

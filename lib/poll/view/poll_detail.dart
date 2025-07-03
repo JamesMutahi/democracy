@@ -18,6 +18,13 @@ class PollDetail extends StatefulWidget {
 class _PollDetailState extends State<PollDetail> {
   late Poll _poll = widget.poll;
   bool changingVote = false;
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    _controller.text = _poll.reason == null ? '' : _poll.reason!.text;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +38,8 @@ class _PollDetailState extends State<PollDetail> {
             setState(() {
               _poll = state.poll;
             });
+            _controller.text =
+                state.poll.reason == null ? '' : state.poll.reason!.text;
           }
         }
       },
@@ -38,48 +47,55 @@ class _PollDetailState extends State<PollDetail> {
         appBar: AppBar(
           title: Text(_poll.name, overflow: TextOverflow.ellipsis),
         ),
-        body: Container(
-          margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(_poll.description),
-              ..._poll.options.map((option) {
-                return AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  child:
-                      (pollHasEnded || userHasVoted && !changingVote)
-                          ? PollPercentIndicator(poll: _poll, option: option)
-                          : OptionTile(
-                            option: option,
-                            onTap: () {
-                              context.read<WebsocketBloc>().add(
-                                WebsocketEvent.vote(option: option),
-                              );
+        body: SingleChildScrollView(
+          child: Container(
+            margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(_poll.description),
+                ..._poll.options.map((option) {
+                  return AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child:
+                        (pollHasEnded || userHasVoted && !changingVote)
+                            ? PollPercentIndicator(poll: _poll, option: option)
+                            : OptionTile(
+                              option: option,
+                              onTap: () {
+                                context.read<WebsocketBloc>().add(
+                                  WebsocketEvent.vote(option: option),
+                                );
+                                setState(() {
+                                  changingVote = false;
+                                });
+                              },
+                            ),
+                  );
+                }),
+                userHasVoted
+                    ? changingVote
+                        ? SizedBox.shrink()
+                        : Align(
+                          alignment: Alignment.topRight,
+                          child: TextButton(
+                            onPressed: () {
                               setState(() {
-                                changingVote = false;
+                                changingVote = true;
                               });
                             },
+                            child: Text('Change'),
                           ),
-                );
-              }),
-              userHasVoted
-                  ? changingVote
-                      ? SizedBox.shrink()
-                      : Align(
-                        alignment: Alignment.topRight,
-                        child: TextButton(
-                          onPressed: () {
-                            setState(() {
-                              changingVote = true;
-                            });
-                          },
-                          child: Text('Change'),
-                        ),
-                      )
-                  : SizedBox.shrink(),
-            ],
+                        )
+                    : SizedBox.shrink(),
+                pollHasEnded
+                    ? Text(_poll.reason == null ? '' : _poll.reason!.text)
+                    : !changingVote
+                    ? ReasonWidget(controller: _controller, poll: _poll)
+                    : SizedBox.shrink(),
+              ],
+            ),
           ),
         ),
       ),
@@ -113,6 +129,84 @@ class OptionTile extends StatelessWidget {
           child: Center(child: Text(option.text)),
         ),
       ),
+    );
+  }
+}
+
+class ReasonWidget extends StatefulWidget {
+  const ReasonWidget({super.key, required this.controller, required this.poll});
+
+  final TextEditingController controller;
+  final Poll poll;
+
+  @override
+  State<ReasonWidget> createState() => _ReasonWidgetState();
+}
+
+class _ReasonWidgetState extends State<ReasonWidget> {
+  bool submitButtonDisabled = true;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Share your reason"),
+              Text(
+                "This is optional but will help to better understand "
+                "why people reject or accept an option. Your "
+                "contribution is greatly appreciated.",
+                style: TextStyle(color: Theme.of(context).hintColor),
+              ),
+            ],
+          ),
+        ),
+        SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          reverse: true,
+          child: TextFormField(
+            controller: widget.controller,
+            onChanged: (value) {
+              setState(() {
+                if (value == '') {
+                  submitButtonDisabled = true;
+                } else {
+                  submitButtonDisabled = false;
+                }
+              });
+            },
+            minLines: 6,
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
+            onTapOutside: (event) {
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
+          ),
+        ),
+        SizedBox(height: 10),
+        Align(
+          alignment: Alignment.topRight,
+          child: ElevatedButton(
+            onPressed:
+                widget.controller.text == ''
+                    ? null
+                    : () {
+                      context.read<WebsocketBloc>().add(
+                        WebsocketEvent.submitReason(
+                          poll: widget.poll,
+                          text: widget.controller.text,
+                        ),
+                      );
+                    },
+            child: Text('Submit'),
+          ),
+        ),
+      ],
     );
   }
 }

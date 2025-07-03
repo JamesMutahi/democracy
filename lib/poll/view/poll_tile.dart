@@ -174,11 +174,7 @@ class PollPercentIndicator extends StatelessWidget {
               Text(option.text),
               SizedBox(width: 20),
               if (poll.votedOption == option.id)
-                const Icon(
-                  Icons.check_circle_outline_rounded,
-                  color: Colors.black,
-                  size: 16,
-                ),
+                const Icon(Icons.check_circle_outline_rounded, size: 16),
               const Spacer(),
               Text(
                 poll.totalVotes == 0

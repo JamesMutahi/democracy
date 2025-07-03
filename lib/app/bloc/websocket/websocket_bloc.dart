@@ -7,6 +7,7 @@ import 'package:democracy/auth/models/user.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/poll/models/option.dart';
+import 'package:democracy/poll/models/poll.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -91,6 +92,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     });
     on<_Vote>((event, emit) {
       _onVote(emit, event);
+    });
+    on<_SubmitReason>((event, emit) {
+      _onSubmitReason(emit, event);
     });
   }
 
@@ -466,6 +470,26 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'action': 'vote',
         'request_id': pollRequestId,
         'option': event.option.id,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onSubmitReason(
+    Emitter<WebsocketState> emit,
+    _SubmitReason event,
+  ) async {
+    if (state is WebsocketFailure) {
+      await _onConnect(emit);
+    }
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': pollsStream,
+      'payload': {
+        'action': 'add_reason',
+        'request_id': pollRequestId,
+        'pk': event.poll.id,
+        'text': event.text,
       },
     };
     _channel.sink.add(jsonEncode(message));

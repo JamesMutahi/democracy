@@ -409,33 +409,142 @@ $MessageCopyWith<$Res> get message {
 /// @nodoc
 
 
-class ChatDetailFailure implements ChatDetailState {
-  const ChatDetailFailure();
+class MessageDeleted implements ChatDetailState {
+  const MessageDeleted({required this.message});
   
 
+ final  Message message;
 
-
+/// Create a copy of ChatDetailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MessageDeletedCopyWith<MessageDeleted> get copyWith => _$MessageDeletedCopyWithImpl<MessageDeleted>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatDetailFailure);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MessageDeleted&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,message);
 
 @override
 String toString() {
-  return 'ChatDetailState.failure()';
+  return 'ChatDetailState.messageDeleted(message: $message)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $MessageDeletedCopyWith<$Res> implements $ChatDetailStateCopyWith<$Res> {
+  factory $MessageDeletedCopyWith(MessageDeleted value, $Res Function(MessageDeleted) _then) = _$MessageDeletedCopyWithImpl;
+@useResult
+$Res call({
+ Message message
+});
 
 
+$MessageCopyWith<$Res> get message;
+
+}
+/// @nodoc
+class _$MessageDeletedCopyWithImpl<$Res>
+    implements $MessageDeletedCopyWith<$Res> {
+  _$MessageDeletedCopyWithImpl(this._self, this._then);
+
+  final MessageDeleted _self;
+  final $Res Function(MessageDeleted) _then;
+
+/// Create a copy of ChatDetailState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(MessageDeleted(
+message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as Message,
+  ));
+}
+
+/// Create a copy of ChatDetailState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MessageCopyWith<$Res> get message {
+  
+  return $MessageCopyWith<$Res>(_self.message, (value) {
+    return _then(_self.copyWith(message: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class ChatDetailFailure implements ChatDetailState {
+  const ChatDetailFailure({required this.error});
+  
+
+ final  String error;
+
+/// Create a copy of ChatDetailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ChatDetailFailureCopyWith<ChatDetailFailure> get copyWith => _$ChatDetailFailureCopyWithImpl<ChatDetailFailure>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatDetailFailure&&(identical(other.error, error) || other.error == error));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,error);
+
+@override
+String toString() {
+  return 'ChatDetailState.failure(error: $error)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ChatDetailFailureCopyWith<$Res> implements $ChatDetailStateCopyWith<$Res> {
+  factory $ChatDetailFailureCopyWith(ChatDetailFailure value, $Res Function(ChatDetailFailure) _then) = _$ChatDetailFailureCopyWithImpl;
+@useResult
+$Res call({
+ String error
+});
+
+
+
+
+}
+/// @nodoc
+class _$ChatDetailFailureCopyWithImpl<$Res>
+    implements $ChatDetailFailureCopyWith<$Res> {
+  _$ChatDetailFailureCopyWithImpl(this._self, this._then);
+
+  final ChatDetailFailure _self;
+  final $Res Function(ChatDetailFailure) _then;
+
+/// Create a copy of ChatDetailState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? error = null,}) {
+  return _then(ChatDetailFailure(
+error: null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
 
 // dart format on

@@ -1,4 +1,5 @@
 import 'package:democracy/poll/models/option.dart';
+import 'package:democracy/poll/models/reason.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'poll.freezed.dart';
@@ -15,6 +16,7 @@ sealed class Poll with _$Poll {
     @JsonKey(name: 'total_votes') required int totalVotes,
     @JsonKey(name: 'voted_option') required int? votedOption,
     required List<Option> options,
+    required Reason? reason,
   }) = _Poll;
 
   factory Poll.fromJson(Map<String, Object?> json) => _$PollFromJson(json);

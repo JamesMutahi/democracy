@@ -41,4 +41,8 @@ class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.userBlocked({required User user}) = _UserBlocked;
   const factory WebsocketEvent.getPolls() = _GetPolls;
   const factory WebsocketEvent.vote({required Option option}) = _Vote;
+  const factory WebsocketEvent.submitReason({
+    required Poll poll,
+    required String text,
+  }) = _SubmitReason;
 }
