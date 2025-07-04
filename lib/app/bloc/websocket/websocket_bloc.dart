@@ -269,7 +269,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'stream': postsStream,
       'payload': {
         'action': 'report',
-        'request_id': postRequestId,
         'data': {'pk': event.post.id},
       },
     };
@@ -283,11 +282,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
-      'payload': {
-        'action': 'replies',
-        'request_id': postRequestId,
-        'pk': event.post.id,
-      },
+      'payload': {'action': 'replies', 'pk': event.post.id},
     };
     _channel.sink.add(jsonEncode(message));
   }
@@ -302,11 +297,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
-      'payload': {
-        'action': 'user_posts',
-        'request_id': postRequestId,
-        'user': event.user.id,
-      },
+      'payload': {'action': 'user_posts', 'user': event.user.id},
     };
     _channel.sink.add(jsonEncode(message));
   }
@@ -321,7 +312,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
-      'payload': {'action': 'bookmarks', 'request_id': postRequestId},
+      'payload': {'action': 'bookmarks'},
     };
     _channel.sink.add(jsonEncode(message));
   }
@@ -336,11 +327,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
-      'payload': {
-        'action': 'liked_posts',
-        'request_id': postRequestId,
-        'user': event.user.id,
-      },
+      'payload': {'action': 'liked_posts', 'user': event.user.id},
     };
     _channel.sink.add(jsonEncode(message));
   }
@@ -355,11 +342,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
-      'payload': {
-        'action': 'user_replies',
-        'request_id': postRequestId,
-        'user': event.user.id,
-      },
+      'payload': {'action': 'user_replies', 'user': event.user.id},
     };
     _channel.sink.add(jsonEncode(message));
   }
@@ -405,8 +388,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'create_message',
         'request_id': messageRequestId,
-        'chat': event.chat.id,
-        'text': event.text,
+        'data': {'chat': event.chat.id, 'text': event.text},
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -426,7 +408,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'action': 'edit_message',
         'request_id': messageRequestId,
         'pk': event.messageId,
-        'text': event.text,
+        'data': {'text': event.text},
       },
     };
     _channel.sink.add(jsonEncode(message));
