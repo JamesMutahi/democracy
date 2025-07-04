@@ -40,7 +40,20 @@ class PollTile extends StatelessWidget {
               ],
             ),
             SizedBox(height: 5),
-            TimeLeft(poll: poll),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TimeLeft(
+                  key: ValueKey(poll),
+                  startTime: poll.startTime,
+                  endTime: poll.endTime,
+                ),
+                Text(
+                  '${poll.totalVotes} ${poll.totalVotes == 1 ? 'vote' : 'votes'}',
+                  style: TextStyle(color: Theme.of(context).disabledColor),
+                ),
+              ],
+            ),
             SizedBox(height: 10),
             ...poll.options.map((option) {
               return PollPercentIndicator(
@@ -57,9 +70,10 @@ class PollTile extends StatelessWidget {
 }
 
 class TimeLeft extends StatefulWidget {
-  const TimeLeft({super.key, required this.poll});
+  const TimeLeft({super.key, required this.startTime, required this.endTime});
 
-  final Poll poll;
+  final DateTime startTime;
+  final DateTime endTime;
 
   @override
   State<TimeLeft> createState() => _TimeLeftState();
@@ -68,7 +82,7 @@ class TimeLeft extends StatefulWidget {
 class _TimeLeftState extends State<TimeLeft> {
   Timer? timer;
   String timeLeft = '';
-  bool outOfTime = false;
+  Color color = Colors.amber;
 
   @override
   void initState() {
@@ -83,8 +97,16 @@ class _TimeLeftState extends State<TimeLeft> {
   }
 
   void getTimeLeft() {
-    Duration diff = widget.poll.endTime.difference(DateTime.now());
+    Duration diff = widget.startTime.difference(DateTime.now());
+    bool started = false;
+    if (diff.inSeconds < 0) {
+      diff = widget.endTime.difference(DateTime.now());
+      started = true;
+    }
     setState(() {
+      if (started) {
+        color = Colors.green;
+      }
       var diffSeconds = diff.inSeconds;
       var unit = 'second';
       var difference = diffSeconds;
@@ -132,10 +154,12 @@ class _TimeLeftState extends State<TimeLeft> {
         }
       }
       if (diffSeconds < 0) {
-        outOfTime = true;
-        timeLeft = 'Closed';
+        if (started) {
+          timeLeft = 'Closed';
+          color = Colors.red;
+        }
       } else {
-        timeLeft = 'Ends in $difference $unit';
+        timeLeft = '${started ? 'Closes' : 'Opens'} in $difference $unit';
       }
     });
   }
@@ -143,29 +167,15 @@ class _TimeLeftState extends State<TimeLeft> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(
           children: [
-            outOfTime
-                ? SizedBox.shrink()
-                : Row(
-                  children: [
-                    SpinKitPulse(
-                      color: Theme.of(context).primaryColor,
-                      size: 15.0,
-                    ),
-                    SizedBox(width: 5),
-                  ],
-                ),
-            Text(
-              timeLeft,
-              style: TextStyle(color: Theme.of(context).disabledColor),
-            ),
+            SpinKitPianoWave(color: color, size: 15.0),
+            SizedBox(width: 5),
           ],
         ),
         Text(
-          '${widget.poll.totalVotes} ${widget.poll.totalVotes == 1 ? 'vote' : 'votes'}',
+          timeLeft,
           style: TextStyle(color: Theme.of(context).disabledColor),
         ),
       ],

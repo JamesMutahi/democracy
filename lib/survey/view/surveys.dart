@@ -1,3 +1,4 @@
+import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
 import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
@@ -19,19 +20,44 @@ class _SurveysState extends State<Surveys> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AnswerBloc, AnswerState>(
-      listener: (context, state) {
-        if (state.status == AnswerStatus.submitted) {
-          if (_surveys.any((survey) => survey.id == state.survey!.id)) {
-            setState(() {
-              int index = _surveys.indexWhere(
-                (survey) => survey.id == state.survey!.id,
-              );
-              _surveys[index] = state.survey!;
-            });
-          }
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<AnswerBloc, AnswerState>(
+          listener: (context, state) {
+            if (state.status == AnswerStatus.submitted) {
+              if (_surveys.any((survey) => survey.id == state.survey!.id)) {
+                setState(() {
+                  int index = _surveys.indexWhere(
+                    (survey) => survey.id == state.survey!.id,
+                  );
+                  _surveys[index] = state.survey!;
+                });
+              }
+            }
+          },
+        ),
+        BlocListener<SurveyDetailCubit, SurveyDetailState>(
+          listener: (context, state) {
+            if (state is SurveyCreated) {
+              if (!_surveys.any((survey) => survey.id == state.survey.id)) {
+                setState(() {
+                  _surveys.add(state.survey);
+                });
+              }
+            }
+            if (state is SurveyUpdated) {
+              if (_surveys.any((survey) => survey.id == state.survey.id)) {
+                setState(() {
+                  int index = _surveys.indexWhere(
+                    (survey) => survey.id == state.survey.id,
+                  );
+                  _surveys[index] = state.survey;
+                });
+              }
+            }
+          },
+        ),
+      ],
       child: ListView.builder(
         controller: _scrollController,
         scrollDirection: Axis.vertical,

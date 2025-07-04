@@ -140,7 +140,12 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       _channel.sink.add(jsonEncode(message));
       message = {
         'stream': chatsStream,
-        'payload': {"action": 'join_chats', "request_id": chatRequestId},
+        'payload': {"action": 'subscribe', "request_id": chatRequestId},
+      };
+      _channel.sink.add(jsonEncode(message));
+      message = {
+        'stream': surveysStream,
+        'payload': {"action": 'subscribe', "request_id": surveyRequestId},
       };
       _channel.sink.add(jsonEncode(message));
     } catch (e) {

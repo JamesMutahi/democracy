@@ -18,6 +18,7 @@ import 'package:democracy/post/bloc/post_list/post_list_cubit.dart';
 import 'package:democracy/post/bloc/replies/replies_cubit.dart';
 import 'package:democracy/post/bloc/user_posts/user_posts_cubit.dart';
 import 'package:democracy/post/bloc/user_replies/user_replies_cubit.dart';
+import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
 import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/page/page_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
@@ -97,6 +98,7 @@ void main() async {
           BlocProvider(create: (context) => ChatDetailCubit(), lazy: false),
           BlocProvider(create: (context) => MessageActionsCubit()),
           BlocProvider(create: (context) => SurveysCubit()),
+          BlocProvider(create: (context) => SurveyDetailCubit()),
           BlocProvider(create: (context) => AnswerBloc()),
         ],
         child: const MyApp(),

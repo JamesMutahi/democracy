@@ -29,6 +29,8 @@ class _PollDetailState extends State<PollDetail> {
 
   @override
   Widget build(BuildContext context) {
+    bool pollHasStarted =
+        _poll.startTime.difference(DateTime.now()) < Duration(seconds: 0);
     bool pollHasEnded =
         _poll.endTime.difference(DateTime.now()) < Duration(seconds: 0);
     bool userHasVoted = _poll.votedOption != null;
@@ -36,9 +38,11 @@ class _PollDetailState extends State<PollDetail> {
       listener: (context, state) {
         if (state is PollUpdated) {
           if (_poll.id == state.poll.id) {
-            setState(() {
-              _poll = state.poll;
-            });
+            if (_poll.reason?.text == state.poll.reason?.text) {
+              setState(() {
+                _poll = state.poll;
+              });
+            }
             _controller.text =
                 state.poll.reason == null ? '' : state.poll.reason!.text;
           }
@@ -56,6 +60,7 @@ class _PollDetailState extends State<PollDetail> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(_poll.description),
+                SizedBox(height: 10),
                 ..._poll.options.map((option) {
                   return AnimatedSwitcher(
                     duration: const Duration(milliseconds: 300),
@@ -69,17 +74,35 @@ class _PollDetailState extends State<PollDetail> {
                             : OptionTile(
                               option: option,
                               onTap: () {
-                                context.read<WebsocketBloc>().add(
-                                  WebsocketEvent.vote(option: option),
-                                );
-                                setState(() {
-                                  changingVote = false;
-                                });
+                                if (pollHasStarted) {
+                                  context.read<WebsocketBloc>().add(
+                                    WebsocketEvent.vote(option: option),
+                                  );
+                                  setState(() {
+                                    changingVote = false;
+                                  });
+                                } else {
+                                  final snackBar = SnackBar(
+                                    behavior: SnackBarBehavior.floating,
+                                    backgroundColor:
+                                        Theme.of(context).cardColor,
+                                    content: SnackBarContent(
+                                      message: 'Not started',
+                                      status: SnackBarStatus.info,
+                                    ),
+                                  );
+                                  ScaffoldMessenger.of(
+                                    context,
+                                  ).clearSnackBars();
+                                  ScaffoldMessenger.of(
+                                    context,
+                                  ).showSnackBar(snackBar);
+                                }
                               },
                             ),
                   );
                 }),
-                userHasVoted
+                userHasVoted && !pollHasEnded
                     ? changingVote
                         ? SizedBox.shrink()
                         : Align(
@@ -94,6 +117,7 @@ class _PollDetailState extends State<PollDetail> {
                           ),
                         )
                     : SizedBox.shrink(),
+                SizedBox(height: 20),
                 !changingVote
                     ? ReasonWidget(
                       key: UniqueKey(),
@@ -194,13 +218,18 @@ class _ReasonWidgetState extends State<ReasonWidget> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Share your reason"),
+                Text(
+                  "Share your reason",
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                SizedBox(height: 5),
                 Text(
                   "This is optional but will help to better understand "
-                  "why people reject or accept an option. Your "
+                  "why you rejected or accepted the option. Your "
                   "contribution is greatly appreciated.",
                   style: TextStyle(color: Theme.of(context).hintColor),
                 ),
+                SizedBox(height: 10),
               ],
             ),
           ),

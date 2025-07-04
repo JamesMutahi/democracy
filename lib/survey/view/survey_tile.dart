@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:democracy/poll/view/poll_tile.dart' show TimeLeft;
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/survey_process/page.dart';
 import 'package:democracy/survey/view/survey_process/response_page.dart';
@@ -13,6 +14,8 @@ class SurveyTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool surveyIsClosed =
+        survey.endTime.difference(DateTime.now()) < Duration(seconds: 0);
     void openSurveyProcessPage() {
       Navigator.push(
         context,
@@ -44,12 +47,19 @@ class SurveyTile extends StatelessWidget {
           children: [
             Text(survey.name, style: Theme.of(context).textTheme.titleMedium),
             SizedBox(height: 5),
-            SurveyTimeLeft(key: UniqueKey(), survey: survey),
+            TimeLeft(
+              key: ValueKey(survey),
+              startTime: survey.startTime,
+              endTime: survey.endTime,
+            ),
             SizedBox(height: 5),
             Text(survey.description),
             SizedBox(height: 10),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment:
+                  surveyIsClosed
+                      ? MainAxisAlignment.end
+                      : MainAxisAlignment.spaceBetween,
               children: [
                 OutlinedButton(
                   onPressed: () {
@@ -62,11 +72,14 @@ class SurveyTile extends StatelessWidget {
                   },
                   child: Text('View response'),
                 ),
-                OutlinedButton(
-                  onPressed: () {
-                    openSurveyProcessPage();
-                  },
-                  child: Text('Submit response'),
+                Visibility(
+                  visible: !surveyIsClosed,
+                  child: OutlinedButton(
+                    onPressed: () {
+                      openSurveyProcessPage();
+                    },
+                    child: Text('Submit response'),
+                  ),
                 ),
               ],
             ),
