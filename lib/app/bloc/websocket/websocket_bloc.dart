@@ -9,6 +9,9 @@ import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/poll/models/option.dart';
 import 'package:democracy/poll/models/poll.dart';
 import 'package:democracy/post/models/post.dart';
+import 'package:democracy/survey/models/choice_answer.dart';
+import 'package:democracy/survey/models/survey.dart';
+import 'package:democracy/survey/models/text_answer.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:web_socket_channel/io.dart';
@@ -21,10 +24,13 @@ part 'websocket_bloc.freezed.dart';
 const String postsStream = 'posts';
 const String pollsStream = 'polls';
 const String chatsStream = 'chats';
+const String surveysStream = 'surveys';
 const int postRequestId = 1;
 const int pollRequestId = 1;
 const int chatRequestId = 1;
 const int messageRequestId = 2;
+const int surveyRequestId = 1;
+const int responseRequestId = 2;
 
 class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   WebsocketBloc({required this.authRepository})
@@ -95,6 +101,12 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     });
     on<_SubmitReason>((event, emit) {
       _onSubmitReason(emit, event);
+    });
+    on<_GetSurveys>((event, emit) {
+      _onGetSurveys(emit, event);
+    });
+    on<_SubmitResponse>((event, emit) {
+      _onSubmitResponse(emit, event);
     });
   }
 
@@ -490,6 +502,57 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'request_id': pollRequestId,
         'pk': event.poll.id,
         'text': event.text,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onGetSurveys(Emitter<WebsocketState> emit, _GetSurveys event) async {
+    if (state is WebsocketFailure) {
+      await _onConnect(emit);
+    }
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': surveysStream,
+      'payload': {'action': 'list', 'request_id': surveyRequestId},
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onSubmitResponse(
+    Emitter<WebsocketState> emit,
+    _SubmitResponse event,
+  ) async {
+    if (state is WebsocketFailure) {
+      await _onConnect(emit);
+    }
+    emit(WebsocketLoading());
+    List<Map<String, dynamic>> textAnswersAsJson = [];
+    List<Map<String, dynamic>> choiceAnswersAsJson = [];
+    for (TextAnswer textAnswer in event.textAnswers) {
+      textAnswersAsJson.add({
+        'question': textAnswer.question.id,
+        'text': textAnswer.text,
+      });
+    }
+    for (ChoiceAnswer choiceAnswer in event.choiceAnswers) {
+      choiceAnswersAsJson.add({
+        'question': choiceAnswer.question.id,
+        'choice': choiceAnswer.choice.id,
+      });
+    }
+    Map<String, dynamic> message = {
+      'stream': surveysStream,
+      'payload': {
+        'action': 'create_response',
+        'request_id': responseRequestId,
+        'data': {
+          'survey': event.survey.id,
+          'start_time': event.startTime.toString(),
+          'end_time': event.endTime.toString(),
+          'text_answers': textAnswersAsJson,
+          'choice_answers': choiceAnswersAsJson,
+        },
       },
     };
     _channel.sink.add(jsonEncode(message));

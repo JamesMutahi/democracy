@@ -1,6 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
-import 'package:democracy/survey/bloc/survey/survey_bloc.dart';
 import 'package:democracy/survey/models/choice.dart';
 import 'package:democracy/survey/models/choice_answer.dart';
 import 'package:democracy/survey/models/question.dart';
@@ -14,8 +12,7 @@ part 'answer_state.dart';
 part 'answer_bloc.freezed.dart';
 
 class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
-  AnswerBloc({required this.surveyRepository, required this.authRepository})
-    : super(const AnswerState()) {
+  AnswerBloc() : super(const AnswerState()) {
     on<_Started>((event, emit) {
       _onStarted(emit, event);
     });
@@ -31,8 +28,8 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
     on<_Validate>((event, emit) {
       _onValidate(emit, event);
     });
-    on<_Submit>((event, emit) async {
-      await _onSubmit(emit);
+    on<_Submitted>((event, emit) async {
+      await _onSubmitted(emit, event);
     });
   }
 
@@ -128,24 +125,13 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
     }
   }
 
-  Future _onSubmit(Emitter<AnswerState> emit) async {
+  Future _onSubmitted(Emitter<AnswerState> emit, _Submitted event) async {
     emit(state.copyWith(status: AnswerStatus.loading));
-    // try {
-    String? token = await authRepository.getToken();
-    await surveyRepository.postResponse(
-      token: token!,
-      survey: state.survey!,
-      startTime: state.startTime!,
-      endTime: state.endTime!,
-      textAnswers: state.textAnswers!,
-      choiceAnswers: state.choiceAnswers!,
-    );
-    emit(state.copyWith(status: AnswerStatus.submitted));
-    // } catch (e) {
-    //   emit(state.copyWith(status: AnswerStatus.submissionFailure));
-    // }
+    if (event.payload['response_status'] == 201) {
+      final Survey survey = Survey.fromJson(event.payload['data']);
+      emit(state.copyWith(status: AnswerStatus.submitted, survey: survey));
+    } else {
+      emit(state.copyWith(status: AnswerStatus.submissionFailure));
+    }
   }
-
-  final SurveyRepository surveyRepository;
-  final AuthRepository authRepository;
 }

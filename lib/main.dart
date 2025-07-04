@@ -18,10 +18,10 @@ import 'package:democracy/post/bloc/post_list/post_list_cubit.dart';
 import 'package:democracy/post/bloc/replies/replies_cubit.dart';
 import 'package:democracy/post/bloc/user_posts/user_posts_cubit.dart';
 import 'package:democracy/post/bloc/user_replies/user_replies_cubit.dart';
-import 'package:democracy/survey/bloc/survey_process/page/page_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
+import 'package:democracy/survey/bloc/survey_process/page/page_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
-import 'package:democracy/survey/bloc/survey/survey_bloc.dart';
+import 'package:democracy/survey/bloc/surveys/surveys_cubit.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -49,9 +49,6 @@ void main() async {
       providers: [
         RepositoryProvider.value(
           value: AuthRepository(authProvider: AuthProvider(dio: dio)),
-        ),
-        RepositoryProvider.value(
-          value: SurveyRepository(surveyProvider: SurveyProvider(dio: dio)),
         ),
       ],
       child: MultiBlocProvider(
@@ -83,23 +80,9 @@ void main() async {
                     LoginCubit(authRepository: context.read<AuthRepository>()),
           ),
           BlocProvider(create: (context) => BottomNavBarCubit()),
-          BlocProvider(
-            create:
-                (context) => SurveyBloc(
-                  surveyRepository: context.read<SurveyRepository>(),
-                  authRepository: context.read<AuthRepository>(),
-                ),
-          ),
           BlocProvider(create: (context) => PageBloc()),
           BlocProvider(create: (context) => PageBloc()),
           BlocProvider(create: (context) => SurveyBottomNavigationBloc()),
-          BlocProvider(
-            create:
-                (context) => AnswerBloc(
-                  surveyRepository: context.read<SurveyRepository>(),
-                  authRepository: context.read<AuthRepository>(),
-                ),
-          ),
           BlocProvider(create: (context) => PollsCubit()),
           BlocProvider(create: (context) => PollDetailCubit()),
           BlocProvider(create: (context) => PostListCubit()),
@@ -113,6 +96,8 @@ void main() async {
           BlocProvider(create: (context) => ChatActionsCubit()),
           BlocProvider(create: (context) => ChatDetailCubit(), lazy: false),
           BlocProvider(create: (context) => MessageActionsCubit()),
+          BlocProvider(create: (context) => SurveysCubit()),
+          BlocProvider(create: (context) => AnswerBloc()),
         ],
         child: const MyApp(),
       ),

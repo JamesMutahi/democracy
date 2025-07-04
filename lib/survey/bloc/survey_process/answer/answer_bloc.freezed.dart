@@ -438,33 +438,73 @@ as List<Question>,
 /// @nodoc
 
 
-class _Submit implements AnswerEvent {
-  const _Submit();
+class _Submitted implements AnswerEvent {
+  const _Submitted({required final  Map<String, dynamic> payload}): _payload = payload;
   
 
+ final  Map<String, dynamic> _payload;
+ Map<String, dynamic> get payload {
+  if (_payload is EqualUnmodifiableMapView) return _payload;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_payload);
+}
 
 
+/// Create a copy of AnswerEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SubmittedCopyWith<_Submitted> get copyWith => __$SubmittedCopyWithImpl<_Submitted>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Submit);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Submitted&&const DeepCollectionEquality().equals(other._payload, _payload));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
 
 @override
 String toString() {
-  return 'AnswerEvent.submit()';
+  return 'AnswerEvent.submitted(payload: $payload)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class _$SubmittedCopyWith<$Res> implements $AnswerEventCopyWith<$Res> {
+  factory _$SubmittedCopyWith(_Submitted value, $Res Function(_Submitted) _then) = __$SubmittedCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, dynamic> payload
+});
 
 
+
+
+}
+/// @nodoc
+class __$SubmittedCopyWithImpl<$Res>
+    implements _$SubmittedCopyWith<$Res> {
+  __$SubmittedCopyWithImpl(this._self, this._then);
+
+  final _Submitted _self;
+  final $Res Function(_Submitted) _then;
+
+/// Create a copy of AnswerEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
+  return _then(_Submitted(
+payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
+  ));
+}
+
+
+}
 
 // dart format on

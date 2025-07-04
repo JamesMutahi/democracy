@@ -1,3 +1,4 @@
+import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/page/page_bloc.dart';
@@ -10,16 +11,16 @@ import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SurveyPage extends StatefulWidget {
-  const SurveyPage({super.key, required this.survey});
+class SurveyProcessPage extends StatefulWidget {
+  const SurveyProcessPage({super.key, required this.survey});
 
   final Survey survey;
 
   @override
-  State<SurveyPage> createState() => _SurveyPageState();
+  State<SurveyProcessPage> createState() => _SurveyProcessPageState();
 }
 
-class _SurveyPageState extends State<SurveyPage> {
+class _SurveyProcessPageState extends State<SurveyProcessPage> {
   @override
   void initState() {
     context.read<SurveyBottomNavigationBloc>().add(
@@ -166,20 +167,32 @@ class _SurveyPageState extends State<SurveyPage> {
                           ),
                         ),
                         SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: () {
-                            context.read<AnswerBloc>().add(
-                              AnswerEvent.submit(),
+                        BlocBuilder<AnswerBloc, AnswerState>(
+                          builder: (context, answerState) {
+                            return ElevatedButton(
+                              onPressed: () {
+                                context.read<WebsocketBloc>().add(
+                                  WebsocketEvent.submitResponse(
+                                    survey: answerState.survey!,
+                                    startTime: answerState.startTime!,
+                                    endTime: answerState.endTime!,
+                                    textAnswers: answerState.textAnswers!,
+                                    choiceAnswers: answerState.choiceAnswers!,
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    Theme.of(
+                                      context,
+                                    ).colorScheme.tertiaryContainer,
+                                shape: BeveledRectangleBorder(
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                              ),
+                              child: Text('SUBMIT'),
                             );
                           },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                Theme.of(context).colorScheme.tertiaryContainer,
-                            shape: BeveledRectangleBorder(
-                              borderRadius: BorderRadius.circular(2),
-                            ),
-                          ),
-                          child: Text('SUBMIT'),
                         ),
                       ],
                     ),

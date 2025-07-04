@@ -1,4 +1,5 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
 import 'package:democracy/poll/models/option.dart';
 import 'package:democracy/poll/models/poll.dart';
@@ -60,7 +61,11 @@ class _PollDetailState extends State<PollDetail> {
                     duration: const Duration(milliseconds: 300),
                     child:
                         (pollHasEnded || userHasVoted && !changingVote)
-                            ? PollPercentIndicator(poll: _poll, option: option)
+                            ? PollPercentIndicator(
+                              key: ValueKey(option.id),
+                              poll: _poll,
+                              option: option,
+                            )
                             : OptionTile(
                               option: option,
                               onTap: () {
@@ -79,7 +84,7 @@ class _PollDetailState extends State<PollDetail> {
                         ? SizedBox.shrink()
                         : Align(
                           alignment: Alignment.topRight,
-                          child: TextButton(
+                          child: OutlinedButton(
                             onPressed: () {
                               setState(() {
                                 changingVote = true;
@@ -89,10 +94,13 @@ class _PollDetailState extends State<PollDetail> {
                           ),
                         )
                     : SizedBox.shrink(),
-                pollHasEnded
-                    ? Text(_poll.reason == null ? '' : _poll.reason!.text)
-                    : !changingVote
-                    ? ReasonWidget(controller: _controller, poll: _poll)
+                !changingVote
+                    ? ReasonWidget(
+                      key: UniqueKey(),
+                      controller: _controller,
+                      poll: _poll,
+                      pollHasEnded: pollHasEnded,
+                    )
                     : SizedBox.shrink(),
               ],
             ),
@@ -134,10 +142,16 @@ class OptionTile extends StatelessWidget {
 }
 
 class ReasonWidget extends StatefulWidget {
-  const ReasonWidget({super.key, required this.controller, required this.poll});
+  const ReasonWidget({
+    super.key,
+    required this.controller,
+    required this.poll,
+    required this.pollHasEnded,
+  });
 
   final TextEditingController controller;
   final Poll poll;
+  final bool pollHasEnded;
 
   @override
   State<ReasonWidget> createState() => _ReasonWidgetState();
@@ -145,68 +159,132 @@ class ReasonWidget extends StatefulWidget {
 
 class _ReasonWidgetState extends State<ReasonWidget> {
   bool submitButtonDisabled = true;
+  bool submitButtonPressed = false;
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: 8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Share your reason"),
-              Text(
-                "This is optional but will help to better understand "
-                "why people reject or accept an option. Your "
-                "contribution is greatly appreciated.",
-                style: TextStyle(color: Theme.of(context).hintColor),
+    return BlocListener<PollDetailCubit, PollDetailState>(
+      listener: (context, state) {
+        if (state is PollUpdated) {
+          if (widget.poll.id == state.poll.id) {
+            if (state.poll.reason != null) {
+              if (submitButtonPressed) {
+                final snackBar = SnackBar(
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: Theme.of(context).cardColor,
+                  content: SnackBarContent(
+                    message: 'Submitted',
+                    status: SnackBarStatus.success,
+                  ),
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                setState(() {
+                  submitButtonPressed = false;
+                });
+              }
+            }
+          }
+        }
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Share your reason"),
+                Text(
+                  "This is optional but will help to better understand "
+                  "why people reject or accept an option. Your "
+                  "contribution is greatly appreciated.",
+                  style: TextStyle(color: Theme.of(context).hintColor),
+                ),
+              ],
+            ),
+          ),
+          SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            reverse: true,
+            child: TextFormField(
+              readOnly: widget.pollHasEnded,
+              controller: widget.controller,
+              onChanged: (value) {
+                setState(() {
+                  if (value == '') {
+                    submitButtonDisabled = true;
+                  } else {
+                    submitButtonDisabled = false;
+                  }
+                });
+              },
+              minLines: 6,
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
+              onTapOutside: (event) {
+                FocusManager.instance.primaryFocus?.unfocus();
+              },
+            ),
+          ),
+          SizedBox(height: 10),
+          widget.pollHasEnded
+              ? SizedBox.shrink()
+              : Align(
+                alignment: Alignment.topRight,
+                child: OutlinedButton(
+                  onPressed:
+                      widget.controller.text == ''
+                          ? null
+                          : () {
+                            showDialog(
+                              context: context,
+                              builder:
+                                  (context) => SubmissionDialog(
+                                    onYesPressed: () {
+                                      Navigator.pop(context);
+                                      submitButtonPressed = true;
+                                      context.read<WebsocketBloc>().add(
+                                        WebsocketEvent.submitReason(
+                                          poll: widget.poll,
+                                          text: widget.controller.text,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                            );
+                          },
+                  child: Text('Submit'),
+                ),
               ),
-            ],
-          ),
-        ),
-        SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          reverse: true,
-          child: TextFormField(
-            controller: widget.controller,
-            onChanged: (value) {
-              setState(() {
-                if (value == '') {
-                  submitButtonDisabled = true;
-                } else {
-                  submitButtonDisabled = false;
-                }
-              });
-            },
-            minLines: 6,
-            keyboardType: TextInputType.multiline,
-            maxLines: null,
-            onTapOutside: (event) {
-              FocusManager.instance.primaryFocus?.unfocus();
-            },
-          ),
-        ),
-        SizedBox(height: 10),
-        Align(
-          alignment: Alignment.topRight,
-          child: ElevatedButton(
-            onPressed:
-                widget.controller.text == ''
-                    ? null
-                    : () {
-                      context.read<WebsocketBloc>().add(
-                        WebsocketEvent.submitReason(
-                          poll: widget.poll,
-                          text: widget.controller.text,
-                        ),
-                      );
-                    },
-            child: Text('Submit'),
-          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SubmissionDialog extends StatelessWidget {
+  const SubmissionDialog({super.key, required this.onYesPressed});
+
+  final VoidCallback onYesPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Submit'),
+      content: Text(
+        'Are you sure you want to submit this?',
+        textAlign: TextAlign.center,
+      ),
+      actions: <Widget>[
+        OutlinedButton(onPressed: onYesPressed, child: const Text('Yes')),
+        OutlinedButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('No'),
         ),
       ],
+      actionsAlignment: MainAxisAlignment.center,
+      buttonPadding: const EdgeInsets.all(20.0),
     );
   }
 }

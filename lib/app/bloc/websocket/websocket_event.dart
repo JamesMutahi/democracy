@@ -45,4 +45,12 @@ class WebsocketEvent with _$WebsocketEvent {
     required Poll poll,
     required String text,
   }) = _SubmitReason;
+  const factory WebsocketEvent.getSurveys() = _GetSurveys;
+  const factory WebsocketEvent.submitResponse({
+    required Survey survey,
+    required DateTime startTime,
+    required DateTime endTime,
+    required List<TextAnswer> textAnswers,
+    required List<ChoiceAnswer> choiceAnswers,
+  }) = _SubmitResponse;
 }

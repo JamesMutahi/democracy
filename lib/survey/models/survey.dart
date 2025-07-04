@@ -1,4 +1,5 @@
 import 'package:democracy/survey/models/question.dart';
+import 'package:democracy/survey/models/response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'survey.freezed.dart';
@@ -13,6 +14,7 @@ sealed class Survey with _$Survey {
     @JsonKey(name: 'start_time') required DateTime startTime,
     @JsonKey(name: 'end_time') required DateTime endTime,
     required List<Question> questions,
+    required Response? response,
   }) = _Survey;
 
   factory Survey.fromJson(Map<String, Object?> json) => _$SurveyFromJson(json);

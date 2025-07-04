@@ -17,5 +17,6 @@ class AnswerEvent with _$AnswerEvent {
   }) = _MultipleChoiceAnswerAdded;
   const factory AnswerEvent.validate({required List<Question> questions}) =
       _Validate;
-  const factory AnswerEvent.submit() = _Submit;
+  const factory AnswerEvent.submitted({required Map<String, dynamic> payload}) =
+      _Submitted;
 }

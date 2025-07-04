@@ -1617,6 +1617,133 @@ $PollCopyWith<$Res> get poll {
 }
 
 /// @nodoc
+
+
+class _GetSurveys implements WebsocketEvent {
+  const _GetSurveys();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetSurveys);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'WebsocketEvent.getSurveys()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _SubmitResponse implements WebsocketEvent {
+  const _SubmitResponse({required this.survey, required this.startTime, required this.endTime, required final  List<TextAnswer> textAnswers, required final  List<ChoiceAnswer> choiceAnswers}): _textAnswers = textAnswers,_choiceAnswers = choiceAnswers;
+  
+
+ final  Survey survey;
+ final  DateTime startTime;
+ final  DateTime endTime;
+ final  List<TextAnswer> _textAnswers;
+ List<TextAnswer> get textAnswers {
+  if (_textAnswers is EqualUnmodifiableListView) return _textAnswers;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_textAnswers);
+}
+
+ final  List<ChoiceAnswer> _choiceAnswers;
+ List<ChoiceAnswer> get choiceAnswers {
+  if (_choiceAnswers is EqualUnmodifiableListView) return _choiceAnswers;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_choiceAnswers);
+}
+
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SubmitResponseCopyWith<_SubmitResponse> get copyWith => __$SubmitResponseCopyWithImpl<_SubmitResponse>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubmitResponse&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&const DeepCollectionEquality().equals(other._textAnswers, _textAnswers)&&const DeepCollectionEquality().equals(other._choiceAnswers, _choiceAnswers));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,survey,startTime,endTime,const DeepCollectionEquality().hash(_textAnswers),const DeepCollectionEquality().hash(_choiceAnswers));
+
+@override
+String toString() {
+  return 'WebsocketEvent.submitResponse(survey: $survey, startTime: $startTime, endTime: $endTime, textAnswers: $textAnswers, choiceAnswers: $choiceAnswers)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SubmitResponseCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
+  factory _$SubmitResponseCopyWith(_SubmitResponse value, $Res Function(_SubmitResponse) _then) = __$SubmitResponseCopyWithImpl;
+@useResult
+$Res call({
+ Survey survey, DateTime startTime, DateTime endTime, List<TextAnswer> textAnswers, List<ChoiceAnswer> choiceAnswers
+});
+
+
+$SurveyCopyWith<$Res> get survey;
+
+}
+/// @nodoc
+class __$SubmitResponseCopyWithImpl<$Res>
+    implements _$SubmitResponseCopyWith<$Res> {
+  __$SubmitResponseCopyWithImpl(this._self, this._then);
+
+  final _SubmitResponse _self;
+  final $Res Function(_SubmitResponse) _then;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? survey = null,Object? startTime = null,Object? endTime = null,Object? textAnswers = null,Object? choiceAnswers = null,}) {
+  return _then(_SubmitResponse(
+survey: null == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
+as Survey,startTime: null == startTime ? _self.startTime : startTime // ignore: cast_nullable_to_non_nullable
+as DateTime,endTime: null == endTime ? _self.endTime : endTime // ignore: cast_nullable_to_non_nullable
+as DateTime,textAnswers: null == textAnswers ? _self._textAnswers : textAnswers // ignore: cast_nullable_to_non_nullable
+as List<TextAnswer>,choiceAnswers: null == choiceAnswers ? _self._choiceAnswers : choiceAnswers // ignore: cast_nullable_to_non_nullable
+as List<ChoiceAnswer>,
+  ));
+}
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SurveyCopyWith<$Res> get survey {
+  
+  return $SurveyCopyWith<$Res>(_self.survey, (value) {
+    return _then(_self.copyWith(survey: value));
+  });
+}
+}
+
+/// @nodoc
 mixin _$WebsocketState {
 
 

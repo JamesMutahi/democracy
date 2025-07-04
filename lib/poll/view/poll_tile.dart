@@ -43,7 +43,11 @@ class PollTile extends StatelessWidget {
             TimeLeft(poll: poll),
             SizedBox(height: 10),
             ...poll.options.map((option) {
-              return PollPercentIndicator(poll: poll, option: option);
+              return PollPercentIndicator(
+                key: UniqueKey(),
+                poll: poll,
+                option: option,
+              );
             }),
           ],
         ),
@@ -131,7 +135,7 @@ class _TimeLeftState extends State<TimeLeft> {
         outOfTime = true;
         timeLeft = 'Closed';
       } else {
-        timeLeft = '$difference $unit';
+        timeLeft = 'Ends in $difference $unit';
       }
     });
   }
@@ -149,7 +153,7 @@ class _TimeLeftState extends State<TimeLeft> {
                   children: [
                     SpinKitPulse(
                       color: Theme.of(context).primaryColor,
-                      size: 20.0,
+                      size: 15.0,
                     ),
                     SizedBox(width: 5),
                   ],
