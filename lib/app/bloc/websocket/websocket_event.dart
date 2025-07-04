@@ -5,6 +5,8 @@ class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.connect() = _Connect;
   const factory WebsocketEvent.changeState({required WebsocketState state}) =
       _ChangeState;
+  const factory WebsocketEvent.subscribePosts({required List<Post> posts}) =
+      _SubscribePosts;
   const factory WebsocketEvent.createPost({required String body}) = _CreatePost;
   const factory WebsocketEvent.updatePost({
     required int id,

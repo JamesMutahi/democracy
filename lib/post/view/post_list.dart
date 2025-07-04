@@ -33,10 +33,6 @@ class _PostListState extends State<PostList> {
         switch (state) {
           case PostUpdated(post: final post):
             _setPostState(post);
-          case PostLiked(post: final post):
-            _setPostState(post);
-          case PostBookmarked(post: final post):
-            _setPostState(post);
         }
       },
       child: ListView.builder(

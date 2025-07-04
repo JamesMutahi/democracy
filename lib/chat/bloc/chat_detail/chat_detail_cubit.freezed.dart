@@ -1,6 +1,5 @@
-// dart format width=80
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -41,6 +40,178 @@ class $ChatDetailStateCopyWith<$Res>  {
 $ChatDetailStateCopyWith(ChatDetailState _, $Res Function(ChatDetailState) __);
 }
 
+
+/// Adds pattern-matching-related methods to [ChatDetailState].
+extension ChatDetailStatePatterns on ChatDetailState {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ChatDetailInitial value)?  initial,TResult Function( ChatDetailLoading value)?  loading,TResult Function( ChatCreated value)?  chatCreated,TResult Function( ChatUpdated value)?  chatUpdated,TResult Function( MessageCreated value)?  messageCreated,TResult Function( MessageUpdated value)?  messageUpdated,TResult Function( MessageDeleted value)?  messageDeleted,TResult Function( ChatDetailFailure value)?  failure,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case ChatDetailInitial() when initial != null:
+return initial(_that);case ChatDetailLoading() when loading != null:
+return loading(_that);case ChatCreated() when chatCreated != null:
+return chatCreated(_that);case ChatUpdated() when chatUpdated != null:
+return chatUpdated(_that);case MessageCreated() when messageCreated != null:
+return messageCreated(_that);case MessageUpdated() when messageUpdated != null:
+return messageUpdated(_that);case MessageDeleted() when messageDeleted != null:
+return messageDeleted(_that);case ChatDetailFailure() when failure != null:
+return failure(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ChatDetailInitial value)  initial,required TResult Function( ChatDetailLoading value)  loading,required TResult Function( ChatCreated value)  chatCreated,required TResult Function( ChatUpdated value)  chatUpdated,required TResult Function( MessageCreated value)  messageCreated,required TResult Function( MessageUpdated value)  messageUpdated,required TResult Function( MessageDeleted value)  messageDeleted,required TResult Function( ChatDetailFailure value)  failure,}){
+final _that = this;
+switch (_that) {
+case ChatDetailInitial():
+return initial(_that);case ChatDetailLoading():
+return loading(_that);case ChatCreated():
+return chatCreated(_that);case ChatUpdated():
+return chatUpdated(_that);case MessageCreated():
+return messageCreated(_that);case MessageUpdated():
+return messageUpdated(_that);case MessageDeleted():
+return messageDeleted(_that);case ChatDetailFailure():
+return failure(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ChatDetailInitial value)?  initial,TResult? Function( ChatDetailLoading value)?  loading,TResult? Function( ChatCreated value)?  chatCreated,TResult? Function( ChatUpdated value)?  chatUpdated,TResult? Function( MessageCreated value)?  messageCreated,TResult? Function( MessageUpdated value)?  messageUpdated,TResult? Function( MessageDeleted value)?  messageDeleted,TResult? Function( ChatDetailFailure value)?  failure,}){
+final _that = this;
+switch (_that) {
+case ChatDetailInitial() when initial != null:
+return initial(_that);case ChatDetailLoading() when loading != null:
+return loading(_that);case ChatCreated() when chatCreated != null:
+return chatCreated(_that);case ChatUpdated() when chatUpdated != null:
+return chatUpdated(_that);case MessageCreated() when messageCreated != null:
+return messageCreated(_that);case MessageUpdated() when messageUpdated != null:
+return messageUpdated(_that);case MessageDeleted() when messageDeleted != null:
+return messageDeleted(_that);case ChatDetailFailure() when failure != null:
+return failure(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Chat chat)?  chatCreated,TResult Function( Chat chat)?  chatUpdated,TResult Function( Message message)?  messageCreated,TResult Function( Message message)?  messageUpdated,TResult Function( Message message)?  messageDeleted,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case ChatDetailInitial() when initial != null:
+return initial();case ChatDetailLoading() when loading != null:
+return loading();case ChatCreated() when chatCreated != null:
+return chatCreated(_that.chat);case ChatUpdated() when chatUpdated != null:
+return chatUpdated(_that.chat);case MessageCreated() when messageCreated != null:
+return messageCreated(_that.message);case MessageUpdated() when messageUpdated != null:
+return messageUpdated(_that.message);case MessageDeleted() when messageDeleted != null:
+return messageDeleted(_that.message);case ChatDetailFailure() when failure != null:
+return failure(_that.error);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Chat chat)  chatCreated,required TResult Function( Chat chat)  chatUpdated,required TResult Function( Message message)  messageCreated,required TResult Function( Message message)  messageUpdated,required TResult Function( Message message)  messageDeleted,required TResult Function( String error)  failure,}) {final _that = this;
+switch (_that) {
+case ChatDetailInitial():
+return initial();case ChatDetailLoading():
+return loading();case ChatCreated():
+return chatCreated(_that.chat);case ChatUpdated():
+return chatUpdated(_that.chat);case MessageCreated():
+return messageCreated(_that.message);case MessageUpdated():
+return messageUpdated(_that.message);case MessageDeleted():
+return messageDeleted(_that.message);case ChatDetailFailure():
+return failure(_that.error);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Chat chat)?  chatCreated,TResult? Function( Chat chat)?  chatUpdated,TResult? Function( Message message)?  messageCreated,TResult? Function( Message message)?  messageUpdated,TResult? Function( Message message)?  messageDeleted,TResult? Function( String error)?  failure,}) {final _that = this;
+switch (_that) {
+case ChatDetailInitial() when initial != null:
+return initial();case ChatDetailLoading() when loading != null:
+return loading();case ChatCreated() when chatCreated != null:
+return chatCreated(_that.chat);case ChatUpdated() when chatUpdated != null:
+return chatUpdated(_that.chat);case MessageCreated() when messageCreated != null:
+return messageCreated(_that.message);case MessageUpdated() when messageUpdated != null:
+return messageUpdated(_that.message);case MessageDeleted() when messageDeleted != null:
+return messageDeleted(_that.message);case ChatDetailFailure() when failure != null:
+return failure(_that.error);case _:
+  return null;
+
+}
+}
+
+}
 
 /// @nodoc
 

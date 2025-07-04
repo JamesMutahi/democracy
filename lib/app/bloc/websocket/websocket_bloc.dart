@@ -26,6 +26,7 @@ const String pollsStream = 'polls';
 const String chatsStream = 'chats';
 const String surveysStream = 'surveys';
 const int postRequestId = 1;
+const int postUpdateRequestId = 2;
 const int pollRequestId = 1;
 const int chatRequestId = 1;
 const int messageRequestId = 2;
@@ -39,6 +40,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       _onConnect(emit);
     });
     on<_ChangeState>((event, emit) => emit(event.state));
+    on<_SubscribePosts>((event, emit) {
+      _onSubscribePosts(emit, event);
+    });
     on<_CreatePost>((event, emit) {
       _onCreatePost(emit, event);
     });
@@ -153,6 +157,26 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     }
   }
 
+  Future _onSubscribePosts(
+    Emitter<WebsocketState> emit,
+    _SubscribePosts event,
+  ) async {
+    if (state is WebsocketFailure) {
+      await _onConnect(emit);
+    }
+    emit(WebsocketLoading());
+    List<int> postIds = event.posts.map((post) => post.id).toList();
+    Map<String, dynamic> message = {
+      'stream': postsStream,
+      'payload': {
+        'action': 'subscribe',
+        'request_id': postRequestId,
+        'post_pks': postIds,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
   Future _onCreatePost(Emitter<WebsocketState> emit, _CreatePost event) async {
     if (state is WebsocketFailure) {
       await _onConnect(emit);
@@ -178,7 +202,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'stream': postsStream,
       'payload': {
         'action': 'update',
-        'request_id': postRequestId,
+        'request_id': postUpdateRequestId,
         'data': {'pk': event.id, 'body': event.body},
       },
     };

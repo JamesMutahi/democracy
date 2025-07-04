@@ -34,30 +34,11 @@ class PostDetailCubit extends Cubit<PostDetailState> {
     }
   }
 
-  void liked({required Map<String, dynamic> payload}) {
-    emit(PostDetailLoading());
-    if (payload['response_status'] == 200) {
-      final Post post = Post.fromJson(payload['data']);
-      emit(PostLiked(post: post));
-    } else {
-      emit(PostDetailFailure(error: payload['errors'][0].toString()));
-    }
-  }
-
-  void bookmarked({required Map<String, dynamic> payload}) {
-    emit(PostDetailLoading());
-    if (payload['response_status'] == 200) {
-      final Post post = Post.fromJson(payload['data']);
-      emit(PostBookmarked(post: post));
-    } else {
-      emit(PostDetailFailure(error: payload['errors'][0].toString()));
-    }
-  }
-
   void deleted({required Map<String, dynamic> payload}) {
     emit(PostDetailLoading());
     if (payload['response_status'] == 204) {
-      emit(PostDeleted());
+      final Post post = Post.fromJson(payload['data']);
+      emit(PostDeleted(post: post));
     } else {
       emit(PostDetailFailure(error: payload['errors'][0].toString()));
     }

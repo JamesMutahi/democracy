@@ -1,6 +1,5 @@
-// dart format width=80
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -41,6 +40,142 @@ class $ConnectivityEventCopyWith<$Res>  {
 $ConnectivityEventCopyWith(ConnectivityEvent _, $Res Function(ConnectivityEvent) __);
 }
 
+
+/// Adds pattern-matching-related methods to [ConnectivityEvent].
+extension ConnectivityEventPatterns on ConnectivityEvent {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _ListenConnection value)?  listenConnection,TResult Function( _ChangeConnection value)?  changeConnection,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ListenConnection() when listenConnection != null:
+return listenConnection(_that);case _ChangeConnection() when changeConnection != null:
+return changeConnection(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _ListenConnection value)  listenConnection,required TResult Function( _ChangeConnection value)  changeConnection,}){
+final _that = this;
+switch (_that) {
+case _ListenConnection():
+return listenConnection(_that);case _ChangeConnection():
+return changeConnection(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _ListenConnection value)?  listenConnection,TResult? Function( _ChangeConnection value)?  changeConnection,}){
+final _that = this;
+switch (_that) {
+case _ListenConnection() when listenConnection != null:
+return listenConnection(_that);case _ChangeConnection() when changeConnection != null:
+return changeConnection(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  listenConnection,TResult Function( ConnectivityState status)?  changeConnection,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ListenConnection() when listenConnection != null:
+return listenConnection();case _ChangeConnection() when changeConnection != null:
+return changeConnection(_that.status);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  listenConnection,required TResult Function( ConnectivityState status)  changeConnection,}) {final _that = this;
+switch (_that) {
+case _ListenConnection():
+return listenConnection();case _ChangeConnection():
+return changeConnection(_that.status);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  listenConnection,TResult? Function( ConnectivityState status)?  changeConnection,}) {final _that = this;
+switch (_that) {
+case _ListenConnection() when listenConnection != null:
+return listenConnection();case _ChangeConnection() when changeConnection != null:
+return changeConnection(_that.status);case _:
+  return null;
+
+}
+}
+
+}
 
 /// @nodoc
 
@@ -178,6 +313,148 @@ class $ConnectivityStateCopyWith<$Res>  {
 $ConnectivityStateCopyWith(ConnectivityState _, $Res Function(ConnectivityState) __);
 }
 
+
+/// Adds pattern-matching-related methods to [ConnectivityState].
+extension ConnectivityStatePatterns on ConnectivityState {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ConnectivityInitial value)?  initial,TResult Function( ConnectivitySuccess value)?  success,TResult Function( ConnectivityFailure value)?  failure,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case ConnectivityInitial() when initial != null:
+return initial(_that);case ConnectivitySuccess() when success != null:
+return success(_that);case ConnectivityFailure() when failure != null:
+return failure(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ConnectivityInitial value)  initial,required TResult Function( ConnectivitySuccess value)  success,required TResult Function( ConnectivityFailure value)  failure,}){
+final _that = this;
+switch (_that) {
+case ConnectivityInitial():
+return initial(_that);case ConnectivitySuccess():
+return success(_that);case ConnectivityFailure():
+return failure(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ConnectivityInitial value)?  initial,TResult? Function( ConnectivitySuccess value)?  success,TResult? Function( ConnectivityFailure value)?  failure,}){
+final _that = this;
+switch (_that) {
+case ConnectivityInitial() when initial != null:
+return initial(_that);case ConnectivitySuccess() when success != null:
+return success(_that);case ConnectivityFailure() when failure != null:
+return failure(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  success,TResult Function()?  failure,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case ConnectivityInitial() when initial != null:
+return initial();case ConnectivitySuccess() when success != null:
+return success();case ConnectivityFailure() when failure != null:
+return failure();case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  success,required TResult Function()  failure,}) {final _that = this;
+switch (_that) {
+case ConnectivityInitial():
+return initial();case ConnectivitySuccess():
+return success();case ConnectivityFailure():
+return failure();case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  success,TResult? Function()?  failure,}) {final _that = this;
+switch (_that) {
+case ConnectivityInitial() when initial != null:
+return initial();case ConnectivitySuccess() when success != null:
+return success();case ConnectivityFailure() when failure != null:
+return failure();case _:
+  return null;
+
+}
+}
+
+}
 
 /// @nodoc
 

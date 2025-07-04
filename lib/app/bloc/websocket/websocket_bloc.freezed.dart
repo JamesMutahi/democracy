@@ -1,6 +1,5 @@
-// dart format width=80
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -41,6 +40,286 @@ class $WebsocketEventCopyWith<$Res>  {
 $WebsocketEventCopyWith(WebsocketEvent _, $Res Function(WebsocketEvent) __);
 }
 
+
+/// Adds pattern-matching-related methods to [WebsocketEvent].
+extension WebsocketEventPatterns on WebsocketEvent {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Connect value)?  connect,TResult Function( _ChangeState value)?  changeState,TResult Function( _SubscribePosts value)?  subscribePosts,TResult Function( _CreatePost value)?  createPost,TResult Function( _UpdatePost value)?  updatePost,TResult Function( _LikePost value)?  likePost,TResult Function( _BookmarkPost value)?  bookmarkPost,TResult Function( _DeletePost value)?  deletePost,TResult Function( _ReportPost value)?  reportPost,TResult Function( _GetReplies value)?  getReplies,TResult Function( _LoadUserPosts value)?  loadUserPosts,TResult Function( _LoadBookmarks value)?  loadBookmarks,TResult Function( _LoadLikedPosts value)?  loadLikedPosts,TResult Function( _LoadUserReplies value)?  loadUserReplies,TResult Function( _LoadChats value)?  loadChats,TResult Function( _CreateChat value)?  createChat,TResult Function( _CreateMessage value)?  createMessage,TResult Function( _EditMessage value)?  editMessage,TResult Function( _DeleteMessage value)?  deleteMessage,TResult Function( _MarkAsRead value)?  markAsRead,TResult Function( _UserBlocked value)?  userBlocked,TResult Function( _GetPolls value)?  getPolls,TResult Function( _Vote value)?  vote,TResult Function( _SubmitReason value)?  submitReason,TResult Function( _GetSurveys value)?  getSurveys,TResult Function( _SubmitResponse value)?  submitResponse,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _Connect() when connect != null:
+return connect(_that);case _ChangeState() when changeState != null:
+return changeState(_that);case _SubscribePosts() when subscribePosts != null:
+return subscribePosts(_that);case _CreatePost() when createPost != null:
+return createPost(_that);case _UpdatePost() when updatePost != null:
+return updatePost(_that);case _LikePost() when likePost != null:
+return likePost(_that);case _BookmarkPost() when bookmarkPost != null:
+return bookmarkPost(_that);case _DeletePost() when deletePost != null:
+return deletePost(_that);case _ReportPost() when reportPost != null:
+return reportPost(_that);case _GetReplies() when getReplies != null:
+return getReplies(_that);case _LoadUserPosts() when loadUserPosts != null:
+return loadUserPosts(_that);case _LoadBookmarks() when loadBookmarks != null:
+return loadBookmarks(_that);case _LoadLikedPosts() when loadLikedPosts != null:
+return loadLikedPosts(_that);case _LoadUserReplies() when loadUserReplies != null:
+return loadUserReplies(_that);case _LoadChats() when loadChats != null:
+return loadChats(_that);case _CreateChat() when createChat != null:
+return createChat(_that);case _CreateMessage() when createMessage != null:
+return createMessage(_that);case _EditMessage() when editMessage != null:
+return editMessage(_that);case _DeleteMessage() when deleteMessage != null:
+return deleteMessage(_that);case _MarkAsRead() when markAsRead != null:
+return markAsRead(_that);case _UserBlocked() when userBlocked != null:
+return userBlocked(_that);case _GetPolls() when getPolls != null:
+return getPolls(_that);case _Vote() when vote != null:
+return vote(_that);case _SubmitReason() when submitReason != null:
+return submitReason(_that);case _GetSurveys() when getSurveys != null:
+return getSurveys(_that);case _SubmitResponse() when submitResponse != null:
+return submitResponse(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Connect value)  connect,required TResult Function( _ChangeState value)  changeState,required TResult Function( _SubscribePosts value)  subscribePosts,required TResult Function( _CreatePost value)  createPost,required TResult Function( _UpdatePost value)  updatePost,required TResult Function( _LikePost value)  likePost,required TResult Function( _BookmarkPost value)  bookmarkPost,required TResult Function( _DeletePost value)  deletePost,required TResult Function( _ReportPost value)  reportPost,required TResult Function( _GetReplies value)  getReplies,required TResult Function( _LoadUserPosts value)  loadUserPosts,required TResult Function( _LoadBookmarks value)  loadBookmarks,required TResult Function( _LoadLikedPosts value)  loadLikedPosts,required TResult Function( _LoadUserReplies value)  loadUserReplies,required TResult Function( _LoadChats value)  loadChats,required TResult Function( _CreateChat value)  createChat,required TResult Function( _CreateMessage value)  createMessage,required TResult Function( _EditMessage value)  editMessage,required TResult Function( _DeleteMessage value)  deleteMessage,required TResult Function( _MarkAsRead value)  markAsRead,required TResult Function( _UserBlocked value)  userBlocked,required TResult Function( _GetPolls value)  getPolls,required TResult Function( _Vote value)  vote,required TResult Function( _SubmitReason value)  submitReason,required TResult Function( _GetSurveys value)  getSurveys,required TResult Function( _SubmitResponse value)  submitResponse,}){
+final _that = this;
+switch (_that) {
+case _Connect():
+return connect(_that);case _ChangeState():
+return changeState(_that);case _SubscribePosts():
+return subscribePosts(_that);case _CreatePost():
+return createPost(_that);case _UpdatePost():
+return updatePost(_that);case _LikePost():
+return likePost(_that);case _BookmarkPost():
+return bookmarkPost(_that);case _DeletePost():
+return deletePost(_that);case _ReportPost():
+return reportPost(_that);case _GetReplies():
+return getReplies(_that);case _LoadUserPosts():
+return loadUserPosts(_that);case _LoadBookmarks():
+return loadBookmarks(_that);case _LoadLikedPosts():
+return loadLikedPosts(_that);case _LoadUserReplies():
+return loadUserReplies(_that);case _LoadChats():
+return loadChats(_that);case _CreateChat():
+return createChat(_that);case _CreateMessage():
+return createMessage(_that);case _EditMessage():
+return editMessage(_that);case _DeleteMessage():
+return deleteMessage(_that);case _MarkAsRead():
+return markAsRead(_that);case _UserBlocked():
+return userBlocked(_that);case _GetPolls():
+return getPolls(_that);case _Vote():
+return vote(_that);case _SubmitReason():
+return submitReason(_that);case _GetSurveys():
+return getSurveys(_that);case _SubmitResponse():
+return submitResponse(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Connect value)?  connect,TResult? Function( _ChangeState value)?  changeState,TResult? Function( _SubscribePosts value)?  subscribePosts,TResult? Function( _CreatePost value)?  createPost,TResult? Function( _UpdatePost value)?  updatePost,TResult? Function( _LikePost value)?  likePost,TResult? Function( _BookmarkPost value)?  bookmarkPost,TResult? Function( _DeletePost value)?  deletePost,TResult? Function( _ReportPost value)?  reportPost,TResult? Function( _GetReplies value)?  getReplies,TResult? Function( _LoadUserPosts value)?  loadUserPosts,TResult? Function( _LoadBookmarks value)?  loadBookmarks,TResult? Function( _LoadLikedPosts value)?  loadLikedPosts,TResult? Function( _LoadUserReplies value)?  loadUserReplies,TResult? Function( _LoadChats value)?  loadChats,TResult? Function( _CreateChat value)?  createChat,TResult? Function( _CreateMessage value)?  createMessage,TResult? Function( _EditMessage value)?  editMessage,TResult? Function( _DeleteMessage value)?  deleteMessage,TResult? Function( _MarkAsRead value)?  markAsRead,TResult? Function( _UserBlocked value)?  userBlocked,TResult? Function( _GetPolls value)?  getPolls,TResult? Function( _Vote value)?  vote,TResult? Function( _SubmitReason value)?  submitReason,TResult? Function( _GetSurveys value)?  getSurveys,TResult? Function( _SubmitResponse value)?  submitResponse,}){
+final _that = this;
+switch (_that) {
+case _Connect() when connect != null:
+return connect(_that);case _ChangeState() when changeState != null:
+return changeState(_that);case _SubscribePosts() when subscribePosts != null:
+return subscribePosts(_that);case _CreatePost() when createPost != null:
+return createPost(_that);case _UpdatePost() when updatePost != null:
+return updatePost(_that);case _LikePost() when likePost != null:
+return likePost(_that);case _BookmarkPost() when bookmarkPost != null:
+return bookmarkPost(_that);case _DeletePost() when deletePost != null:
+return deletePost(_that);case _ReportPost() when reportPost != null:
+return reportPost(_that);case _GetReplies() when getReplies != null:
+return getReplies(_that);case _LoadUserPosts() when loadUserPosts != null:
+return loadUserPosts(_that);case _LoadBookmarks() when loadBookmarks != null:
+return loadBookmarks(_that);case _LoadLikedPosts() when loadLikedPosts != null:
+return loadLikedPosts(_that);case _LoadUserReplies() when loadUserReplies != null:
+return loadUserReplies(_that);case _LoadChats() when loadChats != null:
+return loadChats(_that);case _CreateChat() when createChat != null:
+return createChat(_that);case _CreateMessage() when createMessage != null:
+return createMessage(_that);case _EditMessage() when editMessage != null:
+return editMessage(_that);case _DeleteMessage() when deleteMessage != null:
+return deleteMessage(_that);case _MarkAsRead() when markAsRead != null:
+return markAsRead(_that);case _UserBlocked() when userBlocked != null:
+return userBlocked(_that);case _GetPolls() when getPolls != null:
+return getPolls(_that);case _Vote() when vote != null:
+return vote(_that);case _SubmitReason() when submitReason != null:
+return submitReason(_that);case _GetSurveys() when getSurveys != null:
+return getSurveys(_that);case _SubmitResponse() when submitResponse != null:
+return submitResponse(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  connect,TResult Function( WebsocketState state)?  changeState,TResult Function( List<Post> posts)?  subscribePosts,TResult Function( String body)?  createPost,TResult Function( int id,  String body)?  updatePost,TResult Function( Post post)?  likePost,TResult Function( Post post)?  bookmarkPost,TResult Function( Post post)?  deletePost,TResult Function( Post post)?  reportPost,TResult Function( Post post)?  getReplies,TResult Function( User user)?  loadUserPosts,TResult Function( User user)?  loadBookmarks,TResult Function( User user)?  loadLikedPosts,TResult Function( User user)?  loadUserReplies,TResult Function()?  loadChats,TResult Function( User user)?  createChat,TResult Function( Chat chat,  String text)?  createMessage,TResult Function( int messageId,  String text)?  editMessage,TResult Function( List<Message> messages)?  deleteMessage,TResult Function( Chat chat)?  markAsRead,TResult Function( User user)?  userBlocked,TResult Function()?  getPolls,TResult Function( Option option)?  vote,TResult Function( Poll poll,  String text)?  submitReason,TResult Function()?  getSurveys,TResult Function( Survey survey,  DateTime startTime,  DateTime endTime,  List<TextAnswer> textAnswers,  List<ChoiceAnswer> choiceAnswers)?  submitResponse,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _Connect() when connect != null:
+return connect();case _ChangeState() when changeState != null:
+return changeState(_that.state);case _SubscribePosts() when subscribePosts != null:
+return subscribePosts(_that.posts);case _CreatePost() when createPost != null:
+return createPost(_that.body);case _UpdatePost() when updatePost != null:
+return updatePost(_that.id,_that.body);case _LikePost() when likePost != null:
+return likePost(_that.post);case _BookmarkPost() when bookmarkPost != null:
+return bookmarkPost(_that.post);case _DeletePost() when deletePost != null:
+return deletePost(_that.post);case _ReportPost() when reportPost != null:
+return reportPost(_that.post);case _GetReplies() when getReplies != null:
+return getReplies(_that.post);case _LoadUserPosts() when loadUserPosts != null:
+return loadUserPosts(_that.user);case _LoadBookmarks() when loadBookmarks != null:
+return loadBookmarks(_that.user);case _LoadLikedPosts() when loadLikedPosts != null:
+return loadLikedPosts(_that.user);case _LoadUserReplies() when loadUserReplies != null:
+return loadUserReplies(_that.user);case _LoadChats() when loadChats != null:
+return loadChats();case _CreateChat() when createChat != null:
+return createChat(_that.user);case _CreateMessage() when createMessage != null:
+return createMessage(_that.chat,_that.text);case _EditMessage() when editMessage != null:
+return editMessage(_that.messageId,_that.text);case _DeleteMessage() when deleteMessage != null:
+return deleteMessage(_that.messages);case _MarkAsRead() when markAsRead != null:
+return markAsRead(_that.chat);case _UserBlocked() when userBlocked != null:
+return userBlocked(_that.user);case _GetPolls() when getPolls != null:
+return getPolls();case _Vote() when vote != null:
+return vote(_that.option);case _SubmitReason() when submitReason != null:
+return submitReason(_that.poll,_that.text);case _GetSurveys() when getSurveys != null:
+return getSurveys();case _SubmitResponse() when submitResponse != null:
+return submitResponse(_that.survey,_that.startTime,_that.endTime,_that.textAnswers,_that.choiceAnswers);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  connect,required TResult Function( WebsocketState state)  changeState,required TResult Function( List<Post> posts)  subscribePosts,required TResult Function( String body)  createPost,required TResult Function( int id,  String body)  updatePost,required TResult Function( Post post)  likePost,required TResult Function( Post post)  bookmarkPost,required TResult Function( Post post)  deletePost,required TResult Function( Post post)  reportPost,required TResult Function( Post post)  getReplies,required TResult Function( User user)  loadUserPosts,required TResult Function( User user)  loadBookmarks,required TResult Function( User user)  loadLikedPosts,required TResult Function( User user)  loadUserReplies,required TResult Function()  loadChats,required TResult Function( User user)  createChat,required TResult Function( Chat chat,  String text)  createMessage,required TResult Function( int messageId,  String text)  editMessage,required TResult Function( List<Message> messages)  deleteMessage,required TResult Function( Chat chat)  markAsRead,required TResult Function( User user)  userBlocked,required TResult Function()  getPolls,required TResult Function( Option option)  vote,required TResult Function( Poll poll,  String text)  submitReason,required TResult Function()  getSurveys,required TResult Function( Survey survey,  DateTime startTime,  DateTime endTime,  List<TextAnswer> textAnswers,  List<ChoiceAnswer> choiceAnswers)  submitResponse,}) {final _that = this;
+switch (_that) {
+case _Connect():
+return connect();case _ChangeState():
+return changeState(_that.state);case _SubscribePosts():
+return subscribePosts(_that.posts);case _CreatePost():
+return createPost(_that.body);case _UpdatePost():
+return updatePost(_that.id,_that.body);case _LikePost():
+return likePost(_that.post);case _BookmarkPost():
+return bookmarkPost(_that.post);case _DeletePost():
+return deletePost(_that.post);case _ReportPost():
+return reportPost(_that.post);case _GetReplies():
+return getReplies(_that.post);case _LoadUserPosts():
+return loadUserPosts(_that.user);case _LoadBookmarks():
+return loadBookmarks(_that.user);case _LoadLikedPosts():
+return loadLikedPosts(_that.user);case _LoadUserReplies():
+return loadUserReplies(_that.user);case _LoadChats():
+return loadChats();case _CreateChat():
+return createChat(_that.user);case _CreateMessage():
+return createMessage(_that.chat,_that.text);case _EditMessage():
+return editMessage(_that.messageId,_that.text);case _DeleteMessage():
+return deleteMessage(_that.messages);case _MarkAsRead():
+return markAsRead(_that.chat);case _UserBlocked():
+return userBlocked(_that.user);case _GetPolls():
+return getPolls();case _Vote():
+return vote(_that.option);case _SubmitReason():
+return submitReason(_that.poll,_that.text);case _GetSurveys():
+return getSurveys();case _SubmitResponse():
+return submitResponse(_that.survey,_that.startTime,_that.endTime,_that.textAnswers,_that.choiceAnswers);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  connect,TResult? Function( WebsocketState state)?  changeState,TResult? Function( List<Post> posts)?  subscribePosts,TResult? Function( String body)?  createPost,TResult? Function( int id,  String body)?  updatePost,TResult? Function( Post post)?  likePost,TResult? Function( Post post)?  bookmarkPost,TResult? Function( Post post)?  deletePost,TResult? Function( Post post)?  reportPost,TResult? Function( Post post)?  getReplies,TResult? Function( User user)?  loadUserPosts,TResult? Function( User user)?  loadBookmarks,TResult? Function( User user)?  loadLikedPosts,TResult? Function( User user)?  loadUserReplies,TResult? Function()?  loadChats,TResult? Function( User user)?  createChat,TResult? Function( Chat chat,  String text)?  createMessage,TResult? Function( int messageId,  String text)?  editMessage,TResult? Function( List<Message> messages)?  deleteMessage,TResult? Function( Chat chat)?  markAsRead,TResult? Function( User user)?  userBlocked,TResult? Function()?  getPolls,TResult? Function( Option option)?  vote,TResult? Function( Poll poll,  String text)?  submitReason,TResult? Function()?  getSurveys,TResult? Function( Survey survey,  DateTime startTime,  DateTime endTime,  List<TextAnswer> textAnswers,  List<ChoiceAnswer> choiceAnswers)?  submitResponse,}) {final _that = this;
+switch (_that) {
+case _Connect() when connect != null:
+return connect();case _ChangeState() when changeState != null:
+return changeState(_that.state);case _SubscribePosts() when subscribePosts != null:
+return subscribePosts(_that.posts);case _CreatePost() when createPost != null:
+return createPost(_that.body);case _UpdatePost() when updatePost != null:
+return updatePost(_that.id,_that.body);case _LikePost() when likePost != null:
+return likePost(_that.post);case _BookmarkPost() when bookmarkPost != null:
+return bookmarkPost(_that.post);case _DeletePost() when deletePost != null:
+return deletePost(_that.post);case _ReportPost() when reportPost != null:
+return reportPost(_that.post);case _GetReplies() when getReplies != null:
+return getReplies(_that.post);case _LoadUserPosts() when loadUserPosts != null:
+return loadUserPosts(_that.user);case _LoadBookmarks() when loadBookmarks != null:
+return loadBookmarks(_that.user);case _LoadLikedPosts() when loadLikedPosts != null:
+return loadLikedPosts(_that.user);case _LoadUserReplies() when loadUserReplies != null:
+return loadUserReplies(_that.user);case _LoadChats() when loadChats != null:
+return loadChats();case _CreateChat() when createChat != null:
+return createChat(_that.user);case _CreateMessage() when createMessage != null:
+return createMessage(_that.chat,_that.text);case _EditMessage() when editMessage != null:
+return editMessage(_that.messageId,_that.text);case _DeleteMessage() when deleteMessage != null:
+return deleteMessage(_that.messages);case _MarkAsRead() when markAsRead != null:
+return markAsRead(_that.chat);case _UserBlocked() when userBlocked != null:
+return userBlocked(_that.user);case _GetPolls() when getPolls != null:
+return getPolls();case _Vote() when vote != null:
+return vote(_that.option);case _SubmitReason() when submitReason != null:
+return submitReason(_that.poll,_that.text);case _GetSurveys() when getSurveys != null:
+return getSurveys();case _SubmitResponse() when submitResponse != null:
+return submitResponse(_that.survey,_that.startTime,_that.endTime,_that.textAnswers,_that.choiceAnswers);case _:
+  return null;
+
+}
+}
+
+}
 
 /// @nodoc
 
@@ -147,6 +426,78 @@ $WebsocketStateCopyWith<$Res> get state {
     return _then(_self.copyWith(state: value));
   });
 }
+}
+
+/// @nodoc
+
+
+class _SubscribePosts implements WebsocketEvent {
+  const _SubscribePosts({required final  List<Post> posts}): _posts = posts;
+  
+
+ final  List<Post> _posts;
+ List<Post> get posts {
+  if (_posts is EqualUnmodifiableListView) return _posts;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_posts);
+}
+
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SubscribePostsCopyWith<_SubscribePosts> get copyWith => __$SubscribePostsCopyWithImpl<_SubscribePosts>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubscribePosts&&const DeepCollectionEquality().equals(other._posts, _posts));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_posts));
+
+@override
+String toString() {
+  return 'WebsocketEvent.subscribePosts(posts: $posts)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SubscribePostsCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
+  factory _$SubscribePostsCopyWith(_SubscribePosts value, $Res Function(_SubscribePosts) _then) = __$SubscribePostsCopyWithImpl;
+@useResult
+$Res call({
+ List<Post> posts
+});
+
+
+
+
+}
+/// @nodoc
+class __$SubscribePostsCopyWithImpl<$Res>
+    implements _$SubscribePostsCopyWith<$Res> {
+  __$SubscribePostsCopyWithImpl(this._self, this._then);
+
+  final _SubscribePosts _self;
+  final $Res Function(_SubscribePosts) _then;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? posts = null,}) {
+  return _then(_SubscribePosts(
+posts: null == posts ? _self._posts : posts // ignore: cast_nullable_to_non_nullable
+as List<Post>,
+  ));
+}
+
+
 }
 
 /// @nodoc
@@ -1772,6 +2123,154 @@ class $WebsocketStateCopyWith<$Res>  {
 $WebsocketStateCopyWith(WebsocketState _, $Res Function(WebsocketState) __);
 }
 
+
+/// Adds pattern-matching-related methods to [WebsocketState].
+extension WebsocketStatePatterns on WebsocketState {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( WebsocketInitial value)?  initial,TResult Function( WebsocketLoading value)?  loading,TResult Function( WebsocketSuccess value)?  success,TResult Function( WebsocketFailure value)?  failure,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case WebsocketInitial() when initial != null:
+return initial(_that);case WebsocketLoading() when loading != null:
+return loading(_that);case WebsocketSuccess() when success != null:
+return success(_that);case WebsocketFailure() when failure != null:
+return failure(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( WebsocketInitial value)  initial,required TResult Function( WebsocketLoading value)  loading,required TResult Function( WebsocketSuccess value)  success,required TResult Function( WebsocketFailure value)  failure,}){
+final _that = this;
+switch (_that) {
+case WebsocketInitial():
+return initial(_that);case WebsocketLoading():
+return loading(_that);case WebsocketSuccess():
+return success(_that);case WebsocketFailure():
+return failure(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( WebsocketInitial value)?  initial,TResult? Function( WebsocketLoading value)?  loading,TResult? Function( WebsocketSuccess value)?  success,TResult? Function( WebsocketFailure value)?  failure,}){
+final _that = this;
+switch (_that) {
+case WebsocketInitial() when initial != null:
+return initial(_that);case WebsocketLoading() when loading != null:
+return loading(_that);case WebsocketSuccess() when success != null:
+return success(_that);case WebsocketFailure() when failure != null:
+return failure(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Map<String, dynamic> message)?  success,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case WebsocketInitial() when initial != null:
+return initial();case WebsocketLoading() when loading != null:
+return loading();case WebsocketSuccess() when success != null:
+return success(_that.message);case WebsocketFailure() when failure != null:
+return failure(_that.error);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Map<String, dynamic> message)  success,required TResult Function( String error)  failure,}) {final _that = this;
+switch (_that) {
+case WebsocketInitial():
+return initial();case WebsocketLoading():
+return loading();case WebsocketSuccess():
+return success(_that.message);case WebsocketFailure():
+return failure(_that.error);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Map<String, dynamic> message)?  success,TResult? Function( String error)?  failure,}) {final _that = this;
+switch (_that) {
+case WebsocketInitial() when initial != null:
+return initial();case WebsocketLoading() when loading != null:
+return loading();case WebsocketSuccess() when success != null:
+return success(_that.message);case WebsocketFailure() when failure != null:
+return failure(_that.error);case _:
+  return null;
+
+}
+}
+
+}
 
 /// @nodoc
 

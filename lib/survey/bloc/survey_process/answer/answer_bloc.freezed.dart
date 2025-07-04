@@ -1,6 +1,5 @@
-// dart format width=80
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -41,6 +40,166 @@ class $AnswerEventCopyWith<$Res>  {
 $AnswerEventCopyWith(AnswerEvent _, $Res Function(AnswerEvent) __);
 }
 
+
+/// Adds pattern-matching-related methods to [AnswerEvent].
+extension AnswerEventPatterns on AnswerEvent {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _TextAnswerAdded value)?  textAnswerAdded,TResult Function( _SingleChoiceAnswerAdded value)?  singleChoiceAnswerAdded,TResult Function( _MultipleChoiceAnswerAdded value)?  multipleChoiceAnswerAdded,TResult Function( _Validate value)?  validate,TResult Function( _Submitted value)?  submitted,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _Started() when started != null:
+return started(_that);case _TextAnswerAdded() when textAnswerAdded != null:
+return textAnswerAdded(_that);case _SingleChoiceAnswerAdded() when singleChoiceAnswerAdded != null:
+return singleChoiceAnswerAdded(_that);case _MultipleChoiceAnswerAdded() when multipleChoiceAnswerAdded != null:
+return multipleChoiceAnswerAdded(_that);case _Validate() when validate != null:
+return validate(_that);case _Submitted() when submitted != null:
+return submitted(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _TextAnswerAdded value)  textAnswerAdded,required TResult Function( _SingleChoiceAnswerAdded value)  singleChoiceAnswerAdded,required TResult Function( _MultipleChoiceAnswerAdded value)  multipleChoiceAnswerAdded,required TResult Function( _Validate value)  validate,required TResult Function( _Submitted value)  submitted,}){
+final _that = this;
+switch (_that) {
+case _Started():
+return started(_that);case _TextAnswerAdded():
+return textAnswerAdded(_that);case _SingleChoiceAnswerAdded():
+return singleChoiceAnswerAdded(_that);case _MultipleChoiceAnswerAdded():
+return multipleChoiceAnswerAdded(_that);case _Validate():
+return validate(_that);case _Submitted():
+return submitted(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _TextAnswerAdded value)?  textAnswerAdded,TResult? Function( _SingleChoiceAnswerAdded value)?  singleChoiceAnswerAdded,TResult? Function( _MultipleChoiceAnswerAdded value)?  multipleChoiceAnswerAdded,TResult? Function( _Validate value)?  validate,TResult? Function( _Submitted value)?  submitted,}){
+final _that = this;
+switch (_that) {
+case _Started() when started != null:
+return started(_that);case _TextAnswerAdded() when textAnswerAdded != null:
+return textAnswerAdded(_that);case _SingleChoiceAnswerAdded() when singleChoiceAnswerAdded != null:
+return singleChoiceAnswerAdded(_that);case _MultipleChoiceAnswerAdded() when multipleChoiceAnswerAdded != null:
+return multipleChoiceAnswerAdded(_that);case _Validate() when validate != null:
+return validate(_that);case _Submitted() when submitted != null:
+return submitted(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Survey survey)?  started,TResult Function( Question question,  String text)?  textAnswerAdded,TResult Function( Question question,  Choice choice)?  singleChoiceAnswerAdded,TResult Function( Question question,  List<Choice> choices)?  multipleChoiceAnswerAdded,TResult Function( List<Question> questions)?  validate,TResult Function( Map<String, dynamic> payload)?  submitted,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _Started() when started != null:
+return started(_that.survey);case _TextAnswerAdded() when textAnswerAdded != null:
+return textAnswerAdded(_that.question,_that.text);case _SingleChoiceAnswerAdded() when singleChoiceAnswerAdded != null:
+return singleChoiceAnswerAdded(_that.question,_that.choice);case _MultipleChoiceAnswerAdded() when multipleChoiceAnswerAdded != null:
+return multipleChoiceAnswerAdded(_that.question,_that.choices);case _Validate() when validate != null:
+return validate(_that.questions);case _Submitted() when submitted != null:
+return submitted(_that.payload);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Survey survey)  started,required TResult Function( Question question,  String text)  textAnswerAdded,required TResult Function( Question question,  Choice choice)  singleChoiceAnswerAdded,required TResult Function( Question question,  List<Choice> choices)  multipleChoiceAnswerAdded,required TResult Function( List<Question> questions)  validate,required TResult Function( Map<String, dynamic> payload)  submitted,}) {final _that = this;
+switch (_that) {
+case _Started():
+return started(_that.survey);case _TextAnswerAdded():
+return textAnswerAdded(_that.question,_that.text);case _SingleChoiceAnswerAdded():
+return singleChoiceAnswerAdded(_that.question,_that.choice);case _MultipleChoiceAnswerAdded():
+return multipleChoiceAnswerAdded(_that.question,_that.choices);case _Validate():
+return validate(_that.questions);case _Submitted():
+return submitted(_that.payload);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Survey survey)?  started,TResult? Function( Question question,  String text)?  textAnswerAdded,TResult? Function( Question question,  Choice choice)?  singleChoiceAnswerAdded,TResult? Function( Question question,  List<Choice> choices)?  multipleChoiceAnswerAdded,TResult? Function( List<Question> questions)?  validate,TResult? Function( Map<String, dynamic> payload)?  submitted,}) {final _that = this;
+switch (_that) {
+case _Started() when started != null:
+return started(_that.survey);case _TextAnswerAdded() when textAnswerAdded != null:
+return textAnswerAdded(_that.question,_that.text);case _SingleChoiceAnswerAdded() when singleChoiceAnswerAdded != null:
+return singleChoiceAnswerAdded(_that.question,_that.choice);case _MultipleChoiceAnswerAdded() when multipleChoiceAnswerAdded != null:
+return multipleChoiceAnswerAdded(_that.question,_that.choices);case _Validate() when validate != null:
+return validate(_that.questions);case _Submitted() when submitted != null:
+return submitted(_that.payload);case _:
+  return null;
+
+}
+}
+
+}
 
 /// @nodoc
 

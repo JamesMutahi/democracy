@@ -1,6 +1,5 @@
-// dart format width=80
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -41,6 +40,172 @@ class $PostDetailStateCopyWith<$Res>  {
 $PostDetailStateCopyWith(PostDetailState _, $Res Function(PostDetailState) __);
 }
 
+
+/// Adds pattern-matching-related methods to [PostDetailState].
+extension PostDetailStatePatterns on PostDetailState {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( PostDetailLoading value)?  loading,TResult Function( PostCreated value)?  created,TResult Function( PostUpdated value)?  updated,TResult Function( PostDeleted value)?  deleted,TResult Function( PostReported value)?  reported,TResult Function( PostDetailFailure value)?  failure,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _Initial() when initial != null:
+return initial(_that);case PostDetailLoading() when loading != null:
+return loading(_that);case PostCreated() when created != null:
+return created(_that);case PostUpdated() when updated != null:
+return updated(_that);case PostDeleted() when deleted != null:
+return deleted(_that);case PostReported() when reported != null:
+return reported(_that);case PostDetailFailure() when failure != null:
+return failure(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( PostDetailLoading value)  loading,required TResult Function( PostCreated value)  created,required TResult Function( PostUpdated value)  updated,required TResult Function( PostDeleted value)  deleted,required TResult Function( PostReported value)  reported,required TResult Function( PostDetailFailure value)  failure,}){
+final _that = this;
+switch (_that) {
+case _Initial():
+return initial(_that);case PostDetailLoading():
+return loading(_that);case PostCreated():
+return created(_that);case PostUpdated():
+return updated(_that);case PostDeleted():
+return deleted(_that);case PostReported():
+return reported(_that);case PostDetailFailure():
+return failure(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( PostDetailLoading value)?  loading,TResult? Function( PostCreated value)?  created,TResult? Function( PostUpdated value)?  updated,TResult? Function( PostDeleted value)?  deleted,TResult? Function( PostReported value)?  reported,TResult? Function( PostDetailFailure value)?  failure,}){
+final _that = this;
+switch (_that) {
+case _Initial() when initial != null:
+return initial(_that);case PostDetailLoading() when loading != null:
+return loading(_that);case PostCreated() when created != null:
+return created(_that);case PostUpdated() when updated != null:
+return updated(_that);case PostDeleted() when deleted != null:
+return deleted(_that);case PostReported() when reported != null:
+return reported(_that);case PostDetailFailure() when failure != null:
+return failure(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Post post)?  created,TResult Function( Post post)?  updated,TResult Function( Post post)?  deleted,TResult Function()?  reported,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _Initial() when initial != null:
+return initial();case PostDetailLoading() when loading != null:
+return loading();case PostCreated() when created != null:
+return created(_that.post);case PostUpdated() when updated != null:
+return updated(_that.post);case PostDeleted() when deleted != null:
+return deleted(_that.post);case PostReported() when reported != null:
+return reported();case PostDetailFailure() when failure != null:
+return failure(_that.error);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Post post)  created,required TResult Function( Post post)  updated,required TResult Function( Post post)  deleted,required TResult Function()  reported,required TResult Function( String error)  failure,}) {final _that = this;
+switch (_that) {
+case _Initial():
+return initial();case PostDetailLoading():
+return loading();case PostCreated():
+return created(_that.post);case PostUpdated():
+return updated(_that.post);case PostDeleted():
+return deleted(_that.post);case PostReported():
+return reported();case PostDetailFailure():
+return failure(_that.error);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Post post)?  created,TResult? Function( Post post)?  updated,TResult? Function( Post post)?  deleted,TResult? Function()?  reported,TResult? Function( String error)?  failure,}) {final _that = this;
+switch (_that) {
+case _Initial() when initial != null:
+return initial();case PostDetailLoading() when loading != null:
+return loading();case PostCreated() when created != null:
+return created(_that.post);case PostUpdated() when updated != null:
+return updated(_that.post);case PostDeleted() when deleted != null:
+return deleted(_that.post);case PostReported() when reported != null:
+return reported();case PostDetailFailure() when failure != null:
+return failure(_that.error);case _:
+  return null;
+
+}
+}
+
+}
 
 /// @nodoc
 
@@ -259,184 +424,77 @@ $PostCopyWith<$Res> get post {
 /// @nodoc
 
 
-class PostLiked implements PostDetailState {
-  const PostLiked({required this.post});
-  
-
- final  Post post;
-
-/// Create a copy of PostDetailState
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$PostLikedCopyWith<PostLiked> get copyWith => _$PostLikedCopyWithImpl<PostLiked>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostLiked&&(identical(other.post, post) || other.post == post));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,post);
-
-@override
-String toString() {
-  return 'PostDetailState.liked(post: $post)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $PostLikedCopyWith<$Res> implements $PostDetailStateCopyWith<$Res> {
-  factory $PostLikedCopyWith(PostLiked value, $Res Function(PostLiked) _then) = _$PostLikedCopyWithImpl;
-@useResult
-$Res call({
- Post post
-});
-
-
-$PostCopyWith<$Res> get post;
-
-}
-/// @nodoc
-class _$PostLikedCopyWithImpl<$Res>
-    implements $PostLikedCopyWith<$Res> {
-  _$PostLikedCopyWithImpl(this._self, this._then);
-
-  final PostLiked _self;
-  final $Res Function(PostLiked) _then;
-
-/// Create a copy of PostDetailState
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? post = null,}) {
-  return _then(PostLiked(
-post: null == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
-as Post,
-  ));
-}
-
-/// Create a copy of PostDetailState
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$PostCopyWith<$Res> get post {
-  
-  return $PostCopyWith<$Res>(_self.post, (value) {
-    return _then(_self.copyWith(post: value));
-  });
-}
-}
-
-/// @nodoc
-
-
-class PostBookmarked implements PostDetailState {
-  const PostBookmarked({required this.post});
-  
-
- final  Post post;
-
-/// Create a copy of PostDetailState
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$PostBookmarkedCopyWith<PostBookmarked> get copyWith => _$PostBookmarkedCopyWithImpl<PostBookmarked>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostBookmarked&&(identical(other.post, post) || other.post == post));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,post);
-
-@override
-String toString() {
-  return 'PostDetailState.bookmarked(post: $post)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $PostBookmarkedCopyWith<$Res> implements $PostDetailStateCopyWith<$Res> {
-  factory $PostBookmarkedCopyWith(PostBookmarked value, $Res Function(PostBookmarked) _then) = _$PostBookmarkedCopyWithImpl;
-@useResult
-$Res call({
- Post post
-});
-
-
-$PostCopyWith<$Res> get post;
-
-}
-/// @nodoc
-class _$PostBookmarkedCopyWithImpl<$Res>
-    implements $PostBookmarkedCopyWith<$Res> {
-  _$PostBookmarkedCopyWithImpl(this._self, this._then);
-
-  final PostBookmarked _self;
-  final $Res Function(PostBookmarked) _then;
-
-/// Create a copy of PostDetailState
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? post = null,}) {
-  return _then(PostBookmarked(
-post: null == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
-as Post,
-  ));
-}
-
-/// Create a copy of PostDetailState
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$PostCopyWith<$Res> get post {
-  
-  return $PostCopyWith<$Res>(_self.post, (value) {
-    return _then(_self.copyWith(post: value));
-  });
-}
-}
-
-/// @nodoc
-
-
 class PostDeleted implements PostDetailState {
-  const PostDeleted();
+  const PostDeleted({required this.post});
   
 
+ final  Post post;
 
-
+/// Create a copy of PostDetailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PostDeletedCopyWith<PostDeleted> get copyWith => _$PostDeletedCopyWithImpl<PostDeleted>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostDeleted);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostDeleted&&(identical(other.post, post) || other.post == post));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,post);
 
 @override
 String toString() {
-  return 'PostDetailState.deleted()';
+  return 'PostDetailState.deleted(post: $post)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $PostDeletedCopyWith<$Res> implements $PostDetailStateCopyWith<$Res> {
+  factory $PostDeletedCopyWith(PostDeleted value, $Res Function(PostDeleted) _then) = _$PostDeletedCopyWithImpl;
+@useResult
+$Res call({
+ Post post
+});
 
 
+$PostCopyWith<$Res> get post;
+
+}
+/// @nodoc
+class _$PostDeletedCopyWithImpl<$Res>
+    implements $PostDeletedCopyWith<$Res> {
+  _$PostDeletedCopyWithImpl(this._self, this._then);
+
+  final PostDeleted _self;
+  final $Res Function(PostDeleted) _then;
+
+/// Create a copy of PostDetailState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? post = null,}) {
+  return _then(PostDeleted(
+post: null == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
+as Post,
+  ));
+}
+
+/// Create a copy of PostDetailState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PostCopyWith<$Res> get post {
+  
+  return $PostCopyWith<$Res>(_self.post, (value) {
+    return _then(_self.copyWith(post: value));
+  });
+}
+}
 
 /// @nodoc
 

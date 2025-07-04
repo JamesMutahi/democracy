@@ -48,10 +48,6 @@ class _PostDetailState extends State<PostDetail> {
         switch (state) {
           case PostUpdated():
             _setPostState(state.post);
-          case PostLiked():
-            _setPostState(state.post);
-          case PostBookmarked():
-            _setPostState(state.post);
         }
       },
       child: Scaffold(

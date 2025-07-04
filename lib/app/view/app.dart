@@ -164,14 +164,6 @@ class _Listeners extends StatelessWidget {
                         context.read<PostDetailCubit>().updated(
                           payload: message['payload'],
                         );
-                      case 'like':
-                        context.read<PostDetailCubit>().liked(
-                          payload: message['payload'],
-                        );
-                      case 'bookmark':
-                        context.read<PostDetailCubit>().bookmarked(
-                          payload: message['payload'],
-                        );
                       case 'delete':
                         context.read<PostDetailCubit>().deleted(
                           payload: message['payload'],
@@ -300,32 +292,12 @@ class _Listeners extends StatelessWidget {
             }
           },
         ),
-        BlocListener<PostDetailCubit, PostDetailState>(
+        BlocListener<PostListCubit, PostListState>(
           listener: (context, state) {
-            if (state is PostUpdated) {
-              final snackBar = SnackBar(
-                behavior: SnackBarBehavior.floating,
-                backgroundColor: Theme.of(context).cardColor,
-                content: SnackBarContent(
-                  message: 'Post updated',
-                  status: SnackBarStatus.success,
-                ),
+            if (state is PostListLoaded) {
+              context.read<WebsocketBloc>().add(
+                WebsocketEvent.subscribePosts(posts: state.posts),
               );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            }
-            if (state is PostBookmarked) {
-              final snackBar = SnackBar(
-                behavior: SnackBarBehavior.floating,
-                backgroundColor: Theme.of(context).cardColor,
-                content: SnackBarContent(
-                  message:
-                      (state.post.isBookmarked == true)
-                          ? 'Bookmark added'
-                          : 'Bookmark removed',
-                  status: SnackBarStatus.info,
-                ),
-              );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
           },
         ),

@@ -1,6 +1,5 @@
-// dart format width=80
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -133,6 +132,130 @@ $PostCopyWith<$Res>? get repostOf {
 }
 }
 
+
+/// Adds pattern-matching-related methods to [Post].
+extension PostPatterns on Post {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _Post value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _Post() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _Post value)  $default,){
+final _that = this;
+switch (_that) {
+case _Post():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _Post value)?  $default,){
+final _that = this;
+switch (_that) {
+case _Post() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  User author, @PostStatusConverter()  PostStatus status,  String body,  String? image1Url,  String? image2Url,  String? image3Url,  String? image4Url,  String? image5Url,  String? image6Url,  String? video1Url,  String? video2Url,  String? video3Url,  int likes, @JsonKey(name: 'is_liked')  bool isLiked,  int bookmarks, @JsonKey(name: 'is_bookmarked')  bool isBookmarked,  int views,  int replies,  int reposts, @JsonKey(name: 'is_edited')  bool isEdited, @JsonKey(name: 'is_deleted')  bool isDeleted, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'published_at')  DateTime publishedAt, @JsonKey(name: 'reply_to')  Post? replyTo, @JsonKey(name: 'repost_of')  Post? repostOf)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _Post() when $default != null:
+return $default(_that.id,_that.author,_that.status,_that.body,_that.image1Url,_that.image2Url,_that.image3Url,_that.image4Url,_that.image5Url,_that.image6Url,_that.video1Url,_that.video2Url,_that.video3Url,_that.likes,_that.isLiked,_that.bookmarks,_that.isBookmarked,_that.views,_that.replies,_that.reposts,_that.isEdited,_that.isDeleted,_that.isActive,_that.publishedAt,_that.replyTo,_that.repostOf);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  User author, @PostStatusConverter()  PostStatus status,  String body,  String? image1Url,  String? image2Url,  String? image3Url,  String? image4Url,  String? image5Url,  String? image6Url,  String? video1Url,  String? video2Url,  String? video3Url,  int likes, @JsonKey(name: 'is_liked')  bool isLiked,  int bookmarks, @JsonKey(name: 'is_bookmarked')  bool isBookmarked,  int views,  int replies,  int reposts, @JsonKey(name: 'is_edited')  bool isEdited, @JsonKey(name: 'is_deleted')  bool isDeleted, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'published_at')  DateTime publishedAt, @JsonKey(name: 'reply_to')  Post? replyTo, @JsonKey(name: 'repost_of')  Post? repostOf)  $default,) {final _that = this;
+switch (_that) {
+case _Post():
+return $default(_that.id,_that.author,_that.status,_that.body,_that.image1Url,_that.image2Url,_that.image3Url,_that.image4Url,_that.image5Url,_that.image6Url,_that.video1Url,_that.video2Url,_that.video3Url,_that.likes,_that.isLiked,_that.bookmarks,_that.isBookmarked,_that.views,_that.replies,_that.reposts,_that.isEdited,_that.isDeleted,_that.isActive,_that.publishedAt,_that.replyTo,_that.repostOf);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  User author, @PostStatusConverter()  PostStatus status,  String body,  String? image1Url,  String? image2Url,  String? image3Url,  String? image4Url,  String? image5Url,  String? image6Url,  String? video1Url,  String? video2Url,  String? video3Url,  int likes, @JsonKey(name: 'is_liked')  bool isLiked,  int bookmarks, @JsonKey(name: 'is_bookmarked')  bool isBookmarked,  int views,  int replies,  int reposts, @JsonKey(name: 'is_edited')  bool isEdited, @JsonKey(name: 'is_deleted')  bool isDeleted, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'published_at')  DateTime publishedAt, @JsonKey(name: 'reply_to')  Post? replyTo, @JsonKey(name: 'repost_of')  Post? repostOf)?  $default,) {final _that = this;
+switch (_that) {
+case _Post() when $default != null:
+return $default(_that.id,_that.author,_that.status,_that.body,_that.image1Url,_that.image2Url,_that.image3Url,_that.image4Url,_that.image5Url,_that.image6Url,_that.video1Url,_that.video2Url,_that.video3Url,_that.likes,_that.isLiked,_that.bookmarks,_that.isBookmarked,_that.views,_that.replies,_that.reposts,_that.isEdited,_that.isDeleted,_that.isActive,_that.publishedAt,_that.replyTo,_that.repostOf);case _:
+  return null;
+
+}
+}
+
+}
 
 /// @nodoc
 @JsonSerializable()
