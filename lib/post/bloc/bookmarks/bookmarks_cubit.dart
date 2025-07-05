@@ -8,16 +8,6 @@ part 'bookmarks_cubit.freezed.dart';
 class BookmarksCubit extends Cubit<BookmarksState> {
   BookmarksCubit() : super(const BookmarksState.initial());
 
-  void websocketFailure({required String error}) {
-    if (state is BookmarksInitial || state is BookmarksLoading) {
-      emit(BookmarksFailure());
-    }
-  }
-
-  void retryButtonPressed() {
-    emit(BookmarksInitial());
-  }
-
   void loaded({required Map<String, dynamic> payload}) {
     emit(BookmarksLoading());
     if (payload['response_status'] == 200) {

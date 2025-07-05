@@ -23,7 +23,6 @@ class Replies extends StatelessWidget {
           case RepliesFailure():
             return FailureRetryButton(
               onPressed: () {
-                context.read<RepliesCubit>().retryButtonPressed();
                 context.read<WebsocketBloc>().add(
                   WebsocketEvent.getReplies(post: post),
                 );

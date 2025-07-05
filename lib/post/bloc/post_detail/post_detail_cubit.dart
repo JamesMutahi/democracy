@@ -8,12 +8,6 @@ part 'post_detail_cubit.freezed.dart';
 class PostDetailCubit extends Cubit<PostDetailState> {
   PostDetailCubit() : super(const PostDetailState.initial());
 
-  void websocketFailure({required String error}) {
-    if (state is _Initial || state is PostDetailLoading) {
-      emit(PostDetailFailure(error: error));
-    }
-  }
-
   void created({required Map<String, dynamic> payload}) {
     emit(PostDetailLoading());
     if (payload['response_status'] == 201) {

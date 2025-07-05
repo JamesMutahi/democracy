@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-enum SnackBarStatus { success, info, failure }
+enum SnackBarStatus { loading, success, info, failure }
 
 class SnackBarContent extends StatelessWidget {
   const SnackBarContent({
@@ -14,23 +15,25 @@ class SnackBarContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Icon icon;
+    Widget icon;
     switch (status) {
       case SnackBarStatus.success:
         icon = Icon(
           Icons.check_circle_rounded,
           color: Theme.of(context).primaryColor,
         );
-        break;
       case SnackBarStatus.info:
         icon = const Icon(Icons.info_rounded, color: Colors.indigo);
-        break;
       case SnackBarStatus.failure:
         icon = Icon(
           Icons.error_rounded,
           color: Theme.of(context).colorScheme.error,
         );
-        break;
+      case SnackBarStatus.loading:
+        icon = SpinKitThreeInOut(
+          color: Theme.of(context).primaryColor,
+          size: 10.0,
+        );
     }
     return Center(
       child: Row(

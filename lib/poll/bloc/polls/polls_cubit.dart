@@ -14,10 +14,6 @@ class PollsCubit extends Cubit<PollsState> {
     }
   }
 
-  void retryButtonPressed() {
-    emit(PollsInitial());
-  }
-
   void loaded({required Map<String, dynamic> payload}) {
     emit(PollsLoading());
     if (payload['response_status'] == 200) {

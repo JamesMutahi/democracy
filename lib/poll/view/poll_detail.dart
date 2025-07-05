@@ -60,7 +60,13 @@ class _PollDetailState extends State<PollDetail> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(_poll.description),
-                SizedBox(height: 10),
+                SizedBox(height: 5),
+                TimeLeft(
+                  key: UniqueKey(),
+                  startTime: _poll.startTime,
+                  endTime: _poll.endTime,
+                ),
+                SizedBox(height: 5),
                 ..._poll.options.map((option) {
                   return AnimatedSwitcher(
                     duration: const Duration(milliseconds: 300),
@@ -212,27 +218,6 @@ class _ReasonWidgetState extends State<ReasonWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Share your reason",
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                SizedBox(height: 5),
-                Text(
-                  "This is optional but will help to better understand "
-                  "why you rejected or accepted the option. Your "
-                  "contribution is greatly appreciated.",
-                  style: TextStyle(color: Theme.of(context).hintColor),
-                ),
-                SizedBox(height: 10),
-              ],
-            ),
-          ),
           SingleChildScrollView(
             scrollDirection: Axis.vertical,
             reverse: true,
@@ -248,12 +233,36 @@ class _ReasonWidgetState extends State<ReasonWidget> {
                   }
                 });
               },
-              minLines: 6,
+              minLines: 1,
+              maxLines: 10,
+              maxLength: 300,
               keyboardType: TextInputType.multiline,
-              maxLines: null,
               onTapOutside: (event) {
                 FocusManager.instance.primaryFocus?.unfocus();
               },
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Theme.of(context).scaffoldBackgroundColor,
+                hintText: 'Add reason',
+                hintStyle: TextStyle(color: Theme.of(context).hintColor),
+                prefixIconConstraints: const BoxConstraints(
+                  minWidth: 0,
+                  minHeight: 0,
+                ),
+                border: InputBorder.none,
+                focusedBorder: UnderlineInputBorder(
+                  borderRadius: BorderRadius.circular(0),
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                enabledBorder: UnderlineInputBorder(
+                  borderRadius: BorderRadius.circular(0),
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
+                ),
+              ),
             ),
           ),
           SizedBox(height: 10),
@@ -263,7 +272,8 @@ class _ReasonWidgetState extends State<ReasonWidget> {
                 alignment: Alignment.topRight,
                 child: OutlinedButton(
                   onPressed:
-                      widget.controller.text == ''
+                      widget.controller.text == '' ||
+                              widget.poll.reason?.text == widget.controller.text
                           ? null
                           : () {
                             showDialog(

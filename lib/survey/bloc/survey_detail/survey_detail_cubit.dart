@@ -8,12 +8,6 @@ part 'survey_detail_cubit.freezed.dart';
 class SurveyDetailCubit extends Cubit<SurveyDetailState> {
   SurveyDetailCubit() : super(const SurveyDetailState.initial());
 
-  void websocketFailure({required String error}) {
-    if (state is SurveyDetailInitial || state is SurveyDetailLoading) {
-      emit(SurveyDetailFailure());
-    }
-  }
-
   void created({required Map<String, dynamic> payload}) {
     emit(SurveyDetailLoading());
     if (payload['response_status'] == 201) {

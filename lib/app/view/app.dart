@@ -271,24 +271,20 @@ class _Listeners extends StatelessWidget {
                         );
                     }
                 }
-            }
-            if (state is WebsocketFailure) {
-              String error = 'Something went wrong';
-              context.read<PostDetailCubit>().websocketFailure(error: error);
-              context.read<PostListCubit>().websocketFailure(error: error);
-              context.read<UserPostsCubit>().websocketFailure(error: error);
-              context.read<BookmarksCubit>().websocketFailure(error: error);
-              context.read<LikesCubit>().websocketFailure(error: error);
-              context.read<UserRepliesCubit>().websocketFailure(error: error);
-              final snackBar = SnackBar(
-                behavior: SnackBarBehavior.floating,
-                backgroundColor: Theme.of(context).cardColor,
-                content: SnackBarContent(
-                  message: error,
-                  status: SnackBarStatus.failure,
-                ),
-              );
-              showSnackBar(snackBar: snackBar);
+              case WebsocketFailure(:final error):
+                context.read<PostListCubit>().websocketFailure(error: error);
+                context.read<SurveysCubit>().websocketFailure(error: error);
+                context.read<PollsCubit>().websocketFailure(error: error);
+                context.read<ChatsCubit>().websocketFailure(error: error);
+                final snackBar = SnackBar(
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: Theme.of(context).cardColor,
+                  content: SnackBarContent(
+                    message: error,
+                    status: SnackBarStatus.failure,
+                  ),
+                );
+                showSnackBar(snackBar: snackBar);
             }
           },
         ),

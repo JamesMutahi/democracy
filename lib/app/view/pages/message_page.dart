@@ -45,7 +45,6 @@ class _MessagePageState extends State<MessagePage>
           case ChatsFailure():
             return FailureRetryButton(
               onPressed: () {
-                context.read<ChatsCubit>().retryButtonPressed();
                 context.read<WebsocketBloc>().add(WebsocketEvent.connect());
               },
             );

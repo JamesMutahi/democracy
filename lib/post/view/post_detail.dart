@@ -1,4 +1,5 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/view/bottom_text_form_field.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/app/view/widgets/profile_page.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
@@ -21,6 +22,9 @@ class PostDetail extends StatefulWidget {
 
 class _PostDetailState extends State<PostDetail> {
   late Post _post = widget.post;
+  final _controller = TextEditingController();
+  final _focusNode = FocusNode();
+  bool _disableSendButton = true;
 
   @override
   void initState() {
@@ -159,6 +163,35 @@ class _PostDetailState extends State<PostDetail> {
               Replies(post: _post),
             ],
           ),
+        ),
+        bottomNavigationBar: BottomTextFormField(
+          focusNode: _focusNode,
+          showCursor: true,
+          readOnly: false,
+          controller: _controller,
+          onTap: () {},
+          onChanged: (value) {
+            if (value == '') {
+              setState(() {
+                _disableSendButton = true;
+              });
+            } else {
+              setState(() {
+                _disableSendButton = false;
+              });
+            }
+          },
+          hintText: 'Reply',
+          prefixIcon: null,
+          onSend:
+              _disableSendButton
+                  ? null
+                  : () {
+                    _controller.clear();
+                    setState(() {
+                      _disableSendButton = true;
+                    });
+                  },
         ),
       ),
     );

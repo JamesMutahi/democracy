@@ -14,10 +14,6 @@ class ChatsCubit extends Cubit<ChatsState> {
     }
   }
 
-  void retryButtonPressed() {
-    emit(ChatsInitial());
-  }
-
   void loadChats({required Map<String, dynamic> payload}) {
     emit(ChatsLoading());
     if (payload['response_status'] == 200) {

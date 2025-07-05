@@ -14,10 +14,6 @@ class PostListCubit extends Cubit<PostListState> {
     }
   }
 
-  void retryButtonPressed() {
-    emit(PostListInitial());
-  }
-
   void loadPosts({required Map<String, dynamic> payload}) {
     if (payload['response_status'] == 200) {
       final List<Post> posts = List.from(

@@ -12,6 +12,7 @@ import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/choice_answer.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/models/text_answer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:web_socket_channel/io.dart';
@@ -122,31 +123,55 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       _channel = IOWebSocketChannel.connect(
         wsUrl,
         headers: {'Authorization': 'Token $token'},
-        connectTimeout: Duration(seconds: 5),
       );
       await _channel.ready;
-      _websocketSubscription = _channel.stream.listen((message) async {
-        add(
-          _ChangeState(state: WebsocketSuccess(message: jsonDecode(message))),
-        );
-      });
+      _channel.stream.listen(
+        (message) {
+          add(
+            _ChangeState(state: WebsocketSuccess(message: jsonDecode(message))),
+          );
+        },
+        onDone: () {
+          add(
+            _ChangeState(
+              state: WebsocketFailure(error: 'Server connection lost'),
+            ),
+          );
+          Future.delayed(Duration(seconds: 10)).then((value) {
+            add(_Connect());
+          });
+        },
+        onError: (error) {
+          add(
+            _ChangeState(
+              state: WebsocketFailure(error: 'Server connection lost'),
+            ),
+          );
+          debugPrint('ws error $error');
+          Future.delayed(Duration(seconds: 10)).then((value) {
+            add(_Connect());
+          });
+        },
+      );
       // Get posts
       Map<String, dynamic> message = {
         'stream': postsStream,
         'payload': {"action": 'list', "request_id": postRequestId},
       };
       _channel.sink.add(jsonEncode(message));
-      // Get posts
+      // Subscribe to polls
       message = {
         'stream': pollsStream,
         'payload': {"action": 'subscribe', "request_id": pollRequestId},
       };
       _channel.sink.add(jsonEncode(message));
+      // Subscribe to chats
       message = {
         'stream': chatsStream,
         'payload': {"action": 'subscribe', "request_id": chatRequestId},
       };
       _channel.sink.add(jsonEncode(message));
+      // Subscribe to surveys
       message = {
         'stream': surveysStream,
         'payload': {"action": 'subscribe', "request_id": surveyRequestId},
@@ -572,11 +597,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   @override
   Future<void> close() {
     _channel.sink.close();
-    _websocketSubscription.cancel();
     return super.close();
   }
 
   late WebSocketChannel _channel;
-  late StreamSubscription _websocketSubscription;
   final AuthRepository authRepository;
 }

@@ -38,7 +38,7 @@ class _SurveyPageState extends State<SurveyPage>
             return FailureRetryButton(
               onPressed: () {
                 context.read<WebsocketBloc>().add(
-                  const WebsocketEvent.getPolls(),
+                  const WebsocketEvent.getSurveys(),
                 );
               },
             );

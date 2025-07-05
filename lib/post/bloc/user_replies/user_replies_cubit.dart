@@ -8,16 +8,6 @@ part 'user_replies_cubit.freezed.dart';
 class UserRepliesCubit extends Cubit<UserRepliesState> {
   UserRepliesCubit() : super(const UserRepliesState.initial());
 
-  void websocketFailure({required String error}) {
-    if (state is UserRepliesInitial || state is UserRepliesLoading) {
-      emit(UserRepliesFailure());
-    }
-  }
-
-  void retryButtonPressed() {
-    emit(UserRepliesInitial());
-  }
-
   void loaded({required Map<String, dynamic> payload}) {
     emit(UserRepliesLoading());
     if (payload['response_status'] == 200) {

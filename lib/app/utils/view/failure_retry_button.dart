@@ -8,7 +8,7 @@ class FailureRetryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: FilledButton(onPressed: onPressed, child: const Text('Retry')),
+      child: OutlinedButton(onPressed: onPressed, child: const Text('Retry')),
     );
   }
 }

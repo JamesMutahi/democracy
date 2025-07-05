@@ -190,7 +190,6 @@ class UserPosts extends StatefulWidget {
 class _UserPostsState extends State<UserPosts> {
   @override
   void initState() {
-    context.read<UserPostsCubit>().retryButtonPressed();
     context.read<WebsocketBloc>().add(
       WebsocketEvent.loadUserPosts(user: widget.user),
     );
@@ -207,7 +206,6 @@ class _UserPostsState extends State<UserPosts> {
           case UserPostsFailure():
             return FailureRetryButton(
               onPressed: () {
-                context.read<UserPostsCubit>().retryButtonPressed();
                 context.read<WebsocketBloc>().add(
                   WebsocketEvent.loadUserPosts(user: widget.user),
                 );
@@ -233,7 +231,6 @@ class UserReplies extends StatefulWidget {
 class _UserRepliesState extends State<UserReplies> {
   @override
   void initState() {
-    context.read<UserRepliesCubit>().retryButtonPressed();
     context.read<WebsocketBloc>().add(
       WebsocketEvent.loadUserReplies(user: widget.user),
     );
@@ -250,7 +247,6 @@ class _UserRepliesState extends State<UserReplies> {
           case UserPostsFailure():
             return FailureRetryButton(
               onPressed: () {
-                context.read<UserPostsCubit>().retryButtonPressed();
                 context.read<WebsocketBloc>().add(
                   WebsocketEvent.loadUserPosts(user: widget.user),
                 );
@@ -276,7 +272,6 @@ class Likes extends StatefulWidget {
 class _LikesState extends State<Likes> {
   @override
   void initState() {
-    context.read<LikesCubit>().retryButtonPressed();
     context.read<WebsocketBloc>().add(
       WebsocketEvent.loadLikedPosts(user: widget.user),
     );
@@ -293,7 +288,6 @@ class _LikesState extends State<Likes> {
           case UserPostsFailure():
             return FailureRetryButton(
               onPressed: () {
-                context.read<UserPostsCubit>().retryButtonPressed();
                 context.read<WebsocketBloc>().add(
                   WebsocketEvent.loadUserPosts(user: widget.user),
                 );

@@ -9,12 +9,6 @@ part 'chat_detail_cubit.freezed.dart';
 class ChatDetailCubit extends Cubit<ChatDetailState> {
   ChatDetailCubit() : super(const ChatDetailState.initial());
 
-  void websocketFailure({required String error}) {
-    if (state is ChatDetailInitial || state is ChatDetailLoading) {
-      emit(ChatDetailFailure(error: 'Connection failure'));
-    }
-  }
-
   void chatCreated({required Map<String, dynamic> payload}) {
     emit(ChatDetailLoading());
     if (payload['response_status'] == 201) {

@@ -14,10 +14,6 @@ class SurveysCubit extends Cubit<SurveysState> {
     }
   }
 
-  void retryButtonPressed() {
-    emit(SurveysInitial());
-  }
-
   void loaded({required Map<String, dynamic> payload}) {
     emit(SurveysLoading());
     if (payload['response_status'] == 200) {

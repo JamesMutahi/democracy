@@ -82,7 +82,7 @@ class TimeLeft extends StatefulWidget {
 class _TimeLeftState extends State<TimeLeft> {
   Timer? timer;
   String timeLeft = '';
-  Color color = Colors.amber;
+  Color color = Colors.transparent;
 
   @override
   void initState() {
@@ -106,6 +106,8 @@ class _TimeLeftState extends State<TimeLeft> {
     setState(() {
       if (started) {
         color = Colors.green;
+      } else {
+        color = Colors.amber;
       }
       var diffSeconds = diff.inSeconds;
       var unit = 'second';

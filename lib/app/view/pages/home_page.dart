@@ -51,7 +51,6 @@ class _HomePageState extends State<HomePage>
           case PostListFailure():
             return FailureRetryButton(
               onPressed: () {
-                context.read<PostListCubit>().retryButtonPressed();
                 context.read<WebsocketBloc>().add(WebsocketEvent.connect());
               },
             );

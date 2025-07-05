@@ -24,7 +24,6 @@ class Bookmarks extends StatelessWidget {
             case BookmarksFailure():
               return FailureRetryButton(
                 onPressed: () {
-                  context.read<BookmarksCubit>().retryButtonPressed();
                   context.read<WebsocketBloc>().add(
                     WebsocketEvent.loadBookmarks(user: user),
                   );
