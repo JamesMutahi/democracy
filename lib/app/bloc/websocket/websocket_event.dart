@@ -1,13 +1,18 @@
 part of 'websocket_bloc.dart';
 
 @freezed
-class WebsocketEvent with _$WebsocketEvent {
+abstract class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.connect() = _Connect;
   const factory WebsocketEvent.changeState({required WebsocketState state}) =
       _ChangeState;
-  const factory WebsocketEvent.subscribePosts({required List<Post> posts}) =
-      _SubscribePosts;
-  const factory WebsocketEvent.createPost({required String body}) = _CreatePost;
+  const factory WebsocketEvent.createPost({
+    required String body,
+    required PostStatus status,
+    required Post? repostOf,
+    required Post? replyTo,
+    required Poll? poll,
+    required Survey? survey,
+  }) = _CreatePost;
   const factory WebsocketEvent.updatePost({
     required int id,
     required String body,

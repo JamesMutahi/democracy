@@ -1,19 +1,23 @@
 import 'dart:async';
 
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/view/more_vert.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
+import 'package:democracy/poll/view/poll_tile.dart';
 import 'package:democracy/post/models/post.dart';
+import 'package:democracy/post/view/post_create.dart';
 import 'package:democracy/post/view/post_detail.dart';
+import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class PostTile extends StatelessWidget {
-  const PostTile({super.key, required this.post, this.isRepost = false});
+  const PostTile({super.key, required this.post, this.isChildOfPost = false});
 
   final Post post;
-  final bool isRepost;
+  final bool isChildOfPost;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +40,7 @@ class PostTile extends StatelessWidget {
           border: Border(
             bottom: BorderSide(
               color:
-                  (isRepost)
+                  (isChildOfPost)
                       ? Colors.transparent
                       : Theme.of(context).disabledColor.withAlpha(30),
             ),
@@ -60,28 +64,21 @@ class PostTile extends StatelessWidget {
                         '${post.author.firstName} ${post.author.lastName}',
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
-                      isRepost
+                      isChildOfPost
                           ? SizedBox.shrink()
                           : Row(
                             children: [
                               TimeDifferenceInfo(publishedAt: post.publishedAt),
-                              PostTileButton(
-                                onTap: () {},
-                                icon: Icon(
-                                  Symbols.more_vert_rounded,
-                                  size: 20,
-                                  color: Theme.of(context).disabledColor,
-                                ),
-                              ),
+                              MoreVert(onSelected: (selected) {}, children: []),
                             ],
                           ),
                     ],
                   ),
                   Text(
                     post.body,
-                    overflow: isRepost ? TextOverflow.ellipsis : null,
+                    overflow: isChildOfPost ? TextOverflow.ellipsis : null,
                     maxLines:
-                        isRepost
+                        isChildOfPost
                             ? 4
                             : (post.image1Url == null)
                             ? 20
@@ -89,20 +86,27 @@ class PostTile extends StatelessWidget {
                   ),
                   (post.repostOf == null)
                       ? SizedBox.shrink()
-                      : Container(
-                        margin: EdgeInsets.symmetric(vertical: 5),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Theme.of(
-                              context,
-                            ).disabledColor.withAlpha(30),
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                      : DependencyContainer(
+                        child: PostTile(
+                          post: post.repostOf!,
+                          isChildOfPost: true,
                         ),
-                        child: PostTile(post: post.repostOf!, isRepost: true),
+                      ),
+                  (post.poll == null)
+                      ? SizedBox.shrink()
+                      : DependencyContainer(
+                        child: PollTile(poll: post.poll!, isChildOfPost: true),
+                      ),
+                  (post.survey == null)
+                      ? SizedBox.shrink()
+                      : DependencyContainer(
+                        child: SurveyTile(
+                          survey: post.survey!,
+                          isChildOfPost: true,
+                        ),
                       ),
                   SizedBox(height: 5),
-                  isRepost
+                  isChildOfPost
                       ? SizedBox.shrink()
                       : Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -129,6 +133,26 @@ class PostTile extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class DependencyContainer extends StatelessWidget {
+  const DependencyContainer({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 5),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Theme.of(context).disabledColor.withAlpha(30),
+        ),
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+      child: child,
     );
   }
 }
@@ -206,7 +230,11 @@ class RepostButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PostTileButton(
-      onTap: () {},
+      onTap: () {
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (context) => PostCreate(post: post)));
+      },
       icon: Icon(
         Symbols.loop_rounded,
         size: 20,

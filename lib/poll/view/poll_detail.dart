@@ -125,12 +125,7 @@ class _PollDetailState extends State<PollDetail> {
                     : SizedBox.shrink(),
                 SizedBox(height: 20),
                 !changingVote
-                    ? ReasonWidget(
-                      key: UniqueKey(),
-                      controller: _controller,
-                      poll: _poll,
-                      pollHasEnded: pollHasEnded,
-                    )
+                    ? ReasonWidget(key: UniqueKey(), poll: _poll)
                     : SizedBox.shrink(),
               ],
             ),
@@ -172,32 +167,40 @@ class OptionTile extends StatelessWidget {
 }
 
 class ReasonWidget extends StatefulWidget {
-  const ReasonWidget({
-    super.key,
-    required this.controller,
-    required this.poll,
-    required this.pollHasEnded,
-  });
+  const ReasonWidget({super.key, required this.poll});
 
-  final TextEditingController controller;
   final Poll poll;
-  final bool pollHasEnded;
 
   @override
   State<ReasonWidget> createState() => _ReasonWidgetState();
 }
 
 class _ReasonWidgetState extends State<ReasonWidget> {
-  bool submitButtonDisabled = true;
+  late Poll _poll = widget.poll;
+  late String message;
   bool submitButtonPressed = false;
+
+  @override
+  void initState() {
+    message = _poll.reason == null ? '' : _poll.reason!.text;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    bool pollHasStarted =
+        _poll.startTime.difference(DateTime.now()) < Duration(seconds: 0);
+    bool pollHasEnded =
+        _poll.endTime.difference(DateTime.now()) < Duration(seconds: 0);
     return BlocListener<PollDetailCubit, PollDetailState>(
       listener: (context, state) {
         if (state is PollUpdated) {
-          if (widget.poll.id == state.poll.id) {
+          if (_poll.id == state.poll.id) {
             if (state.poll.reason != null) {
               if (submitButtonPressed) {
+                setState(() {
+                  _poll = state.poll;
+                });
                 final snackBar = SnackBar(
                   behavior: SnackBarBehavior.floating,
                   backgroundColor: Theme.of(context).cardColor,
@@ -222,20 +225,20 @@ class _ReasonWidgetState extends State<ReasonWidget> {
             scrollDirection: Axis.vertical,
             reverse: true,
             child: TextFormField(
-              readOnly: widget.pollHasEnded,
-              controller: widget.controller,
+              readOnly:
+                  pollHasEnded
+                      ? true
+                      : pollHasStarted
+                      ? false
+                      : true,
               onChanged: (value) {
                 setState(() {
-                  if (value == '') {
-                    submitButtonDisabled = true;
-                  } else {
-                    submitButtonDisabled = false;
-                  }
+                  message = value;
                 });
               },
               minLines: 1,
               maxLines: 10,
-              maxLength: 300,
+              maxLength: pollHasEnded ? null : 300,
               keyboardType: TextInputType.multiline,
               onTapOutside: (event) {
                 FocusManager.instance.primaryFocus?.unfocus();
@@ -243,7 +246,7 @@ class _ReasonWidgetState extends State<ReasonWidget> {
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Theme.of(context).scaffoldBackgroundColor,
-                hintText: 'Add reason',
+                hintText: pollHasEnded ? '' : 'Give a reason',
                 hintStyle: TextStyle(color: Theme.of(context).hintColor),
                 prefixIconConstraints: const BoxConstraints(
                   minWidth: 0,
@@ -266,36 +269,36 @@ class _ReasonWidgetState extends State<ReasonWidget> {
             ),
           ),
           SizedBox(height: 10),
-          widget.pollHasEnded
-              ? SizedBox.shrink()
-              : Align(
-                alignment: Alignment.topRight,
-                child: OutlinedButton(
-                  onPressed:
-                      widget.controller.text == '' ||
-                              widget.poll.reason?.text == widget.controller.text
-                          ? null
-                          : () {
-                            showDialog(
-                              context: context,
-                              builder:
-                                  (context) => SubmissionDialog(
-                                    onYesPressed: () {
-                                      Navigator.pop(context);
-                                      submitButtonPressed = true;
-                                      context.read<WebsocketBloc>().add(
-                                        WebsocketEvent.submitReason(
-                                          poll: widget.poll,
-                                          text: widget.controller.text,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                            );
-                          },
-                  child: Text('Submit'),
-                ),
+          Visibility(
+            visible: !pollHasEnded,
+            child: Align(
+              alignment: Alignment.topRight,
+              child: OutlinedButton(
+                onPressed:
+                    message == '' || _poll.reason?.text == message
+                        ? null
+                        : () {
+                          showDialog(
+                            context: context,
+                            builder:
+                                (context) => SubmissionDialog(
+                                  onYesPressed: () {
+                                    Navigator.pop(context);
+                                    submitButtonPressed = true;
+                                    context.read<WebsocketBloc>().add(
+                                      WebsocketEvent.submitReason(
+                                        poll: _poll,
+                                        text: message,
+                                      ),
+                                    );
+                                  },
+                                ),
+                          );
+                        },
+                child: Text('Submit'),
               ),
+            ),
+          ),
         ],
       ),
     );

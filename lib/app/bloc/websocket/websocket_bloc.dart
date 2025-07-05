@@ -41,9 +41,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       _onConnect(emit);
     });
     on<_ChangeState>((event, emit) => emit(event.state));
-    on<_SubscribePosts>((event, emit) {
-      _onSubscribePosts(emit, event);
-    });
     on<_CreatePost>((event, emit) {
       _onCreatePost(emit, event);
     });
@@ -182,26 +179,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     }
   }
 
-  Future _onSubscribePosts(
-    Emitter<WebsocketState> emit,
-    _SubscribePosts event,
-  ) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
-    emit(WebsocketLoading());
-    List<int> postIds = event.posts.map((post) => post.id).toList();
-    Map<String, dynamic> message = {
-      'stream': postsStream,
-      'payload': {
-        'action': 'subscribe',
-        'request_id': postRequestId,
-        'post_pks': postIds,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
   Future _onCreatePost(Emitter<WebsocketState> emit, _CreatePost event) async {
     if (state is WebsocketFailure) {
       await _onConnect(emit);
@@ -212,7 +189,15 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'create',
         'request_id': postRequestId,
-        'data': {'body': event.body},
+        'data': {
+          'body': event.body,
+          'reply_to_id': event.replyTo?.id,
+          'repost_of_id': event.repostOf?.id,
+          'poll_id': event.poll?.id,
+          'survey_id': event.survey?.id,
+          'status':
+              event.status == PostStatus.published ? 'published' : 'draft',
+        },
       },
     };
     _channel.sink.add(jsonEncode(message));

@@ -288,15 +288,6 @@ class _Listeners extends StatelessWidget {
             }
           },
         ),
-        BlocListener<PostListCubit, PostListState>(
-          listener: (context, state) {
-            if (state is PostListLoaded) {
-              context.read<WebsocketBloc>().add(
-                WebsocketEvent.subscribePosts(posts: state.posts),
-              );
-            }
-          },
-        ),
       ],
       child: child,
     );

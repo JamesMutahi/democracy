@@ -1,4 +1,6 @@
 import 'package:democracy/auth/models/user.dart';
+import 'package:democracy/poll/models/poll.dart';
+import 'package:democracy/survey/models/survey.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'post.freezed.dart';
@@ -35,6 +37,8 @@ sealed class Post with _$Post {
     @JsonKey(name: 'published_at') required DateTime publishedAt,
     @JsonKey(name: 'reply_to') required Post? replyTo,
     @JsonKey(name: 'repost_of') required Post? repostOf,
+    required Poll? poll,
+    required Survey? survey,
   }) = _Post;
 
   factory Post.fromJson(Map<String, Object?> json) => _$PostFromJson(json);

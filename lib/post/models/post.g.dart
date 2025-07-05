@@ -39,6 +39,14 @@ _Post _$PostFromJson(Map<String, dynamic> json) => _Post(
       json['repost_of'] == null
           ? null
           : Post.fromJson(json['repost_of'] as Map<String, dynamic>),
+  poll:
+      json['poll'] == null
+          ? null
+          : Poll.fromJson(json['poll'] as Map<String, dynamic>),
+  survey:
+      json['survey'] == null
+          ? null
+          : Survey.fromJson(json['survey'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
@@ -68,4 +76,6 @@ Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
   'published_at': instance.publishedAt.toIso8601String(),
   'reply_to': instance.replyTo,
   'repost_of': instance.repostOf,
+  'poll': instance.poll,
+  'survey': instance.survey,
 };

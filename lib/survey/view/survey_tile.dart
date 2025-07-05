@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:democracy/app/utils/view/more_vert.dart';
 import 'package:democracy/poll/view/poll_tile.dart' show TimeLeft;
+import 'package:democracy/post/view/post_create.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/survey_process/page.dart';
 import 'package:democracy/survey/view/survey_process/response_page.dart';
@@ -8,9 +10,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class SurveyTile extends StatelessWidget {
-  const SurveyTile({super.key, required this.survey});
+  const SurveyTile({
+    super.key,
+    required this.survey,
+    required this.isChildOfPost,
+  });
 
   final Survey survey;
+  final bool isChildOfPost;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +35,7 @@ class SurveyTile extends StatelessWidget {
     return InkWell(
       onTap:
           survey.response != null
-              ? null
+              ? () {}
               : () {
                 openSurveyProcessPage();
               },
@@ -37,7 +44,10 @@ class SurveyTile extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: Theme.of(context).disabledColor.withAlpha(30),
+              color:
+                  isChildOfPost
+                      ? Colors.transparent
+                      : Theme.of(context).disabledColor.withAlpha(30),
             ),
           ),
         ),
@@ -45,7 +55,37 @@ class SurveyTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(survey.name, style: Theme.of(context).textTheme.titleMedium),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  survey.name,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                isChildOfPost
+                    ? SizedBox.shrink()
+                    : MoreVert(
+                      onSelected: (selected) {
+                        switch (selected) {
+                          case 'Post':
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => PostCreate(survey: survey),
+                              ),
+                            );
+                        }
+                      },
+                      children: [
+                        PopupMenuItem<String>(
+                          value: 'Post',
+                          child: Text('Post'),
+                        ),
+                      ],
+                    ),
+              ],
+            ),
             SizedBox(height: 5),
             TimeLeft(
               key: ValueKey(survey),

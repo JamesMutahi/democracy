@@ -42,7 +42,11 @@ class _PollsState extends State<Polls> {
         scrollDirection: Axis.vertical,
         itemBuilder: (BuildContext context, int index) {
           Poll poll = _polls[index];
-          return PollTile(key: ValueKey(poll.id), poll: poll);
+          return PollTile(
+            key: ValueKey(poll.id),
+            poll: poll,
+            isChildOfPost: false,
+          );
         },
         itemCount: _polls.length,
       ),

@@ -36,6 +36,7 @@ class _PostListState extends State<PostList> {
         }
       },
       child: ListView.builder(
+        padding: EdgeInsets.only(bottom: 50),
         controller: _scrollController,
         scrollDirection: Axis.vertical,
         shrinkWrap: true,

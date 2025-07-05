@@ -1,16 +1,19 @@
 import 'dart:async';
 
+import 'package:democracy/app/utils/view/more_vert.dart';
 import 'package:democracy/poll/models/option.dart';
 import 'package:democracy/poll/models/poll.dart';
 import 'package:democracy/poll/view/poll_detail.dart';
+import 'package:democracy/post/view/post_create.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class PollTile extends StatelessWidget {
-  const PollTile({super.key, required this.poll});
+  const PollTile({super.key, required this.poll, required this.isChildOfPost});
 
   final Poll poll;
+  final bool isChildOfPost;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +29,10 @@ class PollTile extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: Theme.of(context).disabledColor.withAlpha(30),
+              color:
+                  isChildOfPost
+                      ? Colors.transparent
+                      : Theme.of(context).disabledColor.withAlpha(30),
             ),
           ),
         ),
@@ -35,8 +41,30 @@ class PollTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(poll.name, style: Theme.of(context).textTheme.titleMedium),
+                isChildOfPost
+                    ? SizedBox.shrink()
+                    : MoreVert(
+                      onSelected: (selected) {
+                        switch (selected) {
+                          case 'Post':
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PostCreate(poll: poll),
+                              ),
+                            );
+                        }
+                      },
+                      children: [
+                        PopupMenuItem<String>(
+                          value: 'Post',
+                          child: Text('Post'),
+                        ),
+                      ],
+                    ),
               ],
             ),
             SizedBox(height: 5),

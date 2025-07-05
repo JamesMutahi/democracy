@@ -28,7 +28,7 @@ class AppDrawer extends StatelessWidget {
                 child: Column(
                   children: [
                     CircleAvatar(
-                      radius: 50,
+                      radius: 65,
                       backgroundColor: Colors.transparent,
                       child: Container(
                         decoration: BoxDecoration(
@@ -36,12 +36,10 @@ class AppDrawer extends StatelessWidget {
                             image: NetworkImage(user.image),
                             fit: BoxFit.cover,
                           ),
-                          borderRadius: BorderRadius.circular(100),
+                          borderRadius: BorderRadius.circular(150),
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
-                    Text('${user.firstName} ${user.lastName}'),
                   ],
                 ),
               ),

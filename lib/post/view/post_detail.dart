@@ -1,11 +1,14 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/bottom_text_form_field.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
+import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/app/view/widgets/profile_page.dart';
+import 'package:democracy/poll/view/poll_tile.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/post_tile.dart';
 import 'package:democracy/post/view/replies.dart';
+import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -50,8 +53,18 @@ class _PostDetailState extends State<PostDetail> {
     return BlocListener<PostDetailCubit, PostDetailState>(
       listener: (context, state) {
         switch (state) {
-          case PostUpdated():
-            _setPostState(state.post);
+          case PostUpdated(:final post):
+            _setPostState(post);
+          case PostCreated():
+            final snackBar = SnackBar(
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Theme.of(context).cardColor,
+              content: SnackBarContent(
+                message: 'Reply sent',
+                status: SnackBarStatus.success,
+              ),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
       },
       child: Scaffold(
@@ -119,19 +132,26 @@ class _PostDetailState extends State<PostDetail> {
                     SizedBox(height: 5),
                     (_post.repostOf == null)
                         ? SizedBox.shrink()
-                        : Container(
-                          margin: EdgeInsets.symmetric(vertical: 5),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Theme.of(
-                                context,
-                              ).disabledColor.withAlpha(30),
-                            ),
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
+                        : DependencyContainer(
                           child: PostTile(
                             post: _post.repostOf!,
-                            isRepost: true,
+                            isChildOfPost: true,
+                          ),
+                        ),
+                    (_post.poll == null)
+                        ? SizedBox.shrink()
+                        : DependencyContainer(
+                          child: PollTile(
+                            poll: _post.poll!,
+                            isChildOfPost: true,
+                          ),
+                        ),
+                    (_post.survey == null)
+                        ? SizedBox.shrink()
+                        : DependencyContainer(
+                          child: SurveyTile(
+                            survey: _post.survey!,
+                            isChildOfPost: true,
                           ),
                         ),
                     SizedBox(height: 5),
@@ -187,6 +207,16 @@ class _PostDetailState extends State<PostDetail> {
               _disableSendButton
                   ? null
                   : () {
+                    context.read<WebsocketBloc>().add(
+                      WebsocketEvent.createPost(
+                        body: _controller.text,
+                        status: PostStatus.published,
+                        replyTo: null,
+                        repostOf: null,
+                        poll: null,
+                        survey: null,
+                      ),
+                    );
                     _controller.clear();
                     setState(() {
                       _disableSendButton = true;

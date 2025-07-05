@@ -63,7 +63,11 @@ class _SurveysState extends State<Surveys> {
         scrollDirection: Axis.vertical,
         itemBuilder: (BuildContext context, int index) {
           Survey survey = _surveys[index];
-          return SurveyTile(key: ValueKey(survey.id), survey: survey);
+          return SurveyTile(
+            key: ValueKey(survey.id),
+            survey: survey,
+            isChildOfPost: false,
+          );
         },
         itemCount: _surveys.length,
       ),
