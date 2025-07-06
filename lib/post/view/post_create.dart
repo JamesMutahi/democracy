@@ -48,154 +48,165 @@ class _PostCreateState extends State<PostCreate> {
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                onPressed: () {
-                  if (body.isEmpty) {
-                    Navigator.pop(context);
-                  } else {
-                    showDialog(
-                      context: context,
-                      builder:
-                          (context) => SaveDraftDialog(
-                            onYesPressed: () {
-                              context.read<WebsocketBloc>().add(
-                                WebsocketEvent.createPost(
-                                  body: body,
-                                  status: PostStatus.draft,
-                                  replyTo: null,
-                                  repostOf: widget.post,
-                                  poll: widget.poll,
-                                  survey: widget.survey,
-                                ),
-                              );
-                            },
+      child: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) {
+            return;
+          }
+          body == ''
+              ? Navigator.pop(context)
+              : showDialog(
+                context: context,
+                builder:
+                    (context) => SaveDraftDialog(
+                      onYesPressed: () {
+                        context.read<WebsocketBloc>().add(
+                          WebsocketEvent.createPost(
+                            body: body,
+                            status: PostStatus.draft,
+                            replyTo: null,
+                            repostOf: widget.post,
+                            poll: widget.poll,
+                            survey: widget.survey,
                           ),
-                    );
-                  }
-                },
-                icon: Icon(Symbols.close),
-              ),
-              OutlinedButton(
-                onPressed:
-                    body == ''
-                        ? null
-                        : () {
-                          showDialog(
-                            context: context,
-                            builder:
-                                (context) => PostCreateDialog(
-                                  onYesPressed: () {
-                                    context.read<WebsocketBloc>().add(
-                                      WebsocketEvent.createPost(
-                                        body: body,
-                                        status: PostStatus.published,
-                                        replyTo: null,
-                                        repostOf: widget.post,
-                                        poll: widget.poll,
-                                        survey: widget.survey,
-                                      ),
-                                    );
-                                  },
-                                ),
-                          );
-                        },
-                child: Text('Post'),
-              ),
-            ],
-          ),
-        ),
-        body: Container(
-          margin: EdgeInsets.all(15),
-          child: SingleChildScrollView(
-            child: Column(
+                        );
+                      },
+                    ),
+              );
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Flexible(
-                      flex: 1,
-                      child: BlocBuilder<AuthBloc, AuthState>(
-                        builder: (context, state) {
-                          late User user;
-                          if (state is Authenticated) {
-                            user = state.user;
-                          }
-                          return ProfileImage(user: user);
-                        },
-                      ),
-                    ),
-                    Flexible(
-                      flex: 9,
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        reverse: true,
-                        child: TextFormField(
-                          onChanged: (value) {
-                            setState(() {
-                              body = value;
-                            });
-                          },
-                          autofocus: true,
-                          minLines: 1,
-                          keyboardType: TextInputType.multiline,
-                          maxLines: null,
-                          // maxLength: 25000,
-                          onTapOutside: (event) {
-                            FocusManager.instance.primaryFocus?.unfocus();
-                          },
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Theme.of(context).scaffoldBackgroundColor,
-                            hintText: "What's new?",
-                            hintStyle: TextStyle(
-                              color: Theme.of(context).hintColor,
-                            ),
-                            prefixIcon: null,
-                            prefixIconConstraints: const BoxConstraints(
-                              minWidth: 0,
-                              minHeight: 0,
-                            ),
-                            prefixStyle: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            contentPadding: const EdgeInsets.all(15),
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(Symbols.close),
                 ),
-                (widget.post == null)
-                    ? SizedBox.shrink()
-                    : DependencyContainer(
-                      child: PostTile(post: widget.post!, isChildOfPost: true),
-                    ),
-                (widget.poll == null)
-                    ? SizedBox.shrink()
-                    : DependencyContainer(
-                      child: PollTile(poll: widget.poll!, isChildOfPost: true),
-                    ),
-                (widget.survey == null)
-                    ? SizedBox.shrink()
-                    : DependencyContainer(
-                      child: SurveyTile(
-                        survey: widget.survey!,
-                        isChildOfPost: true,
-                      ),
-                    ),
+                OutlinedButton(
+                  onPressed:
+                      body == ''
+                          ? null
+                          : () {
+                            showDialog(
+                              context: context,
+                              builder:
+                                  (context) => PostCreateDialog(
+                                    onYesPressed: () {
+                                      context.read<WebsocketBloc>().add(
+                                        WebsocketEvent.createPost(
+                                          body: body,
+                                          status: PostStatus.published,
+                                          replyTo: null,
+                                          repostOf: widget.post,
+                                          poll: widget.poll,
+                                          survey: widget.survey,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                            );
+                          },
+                  child: Text('Post'),
+                ),
               ],
             ),
           ),
+          body: Container(
+            margin: EdgeInsets.all(15),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        flex: 1,
+                        child: BlocBuilder<AuthBloc, AuthState>(
+                          builder: (context, state) {
+                            late User user;
+                            if (state is Authenticated) {
+                              user = state.user;
+                            }
+                            return ProfileImage(user: user);
+                          },
+                        ),
+                      ),
+                      Flexible(
+                        flex: 9,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          reverse: true,
+                          child: TextFormField(
+                            onChanged: (value) {
+                              setState(() {
+                                body = value;
+                              });
+                            },
+                            autofocus: true,
+                            minLines: 1,
+                            keyboardType: TextInputType.multiline,
+                            maxLines: null,
+                            maxLength: 500,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor:
+                                  Theme.of(context).scaffoldBackgroundColor,
+                              hintText: "What's new?",
+                              hintStyle: TextStyle(
+                                color: Theme.of(context).hintColor,
+                              ),
+                              prefixIcon: null,
+                              prefixIconConstraints: const BoxConstraints(
+                                minWidth: 0,
+                                minHeight: 0,
+                              ),
+                              prefixStyle: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              contentPadding: const EdgeInsets.all(15),
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  (widget.post == null)
+                      ? SizedBox.shrink()
+                      : DependencyContainer(
+                        child: PostTile(
+                          post: widget.post!,
+                          isChildOfPost: true,
+                        ),
+                      ),
+                  (widget.poll == null)
+                      ? SizedBox.shrink()
+                      : DependencyContainer(
+                        child: PollTile(
+                          poll: widget.poll!,
+                          isChildOfPost: true,
+                        ),
+                      ),
+                  (widget.survey == null)
+                      ? SizedBox.shrink()
+                      : DependencyContainer(
+                        child: SurveyTile(
+                          survey: widget.survey!,
+                          isChildOfPost: true,
+                        ),
+                      ),
+                ],
+              ),
+            ),
+          ),
+          bottomNavigationBar: _BottomNavBar(body: body),
         ),
-        bottomNavigationBar: _BottomNavBar(body: body),
       ),
     );
   }
@@ -218,9 +229,15 @@ class _BottomNavBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            PostExtraButton(iconData: Symbols.gallery_thumbnail_rounded),
+            PostExtraButton(
+              iconData: Symbols.gallery_thumbnail_rounded,
+              onTap: () {},
+            ),
             SizedBox(width: 15),
-            PostExtraButton(iconData: Symbols.edit_calendar_rounded),
+            PostExtraButton(
+              iconData: Symbols.edit_calendar_rounded,
+              onTap: () {},
+            ),
           ],
         ),
       ),
@@ -229,16 +246,21 @@ class _BottomNavBar extends StatelessWidget {
 }
 
 class PostExtraButton extends StatelessWidget {
-  const PostExtraButton({super.key, required this.iconData});
+  const PostExtraButton({
+    super.key,
+    required this.iconData,
+    required this.onTap,
+  });
 
   final IconData iconData;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.all(Radius.circular(20)),
       splashColor: Theme.of(context).colorScheme.secondaryFixedDim,
-      onTap: () {},
+      onTap: onTap,
       child: Container(
         padding: EdgeInsets.all(5),
         decoration: BoxDecoration(
@@ -260,7 +282,7 @@ class PostCreateDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Post'),
+      title: Center(child: Text('Post')),
       content: Text(
         'Are you sure you want to post this?',
         textAlign: TextAlign.center,
@@ -292,7 +314,7 @@ class SaveDraftDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Close'),
+      title: Center(child: Text('Save as draft')),
       content: Text(
         'Do you want to save this post as a draft? \n'
         'You can post it at a later time.',

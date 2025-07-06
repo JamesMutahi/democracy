@@ -99,7 +99,7 @@ class BlockDialog extends StatelessWidget {
     return AlertDialog(
       icon: const Icon(Icons.warning_amber_rounded, size: 40),
       iconColor: Colors.amber,
-      title: Text(title),
+      title: Center(child: Text(title)),
       content: Text(subtitle, textAlign: TextAlign.center),
       actions: <Widget>[
         OutlinedButton(onPressed: onYesPressed, child: const Text('Yes')),

@@ -10,10 +10,16 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class PollTile extends StatelessWidget {
-  const PollTile({super.key, required this.poll, required this.isChildOfPost});
+  const PollTile({
+    super.key,
+    required this.poll,
+    required this.isChildOfPost,
+    this.animateToInitialPercent = false,
+  });
 
   final Poll poll;
   final bool isChildOfPost;
+  final bool animateToInitialPercent;
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +94,7 @@ class PollTile extends StatelessWidget {
                 key: UniqueKey(),
                 poll: poll,
                 option: option,
+                animateToInitialPercent: animateToInitialPercent,
               );
             }),
           ],
@@ -218,14 +225,17 @@ class PollPercentIndicator extends StatelessWidget {
     super.key,
     required this.poll,
     required this.option,
+    required this.animateToInitialPercent,
   });
 
   final Poll poll;
   final Option option;
+  final bool animateToInitialPercent;
 
   @override
   Widget build(BuildContext context) {
     double optionHeight = 40;
+    double percent = poll.totalVotes == 0 ? 0 : option.votes / poll.totalVotes;
     return Container(
       key: UniqueKey(),
       margin: EdgeInsets.only(bottom: 8),
@@ -236,9 +246,11 @@ class PollPercentIndicator extends StatelessWidget {
         lineHeight: optionHeight,
         barRadius: const Radius.circular(8),
         padding: EdgeInsets.zero,
-        percent: poll.totalVotes == 0 ? 0 : option.votes / poll.totalVotes,
+        percent: percent,
         animation: true,
-        animationDuration: 300,
+        animateFromLastPercent: true,
+        animateToInitialPercent: animateToInitialPercent,
+        animationDuration: 500,
         backgroundColor: Theme.of(context).canvasColor,
         progressColor:
             poll.totalVotes == 0

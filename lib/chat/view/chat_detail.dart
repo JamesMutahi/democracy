@@ -1,5 +1,6 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/bottom_text_form_field.dart';
+import 'package:democracy/app/utils/view/more_vert.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/auth/models/user.dart';
 import 'package:democracy/chat/bloc/chat_actions/chat_actions_cubit.dart';
@@ -206,30 +207,38 @@ class ChatPopUpMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton(
-      padding: EdgeInsets.zero,
-      icon: Icon(Symbols.more_vert_rounded),
-      itemBuilder:
-          (BuildContext context) => <PopupMenuEntry<Widget>>[
-            PopupMenuItem(
-              child: MaterialButton(
-                onPressed: () {
-                  context.read<ChatActionsCubit>().closeActionButtons();
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.userBlocked(user: otherUser),
-                  );
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  chat.blockers.isEmpty
-                      ? 'Block'
-                      : chat.blockers.contains(currentUser.id)
-                      ? 'Unblock'
-                      : 'Block',
-                ),
-              ),
-            ),
-          ],
+    return MoreVert(
+      onSelected: (selected) {
+        switch (selected) {
+          case 'Block':
+            context.read<ChatActionsCubit>().closeActionButtons();
+            context.read<WebsocketBloc>().add(
+              WebsocketEvent.userBlocked(user: otherUser),
+            );
+          case 'Unblock':
+            context.read<ChatActionsCubit>().closeActionButtons();
+            context.read<WebsocketBloc>().add(
+              WebsocketEvent.userBlocked(user: otherUser),
+            );
+        }
+      },
+      children: [
+        PopupMenuItem(
+          value:
+              chat.blockers.isEmpty
+                  ? 'Block'
+                  : chat.blockers.contains(currentUser.id)
+                  ? 'Unblock'
+                  : 'Block',
+          child: Text(
+            chat.blockers.isEmpty
+                ? 'Block'
+                : chat.blockers.contains(currentUser.id)
+                ? 'Unblock'
+                : 'Block',
+          ),
+        ),
+      ],
     );
   }
 }
@@ -305,7 +314,7 @@ class DeleteDialog extends StatelessWidget {
     return AlertDialog(
       icon: const Icon(Icons.warning_amber_rounded, size: 40),
       iconColor: Colors.amber,
-      title: Text('Delete message'),
+      title: Center(child: Text('Delete message')),
       content: Text(
         'Are you sure you want to delete this? \n'
         'The message will be permanently deleted',
@@ -332,4 +341,3 @@ class DeleteDialog extends StatelessWidget {
     );
   }
 }
-

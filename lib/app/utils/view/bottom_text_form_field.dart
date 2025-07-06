@@ -49,12 +49,14 @@ class BottomTextFormField extends StatelessWidget {
               keyboardType: TextInputType.multiline,
               minLines: 1,
               maxLines: 4,
+              maxLength: 500,
               textAlignVertical: TextAlignVertical.center,
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Theme.of(context).scaffoldBackgroundColor,
                 hintText: hintText,
                 hintStyle: TextStyle(color: Theme.of(context).hintColor),
+                counterText: '',
                 prefixIcon: prefixIcon,
                 prefixIconConstraints: const BoxConstraints(
                   minWidth: 0,

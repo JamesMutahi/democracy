@@ -156,24 +156,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'payload': {"action": 'list', "request_id": postRequestId},
       };
       _channel.sink.add(jsonEncode(message));
-      // Subscribe to polls
-      message = {
-        'stream': pollsStream,
-        'payload': {"action": 'subscribe', "request_id": pollRequestId},
-      };
-      _channel.sink.add(jsonEncode(message));
-      // Subscribe to chats
-      message = {
-        'stream': chatsStream,
-        'payload': {"action": 'subscribe', "request_id": chatRequestId},
-      };
-      _channel.sink.add(jsonEncode(message));
-      // Subscribe to surveys
-      message = {
-        'stream': surveysStream,
-        'payload': {"action": 'subscribe', "request_id": surveyRequestId},
-      };
-      _channel.sink.add(jsonEncode(message));
     } catch (e) {
       add(_ChangeState(state: WebsocketFailure(error: e.toString())));
     }

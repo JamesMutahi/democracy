@@ -84,7 +84,9 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text('Leave survey?', textAlign: TextAlign.center),
+                title: Center(
+                  child: Text('Leave survey?', textAlign: TextAlign.center),
+                ),
                 content: Text(
                   'Progress is not saved',
                   textAlign: TextAlign.center,

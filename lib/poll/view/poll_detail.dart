@@ -76,6 +76,7 @@ class _PollDetailState extends State<PollDetail> {
                               key: ValueKey(option.id),
                               poll: _poll,
                               option: option,
+                              animateToInitialPercent: true,
                             )
                             : OptionTile(
                               option: option,
@@ -313,7 +314,7 @@ class SubmissionDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Submit'),
+      title: Center(child: Text('Submit')),
       content: Text(
         'Are you sure you want to submit this?',
         textAlign: TextAlign.center,

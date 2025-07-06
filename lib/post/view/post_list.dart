@@ -18,21 +18,18 @@ class _PostListState extends State<PostList> {
   final _scrollController = ScrollController();
   late final List<Post> _posts = widget.posts.toList();
 
-  void _setPostState(post) {
-    if (_posts.any((element) => element.id == post.id)) {
-      setState(() {
-        _posts[_posts.indexWhere((element) => element.id == post.id)] = post;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocListener<PostDetailCubit, PostDetailState>(
       listener: (context, state) {
         switch (state) {
           case PostUpdated(post: final post):
-            _setPostState(post);
+            if (_posts.any((element) => element.id == post.id)) {
+              setState(() {
+                _posts[_posts.indexWhere((element) => element.id == post.id)] =
+                    post;
+              });
+            }
         }
       },
       child: ListView.builder(
