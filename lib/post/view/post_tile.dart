@@ -258,7 +258,14 @@ class ReplyButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PostTileButton(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PostCreate(post: post, isReply: true),
+          ),
+        );
+      },
       icon: Icon(
         Symbols.message_rounded,
         size: 20,

@@ -15,11 +15,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class PostCreate extends StatefulWidget {
-  const PostCreate({super.key, this.post, this.poll, this.survey});
+  const PostCreate({
+    super.key,
+    this.post,
+    this.poll,
+    this.survey,
+    this.isReply = false,
+  });
 
   final Post? post;
   final Poll? poll;
   final Survey? survey;
+  final bool isReply;
 
   @override
   State<PostCreate> createState() => _PostCreateState();
@@ -27,15 +34,32 @@ class PostCreate extends StatefulWidget {
 
 class _PostCreateState extends State<PostCreate> {
   String body = '';
+
+  void createPost({PostStatus status = PostStatus.published}) {
+    context.read<WebsocketBloc>().add(
+      WebsocketEvent.createPost(
+        body: body,
+        status: status,
+        replyTo: widget.isReply ? widget.post : null,
+        repostOf: widget.isReply ? null : widget.post,
+        poll: widget.poll,
+        survey: widget.survey,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    print(widget.isReply);
     return BlocListener<PostDetailCubit, PostDetailState>(
       listener: (context, state) {
         if (state is PostCreated) {
           Navigator.pop(context);
           String message =
               state.post.status == PostStatus.published
-                  ? 'Post published'
+                  ? state.post.replyTo == null
+                      ? 'Post published'
+                      : 'Reply sent'
                   : 'Post saved as draft';
           final snackBar = SnackBar(
             behavior: SnackBarBehavior.floating,
@@ -61,16 +85,7 @@ class _PostCreateState extends State<PostCreate> {
                 builder:
                     (context) => SaveDraftDialog(
                       onYesPressed: () {
-                        context.read<WebsocketBloc>().add(
-                          WebsocketEvent.createPost(
-                            body: body,
-                            status: PostStatus.draft,
-                            replyTo: null,
-                            repostOf: widget.post,
-                            poll: widget.poll,
-                            survey: widget.survey,
-                          ),
-                        );
+                        createPost(status: PostStatus.draft);
                       },
                     ),
               );
@@ -83,7 +98,17 @@ class _PostCreateState extends State<PostCreate> {
               children: [
                 IconButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    body == ''
+                        ? Navigator.pop(context)
+                        : showDialog(
+                          context: context,
+                          builder:
+                              (context) => SaveDraftDialog(
+                                onYesPressed: () {
+                                  createPost(status: PostStatus.draft);
+                                },
+                              ),
+                        );
                   },
                   icon: Icon(Symbols.close),
                 ),
@@ -97,21 +122,12 @@ class _PostCreateState extends State<PostCreate> {
                               builder:
                                   (context) => PostCreateDialog(
                                     onYesPressed: () {
-                                      context.read<WebsocketBloc>().add(
-                                        WebsocketEvent.createPost(
-                                          body: body,
-                                          status: PostStatus.published,
-                                          replyTo: null,
-                                          repostOf: widget.post,
-                                          poll: widget.poll,
-                                          survey: widget.survey,
-                                        ),
-                                      );
+                                      createPost();
                                     },
                                   ),
                             );
                           },
-                  child: Text('Post'),
+                  child: Text(widget.isReply ? 'Reply' : 'Post'),
                 ),
               ],
             ),

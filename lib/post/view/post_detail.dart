@@ -211,7 +211,7 @@ class _PostDetailState extends State<PostDetail> {
                       WebsocketEvent.createPost(
                         body: _controller.text,
                         status: PostStatus.published,
-                        replyTo: null,
+                        replyTo: _post,
                         repostOf: null,
                         poll: null,
                         survey: null,

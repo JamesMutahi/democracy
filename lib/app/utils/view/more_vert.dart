@@ -12,7 +12,7 @@ class MoreVert extends StatelessWidget {
     return PopupMenuButton<String>(
       icon: Icon(
         Symbols.more_vert_rounded,
-        color: Theme.of(context).colorScheme.outline,
+        color: Theme.of(context).disabledColor,
       ),
       onSelected: onSelected,
       itemBuilder: (BuildContext context) => children,

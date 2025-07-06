@@ -50,8 +50,8 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_LikePost>((event, emit) {
       _onLikePost(emit, event);
     });
-    on<_BookmarkPost>((event, emit) async {
-      await _onBookmarkPost(emit, event);
+    on<_BookmarkPost>((event, emit) {
+      _onBookmarkPost(emit, event);
     });
     on<_DeletePost>((event, emit) {
       _onDeletePost(emit, event);
