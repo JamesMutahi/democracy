@@ -38,11 +38,12 @@ class _PostListState extends State<PostList> {
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
         itemBuilder: (BuildContext context, int index) {
+          Post post = _posts[index];
           return index >= _posts.length
               ? (_posts.length > 2)
                   ? const BottomLoader()
                   : SizedBox.shrink()
-              : PostTile(key: ValueKey(index), post: _posts[index]);
+              : PostTile(key: ValueKey(post.id), post: post);
         },
         itemCount: _posts.length,
       ),

@@ -19,13 +19,6 @@ class PollDetail extends StatefulWidget {
 class _PollDetailState extends State<PollDetail> {
   late Poll _poll = widget.poll;
   bool changingVote = false;
-  final TextEditingController _controller = TextEditingController();
-
-  @override
-  void initState() {
-    _controller.text = _poll.reason == null ? '' : _poll.reason!.text;
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,13 +31,11 @@ class _PollDetailState extends State<PollDetail> {
       listener: (context, state) {
         if (state is PollUpdated) {
           if (_poll.id == state.poll.id) {
-            if (_poll.reason?.text == state.poll.reason?.text) {
+            if (_poll.votedOption != state.poll.votedOption) {
               setState(() {
                 _poll = state.poll;
               });
             }
-            _controller.text =
-                state.poll.reason == null ? '' : state.poll.reason!.text;
           }
         }
       },
@@ -126,7 +117,11 @@ class _PollDetailState extends State<PollDetail> {
                     : SizedBox.shrink(),
                 SizedBox(height: 20),
                 !changingVote
-                    ? ReasonWidget(key: UniqueKey(), poll: _poll)
+                    ? ReasonWidget(
+                      poll: _poll,
+                      pollHasEnded: pollHasEnded,
+                      pollHasStarted: pollHasStarted,
+                    )
                     : SizedBox.shrink(),
               ],
             ),
@@ -141,7 +136,7 @@ class OptionTile extends StatelessWidget {
   const OptionTile({super.key, required this.option, required this.onTap});
 
   final Option option;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -168,9 +163,16 @@ class OptionTile extends StatelessWidget {
 }
 
 class ReasonWidget extends StatefulWidget {
-  const ReasonWidget({super.key, required this.poll});
+  const ReasonWidget({
+    super.key,
+    required this.poll,
+    required this.pollHasEnded,
+    required this.pollHasStarted,
+  });
 
   final Poll poll;
+  final bool pollHasEnded;
+  final bool pollHasStarted;
 
   @override
   State<ReasonWidget> createState() => _ReasonWidgetState();
@@ -178,44 +180,26 @@ class ReasonWidget extends StatefulWidget {
 
 class _ReasonWidgetState extends State<ReasonWidget> {
   late Poll _poll = widget.poll;
-  late String message;
-  bool submitButtonPressed = false;
-
-  @override
-  void initState() {
-    message = _poll.reason == null ? '' : _poll.reason!.text;
-    super.initState();
-  }
+  late String reason = '';
 
   @override
   Widget build(BuildContext context) {
-    bool pollHasStarted =
-        _poll.startTime.difference(DateTime.now()) < Duration(seconds: 0);
-    bool pollHasEnded =
-        _poll.endTime.difference(DateTime.now()) < Duration(seconds: 0);
     return BlocListener<PollDetailCubit, PollDetailState>(
       listener: (context, state) {
         if (state is PollUpdated) {
-          if (_poll.id == state.poll.id) {
-            if (state.poll.reason != null) {
-              if (submitButtonPressed) {
-                setState(() {
-                  _poll = state.poll;
-                });
-                final snackBar = SnackBar(
-                  behavior: SnackBarBehavior.floating,
-                  backgroundColor: Theme.of(context).cardColor,
-                  content: SnackBarContent(
-                    message: 'Submitted',
-                    status: SnackBarStatus.success,
-                  ),
-                );
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                setState(() {
-                  submitButtonPressed = false;
-                });
-              }
-            }
+          if (state.poll.reason?.text != _poll.reason?.text) {
+            setState(() {
+              _poll = state.poll;
+            });
+            final snackBar = SnackBar(
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Theme.of(context).cardColor,
+              content: SnackBarContent(
+                message: 'Submitted',
+                status: SnackBarStatus.success,
+              ),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }
         }
       },
@@ -226,20 +210,21 @@ class _ReasonWidgetState extends State<ReasonWidget> {
             scrollDirection: Axis.vertical,
             reverse: true,
             child: TextFormField(
-              readOnly:
-                  pollHasEnded
-                      ? true
-                      : pollHasStarted
-                      ? false
-                      : true,
+              initialValue: _poll.reason?.text,
               onChanged: (value) {
                 setState(() {
-                  message = value;
+                  reason = value;
                 });
               },
+              readOnly:
+                  widget.pollHasEnded
+                      ? true
+                      : widget.pollHasStarted
+                      ? false
+                      : true,
               minLines: 1,
               maxLines: 10,
-              maxLength: pollHasEnded ? null : 300,
+              maxLength: widget.pollHasEnded ? null : 300,
               keyboardType: TextInputType.multiline,
               onTapOutside: (event) {
                 FocusManager.instance.primaryFocus?.unfocus();
@@ -247,7 +232,7 @@ class _ReasonWidgetState extends State<ReasonWidget> {
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Theme.of(context).scaffoldBackgroundColor,
-                hintText: pollHasEnded ? '' : 'Give a reason',
+                hintText: widget.pollHasEnded ? '' : 'Give a reason',
                 hintStyle: TextStyle(color: Theme.of(context).hintColor),
                 prefixIconConstraints: const BoxConstraints(
                   minWidth: 0,
@@ -271,12 +256,14 @@ class _ReasonWidgetState extends State<ReasonWidget> {
           ),
           SizedBox(height: 10),
           Visibility(
-            visible: !pollHasEnded,
+            visible: !widget.pollHasEnded,
             child: Align(
               alignment: Alignment.topRight,
               child: OutlinedButton(
                 onPressed:
-                    message == '' || _poll.reason?.text == message
+                    reason == ''
+                        ? null
+                        : reason == _poll.reason?.text
                         ? null
                         : () {
                           showDialog(
@@ -285,11 +272,10 @@ class _ReasonWidgetState extends State<ReasonWidget> {
                                 (context) => SubmissionDialog(
                                   onYesPressed: () {
                                     Navigator.pop(context);
-                                    submitButtonPressed = true;
                                     context.read<WebsocketBloc>().add(
                                       WebsocketEvent.submitReason(
                                         poll: _poll,
-                                        text: message,
+                                        text: reason,
                                       ),
                                     );
                                   },

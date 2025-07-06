@@ -138,6 +138,7 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
                         ),
                         itemBuilder: (BuildContext context, int index) {
                           return QuestionTile(
+                            key: ValueKey(questions[index].id),
                             questions: state.questions,
                             question: questions[index],
                           );

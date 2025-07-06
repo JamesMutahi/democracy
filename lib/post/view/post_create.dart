@@ -221,7 +221,7 @@ class _PostCreateState extends State<PostCreate> {
               ),
             ),
           ),
-          bottomNavigationBar: _BottomNavBar(body: body),
+          bottomNavigationBar: _BottomNavBar(),
         ),
       ),
     );
@@ -229,9 +229,7 @@ class _PostCreateState extends State<PostCreate> {
 }
 
 class _BottomNavBar extends StatelessWidget {
-  const _BottomNavBar({required this.body});
-
-  final String body;
+  const _BottomNavBar();
 
   @override
   Widget build(BuildContext context) {

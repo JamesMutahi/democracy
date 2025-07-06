@@ -86,6 +86,8 @@ class PostTile extends StatelessWidget {
                   ),
                   (post.repostOf == null)
                       ? SizedBox.shrink()
+                      : isChildOfPost
+                      ? SizedBox.shrink()
                       : DependencyContainer(
                         child: PostTile(
                           post: post.repostOf!,

@@ -73,7 +73,7 @@ class PollTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TimeLeft(
-                  key: ValueKey(poll),
+                  key: ValueKey('poll ${poll.id}'),
                   startTime: poll.startTime,
                   endTime: poll.endTime,
                 ),
@@ -242,7 +242,6 @@ class PollPercentIndicator extends StatelessWidget {
     double optionHeight = 40;
     double percent = poll.totalVotes == 0 ? 0 : option.votes / poll.totalVotes;
     return Container(
-      key: UniqueKey(),
       margin: EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(const Radius.circular(8)),
