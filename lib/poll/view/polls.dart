@@ -36,6 +36,13 @@ class _PollsState extends State<Polls> {
             });
           }
         }
+        if (state is PollDeleted) {
+          if (_polls.any((poll) => poll.id == state.poll.id)) {
+            setState(() {
+              _polls.removeWhere((poll) => poll.id == state.poll.id);
+            });
+          }
+        }
       },
       child: ListView.builder(
         controller: _scrollController,

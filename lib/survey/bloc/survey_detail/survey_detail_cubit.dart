@@ -14,7 +14,7 @@ class SurveyDetailCubit extends Cubit<SurveyDetailState> {
       Survey survey = Survey.fromJson(payload['data']);
       emit(SurveyCreated(survey: survey));
     } else {
-      emit(SurveyDetailFailure());
+      emit(SurveyDetailFailure(error: payload['errors'][0]));
     }
   }
 
@@ -24,7 +24,17 @@ class SurveyDetailCubit extends Cubit<SurveyDetailState> {
       final Survey survey = Survey.fromJson(payload['data']);
       emit(SurveyUpdated(survey: survey));
     } else {
-      emit(SurveyDetailFailure());
+      emit(SurveyDetailFailure(error: payload['errors'][0]));
+    }
+  }
+
+  void deleted({required Map<String, dynamic> payload}) {
+    emit(SurveyDetailLoading());
+    if (payload['response_status'] == 204) {
+      final Survey survey = Survey.fromJson(payload['data']);
+      emit(SurveyDeleted(survey: survey));
+    } else {
+      emit(SurveyDetailFailure(error: payload['errors'][0]));
     }
   }
 }

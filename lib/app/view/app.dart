@@ -245,6 +245,10 @@ class _Listeners extends StatelessWidget {
                         context.read<PollDetailCubit>().updated(
                           payload: message['payload'],
                         );
+                      case 'delete':
+                        context.read<PollDetailCubit>().deleted(
+                          payload: message['payload'],
+                        );
                     }
                   case surveysStream:
                     switch (message['payload']['action']) {
@@ -267,6 +271,10 @@ class _Listeners extends StatelessWidget {
                         }
                       case 'update':
                         context.read<SurveyDetailCubit>().updated(
+                          payload: message['payload'],
+                        );
+                      case 'delete':
+                        context.read<SurveyDetailCubit>().deleted(
                           payload: message['payload'],
                         );
                     }

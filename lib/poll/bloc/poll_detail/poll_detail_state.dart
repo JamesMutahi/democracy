@@ -6,5 +6,7 @@ class PollDetailState with _$PollDetailState {
   const factory PollDetailState.loading() = PollDetailLoading;
   const factory PollDetailState.created({required Poll poll}) = PollCreated;
   const factory PollDetailState.updated({required Poll poll}) = PollUpdated;
-  const factory PollDetailState.failure() = PollDetailFailure;
+  const factory PollDetailState.deleted({required Poll poll}) = PollDeleted;
+  const factory PollDetailState.failure({required String error}) =
+      PollDetailFailure;
 }

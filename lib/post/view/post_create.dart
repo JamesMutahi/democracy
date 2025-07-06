@@ -50,7 +50,6 @@ class _PostCreateState extends State<PostCreate> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.isReply);
     return BlocListener<PostDetailCubit, PostDetailState>(
       listener: (context, state) {
         if (state is PostCreated) {
@@ -173,7 +172,8 @@ class _PostCreateState extends State<PostCreate> {
                               filled: true,
                               fillColor:
                                   Theme.of(context).scaffoldBackgroundColor,
-                              hintText: "What's new?",
+                              hintText:
+                                  widget.isReply ? 'Reply' : "What's new?",
                               hintStyle: TextStyle(
                                 color: Theme.of(context).hintColor,
                               ),

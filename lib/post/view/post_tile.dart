@@ -69,7 +69,7 @@ class PostTile extends StatelessWidget {
                           : Row(
                             children: [
                               TimeDifferenceInfo(publishedAt: post.publishedAt),
-                              MoreVert(onSelected: (selected) {}, children: []),
+                              MorePopUp(onSelected: (selected) {}, texts: []),
                             ],
                           ),
                     ],

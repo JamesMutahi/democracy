@@ -55,6 +55,15 @@ class _SurveysState extends State<Surveys> {
                 });
               }
             }
+            if (state is SurveyDeleted) {
+              if (_surveys.any((survey) => survey.id == state.survey.id)) {
+                setState(() {
+                  _surveys.removeWhere(
+                    (survey) => survey.id == state.survey.id,
+                  );
+                });
+              }
+            }
           },
         ),
       ],

@@ -207,7 +207,7 @@ class ChatPopUpMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MoreVert(
+    return MorePopUp(
       onSelected: (selected) {
         switch (selected) {
           case 'Block':
@@ -222,22 +222,12 @@ class ChatPopUpMenu extends StatelessWidget {
             );
         }
       },
-      children: [
-        PopupMenuItem(
-          value:
-              chat.blockers.isEmpty
-                  ? 'Block'
-                  : chat.blockers.contains(currentUser.id)
-                  ? 'Unblock'
-                  : 'Block',
-          child: Text(
-            chat.blockers.isEmpty
-                ? 'Block'
-                : chat.blockers.contains(currentUser.id)
-                ? 'Unblock'
-                : 'Block',
-          ),
-        ),
+      texts: [
+        chat.blockers.isEmpty
+            ? 'Block'
+            : chat.blockers.contains(currentUser.id)
+            ? 'Unblock'
+            : 'Block',
       ],
     );
   }

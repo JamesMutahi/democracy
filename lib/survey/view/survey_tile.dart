@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:democracy/app/utils/view/more_vert.dart';
 import 'package:democracy/poll/view/poll_tile.dart' show TimeLeft;
 import 'package:democracy/post/view/post_create.dart';
@@ -7,7 +5,6 @@ import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/survey_process/page.dart';
 import 'package:democracy/survey/view/survey_process/response_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class SurveyTile extends StatelessWidget {
   const SurveyTile({
@@ -23,6 +20,7 @@ class SurveyTile extends StatelessWidget {
   Widget build(BuildContext context) {
     bool surveyIsClosed =
         survey.endTime.difference(DateTime.now()) < Duration(seconds: 0);
+    bool alreadyResponded = survey.response != null;
     void openSurveyProcessPage() {
       Navigator.push(
         context,
@@ -34,7 +32,7 @@ class SurveyTile extends StatelessWidget {
 
     return InkWell(
       onTap:
-          survey.response != null
+          alreadyResponded
               ? () {}
               : () {
                 openSurveyProcessPage();
@@ -64,7 +62,7 @@ class SurveyTile extends StatelessWidget {
                 ),
                 isChildOfPost
                     ? SizedBox.shrink()
-                    : MoreVert(
+                    : MorePopUp(
                       onSelected: (selected) {
                         switch (selected) {
                           case 'Post':
@@ -77,12 +75,7 @@ class SurveyTile extends StatelessWidget {
                             );
                         }
                       },
-                      children: [
-                        PopupMenuItem<String>(
-                          value: 'Post',
-                          child: Text('Post'),
-                        ),
-                      ],
+                      texts: ['Post'],
                     ),
               ],
             ),
@@ -95,142 +88,39 @@ class SurveyTile extends StatelessWidget {
             SizedBox(height: 5),
             Text(survey.description),
             SizedBox(height: 10),
-            Row(
-              mainAxisAlignment:
-                  surveyIsClosed
-                      ? MainAxisAlignment.end
-                      : MainAxisAlignment.spaceBetween,
-              children: [
-                OutlinedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ResponsePage(survey: survey),
+            alreadyResponded
+                ? Row(
+                  mainAxisAlignment:
+                      surveyIsClosed
+                          ? MainAxisAlignment.end
+                          : MainAxisAlignment.spaceBetween,
+                  children: [
+                    Visibility(
+                      visible: !surveyIsClosed,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          openSurveyProcessPage();
+                        },
+                        child: Text('Submit response'),
                       ),
-                    );
-                  },
-                  child: Text('View response'),
-                ),
-                Visibility(
-                  visible: !surveyIsClosed,
-                  child: OutlinedButton(
-                    onPressed: () {
-                      openSurveyProcessPage();
-                    },
-                    child: Text('Submit response'),
-                  ),
-                ),
-              ],
-            ),
+                    ),
+                    OutlinedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ResponsePage(survey: survey),
+                          ),
+                        );
+                      },
+                      child: Text('View response'),
+                    ),
+                  ],
+                )
+                : SizedBox.shrink(),
           ],
         ),
       ),
-    );
-  }
-}
-
-class SurveyTimeLeft extends StatefulWidget {
-  const SurveyTimeLeft({super.key, required this.survey});
-
-  final Survey survey;
-
-  @override
-  State<SurveyTimeLeft> createState() => _SurveyTimeLeftState();
-}
-
-class _SurveyTimeLeftState extends State<SurveyTimeLeft> {
-  Timer? _timer;
-  String timeLeft = '';
-  bool outOfTime = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _timer = Timer.periodic(Duration(seconds: 1), (Timer t) => getTimeLeft());
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
-  void getTimeLeft() {
-    Duration diff = widget.survey.endTime.difference(DateTime.now());
-    setState(() {
-      var diffSeconds = diff.inSeconds;
-      var unit = 'second';
-      var difference = diffSeconds;
-      if (diffSeconds > 1 || diffSeconds < 1) {
-        unit = 'seconds';
-      }
-      if (diffSeconds > 59) {
-        final diffMinutes = diff.inMinutes;
-        difference = diffMinutes;
-        unit = 'minute';
-        if (diffMinutes > 1) {
-          unit = 'minutes';
-        }
-        if (diffMinutes > 59) {
-          final diffHours = diff.inHours;
-          difference = diffHours;
-          unit = 'hour';
-          if (diffHours > 1) {
-            unit = 'hours';
-          }
-          if (diffHours > 24) {
-            final diffDays = diff.inDays;
-            difference = diffDays;
-            unit = 'day';
-            if (diffDays > 1) {
-              unit = 'days';
-            }
-            if (diffDays > 30) {
-              final diffMonths = (diffDays / 30).floor();
-              difference = diffMonths;
-              unit = 'month';
-              if (diffMonths > 1) {
-                unit = 'months';
-              }
-              if (diffDays > 365) {
-                final diffYears = (diffDays / 365).floor();
-                difference = diffYears;
-                unit = 'year';
-                if (diffYears > 1) {
-                  unit = 'years';
-                }
-              }
-            }
-          }
-        }
-      }
-      if (diffSeconds < 0) {
-        outOfTime = true;
-        timeLeft = 'Closed';
-      } else {
-        timeLeft = 'Ends in $difference $unit';
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        outOfTime
-            ? SizedBox.shrink()
-            : Row(
-              children: [
-                SpinKitPulse(color: Theme.of(context).primaryColor, size: 15.0),
-                SizedBox(width: 5),
-              ],
-            ),
-        Text(
-          timeLeft,
-          style: TextStyle(color: Theme.of(context).disabledColor),
-        ),
-      ],
     );
   }
 }

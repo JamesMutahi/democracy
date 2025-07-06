@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Choice {
 
- int get id; int get question; String get text;
+ int get id; int get number; int get question; String get text;
 /// Create a copy of Choice
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $ChoiceCopyWith<Choice> get copyWith => _$ChoiceCopyWithImpl<Choice>(this as Cho
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Choice&&(identical(other.id, id) || other.id == id)&&(identical(other.question, question) || other.question == question)&&(identical(other.text, text) || other.text == text));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Choice&&(identical(other.id, id) || other.id == id)&&(identical(other.number, number) || other.number == number)&&(identical(other.question, question) || other.question == question)&&(identical(other.text, text) || other.text == text));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,question,text);
+int get hashCode => Object.hash(runtimeType,id,number,question,text);
 
 @override
 String toString() {
-  return 'Choice(id: $id, question: $question, text: $text)';
+  return 'Choice(id: $id, number: $number, question: $question, text: $text)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $ChoiceCopyWith<$Res>  {
   factory $ChoiceCopyWith(Choice value, $Res Function(Choice) _then) = _$ChoiceCopyWithImpl;
 @useResult
 $Res call({
- int id, int question, String text
+ int id, int number, int question, String text
 });
 
 
@@ -65,9 +65,10 @@ class _$ChoiceCopyWithImpl<$Res>
 
 /// Create a copy of Choice
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? question = null,Object? text = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? number = null,Object? question = null,Object? text = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,number: null == number ? _self.number : number // ignore: cast_nullable_to_non_nullable
 as int,question: null == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
 as int,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,
@@ -152,10 +153,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int question,  String text)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int number,  int question,  String text)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Choice() when $default != null:
-return $default(_that.id,_that.question,_that.text);case _:
+return $default(_that.id,_that.number,_that.question,_that.text);case _:
   return orElse();
 
 }
@@ -173,10 +174,10 @@ return $default(_that.id,_that.question,_that.text);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int question,  String text)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int number,  int question,  String text)  $default,) {final _that = this;
 switch (_that) {
 case _Choice():
-return $default(_that.id,_that.question,_that.text);}
+return $default(_that.id,_that.number,_that.question,_that.text);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -190,10 +191,10 @@ return $default(_that.id,_that.question,_that.text);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int question,  String text)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int number,  int question,  String text)?  $default,) {final _that = this;
 switch (_that) {
 case _Choice() when $default != null:
-return $default(_that.id,_that.question,_that.text);case _:
+return $default(_that.id,_that.number,_that.question,_that.text);case _:
   return null;
 
 }
@@ -205,10 +206,11 @@ return $default(_that.id,_that.question,_that.text);case _:
 @JsonSerializable()
 
 class _Choice implements Choice {
-  const _Choice({required this.id, required this.question, required this.text});
+  const _Choice({required this.id, required this.number, required this.question, required this.text});
   factory _Choice.fromJson(Map<String, dynamic> json) => _$ChoiceFromJson(json);
 
 @override final  int id;
+@override final  int number;
 @override final  int question;
 @override final  String text;
 
@@ -225,16 +227,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Choice&&(identical(other.id, id) || other.id == id)&&(identical(other.question, question) || other.question == question)&&(identical(other.text, text) || other.text == text));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Choice&&(identical(other.id, id) || other.id == id)&&(identical(other.number, number) || other.number == number)&&(identical(other.question, question) || other.question == question)&&(identical(other.text, text) || other.text == text));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,question,text);
+int get hashCode => Object.hash(runtimeType,id,number,question,text);
 
 @override
 String toString() {
-  return 'Choice(id: $id, question: $question, text: $text)';
+  return 'Choice(id: $id, number: $number, question: $question, text: $text)';
 }
 
 
@@ -245,7 +247,7 @@ abstract mixin class _$ChoiceCopyWith<$Res> implements $ChoiceCopyWith<$Res> {
   factory _$ChoiceCopyWith(_Choice value, $Res Function(_Choice) _then) = __$ChoiceCopyWithImpl;
 @override @useResult
 $Res call({
- int id, int question, String text
+ int id, int number, int question, String text
 });
 
 
@@ -262,9 +264,10 @@ class __$ChoiceCopyWithImpl<$Res>
 
 /// Create a copy of Choice
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? question = null,Object? text = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? number = null,Object? question = null,Object? text = null,}) {
   return _then(_Choice(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,number: null == number ? _self.number : number // ignore: cast_nullable_to_non_nullable
 as int,question: null == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
 as int,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,

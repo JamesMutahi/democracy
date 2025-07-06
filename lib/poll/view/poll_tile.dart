@@ -52,7 +52,7 @@ class PollTile extends StatelessWidget {
                 Text(poll.name, style: Theme.of(context).textTheme.titleMedium),
                 isChildOfPost
                     ? SizedBox.shrink()
-                    : MoreVert(
+                    : MorePopUp(
                       onSelected: (selected) {
                         switch (selected) {
                           case 'Post':
@@ -64,12 +64,7 @@ class PollTile extends StatelessWidget {
                             );
                         }
                       },
-                      children: [
-                        PopupMenuItem<String>(
-                          value: 'Post',
-                          child: Text('Post'),
-                        ),
-                      ],
+                      texts: ['Post'],
                     ),
               ],
             ),
@@ -105,10 +100,16 @@ class PollTile extends StatelessWidget {
 }
 
 class TimeLeft extends StatefulWidget {
-  const TimeLeft({super.key, required this.startTime, required this.endTime});
+  const TimeLeft({
+    super.key,
+    required this.startTime,
+    required this.endTime,
+    this.alignCenter = false,
+  });
 
   final DateTime startTime;
   final DateTime endTime;
+  final bool alignCenter;
 
   @override
   State<TimeLeft> createState() => _TimeLeftState();
@@ -204,6 +205,10 @@ class _TimeLeftState extends State<TimeLeft> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment:
+          widget.alignCenter
+              ? MainAxisAlignment.center
+              : MainAxisAlignment.start,
       children: [
         Row(
           children: [

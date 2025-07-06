@@ -24,6 +24,8 @@ class _SingleChoiceWidgetState extends State<SingleChoiceWidget> {
   String? errorText;
   @override
   Widget build(BuildContext context) {
+    List<Choice> choices = widget.question.choices.toList();
+    choices.sort((a, b) => a.number.compareTo(b.number));
     return BlocListener<AnswerBloc, AnswerState>(
       listener: (context, state) {
         if (state.status == AnswerStatus.validationFailure) {
@@ -44,11 +46,11 @@ class _SingleChoiceWidgetState extends State<SingleChoiceWidget> {
               SizedBox(width: 5),
               (widget.question.isRequired)
                   ? Text(
-                '*',
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.error,
-                ),
-              )
+                    '*',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  )
                   : SizedBox.shrink(),
             ],
           ),
@@ -70,7 +72,7 @@ class _SingleChoiceWidgetState extends State<SingleChoiceWidget> {
               ),
             ),
             items:
-                widget.question.choices
+                choices
                     .map(
                       (e) => DropdownMenuItem<Choice>(
                         value: e,

@@ -14,7 +14,7 @@ class PollDetailCubit extends Cubit<PollDetailState> {
       Poll poll = Poll.fromJson(payload['data']);
       emit(PollCreated(poll: poll));
     } else {
-      emit(PollDetailFailure());
+      emit(PollDetailFailure(error: payload['errors'][0]));
     }
   }
 
@@ -24,7 +24,17 @@ class PollDetailCubit extends Cubit<PollDetailState> {
       final Poll poll = Poll.fromJson(payload['data']);
       emit(PollUpdated(poll: poll));
     } else {
-      emit(PollDetailFailure());
+      emit(PollDetailFailure(error: payload['errors'][0]));
+    }
+  }
+
+  void deleted({required Map<String, dynamic> payload}) {
+    emit(PollDetailLoading());
+    if (payload['response_status'] == 204) {
+      Poll poll = Poll.fromJson(payload['data']);
+      emit(PollDeleted(poll: poll));
+    } else {
+      emit(PollDetailFailure(error: payload['errors'][0]));
     }
   }
 }

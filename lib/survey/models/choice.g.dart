@@ -8,12 +8,14 @@ part of 'choice.dart';
 
 _Choice _$ChoiceFromJson(Map<String, dynamic> json) => _Choice(
   id: (json['id'] as num).toInt(),
+  number: (json['number'] as num).toInt(),
   question: (json['question'] as num).toInt(),
   text: json['text'] as String,
 );
 
 Map<String, dynamic> _$ChoiceToJson(_Choice instance) => <String, dynamic>{
   'id': instance.id,
+  'number': instance.number,
   'question': instance.question,
   'text': instance.text,
 };

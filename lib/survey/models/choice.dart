@@ -7,6 +7,7 @@ part 'choice.g.dart';
 sealed class Choice with _$Choice {
   const factory Choice({
     required final int id,
+    required final int number,
     required int question,
     required String text,
   }) = _Choice;

@@ -1,4 +1,5 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/poll/view/poll_tile.dart' show TimeLeft;
 import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/page/page_bloc.dart';
@@ -32,6 +33,9 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool surveyHasStarted =
+        widget.survey.startTime.difference(DateTime.now()) <
+        Duration(seconds: 0);
     return MultiBlocListener(
       listeners: [
         BlocListener<SurveyBottomNavigationBloc, SurveyBottomNavigationState>(
@@ -149,45 +153,52 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
                       children: [
                         Text('Survey complete', style: TextStyle(fontSize: 20)),
                         SizedBox(height: 10),
-                        RichText(
-                          text: TextSpan(
-                            text: 'Tap ',
-                            style: TextStyle(color: Colors.grey),
-                            children: <TextSpan>[
-                              TextSpan(
-                                text: 'submit ',
-                                style: TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              TextSpan(
-                                text: 'to submit your response',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                            ],
-                          ),
+                        TimeLeft(
+                          key: UniqueKey(),
+                          alignCenter: true,
+                          startTime: widget.survey.startTime,
+                          endTime: widget.survey.endTime,
                         ),
                         SizedBox(height: 10),
                         BlocBuilder<AnswerBloc, AnswerState>(
                           builder: (context, answerState) {
                             return ElevatedButton(
                               onPressed: () {
-                                context.read<WebsocketBloc>().add(
-                                  WebsocketEvent.submitResponse(
-                                    survey: answerState.survey!,
-                                    startTime: answerState.startTime!,
-                                    endTime: answerState.endTime!,
-                                    textAnswers: answerState.textAnswers!,
-                                    choiceAnswers: answerState.choiceAnswers!,
-                                  ),
-                                );
+                                if (surveyHasStarted) {
+                                  context.read<WebsocketBloc>().add(
+                                    WebsocketEvent.submitResponse(
+                                      survey: answerState.survey!,
+                                      startTime: answerState.startTime!,
+                                      endTime: answerState.endTime!,
+                                      textAnswers: answerState.textAnswers!,
+                                      choiceAnswers: answerState.choiceAnswers!,
+                                    ),
+                                  );
+                                } else {
+                                  final snackBar = SnackBar(
+                                    behavior: SnackBarBehavior.floating,
+                                    backgroundColor:
+                                        Theme.of(context).cardColor,
+                                    content: SnackBarContent(
+                                      message: 'Not started',
+                                      status: SnackBarStatus.info,
+                                    ),
+                                  );
+                                  ScaffoldMessenger.of(
+                                    context,
+                                  ).clearSnackBars();
+                                  ScaffoldMessenger.of(
+                                    context,
+                                  ).showSnackBar(snackBar);
+                                }
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:
-                                    Theme.of(
-                                      context,
-                                    ).colorScheme.tertiaryContainer,
+                                    surveyHasStarted
+                                        ? Theme.of(
+                                          context,
+                                        ).colorScheme.tertiaryContainer
+                                        : Theme.of(context).disabledColor,
                                 shape: BeveledRectangleBorder(
                                   borderRadius: BorderRadius.circular(2),
                                 ),
@@ -300,5 +311,14 @@ class QuestionTile extends StatelessWidget {
             );
       },
     );
+  }
+}
+
+class SubmitButton extends StatelessWidget {
+  const SubmitButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
   }
 }
