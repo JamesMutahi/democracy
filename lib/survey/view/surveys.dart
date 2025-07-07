@@ -1,5 +1,5 @@
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
-import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
+import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +22,7 @@ class _SurveysState extends State<Surveys> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<AnswerBloc, AnswerState>(
+        BlocListener<AnswerCubit, AnswerState>(
           listener: (context, state) {
             if (state.status == AnswerStatus.submitted) {
               if (_surveys.any((survey) => survey.id == state.survey!.id)) {

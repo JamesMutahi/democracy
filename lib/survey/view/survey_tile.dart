@@ -88,7 +88,9 @@ class SurveyTile extends StatelessWidget {
             SizedBox(height: 5),
             Text(survey.description),
             SizedBox(height: 10),
-            alreadyResponded
+            isChildOfPost
+                ? SizedBox.shrink()
+                : alreadyResponded
                 ? Row(
                   mainAxisAlignment:
                       surveyIsClosed

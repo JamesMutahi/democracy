@@ -21,7 +21,7 @@ import 'package:democracy/app/utils/view/splash_page.dart';
 import 'package:democracy/post/bloc/user_posts/user_posts_cubit.dart';
 import 'package:democracy/post/bloc/user_replies/user_replies_cubit.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
-import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
+import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
 import 'package:democracy/survey/bloc/surveys/surveys_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -265,8 +265,8 @@ class _Listeners extends StatelessWidget {
                         }
                         if (message['payload']['request_id'] ==
                             responseRequestId) {
-                          context.read<AnswerBloc>().add(
-                            AnswerEvent.submitted(payload: message['payload']),
+                          context.read<AnswerCubit>().submitted(
+                            payload: message['payload'],
                           );
                         }
                       case 'update':

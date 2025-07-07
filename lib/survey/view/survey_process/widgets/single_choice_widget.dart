@@ -1,4 +1,4 @@
-import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
+import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
 import 'package:democracy/survey/models/choice.dart';
 import 'package:democracy/survey/models/choice_answer.dart';
 import 'package:democracy/survey/models/question.dart';
@@ -26,7 +26,7 @@ class _SingleChoiceWidgetState extends State<SingleChoiceWidget> {
   Widget build(BuildContext context) {
     List<Choice> choices = widget.question.choices.toList();
     choices.sort((a, b) => a.number.compareTo(b.number));
-    return BlocListener<AnswerBloc, AnswerState>(
+    return BlocListener<AnswerCubit, AnswerState>(
       listener: (context, state) {
         if (state.status == AnswerStatus.validationFailure) {
           if (state.required!.any((e) => e.id == widget.question.id)) {
@@ -81,11 +81,9 @@ class _SingleChoiceWidgetState extends State<SingleChoiceWidget> {
                     )
                     .toList(),
             onChanged: (choice) {
-              context.read<AnswerBloc>().add(
-                AnswerEvent.singleChoiceAnswerAdded(
-                  question: widget.question,
-                  choice: choice!,
-                ),
+              context.read<AnswerCubit>().singleChoiceAnswerAdded(
+                question: widget.question,
+                choice: choice!,
               );
             },
           ),

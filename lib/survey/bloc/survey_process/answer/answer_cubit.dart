@@ -5,40 +5,18 @@ import 'package:democracy/survey/models/question.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/models/text_answer.dart';
 import 'package:equatable/equatable.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'answer_event.dart';
 part 'answer_state.dart';
-part 'answer_bloc.freezed.dart';
 
-class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
-  AnswerBloc() : super(const AnswerState()) {
-    on<_Started>((event, emit) {
-      _onStarted(emit, event);
-    });
-    on<_TextAnswerAdded>((event, emit) {
-      _onTextAnswerAdded(emit, event);
-    });
-    on<_SingleChoiceAnswerAdded>((event, emit) {
-      _onSingleChoiceAnswerAdded(emit, event);
-    });
-    on<_MultipleChoiceAnswerAdded>((event, emit) {
-      _onMultipleChoiceAnswerAdded(emit, event);
-    });
-    on<_Validate>((event, emit) {
-      _onValidate(emit, event);
-    });
-    on<_Submitted>((event, emit) async {
-      await _onSubmitted(emit, event);
-    });
-  }
+class AnswerCubit extends Cubit<AnswerState> {
+  AnswerCubit() : super(const AnswerState());
 
-  void _onStarted(Emitter<AnswerState> emit, _Started event) {
+  void started({required Survey survey}) {
     emit(state.copyWith(status: AnswerStatus.loading));
     emit(
       state.copyWith(
         status: AnswerStatus.loaded,
-        survey: event.survey,
+        survey: survey,
         startTime: DateTime.now(),
         textAnswers: [],
         choiceAnswers: [],
@@ -46,44 +24,41 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
     );
   }
 
-  void _onTextAnswerAdded(Emitter<AnswerState> emit, _TextAnswerAdded event) {
+  void textAnswerAdded({required Question question, required String text}) {
     emit(state.copyWith(status: AnswerStatus.loading));
     state.textAnswers!.removeWhere(
-      (textAnswer) => textAnswer.question.id == event.question.id,
+      (textAnswer) => textAnswer.question.id == question.id,
     );
-    if (event.text.isNotEmpty) {
-      TextAnswer textAnswer = TextAnswer(
-        question: event.question,
-        text: event.text,
-      );
+    if (text.isNotEmpty) {
+      TextAnswer textAnswer = TextAnswer(question: question, text: text);
       state.textAnswers!.add(textAnswer);
     }
     emit(state.copyWith(status: AnswerStatus.loaded));
   }
 
-  void _onSingleChoiceAnswerAdded(
-    Emitter<AnswerState> emit,
-    _SingleChoiceAnswerAdded event,
-  ) {
+  void singleChoiceAnswerAdded({
+    required Question question,
+    required Choice choice,
+  }) {
     emit(state.copyWith(status: AnswerStatus.loading));
     ChoiceAnswer choiceAnswer = ChoiceAnswer(
-      question: event.question,
-      choice: event.choice,
+      question: question,
+      choice: choice,
     );
-    state.choiceAnswers!.removeWhere((e) => e.question.id == event.question.id);
+    state.choiceAnswers!.removeWhere((e) => e.question.id == question.id);
     state.choiceAnswers!.add(choiceAnswer);
     emit(state.copyWith(status: AnswerStatus.loaded));
   }
 
-  void _onMultipleChoiceAnswerAdded(
-    Emitter<AnswerState> emit,
-    _MultipleChoiceAnswerAdded event,
-  ) {
+  void multipleChoiceAnswerAdded({
+    required Question question,
+    required List<Choice> choices,
+  }) {
     emit(state.copyWith(status: AnswerStatus.loading));
-    state.choiceAnswers!.removeWhere((e) => e.question.id == event.question.id);
-    for (Choice choice in event.choices) {
+    state.choiceAnswers!.removeWhere((e) => e.question.id == question.id);
+    for (Choice choice in choices) {
       ChoiceAnswer choiceAnswer = ChoiceAnswer(
-        question: event.question,
+        question: question,
         choice: choice,
       );
       state.choiceAnswers!.add(choiceAnswer);
@@ -91,11 +66,11 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
     emit(state.copyWith(status: AnswerStatus.loaded));
   }
 
-  void _onValidate(Emitter<AnswerState> emit, _Validate event) {
+  void validate({required List<Question> questions}) {
     emit(state.copyWith(status: AnswerStatus.loading));
     List<Question> required = [];
     for (Question question
-        in event.questions.where((e) => e.isRequired == true).toList()) {
+        in questions.where((e) => e.isRequired == true).toList()) {
       if (!state.textAnswers!.any((e) => e.question.id == question.id) &&
           !state.choiceAnswers!.any((e) => e.question.id == question.id)) {
         required.add(question);
@@ -125,10 +100,10 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
     }
   }
 
-  Future _onSubmitted(Emitter<AnswerState> emit, _Submitted event) async {
+  Future submitted({required Map<String, dynamic> payload}) async {
     emit(state.copyWith(status: AnswerStatus.loading));
-    if (event.payload['response_status'] == 201) {
-      final Survey survey = Survey.fromJson(event.payload['data']);
+    if (payload['response_status'] == 201) {
+      final Survey survey = Survey.fromJson(payload['data']);
       emit(state.copyWith(status: AnswerStatus.submitted, survey: survey));
     } else {
       emit(state.copyWith(status: AnswerStatus.submissionFailure));

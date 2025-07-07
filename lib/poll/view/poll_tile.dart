@@ -23,6 +23,8 @@ class PollTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool pollHasStarted =
+        poll.startTime.difference(DateTime.now()) < Duration(seconds: 0);
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -77,10 +79,12 @@ class PollTile extends StatelessWidget {
                   startTime: poll.startTime,
                   endTime: poll.endTime,
                 ),
-                Text(
-                  '${poll.totalVotes} ${poll.totalVotes == 1 ? 'vote' : 'votes'}',
-                  style: TextStyle(color: Theme.of(context).disabledColor),
-                ),
+                pollHasStarted
+                    ? Text(
+                      '${poll.totalVotes} ${poll.totalVotes == 1 ? 'vote' : 'votes'}',
+                      style: TextStyle(color: Theme.of(context).disabledColor),
+                    )
+                    : SizedBox.shrink(),
               ],
             ),
             SizedBox(height: 10),

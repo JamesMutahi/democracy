@@ -1,4 +1,4 @@
-import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
+import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
 import 'package:democracy/survey/models/question.dart';
 import 'package:democracy/survey/models/text_answer.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +22,7 @@ class _NumberWidgetState extends State<NumberWidget> {
   String? errorText;
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AnswerBloc, AnswerState>(
+    return BlocListener<AnswerCubit, AnswerState>(
       listener: (context, state) {
         if (state.status == AnswerStatus.validationFailure) {
           if (state.required!.any((e) => e.id == widget.question.id)) {
@@ -58,11 +58,9 @@ class _NumberWidgetState extends State<NumberWidget> {
             },
             keyboardType: TextInputType.number,
             onChanged: (value) {
-              context.read<AnswerBloc>().add(
-                AnswerEvent.textAnswerAdded(
-                  question: widget.question,
-                  text: value,
-                ),
+              context.read<AnswerCubit>().textAnswerAdded(
+                question: widget.question,
+                text: value,
               );
             },
             decoration: InputDecoration(

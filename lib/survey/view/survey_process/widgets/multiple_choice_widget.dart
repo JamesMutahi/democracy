@@ -1,4 +1,4 @@
-import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
+import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
 import 'package:democracy/survey/models/choice.dart';
 import 'package:democracy/survey/models/choice_answer.dart';
 import 'package:democracy/survey/models/question.dart';
@@ -28,7 +28,7 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget> {
     for (ChoiceAnswer choiceAnswer in widget.choiceAnswers) {
       selectedChoices.add(choiceAnswer.choice);
     }
-    return BlocListener<AnswerBloc, AnswerState>(
+    return BlocListener<AnswerCubit, AnswerState>(
       listener: (context, state) {
         if (state.status == AnswerStatus.validationFailure) {
           if (state.required!.any((e) => e.id == widget.question.id)) {
@@ -48,11 +48,11 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget> {
               SizedBox(width: 5),
               (widget.question.isRequired)
                   ? Text(
-                '*',
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.error,
-                ),
-              )
+                    '*',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  )
                   : SizedBox.shrink(),
             ],
           ),
@@ -79,11 +79,9 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget> {
                     )
                     .toList(),
             onChanged: (choices) {
-              context.read<AnswerBloc>().add(
-                AnswerEvent.multipleChoiceAnswerAdded(
-                  question: widget.question,
-                  choices: choices!,
-                ),
+              context.read<AnswerCubit>().multipleChoiceAnswerAdded(
+                question: widget.question,
+                choices: choices!,
               );
             },
             separator: const VerticalDivider(width: 10, thickness: 5),

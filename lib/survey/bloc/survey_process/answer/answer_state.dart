@@ -1,4 +1,4 @@
-part of 'answer_bloc.dart';
+part of 'answer_cubit.dart';
 
 enum AnswerStatus {
   initial,

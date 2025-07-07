@@ -1,6 +1,6 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/poll/view/poll_tile.dart' show TimeLeft;
-import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
+import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
 import 'package:democracy/survey/bloc/survey_process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/page/page_bloc.dart';
 import 'package:democracy/survey/models/question.dart';
@@ -27,7 +27,7 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
     context.read<SurveyBottomNavigationBloc>().add(
       SurveyBottomNavigationEvent.started(survey: widget.survey),
     );
-    context.read<AnswerBloc>().add(AnswerEvent.started(survey: widget.survey));
+    context.read<AnswerCubit>().started(survey: widget.survey);
     super.initState();
   }
 
@@ -50,7 +50,7 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
             }
           },
         ),
-        BlocListener<AnswerBloc, AnswerState>(
+        BlocListener<AnswerCubit, AnswerState>(
           listener: (context, state) {
             if (state.status == AnswerStatus.submitted) {
               Navigator.of(context).pop();
@@ -161,7 +161,7 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
                           endTime: widget.survey.endTime,
                         ),
                         SizedBox(height: 10),
-                        BlocBuilder<AnswerBloc, AnswerState>(
+                        BlocBuilder<AnswerCubit, AnswerState>(
                           builder: (context, answerState) {
                             return ElevatedButton(
                               onPressed: () {
@@ -235,7 +235,7 @@ class QuestionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AnswerBloc, AnswerState>(
+    return BlocBuilder<AnswerCubit, AnswerState>(
       builder: (context, state) {
         bool textAnswerExists = state.textAnswers!.any(
           (e) => e.question.id == question.id,

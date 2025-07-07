@@ -1,9 +1,11 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/view/more_vert.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
 import 'package:democracy/poll/models/option.dart';
 import 'package:democracy/poll/models/poll.dart';
 import 'package:democracy/poll/view/poll_tile.dart';
+import 'package:democracy/post/view/post_create.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -42,6 +44,22 @@ class _PollDetailState extends State<PollDetail> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(_poll.name, overflow: TextOverflow.ellipsis),
+          actions: [
+            MorePopUp(
+              onSelected: (selected) {
+                switch (selected) {
+                  case 'Post':
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PostCreate(poll: _poll),
+                      ),
+                    );
+                }
+              },
+              texts: ['Post'],
+            ),
+          ],
         ),
         body: SingleChildScrollView(
           child: Container(
