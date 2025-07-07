@@ -19,7 +19,7 @@ class Replies extends StatelessWidget {
         switch (state) {
           case RepliesLoaded():
             List<Post> posts = state.posts.toList();
-            return PostList(posts: posts);
+            return PostList(key: UniqueKey(), posts: posts);
           case RepliesFailure():
             return FailureRetryButton(
               onPressed: () {

@@ -121,6 +121,7 @@ class LogoutDialog extends StatelessWidget {
         OutlinedButton(
           onPressed: () {
             Navigator.pop(context);
+            context.read<WebsocketBloc>().add(WebsocketEvent.disconnect());
             context.read<LoginCubit>().logout();
           },
           child: const Text('Yes'),

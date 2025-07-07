@@ -31,7 +31,13 @@ class PostTile extends StatelessWidget {
                 builder:
                     (context) => PostDetail(post: post, key: ValueKey(post.id)),
               ),
-            )
+            ).whenComplete(() {
+              if (context.mounted) {
+                context.read<WebsocketBloc>().add(
+                  WebsocketEvent.unsubscribeReplies(post: post),
+                );
+              }
+            })
             : null;
       },
       child: Container(

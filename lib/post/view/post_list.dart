@@ -30,6 +30,12 @@ class _PostListState extends State<PostList> {
                     post;
               });
             }
+          case PostDeleted(post: final post):
+            if (_posts.any((element) => element.id == post.id)) {
+              setState(() {
+                _posts.removeWhere((element) => element.id == post.id);
+              });
+            }
         }
       },
       child: ListView.builder(

@@ -180,7 +180,7 @@ class _PostDetailState extends State<PostDetail> {
                   ],
                 ),
               ),
-              Replies(post: _post),
+              Replies(key: ValueKey(_post.id), post: _post),
             ],
           ),
         ),

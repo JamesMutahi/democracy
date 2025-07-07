@@ -60,4 +60,7 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     required List<TextAnswer> textAnswers,
     required List<ChoiceAnswer> choiceAnswers,
   }) = _SubmitResponse;
+  const factory WebsocketEvent.unsubscribeReplies({required Post post}) =
+      _UnsubscribeReplies;
+  const factory WebsocketEvent.disconnect() = _Disconnect;
 }

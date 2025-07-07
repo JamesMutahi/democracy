@@ -28,6 +28,7 @@ const String chatsStream = 'chats';
 const String surveysStream = 'surveys';
 const int postRequestId = 1;
 const int postUpdateRequestId = 2;
+const int postRepliesRequestId = 3;
 const int pollRequestId = 1;
 const int chatRequestId = 1;
 const int messageRequestId = 2;
@@ -61,6 +62,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     });
     on<_GetReplies>((event, emit) {
       _onGetReplies(emit, event);
+    });
+    on<_UnsubscribeReplies>((event, emit) {
+      _onUnsubscribeReplies(emit, event);
     });
     on<_LoadUserPosts>((event, emit) {
       _onLoadUserPosts(emit, event);
@@ -109,6 +113,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     });
     on<_SubmitResponse>((event, emit) {
       _onSubmitResponse(emit, event);
+    });
+    on<_Disconnect>((event, emit) {
+      _channel.sink.close();
     });
   }
 
@@ -274,7 +281,30 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
-      'payload': {'action': 'replies', 'pk': event.post.id},
+      'payload': {
+        'action': 'replies',
+        'request_id': postRepliesRequestId,
+        'pk': event.post.id,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onUnsubscribeReplies(
+    Emitter<WebsocketState> emit,
+    _UnsubscribeReplies event,
+  ) async {
+    if (state is WebsocketFailure) {
+      await _onConnect(emit);
+    }
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': postsStream,
+      'payload': {
+        'action': 'unsubscribe_replies',
+        'request_id': postRepliesRequestId,
+        'pk': event.post.id,
+      },
     };
     _channel.sink.add(jsonEncode(message));
   }

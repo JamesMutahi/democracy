@@ -29,7 +29,9 @@ class _HomePageState extends State<HomePage>
           case PostListLoaded(:final posts):
             return Stack(
               children: [
-                (posts.isNotEmpty) ? PostList(posts: posts) : const NoResults(),
+                (posts.isNotEmpty)
+                    ? PostList(key: UniqueKey(), posts: posts)
+                    : const NoResults(),
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Container(
