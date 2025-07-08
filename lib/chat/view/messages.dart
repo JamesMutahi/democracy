@@ -1,17 +1,24 @@
 import 'package:collection/collection.dart';
-import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/models/user.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/models/message.dart';
+import 'package:democracy/poll/view/poll_tile.dart';
+import 'package:democracy/post/view/post_tile.dart';
+import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class Messages extends StatefulWidget {
-  const Messages({super.key, required this.messages});
+  const Messages({
+    super.key,
+    required this.messages,
+    required this.currentUser,
+  });
 
   final List<Message> messages;
+  final User currentUser;
 
   @override
   State<Messages> createState() => _MessagesState();
@@ -35,8 +42,80 @@ class _MessagesState extends State<Messages> {
       // ListView is in reverse so objects are set in reverse order as well
       widgets.add(SizedBox(height: messageMargin));
       for (Message message in list) {
-        widgets.add(MessageCard(key: ValueKey(message.id), message: message));
+        bool alignedRight = widget.currentUser.id == message.user.id;
+        if (message.isDeleted) {
+          widgets.add(SizedBox(height: messageMargin));
+          widgets.add(
+            AlignmentContainer(
+              message: message,
+              alignedRight: alignedRight,
+              child: Text(
+                message.text,
+                style: TextStyle(color: Theme.of(context).disabledColor),
+              ),
+            ),
+          );
+        } else {
+          widgets.add(
+            AlignmentContainer(
+              message: message,
+              alignedRight: alignedRight,
+              backgroundColor: Colors.transparent,
+              child: MessageTime(message: message),
+            ),
+          );
+          if (message.text.isNotEmpty) {
+            widgets.add(
+              AlignmentContainer(
+                key: ValueKey(message.id),
+                message: message,
+                alignedRight: alignedRight,
+                child: MessageCard(
+                  alignedRight: alignedRight,
+                  message: message,
+                ),
+              ),
+            );
+          }
+          if (message.post != null) {
+            if (message.text.isNotEmpty) {
+              widgets.add(SizedBox(height: messageMargin));
+            }
+            widgets.add(
+              AlignmentContainer(
+                message: message,
+                alignedRight: alignedRight,
+                child: PostTile(post: message.post!, isChildOfPost: true),
+              ),
+            );
+          }
+          if (message.poll != null) {
+            if (message.text.isNotEmpty) {
+              widgets.add(SizedBox(height: messageMargin));
+            }
+            widgets.add(
+              AlignmentContainer(
+                message: message,
+                alignedRight: alignedRight,
+                child: PollTile(poll: message.poll!, isChildOfPost: true),
+              ),
+            );
+          }
+          if (message.survey != null) {
+            if (message.text.isNotEmpty) {
+              widgets.add(SizedBox(height: messageMargin));
+            }
+            widgets.add(
+              AlignmentContainer(
+                message: message,
+                alignedRight: alignedRight,
+                child: SurveyTile(survey: message.survey!, isChildOfPost: true),
+              ),
+            );
+          }
+        }
       }
+      widgets.add(SizedBox(height: messageMargin));
       if (DateFormat.yMMMMd().format(DateTime.now()) == date) {
         widgets.add(Center(child: Text('Today')));
       } else if (DateFormat.yMMMMd().format(
@@ -67,26 +146,95 @@ class _MessagesState extends State<Messages> {
             });
           }
         }
+        if (state is MessageDeleted) {
+          if (_messages.any((element) => element.id == state.messageId)) {
+            setState(() {
+              _messages.removeWhere((element) => element.id == state.messageId);
+            });
+          }
+        }
       },
       child: ListView(reverse: true, children: widgets),
     );
   }
 }
 
-class MessageCard extends StatefulWidget {
-  const MessageCard({super.key, required this.message});
+class MessageCard extends StatelessWidget {
+  const MessageCard({
+    super.key,
+    required this.alignedRight,
+    required this.message,
+  });
+
+  final bool alignedRight;
+  final Message message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment:
+          alignedRight ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      children: [
+        Text(message.text),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            message.isEdited
+                ? Text(
+                  'Edited',
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: Theme.of(context).disabledColor,
+                  ),
+                )
+                : SizedBox.shrink(),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class MessageTime extends StatelessWidget {
+  const MessageTime({super.key, required this.message});
 
   final Message message;
 
   @override
-  State<MessageCard> createState() => _MessageCardState();
+  Widget build(BuildContext context) {
+    var timeFormat = DateFormat('hh:mm');
+    return Text(
+      timeFormat.format(message.createdAt),
+      style: Theme.of(
+        context,
+      ).textTheme.labelSmall?.copyWith(color: Theme.of(context).disabledColor),
+    );
+  }
 }
 
-class _MessageCardState extends State<MessageCard> {
-  var timeFormat = DateFormat('hh:mm');
+class AlignmentContainer extends StatefulWidget {
+  const AlignmentContainer({
+    super.key,
+    required this.alignedRight,
+    required this.child,
+    this.backgroundColor,
+    required this.message,
+  });
+
+  final bool alignedRight;
+  final Message message;
+  final Widget child;
+  final Color? backgroundColor;
+
+  @override
+  State<AlignmentContainer> createState() => _AlignmentContainerState();
+}
+
+class _AlignmentContainerState extends State<AlignmentContainer> {
   double messageMargin = 10;
   Color highlightColor = Colors.transparent;
   bool canTap = false;
+
   @override
   Widget build(BuildContext context) {
     double messageWidth = 0.8 * MediaQuery.of(context).size.width;
@@ -113,105 +261,21 @@ class _MessageCardState extends State<MessageCard> {
           });
         }
       },
-      child: BlocBuilder<AuthBloc, AuthState>(
-        builder: (context, state) {
-          late User currentUser;
-          if (state is Authenticated) {
-            currentUser = state.user;
-          }
-          bool alignedRight = currentUser.id == widget.message.user.id;
-          return GestureDetector(
-            onTap:
-                widget.message.isDeleted
-                    ? null
-                    : canTap
-                    ? () {
-                      context.read<MessageActionsCubit>().messageHighlighted(
-                        message: widget.message,
-                      );
-                    }
-                    : null,
-            child: Container(
-              margin: EdgeInsets.only(top: messageMargin),
-              color: highlightColor,
-              child: GestureDetector(
-                onLongPress:
-                    widget.message.isDeleted
-                        ? null
-                        : () {
-                          context
-                              .read<MessageActionsCubit>()
-                              .messageHighlighted(message: widget.message);
-                        },
-                child: Align(
-                  key: ValueKey(widget.message.id),
-                  alignment:
-                      alignedRight ? Alignment.topRight : Alignment.topLeft,
-                  child: Container(
-                    constraints: BoxConstraints(maxWidth: messageWidth),
-                    margin: EdgeInsets.only(
-                      left: alignedRight ? 0 : messageMargin,
-                      right: alignedRight ? messageMargin : 0,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 10.0,
-                      horizontal: 15,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
-                      color: Theme.of(context).canvasColor,
-                    ),
-                    child:
-                        widget.message.isDeleted
-                            ? Text(
-                              widget.message.text,
-                              style: TextStyle(
-                                color: Theme.of(context).disabledColor,
-                              ),
-                            )
-                            : Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment:
-                                  alignedRight
-                                      ? CrossAxisAlignment.end
-                                      : CrossAxisAlignment.start,
-                              children: [
-                                Text(widget.message.text),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    widget.message.isEdited
-                                        ? Text(
-                                          'Edited',
-                                          style: Theme.of(
-                                            context,
-                                          ).textTheme.labelSmall?.copyWith(
-                                            color:
-                                                Theme.of(context).disabledColor,
-                                          ),
-                                        )
-                                        : SizedBox.shrink(),
-                                    SizedBox(width: 5),
-                                    Text(
-                                      timeFormat.format(
-                                        widget.message.createdAt,
-                                      ),
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.labelSmall?.copyWith(
-                                        color: Theme.of(context).disabledColor,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
+      child: Align(
+        alignment: widget.alignedRight ? Alignment.topRight : Alignment.topLeft,
+        child: Container(
+          constraints: BoxConstraints(maxWidth: messageWidth),
+          margin: EdgeInsets.only(
+            left: widget.alignedRight ? 0 : messageMargin,
+            right: widget.alignedRight ? messageMargin : 0,
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(15)),
+            color: widget.backgroundColor ?? Theme.of(context).canvasColor,
+          ),
+          child: widget.child,
+        ),
       ),
     );
   }

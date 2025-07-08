@@ -39,7 +39,7 @@ class _MessagePageState extends State<MessagePage>
                 if (state is Authenticated) {
                   user = state.user;
                 }
-                return Chats(chats: chats, currentUser: user);
+                return Chats(key: UniqueKey(), chats: chats, currentUser: user);
               },
             );
           case ChatsFailure():

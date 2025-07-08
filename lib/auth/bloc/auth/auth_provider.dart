@@ -8,7 +8,7 @@ class AuthProvider {
   Future<String> login({required String email, required String password}) async {
     try {
     Response response = await dio.post(
-      '/auth/login/',
+      'auth/login/',
       data: {'email': email, 'password': password},
     );
     if (response.statusCode == 200) {
@@ -26,7 +26,7 @@ class AuthProvider {
   Future<void> logout({required String token}) async {
     try {
       Response response = await dio.delete(
-        '/auth/logout/',
+        'auth/logout/',
         options: Options(
           headers: <String, String>{'Authorization': 'Token $token'},
         ),
@@ -44,7 +44,7 @@ class AuthProvider {
   Future<User> getUserFromAPI({required String token}) async {
     try {
       Response response = await dio.get(
-        '/auth/user/',
+        'auth/user/',
         options: Options(
           headers: <String, String>{'Authorization': 'Token $token'},
         ),
@@ -64,7 +64,7 @@ class AuthProvider {
   Future<List<User>> getMutedAccounts({required String token}) async {
     try {
       Response response = await dio.get(
-        '/api/muted-accounts/',
+        'api/muted-accounts/',
         options: Options(
           headers: <String, String>{'Authorization': 'Token $token'},
         ),
@@ -82,7 +82,7 @@ class AuthProvider {
   Future<List<User>> getBlockedAccounts({required String token}) async {
     try {
       Response response = await dio.get(
-        '/api/blocked-accounts/',
+        'api/blocked-accounts/',
         options: Options(
           headers: <String, String>{'Authorization': 'Token $token'},
         ),

@@ -1,6 +1,6 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/bottom_text_form_field.dart';
-import 'package:democracy/app/utils/view/more_vert.dart';
+import 'package:democracy/app/utils/view/more_pop_up.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/auth/models/user.dart';
 import 'package:democracy/chat/bloc/chat_actions/chat_actions_cubit.dart';
@@ -111,7 +111,10 @@ class _ChatDetailState extends State<ChatDetail> {
           ),
           body:
               _chat.blockers.isEmpty
-                  ? Messages(messages: _chat.messages)
+                  ? Messages(
+                    messages: _chat.messages,
+                    currentUser: widget.currentUser,
+                  )
                   : Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,

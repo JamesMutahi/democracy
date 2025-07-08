@@ -32,7 +32,7 @@ class _SurveyPageState extends State<SurveyPage>
         switch (state) {
           case SurveysLoaded(:final surveys):
             return (surveys.isNotEmpty)
-                ? Surveys(surveys: surveys)
+                ? Surveys(key: UniqueKey(), surveys: surveys)
                 : const NoResults();
           case SurveysFailure():
             return FailureRetryButton(

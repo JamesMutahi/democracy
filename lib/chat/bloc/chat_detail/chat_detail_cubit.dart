@@ -52,8 +52,16 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
   void messageDeleted({required Map<String, dynamic> payload}) {
     emit(ChatDetailLoading());
     if (payload['response_status'] == 204) {
-      Message message = Message.fromJson(payload['data']);
-      emit(MessageDeleted(message: message));
+      emit(MessageDeleted(messageId: payload['pk']));
+    } else {
+      emit(ChatDetailFailure(error: payload['errors'][0]));
+    }
+  }
+
+  void directMessageSent({required Map<String, dynamic> payload}) {
+    emit(ChatDetailLoading());
+    if (payload['response_status'] == 200) {
+      emit(DirectMessageSent());
     } else {
       emit(ChatDetailFailure(error: payload['errors'][0]));
     }

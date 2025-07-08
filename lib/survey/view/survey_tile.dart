@@ -1,4 +1,5 @@
-import 'package:democracy/app/utils/view/more_vert.dart';
+import 'package:democracy/app/utils/view/more_pop_up.dart';
+import 'package:democracy/app/utils/view/share_bottom_sheet.dart';
 import 'package:democracy/poll/view/poll_tile.dart' show TimeLeft;
 import 'package:democracy/post/view/post_create.dart';
 import 'package:democracy/survey/models/survey.dart';
@@ -73,9 +74,17 @@ class SurveyTile extends StatelessWidget {
                                     (context) => PostCreate(survey: survey),
                               ),
                             );
+                          case 'Share':
+                            showModalBottomSheet<void>(
+                              context: context,
+                              shape: const BeveledRectangleBorder(),
+                              builder: (BuildContext context) {
+                                return ShareBottomSheet(survey: survey);
+                              },
+                            );
                         }
                       },
-                      texts: ['Post'],
+                      texts: ['Post', 'Share'],
                     ),
               ],
             ),

@@ -10,8 +10,9 @@ class ChatDetailState with _$ChatDetailState {
       MessageCreated;
   const factory ChatDetailState.messageUpdated({required Message message}) =
       MessageUpdated;
-  const factory ChatDetailState.messageDeleted({required Message message}) =
+  const factory ChatDetailState.messageDeleted({required int messageId}) =
       MessageDeleted;
+  const factory ChatDetailState.directMessageSent() = DirectMessageSent;
   const factory ChatDetailState.failure({required String error}) =
       ChatDetailFailure;
 }

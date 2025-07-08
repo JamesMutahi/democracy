@@ -9,6 +9,7 @@ import 'package:democracy/chat/bloc/chat_actions/chat_actions_cubit.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
+import 'package:democracy/chat/bloc/search_users/search_users_cubit.dart';
 import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
 import 'package:democracy/poll/bloc/polls/polls_cubit.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
@@ -97,6 +98,7 @@ void main() async {
           BlocProvider(create: (context) => ChatActionsCubit()),
           BlocProvider(create: (context) => ChatDetailCubit()),
           BlocProvider(create: (context) => MessageActionsCubit()),
+          BlocProvider(create: (context) => SearchUsersCubit()),
           BlocProvider(create: (context) => SurveysCubit()),
           BlocProvider(create: (context) => SurveyDetailCubit()),
           BlocProvider(create: (context) => AnswerCubit()),

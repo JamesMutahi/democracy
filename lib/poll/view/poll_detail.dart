@@ -1,5 +1,5 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/utils/view/more_vert.dart';
+import 'package:democracy/app/utils/view/more_pop_up.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
 import 'package:democracy/poll/models/option.dart';

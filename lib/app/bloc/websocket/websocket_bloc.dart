@@ -98,6 +98,12 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_UserBlocked>((event, emit) {
       _onUserBlocked(emit, event);
     });
+    on<_SearchUsers>((event, emit) {
+      _onSearchUsers(emit, event);
+    });
+    on<_SendDirectMessage>((event, emit) {
+      _onSendDirectMessage(emit, event);
+    });
     on<_GetPolls>((event, emit) {
       _onGetPolls(emit, event);
     });
@@ -409,7 +415,13 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'create_message',
         'request_id': messageRequestId,
-        'data': {'chat': event.chat.id, 'text': event.text},
+        'data': {
+          'chat': event.chat.id,
+          'text': event.text,
+          'post_id': event.post?.id,
+          'poll_id': event.poll?.id,
+          'survey_id': event.survey?.id,
+        },
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -486,6 +498,51 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'action': 'block_user',
         'request_id': chatRequestId,
         'user': event.user.id,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onSearchUsers(
+    Emitter<WebsocketState> emit,
+    _SearchUsers event,
+  ) async {
+    if (state is WebsocketFailure) {
+      await _onConnect(emit);
+    }
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': chatsStream,
+      'payload': {
+        'action': 'search_users',
+        'request_id': chatRequestId,
+        'search_term': event.searchTerm,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onSendDirectMessage(
+    Emitter<WebsocketState> emit,
+    _SendDirectMessage event,
+  ) async {
+    if (state is WebsocketFailure) {
+      await _onConnect(emit);
+    }
+    emit(WebsocketLoading());
+    List<int> userPks = event.users.map((user) => user.id).toList();
+    Map<String, dynamic> message = {
+      'stream': chatsStream,
+      'payload': {
+        'action': 'direct_message',
+        'request_id': messageRequestId,
+        'user_pks': userPks,
+        'data': {
+          'text': event.text,
+          'post_id': event.post?.id,
+          'poll_id': event.poll?.id,
+          'survey_id': event.survey?.id,
+        },
       },
     };
     _channel.sink.add(jsonEncode(message));

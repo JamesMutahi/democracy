@@ -8,6 +8,7 @@ import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/auth/view/login.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
+import 'package:democracy/chat/bloc/search_users/search_users_cubit.dart';
 import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
 import 'package:democracy/poll/bloc/polls/polls_cubit.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
@@ -230,6 +231,14 @@ class _Listeners extends StatelessWidget {
                             payload: message['payload'],
                           );
                         }
+                      case 'search_users':
+                        context.read<SearchUsersCubit>().loaded(
+                          payload: message['payload'],
+                        );
+                      case 'direct_message':
+                        context.read<ChatDetailCubit>().directMessageSent(
+                          payload: message['payload'],
+                        );
                     }
                   case pollsStream:
                     switch (message['payload']['action']) {

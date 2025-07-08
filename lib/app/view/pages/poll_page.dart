@@ -27,7 +27,9 @@ class _PollPageState extends State<PollPage> {
       builder: (context, state) {
         switch (state) {
           case PollsLoaded(:final polls):
-            return (polls.isNotEmpty) ? Polls(polls: polls) : const NoResults();
+            return (polls.isNotEmpty)
+                ? Polls(key: UniqueKey(), polls: polls)
+                : const NoResults();
           case PollsFailure():
             return FailureRetryButton(
               onPressed: () {

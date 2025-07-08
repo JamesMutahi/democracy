@@ -23,6 +23,8 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.deletePost({required Post post}) = _DeletePost;
   const factory WebsocketEvent.reportPost({required Post post}) = _ReportPost;
   const factory WebsocketEvent.getReplies({required Post post}) = _GetReplies;
+  const factory WebsocketEvent.unsubscribeReplies({required Post post}) =
+      _UnsubscribeReplies;
   const factory WebsocketEvent.loadUserPosts({required User user}) =
       _LoadUserPosts;
   const factory WebsocketEvent.loadBookmarks({required User user}) =
@@ -36,6 +38,9 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.createMessage({
     required Chat chat,
     required String text,
+    Post? post,
+    Poll? poll,
+    Survey? survey,
   }) = _CreateMessage;
   const factory WebsocketEvent.editMessage({
     required int messageId,
@@ -60,7 +65,14 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     required List<TextAnswer> textAnswers,
     required List<ChoiceAnswer> choiceAnswers,
   }) = _SubmitResponse;
-  const factory WebsocketEvent.unsubscribeReplies({required Post post}) =
-      _UnsubscribeReplies;
+  const factory WebsocketEvent.searchUsers({required String searchTerm}) =
+      _SearchUsers;
+  const factory WebsocketEvent.sendDirectMessage({
+    required List<User> users,
+    required String text,
+    Post? post,
+    Poll? poll,
+    Survey? survey,
+  }) = _SendDirectMessage;
   const factory WebsocketEvent.disconnect() = _Disconnect;
 }

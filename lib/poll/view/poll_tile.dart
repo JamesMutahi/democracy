@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:democracy/app/utils/view/more_vert.dart';
+import 'package:democracy/app/utils/view/more_pop_up.dart';
+import 'package:democracy/app/utils/view/share_bottom_sheet.dart';
 import 'package:democracy/poll/models/option.dart';
 import 'package:democracy/poll/models/poll.dart';
 import 'package:democracy/poll/view/poll_detail.dart';
@@ -64,9 +65,17 @@ class PollTile extends StatelessWidget {
                                 builder: (context) => PostCreate(poll: poll),
                               ),
                             );
+                          case 'Share':
+                            showModalBottomSheet<void>(
+                              context: context,
+                              shape: const BeveledRectangleBorder(),
+                              builder: (BuildContext context) {
+                                return ShareBottomSheet(poll: poll);
+                              },
+                            );
                         }
                       },
-                      texts: ['Post'],
+                      texts: ['Post', 'Share'],
                     ),
               ],
             ),
@@ -79,7 +88,9 @@ class PollTile extends StatelessWidget {
                   startTime: poll.startTime,
                   endTime: poll.endTime,
                 ),
-                pollHasStarted
+                isChildOfPost
+                    ? SizedBox.shrink()
+                    : pollHasStarted
                     ? Text(
                       '${poll.totalVotes} ${poll.totalVotes == 1 ? 'vote' : 'votes'}',
                       style: TextStyle(color: Theme.of(context).disabledColor),

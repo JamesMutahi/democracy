@@ -1,8 +1,9 @@
 import 'dart:async';
 
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/utils/view/more_vert.dart';
+import 'package:democracy/app/utils/view/more_pop_up.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
+import 'package:democracy/app/utils/view/share_bottom_sheet.dart';
 import 'package:democracy/poll/view/poll_tile.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/post_create.dart';
@@ -39,7 +40,7 @@ class PostTile extends StatelessWidget {
         });
       },
       child: Container(
-        padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 5),
+        padding: EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 5),
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
@@ -353,7 +354,15 @@ class ShareButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PostTileButton(
-      onTap: () {},
+      onTap: () {
+        showModalBottomSheet<void>(
+          context: context,
+          shape: const BeveledRectangleBorder(),
+          builder: (BuildContext context) {
+            return ShareBottomSheet(post: post);
+          },
+        );
+      },
       icon: Icon(
         Symbols.share_rounded,
         size: 20,
