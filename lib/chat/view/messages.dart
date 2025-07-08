@@ -43,8 +43,8 @@ class _MessagesState extends State<Messages> {
       widgets.add(SizedBox(height: messageMargin));
       for (Message message in list) {
         bool alignedRight = widget.currentUser.id == message.user.id;
+        widgets.add(SizedBox(height: messageMargin));
         if (message.isDeleted) {
-          widgets.add(SizedBox(height: messageMargin));
           widgets.add(
             AlignmentContainer(
               message: message,
@@ -57,12 +57,7 @@ class _MessagesState extends State<Messages> {
           );
         } else {
           widgets.add(
-            AlignmentContainer(
-              message: message,
-              alignedRight: alignedRight,
-              backgroundColor: Colors.transparent,
-              child: MessageTime(message: message),
-            ),
+            MessageTime(message: message, alignedRight: alignedRight),
           );
           if (message.text.isNotEmpty) {
             widgets.add(
@@ -196,18 +191,32 @@ class MessageCard extends StatelessWidget {
 }
 
 class MessageTime extends StatelessWidget {
-  const MessageTime({super.key, required this.message});
+  const MessageTime({
+    super.key,
+    required this.message,
+    required this.alignedRight,
+  });
 
   final Message message;
+  final bool alignedRight;
 
   @override
   Widget build(BuildContext context) {
     var timeFormat = DateFormat('hh:mm');
-    return Text(
-      timeFormat.format(message.createdAt),
-      style: Theme.of(
-        context,
-      ).textTheme.labelSmall?.copyWith(color: Theme.of(context).disabledColor),
+    return Align(
+      alignment: alignedRight ? Alignment.topRight : Alignment.topLeft,
+      child: Container(
+        margin: EdgeInsets.only(
+          left: alignedRight ? 0 : 20,
+          right: alignedRight ? 20 : 0,
+        ),
+        child: Text(
+          timeFormat.format(message.createdAt),
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+            color: Theme.of(context).disabledColor,
+          ),
+        ),
+      ),
     );
   }
 }
@@ -217,14 +226,12 @@ class AlignmentContainer extends StatefulWidget {
     super.key,
     required this.alignedRight,
     required this.child,
-    this.backgroundColor,
     required this.message,
   });
 
   final bool alignedRight;
   final Message message;
   final Widget child;
-  final Color? backgroundColor;
 
   @override
   State<AlignmentContainer> createState() => _AlignmentContainerState();
@@ -261,20 +268,50 @@ class _AlignmentContainerState extends State<AlignmentContainer> {
           });
         }
       },
-      child: Align(
-        alignment: widget.alignedRight ? Alignment.topRight : Alignment.topLeft,
+      child: GestureDetector(
+        onTap:
+            widget.message.isDeleted
+                ? null
+                : canTap
+                ? () {
+                  context.read<MessageActionsCubit>().messageHighlighted(
+                    message: widget.message,
+                  );
+                }
+                : null,
         child: Container(
-          constraints: BoxConstraints(maxWidth: messageWidth),
-          margin: EdgeInsets.only(
-            left: widget.alignedRight ? 0 : messageMargin,
-            right: widget.alignedRight ? messageMargin : 0,
+          margin: EdgeInsets.only(top: messageMargin),
+          color: highlightColor,
+          child: GestureDetector(
+            onLongPress:
+                widget.message.isDeleted
+                    ? null
+                    : () {
+                      context.read<MessageActionsCubit>().messageHighlighted(
+                        message: widget.message,
+                      );
+                    },
+            child: Align(
+              alignment:
+                  widget.alignedRight ? Alignment.topRight : Alignment.topLeft,
+              child: Container(
+                constraints: BoxConstraints(maxWidth: messageWidth),
+                margin: EdgeInsets.only(
+                  left: widget.alignedRight ? 0 : messageMargin,
+                  right: widget.alignedRight ? messageMargin : 0,
+                ),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10.0,
+                  horizontal: 15,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                  color: Theme.of(context).canvasColor,
+                ),
+                child: widget.child,
+              ),
+            ),
           ),
-          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(15)),
-            color: widget.backgroundColor ?? Theme.of(context).canvasColor,
-          ),
-          child: widget.child,
         ),
       ),
     );
