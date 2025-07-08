@@ -128,13 +128,13 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<Post> posts)?  loaded,TResult Function()?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( int postId,  List<Post> posts)?  loaded,TResult Function( int? postId)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case RepliesInitial() when initial != null:
 return initial();case RepliesLoading() when loading != null:
 return loading();case RepliesLoaded() when loaded != null:
-return loaded(_that.posts);case RepliesFailure() when failure != null:
-return failure();case _:
+return loaded(_that.postId,_that.posts);case RepliesFailure() when failure != null:
+return failure(_that.postId);case _:
   return orElse();
 
 }
@@ -152,13 +152,13 @@ return failure();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<Post> posts)  loaded,required TResult Function()  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( int postId,  List<Post> posts)  loaded,required TResult Function( int? postId)  failure,}) {final _that = this;
 switch (_that) {
 case RepliesInitial():
 return initial();case RepliesLoading():
 return loading();case RepliesLoaded():
-return loaded(_that.posts);case RepliesFailure():
-return failure();case _:
+return loaded(_that.postId,_that.posts);case RepliesFailure():
+return failure(_that.postId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -175,13 +175,13 @@ return failure();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<Post> posts)?  loaded,TResult? Function()?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( int postId,  List<Post> posts)?  loaded,TResult? Function( int? postId)?  failure,}) {final _that = this;
 switch (_that) {
 case RepliesInitial() when initial != null:
 return initial();case RepliesLoading() when loading != null:
 return loading();case RepliesLoaded() when loaded != null:
-return loaded(_that.posts);case RepliesFailure() when failure != null:
-return failure();case _:
+return loaded(_that.postId,_that.posts);case RepliesFailure() when failure != null:
+return failure(_that.postId);case _:
   return null;
 
 }
@@ -257,9 +257,10 @@ String toString() {
 
 
 class RepliesLoaded implements RepliesState {
-  const RepliesLoaded({required final  List<Post> posts}): _posts = posts;
+  const RepliesLoaded({required this.postId, required final  List<Post> posts}): _posts = posts;
   
 
+ final  int postId;
  final  List<Post> _posts;
  List<Post> get posts {
   if (_posts is EqualUnmodifiableListView) return _posts;
@@ -278,16 +279,16 @@ $RepliesLoadedCopyWith<RepliesLoaded> get copyWith => _$RepliesLoadedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RepliesLoaded&&const DeepCollectionEquality().equals(other._posts, _posts));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RepliesLoaded&&(identical(other.postId, postId) || other.postId == postId)&&const DeepCollectionEquality().equals(other._posts, _posts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_posts));
+int get hashCode => Object.hash(runtimeType,postId,const DeepCollectionEquality().hash(_posts));
 
 @override
 String toString() {
-  return 'RepliesState.loaded(posts: $posts)';
+  return 'RepliesState.loaded(postId: $postId, posts: $posts)';
 }
 
 
@@ -298,7 +299,7 @@ abstract mixin class $RepliesLoadedCopyWith<$Res> implements $RepliesStateCopyWi
   factory $RepliesLoadedCopyWith(RepliesLoaded value, $Res Function(RepliesLoaded) _then) = _$RepliesLoadedCopyWithImpl;
 @useResult
 $Res call({
- List<Post> posts
+ int postId, List<Post> posts
 });
 
 
@@ -315,9 +316,10 @@ class _$RepliesLoadedCopyWithImpl<$Res>
 
 /// Create a copy of RepliesState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? posts = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? postId = null,Object? posts = null,}) {
   return _then(RepliesLoaded(
-posts: null == posts ? _self._posts : posts // ignore: cast_nullable_to_non_nullable
+postId: null == postId ? _self.postId : postId // ignore: cast_nullable_to_non_nullable
+as int,posts: null == posts ? _self._posts : posts // ignore: cast_nullable_to_non_nullable
 as List<Post>,
   ));
 }
@@ -329,32 +331,66 @@ as List<Post>,
 
 
 class RepliesFailure implements RepliesState {
-  const RepliesFailure();
+  const RepliesFailure({required this.postId});
   
 
+ final  int? postId;
 
-
+/// Create a copy of RepliesState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$RepliesFailureCopyWith<RepliesFailure> get copyWith => _$RepliesFailureCopyWithImpl<RepliesFailure>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RepliesFailure);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RepliesFailure&&(identical(other.postId, postId) || other.postId == postId));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,postId);
 
 @override
 String toString() {
-  return 'RepliesState.failure()';
+  return 'RepliesState.failure(postId: $postId)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $RepliesFailureCopyWith<$Res> implements $RepliesStateCopyWith<$Res> {
+  factory $RepliesFailureCopyWith(RepliesFailure value, $Res Function(RepliesFailure) _then) = _$RepliesFailureCopyWithImpl;
+@useResult
+$Res call({
+ int? postId
+});
 
 
+
+
+}
+/// @nodoc
+class _$RepliesFailureCopyWithImpl<$Res>
+    implements $RepliesFailureCopyWith<$Res> {
+  _$RepliesFailureCopyWithImpl(this._self, this._then);
+
+  final RepliesFailure _self;
+  final $Res Function(RepliesFailure) _then;
+
+/// Create a copy of RepliesState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? postId = freezed,}) {
+  return _then(RepliesFailure(
+postId: freezed == postId ? _self.postId : postId // ignore: cast_nullable_to_non_nullable
+as int?,
+  ));
+}
+
+
+}
 
 // dart format on

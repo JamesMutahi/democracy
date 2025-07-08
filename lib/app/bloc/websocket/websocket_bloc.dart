@@ -28,7 +28,6 @@ const String chatsStream = 'chats';
 const String surveysStream = 'surveys';
 const int postRequestId = 1;
 const int postUpdateRequestId = 2;
-const int postRepliesRequestId = 3;
 const int pollRequestId = 1;
 const int chatRequestId = 1;
 const int messageRequestId = 2;
@@ -283,7 +282,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'stream': postsStream,
       'payload': {
         'action': 'replies',
-        'request_id': postRepliesRequestId,
+        'request_id': event.post.id,
         'pk': event.post.id,
       },
     };
@@ -302,7 +301,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'stream': postsStream,
       'payload': {
         'action': 'unsubscribe_replies',
-        'request_id': postRepliesRequestId,
+        'request_id': event.post.id,
         'pk': event.post.id,
       },
     };

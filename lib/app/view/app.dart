@@ -281,6 +281,7 @@ class _Listeners extends StatelessWidget {
                 }
               case WebsocketFailure(:final error):
                 context.read<PostListCubit>().websocketFailure(error: error);
+                context.read<RepliesCubit>().websocketFailure(error: error);
                 context.read<SurveysCubit>().websocketFailure(error: error);
                 context.read<PollsCubit>().websocketFailure(error: error);
                 context.read<ChatsCubit>().websocketFailure(error: error);

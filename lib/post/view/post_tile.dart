@@ -24,21 +24,19 @@ class PostTile extends StatelessWidget {
     var numberFormat = NumberFormat.compact(locale: "en_UK");
     return InkWell(
       onTap: () {
-        (post.replyTo == null)
-            ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder:
-                    (context) => PostDetail(post: post, key: ValueKey(post.id)),
-              ),
-            ).whenComplete(() {
-              if (context.mounted) {
-                context.read<WebsocketBloc>().add(
-                  WebsocketEvent.unsubscribeReplies(post: post),
-                );
-              }
-            })
-            : null;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) => PostDetail(post: post, key: ValueKey(post.id)),
+          ),
+        ).whenComplete(() {
+          if (context.mounted) {
+            context.read<WebsocketBloc>().add(
+              WebsocketEvent.unsubscribeReplies(post: post),
+            );
+          }
+        });
       },
       child: Container(
         padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 5),
