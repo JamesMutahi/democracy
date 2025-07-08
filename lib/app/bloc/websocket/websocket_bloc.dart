@@ -616,18 +616,18 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       await _onConnect(emit);
     }
     emit(WebsocketLoading());
-    List<Map<String, dynamic>> textAnswersAsJson = [];
-    List<Map<String, dynamic>> choiceAnswersAsJson = [];
+    List<Map<String, dynamic>> textAnswers = [];
+    List<Map<String, dynamic>> choiceAnswers = [];
     for (TextAnswer textAnswer in event.textAnswers) {
-      textAnswersAsJson.add({
-        'question': textAnswer.question.id,
+      textAnswers.add({
+        'question_id': textAnswer.question.id,
         'text': textAnswer.text,
       });
     }
     for (ChoiceAnswer choiceAnswer in event.choiceAnswers) {
-      choiceAnswersAsJson.add({
-        'question': choiceAnswer.question.id,
-        'choice': choiceAnswer.choice.id,
+      choiceAnswers.add({
+        'question_id': choiceAnswer.question.id,
+        'choice_id': choiceAnswer.choice.id,
       });
     }
     Map<String, dynamic> message = {
@@ -639,8 +639,8 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
           'survey': event.survey.id,
           'start_time': event.startTime.toString(),
           'end_time': event.endTime.toString(),
-          'text_answers': textAnswersAsJson,
-          'choice_answers': choiceAnswersAsJson,
+          'text_answers': textAnswers,
+          'choice_answers': choiceAnswers,
         },
       },
     };
