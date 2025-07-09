@@ -388,7 +388,8 @@ class _TimeDifferenceInfoState extends State<TimeDifferenceInfo> {
   @override
   void initState() {
     super.initState();
-    timer = Timer.periodic(Duration(seconds: 1), (Timer t) => getTimeLeft());
+    getTimeSince();
+    timer = Timer.periodic(Duration(minutes: 1), (Timer t) => getTimeSince());
   }
 
   @override
@@ -397,7 +398,7 @@ class _TimeDifferenceInfoState extends State<TimeDifferenceInfo> {
     super.dispose();
   }
 
-  void getTimeLeft() {
+  void getTimeSince() {
     Duration diff = DateTime.now().difference(widget.publishedAt);
     setState(() {
       var diffSeconds = diff.inSeconds;

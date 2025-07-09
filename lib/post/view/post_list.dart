@@ -23,6 +23,23 @@ class _PostListState extends State<PostList> {
     return BlocListener<PostDetailCubit, PostDetailState>(
       listener: (context, state) {
         switch (state) {
+          case PostCreated(post: final post):
+            if (_posts.any((element) => element.id == post.repostOf?.id)) {
+              setState(() {
+                _posts[_posts.indexWhere(
+                      (element) => element.id == post.repostOf!.id,
+                    )] =
+                    post.repostOf!;
+              });
+            }
+            if (_posts.any((element) => element.id == post.replyTo?.id)) {
+              setState(() {
+                _posts[_posts.indexWhere(
+                      (element) => element.id == post.replyTo!.id,
+                    )] =
+                    post.replyTo!;
+              });
+            }
           case PostUpdated(post: final post):
             if (_posts.any((element) => element.id == post.id)) {
               setState(() {

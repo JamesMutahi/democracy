@@ -172,19 +172,6 @@ class MessageCard extends StatelessWidget {
           alignedRight ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
         Text(message.text),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            message.isEdited
-                ? Text(
-                  'Edited',
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: Theme.of(context).disabledColor,
-                  ),
-                )
-                : SizedBox.shrink(),
-          ],
-        ),
       ],
     );
   }
@@ -210,11 +197,24 @@ class MessageTime extends StatelessWidget {
           left: alignedRight ? 0 : 20,
           right: alignedRight ? 20 : 0,
         ),
-        child: Text(
-          timeFormat.format(message.createdAt),
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-            color: Theme.of(context).disabledColor,
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            message.isEdited
+                ? Text(
+                  'Edited ',
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: Theme.of(context).disabledColor,
+                  ),
+                )
+                : SizedBox.shrink(),
+            Text(
+              timeFormat.format(message.createdAt),
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: Theme.of(context).disabledColor,
+              ),
+            ),
+          ],
         ),
       ),
     );

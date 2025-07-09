@@ -38,11 +38,9 @@ class _PostDetailState extends State<PostDetail> {
   }
 
   void _setPostState(post) {
-    if (_post.id == post.id) {
-      setState(() {
-        _post = post;
-      });
-    }
+    setState(() {
+      _post = post;
+    });
   }
 
   @override
@@ -54,17 +52,25 @@ class _PostDetailState extends State<PostDetail> {
       listener: (context, state) {
         switch (state) {
           case PostUpdated(:final post):
-            _setPostState(post);
-          case PostCreated():
-            final snackBar = SnackBar(
-              behavior: SnackBarBehavior.floating,
-              backgroundColor: Theme.of(context).cardColor,
-              content: SnackBarContent(
-                message: 'Reply sent',
-                status: SnackBarStatus.success,
-              ),
-            );
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            if (_post.id == post.id) {
+              _setPostState(post);
+            }
+          case PostCreated(:final post):
+            if (post.repostOf?.id == _post.id) {
+              _setPostState(post.repostOf!);
+            }
+            if (post.replyTo?.id == _post.id) {
+              _setPostState(post.replyTo!);
+              final snackBar = SnackBar(
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Theme.of(context).cardColor,
+                content: SnackBarContent(
+                  message: 'Reply sent',
+                  status: SnackBarStatus.success,
+                ),
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
         }
       },
       child: Scaffold(
