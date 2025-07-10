@@ -40,7 +40,7 @@ class PostDetailCubit extends Cubit<PostDetailState> {
 
   void reported({required Map<String, dynamic> payload}) {
     emit(PostDetailLoading());
-    if (payload['response_status'] == 204) {
+    if (payload['response_status'] == 200) {
       emit(PostReported());
     } else {
       emit(PostDetailFailure(error: payload['errors'][0].toString()));

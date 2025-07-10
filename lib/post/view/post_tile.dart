@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/more_pop_up.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
+import 'package:democracy/app/utils/view/report.dart';
 import 'package:democracy/app/utils/view/share_bottom_sheet.dart';
 import 'package:democracy/poll/view/poll_tile.dart';
 import 'package:democracy/post/models/post.dart';
@@ -74,7 +75,42 @@ class PostTile extends StatelessWidget {
                           : Row(
                             children: [
                               TimeDifferenceInfo(publishedAt: post.publishedAt),
-                              MorePopUp(onSelected: (selected) {}, texts: []),
+                              isChildOfPost
+                                  ? SizedBox.shrink()
+                                  : MorePopUp(
+                                    onSelected: (selected) {
+                                      switch (selected) {
+                                        case 'Share':
+                                          showModalBottomSheet<void>(
+                                            context: context,
+                                            shape:
+                                                const BeveledRectangleBorder(),
+                                            builder: (BuildContext context) {
+                                              return ShareBottomSheet(
+                                                post: post,
+                                              );
+                                            },
+                                          );
+                                        case 'Report':
+                                          showGeneralDialog(
+                                            context: context,
+                                            transitionDuration: const Duration(
+                                              milliseconds: 300,
+                                            ),
+                                            pageBuilder: (
+                                              context,
+                                              animation,
+                                              secondaryAnimation,
+                                            ) {
+                                              return ReportModal(
+                                                post: post,
+                                              );
+                                            },
+                                          );
+                                      }
+                                    },
+                                    texts: ['Share', 'Report'],
+                                  ),
                             ],
                           ),
                     ],

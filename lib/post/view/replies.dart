@@ -115,7 +115,7 @@ class _RepliesState extends State<Replies> {
               )
               : ListView.builder(
                 padding: EdgeInsets.only(bottom: 50),
-                scrollDirection: Axis.vertical,
+                physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) {
                   Post post = posts[index];

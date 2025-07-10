@@ -174,9 +174,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onCreatePost(Emitter<WebsocketState> emit, _CreatePost event) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
@@ -198,9 +195,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onUpdatePost(Emitter<WebsocketState> emit, _UpdatePost event) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
@@ -214,9 +208,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onLikePost(Emitter<WebsocketState> emit, _LikePost event) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
@@ -233,9 +224,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _BookmarkPost event,
   ) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
@@ -249,9 +237,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onDeletePost(Emitter<WebsocketState> emit, _DeletePost event) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
@@ -265,24 +250,18 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onReportPost(Emitter<WebsocketState> emit, _ReportPost event) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
       'payload': {
         'action': 'report',
-        'data': {'pk': event.post.id},
+        'data': {'issue': event.issue, 'post': event.post.id},
       },
     };
     _channel.sink.add(jsonEncode(message));
   }
 
   Future _onGetReplies(Emitter<WebsocketState> emit, _GetReplies event) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
@@ -299,9 +278,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _UnsubscribeReplies event,
   ) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
@@ -318,9 +294,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _LoadUserPosts event,
   ) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
@@ -333,9 +306,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _LoadBookmarks event,
   ) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
@@ -348,9 +318,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _LoadLikedPosts event,
   ) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
@@ -363,9 +330,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _LoadUserReplies event,
   ) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
@@ -375,9 +339,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onLoadChats(Emitter<WebsocketState> emit, _LoadChats event) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': chatsStream,
@@ -387,9 +348,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onCreateChat(Emitter<WebsocketState> emit, _CreateChat event) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': chatsStream,
@@ -406,9 +364,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _CreateMessage event,
   ) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': chatsStream,
@@ -431,9 +386,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _EditMessage event,
   ) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': chatsStream,
@@ -451,9 +403,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _DeleteMessage event,
   ) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     for (Message msg in event.messages) {
       Map<String, dynamic> message = {
@@ -469,9 +418,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onMarkAsRead(Emitter<WebsocketState> emit, _MarkAsRead event) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': chatsStream,
@@ -488,9 +434,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _UserBlocked event,
   ) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': chatsStream,
@@ -507,9 +450,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _SearchUsers event,
   ) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': chatsStream,
@@ -526,9 +466,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _SendDirectMessage event,
   ) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     List<int> userPks = event.users.map((user) => user.id).toList();
     Map<String, dynamic> message = {
@@ -549,9 +486,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onGetPolls(Emitter<WebsocketState> emit, _GetPolls event) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': pollsStream,
@@ -561,9 +495,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onVote(Emitter<WebsocketState> emit, _Vote event) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': pollsStream,
@@ -580,9 +511,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _SubmitReason event,
   ) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': pollsStream,
@@ -612,9 +540,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _SubmitResponse event,
   ) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     List<Map<String, dynamic>> textAnswers = [];
     List<Map<String, dynamic>> choiceAnswers = [];
