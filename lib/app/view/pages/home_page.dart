@@ -7,6 +7,7 @@ import 'package:democracy/app/utils/view/loading_indicator.dart';
 import 'package:democracy/app/utils/view/no_results.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -44,7 +45,10 @@ class _HomePageState extends State<HomePage>
                         );
                       },
                       mini: true,
-                      child: Icon(Icons.add),
+                      child: Icon(
+                        Symbols.post_add_rounded,
+                        size: 20,
+                      ),
                     ),
                   ),
                 ),

@@ -12,7 +12,6 @@ import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 class PostDetail extends StatefulWidget {
   const PostDetail({super.key, required this.post});
@@ -123,14 +122,7 @@ class _PostDetailState extends State<PostDetail> {
                             ),
                           ),
                         ),
-                        PostTileButton(
-                          onTap: () {},
-                          icon: Icon(
-                            Symbols.more_vert_rounded,
-                            size: 20,
-                            color: Theme.of(context).disabledColor,
-                          ),
-                        ),
+                        PostMorePopUp(post: _post),
                       ],
                     ),
                     SizedBox(height: 5),

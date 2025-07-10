@@ -65,6 +65,7 @@ class PostTile extends StatelessWidget {
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         '${post.author.firstName} ${post.author.lastName}',
@@ -77,40 +78,7 @@ class PostTile extends StatelessWidget {
                               TimeDifferenceInfo(publishedAt: post.publishedAt),
                               isChildOfPost
                                   ? SizedBox.shrink()
-                                  : MorePopUp(
-                                    onSelected: (selected) {
-                                      switch (selected) {
-                                        case 'Share':
-                                          showModalBottomSheet<void>(
-                                            context: context,
-                                            shape:
-                                                const BeveledRectangleBorder(),
-                                            builder: (BuildContext context) {
-                                              return ShareBottomSheet(
-                                                post: post,
-                                              );
-                                            },
-                                          );
-                                        case 'Report':
-                                          showGeneralDialog(
-                                            context: context,
-                                            transitionDuration: const Duration(
-                                              milliseconds: 300,
-                                            ),
-                                            pageBuilder: (
-                                              context,
-                                              animation,
-                                              secondaryAnimation,
-                                            ) {
-                                              return ReportModal(
-                                                post: post,
-                                              );
-                                            },
-                                          );
-                                      }
-                                    },
-                                    texts: ['Share', 'Report'],
-                                  ),
+                                  : PostMorePopUp(post: post)
                             ],
                           ),
                     ],
@@ -200,6 +168,44 @@ class DependencyContainer extends StatelessWidget {
   }
 }
 
+class PostMorePopUp extends StatelessWidget {
+  const PostMorePopUp({super.key, required this.post});
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context) {
+    return MorePopUp(
+      onSelected: (selected) {
+        switch (selected) {
+          case 'Mute':
+          //   TODO:
+            return;
+          case 'Block':
+          //   TODO:
+            return;
+          case 'Report':
+            showGeneralDialog(
+              context: context,
+              transitionDuration: const Duration(
+                milliseconds: 300,
+              ),
+              pageBuilder: (
+                  context,
+                  animation,
+                  secondaryAnimation,
+                  ) {
+                return ReportModal(post: post);
+              },
+            );
+        }
+      },
+      texts: ['Mute', 'Block', 'Report'],
+    );
+  }
+}
+
+
 class PostTileButton extends StatelessWidget {
   const PostTileButton({
     super.key,
@@ -227,7 +233,7 @@ class PostTileButton extends StatelessWidget {
             ? SizedBox.shrink()
             : Text(
               trailing!,
-              style: TextStyle(color: Theme.of(context).disabledColor),
+              style: TextStyle(color: Theme.of(context).colorScheme.outline),
             ),
       ],
     );
@@ -252,7 +258,7 @@ class LikeButton extends StatelessWidget {
         color:
             post.isLiked
                 ? Theme.of(context).colorScheme.error
-                : Theme.of(context).disabledColor,
+                : Theme.of(context).colorScheme.outline,
         fill: post.isLiked ? 1 : 0,
       ),
       trailing: (post.likes > 0) ? numberFormat.format(post.likes) : null,
@@ -281,7 +287,7 @@ class RepostButton extends StatelessWidget {
       icon: Icon(
         Symbols.loop_rounded,
         size: 20,
-        color: Theme.of(context).disabledColor,
+        color: Theme.of(context).colorScheme.outline,
       ),
       trailing: (post.reposts > 0) ? numberFormat.format(post.reposts) : null,
     );
@@ -312,7 +318,7 @@ class ReplyButton extends StatelessWidget {
       icon: Icon(
         Symbols.message_rounded,
         size: 20,
-        color: Theme.of(context).disabledColor,
+        color: Theme.of(context).colorScheme.outline,
       ),
       trailing: (post.replies > 0) ? numberFormat.format(post.replies) : null,
     );
@@ -336,7 +342,7 @@ class ViewsButton extends StatelessWidget {
       icon: Icon(
         Symbols.poll_rounded,
         size: 20,
-        color: Theme.of(context).disabledColor,
+        color: Theme.of(context).colorScheme.outline,
       ),
       trailing: (post.views > 0) ? numberFormat.format(post.views) : null,
     );
@@ -369,7 +375,7 @@ class BookmarkButton extends StatelessWidget {
         color:
             post.isBookmarked
                 ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).disabledColor,
+                : Theme.of(context).colorScheme.outline,
         fill: post.isBookmarked ? 1 : 0,
       ),
       trailing:
@@ -402,7 +408,7 @@ class ShareButton extends StatelessWidget {
       icon: Icon(
         Symbols.share_rounded,
         size: 20,
-        color: Theme.of(context).disabledColor,
+        color: Theme.of(context).colorScheme.outline,
       ),
     );
   }
@@ -491,7 +497,7 @@ class _TimeDifferenceInfoState extends State<TimeDifferenceInfo> {
   Widget build(BuildContext context) {
     return Text(
       timeSince,
-      style: TextStyle(color: Theme.of(context).disabledColor),
+      style: TextStyle(color: Theme.of(context).colorScheme.outline),
     );
   }
 }

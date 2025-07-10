@@ -31,6 +31,29 @@ class SurveyTile extends StatelessWidget {
       );
     }
 
+    List<Widget> surveyButtons = [
+      Visibility(
+        visible: !surveyIsClosed,
+        child: OutlinedButton(
+          onPressed: () {
+            openSurveyProcessPage();
+          },
+          child: Text('Submit response'),
+        ),
+      ),
+      OutlinedButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ResponsePage(survey: survey),
+            ),
+          );
+        },
+        child: Text('View response'),
+      ),
+    ];
+
     return InkWell(
       onTap:
           alreadyResponded
@@ -98,35 +121,18 @@ class SurveyTile extends StatelessWidget {
             Text(survey.description),
             SizedBox(height: 10),
             isChildOfPost
-                ? SizedBox.shrink()
+                ? Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: surveyButtons,
+                )
                 : alreadyResponded
                 ? Row(
                   mainAxisAlignment:
                       surveyIsClosed
                           ? MainAxisAlignment.end
                           : MainAxisAlignment.spaceBetween,
-                  children: [
-                    Visibility(
-                      visible: !surveyIsClosed,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          openSurveyProcessPage();
-                        },
-                        child: Text('Submit response'),
-                      ),
-                    ),
-                    OutlinedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ResponsePage(survey: survey),
-                          ),
-                        );
-                      },
-                      child: Text('View response'),
-                    ),
-                  ],
+                  children: surveyButtons,
                 )
                 : SizedBox.shrink(),
           ],

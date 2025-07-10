@@ -1,6 +1,5 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/bottom_text_form_field.dart';
-import 'package:democracy/app/utils/view/more_pop_up.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/auth/models/user.dart';
 import 'package:democracy/chat/bloc/chat_actions/chat_actions_cubit.dart';
@@ -102,10 +101,13 @@ class _ChatDetailState extends State<ChatDetail> {
                     otherUser: widget.otherUser,
                   )
                   : SizedBox.shrink(),
-              ChatPopUpMenu(
-                chat: _chat,
-                currentUser: widget.currentUser,
-                otherUser: widget.otherUser,
+              Container(
+                margin: EdgeInsets.only(right: 15),
+                child: ChatPopUpMenu(
+                  chat: _chat,
+                  currentUser: widget.currentUser,
+                  otherUser: widget.otherUser,
+                ),
               ),
             ],
           ),
@@ -210,7 +212,16 @@ class ChatPopUpMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MorePopUp(
+    List texts = [
+      chat.blockers.isEmpty
+          ? 'Block'
+          : chat.blockers.contains(currentUser.id)
+          ? 'Unblock'
+          : 'Block',
+    ];
+    return PopupMenuButton<String>(
+      padding: EdgeInsets.zero,
+      menuPadding: EdgeInsets.zero,
       onSelected: (selected) {
         switch (selected) {
           case 'Block':
@@ -225,13 +236,19 @@ class ChatPopUpMenu extends StatelessWidget {
             );
         }
       },
-      texts: [
-        chat.blockers.isEmpty
-            ? 'Block'
-            : chat.blockers.contains(currentUser.id)
-            ? 'Unblock'
-            : 'Block',
-      ],
+      itemBuilder:
+          (BuildContext context) => [
+            ...texts.map((text) {
+              return PopupMenuItem<String>(
+                value: text,
+                child: Text(text, textAlign: TextAlign.center),
+              );
+            }),
+          ],
+      icon: Icon(
+        Symbols.more_vert_rounded,
+        color: Theme.of(context).colorScheme.outline,
+      ),
     );
   }
 }

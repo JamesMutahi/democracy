@@ -10,11 +10,10 @@ class MorePopUp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
-      icon: Icon(
-        Symbols.more_vert_rounded,
-        color: Theme.of(context).disabledColor,
-      ),
+      padding: EdgeInsets.zero,
+      menuPadding: EdgeInsets.zero,
       onSelected: onSelected,
+      splashRadius: 100,
       itemBuilder:
           (BuildContext context) => [
             ...texts.map((text) {
@@ -24,6 +23,10 @@ class MorePopUp extends StatelessWidget {
               );
             }),
           ],
+      child: Icon(
+        Symbols.more_vert_rounded,
+        color: Theme.of(context).disabledColor,
+      ),
     );
   }
 }
