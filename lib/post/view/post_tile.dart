@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/view/custom_text.dart';
 import 'package:democracy/app/utils/view/more_pop_up.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/app/utils/view/report.dart';
 import 'package:democracy/app/utils/view/share_bottom_sheet.dart';
+import 'package:democracy/app/view/widgets/profile_page.dart';
 import 'package:democracy/poll/view/poll_tile.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/post_create.dart';
@@ -68,7 +70,7 @@ class PostTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${post.author.firstName} ${post.author.lastName}',
+                        post.author.displayName,
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                       isChildOfPost
@@ -78,20 +80,25 @@ class PostTile extends StatelessWidget {
                               TimeDifferenceInfo(publishedAt: post.publishedAt),
                               isChildOfPost
                                   ? SizedBox.shrink()
-                                  : PostMorePopUp(post: post)
+                                  : PostMorePopUp(post: post),
                             ],
                           ),
                     ],
                   ),
-                  Text(
-                    post.body,
-                    overflow: isChildOfPost ? TextOverflow.ellipsis : null,
-                    maxLines:
-                        isChildOfPost
-                            ? 4
-                            : (post.image1Url == null)
-                            ? 20
-                            : 10,
+                  CustomText(
+                    text: post.body,
+                    onUserTagPressed: (userId) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder:
+                              (context) => ProfilePage(
+                                user: post.taggedUsers.firstWhere(
+                                  (user) => user.id == int.parse(userId),
+                                ),
+                              ),
+                        ),
+                      );
+                    },
                   ),
                   (post.repostOf == null)
                       ? SizedBox.shrink()
@@ -179,22 +186,16 @@ class PostMorePopUp extends StatelessWidget {
       onSelected: (selected) {
         switch (selected) {
           case 'Mute':
-          //   TODO:
+            //   TODO:
             return;
           case 'Block':
-          //   TODO:
+            //   TODO:
             return;
           case 'Report':
             showGeneralDialog(
               context: context,
-              transitionDuration: const Duration(
-                milliseconds: 300,
-              ),
-              pageBuilder: (
-                  context,
-                  animation,
-                  secondaryAnimation,
-                  ) {
+              transitionDuration: const Duration(milliseconds: 300),
+              pageBuilder: (context, animation, secondaryAnimation) {
                 return ReportModal(post: post);
               },
             );
@@ -204,7 +205,6 @@ class PostMorePopUp extends StatelessWidget {
     );
   }
 }
-
 
 class PostTileButton extends StatelessWidget {
   const PostTileButton({

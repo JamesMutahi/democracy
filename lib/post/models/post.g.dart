@@ -47,6 +47,10 @@ _Post _$PostFromJson(Map<String, dynamic> json) => _Post(
       json['survey'] == null
           ? null
           : Survey.fromJson(json['survey'] as Map<String, dynamic>),
+  taggedUsers:
+      (json['tagged_users'] as List<dynamic>)
+          .map((e) => User.fromJson(e as Map<String, dynamic>))
+          .toList(),
 );
 
 Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
@@ -78,4 +82,5 @@ Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
   'repost_of': instance.repostOf,
   'poll': instance.poll,
   'survey': instance.survey,
+  'tagged_users': instance.taggedUsers,
 };

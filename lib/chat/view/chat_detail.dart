@@ -40,8 +40,14 @@ class _ChatDetailState extends State<ChatDetail> {
   late Chat _chat = widget.chat;
 
   @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    String title = '${widget.otherUser.firstName} ${widget.otherUser.lastName}';
+    String title = widget.otherUser.displayName;
     return MultiBlocListener(
       listeners: [
         BlocListener<ChatDetailCubit, ChatDetailState>(
@@ -101,13 +107,10 @@ class _ChatDetailState extends State<ChatDetail> {
                     otherUser: widget.otherUser,
                   )
                   : SizedBox.shrink(),
-              Container(
-                margin: EdgeInsets.only(right: 15),
-                child: ChatPopUpMenu(
-                  chat: _chat,
-                  currentUser: widget.currentUser,
-                  otherUser: widget.otherUser,
-                ),
+              ChatPopUpMenu(
+                chat: _chat,
+                currentUser: widget.currentUser,
+                otherUser: widget.otherUser,
               ),
             ],
           ),
@@ -192,7 +195,7 @@ String copyMultiple({required Set<Message> forCopy}) {
   for (var message in messages) {
     copiedText +=
         '[${dateFormat.format(message.createdAt)}] '
-        '${message.user.firstName} ${message.user.lastName}: '
+        '${message.user.displayName}: '
         '${message.text} ${(messages.last == message) ? '' : '\n'}';
   }
   return copiedText;

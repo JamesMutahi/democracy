@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class BottomTextFormField extends StatelessWidget {
   const BottomTextFormField({
     super.key,
+    this.containerKey,
     required this.focusNode,
     required this.showCursor,
     required this.readOnly,
@@ -15,6 +16,7 @@ class BottomTextFormField extends StatelessWidget {
     this.onSend,
   });
 
+  final Key? containerKey;
   final FocusNode focusNode;
   final bool showCursor;
   final bool readOnly;
@@ -29,6 +31,7 @@ class BottomTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      key: containerKey,
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),

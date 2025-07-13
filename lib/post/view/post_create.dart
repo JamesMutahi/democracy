@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
+import 'package:democracy/app/utils/view/tagging.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/models/user.dart';
+import 'package:democracy/chat/bloc/search_users/search_users_cubit.dart';
 import 'package:democracy/poll/models/poll.dart';
 import 'package:democracy/poll/view/poll_tile.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
@@ -12,6 +16,8 @@ import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:fluttertagger/fluttertagger.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class PostCreate extends StatefulWidget {
@@ -33,17 +39,20 @@ class PostCreate extends StatefulWidget {
 }
 
 class _PostCreateState extends State<PostCreate> {
-  String body = '';
+  final _controller = FlutterTaggerController();
+  bool _disablePostButton = true;
 
   void createPost({PostStatus status = PostStatus.published}) {
     context.read<WebsocketBloc>().add(
       WebsocketEvent.createPost(
-        body: body,
+        body: _controller.formattedText,
         status: status,
         replyTo: widget.isReply ? widget.post : null,
         repostOf: widget.isReply ? null : widget.post,
         poll: widget.poll,
         survey: widget.survey,
+        taggedUserIds:
+            _controller.tags.map((tag) => int.parse(tag.id)).toList(),
       ),
     );
   }
@@ -77,7 +86,7 @@ class _PostCreateState extends State<PostCreate> {
           if (didPop) {
             return;
           }
-          body == ''
+          _disablePostButton
               ? Navigator.pop(context)
               : showDialog(
                 context: context,
@@ -97,7 +106,7 @@ class _PostCreateState extends State<PostCreate> {
               children: [
                 IconButton(
                   onPressed: () {
-                    body == ''
+                    _disablePostButton
                         ? Navigator.pop(context)
                         : showDialog(
                           context: context,
@@ -113,7 +122,7 @@ class _PostCreateState extends State<PostCreate> {
                 ),
                 OutlinedButton(
                   onPressed:
-                      body == ''
+                      _disablePostButton
                           ? null
                           : () {
                             showDialog(
@@ -135,6 +144,8 @@ class _PostCreateState extends State<PostCreate> {
             margin: EdgeInsets.all(15),
             child: SingleChildScrollView(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -158,15 +169,22 @@ class _PostCreateState extends State<PostCreate> {
                           scrollDirection: Axis.vertical,
                           reverse: true,
                           child: TextFormField(
+                            controller: _controller,
                             onChanged: (value) {
-                              setState(() {
-                                body = value;
-                              });
+                              if (value == '') {
+                                setState(() {
+                                  _disablePostButton = true;
+                                });
+                              } else {
+                                setState(() {
+                                  _disablePostButton = false;
+                                });
+                              }
                             },
                             autofocus: true,
                             minLines: 1,
+                            maxLines: 7,
                             keyboardType: TextInputType.multiline,
-                            maxLines: null,
                             maxLength: 500,
                             decoration: InputDecoration(
                               filled: true,
@@ -221,39 +239,146 @@ class _PostCreateState extends State<PostCreate> {
               ),
             ),
           ),
-          bottomNavigationBar: _BottomNavBar(),
+          bottomNavigationBar: _BottomNavBar(controller: _controller),
         ),
       ),
     );
   }
 }
 
-class _BottomNavBar extends StatelessWidget {
-  const _BottomNavBar();
+class _BottomNavBar extends StatefulWidget {
+  const _BottomNavBar({required this.controller});
+
+  final FlutterTaggerController controller;
+
+  @override
+  State<_BottomNavBar> createState() => _BottomNavBarState();
+}
+
+class _BottomNavBarState extends State<_BottomNavBar>
+    with TickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<Offset> _animation;
+
+  double overlayHeight = 1;
+  SearchResultView _view = SearchResultView.none;
+
+  late StreamSubscription<bool> keyboardSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 150),
+    );
+
+    _animation = Tween<Offset>(
+      begin: const Offset(0, 0.5),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+
+    var keyboardVisibilityController = KeyboardVisibilityController();
+    keyboardSubscription = keyboardVisibilityController.onChange.listen((
+      bool visible,
+    ) {
+      if (!visible) {
+        widget.controller.dismissOverlay();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    widget.controller.dispose();
+    keyboardSubscription.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).canvasColor,
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            PostExtraButton(
-              iconData: Symbols.gallery_thumbnail_rounded,
-              onTap: () {},
+    return BlocListener<SearchUsersCubit, SearchUsersState>(
+      listener: (context, state) {
+        if (state is SearchUsersLoaded) {
+          setState(() {
+            _view = SearchResultView.users;
+            if (state.users.isEmpty) {
+              overlayHeight = 1;
+            }
+            if (state.users.length == 1) {
+              overlayHeight = 75;
+            }
+            if (state.users.length == 2) {
+              overlayHeight = 150;
+            }
+            if (state.users.length == 3) {
+              overlayHeight = 225;
+            }
+            if (state.users.length > 3) {
+              overlayHeight = 300;
+            }
+          });
+        }
+      },
+      child: FlutterTagger(
+        triggerStrategy: TriggerStrategy.eager,
+        controller: widget.controller,
+        animationController: _animationController,
+        onSearch: (query, triggerChar) {
+          if (triggerChar == "@") {
+            setState(() {
+              _view = SearchResultView.users;
+            });
+            context.read<WebsocketBloc>().add(
+              WebsocketEvent.searchUsers(
+                searchTerm: query.toLowerCase().trim(),
+              ),
+            );
+          }
+        },
+        triggerCharacterAndStyles: const {
+          "@": TextStyle(color: Colors.blueAccent),
+        },
+        tagTextFormatter: (id, tag, triggerCharacter) {
+          return "$triggerCharacter$id#$tag#";
+        },
+        overlayHeight: overlayHeight,
+        overlay:
+            _view == SearchResultView.users
+                ? UserListView(
+                  tagController: widget.controller,
+                  animation: _animation,
+                )
+                : SizedBox.shrink(),
+        builder: (context, containerKey) {
+          return Container(
+            key: containerKey,
+            color: Theme.of(context).canvasColor,
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
-            SizedBox(width: 15),
-            PostExtraButton(
-              iconData: Symbols.edit_calendar_rounded,
-              onTap: () {},
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  PostExtraButton(
+                    iconData: Symbols.gallery_thumbnail_rounded,
+                    onTap: () {},
+                  ),
+                  SizedBox(width: 15),
+                  PostExtraButton(
+                    iconData: Symbols.edit_calendar_rounded,
+                    onTap: () {},
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

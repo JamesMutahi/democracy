@@ -12,6 +12,7 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     required Post? replyTo,
     required Poll? poll,
     required Survey? survey,
+    required List<int> taggedUserIds,
   }) = _CreatePost;
   const factory WebsocketEvent.updatePost({
     required int id,

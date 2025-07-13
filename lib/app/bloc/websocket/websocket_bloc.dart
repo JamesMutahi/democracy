@@ -188,6 +188,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
           'survey_id': event.survey?.id,
           'status':
               event.status == PostStatus.published ? 'published' : 'draft',
+          'tagged_user_ids': event.taggedUserIds,
         },
       },
     };

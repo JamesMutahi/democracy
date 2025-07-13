@@ -100,8 +100,18 @@ class ProfilePage extends StatelessWidget {
                         ],
                       ),
                       SizedBox(height: 10),
-                      Text('${user.firstName} ${user.lastName}'),
-                      SizedBox(height: 10),
+                      Text(
+                        user.displayName,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        user.name,
+                        style: TextStyle(
+                          color: Theme.of(context).disabledColor,
+                        ),
+                      ),
+                      SizedBox(height: 5),
                       Row(
                         children: [
                           Icon(
@@ -126,10 +136,10 @@ class ProfilePage extends StatelessWidget {
                       ),
                       (user.status.isNotEmpty)
                           ? Column(
-                            children: [SizedBox(height: 10), Text(user.status)],
+                            children: [SizedBox(height: 5), Text(user.status)],
                           )
                           : SizedBox.shrink(),
-                      SizedBox(height: 10),
+                      SizedBox(height: 5),
                       Row(
                         children: [
                           // TODO: Open page to view following and followers

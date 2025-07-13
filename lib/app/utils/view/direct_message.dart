@@ -31,6 +31,12 @@ class _DirectMessageState extends State<DirectMessage> {
   List<User> selectedUsers = [];
 
   @override
+  void dispose() {
+    focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     context.read<WebsocketBloc>().add(
       WebsocketEvent.searchUsers(searchTerm: ''),
@@ -127,7 +133,8 @@ class _DirectMessageState extends State<DirectMessage> {
                           selectedTileColor: Theme.of(context).highlightColor,
                           selected: selectedUsers.contains(user),
                           leading: ProfileImage(user: user),
-                          title: Text('${user.firstName} ${user.lastName}'),
+                          title: Text(user.displayName),
+                          subtitle: Text(user.name),
                           trailing:
                               selectedUsers.contains(user)
                                   ? Icon(Symbols.check_rounded)

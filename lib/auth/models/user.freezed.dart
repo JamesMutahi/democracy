@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$User {
 
- int get id;@JsonKey(name: 'first_name') String get firstName;@JsonKey(name: 'last_name') String get lastName; String get email; String get image; String get status; List<int> get muted; List<int> get blocked; int get following; int get followers;@JsonKey(name: 'is_active') bool get isActive;@JsonKey(name: 'date_joined') DateTime get dateJoined;
+ int get id; String get name;@JsonKey(name: 'display_name') String get displayName; String get email; String get image; String get status; List<int> get muted; List<int> get blocked; int get following; int get followers;@JsonKey(name: 'is_active') bool get isActive;@JsonKey(name: 'date_joined') DateTime get dateJoined;
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $UserCopyWith<User> get copyWith => _$UserCopyWithImpl<User>(this as User, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is User&&(identical(other.id, id) || other.id == id)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.email, email) || other.email == email)&&(identical(other.image, image) || other.image == image)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.muted, muted)&&const DeepCollectionEquality().equals(other.blocked, blocked)&&(identical(other.following, following) || other.following == following)&&(identical(other.followers, followers) || other.followers == followers)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.dateJoined, dateJoined) || other.dateJoined == dateJoined));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is User&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.email, email) || other.email == email)&&(identical(other.image, image) || other.image == image)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.muted, muted)&&const DeepCollectionEquality().equals(other.blocked, blocked)&&(identical(other.following, following) || other.following == following)&&(identical(other.followers, followers) || other.followers == followers)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.dateJoined, dateJoined) || other.dateJoined == dateJoined));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,firstName,lastName,email,image,status,const DeepCollectionEquality().hash(muted),const DeepCollectionEquality().hash(blocked),following,followers,isActive,dateJoined);
+int get hashCode => Object.hash(runtimeType,id,name,displayName,email,image,status,const DeepCollectionEquality().hash(muted),const DeepCollectionEquality().hash(blocked),following,followers,isActive,dateJoined);
 
 @override
 String toString() {
-  return 'User(id: $id, firstName: $firstName, lastName: $lastName, email: $email, image: $image, status: $status, muted: $muted, blocked: $blocked, following: $following, followers: $followers, isActive: $isActive, dateJoined: $dateJoined)';
+  return 'User(id: $id, name: $name, displayName: $displayName, email: $email, image: $image, status: $status, muted: $muted, blocked: $blocked, following: $following, followers: $followers, isActive: $isActive, dateJoined: $dateJoined)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $UserCopyWith<$Res>  {
   factory $UserCopyWith(User value, $Res Function(User) _then) = _$UserCopyWithImpl;
 @useResult
 $Res call({
- int id,@JsonKey(name: 'first_name') String firstName,@JsonKey(name: 'last_name') String lastName, String email, String image, String status, List<int> muted, List<int> blocked, int following, int followers,@JsonKey(name: 'is_active') bool isActive,@JsonKey(name: 'date_joined') DateTime dateJoined
+ int id, String name,@JsonKey(name: 'display_name') String displayName, String email, String image, String status, List<int> muted, List<int> blocked, int following, int followers,@JsonKey(name: 'is_active') bool isActive,@JsonKey(name: 'date_joined') DateTime dateJoined
 });
 
 
@@ -65,11 +65,11 @@ class _$UserCopyWithImpl<$Res>
 
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? firstName = null,Object? lastName = null,Object? email = null,Object? image = null,Object? status = null,Object? muted = null,Object? blocked = null,Object? following = null,Object? followers = null,Object? isActive = null,Object? dateJoined = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? displayName = null,Object? email = null,Object? image = null,Object? status = null,Object? muted = null,Object? blocked = null,Object? following = null,Object? followers = null,Object? isActive = null,Object? dateJoined = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
-as String,lastName: null == lastName ? _self.lastName : lastName // ignore: cast_nullable_to_non_nullable
+as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,image: null == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
@@ -161,10 +161,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id, @JsonKey(name: 'first_name')  String firstName, @JsonKey(name: 'last_name')  String lastName,  String email,  String image,  String status,  List<int> muted,  List<int> blocked,  int following,  int followers, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'date_joined')  DateTime dateJoined)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name, @JsonKey(name: 'display_name')  String displayName,  String email,  String image,  String status,  List<int> muted,  List<int> blocked,  int following,  int followers, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'date_joined')  DateTime dateJoined)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _User() when $default != null:
-return $default(_that.id,_that.firstName,_that.lastName,_that.email,_that.image,_that.status,_that.muted,_that.blocked,_that.following,_that.followers,_that.isActive,_that.dateJoined);case _:
+return $default(_that.id,_that.name,_that.displayName,_that.email,_that.image,_that.status,_that.muted,_that.blocked,_that.following,_that.followers,_that.isActive,_that.dateJoined);case _:
   return orElse();
 
 }
@@ -182,10 +182,10 @@ return $default(_that.id,_that.firstName,_that.lastName,_that.email,_that.image,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id, @JsonKey(name: 'first_name')  String firstName, @JsonKey(name: 'last_name')  String lastName,  String email,  String image,  String status,  List<int> muted,  List<int> blocked,  int following,  int followers, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'date_joined')  DateTime dateJoined)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name, @JsonKey(name: 'display_name')  String displayName,  String email,  String image,  String status,  List<int> muted,  List<int> blocked,  int following,  int followers, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'date_joined')  DateTime dateJoined)  $default,) {final _that = this;
 switch (_that) {
 case _User():
-return $default(_that.id,_that.firstName,_that.lastName,_that.email,_that.image,_that.status,_that.muted,_that.blocked,_that.following,_that.followers,_that.isActive,_that.dateJoined);}
+return $default(_that.id,_that.name,_that.displayName,_that.email,_that.image,_that.status,_that.muted,_that.blocked,_that.following,_that.followers,_that.isActive,_that.dateJoined);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -199,10 +199,10 @@ return $default(_that.id,_that.firstName,_that.lastName,_that.email,_that.image,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id, @JsonKey(name: 'first_name')  String firstName, @JsonKey(name: 'last_name')  String lastName,  String email,  String image,  String status,  List<int> muted,  List<int> blocked,  int following,  int followers, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'date_joined')  DateTime dateJoined)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name, @JsonKey(name: 'display_name')  String displayName,  String email,  String image,  String status,  List<int> muted,  List<int> blocked,  int following,  int followers, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'date_joined')  DateTime dateJoined)?  $default,) {final _that = this;
 switch (_that) {
 case _User() when $default != null:
-return $default(_that.id,_that.firstName,_that.lastName,_that.email,_that.image,_that.status,_that.muted,_that.blocked,_that.following,_that.followers,_that.isActive,_that.dateJoined);case _:
+return $default(_that.id,_that.name,_that.displayName,_that.email,_that.image,_that.status,_that.muted,_that.blocked,_that.following,_that.followers,_that.isActive,_that.dateJoined);case _:
   return null;
 
 }
@@ -214,12 +214,12 @@ return $default(_that.id,_that.firstName,_that.lastName,_that.email,_that.image,
 @JsonSerializable()
 
 class _User implements User {
-  const _User({required this.id, @JsonKey(name: 'first_name') required this.firstName, @JsonKey(name: 'last_name') required this.lastName, required this.email, required this.image, required this.status, required final  List<int> muted, required final  List<int> blocked, required this.following, required this.followers, @JsonKey(name: 'is_active') required this.isActive, @JsonKey(name: 'date_joined') required this.dateJoined}): _muted = muted,_blocked = blocked;
+  const _User({required this.id, required this.name, @JsonKey(name: 'display_name') required this.displayName, required this.email, required this.image, required this.status, required final  List<int> muted, required final  List<int> blocked, required this.following, required this.followers, @JsonKey(name: 'is_active') required this.isActive, @JsonKey(name: 'date_joined') required this.dateJoined}): _muted = muted,_blocked = blocked;
   factory _User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
 @override final  int id;
-@override@JsonKey(name: 'first_name') final  String firstName;
-@override@JsonKey(name: 'last_name') final  String lastName;
+@override final  String name;
+@override@JsonKey(name: 'display_name') final  String displayName;
 @override final  String email;
 @override final  String image;
 @override final  String status;
@@ -255,16 +255,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _User&&(identical(other.id, id) || other.id == id)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.email, email) || other.email == email)&&(identical(other.image, image) || other.image == image)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other._muted, _muted)&&const DeepCollectionEquality().equals(other._blocked, _blocked)&&(identical(other.following, following) || other.following == following)&&(identical(other.followers, followers) || other.followers == followers)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.dateJoined, dateJoined) || other.dateJoined == dateJoined));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _User&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.email, email) || other.email == email)&&(identical(other.image, image) || other.image == image)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other._muted, _muted)&&const DeepCollectionEquality().equals(other._blocked, _blocked)&&(identical(other.following, following) || other.following == following)&&(identical(other.followers, followers) || other.followers == followers)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.dateJoined, dateJoined) || other.dateJoined == dateJoined));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,firstName,lastName,email,image,status,const DeepCollectionEquality().hash(_muted),const DeepCollectionEquality().hash(_blocked),following,followers,isActive,dateJoined);
+int get hashCode => Object.hash(runtimeType,id,name,displayName,email,image,status,const DeepCollectionEquality().hash(_muted),const DeepCollectionEquality().hash(_blocked),following,followers,isActive,dateJoined);
 
 @override
 String toString() {
-  return 'User(id: $id, firstName: $firstName, lastName: $lastName, email: $email, image: $image, status: $status, muted: $muted, blocked: $blocked, following: $following, followers: $followers, isActive: $isActive, dateJoined: $dateJoined)';
+  return 'User(id: $id, name: $name, displayName: $displayName, email: $email, image: $image, status: $status, muted: $muted, blocked: $blocked, following: $following, followers: $followers, isActive: $isActive, dateJoined: $dateJoined)';
 }
 
 
@@ -275,7 +275,7 @@ abstract mixin class _$UserCopyWith<$Res> implements $UserCopyWith<$Res> {
   factory _$UserCopyWith(_User value, $Res Function(_User) _then) = __$UserCopyWithImpl;
 @override @useResult
 $Res call({
- int id,@JsonKey(name: 'first_name') String firstName,@JsonKey(name: 'last_name') String lastName, String email, String image, String status, List<int> muted, List<int> blocked, int following, int followers,@JsonKey(name: 'is_active') bool isActive,@JsonKey(name: 'date_joined') DateTime dateJoined
+ int id, String name,@JsonKey(name: 'display_name') String displayName, String email, String image, String status, List<int> muted, List<int> blocked, int following, int followers,@JsonKey(name: 'is_active') bool isActive,@JsonKey(name: 'date_joined') DateTime dateJoined
 });
 
 
@@ -292,11 +292,11 @@ class __$UserCopyWithImpl<$Res>
 
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? firstName = null,Object? lastName = null,Object? email = null,Object? image = null,Object? status = null,Object? muted = null,Object? blocked = null,Object? following = null,Object? followers = null,Object? isActive = null,Object? dateJoined = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? displayName = null,Object? email = null,Object? image = null,Object? status = null,Object? muted = null,Object? blocked = null,Object? following = null,Object? followers = null,Object? isActive = null,Object? dateJoined = null,}) {
   return _then(_User(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
-as String,lastName: null == lastName ? _self.lastName : lastName // ignore: cast_nullable_to_non_nullable
+as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,image: null == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable

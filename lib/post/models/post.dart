@@ -39,6 +39,7 @@ sealed class Post with _$Post {
     @JsonKey(name: 'repost_of') required Post? repostOf,
     required Poll? poll,
     required Survey? survey,
+    @JsonKey(name: 'tagged_users') required List<User> taggedUsers,
   }) = _Post;
 
   factory Post.fromJson(Map<String, Object?> json) => _$PostFromJson(json);

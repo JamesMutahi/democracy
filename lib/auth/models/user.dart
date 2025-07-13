@@ -7,8 +7,8 @@ part 'user.g.dart';
 sealed class User with _$User {
   const factory User({
     required final int id,
-    @JsonKey(name: 'first_name') required String firstName,
-    @JsonKey(name: 'last_name') required String lastName,
+    required String name,
+    @JsonKey(name: 'display_name') required String displayName,
     required String email,
     required String image,
     required String status,
