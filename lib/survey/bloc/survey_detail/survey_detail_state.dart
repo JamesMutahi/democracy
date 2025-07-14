@@ -8,7 +8,7 @@ class SurveyDetailState with _$SurveyDetailState {
       SurveyCreated;
   const factory SurveyDetailState.updated({required Survey survey}) =
       SurveyUpdated;
-  const factory SurveyDetailState.deleted({required Survey survey}) =
+  const factory SurveyDetailState.deleted({required int surveyId}) =
       SurveyDeleted;
   const factory SurveyDetailState.failure({required String error}) =
       SurveyDetailFailure;

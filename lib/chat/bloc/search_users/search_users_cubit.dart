@@ -17,7 +17,7 @@ class SearchUsersCubit extends Cubit<SearchUsersState> {
   void loaded({required Map<String, dynamic> payload}) {
     emit(SearchUsersLoading());
     if (payload['response_status'] == 200) {
-      final List<User> users = List.from(
+      List<User> users = List.from(
         payload['data'].map((e) => User.fromJson(e)),
       );
       emit(SearchUsersLoaded(users: users));

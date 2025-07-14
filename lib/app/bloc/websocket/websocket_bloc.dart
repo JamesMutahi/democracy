@@ -6,6 +6,7 @@ import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/models/user.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/models/chat.dart';
+import 'package:democracy/notification/models/notification.dart';
 import 'package:democracy/poll/models/option.dart';
 import 'package:democracy/poll/models/poll.dart';
 import 'package:democracy/post/models/post.dart';
@@ -26,6 +27,7 @@ const String postsStream = 'posts';
 const String pollsStream = 'polls';
 const String chatsStream = 'chats';
 const String surveysStream = 'surveys';
+const String notificationsStream = 'notifications';
 const int postRequestId = 1;
 const int postUpdateRequestId = 2;
 const int pollRequestId = 1;
@@ -33,6 +35,7 @@ const int chatRequestId = 1;
 const int messageRequestId = 2;
 const int surveyRequestId = 1;
 const int responseRequestId = 2;
+const int notificationRequestId = 1;
 
 class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   WebsocketBloc({required this.authRepository})
@@ -41,6 +44,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       _onConnect(emit);
     });
     on<_ChangeState>((event, emit) => emit(event.state));
+    on<_GetPosts>((event, emit) {
+      _onGetPosts(emit);
+    });
     on<_CreatePost>((event, emit) {
       _onCreatePost(emit, event);
     });
@@ -69,7 +75,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       _onLoadUserPosts(emit, event);
     });
     on<_LoadBookmarks>((event, emit) {
-      _onLoadBookmarks(emit, event);
+      _onLoadBookmarks(emit);
     });
     on<_LoadLikedPosts>((event, emit) {
       _onLoadLikedPosts(emit, event);
@@ -78,7 +84,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       _onLoadUserReplies(emit, event);
     });
     on<_LoadChats>((event, emit) {
-      _onLoadChats(emit, event);
+      _onLoadChats(emit);
     });
     on<_CreateChat>((event, emit) {
       _onCreateChat(emit, event);
@@ -92,8 +98,8 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_DeleteMessage>((event, emit) {
       _onDeleteMessage(emit, event);
     });
-    on<_MarkAsRead>((event, emit) {
-      _onMarkAsRead(emit, event);
+    on<_MarkChatAsRead>((event, emit) {
+      _onMarkChatAsRead(emit, event);
     });
     on<_UserBlocked>((event, emit) {
       _onUserBlocked(emit, event);
@@ -105,7 +111,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       _onSendDirectMessage(emit, event);
     });
     on<_GetPolls>((event, emit) {
-      _onGetPolls(emit, event);
+      _onGetPolls(emit);
     });
     on<_Vote>((event, emit) {
       _onVote(emit, event);
@@ -114,10 +120,16 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       _onSubmitReason(emit, event);
     });
     on<_GetSurveys>((event, emit) {
-      _onGetSurveys(emit, event);
+      _onGetSurveys(emit);
     });
     on<_SubmitResponse>((event, emit) {
       _onSubmitResponse(emit, event);
+    });
+    on<_GetNotifications>((event, emit) {
+      _onGetNotifications(emit);
+    });
+    on<_MarkNotificationAsRead>((event, emit) {
+      _onMarkNotificationAsRead(emit, event);
     });
     on<_Disconnect>((event, emit) {
       _channel.sink.close();
@@ -134,6 +146,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         headers: {'Authorization': 'Token $token'},
       );
       await _channel.ready;
+      add(_ChangeState(state: WebsocketConnected()));
       _channel.stream.listen(
         (message) {
           add(
@@ -162,15 +175,19 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
           });
         },
       );
-      // Get posts
-      Map<String, dynamic> message = {
-        'stream': postsStream,
-        'payload': {"action": 'list', "request_id": postRequestId},
-      };
-      _channel.sink.add(jsonEncode(message));
+      add(WebsocketEvent.getNotifications());
     } catch (e) {
       add(_ChangeState(state: WebsocketFailure(error: e.toString())));
     }
+  }
+
+  Future _onGetPosts(Emitter<WebsocketState> emit) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': postsStream,
+      'payload': {"action": 'list', "request_id": postRequestId},
+    };
+    _channel.sink.add(jsonEncode(message));
   }
 
   Future _onCreatePost(Emitter<WebsocketState> emit, _CreatePost event) async {
@@ -303,10 +320,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
-  Future _onLoadBookmarks(
-    Emitter<WebsocketState> emit,
-    _LoadBookmarks event,
-  ) async {
+  Future _onLoadBookmarks(Emitter<WebsocketState> emit) async {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
@@ -339,7 +353,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
-  Future _onLoadChats(Emitter<WebsocketState> emit, _LoadChats event) async {
+  Future _onLoadChats(Emitter<WebsocketState> emit) async {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': chatsStream,
@@ -418,7 +432,10 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     }
   }
 
-  Future _onMarkAsRead(Emitter<WebsocketState> emit, _MarkAsRead event) async {
+  Future _onMarkChatAsRead(
+    Emitter<WebsocketState> emit,
+    _MarkChatAsRead event,
+  ) async {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': chatsStream,
@@ -486,7 +503,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
-  Future _onGetPolls(Emitter<WebsocketState> emit, _GetPolls event) async {
+  Future _onGetPolls(Emitter<WebsocketState> emit) async {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': pollsStream,
@@ -525,7 +542,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
-  Future _onGetSurveys(Emitter<WebsocketState> emit, _GetSurveys event) async {
+  Future _onGetSurveys(Emitter<WebsocketState> emit) async {
     if (state is WebsocketFailure) {
       await _onConnect(emit);
     }
@@ -568,6 +585,34 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
           'text_answers': textAnswers,
           'choice_answers': choiceAnswers,
         },
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onGetNotifications(Emitter<WebsocketState> emit) async {
+    if (state is WebsocketFailure) {
+      await _onConnect(emit);
+    }
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': notificationsStream,
+      'payload': {'action': 'list', 'request_id': notificationRequestId},
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onMarkNotificationAsRead(
+    Emitter<WebsocketState> emit,
+    _MarkNotificationAsRead event,
+  ) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': notificationsStream,
+      'payload': {
+        'action': 'mark_as_read',
+        'request_id': notificationRequestId,
+        'pk': event.notification.id,
       },
     };
     _channel.sink.add(jsonEncode(message));

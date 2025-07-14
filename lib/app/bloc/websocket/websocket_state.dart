@@ -6,6 +6,8 @@ abstract class WebsocketState with _$WebsocketState {
 
   const factory WebsocketState.loading() = WebsocketLoading;
 
+  const factory WebsocketState.connected() = WebsocketConnected;
+
   const factory WebsocketState.success({
     required Map<String, dynamic> message,
   }) = WebsocketSuccess;

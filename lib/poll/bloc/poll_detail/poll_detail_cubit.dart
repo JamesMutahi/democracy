@@ -31,8 +31,7 @@ class PollDetailCubit extends Cubit<PollDetailState> {
   void deleted({required Map<String, dynamic> payload}) {
     emit(PollDetailLoading());
     if (payload['response_status'] == 204) {
-      Poll poll = Poll.fromJson(payload['data']);
-      emit(PollDeleted(poll: poll));
+      emit(PollDeleted(pollId: payload['pk']));
     } else {
       emit(PollDetailFailure(error: payload['errors'][0]));
     }

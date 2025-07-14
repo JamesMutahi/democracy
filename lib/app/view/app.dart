@@ -9,6 +9,8 @@ import 'package:democracy/auth/view/login.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
 import 'package:democracy/chat/bloc/search_users/search_users_cubit.dart';
+import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
+import 'package:democracy/notification/bloc/notifications/notifications_cubit.dart';
 import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
 import 'package:democracy/poll/bloc/polls/polls_cubit.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
@@ -66,7 +68,7 @@ class MyApp extends StatelessWidget {
                   case Unauthenticated():
                     return LoginPage();
                   case Authenticated():
-                    return Dashboard();
+                    return WebsocketConnection();
                   default:
                     return SplashPage();
                 }
@@ -75,6 +77,30 @@ class MyApp extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class WebsocketConnection extends StatefulWidget {
+  const WebsocketConnection({super.key});
+
+  @override
+  State<WebsocketConnection> createState() => _WebsocketConnectionState();
+}
+
+class _WebsocketConnectionState extends State<WebsocketConnection> {
+  bool isConnected = false;
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<WebsocketBloc, WebsocketState>(
+      listener: (context, state) {
+        if (state is WebsocketConnected) {
+          setState(() {
+            isConnected = true;
+          });
+        }
+      },
+      child: isConnected ? Dashboard() : SplashPage(),
     );
   }
 }
@@ -287,6 +313,25 @@ class _Listeners extends StatelessWidget {
                           payload: message['payload'],
                         );
                     }
+                  case notificationsStream:
+                    switch (message['payload']['action']) {
+                      case 'list':
+                        context.read<NotificationsCubit>().loaded(
+                          payload: message['payload'],
+                        );
+                      case 'create':
+                        context.read<NotificationDetailCubit>().created(
+                          payload: message['payload'],
+                        );
+                      case 'update':
+                        context.read<NotificationDetailCubit>().updated(
+                          payload: message['payload'],
+                        );
+                      case 'delete':
+                        context.read<NotificationDetailCubit>().deleted(
+                          payload: message['payload'],
+                        );
+                    }
                 }
               case WebsocketFailure(:final error):
                 context.read<PostListCubit>().websocketFailure(error: error);
@@ -294,6 +339,9 @@ class _Listeners extends StatelessWidget {
                 context.read<SurveysCubit>().websocketFailure(error: error);
                 context.read<PollsCubit>().websocketFailure(error: error);
                 context.read<ChatsCubit>().websocketFailure(error: error);
+                context.read<NotificationsCubit>().websocketFailure(
+                  error: error,
+                );
                 final snackBar = SnackBar(
                   behavior: SnackBarBehavior.floating,
                   backgroundColor: Theme.of(context).cardColor,

@@ -5,6 +5,7 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.connect() = _Connect;
   const factory WebsocketEvent.changeState({required WebsocketState state}) =
       _ChangeState;
+  const factory WebsocketEvent.getPosts() = _GetPosts;
   const factory WebsocketEvent.createPost({
     required String body,
     required PostStatus status,
@@ -53,7 +54,8 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.deleteMessage({
     required List<Message> messages,
   }) = _DeleteMessage;
-  const factory WebsocketEvent.markAsRead({required Chat chat}) = _MarkAsRead;
+  const factory WebsocketEvent.markChatAsRead({required Chat chat}) =
+      _MarkChatAsRead;
   const factory WebsocketEvent.userBlocked({required User user}) = _UserBlocked;
   const factory WebsocketEvent.getPolls() = _GetPolls;
   const factory WebsocketEvent.vote({required Option option}) = _Vote;
@@ -78,5 +80,9 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     Poll? poll,
     Survey? survey,
   }) = _SendDirectMessage;
+  const factory WebsocketEvent.getNotifications() = _GetNotifications;
+  const factory WebsocketEvent.markNotificationAsRead({
+    required Notification notification,
+  }) = _MarkNotificationAsRead;
   const factory WebsocketEvent.disconnect() = _Disconnect;
 }

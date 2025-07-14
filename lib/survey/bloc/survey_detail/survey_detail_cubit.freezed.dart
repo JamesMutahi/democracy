@@ -134,14 +134,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Survey survey)?  created,TResult Function( Survey survey)?  updated,TResult Function( Survey survey)?  deleted,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Survey survey)?  created,TResult Function( Survey survey)?  updated,TResult Function( int surveyId)?  deleted,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case SurveyDetailInitial() when initial != null:
 return initial();case SurveyDetailLoading() when loading != null:
 return loading();case SurveyCreated() when created != null:
 return created(_that.survey);case SurveyUpdated() when updated != null:
 return updated(_that.survey);case SurveyDeleted() when deleted != null:
-return deleted(_that.survey);case SurveyDetailFailure() when failure != null:
+return deleted(_that.surveyId);case SurveyDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return orElse();
 
@@ -160,14 +160,14 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Survey survey)  created,required TResult Function( Survey survey)  updated,required TResult Function( Survey survey)  deleted,required TResult Function( String error)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Survey survey)  created,required TResult Function( Survey survey)  updated,required TResult Function( int surveyId)  deleted,required TResult Function( String error)  failure,}) {final _that = this;
 switch (_that) {
 case SurveyDetailInitial():
 return initial();case SurveyDetailLoading():
 return loading();case SurveyCreated():
 return created(_that.survey);case SurveyUpdated():
 return updated(_that.survey);case SurveyDeleted():
-return deleted(_that.survey);case SurveyDetailFailure():
+return deleted(_that.surveyId);case SurveyDetailFailure():
 return failure(_that.error);case _:
   throw StateError('Unexpected subclass');
 
@@ -185,14 +185,14 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Survey survey)?  created,TResult? Function( Survey survey)?  updated,TResult? Function( Survey survey)?  deleted,TResult? Function( String error)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Survey survey)?  created,TResult? Function( Survey survey)?  updated,TResult? Function( int surveyId)?  deleted,TResult? Function( String error)?  failure,}) {final _that = this;
 switch (_that) {
 case SurveyDetailInitial() when initial != null:
 return initial();case SurveyDetailLoading() when loading != null:
 return loading();case SurveyCreated() when created != null:
 return created(_that.survey);case SurveyUpdated() when updated != null:
 return updated(_that.survey);case SurveyDeleted() when deleted != null:
-return deleted(_that.survey);case SurveyDetailFailure() when failure != null:
+return deleted(_that.surveyId);case SurveyDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return null;
 
@@ -419,10 +419,10 @@ $SurveyCopyWith<$Res> get survey {
 
 
 class SurveyDeleted implements SurveyDetailState {
-  const SurveyDeleted({required this.survey});
+  const SurveyDeleted({required this.surveyId});
   
 
- final  Survey survey;
+ final  int surveyId;
 
 /// Create a copy of SurveyDetailState
 /// with the given fields replaced by the non-null parameter values.
@@ -434,16 +434,16 @@ $SurveyDeletedCopyWith<SurveyDeleted> get copyWith => _$SurveyDeletedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SurveyDeleted&&(identical(other.survey, survey) || other.survey == survey));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SurveyDeleted&&(identical(other.surveyId, surveyId) || other.surveyId == surveyId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,survey);
+int get hashCode => Object.hash(runtimeType,surveyId);
 
 @override
 String toString() {
-  return 'SurveyDetailState.deleted(survey: $survey)';
+  return 'SurveyDetailState.deleted(surveyId: $surveyId)';
 }
 
 
@@ -454,11 +454,11 @@ abstract mixin class $SurveyDeletedCopyWith<$Res> implements $SurveyDetailStateC
   factory $SurveyDeletedCopyWith(SurveyDeleted value, $Res Function(SurveyDeleted) _then) = _$SurveyDeletedCopyWithImpl;
 @useResult
 $Res call({
- Survey survey
+ int surveyId
 });
 
 
-$SurveyCopyWith<$Res> get survey;
+
 
 }
 /// @nodoc
@@ -471,23 +471,14 @@ class _$SurveyDeletedCopyWithImpl<$Res>
 
 /// Create a copy of SurveyDetailState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? survey = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? surveyId = null,}) {
   return _then(SurveyDeleted(
-survey: null == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
-as Survey,
+surveyId: null == surveyId ? _self.surveyId : surveyId // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
-/// Create a copy of SurveyDetailState
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$SurveyCopyWith<$Res> get survey {
-  
-  return $SurveyCopyWith<$Res>(_self.survey, (value) {
-    return _then(_self.copyWith(survey: value));
-  });
-}
+
 }
 
 /// @nodoc

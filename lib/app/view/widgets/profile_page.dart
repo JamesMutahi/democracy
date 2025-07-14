@@ -33,12 +33,7 @@ class ProfilePage extends StatelessWidget {
             if (state is ChatCreated) {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder:
-                      (context) => ChatDetail(
-                        chat: state.chat,
-                        currentUser: currentUser,
-                        otherUser: user,
-                      ),
+                  builder: (context) => ChatDetail(chat: state.chat),
                 ),
               );
             }

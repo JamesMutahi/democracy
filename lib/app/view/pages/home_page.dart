@@ -22,6 +22,12 @@ class _HomePageState extends State<HomePage>
   bool get wantKeepAlive => true;
 
   @override
+  void initState() {
+    context.read<WebsocketBloc>().add(WebsocketEvent.getPosts());
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return BlocBuilder<PostListCubit, PostListState>(
@@ -32,7 +38,7 @@ class _HomePageState extends State<HomePage>
               children: [
                 (posts.isNotEmpty)
                     ? PostList(key: UniqueKey(), posts: posts)
-                    : const NoResults(),
+                    : NoResults(text: 'No posts'),
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Container(

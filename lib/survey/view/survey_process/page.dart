@@ -145,7 +145,10 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
                         },
                         itemCount: questions.length,
                       )
-                      : const NoResults();
+                      : NoResults(
+                        text:
+                            "Oops...Someone didn't add the questions for this page",
+                      );
                 case PageComplete():
                   return Center(
                     child: Column(

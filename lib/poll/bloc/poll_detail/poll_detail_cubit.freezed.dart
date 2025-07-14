@@ -134,14 +134,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Poll poll)?  created,TResult Function( Poll poll)?  updated,TResult Function( Poll poll)?  deleted,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Poll poll)?  created,TResult Function( Poll poll)?  updated,TResult Function( int pollId)?  deleted,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case PollDetailInitial() when initial != null:
 return initial();case PollDetailLoading() when loading != null:
 return loading();case PollCreated() when created != null:
 return created(_that.poll);case PollUpdated() when updated != null:
 return updated(_that.poll);case PollDeleted() when deleted != null:
-return deleted(_that.poll);case PollDetailFailure() when failure != null:
+return deleted(_that.pollId);case PollDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return orElse();
 
@@ -160,14 +160,14 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Poll poll)  created,required TResult Function( Poll poll)  updated,required TResult Function( Poll poll)  deleted,required TResult Function( String error)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Poll poll)  created,required TResult Function( Poll poll)  updated,required TResult Function( int pollId)  deleted,required TResult Function( String error)  failure,}) {final _that = this;
 switch (_that) {
 case PollDetailInitial():
 return initial();case PollDetailLoading():
 return loading();case PollCreated():
 return created(_that.poll);case PollUpdated():
 return updated(_that.poll);case PollDeleted():
-return deleted(_that.poll);case PollDetailFailure():
+return deleted(_that.pollId);case PollDetailFailure():
 return failure(_that.error);case _:
   throw StateError('Unexpected subclass');
 
@@ -185,14 +185,14 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Poll poll)?  created,TResult? Function( Poll poll)?  updated,TResult? Function( Poll poll)?  deleted,TResult? Function( String error)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Poll poll)?  created,TResult? Function( Poll poll)?  updated,TResult? Function( int pollId)?  deleted,TResult? Function( String error)?  failure,}) {final _that = this;
 switch (_that) {
 case PollDetailInitial() when initial != null:
 return initial();case PollDetailLoading() when loading != null:
 return loading();case PollCreated() when created != null:
 return created(_that.poll);case PollUpdated() when updated != null:
 return updated(_that.poll);case PollDeleted() when deleted != null:
-return deleted(_that.poll);case PollDetailFailure() when failure != null:
+return deleted(_that.pollId);case PollDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return null;
 
@@ -419,10 +419,10 @@ $PollCopyWith<$Res> get poll {
 
 
 class PollDeleted implements PollDetailState {
-  const PollDeleted({required this.poll});
+  const PollDeleted({required this.pollId});
   
 
- final  Poll poll;
+ final  int pollId;
 
 /// Create a copy of PollDetailState
 /// with the given fields replaced by the non-null parameter values.
@@ -434,16 +434,16 @@ $PollDeletedCopyWith<PollDeleted> get copyWith => _$PollDeletedCopyWithImpl<Poll
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PollDeleted&&(identical(other.poll, poll) || other.poll == poll));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PollDeleted&&(identical(other.pollId, pollId) || other.pollId == pollId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,poll);
+int get hashCode => Object.hash(runtimeType,pollId);
 
 @override
 String toString() {
-  return 'PollDetailState.deleted(poll: $poll)';
+  return 'PollDetailState.deleted(pollId: $pollId)';
 }
 
 
@@ -454,11 +454,11 @@ abstract mixin class $PollDeletedCopyWith<$Res> implements $PollDetailStateCopyW
   factory $PollDeletedCopyWith(PollDeleted value, $Res Function(PollDeleted) _then) = _$PollDeletedCopyWithImpl;
 @useResult
 $Res call({
- Poll poll
+ int pollId
 });
 
 
-$PollCopyWith<$Res> get poll;
+
 
 }
 /// @nodoc
@@ -471,23 +471,14 @@ class _$PollDeletedCopyWithImpl<$Res>
 
 /// Create a copy of PollDetailState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? poll = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? pollId = null,}) {
   return _then(PollDeleted(
-poll: null == poll ? _self.poll : poll // ignore: cast_nullable_to_non_nullable
-as Poll,
+pollId: null == pollId ? _self.pollId : pollId // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
-/// Create a copy of PollDetailState
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$PollCopyWith<$Res> get poll {
-  
-  return $PollCopyWith<$Res>(_self.poll, (value) {
-    return _then(_self.copyWith(poll: value));
-  });
-}
+
 }
 
 /// @nodoc

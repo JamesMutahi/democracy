@@ -31,8 +31,7 @@ class SurveyDetailCubit extends Cubit<SurveyDetailState> {
   void deleted({required Map<String, dynamic> payload}) {
     emit(SurveyDetailLoading());
     if (payload['response_status'] == 204) {
-      final Survey survey = Survey.fromJson(payload['data']);
-      emit(SurveyDeleted(survey: survey));
+      emit(SurveyDeleted(surveyId: payload['pk']));
     } else {
       emit(SurveyDetailFailure(error: payload['errors'][0]));
     }

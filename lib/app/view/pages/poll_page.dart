@@ -29,7 +29,7 @@ class _PollPageState extends State<PollPage> {
           case PollsLoaded(:final polls):
             return (polls.isNotEmpty)
                 ? Polls(key: UniqueKey(), polls: polls)
-                : const NoResults();
+                : NoResults(text: 'No polls',);
           case PollsFailure():
             return FailureRetryButton(
               onPressed: () {

@@ -37,9 +37,9 @@ class _PollsState extends State<Polls> {
           }
         }
         if (state is PollDeleted) {
-          if (_polls.any((poll) => poll.id == state.poll.id)) {
+          if (_polls.any((poll) => poll.id == state.pollId)) {
             setState(() {
-              _polls.removeWhere((poll) => poll.id == state.poll.id);
+              _polls.removeWhere((poll) => poll.id == state.pollId);
             });
           }
         }

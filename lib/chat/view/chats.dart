@@ -190,7 +190,7 @@ class _ChatTileState extends State<ChatTile> {
               if (!widget.chat.lastMessage!.isRead &&
                   widget.chat.lastMessage!.user.id != widget.currentUser.id) {
                 context.read<WebsocketBloc>().add(
-                  WebsocketEvent.markAsRead(chat: widget.chat),
+                  WebsocketEvent.markChatAsRead(chat: widget.chat),
                 );
               }
             }
@@ -200,8 +200,6 @@ class _ChatTileState extends State<ChatTile> {
                     (context) => ChatDetail(
                       key: ValueKey(widget.chat.id),
                       chat: widget.chat,
-                      currentUser: widget.currentUser,
-                      otherUser: otherUser,
                     ),
               ),
             );
