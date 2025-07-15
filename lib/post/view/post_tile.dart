@@ -70,7 +70,7 @@ class PostTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        post.author.displayName,
+                        post.author.name,
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                       isChildOfPost

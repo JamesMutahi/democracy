@@ -6,10 +6,10 @@ import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/auth/models/user.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
-import 'package:democracy/chat/bloc/search_users/search_users_cubit.dart';
 import 'package:democracy/poll/models/poll.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
+import 'package:democracy/users/bloc/search_users/search_users_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -133,8 +133,8 @@ class _DirectMessageState extends State<DirectMessage> {
                           selectedTileColor: Theme.of(context).highlightColor,
                           selected: selectedUsers.contains(user),
                           leading: ProfileImage(user: user),
-                          title: Text(user.displayName),
-                          subtitle: Text(user.name),
+                          title: Text(user.name),
+                          subtitle: Text(user.username),
                           trailing:
                               selectedUsers.contains(user)
                                   ? Icon(Symbols.check_rounded)

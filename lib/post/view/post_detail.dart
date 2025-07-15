@@ -8,13 +8,13 @@ import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/app/utils/view/tagging.dart';
 import 'package:democracy/app/view/widgets/profile_page.dart';
 import 'package:democracy/auth/models/user.dart';
-import 'package:democracy/chat/bloc/search_users/search_users_cubit.dart';
 import 'package:democracy/poll/view/poll_tile.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/post_tile.dart';
 import 'package:democracy/post/view/replies.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
+import 'package:democracy/users/bloc/search_users/search_users_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -112,7 +112,7 @@ class _PostDetailState extends State<PostDetail> {
                                 ProfileImage(user: _post.author),
                                 SizedBox(width: 10),
                                 Text(
-                                  _post.author.displayName,
+                                  _post.author.name,
                                   style: Theme.of(context).textTheme.bodyLarge,
                                 ),
                               ],

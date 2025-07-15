@@ -125,7 +125,7 @@ class _ChatTileState extends State<ChatTile> {
     User otherUser = widget.chat.users.firstWhere(
       (u) => u.id != widget.currentUser.id,
     );
-    String title = otherUser.displayName;
+    String title = otherUser.name;
     return BlocListener<ChatActionsCubit, ChatActionsState>(
       listener: (context, state) {
         if (state.status == ChatActionsStatus.actionButtonsOpened) {

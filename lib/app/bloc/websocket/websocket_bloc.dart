@@ -27,6 +27,7 @@ const String postsStream = 'posts';
 const String pollsStream = 'polls';
 const String chatsStream = 'chats';
 const String surveysStream = 'surveys';
+const String usersStream = 'users';
 const String notificationsStream = 'notifications';
 const int postRequestId = 1;
 const int postUpdateRequestId = 2;
@@ -35,6 +36,7 @@ const int chatRequestId = 1;
 const int messageRequestId = 2;
 const int surveyRequestId = 1;
 const int responseRequestId = 2;
+const int usersRequestId = 1;
 const int notificationRequestId = 1;
 
 class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
@@ -470,10 +472,10 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   ) async {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
-      'stream': chatsStream,
+      'stream': usersStream,
       'payload': {
         'action': 'search_users',
-        'request_id': chatRequestId,
+        'request_id': usersRequestId,
         'search_term': event.searchTerm,
       },
     };

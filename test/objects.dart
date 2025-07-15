@@ -2,8 +2,8 @@ import 'package:democracy/auth/models/user.dart';
 
 User user1 = User(
   id: 1,
+  username: 'Jamoh007',
   name: 'James Mutahi',
-  displayName: 'Jamoh007',
   email: 'mutahijames0@gmail.com',
   isActive: true,
   status: '',
@@ -17,8 +17,8 @@ User user1 = User(
 
 User user2 = User(
   id: 2,
+  username: 'GIJoe',
   name: 'g g',
-  displayName: 'GIJoe',
   email: 'g@g.com',
   isActive: true,
   status: '',

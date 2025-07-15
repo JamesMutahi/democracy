@@ -97,7 +97,7 @@ class _ChatDetailState extends State<ChatDetail> {
                             ProfileImage(user: otherUser),
                             SizedBox(width: 10),
                             Text(
-                              otherUser.displayName,
+                              otherUser.name,
                               style: TextStyle(overflow: TextOverflow.ellipsis),
                             ),
                           ],
@@ -199,7 +199,7 @@ String copyMultiple({required Set<Message> forCopy}) {
   for (var message in messages) {
     copiedText +=
         '[${dateFormat.format(message.createdAt)}] '
-        '${message.user.displayName}: '
+        '${message.user.name}: '
         '${message.text} ${(messages.last == message) ? '' : '\n'}';
   }
   return copiedText;

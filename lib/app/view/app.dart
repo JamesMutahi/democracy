@@ -8,7 +8,6 @@ import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/auth/view/login.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
-import 'package:democracy/chat/bloc/search_users/search_users_cubit.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_cubit.dart';
 import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
@@ -26,6 +25,7 @@ import 'package:democracy/post/bloc/user_replies/user_replies_cubit.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
 import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
 import 'package:democracy/survey/bloc/surveys/surveys_cubit.dart';
+import 'package:democracy/users/bloc/search_users/search_users_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -257,10 +257,6 @@ class _Listeners extends StatelessWidget {
                             payload: message['payload'],
                           );
                         }
-                      case 'search_users':
-                        context.read<SearchUsersCubit>().loaded(
-                          payload: message['payload'],
-                        );
                       case 'direct_message':
                         context.read<ChatDetailCubit>().directMessageSent(
                           payload: message['payload'],
@@ -310,6 +306,13 @@ class _Listeners extends StatelessWidget {
                         );
                       case 'delete':
                         context.read<SurveyDetailCubit>().deleted(
+                          payload: message['payload'],
+                        );
+                    }
+                  case usersStream:
+                    switch (message['payload']['action']) {
+                      case 'search_users':
+                        context.read<SearchUsersCubit>().loaded(
                           payload: message['payload'],
                         );
                     }
