@@ -1,4 +1,4 @@
-import 'package:democracy/auth/models/user.dart';
+import 'package:democracy/user/models/user.dart';
 import 'package:democracy/poll/models/poll.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';

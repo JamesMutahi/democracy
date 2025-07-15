@@ -6,7 +6,7 @@ import 'package:democracy/app/utils/view/more_pop_up.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/app/utils/view/report.dart';
 import 'package:democracy/app/utils/view/share_bottom_sheet.dart';
-import 'package:democracy/app/view/widgets/profile_page.dart';
+import 'package:democracy/user/view/profile.dart';
 import 'package:democracy/poll/view/poll_tile.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/post_create.dart';

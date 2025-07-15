@@ -1,4 +1,4 @@
-import 'package:democracy/auth/models/user.dart';
+import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 
 class ProfileImage extends StatelessWidget {

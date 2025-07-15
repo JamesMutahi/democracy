@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
-import 'package:democracy/auth/models/user.dart';
+import 'package:democracy/user/models/user.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/notification/models/notification.dart';

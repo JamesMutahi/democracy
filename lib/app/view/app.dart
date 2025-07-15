@@ -25,7 +25,7 @@ import 'package:democracy/post/bloc/user_replies/user_replies_cubit.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
 import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
 import 'package:democracy/survey/bloc/surveys/surveys_cubit.dart';
-import 'package:democracy/users/bloc/search_users/search_users_cubit.dart';
+import 'package:democracy/user/bloc/search_users/search_users_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_framework.dart';

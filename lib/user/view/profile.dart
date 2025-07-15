@@ -2,7 +2,7 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/failure_retry_button.dart';
 import 'package:democracy/app/utils/view/loading_indicator.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
-import 'package:democracy/auth/models/user.dart';
+import 'package:democracy/user/models/user.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/view/chat_detail.dart';
 import 'package:democracy/post/bloc/likes/likes_cubit.dart';
@@ -71,32 +71,47 @@ class ProfilePage extends StatelessWidget {
                                   Radius.circular(50),
                                 ),
                                 onTap: () {
-                                  //   TODO:
+                                  showDialog(
+                                    context: context,
+                                    builder:
+                                        (context) =>
+                                            EditProfileDialog(user: user),
+                                  );
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(15.0),
                                   child: Icon(Symbols.edit_rounded),
                                 ),
                               )
-                              : InkWell(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(50),
-                                ),
-                                onTap: () {
-                                  context.read<WebsocketBloc>().add(
-                                    WebsocketEvent.createChat(user: user),
-                                  );
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Icon(Symbols.email_rounded),
-                                ),
+                              : Row(
+                                children: [
+                                  InkWell(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(50),
+                                    ),
+                                    onTap: () {
+                                      context.read<WebsocketBloc>().add(
+                                        WebsocketEvent.createChat(user: user),
+                                      );
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Icon(Symbols.email_rounded),
+                                    ),
+                                  ),
+                                  OutlinedButton(
+                                    onPressed: () {
+                                      //   TODO: Follow/Unfollow
+                                    },
+                                    child: Text('Follow'),
+                                  ),
+                                ],
                               ),
                         ],
                       ),
                       SizedBox(height: 10),
                       Text(
-                        user.displayName,
+                        user.name,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       SizedBox(height: 5),
@@ -302,6 +317,47 @@ class _LikesState extends State<Likes> {
             return LoadingIndicator();
         }
       },
+    );
+  }
+}
+
+class EditProfileDialog extends StatelessWidget {
+  const EditProfileDialog({super.key, required this.user});
+
+  final User user;
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Stack(
+              children: [
+                CircleAvatar(
+                  radius: 40,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(user.image),
+                        fit: BoxFit.cover,
+                      ),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 10),
+            TextFormField(),
+            SizedBox(height: 10),
+            TextFormField(),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:democracy/auth/models/user.dart';
+import 'package:democracy/user/models/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'search_users_state.dart';

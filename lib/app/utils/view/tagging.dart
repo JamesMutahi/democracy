@@ -1,6 +1,6 @@
 import 'package:democracy/app/utils/view/profile_image.dart';
-import 'package:democracy/auth/models/user.dart';
-import 'package:democracy/users/bloc/search_users/search_users_cubit.dart';
+import 'package:democracy/user/models/user.dart';
+import 'package:democracy/user/bloc/search_users/search_users_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertagger/fluttertagger.dart';
