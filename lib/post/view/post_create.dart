@@ -13,8 +13,9 @@ import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/post/view/post_tile.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
-import 'package:democracy/user/bloc/search_users/search_users_cubit.dart';
+import 'package:democracy/user/bloc/users/users_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:fluttertagger/fluttertagger.dart';
@@ -69,13 +70,10 @@ class _PostCreateState extends State<PostCreate> {
                       ? 'Post published'
                       : 'Reply sent'
                   : 'Post saved as draft';
-          final snackBar = SnackBar(
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: Theme.of(context).cardColor,
-            content: SnackBarContent(
-              message: message,
-              status: SnackBarStatus.success,
-            ),
+          final snackBar = getSnackBar(
+            context: context,
+            message: message,
+            status: SnackBarStatus.success,
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
@@ -186,6 +184,7 @@ class _PostCreateState extends State<PostCreate> {
                             maxLines: 7,
                             keyboardType: TextInputType.multiline,
                             maxLength: 500,
+                            maxLengthEnforcement: MaxLengthEnforcement.enforced,
                             decoration: InputDecoration(
                               filled: true,
                               fillColor:
@@ -300,9 +299,9 @@ class _BottomNavBarState extends State<_BottomNavBar>
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<SearchUsersCubit, SearchUsersState>(
+    return BlocListener<UsersCubit, UsersState>(
       listener: (context, state) {
-        if (state is SearchUsersLoaded) {
+        if (state is UsersLoaded) {
           setState(() {
             _view = SearchResultView.users;
             if (state.users.isEmpty) {
@@ -333,7 +332,7 @@ class _BottomNavBarState extends State<_BottomNavBar>
               _view = SearchResultView.users;
             });
             context.read<WebsocketBloc>().add(
-              WebsocketEvent.searchUsers(
+              WebsocketEvent.getUsers(
                 searchTerm: query.toLowerCase().trim(),
               ),
             );

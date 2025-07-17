@@ -55,14 +55,10 @@ class _DashboardState extends State<Dashboard> {
           now.difference(currentBackPressTime!) >
               Duration(seconds: requiredSeconds)) {
         currentBackPressTime = now;
-        final snackBar = SnackBar(
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Theme.of(context).cardColor,
-          closeIconColor: Theme.of(context).primaryColor,
-          content: const SnackBarContent(
-            message: 'Press back again to close',
-            status: SnackBarStatus.info,
-          ),
+        final snackBar = getSnackBar(
+          context: context,
+          message: 'Press back again to close',
+          status: SnackBarStatus.info,
         );
         ScaffoldFeatureController controller = showSnackBar(snackBar: snackBar);
         Future.delayed(Duration(seconds: requiredSeconds), () {
@@ -242,7 +238,6 @@ class _NotificationCountState extends State<NotificationCount> {
                   });
                 }
               }
-              ;
             }
             if (state is NotificationDeleted) {
               if (unreadNotifications.any(

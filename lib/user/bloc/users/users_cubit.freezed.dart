@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'search_users_cubit.dart';
+part of 'users_cubit.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -12,7 +12,7 @@ part of 'search_users_cubit.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$SearchUsersState {
+mixin _$UsersState {
 
 
 
@@ -20,7 +20,7 @@ mixin _$SearchUsersState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchUsersState);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UsersState);
 }
 
 
@@ -29,20 +29,20 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SearchUsersState()';
+  return 'UsersState()';
 }
 
 
 }
 
 /// @nodoc
-class $SearchUsersStateCopyWith<$Res>  {
-$SearchUsersStateCopyWith(SearchUsersState _, $Res Function(SearchUsersState) __);
+class $UsersStateCopyWith<$Res>  {
+$UsersStateCopyWith(UsersState _, $Res Function(UsersState) __);
 }
 
 
-/// Adds pattern-matching-related methods to [SearchUsersState].
-extension SearchUsersStatePatterns on SearchUsersState {
+/// Adds pattern-matching-related methods to [UsersState].
+extension UsersStatePatterns on UsersState {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -55,13 +55,13 @@ extension SearchUsersStatePatterns on SearchUsersState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( SearchUsersInitial value)?  initial,TResult Function( SearchUsersLoading value)?  loading,TResult Function( SearchUsersLoaded value)?  loaded,TResult Function( SearchUsersFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( UsersInitial value)?  initial,TResult Function( UsersLoading value)?  loading,TResult Function( UsersLoaded value)?  loaded,TResult Function( UsersFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case SearchUsersInitial() when initial != null:
-return initial(_that);case SearchUsersLoading() when loading != null:
-return loading(_that);case SearchUsersLoaded() when loaded != null:
-return loaded(_that);case SearchUsersFailure() when failure != null:
+case UsersInitial() when initial != null:
+return initial(_that);case UsersLoading() when loading != null:
+return loading(_that);case UsersLoaded() when loaded != null:
+return loaded(_that);case UsersFailure() when failure != null:
 return failure(_that);case _:
   return orElse();
 
@@ -80,13 +80,13 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( SearchUsersInitial value)  initial,required TResult Function( SearchUsersLoading value)  loading,required TResult Function( SearchUsersLoaded value)  loaded,required TResult Function( SearchUsersFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( UsersInitial value)  initial,required TResult Function( UsersLoading value)  loading,required TResult Function( UsersLoaded value)  loaded,required TResult Function( UsersFailure value)  failure,}){
 final _that = this;
 switch (_that) {
-case SearchUsersInitial():
-return initial(_that);case SearchUsersLoading():
-return loading(_that);case SearchUsersLoaded():
-return loaded(_that);case SearchUsersFailure():
+case UsersInitial():
+return initial(_that);case UsersLoading():
+return loading(_that);case UsersLoaded():
+return loaded(_that);case UsersFailure():
 return failure(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -104,13 +104,13 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( SearchUsersInitial value)?  initial,TResult? Function( SearchUsersLoading value)?  loading,TResult? Function( SearchUsersLoaded value)?  loaded,TResult? Function( SearchUsersFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( UsersInitial value)?  initial,TResult? Function( UsersLoading value)?  loading,TResult? Function( UsersLoaded value)?  loaded,TResult? Function( UsersFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
-case SearchUsersInitial() when initial != null:
-return initial(_that);case SearchUsersLoading() when loading != null:
-return loading(_that);case SearchUsersLoaded() when loaded != null:
-return loaded(_that);case SearchUsersFailure() when failure != null:
+case UsersInitial() when initial != null:
+return initial(_that);case UsersLoading() when loading != null:
+return loading(_that);case UsersLoaded() when loaded != null:
+return loaded(_that);case UsersFailure() when failure != null:
 return failure(_that);case _:
   return null;
 
@@ -130,10 +130,10 @@ return failure(_that);case _:
 
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<User> users)?  loaded,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case SearchUsersInitial() when initial != null:
-return initial();case SearchUsersLoading() when loading != null:
-return loading();case SearchUsersLoaded() when loaded != null:
-return loaded(_that.users);case SearchUsersFailure() when failure != null:
+case UsersInitial() when initial != null:
+return initial();case UsersLoading() when loading != null:
+return loading();case UsersLoaded() when loaded != null:
+return loaded(_that.users);case UsersFailure() when failure != null:
 return failure(_that.error);case _:
   return orElse();
 
@@ -154,10 +154,10 @@ return failure(_that.error);case _:
 
 @optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<User> users)  loaded,required TResult Function( String error)  failure,}) {final _that = this;
 switch (_that) {
-case SearchUsersInitial():
-return initial();case SearchUsersLoading():
-return loading();case SearchUsersLoaded():
-return loaded(_that.users);case SearchUsersFailure():
+case UsersInitial():
+return initial();case UsersLoading():
+return loading();case UsersLoaded():
+return loaded(_that.users);case UsersFailure():
 return failure(_that.error);case _:
   throw StateError('Unexpected subclass');
 
@@ -177,10 +177,10 @@ return failure(_that.error);case _:
 
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<User> users)?  loaded,TResult? Function( String error)?  failure,}) {final _that = this;
 switch (_that) {
-case SearchUsersInitial() when initial != null:
-return initial();case SearchUsersLoading() when loading != null:
-return loading();case SearchUsersLoaded() when loaded != null:
-return loaded(_that.users);case SearchUsersFailure() when failure != null:
+case UsersInitial() when initial != null:
+return initial();case UsersLoading() when loading != null:
+return loading();case UsersLoaded() when loaded != null:
+return loaded(_that.users);case UsersFailure() when failure != null:
 return failure(_that.error);case _:
   return null;
 
@@ -192,8 +192,8 @@ return failure(_that.error);case _:
 /// @nodoc
 
 
-class SearchUsersInitial implements SearchUsersState {
-  const SearchUsersInitial();
+class UsersInitial implements UsersState {
+  const UsersInitial();
   
 
 
@@ -203,7 +203,7 @@ class SearchUsersInitial implements SearchUsersState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchUsersInitial);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UsersInitial);
 }
 
 
@@ -212,7 +212,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SearchUsersState.initial()';
+  return 'UsersState.initial()';
 }
 
 
@@ -224,8 +224,8 @@ String toString() {
 /// @nodoc
 
 
-class SearchUsersLoading implements SearchUsersState {
-  const SearchUsersLoading();
+class UsersLoading implements UsersState {
+  const UsersLoading();
   
 
 
@@ -235,7 +235,7 @@ class SearchUsersLoading implements SearchUsersState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchUsersLoading);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UsersLoading);
 }
 
 
@@ -244,7 +244,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SearchUsersState.loading()';
+  return 'UsersState.loading()';
 }
 
 
@@ -256,8 +256,8 @@ String toString() {
 /// @nodoc
 
 
-class SearchUsersLoaded implements SearchUsersState {
-  const SearchUsersLoaded({required final  List<User> users}): _users = users;
+class UsersLoaded implements UsersState {
+  const UsersLoaded({required final  List<User> users}): _users = users;
   
 
  final  List<User> _users;
@@ -268,17 +268,17 @@ class SearchUsersLoaded implements SearchUsersState {
 }
 
 
-/// Create a copy of SearchUsersState
+/// Create a copy of UsersState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$SearchUsersLoadedCopyWith<SearchUsersLoaded> get copyWith => _$SearchUsersLoadedCopyWithImpl<SearchUsersLoaded>(this, _$identity);
+$UsersLoadedCopyWith<UsersLoaded> get copyWith => _$UsersLoadedCopyWithImpl<UsersLoaded>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchUsersLoaded&&const DeepCollectionEquality().equals(other._users, _users));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UsersLoaded&&const DeepCollectionEquality().equals(other._users, _users));
 }
 
 
@@ -287,15 +287,15 @@ int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(
 
 @override
 String toString() {
-  return 'SearchUsersState.loaded(users: $users)';
+  return 'UsersState.loaded(users: $users)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $SearchUsersLoadedCopyWith<$Res> implements $SearchUsersStateCopyWith<$Res> {
-  factory $SearchUsersLoadedCopyWith(SearchUsersLoaded value, $Res Function(SearchUsersLoaded) _then) = _$SearchUsersLoadedCopyWithImpl;
+abstract mixin class $UsersLoadedCopyWith<$Res> implements $UsersStateCopyWith<$Res> {
+  factory $UsersLoadedCopyWith(UsersLoaded value, $Res Function(UsersLoaded) _then) = _$UsersLoadedCopyWithImpl;
 @useResult
 $Res call({
  List<User> users
@@ -306,17 +306,17 @@ $Res call({
 
 }
 /// @nodoc
-class _$SearchUsersLoadedCopyWithImpl<$Res>
-    implements $SearchUsersLoadedCopyWith<$Res> {
-  _$SearchUsersLoadedCopyWithImpl(this._self, this._then);
+class _$UsersLoadedCopyWithImpl<$Res>
+    implements $UsersLoadedCopyWith<$Res> {
+  _$UsersLoadedCopyWithImpl(this._self, this._then);
 
-  final SearchUsersLoaded _self;
-  final $Res Function(SearchUsersLoaded) _then;
+  final UsersLoaded _self;
+  final $Res Function(UsersLoaded) _then;
 
-/// Create a copy of SearchUsersState
+/// Create a copy of UsersState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? users = null,}) {
-  return _then(SearchUsersLoaded(
+  return _then(UsersLoaded(
 users: null == users ? _self._users : users // ignore: cast_nullable_to_non_nullable
 as List<User>,
   ));
@@ -328,23 +328,23 @@ as List<User>,
 /// @nodoc
 
 
-class SearchUsersFailure implements SearchUsersState {
-  const SearchUsersFailure({required this.error});
+class UsersFailure implements UsersState {
+  const UsersFailure({required this.error});
   
 
  final  String error;
 
-/// Create a copy of SearchUsersState
+/// Create a copy of UsersState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$SearchUsersFailureCopyWith<SearchUsersFailure> get copyWith => _$SearchUsersFailureCopyWithImpl<SearchUsersFailure>(this, _$identity);
+$UsersFailureCopyWith<UsersFailure> get copyWith => _$UsersFailureCopyWithImpl<UsersFailure>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchUsersFailure&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UsersFailure&&(identical(other.error, error) || other.error == error));
 }
 
 
@@ -353,15 +353,15 @@ int get hashCode => Object.hash(runtimeType,error);
 
 @override
 String toString() {
-  return 'SearchUsersState.failure(error: $error)';
+  return 'UsersState.failure(error: $error)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $SearchUsersFailureCopyWith<$Res> implements $SearchUsersStateCopyWith<$Res> {
-  factory $SearchUsersFailureCopyWith(SearchUsersFailure value, $Res Function(SearchUsersFailure) _then) = _$SearchUsersFailureCopyWithImpl;
+abstract mixin class $UsersFailureCopyWith<$Res> implements $UsersStateCopyWith<$Res> {
+  factory $UsersFailureCopyWith(UsersFailure value, $Res Function(UsersFailure) _then) = _$UsersFailureCopyWithImpl;
 @useResult
 $Res call({
  String error
@@ -372,17 +372,17 @@ $Res call({
 
 }
 /// @nodoc
-class _$SearchUsersFailureCopyWithImpl<$Res>
-    implements $SearchUsersFailureCopyWith<$Res> {
-  _$SearchUsersFailureCopyWithImpl(this._self, this._then);
+class _$UsersFailureCopyWithImpl<$Res>
+    implements $UsersFailureCopyWith<$Res> {
+  _$UsersFailureCopyWithImpl(this._self, this._then);
 
-  final SearchUsersFailure _self;
-  final $Res Function(SearchUsersFailure) _then;
+  final UsersFailure _self;
+  final $Res Function(UsersFailure) _then;
 
-/// Create a copy of SearchUsersState
+/// Create a copy of UsersState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? error = null,}) {
-  return _then(SearchUsersFailure(
+  return _then(UsersFailure(
 error: null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String,
   ));

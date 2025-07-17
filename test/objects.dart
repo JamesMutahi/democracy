@@ -9,10 +9,14 @@ User user1 = User(
   status: '',
   dateJoined: '1944-06-06 02:00:00.000' as DateTime,
   image: '',
+  coverPhoto: '',
   following: 2,
   followers: 0,
   muted: [],
   blocked: [],
+  isMuted: false,
+  isBlocked: false,
+  isFollowed: false,
 );
 
 User user2 = User(
@@ -24,8 +28,12 @@ User user2 = User(
   status: '',
   dateJoined: '1944-06-06 02:00:00.000' as DateTime,
   image: '',
+  coverPhoto: '',
   following: 2,
   followers: 0,
   muted: [],
   blocked: [],
+  isMuted: false,
+  isBlocked: false,
+  isFollowed: false,
 );

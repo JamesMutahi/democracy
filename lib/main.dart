@@ -25,7 +25,8 @@ import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
 import 'package:democracy/survey/bloc/survey_process/page/page_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
 import 'package:democracy/survey/bloc/surveys/surveys_cubit.dart';
-import 'package:democracy/user/bloc/search_users/search_users_cubit.dart';
+import 'package:democracy/user/bloc/users/users_cubit.dart';
+import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -100,12 +101,13 @@ void main() async {
           BlocProvider(create: (context) => ChatActionsCubit()),
           BlocProvider(create: (context) => ChatDetailCubit()),
           BlocProvider(create: (context) => MessageActionsCubit()),
-          BlocProvider(create: (context) => SearchUsersCubit()),
           BlocProvider(create: (context) => SurveysCubit()),
           BlocProvider(create: (context) => SurveyDetailCubit()),
           BlocProvider(create: (context) => AnswerCubit()),
           BlocProvider(create: (context) => NotificationsCubit(), lazy: false),
           BlocProvider(create: (context) => NotificationDetailCubit()),
+          BlocProvider(create: (context) => UsersCubit()),
+          BlocProvider(create: (context) => UserDetailCubit()),
         ],
         child: const MyApp(),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class BottomTextFormField extends StatelessWidget {
   const BottomTextFormField({
@@ -53,6 +54,7 @@ class BottomTextFormField extends StatelessWidget {
               minLines: 1,
               maxLines: 4,
               maxLength: 500,
+              maxLengthEnforcement: MaxLengthEnforcement.enforced,
               textAlignVertical: TextAlignVertical.center,
               decoration: InputDecoration(
                 filled: true,

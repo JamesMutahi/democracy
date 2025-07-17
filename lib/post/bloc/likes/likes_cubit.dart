@@ -14,9 +14,9 @@ class LikesCubit extends Cubit<LikesState> {
       final List<Post> posts = List.from(
         payload['data'].map((e) => Post.fromJson(e)),
       );
-      emit(LikesLoaded(posts: posts));
+      emit(LikesLoaded(userId: payload['request_id'], posts: posts));
     } else {
-      emit(LikesFailure());
+      emit(LikesFailure(userId: payload['request_id']));
     }
   }
 }

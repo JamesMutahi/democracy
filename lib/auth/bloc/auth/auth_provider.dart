@@ -60,40 +60,4 @@ class AuthProvider {
       );
     }
   }
-
-  Future<List<User>> getMutedAccounts({required String token}) async {
-    try {
-      Response response = await dio.get(
-        'api/muted-accounts/',
-        options: Options(
-          headers: <String, String>{'Authorization': 'Token $token'},
-        ),
-      );
-      if (response.statusCode == 200) {
-        return List.from(response.data.map((e) => User.fromJson(e)));
-      } else {
-        return Future.error('Unable to get data at this time');
-      }
-    } on DioException {
-      return Future.error('Unable to get data at this time');
-    }
-  }
-
-  Future<List<User>> getBlockedAccounts({required String token}) async {
-    try {
-      Response response = await dio.get(
-        'api/blocked-accounts/',
-        options: Options(
-          headers: <String, String>{'Authorization': 'Token $token'},
-        ),
-      );
-      if (response.statusCode == 200) {
-        return List.from(response.data.map((e) => User.fromJson(e)));
-      } else {
-        return Future.error('Unable to get data at this time');
-      }
-    } on DioException {
-      return Future.error('Unable to get data at this time');
-    }
-  }
 }

@@ -34,6 +34,15 @@ class _RepliesState extends State<Replies> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
+        BlocListener<WebsocketBloc, WebsocketState>(
+          listener: (context, state) {
+            if (state is WebsocketConnected) {
+              context.read<WebsocketBloc>().add(
+                WebsocketEvent.getReplies(post: widget.post),
+              );
+            }
+          },
+        ),
         BlocListener<RepliesCubit, RepliesState>(
           listener: (context, state) {
             if (state is RepliesLoaded) {

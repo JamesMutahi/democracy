@@ -12,6 +12,7 @@ _User _$UserFromJson(Map<String, dynamic> json) => _User(
   name: json['name'] as String,
   email: json['email'] as String,
   image: json['image'] as String,
+  coverPhoto: json['cover_photo'] as String,
   status: json['status'] as String,
   muted:
       (json['muted'] as List<dynamic>).map((e) => (e as num).toInt()).toList(),
@@ -23,6 +24,9 @@ _User _$UserFromJson(Map<String, dynamic> json) => _User(
   followers: (json['followers'] as num).toInt(),
   isActive: json['is_active'] as bool,
   dateJoined: DateTime.parse(json['date_joined'] as String),
+  isMuted: json['is_muted'] as bool,
+  isBlocked: json['is_blocked'] as bool,
+  isFollowed: json['is_followed'] as bool,
 );
 
 Map<String, dynamic> _$UserToJson(_User instance) => <String, dynamic>{
@@ -31,6 +35,7 @@ Map<String, dynamic> _$UserToJson(_User instance) => <String, dynamic>{
   'name': instance.name,
   'email': instance.email,
   'image': instance.image,
+  'cover_photo': instance.coverPhoto,
   'status': instance.status,
   'muted': instance.muted,
   'blocked': instance.blocked,
@@ -38,4 +43,7 @@ Map<String, dynamic> _$UserToJson(_User instance) => <String, dynamic>{
   'followers': instance.followers,
   'is_active': instance.isActive,
   'date_joined': instance.dateJoined.toIso8601String(),
+  'is_muted': instance.isMuted,
+  'is_blocked': instance.isBlocked,
+  'is_followed': instance.isFollowed,
 };

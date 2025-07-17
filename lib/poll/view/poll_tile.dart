@@ -53,30 +53,7 @@ class PollTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(poll.name, style: Theme.of(context).textTheme.titleMedium),
-                isChildOfPost
-                    ? SizedBox.shrink()
-                    : MorePopUp(
-                      onSelected: (selected) {
-                        switch (selected) {
-                          case 'Post':
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PostCreate(poll: poll),
-                              ),
-                            );
-                          case 'Share':
-                            showModalBottomSheet<void>(
-                              context: context,
-                              shape: const BeveledRectangleBorder(),
-                              builder: (BuildContext context) {
-                                return ShareBottomSheet(poll: poll);
-                              },
-                            );
-                        }
-                      },
-                      texts: ['Post', 'Share'],
-                    ),
+                isChildOfPost ? SizedBox.shrink() : PollPopUp(poll: poll),
               ],
             ),
             SizedBox(height: 5),
@@ -110,6 +87,35 @@ class PollTile extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class PollPopUp extends StatelessWidget {
+  const PollPopUp({super.key, required this.poll});
+
+  final Poll poll;
+  @override
+  Widget build(BuildContext context) {
+    return MorePopUp(
+      onSelected: (selected) {
+        switch (selected) {
+          case 'Post':
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => PostCreate(poll: poll)),
+            );
+          case 'Share':
+            showModalBottomSheet<void>(
+              context: context,
+              shape: const BeveledRectangleBorder(),
+              builder: (BuildContext context) {
+                return ShareBottomSheet(poll: poll);
+              },
+            );
+        }
+      },
+      texts: ['Post', 'Share'],
     );
   }
 }

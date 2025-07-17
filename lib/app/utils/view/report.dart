@@ -52,24 +52,18 @@ class _ReportModalState extends State<ReportModal> {
       listener: (context, state) {
         switch (state) {
           case PostReported():
-            final snackBar = SnackBar(
-              behavior: SnackBarBehavior.floating,
-              backgroundColor: Theme.of(context).cardColor,
-              content: const SnackBarContent(
-                message: 'Reported',
-                status: SnackBarStatus.info,
-              ),
+            final snackBar = getSnackBar(
+              context: context,
+              message: 'Reported',
+              status: SnackBarStatus.info,
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
             Navigator.of(context).pop();
           case PostDetailFailure(:final error):
-            final snackBar = SnackBar(
-              behavior: SnackBarBehavior.floating,
-              backgroundColor: Theme.of(context).cardColor,
-              content: SnackBarContent(
-                message: error,
-                status: SnackBarStatus.failure,
-              ),
+            final snackBar = getSnackBar(
+              context: context,
+              message: error,
+              status: SnackBarStatus.failure,
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
@@ -23,21 +24,23 @@ part 'websocket_event.dart';
 part 'websocket_state.dart';
 part 'websocket_bloc.freezed.dart';
 
+// Streams
 const String postsStream = 'posts';
 const String pollsStream = 'polls';
 const String chatsStream = 'chats';
 const String surveysStream = 'surveys';
 const String usersStream = 'users';
 const String notificationsStream = 'notifications';
-const int postRequestId = 1;
-const int postUpdateRequestId = 2;
-const int pollRequestId = 1;
-const int chatRequestId = 1;
-const int messageRequestId = 2;
-const int surveyRequestId = 1;
-const int responseRequestId = 2;
-const int usersRequestId = 1;
-const int notificationRequestId = 1;
+
+// Request ids
+const String postRequestId = 'posts';
+const String pollRequestId = 'polls';
+const String chatRequestId = 'chats';
+const String messageRequestId = 'messages';
+const String surveyRequestId = 'surveys';
+const String responseRequestId = 'responses';
+const String usersRequestId = 'users';
+const String notificationRequestId = 'notifications';
 
 class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   WebsocketBloc({required this.authRepository})
@@ -85,6 +88,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_LoadUserReplies>((event, emit) {
       _onLoadUserReplies(emit, event);
     });
+    on<_UnsubscribeUserProfilePosts>((event, emit) {
+      _onUnsubscribeUserProfilePosts(emit, event);
+    });
     on<_LoadChats>((event, emit) {
       _onLoadChats(emit);
     });
@@ -106,8 +112,23 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_UserBlocked>((event, emit) {
       _onUserBlocked(emit, event);
     });
-    on<_SearchUsers>((event, emit) {
-      _onSearchUsers(emit, event);
+    on<_GetUsers>((event, emit) {
+      _onGetUsers(emit, event);
+    });
+    on<_GetUser>((event, emit) {
+      _onGetUser(emit, event);
+    });
+    on<_UpdateUser>((event, emit) {
+      _onUpdateUser(emit, event);
+    });
+    on<_MuteUser>((event, emit) {
+      _onMuteUser(emit, event);
+    });
+    on<_BlockUser>((event, emit) {
+      _onBlockUser(emit, event);
+    });
+    on<_FollowUser>((event, emit) {
+      _onFollowUser(emit, event);
     });
     on<_SendDirectMessage>((event, emit) {
       _onSendDirectMessage(emit, event);
@@ -220,7 +241,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'stream': postsStream,
       'payload': {
         'action': 'update',
-        'request_id': postUpdateRequestId,
+        'request_id': postRequestId,
         'data': {'pk': event.id, 'body': event.body},
       },
     };
@@ -317,7 +338,11 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
-      'payload': {'action': 'user_posts', 'user': event.user.id},
+      'payload': {
+        'action': 'user_posts',
+        'request_id': event.user.id,
+        'user': event.user.id,
+      },
     };
     _channel.sink.add(jsonEncode(message));
   }
@@ -338,7 +363,11 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
-      'payload': {'action': 'liked_posts', 'user': event.user.id},
+      'payload': {
+        'action': 'liked_posts',
+        'request_id': event.user.id,
+        'user': event.user.id,
+      },
     };
     _channel.sink.add(jsonEncode(message));
   }
@@ -350,7 +379,27 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
-      'payload': {'action': 'user_replies', 'user': event.user.id},
+      'payload': {
+        'action': 'user_replies',
+        'request_id': event.user.id,
+        'user': event.user.id,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onUnsubscribeUserProfilePosts(
+    Emitter<WebsocketState> emit,
+    _UnsubscribeUserProfilePosts event,
+  ) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': postsStream,
+      'payload': {
+        'action': 'unsubscribe_user_profile_posts',
+        'request_id': event.user.id,
+        'user': event.user.id,
+      },
     };
     _channel.sink.add(jsonEncode(message));
   }
@@ -466,17 +515,91 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
-  Future _onSearchUsers(
-    Emitter<WebsocketState> emit,
-    _SearchUsers event,
-  ) async {
+  Future _onGetUsers(Emitter<WebsocketState> emit, _GetUsers event) async {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': usersStream,
       'payload': {
-        'action': 'search_users',
+        'action': 'list',
         'request_id': usersRequestId,
         'search_term': event.searchTerm,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onGetUser(Emitter<WebsocketState> emit, _GetUser event) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': usersStream,
+      'payload': {
+        'action': 'retrieve',
+        'request_id': usersRequestId,
+        'pk': event.user.id,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onUpdateUser(Emitter<WebsocketState> emit, _UpdateUser event) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': usersStream,
+      'payload': {
+        'action': 'patch',
+        'request_id': usersRequestId,
+        'pk': event.user.id,
+        'data': {
+          'name': event.name,
+          'status': event.status,
+          if (event.imagePath != null)
+            'image_base64': base64Encode(
+              File(event.imagePath!).readAsBytesSync(),
+            ),
+          if (event.coverPhotoPath != null)
+            'cover_photo_base64': base64Encode(
+              File(event.coverPhotoPath!).readAsBytesSync(),
+            ),
+        },
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onMuteUser(Emitter<WebsocketState> emit, _MuteUser event) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': usersStream,
+      'payload': {
+        'action': 'mute',
+        'request_id': usersRequestId,
+        'pk': event.user.id,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onBlockUser(Emitter<WebsocketState> emit, _BlockUser event) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': usersStream,
+      'payload': {
+        'action': 'block',
+        'request_id': usersRequestId,
+        'pk': event.user.id,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onFollowUser(Emitter<WebsocketState> emit, _FollowUser event) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': usersStream,
+      'payload': {
+        'action': 'follow',
+        'request_id': usersRequestId,
+        'pk': event.user.id,
       },
     };
     _channel.sink.add(jsonEncode(message));

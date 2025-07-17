@@ -34,13 +34,7 @@ class PostTile extends StatelessWidget {
             builder:
                 (context) => PostDetail(post: post, key: ValueKey(post.id)),
           ),
-        ).whenComplete(() {
-          if (context.mounted) {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.unsubscribeReplies(post: post),
-            );
-          }
-        });
+        );
       },
       child: Container(
         padding: EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 5),
@@ -85,21 +79,7 @@ class PostTile extends StatelessWidget {
                           ),
                     ],
                   ),
-                  CustomText(
-                    text: post.body,
-                    onUserTagPressed: (userId) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder:
-                              (context) => ProfilePage(
-                                user: post.taggedUsers.firstWhere(
-                                  (user) => user.id == int.parse(userId),
-                                ),
-                              ),
-                        ),
-                      );
-                    },
-                  ),
+                  PostBody(post: post),
                   (post.repostOf == null)
                       ? SizedBox.shrink()
                       : isChildOfPost
@@ -151,6 +131,53 @@ class PostTile extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class PostBody extends StatefulWidget {
+  const PostBody({super.key, required this.post});
+
+  final Post post;
+
+  @override
+  State<PostBody> createState() => _PostBodyState();
+}
+
+class _PostBodyState extends State<PostBody> {
+  String suffix = '...Show more';
+  bool readMore = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomText(
+      text: widget.post.body,
+      style: Theme.of(context).textTheme.bodyMedium!,
+      suffix: suffix,
+      showAllText: readMore,
+      onSuffixPressed: () {
+        setState(() {
+          if (readMore) {
+            suffix = '...Show more';
+            readMore = false;
+          } else {
+            suffix = '\nShow less';
+            readMore = true;
+          }
+        });
+      },
+      onUserTagPressed: (userId) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder:
+                (context) => ProfilePage(
+                  user: widget.post.taggedUsers.firstWhere(
+                    (user) => user.id == int.parse(userId),
+                  ),
+                ),
+          ),
+        );
+      },
     );
   }
 }

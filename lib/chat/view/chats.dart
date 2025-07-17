@@ -78,13 +78,10 @@ class _ChatsState extends State<Chats> {
           }
         }
         if (state is ChatDetailFailure) {
-          final snackBar = SnackBar(
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: Theme.of(context).cardColor,
-            content: SnackBarContent(
-              message: state.error,
-              status: SnackBarStatus.failure,
-            ),
+          final snackBar = getSnackBar(
+            context: context,
+            message: state.error,
+            status: SnackBarStatus.failure,
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }

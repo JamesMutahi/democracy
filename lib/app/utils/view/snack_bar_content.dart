@@ -3,6 +3,28 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 enum SnackBarStatus { loading, success, info, failure }
 
+SnackBar getSnackBar({
+  required BuildContext context,
+  required String message,
+  required SnackBarStatus status,
+}) {
+  final snackBar = SnackBar(
+    // dismissDirection: DismissDirection.up,
+    behavior: SnackBarBehavior.floating,
+    backgroundColor: Theme.of(context).cardColor,
+    margin: EdgeInsets.only(
+      // bottom: MediaQuery.of(context).size.height - 100,
+      left: 10,
+      right: 10,
+    ),
+    content: SnackBarContent(
+      message: message,
+      status: status,
+    ),
+  );
+  return snackBar;
+}
+
 class SnackBarContent extends StatelessWidget {
   const SnackBarContent({
     super.key,

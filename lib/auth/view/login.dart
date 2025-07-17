@@ -20,23 +20,17 @@ class _LoginPageState extends State<LoginPage> {
       listener: (context, state) {
         switch (state) {
           case LoggedIn():
-            final snackBar = SnackBar(
-              behavior: SnackBarBehavior.floating,
-              backgroundColor: Theme.of(context).cardColor,
-              content: const SnackBarContent(
-                message: 'Logged in',
-                status: SnackBarStatus.success,
-              ),
+            final snackBar = getSnackBar(
+              context: context,
+              message: 'Logged in',
+              status: SnackBarStatus.success,
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
           case LoginFailure(:final error):
-            final snackBar = SnackBar(
-              behavior: SnackBarBehavior.floating,
-              backgroundColor: Theme.of(context).cardColor,
-              content: SnackBarContent(
-                message: error,
-                status: SnackBarStatus.failure,
-              ),
+            final snackBar = getSnackBar(
+              context: context,
+              message: error,
+              status: SnackBarStatus.failure,
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }

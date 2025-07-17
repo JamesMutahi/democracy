@@ -38,6 +38,9 @@ abstract class WebsocketEvent with _$WebsocketEvent {
       _LoadLikedPosts;
   const factory WebsocketEvent.loadUserReplies({required User user}) =
       _LoadUserReplies;
+  const factory WebsocketEvent.unsubscribeUserProfilePosts({
+    required User user,
+  }) = _UnsubscribeUserProfilePosts;
   const factory WebsocketEvent.loadChats() = _LoadChats;
   const factory WebsocketEvent.createChat({required User user}) = _CreateChat;
   const factory WebsocketEvent.createMessage({
@@ -71,8 +74,19 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     required List<TextAnswer> textAnswers,
     required List<ChoiceAnswer> choiceAnswers,
   }) = _SubmitResponse;
-  const factory WebsocketEvent.searchUsers({required String searchTerm}) =
-      _SearchUsers;
+  const factory WebsocketEvent.getUsers({required String searchTerm}) =
+      _GetUsers;
+  const factory WebsocketEvent.getUser({required User user}) = _GetUser;
+  const factory WebsocketEvent.updateUser({
+    required User user,
+    required String name,
+    required String status,
+    required String? imagePath,
+    required String? coverPhotoPath,
+  }) = _UpdateUser;
+  const factory WebsocketEvent.muteUser({required User user}) = _MuteUser;
+  const factory WebsocketEvent.blockUser({required User user}) = _BlockUser;
+  const factory WebsocketEvent.followUser({required User user}) = _FollowUser;
   const factory WebsocketEvent.sendDirectMessage({
     required List<User> users,
     required String text,

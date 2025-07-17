@@ -8,12 +8,11 @@ class AuthRepository {
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
   );
 
-  Future<String> login({required String email, required String password}) async {
+  Future<String> login({
+    required String email,
+    required String password,
+  }) async {
     return await authProvider.login(email: email, password: password);
-  }
-
-  Future<void> logout({required String token}) async {
-    await authProvider.logout(token: token);
   }
 
   Future<String?> saveToken({required String token}) async {
@@ -31,21 +30,15 @@ class AuthRepository {
     }
   }
 
+  Future<void> logout({required String token}) async {
+    await authProvider.logout(token: token);
+  }
+
   Future<void> deleteToken() async {
     await _storage.delete(key: 'token');
   }
 
   Future<User> getUserFromAPI({required String token}) async {
     return await authProvider.getUserFromAPI(token: token);
-  }
-
-  Future<List<User>> getMutedAccounts({required String token}) async {
-    List<User> muted = await authProvider.getMutedAccounts(token: token);
-    return muted;
-  }
-
-  Future<List<User>> getBlockedAccounts({required String token}) async {
-    List<User> blocked = await authProvider.getBlockedAccounts(token: token);
-    return blocked;
   }
 }

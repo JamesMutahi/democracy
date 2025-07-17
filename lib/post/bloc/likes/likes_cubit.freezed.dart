@@ -128,13 +128,13 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<Post> posts)?  loaded,TResult Function()?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( int userId,  List<Post> posts)?  loaded,TResult Function( int userId)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LikesInitial() when initial != null:
 return initial();case LikesLoading() when loading != null:
 return loading();case LikesLoaded() when loaded != null:
-return loaded(_that.posts);case LikesFailure() when failure != null:
-return failure();case _:
+return loaded(_that.userId,_that.posts);case LikesFailure() when failure != null:
+return failure(_that.userId);case _:
   return orElse();
 
 }
@@ -152,13 +152,13 @@ return failure();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<Post> posts)  loaded,required TResult Function()  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( int userId,  List<Post> posts)  loaded,required TResult Function( int userId)  failure,}) {final _that = this;
 switch (_that) {
 case LikesInitial():
 return initial();case LikesLoading():
 return loading();case LikesLoaded():
-return loaded(_that.posts);case LikesFailure():
-return failure();case _:
+return loaded(_that.userId,_that.posts);case LikesFailure():
+return failure(_that.userId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -175,13 +175,13 @@ return failure();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<Post> posts)?  loaded,TResult? Function()?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( int userId,  List<Post> posts)?  loaded,TResult? Function( int userId)?  failure,}) {final _that = this;
 switch (_that) {
 case LikesInitial() when initial != null:
 return initial();case LikesLoading() when loading != null:
 return loading();case LikesLoaded() when loaded != null:
-return loaded(_that.posts);case LikesFailure() when failure != null:
-return failure();case _:
+return loaded(_that.userId,_that.posts);case LikesFailure() when failure != null:
+return failure(_that.userId);case _:
   return null;
 
 }
@@ -257,9 +257,10 @@ String toString() {
 
 
 class LikesLoaded implements LikesState {
-  const LikesLoaded({required final  List<Post> posts}): _posts = posts;
+  const LikesLoaded({required this.userId, required final  List<Post> posts}): _posts = posts;
   
 
+ final  int userId;
  final  List<Post> _posts;
  List<Post> get posts {
   if (_posts is EqualUnmodifiableListView) return _posts;
@@ -278,16 +279,16 @@ $LikesLoadedCopyWith<LikesLoaded> get copyWith => _$LikesLoadedCopyWithImpl<Like
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LikesLoaded&&const DeepCollectionEquality().equals(other._posts, _posts));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LikesLoaded&&(identical(other.userId, userId) || other.userId == userId)&&const DeepCollectionEquality().equals(other._posts, _posts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_posts));
+int get hashCode => Object.hash(runtimeType,userId,const DeepCollectionEquality().hash(_posts));
 
 @override
 String toString() {
-  return 'LikesState.loaded(posts: $posts)';
+  return 'LikesState.loaded(userId: $userId, posts: $posts)';
 }
 
 
@@ -298,7 +299,7 @@ abstract mixin class $LikesLoadedCopyWith<$Res> implements $LikesStateCopyWith<$
   factory $LikesLoadedCopyWith(LikesLoaded value, $Res Function(LikesLoaded) _then) = _$LikesLoadedCopyWithImpl;
 @useResult
 $Res call({
- List<Post> posts
+ int userId, List<Post> posts
 });
 
 
@@ -315,9 +316,10 @@ class _$LikesLoadedCopyWithImpl<$Res>
 
 /// Create a copy of LikesState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? posts = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? posts = null,}) {
   return _then(LikesLoaded(
-posts: null == posts ? _self._posts : posts // ignore: cast_nullable_to_non_nullable
+userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as int,posts: null == posts ? _self._posts : posts // ignore: cast_nullable_to_non_nullable
 as List<Post>,
   ));
 }
@@ -329,32 +331,66 @@ as List<Post>,
 
 
 class LikesFailure implements LikesState {
-  const LikesFailure();
+  const LikesFailure({required this.userId});
   
 
+ final  int userId;
 
-
+/// Create a copy of LikesState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$LikesFailureCopyWith<LikesFailure> get copyWith => _$LikesFailureCopyWithImpl<LikesFailure>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LikesFailure);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LikesFailure&&(identical(other.userId, userId) || other.userId == userId));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,userId);
 
 @override
 String toString() {
-  return 'LikesState.failure()';
+  return 'LikesState.failure(userId: $userId)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $LikesFailureCopyWith<$Res> implements $LikesStateCopyWith<$Res> {
+  factory $LikesFailureCopyWith(LikesFailure value, $Res Function(LikesFailure) _then) = _$LikesFailureCopyWithImpl;
+@useResult
+$Res call({
+ int userId
+});
 
 
+
+
+}
+/// @nodoc
+class _$LikesFailureCopyWithImpl<$Res>
+    implements $LikesFailureCopyWith<$Res> {
+  _$LikesFailureCopyWithImpl(this._self, this._then);
+
+  final LikesFailure _self;
+  final $Res Function(LikesFailure) _then;
+
+/// Create a copy of LikesState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? userId = null,}) {
+  return _then(LikesFailure(
+userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
 
 // dart format on

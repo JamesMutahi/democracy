@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 // ignore: must_be_immutable
 class CustomText extends StatelessWidget {
   final String text;
+  final TextStyle style;
   final double? fontSize;
   final int maxTextLength;
   final VoidCallback? onSuffixPressed;
@@ -19,6 +20,7 @@ class CustomText extends StatelessWidget {
   CustomText({
     super.key,
     required this.text,
+    required this.style,
     this.maxTextLength = 300,
     this.showAllText = false,
     this.suffix = "Show more",
@@ -28,11 +30,8 @@ class CustomText extends StatelessWidget {
     this.parentTextStyle,
     this.onParentPressed,
     this.onUserTagPressed,
-  }) : _suffix = "...$suffix",
-       _text = text.trim(),
-       _fontSize = fontSize ?? 14;
-
-  final double _fontSize;
+  }) : _suffix = suffix,
+       _text = text.trim();
 
   final String _text;
 
@@ -44,7 +43,7 @@ class CustomText extends StatelessWidget {
 
   TextSpan _copyWith(TextSpan span, {String? text}) {
     return TextSpan(
-      style: span.style,
+      style: style,
       recognizer: span.recognizer,
       children: span.children,
       text: text ?? span.text,
@@ -72,7 +71,7 @@ class CustomText extends StatelessWidget {
         _spans.add(
           TextSpan(
             text: _suffix,
-            style: const TextStyle(color: Colors.pink),
+            style: style.copyWith(color: Colors.pink),
             recognizer: TapGestureRecognizer()..onTap = onSuffixPressed,
           ),
         );
@@ -110,11 +109,7 @@ class CustomText extends StatelessWidget {
         _addText(
           TextSpan(
             text: element.text,
-            style: TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: _fontSize,
-              color: Colors.blueAccent,
-            ),
+            style: style.copyWith(color: Colors.blueAccent),
             recognizer:
                 TapGestureRecognizer()
                   ..onTap = () async {
@@ -132,11 +127,7 @@ class CustomText extends StatelessWidget {
         _addText(
           TextSpan(
             text: element.name,
-            style: TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: _fontSize,
-              color: Colors.blueAccent,
-            ),
+            style: style.copyWith(color: Colors.blueAccent),
             recognizer:
                 TapGestureRecognizer()
                   ..onTap = () {
@@ -148,11 +139,7 @@ class CustomText extends StatelessWidget {
         _addText(
           TextSpan(
             text: element.title,
-            style: TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: _fontSize,
-              color: Colors.blueAccent,
-            ),
+            style: style.copyWith(color: Colors.blueAccent),
             recognizer:
                 TapGestureRecognizer()
                   ..onTap = () {
@@ -161,7 +148,7 @@ class CustomText extends StatelessWidget {
           ),
         );
       } else {
-        _addText(TextSpan(text: element.text));
+        _addText(TextSpan(text: element.text, style: style));
       }
     }
 
@@ -172,12 +159,12 @@ class CustomText extends StatelessWidget {
       _spans.add(
         TextSpan(
           text: _suffix,
-          style: const TextStyle(color: Colors.pink),
+          style: style.copyWith(color: Colors.pink),
           recognizer: TapGestureRecognizer()..onTap = onSuffixPressed,
         ),
       );
     }
-    return TextSpan(children: _spans);
+    return TextSpan(children: _spans, style: style);
   }
 
   @override

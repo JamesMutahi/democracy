@@ -14,9 +14,9 @@ class UserPostsCubit extends Cubit<UserPostsState> {
       final List<Post> posts = List.from(
         payload['data'].map((e) => Post.fromJson(e)),
       );
-      emit(UserPostsLoaded(posts: posts));
+      emit(UserPostsLoaded(userId: payload['request_id'], posts: posts));
     } else {
-      emit(UserPostsFailure());
+      emit(UserPostsFailure(userId: payload['request_id']));
     }
   }
 }

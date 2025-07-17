@@ -9,7 +9,7 @@ import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/poll/models/poll.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
-import 'package:democracy/user/bloc/search_users/search_users_cubit.dart';
+import 'package:democracy/user/bloc/users/users_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -39,7 +39,7 @@ class _DirectMessageState extends State<DirectMessage> {
   @override
   void initState() {
     context.read<WebsocketBloc>().add(
-      WebsocketEvent.searchUsers(searchTerm: ''),
+      WebsocketEvent.getUsers(searchTerm: ''),
     );
     super.initState();
   }
@@ -50,13 +50,10 @@ class _DirectMessageState extends State<DirectMessage> {
       listener: (context, state) {
         if (state is DirectMessageSent) {
           Navigator.pop(context);
-          final snackBar = SnackBar(
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: Theme.of(context).cardColor,
-            content: SnackBarContent(
-              message: 'Direct message sent',
-              status: SnackBarStatus.success,
-            ),
+          final snackBar = getSnackBar(
+            context: context,
+            message: 'Direct message sent',
+            status: SnackBarStatus.success,
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
@@ -89,7 +86,7 @@ class _DirectMessageState extends State<DirectMessage> {
               child: TextFormField(
                 onChanged: (value) {
                   context.read<WebsocketBloc>().add(
-                    WebsocketEvent.searchUsers(searchTerm: value),
+                    WebsocketEvent.getUsers(searchTerm: value),
                   );
                 },
                 onTapOutside: (event) {
@@ -109,10 +106,10 @@ class _DirectMessageState extends State<DirectMessage> {
                 ),
               ),
             ),
-            BlocBuilder<SearchUsersCubit, SearchUsersState>(
+            BlocBuilder<UsersCubit, UsersState>(
               builder: (context, state) {
                 switch (state) {
-                  case SearchUsersLoaded(:final users):
+                  case UsersLoaded(:final users):
                     return ListView.builder(
                       padding: EdgeInsets.only(top: 5, bottom: 20),
                       scrollDirection: Axis.vertical,
@@ -143,11 +140,11 @@ class _DirectMessageState extends State<DirectMessage> {
                       },
                       itemCount: users.length,
                     );
-                  case SearchUsersFailure():
+                  case UsersFailure():
                     return FailureRetryButton(
                       onPressed: () {
                         context.read<WebsocketBloc>().add(
-                          WebsocketEvent.searchUsers(searchTerm: ''),
+                          WebsocketEvent.getUsers(searchTerm: ''),
                         );
                       },
                     );

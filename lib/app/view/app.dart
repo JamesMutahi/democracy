@@ -25,7 +25,8 @@ import 'package:democracy/post/bloc/user_replies/user_replies_cubit.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
 import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
 import 'package:democracy/survey/bloc/surveys/surveys_cubit.dart';
-import 'package:democracy/user/bloc/search_users/search_users_cubit.dart';
+import 'package:democracy/user/bloc/users/users_cubit.dart';
+import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -123,23 +124,17 @@ class _Listeners extends StatelessWidget {
           listener: (context, state) {
             switch (state) {
               case ConnectivitySuccess():
-                final snackBar = SnackBar(
-                  behavior: SnackBarBehavior.floating,
-                  backgroundColor: Theme.of(context).cardColor,
-                  content: const SnackBarContent(
-                    message: 'You are online',
-                    status: SnackBarStatus.success,
-                  ),
+                final snackBar = getSnackBar(
+                  context: context,
+                  message: 'You are online',
+                  status: SnackBarStatus.success,
                 );
                 showSnackBar(snackBar: snackBar);
               case ConnectivityFailure():
-                final snackBar = SnackBar(
-                  behavior: SnackBarBehavior.floating,
-                  backgroundColor: Theme.of(context).cardColor,
-                  content: const SnackBarContent(
-                    message: 'You are offline',
-                    status: SnackBarStatus.failure,
-                  ),
+                final snackBar = getSnackBar(
+                  context: context,
+                  message: 'You are offline',
+                  status: SnackBarStatus.failure,
                 );
                 showSnackBar(snackBar: snackBar);
             }
@@ -160,13 +155,10 @@ class _Listeners extends StatelessWidget {
               case LoggedOut():
                 context.read<BottomNavBarCubit>().changePage(0);
                 context.read<AuthBloc>().add(const AuthEvent.authenticate());
-                final snackBar = SnackBar(
-                  behavior: SnackBarBehavior.floating,
-                  backgroundColor: Theme.of(context).cardColor,
-                  content: const SnackBarContent(
-                    message: 'Logged out',
-                    status: SnackBarStatus.info,
-                  ),
+                final snackBar = getSnackBar(
+                  context: context,
+                  message: 'Logged out',
+                  status: SnackBarStatus.info,
                 );
                 showSnackBar(snackBar: snackBar);
             }
@@ -311,8 +303,16 @@ class _Listeners extends StatelessWidget {
                     }
                   case usersStream:
                     switch (message['payload']['action']) {
-                      case 'search_users':
-                        context.read<SearchUsersCubit>().loaded(
+                      case 'list':
+                        context.read<UsersCubit>().loaded(
+                          payload: message['payload'],
+                        );
+                      case 'retrieve':
+                        context.read<UserDetailCubit>().loaded(
+                          payload: message['payload'],
+                        );
+                      case 'update':
+                        context.read<UserDetailCubit>().updated(
                           payload: message['payload'],
                         );
                     }
@@ -345,13 +345,10 @@ class _Listeners extends StatelessWidget {
                 context.read<NotificationsCubit>().websocketFailure(
                   error: error,
                 );
-                final snackBar = SnackBar(
-                  behavior: SnackBarBehavior.floating,
-                  backgroundColor: Theme.of(context).cardColor,
-                  content: SnackBarContent(
-                    message: error,
-                    status: SnackBarStatus.failure,
-                  ),
+                final snackBar = getSnackBar(
+                  context: context,
+                  message: error,
+                  status: SnackBarStatus.failure,
                 );
                 showSnackBar(snackBar: snackBar);
             }

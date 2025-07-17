@@ -1,6 +1,6 @@
 import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/user/bloc/search_users/search_users_cubit.dart';
+import 'package:democracy/user/bloc/users/users_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertagger/fluttertagger.dart';
@@ -27,11 +27,11 @@ class UserListView extends StatelessWidget {
           shape: BoxShape.rectangle,
           color: Theme.of(context).canvasColor,
         ),
-        child: BlocBuilder<SearchUsersCubit, SearchUsersState>(
+        child: BlocBuilder<UsersCubit, UsersState>(
           builder: (context, state) {
             List<User> users = [];
             switch (state) {
-              case SearchUsersLoaded():
+              case UsersLoaded():
                 users = state.users.toList();
               default:
                 users = [];

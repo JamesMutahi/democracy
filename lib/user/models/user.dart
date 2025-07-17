@@ -11,6 +11,7 @@ sealed class User with _$User {
     required String name,
     required String email,
     required String image,
+    @JsonKey(name: 'cover_photo') required String coverPhoto,
     required String status,
     required List<int> muted,
     required List<int> blocked,
@@ -18,6 +19,9 @@ sealed class User with _$User {
     required int followers,
     @JsonKey(name: 'is_active') required bool isActive,
     @JsonKey(name: 'date_joined') required DateTime dateJoined,
+    @JsonKey(name: 'is_muted') required bool isMuted,
+    @JsonKey(name: 'is_blocked') required bool isBlocked,
+    @JsonKey(name: 'is_followed') required bool isFollowed,
   }) = _User;
 
   factory User.fromJson(Map<String, Object?> json) => _$UserFromJson(json);

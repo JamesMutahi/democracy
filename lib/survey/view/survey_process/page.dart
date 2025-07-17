@@ -54,24 +54,18 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
           listener: (context, state) {
             if (state.status == AnswerStatus.submitted) {
               Navigator.of(context).pop();
-              final snackBar = SnackBar(
-                behavior: SnackBarBehavior.floating,
-                backgroundColor: Theme.of(context).cardColor,
-                content: SnackBarContent(
-                  message: 'Submitted',
-                  status: SnackBarStatus.success,
-                ),
+              final snackBar = getSnackBar(
+                context: context,
+                message: 'Submitted',
+                status: SnackBarStatus.success,
               );
               ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
             if (state.status == AnswerStatus.submissionFailure) {
-              final snackBar = SnackBar(
-                behavior: SnackBarBehavior.floating,
-                backgroundColor: Theme.of(context).cardColor,
-                content: SnackBarContent(
-                  message: 'Something went wrong.',
-                  status: SnackBarStatus.failure,
-                ),
+              final snackBar = getSnackBar(
+                context: context,
+                message: 'Something went wrong.',
+                status: SnackBarStatus.failure,
               );
               ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
@@ -179,14 +173,10 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
                                     ),
                                   );
                                 } else {
-                                  final snackBar = SnackBar(
-                                    behavior: SnackBarBehavior.floating,
-                                    backgroundColor:
-                                        Theme.of(context).cardColor,
-                                    content: SnackBarContent(
-                                      message: 'Not started',
-                                      status: SnackBarStatus.info,
-                                    ),
+                                  final snackBar = getSnackBar(
+                                    context: context,
+                                    message: 'Not started',
+                                    status: SnackBarStatus.info,
                                   );
                                   ScaffoldMessenger.of(
                                     context,
