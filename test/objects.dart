@@ -16,6 +16,7 @@ User user1 = User(
   blocked: [],
   isMuted: false,
   isBlocked: false,
+  hasBlocked: false,
   isFollowed: false,
 );
 
@@ -35,5 +36,6 @@ User user2 = User(
   blocked: [],
   isMuted: false,
   isBlocked: false,
+  hasBlocked: false,
   isFollowed: false,
 );

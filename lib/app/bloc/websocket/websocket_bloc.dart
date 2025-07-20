@@ -109,9 +109,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_MarkChatAsRead>((event, emit) {
       _onMarkChatAsRead(emit, event);
     });
-    on<_UserBlocked>((event, emit) {
-      _onUserBlocked(emit, event);
-    });
     on<_GetUsers>((event, emit) {
       _onGetUsers(emit, event);
     });
@@ -494,22 +491,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'action': 'mark_as_read',
         'request_id': messageRequestId,
         'pk': event.chat.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onUserBlocked(
-    Emitter<WebsocketState> emit,
-    _UserBlocked event,
-  ) async {
-    emit(WebsocketLoading());
-    Map<String, dynamic> message = {
-      'stream': chatsStream,
-      'payload': {
-        'action': 'block_user',
-        'request_id': chatRequestId,
-        'user': event.user.id,
       },
     };
     _channel.sink.add(jsonEncode(message));

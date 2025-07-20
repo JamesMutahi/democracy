@@ -2,14 +2,11 @@ import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/view/pages/index.dart';
 import 'package:democracy/app/view/widgets/bottom_nav_bar.dart';
-import 'package:democracy/app/view/widgets/chat_actions.dart';
 import 'package:democracy/app/view/widgets/drawer.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/chat/bloc/chat_actions/chat_actions_cubit.dart';
-import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_cubit.dart';
 import 'package:democracy/notification/view/notifications.dart';
@@ -31,8 +28,6 @@ class _DashboardState extends State<Dashboard> {
   DateTime? currentBackPressTime;
   bool canPopNow = false;
   int requiredSeconds = 2;
-  bool showChatActions = false;
-  Set<Chat> chats = {};
 
   @override
   Widget build(BuildContext context) {
@@ -44,10 +39,6 @@ class _DashboardState extends State<Dashboard> {
     void onPopInvoked(bool didPop) {
       if (_key.currentState!.isDrawerOpen) {
         _key.currentState!.closeDrawer();
-        return;
-      }
-      if (showChatActions) {
-        context.read<ChatActionsCubit>().closeActionButtons();
         return;
       }
       DateTime now = DateTime.now();
@@ -81,75 +72,56 @@ class _DashboardState extends State<Dashboard> {
         if (state is Authenticated) {
           user = state.user;
         }
-        return BlocListener<ChatActionsCubit, ChatActionsState>(
-          listener: (context, state) {
-            if (state.status == ChatActionsStatus.actionButtonsOpened) {
-              setState(() {
-                showChatActions = true;
-                chats = state.chats;
-              });
-            }
-            if (state.status == ChatActionsStatus.actionButtonsClosed) {
-              setState(() {
-                showChatActions = false;
-                chats = {};
-              });
-            }
-          },
-          child: Scaffold(
-            key: _key,
-            resizeToAvoidBottomInset: false,
-            appBar: AppBar(
-              automaticallyImplyLeading: false,
-              title:
-                  showChatActions
-                      ? ChatActions(chats: chats.toList(), currentUser: user)
-                      : Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          InkWell(
-                            borderRadius: BorderRadius.all(Radius.circular(50)),
-                            child: ProfileImage(user: user),
-                            onTap: () {
-                              _key.currentState!.openDrawer();
-                            },
-                          ),
-                          NotificationButton(),
-                        ],
-                      ),
-            ),
-            drawer: AppDrawer(user: user),
-            body: PopScope(
-              canPop: canPopNow,
-              onPopInvokedWithResult: (didPop, __) {
-                onPopInvoked(didPop);
-              },
-              child: BlocListener<BottomNavBarCubit, BottomNavBarState>(
-                listener: (context, state) {
-                  switch (state) {
-                    case BottomNavBarPageChanged(:final page):
-                      pageController.animateToPage(
-                        page,
-                        duration: const Duration(milliseconds: 500),
-                        curve: Curves.decelerate,
-                      );
-                  }
-                },
-                child: PageView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  controller: pageController,
-                  children: [
-                    HomePage(),
-                    ExplorePage(),
-                    PollPage(),
-                    SurveyPage(),
-                    MessagePage(),
-                  ],
+        return Scaffold(
+          key: _key,
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                InkWell(
+                  borderRadius: BorderRadius.all(Radius.circular(50)),
+                  child: ProfileImage(user: user),
+                  onTap: () {
+                    _key.currentState!.openDrawer();
+                  },
                 ),
+                NotificationButton(),
+              ],
+            ),
+          ),
+          drawer: AppDrawer(user: user),
+          body: PopScope(
+            canPop: canPopNow,
+            onPopInvokedWithResult: (didPop, __) {
+              onPopInvoked(didPop);
+            },
+            child: BlocListener<BottomNavBarCubit, BottomNavBarState>(
+              listener: (context, state) {
+                switch (state) {
+                  case BottomNavBarPageChanged(:final page):
+                    pageController.animateToPage(
+                      page,
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.decelerate,
+                    );
+                }
+              },
+              child: PageView(
+                physics: const NeverScrollableScrollPhysics(),
+                controller: pageController,
+                children: [
+                  HomePage(),
+                  ExplorePage(),
+                  PollPage(),
+                  SurveyPage(),
+                  MessagePage(),
+                ],
               ),
             ),
-            bottomNavigationBar: const BottomNavBar(),
           ),
+          bottomNavigationBar: const BottomNavBar(),
         );
       },
     );

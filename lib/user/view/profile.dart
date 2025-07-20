@@ -1,4 +1,5 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
 import 'package:democracy/user/models/user.dart';
@@ -117,7 +118,11 @@ class _ProfilePageState extends State<ProfilePage> {
               if (state is ChatCreated) {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => ChatDetail(chat: state.chat),
+                    builder:
+                        (context) => ChatDetail(
+                          key: ValueKey(state.chat.id),
+                          chat: state.chat,
+                        ),
                   ),
                 );
               }
@@ -386,11 +391,25 @@ class ProfileAppBarDelegate extends SliverPersistentHeaderDelegate {
                                     ),
                                   ProfileButton(
                                     icon: Icon(Symbols.email_rounded),
-                                    onTap: () {
-                                      context.read<WebsocketBloc>().add(
-                                        WebsocketEvent.createChat(user: user),
-                                      );
-                                    },
+                                    onTap:
+                                        user.hasBlocked
+                                            ? () {
+                                              final snackBar = getSnackBar(
+                                                context: context,
+                                                message: 'Blocked',
+                                                status: SnackBarStatus.failure,
+                                              );
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(snackBar);
+                                            }
+                                            : () {
+                                              context.read<WebsocketBloc>().add(
+                                                WebsocketEvent.createChat(
+                                                  user: user,
+                                                ),
+                                              );
+                                            },
                                   ),
                                   SizedBox(width: 7),
                                   OutlinedButton(
@@ -679,7 +698,6 @@ class ProfileDialog extends StatelessWidget {
         ),
         OutlinedButton(
           onPressed: () {
-            Navigator.pop(context);
             Navigator.pop(context);
           },
           child: const Text('No'),

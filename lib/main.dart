@@ -5,7 +5,6 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/view/app.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
-import 'package:democracy/chat/bloc/chat_actions/chat_actions_cubit.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
@@ -98,7 +97,6 @@ void main() async {
           BlocProvider(create: (context) => LikesCubit()),
           BlocProvider(create: (context) => UserRepliesCubit()),
           BlocProvider(create: (context) => ChatsCubit()),
-          BlocProvider(create: (context) => ChatActionsCubit()),
           BlocProvider(create: (context) => ChatDetailCubit()),
           BlocProvider(create: (context) => MessageActionsCubit()),
           BlocProvider(create: (context) => SurveysCubit()),

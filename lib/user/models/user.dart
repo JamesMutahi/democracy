@@ -21,6 +21,7 @@ sealed class User with _$User {
     @JsonKey(name: 'date_joined') required DateTime dateJoined,
     @JsonKey(name: 'is_muted') required bool isMuted,
     @JsonKey(name: 'is_blocked') required bool isBlocked,
+    @JsonKey(name: 'has_blocked') required bool hasBlocked,
     @JsonKey(name: 'is_followed') required bool isFollowed,
   }) = _User;
 

@@ -38,9 +38,7 @@ class _DirectMessageState extends State<DirectMessage> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(
-      WebsocketEvent.getUsers(searchTerm: ''),
-    );
+    context.read<WebsocketBloc>().add(WebsocketEvent.getUsers(searchTerm: ''));
     super.initState();
   }
 

@@ -7,6 +7,7 @@ import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
 import 'package:democracy/chat/view/chats.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 class MessagePage extends StatefulWidget {
   const MessagePage({super.key});
@@ -39,7 +40,26 @@ class _MessagePageState extends State<MessagePage>
                 if (state is Authenticated) {
                   user = state.user;
                 }
-                return Chats(key: UniqueKey(), chats: chats, currentUser: user);
+                return Stack(
+                  children: [
+                    Chats(key: UniqueKey(), chats: chats, currentUser: user),
+                    Align(
+
+                      alignment: Alignment.bottomRight,
+                      child: Container(
+                        margin: EdgeInsets.only(right: 10, bottom: 10),
+                        child: FloatingActionButton(
+                          heroTag: 'message',
+                          onPressed: () {
+                            //   TODO:
+                          },
+                          mini: true,
+                          child: Icon(Symbols.add_circle_rounded, size: 20),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
               },
             );
           case ChatsFailure():

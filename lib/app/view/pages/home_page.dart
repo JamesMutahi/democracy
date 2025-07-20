@@ -44,6 +44,7 @@ class _HomePageState extends State<HomePage>
                   child: Container(
                     margin: EdgeInsets.only(right: 10, bottom: 10),
                     child: FloatingActionButton(
+                      heroTag: 'posts',
                       onPressed: () {
                         Navigator.push(
                           context,

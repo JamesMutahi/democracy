@@ -6,6 +6,7 @@ import 'package:democracy/app/utils/view/more_pop_up.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/app/utils/view/report.dart';
 import 'package:democracy/app/utils/view/share_bottom_sheet.dart';
+import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/user/view/profile.dart';
 import 'package:democracy/poll/view/poll_tile.dart';
 import 'package:democracy/post/models/post.dart';
@@ -242,7 +243,7 @@ class PostTileButton extends StatelessWidget {
   });
 
   final Icon icon;
-  final String? trailing;
+  final Text? trailing;
   final VoidCallback onTap;
 
   @override
@@ -256,12 +257,7 @@ class PostTileButton extends StatelessWidget {
           ),
           child: Padding(padding: const EdgeInsets.all(7.5), child: icon),
         ),
-        (trailing == null)
-            ? SizedBox.shrink()
-            : Text(
-              trailing!,
-              style: TextStyle(color: Theme.of(context).colorScheme.outline),
-            ),
+        (trailing == null) ? SizedBox.shrink() : trailing!,
       ],
     );
   }
@@ -288,7 +284,13 @@ class LikeButton extends StatelessWidget {
                 : Theme.of(context).colorScheme.outline,
         fill: post.isLiked ? 1 : 0,
       ),
-      trailing: (post.likes > 0) ? numberFormat.format(post.likes) : null,
+      trailing:
+          (post.likes > 0)
+              ? Text(
+                numberFormat.format(post.likes),
+                style: TextStyle(color: Theme.of(context).colorScheme.outline),
+              )
+              : null,
     );
   }
 }
@@ -306,17 +308,43 @@ class RepostButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PostTileButton(
-      onTap: () {
-        Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (context) => PostCreate(post: post)));
-      },
+      onTap:
+          post.author.hasBlocked
+              ? () {
+                final snackBar = getSnackBar(
+                  context: context,
+                  message: 'Blocked',
+                  status: SnackBarStatus.failure,
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              }
+              : () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => PostCreate(post: post),
+                  ),
+                );
+              },
       icon: Icon(
         Symbols.loop_rounded,
         size: 20,
-        color: Theme.of(context).colorScheme.outline,
+        color:
+            post.author.hasBlocked
+                ? Theme.of(context).disabledColor
+                : Theme.of(context).colorScheme.outline,
       ),
-      trailing: (post.reposts > 0) ? numberFormat.format(post.reposts) : null,
+      trailing:
+          (post.reposts > 0)
+              ? Text(
+                numberFormat.format(post.reposts),
+                style: TextStyle(
+                  color:
+                      post.author.hasBlocked
+                          ? Theme.of(context).disabledColor
+                          : Theme.of(context).colorScheme.outline,
+                ),
+              )
+              : null,
     );
   }
 }
@@ -334,20 +362,44 @@ class ReplyButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PostTileButton(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PostCreate(post: post, isReply: true),
-          ),
-        );
-      },
+      onTap:
+          post.author.hasBlocked
+              ? () {
+                final snackBar = getSnackBar(
+                  context: context,
+                  message: 'Blocked',
+                  status: SnackBarStatus.failure,
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              }
+              : () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PostCreate(post: post, isReply: true),
+                  ),
+                );
+              },
       icon: Icon(
         Symbols.message_rounded,
         size: 20,
-        color: Theme.of(context).colorScheme.outline,
+        color:
+            post.author.hasBlocked
+                ? Theme.of(context).disabledColor
+                : Theme.of(context).colorScheme.outline,
       ),
-      trailing: (post.replies > 0) ? numberFormat.format(post.replies) : null,
+      trailing:
+          (post.replies > 0)
+              ? Text(
+                numberFormat.format(post.replies),
+                style: TextStyle(
+                  color:
+                      post.author.hasBlocked
+                          ? Theme.of(context).disabledColor
+                          : Theme.of(context).colorScheme.outline,
+                ),
+              )
+              : null,
     );
   }
 }
@@ -371,7 +423,13 @@ class ViewsButton extends StatelessWidget {
         size: 20,
         color: Theme.of(context).colorScheme.outline,
       ),
-      trailing: (post.views > 0) ? numberFormat.format(post.views) : null,
+      trailing:
+          (post.views > 0)
+              ? Text(
+                numberFormat.format(post.views),
+                style: TextStyle(color: Theme.of(context).colorScheme.outline),
+              )
+              : null,
     );
   }
 }
@@ -406,10 +464,11 @@ class BookmarkButton extends StatelessWidget {
         fill: post.isBookmarked ? 1 : 0,
       ),
       trailing:
-          showTrailing
-              ? (post.bookmarks > 0)
-                  ? numberFormat.format(post.bookmarks)
-                  : null
+          (post.bookmarks > 0)
+              ? Text(
+                numberFormat.format(post.bookmarks),
+                style: TextStyle(color: Theme.of(context).colorScheme.outline),
+              )
               : null,
     );
   }

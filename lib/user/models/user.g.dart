@@ -26,6 +26,7 @@ _User _$UserFromJson(Map<String, dynamic> json) => _User(
   dateJoined: DateTime.parse(json['date_joined'] as String),
   isMuted: json['is_muted'] as bool,
   isBlocked: json['is_blocked'] as bool,
+  hasBlocked: json['has_blocked'] as bool,
   isFollowed: json['is_followed'] as bool,
 );
 
@@ -45,5 +46,6 @@ Map<String, dynamic> _$UserToJson(_User instance) => <String, dynamic>{
   'date_joined': instance.dateJoined.toIso8601String(),
   'is_muted': instance.isMuted,
   'is_blocked': instance.isBlocked,
+  'has_blocked': instance.hasBlocked,
   'is_followed': instance.isFollowed,
 };

@@ -2,9 +2,8 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/bottom_text_form_field.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/chat/bloc/chat_actions/chat_actions_cubit.dart';
-import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
@@ -16,25 +15,66 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-class ChatDetail extends StatefulWidget {
+class ChatDetail extends StatelessWidget {
   const ChatDetail({super.key, required this.chat});
 
   final Chat chat;
 
   @override
-  State<ChatDetail> createState() => _ChatDetailState();
+  Widget build(BuildContext context) {
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        late User currentUser;
+        if (state is Authenticated) {
+          currentUser = state.user;
+        }
+        User otherUser = chat.users.firstWhere((u) => u.id != currentUser.id);
+        return ChatScaffold(
+          chat: chat,
+          currentUser: currentUser,
+          otherUser: otherUser,
+        );
+      },
+    );
+  }
 }
 
-class _ChatDetailState extends State<ChatDetail> {
+class ChatScaffold extends StatefulWidget {
+  const ChatScaffold({
+    super.key,
+    required this.chat,
+    required this.currentUser,
+    required this.otherUser,
+  });
+
+  final Chat chat;
+  final User currentUser;
+  final User otherUser;
+
+  @override
+  State<ChatScaffold> createState() => _ChatScaffoldState();
+}
+
+class _ChatScaffoldState extends State<ChatScaffold> {
+  late User otherUser = widget.otherUser;
   final _controller = TextEditingController();
   final _focusNode = FocusNode();
   bool _disableSendButton = true;
   bool showMessageActions = false;
   Set<Message> messages = {};
-  late Chat _chat = widget.chat;
+  bool hideChat = true;
+
+  @override
+  void initState() {
+    context.read<WebsocketBloc>().add(
+      WebsocketEvent.getUser(user: widget.otherUser),
+    );
+    super.initState();
+  }
 
   @override
   void dispose() {
+    _controller.dispose();
     _focusNode.dispose();
     super.dispose();
   }
@@ -43,17 +83,6 @@ class _ChatDetailState extends State<ChatDetail> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<ChatDetailCubit, ChatDetailState>(
-          listener: (context, state) {
-            if (state is ChatUpdated) {
-              if (_chat.id == state.chat.id) {
-                setState(() {
-                  _chat = state.chat;
-                });
-              }
-            }
-          },
-        ),
         BlocListener<MessageActionsCubit, MessageActionsState>(
           listener: (context, state) {
             if (state.status == MessageActionsStatus.actionButtonsOpened) {
@@ -70,122 +99,177 @@ class _ChatDetailState extends State<ChatDetail> {
             }
           },
         ),
-      ],
-      child: BlocBuilder<AuthBloc, AuthState>(
-        builder: (context, state) {
-          late User currentUser;
-          if (state is Authenticated) {
-            currentUser = state.user;
-          }
-          User otherUser = widget.chat.users.firstWhere(
-            (u) => u.id != currentUser.id,
-          );
-          return PopScope(
-            canPop: !showMessageActions,
-            onPopInvokedWithResult: (didPop, __) {
-              if (showMessageActions) {
-                context.read<MessageActionsCubit>().closeActionButtons();
+        BlocListener<UserDetailCubit, UserDetailState>(
+          listener: (context, state) {
+            if (state is UserLoaded) {
+              if (otherUser.id == state.user.id) {
+                setState(() {
+                  otherUser = state.user;
+                  if (state.user.isBlocked) {
+                    if (hideChat == false) {
+                      hideChat = true;
+                    }
+                  } else {
+                    hideChat = false;
+                  }
+                });
               }
-            },
-            child: Scaffold(
-              appBar: AppBar(
-                title:
-                    showMessageActions
-                        ? SizedBox.shrink()
-                        : Row(
-                          children: [
-                            ProfileImage(user: otherUser),
-                            SizedBox(width: 10),
-                            Text(
-                              otherUser.name,
-                              style: TextStyle(overflow: TextOverflow.ellipsis),
-                            ),
-                          ],
+            }
+            if (state is UserUpdated) {
+              if (otherUser.id == state.user.id) {
+                setState(() {
+                  otherUser = state.user;
+                  if (state.user.isBlocked) {
+                    if (hideChat == false) {
+                      hideChat = true;
+                    }
+                  } else {
+                    hideChat = false;
+                  }
+                });
+              }
+            }
+          },
+        ),
+        BlocListener<WebsocketBloc, WebsocketState>(
+          listener: (context, state) {
+            if (state is WebsocketConnected) {
+              context.read<WebsocketBloc>().add(
+                WebsocketEvent.getUser(user: otherUser),
+              );
+            }
+          },
+        ),
+      ],
+      child: PopScope(
+        canPop: !showMessageActions,
+        onPopInvokedWithResult: (didPop, __) {
+          if (showMessageActions) {
+            context.read<MessageActionsCubit>().closeActionButtons();
+          }
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title:
+                showMessageActions
+                    ? SizedBox.shrink()
+                    : Row(
+                      children: [
+                        ProfileImage(user: otherUser),
+                        SizedBox(width: 10),
+                        Text(
+                          otherUser.name,
+                          style: TextStyle(overflow: TextOverflow.ellipsis),
                         ),
-                actions: [
-                  showMessageActions
-                      ? _MessageActions(
-                        messages: messages,
-                        otherUser: otherUser,
-                      )
-                      : SizedBox.shrink(),
-                  ChatPopUpMenu(
-                    chat: _chat,
-                    currentUser: currentUser,
-                    otherUser: otherUser,
-                  ),
-                ],
+                      ],
+                    ),
+            actions: [
+              showMessageActions
+                  ? _MessageActions(messages: messages, otherUser: otherUser)
+                  : SizedBox.shrink(),
+              ChatPopUpMenu(
+                chat: widget.chat,
+                currentUser: widget.currentUser,
+                otherUser: otherUser,
               ),
-              body:
-                  _chat.blockers.isEmpty
-                      ? Messages(
-                        messages: _chat.messages,
-                        currentUser: currentUser,
-                      )
-                      : Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Blocked',
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            _chat.blockers.contains(currentUser.id)
-                                ? ElevatedButton(
-                                  onPressed: () {
-                                    context.read<WebsocketBloc>().add(
-                                      WebsocketEvent.userBlocked(
-                                        user: otherUser,
-                                      ),
-                                    );
-                                  },
-                                  child: Text('Unblock'),
-                                )
-                                : SizedBox.shrink(),
-                          ],
+            ],
+          ),
+          body:
+              (hideChat && otherUser.isBlocked)
+                  ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          '@${otherUser.username} is blocked',
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        SizedBox(height: 10),
+                        OutlinedButton(
+                          onPressed: () {
+                            setState(() {
+                              hideChat = false;
+                            });
+                          },
+                          child: Text('View messages'),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          'Will not unblock them',
+                          style: Theme.of(
+                            context,
+                          ).textTheme.labelMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                  : Messages(
+                    messages: widget.chat.messages,
+                    currentUser: widget.currentUser,
+                  ),
+          bottomNavigationBar:
+              otherUser.hasBlocked
+                  ? Container(
+                    margin: const EdgeInsets.only(bottom: 8.0),
+                    child: Text('You have been blocked', textAlign: TextAlign.center,),
+                  )
+                  : otherUser.isBlocked && hideChat
+                  ? SizedBox.shrink()
+                  : otherUser.isBlocked && !hideChat
+                  ? OutlinedButton(
+                    style: ButtonStyle(
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
-              bottomNavigationBar:
-                  _chat.blockers.isEmpty
-                      ? BottomTextFormField(
-                        focusNode: _focusNode,
-                        showCursor: true,
-                        readOnly: false,
-                        controller: _controller,
-                        onTap: () {},
-                        onChanged: (value) {
-                          if (value == '') {
-                            setState(() {
-                              _disableSendButton = true;
-                            });
-                          } else {
-                            setState(() {
-                              _disableSendButton = false;
-                            });
-                          }
-                        },
-                        hintText: 'Message',
-                        prefixIcon: null,
-                        onSend:
-                            _disableSendButton
-                                ? null
-                                : () {
-                                  context.read<WebsocketBloc>().add(
-                                    WebsocketEvent.createMessage(
-                                      chat: _chat,
-                                      text: _controller.text,
-                                    ),
-                                  );
-                                  _controller.clear();
-                                  setState(() {
-                                    _disableSendButton = true;
-                                  });
-                                },
-                      )
-                      : SizedBox.shrink(),
-            ),
-          );
-        },
+                    ),
+                    onPressed: () {
+                      context.read<WebsocketBloc>().add(
+                        WebsocketEvent.blockUser(user: otherUser),
+                      );
+                    },
+                    child: Text('Unblock'),
+                  )
+                  : BottomTextFormField(
+                    focusNode: _focusNode,
+                    showCursor: true,
+                    readOnly: false,
+                    controller: _controller,
+                    onTap: () {},
+                    onChanged: (value) {
+                      if (value == '') {
+                        setState(() {
+                          _disableSendButton = true;
+                        });
+                      } else {
+                        setState(() {
+                          _disableSendButton = false;
+                        });
+                      }
+                    },
+                    hintText: 'Message',
+                    prefixIcon: null,
+                    onSend:
+                        _disableSendButton
+                            ? null
+                            : () {
+                              context.read<WebsocketBloc>().add(
+                                WebsocketEvent.createMessage(
+                                  chat: widget.chat,
+                                  text: _controller.text,
+                                ),
+                              );
+                              _controller.clear();
+                              setState(() {
+                                _disableSendButton = true;
+                              });
+                            },
+                  ),
+        ),
       ),
     );
   }
@@ -219,27 +303,19 @@ class ChatPopUpMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List texts = [
-      chat.blockers.isEmpty
-          ? 'Block'
-          : chat.blockers.contains(currentUser.id)
-          ? 'Unblock'
-          : 'Block',
-    ];
+    List texts = [otherUser.isBlocked ? 'Unblock' : 'Block'];
     return PopupMenuButton<String>(
       padding: EdgeInsets.zero,
       menuPadding: EdgeInsets.zero,
       onSelected: (selected) {
         switch (selected) {
           case 'Block':
-            context.read<ChatActionsCubit>().closeActionButtons();
             context.read<WebsocketBloc>().add(
-              WebsocketEvent.userBlocked(user: otherUser),
+              WebsocketEvent.blockUser(user: otherUser),
             );
           case 'Unblock':
-            context.read<ChatActionsCubit>().closeActionButtons();
             context.read<WebsocketBloc>().add(
-              WebsocketEvent.userBlocked(user: otherUser),
+              WebsocketEvent.blockUser(user: otherUser),
             );
         }
       },

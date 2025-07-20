@@ -59,7 +59,6 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   }) = _DeleteMessage;
   const factory WebsocketEvent.markChatAsRead({required Chat chat}) =
       _MarkChatAsRead;
-  const factory WebsocketEvent.userBlocked({required User user}) = _UserBlocked;
   const factory WebsocketEvent.getPolls() = _GetPolls;
   const factory WebsocketEvent.vote({required Option option}) = _Vote;
   const factory WebsocketEvent.submitReason({
