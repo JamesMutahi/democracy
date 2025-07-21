@@ -211,25 +211,32 @@ class _ReportModalState extends State<ReportModal> {
             ),
           ],
         ),
-        bottomNavigationBar: BottomAppBar(
-          child: FilledButton(
+        bottomNavigationBar: Container(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: OutlinedButton(
             style: ButtonStyle(
-              backgroundColor: WidgetStatePropertyAll(
-                (_disabled)
-                    ? Theme.of(context).disabledColor
-                    : Theme.of(context).primaryColor,
+              padding: WidgetStateProperty.all(
+                EdgeInsets.symmetric(vertical: 15),
+              ),
+              shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
               ),
             ),
-            onPressed: () {
-              (_disabled)
-                  ? null
-                  : context.read<WebsocketBloc>().add(
-                    WebsocketEvent.reportPost(
-                      issue: issues[_issue]!,
-                      post: widget.post,
-                    ),
-                  );
-            },
+            onPressed:
+                _disabled
+                    ? null
+                    : () {
+                      context.read<WebsocketBloc>().add(
+                        WebsocketEvent.reportPost(
+                          issue: issues[_issue]!,
+                          post: widget.post,
+                        ),
+                      );
+                    },
             child: const Text('Report'),
           ),
         ),

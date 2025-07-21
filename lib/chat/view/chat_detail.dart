@@ -147,6 +147,9 @@ class _ChatScaffoldState extends State<ChatScaffold> {
           if (showMessageActions) {
             context.read<MessageActionsCubit>().closeActionButtons();
           }
+          context.read<WebsocketBloc>().add(
+            WebsocketEvent.unsubscribeUser(user: otherUser),
+          );
         },
         child: Scaffold(
           appBar: AppBar(
@@ -211,29 +214,36 @@ class _ChatScaffoldState extends State<ChatScaffold> {
                     currentUser: widget.currentUser,
                   ),
           bottomNavigationBar:
-              otherUser.hasBlocked
-                  ? Container(
-                    margin: const EdgeInsets.only(bottom: 8.0),
-                    child: Text('You have been blocked', textAlign: TextAlign.center,),
-                  )
-                  : otherUser.isBlocked && hideChat
+              otherUser.isBlocked && hideChat
                   ? SizedBox.shrink()
                   : otherUser.isBlocked && !hideChat
-                  ? OutlinedButton(
-                    style: ButtonStyle(
-                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+                  ? otherUser.hasBlocked
+                      ? Container(
+                        margin: const EdgeInsets.only(bottom: 8.0),
+                        child: Text(
+                          'You have been blocked',
+                          textAlign: TextAlign.center,
                         ),
-                      ),
-                    ),
-                    onPressed: () {
-                      context.read<WebsocketBloc>().add(
-                        WebsocketEvent.blockUser(user: otherUser),
-                      );
-                    },
-                    child: Text('Unblock'),
-                  )
+                      )
+                      : OutlinedButton(
+                        style: ButtonStyle(
+                          padding: WidgetStateProperty.all(
+                            EdgeInsets.symmetric(vertical: 15),
+                          ),
+                          shape:
+                              WidgetStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                              ),
+                        ),
+                        onPressed: () {
+                          context.read<WebsocketBloc>().add(
+                            WebsocketEvent.blockUser(user: otherUser),
+                          );
+                        },
+                        child: Text('Unblock'),
+                      )
                   : BottomTextFormField(
                     focusNode: _focusNode,
                     showCursor: true,

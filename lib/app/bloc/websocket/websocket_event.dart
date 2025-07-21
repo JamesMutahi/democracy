@@ -38,6 +38,8 @@ abstract class WebsocketEvent with _$WebsocketEvent {
       _LoadLikedPosts;
   const factory WebsocketEvent.loadUserReplies({required User user}) =
       _LoadUserReplies;
+  const factory WebsocketEvent.unsubscribeUser({required User user}) =
+      _UnsubscribeUser;
   const factory WebsocketEvent.unsubscribeUserProfilePosts({
     required User user,
   }) = _UnsubscribeUserProfilePosts;

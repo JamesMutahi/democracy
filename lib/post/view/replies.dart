@@ -98,10 +98,10 @@ class _RepliesState extends State<Replies> {
                         post;
                   });
                 }
-              case PostDeleted(post: final post):
-                if (posts.any((element) => element.id == post.id)) {
+              case PostDeleted(:final postId):
+                if (posts.any((element) => element.id == postId)) {
                   setState(() {
-                    posts.removeWhere((element) => element.id == post.id);
+                    posts.removeWhere((element) => element.id == postId);
                   });
                 }
             }

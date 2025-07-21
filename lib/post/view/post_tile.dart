@@ -2,11 +2,14 @@ import 'dart:async';
 
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/custom_text.dart';
+import 'package:democracy/app/utils/view/dialogs.dart';
 import 'package:democracy/app/utils/view/more_pop_up.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/app/utils/view/report.dart';
 import 'package:democracy/app/utils/view/share_bottom_sheet.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
+import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/profile.dart';
 import 'package:democracy/poll/view/poll_tile.dart';
 import 'package:democracy/post/models/post.dart';
@@ -49,88 +52,109 @@ class PostTile extends StatelessWidget {
             ),
           ),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ProfileImage(user: post.author),
-            SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        post.author.name,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                      isChildOfPost
-                          ? SizedBox.shrink()
-                          : Row(
+        child:
+            post.isDeleted
+                ? PostDeletedWidget()
+                : Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ProfileImage(user: post.author),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              TimeDifferenceInfo(publishedAt: post.publishedAt),
+                              Text(
+                                post.author.name,
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
                               isChildOfPost
                                   ? SizedBox.shrink()
-                                  : PostMorePopUp(post: post),
+                                  : Row(
+                                    children: [
+                                      TimeDifferenceInfo(
+                                        publishedAt: post.publishedAt,
+                                      ),
+                                      isChildOfPost
+                                          ? SizedBox.shrink()
+                                          : PostMorePopUp(post: post),
+                                    ],
+                                  ),
                             ],
                           ),
-                    ],
-                  ),
-                  PostBody(post: post),
-                  (post.repostOf == null)
-                      ? SizedBox.shrink()
-                      : isChildOfPost
-                      ? SizedBox.shrink()
-                      : DependencyContainer(
-                        child: PostTile(
-                          post: post.repostOf!,
-                          isChildOfPost: true,
-                        ),
-                      ),
-                  (post.poll == null)
-                      ? SizedBox.shrink()
-                      : DependencyContainer(
-                        child: PollTile(poll: post.poll!, isChildOfPost: true),
-                      ),
-                  (post.survey == null)
-                      ? SizedBox.shrink()
-                      : DependencyContainer(
-                        child: SurveyTile(
-                          survey: post.survey!,
-                          isChildOfPost: true,
-                        ),
-                      ),
-                  SizedBox(height: 5),
-                  isChildOfPost
-                      ? SizedBox.shrink()
-                      : Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          ReplyButton(post: post, numberFormat: numberFormat),
-                          RepostButton(post: post, numberFormat: numberFormat),
-                          LikeButton(post: post, numberFormat: numberFormat),
-                          ViewsButton(post: post, numberFormat: numberFormat),
-                          Row(
-                            children: [
-                              BookmarkButton(
-                                post: post,
-                                showTrailing: false,
-                                numberFormat: numberFormat,
+                          PostBody(post: post),
+                          (post.repostOf == null)
+                              ? SizedBox.shrink()
+                              : isChildOfPost
+                              ? SizedBox.shrink()
+                              : DependencyContainer(
+                                child: PostTile(
+                                  post: post.repostOf!,
+                                  isChildOfPost: true,
+                                ),
                               ),
-                              ShareButton(post: post),
-                            ],
-                          ),
+                          (post.poll == null)
+                              ? SizedBox.shrink()
+                              : DependencyContainer(
+                                child: PollTile(
+                                  poll: post.poll!,
+                                  isChildOfPost: true,
+                                ),
+                              ),
+                          (post.survey == null)
+                              ? SizedBox.shrink()
+                              : DependencyContainer(
+                                child: SurveyTile(
+                                  survey: post.survey!,
+                                  isChildOfPost: true,
+                                ),
+                              ),
+                          SizedBox(height: 5),
+                          isChildOfPost
+                              ? SizedBox.shrink()
+                              : Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  ReplyButton(
+                                    post: post,
+                                    numberFormat: numberFormat,
+                                  ),
+                                  RepostButton(
+                                    post: post,
+                                    numberFormat: numberFormat,
+                                  ),
+                                  LikeButton(
+                                    post: post,
+                                    numberFormat: numberFormat,
+                                  ),
+                                  ViewsButton(
+                                    post: post,
+                                    numberFormat: numberFormat,
+                                  ),
+                                  Row(
+                                    children: [
+                                      BookmarkButton(
+                                        post: post,
+                                        showTrailing: false,
+                                        numberFormat: numberFormat,
+                                      ),
+                                      ShareButton(post: post),
+                                    ],
+                                  ),
+                                ],
+                              ),
                         ],
                       ),
-                ],
-              ),
-            ),
-          ],
-        ),
+                    ),
+                  ],
+                ),
       ),
     );
   }
@@ -183,6 +207,20 @@ class _PostBodyState extends State<PostBody> {
   }
 }
 
+class PostDeletedWidget extends StatelessWidget {
+  const PostDeletedWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text('This post was deleted by the author'),
+      ),
+    );
+  }
+}
+
 class DependencyContainer extends StatelessWidget {
   const DependencyContainer({super.key, required this.child});
 
@@ -210,26 +248,69 @@ class PostMorePopUp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MorePopUp(
-      onSelected: (selected) {
-        switch (selected) {
-          case 'Mute':
-            //   TODO:
-            return;
-          case 'Block':
-            //   TODO:
-            return;
-          case 'Report':
-            showGeneralDialog(
-              context: context,
-              transitionDuration: const Duration(milliseconds: 300),
-              pageBuilder: (context, animation, secondaryAnimation) {
-                return ReportModal(post: post);
-              },
-            );
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        late User user;
+        if (state is Authenticated) {
+          user = state.user;
         }
+        return MorePopUp(
+          onSelected: (selected) {
+            switch (selected) {
+              case 'Delete':
+                showDialog(
+                  context: context,
+                  builder:
+                      (context) => CustomDialog(
+                        title: 'Delete',
+                        content: 'Are you sure you want to delete this post?',
+                        onYesPressed: () {
+                          context.read<WebsocketBloc>().add(
+                            WebsocketEvent.deletePost(post: post),
+                          );
+                        },
+                      ),
+                );
+              case 'Mute':
+                showDialog(
+                  context: context,
+                  builder: (context) => MuteDialog(user: post.author),
+                );
+              case 'Unmute':
+                context.read<WebsocketBloc>().add(
+                  WebsocketEvent.muteUser(user: post.author),
+                );
+              case 'Block':
+                showDialog(
+                  context: context,
+                  builder: (context) => BlockDialog(user: post.author),
+                );
+              case 'Unblock':
+                context.read<WebsocketBloc>().add(
+                  WebsocketEvent.blockUser(user: post.author),
+                );
+              case 'Report':
+                showModalBottomSheet(
+                  context: context,
+                  showDragHandle: true,
+                  isScrollControlled: true,
+                  useSafeArea: true,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  shape: const BeveledRectangleBorder(),
+                  builder: (context) => ReportModal(post: post),
+                );
+            }
+          },
+          texts:
+              user.id == post.author.id
+                  ? ['Delete']
+                  : [
+                    post.author.isMuted ? 'Unmute' : 'Mute',
+                    post.author.isBlocked ? 'Unblock' : 'Block',
+                    'Report',
+                  ],
+        );
       },
-      texts: ['Mute', 'Block', 'Report'],
     );
   }
 }
@@ -464,7 +545,7 @@ class BookmarkButton extends StatelessWidget {
         fill: post.isBookmarked ? 1 : 0,
       ),
       trailing:
-          (post.bookmarks > 0)
+          (post.bookmarks > 0 && showTrailing)
               ? Text(
                 numberFormat.format(post.bookmarks),
                 style: TextStyle(color: Theme.of(context).colorScheme.outline),

@@ -1,4 +1,5 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/view/dialogs.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
@@ -130,6 +131,9 @@ class _ProfilePageState extends State<ProfilePage> {
             child: PopScope(
               canPop: true,
               onPopInvokedWithResult: (_, __) {
+                context.read<WebsocketBloc>().add(
+                  WebsocketEvent.unsubscribeUser(user: user),
+                );
                 context.read<WebsocketBloc>().add(
                   WebsocketEvent.unsubscribeUserProfilePosts(user: user),
                 );
@@ -390,7 +394,16 @@ class ProfileAppBarDelegate extends SliverPersistentHeaderDelegate {
                                       ],
                                     ),
                                   ProfileButton(
-                                    icon: Icon(Symbols.email_rounded),
+                                    icon:
+                                        user.hasBlocked
+                                            ? Icon(
+                                              Symbols.email_rounded,
+                                              color:
+                                                  Theme.of(
+                                                    context,
+                                                  ).disabledColor,
+                                            )
+                                            : Icon(Symbols.email_rounded),
                                     onTap:
                                         user.hasBlocked
                                             ? () {
@@ -525,19 +538,7 @@ class _ProfilePopUpMenu extends StatelessWidget {
           case 'Mute':
             showDialog(
               context: context,
-              builder:
-                  (context) => ProfileDialog(
-                    title: 'Mute @${user.username}?',
-                    content:
-                        'You will not see their posts on your timeline. '
-                        'You will continue receiving notifications. '
-                        'They will not know they have been muted.',
-                    onYesPressed: () {
-                      context.read<WebsocketBloc>().add(
-                        WebsocketEvent.muteUser(user: user),
-                      );
-                    },
-                  ),
+              builder: (context) => MuteDialog(user: user),
             );
           case 'Unmute':
             context.read<WebsocketBloc>().add(
@@ -546,19 +547,7 @@ class _ProfilePopUpMenu extends StatelessWidget {
           case 'Block':
             showDialog(
               context: context,
-              builder:
-                  (context) => ProfileDialog(
-                    title: 'Block @${user.username}?',
-                    content:
-                        'They will no longer be able to engage with your posts '
-                        'or message you. You will also not receive '
-                        'notifications from them.',
-                    onYesPressed: () {
-                      context.read<WebsocketBloc>().add(
-                        WebsocketEvent.blockUser(user: user),
-                      );
-                    },
-                  ),
+              builder: (context) => BlockDialog(user: user),
             );
           case 'Unblock':
             context.read<WebsocketBloc>().add(
@@ -667,44 +656,6 @@ class _UserDetails extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class ProfileDialog extends StatelessWidget {
-  const ProfileDialog({
-    super.key,
-    required this.title,
-    required this.content,
-    required this.onYesPressed,
-  });
-
-  final String title;
-  final String content;
-  final VoidCallback onYesPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Center(child: Text(title)),
-      content: Text(content, textAlign: TextAlign.center),
-      actions: <Widget>[
-        OutlinedButton(
-          onPressed: () {
-            onYesPressed();
-            Navigator.pop(context);
-          },
-          child: const Text('Yes'),
-        ),
-        OutlinedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('No'),
-        ),
-      ],
-      actionsAlignment: MainAxisAlignment.center,
-      buttonPadding: const EdgeInsets.all(20.0),
     );
   }
 }

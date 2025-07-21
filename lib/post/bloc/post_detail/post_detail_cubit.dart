@@ -31,8 +31,7 @@ class PostDetailCubit extends Cubit<PostDetailState> {
   void deleted({required Map<String, dynamic> payload}) {
     emit(PostDetailLoading());
     if (payload['response_status'] == 204) {
-      final Post post = Post.fromJson(payload['data']);
-      emit(PostDeleted(post: post));
+      emit(PostDeleted(postId: payload['pk']));
     } else {
       emit(PostDetailFailure(error: payload['errors'][0].toString()));
     }

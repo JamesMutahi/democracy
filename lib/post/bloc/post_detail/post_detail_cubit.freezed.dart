@@ -137,14 +137,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Post post)?  created,TResult Function( Post post)?  updated,TResult Function( Post post)?  deleted,TResult Function()?  reported,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Post post)?  created,TResult Function( Post post)?  updated,TResult Function( int postId)?  deleted,TResult Function()?  reported,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case PostDetailLoading() when loading != null:
 return loading();case PostCreated() when created != null:
 return created(_that.post);case PostUpdated() when updated != null:
 return updated(_that.post);case PostDeleted() when deleted != null:
-return deleted(_that.post);case PostReported() when reported != null:
+return deleted(_that.postId);case PostReported() when reported != null:
 return reported();case PostDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return orElse();
@@ -164,14 +164,14 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Post post)  created,required TResult Function( Post post)  updated,required TResult Function( Post post)  deleted,required TResult Function()  reported,required TResult Function( String error)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Post post)  created,required TResult Function( Post post)  updated,required TResult Function( int postId)  deleted,required TResult Function()  reported,required TResult Function( String error)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case PostDetailLoading():
 return loading();case PostCreated():
 return created(_that.post);case PostUpdated():
 return updated(_that.post);case PostDeleted():
-return deleted(_that.post);case PostReported():
+return deleted(_that.postId);case PostReported():
 return reported();case PostDetailFailure():
 return failure(_that.error);case _:
   throw StateError('Unexpected subclass');
@@ -190,14 +190,14 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Post post)?  created,TResult? Function( Post post)?  updated,TResult? Function( Post post)?  deleted,TResult? Function()?  reported,TResult? Function( String error)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Post post)?  created,TResult? Function( Post post)?  updated,TResult? Function( int postId)?  deleted,TResult? Function()?  reported,TResult? Function( String error)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case PostDetailLoading() when loading != null:
 return loading();case PostCreated() when created != null:
 return created(_that.post);case PostUpdated() when updated != null:
 return updated(_that.post);case PostDeleted() when deleted != null:
-return deleted(_that.post);case PostReported() when reported != null:
+return deleted(_that.postId);case PostReported() when reported != null:
 return reported();case PostDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return null;
@@ -425,10 +425,10 @@ $PostCopyWith<$Res> get post {
 
 
 class PostDeleted implements PostDetailState {
-  const PostDeleted({required this.post});
+  const PostDeleted({required this.postId});
   
 
- final  Post post;
+ final  int postId;
 
 /// Create a copy of PostDetailState
 /// with the given fields replaced by the non-null parameter values.
@@ -440,16 +440,16 @@ $PostDeletedCopyWith<PostDeleted> get copyWith => _$PostDeletedCopyWithImpl<Post
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostDeleted&&(identical(other.post, post) || other.post == post));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostDeleted&&(identical(other.postId, postId) || other.postId == postId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,post);
+int get hashCode => Object.hash(runtimeType,postId);
 
 @override
 String toString() {
-  return 'PostDetailState.deleted(post: $post)';
+  return 'PostDetailState.deleted(postId: $postId)';
 }
 
 
@@ -460,11 +460,11 @@ abstract mixin class $PostDeletedCopyWith<$Res> implements $PostDetailStateCopyW
   factory $PostDeletedCopyWith(PostDeleted value, $Res Function(PostDeleted) _then) = _$PostDeletedCopyWithImpl;
 @useResult
 $Res call({
- Post post
+ int postId
 });
 
 
-$PostCopyWith<$Res> get post;
+
 
 }
 /// @nodoc
@@ -477,23 +477,14 @@ class _$PostDeletedCopyWithImpl<$Res>
 
 /// Create a copy of PostDetailState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? post = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? postId = null,}) {
   return _then(PostDeleted(
-post: null == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
-as Post,
+postId: null == postId ? _self.postId : postId // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
-/// Create a copy of PostDetailState
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$PostCopyWith<$Res> get post {
-  
-  return $PostCopyWith<$Res>(_self.post, (value) {
-    return _then(_self.copyWith(post: value));
-  });
-}
+
 }
 
 /// @nodoc

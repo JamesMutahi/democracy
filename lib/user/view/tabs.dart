@@ -79,10 +79,10 @@ class _UserPostsState extends State<UserPosts> {
                         post;
                   });
                 }
-              case PostDeleted(post: final post):
-                if (posts.any((element) => element.id == post.id)) {
+              case PostDeleted(:final postId):
+                if (posts.any((element) => element.id == postId)) {
                   setState(() {
-                    posts.removeWhere((element) => element.id == post.id);
+                    posts.removeWhere((element) => element.id == postId);
                   });
                 }
             }
@@ -171,10 +171,10 @@ class _UserRepliesState extends State<UserReplies> {
                         post;
                   });
                 }
-              case PostDeleted(post: final post):
-                if (posts.any((element) => element.id == post.id)) {
+              case PostDeleted(:final postId):
+                if (posts.any((element) => element.id == postId)) {
                   setState(() {
-                    posts.removeWhere((element) => element.id == post.id);
+                    posts.removeWhere((element) => element.id == postId);
                   });
                 }
             }
@@ -263,10 +263,10 @@ class _LikesState extends State<Likes> {
                         post;
                   });
                 }
-              case PostDeleted(post: final post):
-                if (posts.any((element) => element.id == post.id)) {
+              case PostDeleted(:final postId):
+                if (posts.any((element) => element.id == postId)) {
                   setState(() {
-                    posts.removeWhere((element) => element.id == post.id);
+                    posts.removeWhere((element) => element.id == postId);
                   });
                 }
             }

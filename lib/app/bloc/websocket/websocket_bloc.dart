@@ -127,6 +127,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_FollowUser>((event, emit) {
       _onFollowUser(emit, event);
     });
+    on<_UnsubscribeUser>((event, emit) {
+      _onUnsubscribeUser(emit, event);
+    });
     on<_SendDirectMessage>((event, emit) {
       _onSendDirectMessage(emit, event);
     });
@@ -237,7 +240,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Map<String, dynamic> message = {
       'stream': postsStream,
       'payload': {
-        'action': 'update',
+        'action': 'patch',
         'request_id': postRequestId,
         'data': {'pk': event.id, 'body': event.body},
       },
@@ -281,7 +284,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'delete',
         'request_id': postRequestId,
-        'data': {'pk': event.post.id},
+        'pk': event.post.id,
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -579,6 +582,22 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'stream': usersStream,
       'payload': {
         'action': 'follow',
+        'request_id': usersRequestId,
+        'pk': event.user.id,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onUnsubscribeUser(
+    Emitter<WebsocketState> emit,
+    _UnsubscribeUser event,
+  ) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': usersStream,
+      'payload': {
+        'action': 'unsubscribe',
         'request_id': usersRequestId,
         'pk': event.user.id,
       },

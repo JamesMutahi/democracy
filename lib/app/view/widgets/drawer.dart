@@ -45,6 +45,7 @@ class AppDrawer extends StatelessWidget {
               ),
               ListTile(
                 onTap: () {
+                  Navigator.pop(context);
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => ProfilePage(user: user),
@@ -56,6 +57,7 @@ class AppDrawer extends StatelessWidget {
               ),
               ListTile(
                 onTap: () {
+                  Navigator.pop(context);
                   context.read<WebsocketBloc>().add(
                     WebsocketEvent.loadBookmarks(user: user),
                   );
@@ -70,6 +72,7 @@ class AppDrawer extends StatelessWidget {
               ),
               ListTile(
                 onTap: () {
+                  Navigator.pop(context);
                   Navigator.of(
                     context,
                   ).push(MaterialPageRoute(builder: (context) => Settings()));
