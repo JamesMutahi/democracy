@@ -24,6 +24,29 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    return DefaultTabController(
+      length: 2,
+      child: Column(
+        children: [
+          const TabBar(tabs: [Tab(text: 'For You'), Tab(text: 'Following')]),
+          const SizedBox(height: 10),
+          Expanded(
+            child: TabBarView(
+              physics: NeverScrollableScrollPhysics(),
+              children: [ForYouTab(), FollowingTab()],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ForYouTab extends StatelessWidget {
+  const ForYouTab({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return BlocBuilder<PostListCubit, PostListState>(
       builder: (context, state) {
         switch (state) {
@@ -46,7 +69,7 @@ class _HomePageState extends State<HomePage>
                         );
                       },
                       mini: true,
-                      child: Icon(Symbols.post_add_rounded, size: 20),
+                      child: Icon(Symbols.post_add_rounded),
                     ),
                   ),
                 ),
@@ -63,5 +86,14 @@ class _HomePageState extends State<HomePage>
         }
       },
     );
+  }
+}
+
+class FollowingTab extends StatelessWidget {
+  const FollowingTab({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
   }
 }

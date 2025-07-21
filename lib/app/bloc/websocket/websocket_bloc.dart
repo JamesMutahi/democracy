@@ -198,7 +198,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
           });
         },
       );
-      add(WebsocketEvent.getNotifications());
     } catch (e) {
       add(_ChangeState(state: WebsocketFailure(error: e.toString())));
     }

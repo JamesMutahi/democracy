@@ -4,7 +4,7 @@ import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/bloc/replies/replies_cubit.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/app/utils/view/failure_retry_button.dart';
-import 'package:democracy/post/view/post_tile.dart';
+import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

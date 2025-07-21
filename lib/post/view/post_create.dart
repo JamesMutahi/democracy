@@ -9,8 +9,7 @@ import 'package:democracy/poll/models/poll.dart';
 import 'package:democracy/poll/view/poll_tile.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:democracy/app/utils/view/snack_bar_content.dart';
-import 'package:democracy/post/view/post_tile.dart';
+import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:democracy/user/bloc/users/users_cubit.dart';
@@ -64,18 +63,6 @@ class _PostCreateState extends State<PostCreate> {
       listener: (context, state) {
         if (state is PostCreated) {
           Navigator.pop(context);
-          String message =
-              state.post.status == PostStatus.published
-                  ? state.post.replyTo == null
-                      ? 'Post published'
-                      : 'Reply sent'
-                  : 'Post saved as draft';
-          final snackBar = getSnackBar(
-            context: context,
-            message: message,
-            status: SnackBarStatus.success,
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
       },
       child: PopScope(
@@ -213,10 +200,7 @@ class _PostCreateState extends State<PostCreate> {
                   (widget.post == null)
                       ? SizedBox.shrink()
                       : DependencyContainer(
-                        child: PostTile(
-                          post: widget.post!,
-                          isChildOfPost: true,
-                        ),
+                        child: PostTile(post: widget.post!, isDependency: true),
                       ),
                   (widget.poll == null)
                       ? SizedBox.shrink()
@@ -332,9 +316,7 @@ class _BottomNavBarState extends State<_BottomNavBar>
               _view = SearchResultView.users;
             });
             context.read<WebsocketBloc>().add(
-              WebsocketEvent.getUsers(
-                searchTerm: query.toLowerCase().trim(),
-              ),
+              WebsocketEvent.getUsers(searchTerm: query.toLowerCase().trim()),
             );
           }
         },

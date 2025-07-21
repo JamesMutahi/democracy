@@ -48,7 +48,7 @@ class _MessagePageState extends State<MessagePage>
                             //   TODO:
                           },
                           mini: true,
-                          child: Icon(Symbols.add_circle_rounded, size: 20),
+                          child: Icon(Symbols.add_rounded),
                         ),
                       ),
                     ),

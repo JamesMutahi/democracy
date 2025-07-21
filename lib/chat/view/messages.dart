@@ -4,7 +4,7 @@ import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/poll/view/poll_tile.dart';
-import 'package:democracy/post/view/post_tile.dart';
+import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -80,7 +80,7 @@ class _MessagesState extends State<Messages> {
               AlignmentContainer(
                 message: message,
                 alignedRight: alignedRight,
-                child: PostTile(post: message.post!, isChildOfPost: true),
+                child: PostTile(post: message.post!, isDependency: true),
               ),
             );
           }

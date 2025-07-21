@@ -3,7 +3,7 @@ import 'package:democracy/app/utils/view/bottom_loader.dart';
 import 'package:democracy/app/utils/view/failure_retry_button.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:democracy/post/view/post_tile.dart';
+import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/post/bloc/likes/likes_cubit.dart';
 import 'package:democracy/post/bloc/user_posts/user_posts_cubit.dart';
