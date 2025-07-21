@@ -91,8 +91,8 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_UnsubscribeUserProfilePosts>((event, emit) {
       _onUnsubscribeUserProfilePosts(emit, event);
     });
-    on<_LoadChats>((event, emit) {
-      _onLoadChats(emit);
+    on<_GetChats>((event, emit) {
+      _onGetChats(emit);
     });
     on<_CreateChat>((event, emit) {
       _onCreateChat(emit, event);
@@ -404,7 +404,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
-  Future _onLoadChats(Emitter<WebsocketState> emit) async {
+  Future _onGetChats(Emitter<WebsocketState> emit) async {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': chatsStream,

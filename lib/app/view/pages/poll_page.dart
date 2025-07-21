@@ -14,22 +14,21 @@ class PollPage extends StatefulWidget {
   State<PollPage> createState() => _PollPageState();
 }
 
-class _PollPageState extends State<PollPage> {
+class _PollPageState extends State<PollPage>
+    with AutomaticKeepAliveClientMixin {
   @override
-  void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getPolls());
-    super.initState();
-  }
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BlocBuilder<PollsCubit, PollsState>(
       builder: (context, state) {
         switch (state) {
           case PollsLoaded(:final polls):
             return (polls.isNotEmpty)
                 ? Polls(key: UniqueKey(), polls: polls)
-                : NoResults(text: 'No polls',);
+                : NoResults(text: 'No polls');
           case PollsFailure():
             return FailureRetryButton(
               onPressed: () {

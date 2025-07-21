@@ -22,12 +22,6 @@ class _HomePageState extends State<HomePage>
   bool get wantKeepAlive => true;
 
   @override
-  void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getPosts());
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     super.build(context);
     return BlocBuilder<PostListCubit, PostListState>(
@@ -52,10 +46,7 @@ class _HomePageState extends State<HomePage>
                         );
                       },
                       mini: true,
-                      child: Icon(
-                        Symbols.post_add_rounded,
-                        size: 20,
-                      ),
+                      child: Icon(Symbols.post_add_rounded, size: 20),
                     ),
                   ),
                 ),

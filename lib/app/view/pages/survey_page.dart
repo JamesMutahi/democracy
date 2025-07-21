@@ -18,11 +18,6 @@ class _SurveyPageState extends State<SurveyPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  @override
-  void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getSurveys());
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +28,7 @@ class _SurveyPageState extends State<SurveyPage>
           case SurveysLoaded(:final surveys):
             return (surveys.isNotEmpty)
                 ? Surveys(key: UniqueKey(), surveys: surveys)
-                : NoResults(text: 'No surveys',);
+                : NoResults(text: 'No surveys');
           case SurveysFailure():
             return FailureRetryButton(
               onPressed: () {

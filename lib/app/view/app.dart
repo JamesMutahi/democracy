@@ -69,7 +69,7 @@ class MyApp extends StatelessWidget {
                   case Unauthenticated():
                     return LoginPage();
                   case Authenticated():
-                    return WebsocketConnection();
+                    return Dashboard();
                   default:
                     return SplashPage();
                 }
@@ -78,30 +78,6 @@ class MyApp extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class WebsocketConnection extends StatefulWidget {
-  const WebsocketConnection({super.key});
-
-  @override
-  State<WebsocketConnection> createState() => _WebsocketConnectionState();
-}
-
-class _WebsocketConnectionState extends State<WebsocketConnection> {
-  bool isConnected = false;
-  @override
-  Widget build(BuildContext context) {
-    return BlocListener<WebsocketBloc, WebsocketState>(
-      listener: (context, state) {
-        if (state is WebsocketConnected) {
-          setState(() {
-            isConnected = true;
-          });
-        }
-      },
-      child: isConnected ? Dashboard() : SplashPage(),
     );
   }
 }
@@ -167,6 +143,14 @@ class _Listeners extends StatelessWidget {
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
             switch (state) {
+              case WebsocketConnected():
+                context.read<WebsocketBloc>().add(WebsocketEvent.getPosts());
+                context.read<WebsocketBloc>().add(
+                  WebsocketEvent.getNotifications(),
+                );
+                context.read<WebsocketBloc>().add(WebsocketEvent.getPolls());
+                context.read<WebsocketBloc>().add(WebsocketEvent.getSurveys());
+                context.read<WebsocketBloc>().add(WebsocketEvent.getChats());
               case WebsocketSuccess(:final message):
                 switch (message['stream']) {
                   case postsStream:

@@ -43,7 +43,7 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.unsubscribeUserProfilePosts({
     required User user,
   }) = _UnsubscribeUserProfilePosts;
-  const factory WebsocketEvent.loadChats() = _LoadChats;
+  const factory WebsocketEvent.getChats() = _GetChats;
   const factory WebsocketEvent.createChat({required User user}) = _CreateChat;
   const factory WebsocketEvent.createMessage({
     required Chat chat,
