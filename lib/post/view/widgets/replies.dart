@@ -5,6 +5,7 @@ import 'package:democracy/post/bloc/replies/replies_cubit.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/app/utils/view/failure_retry_button.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
+import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -104,6 +105,25 @@ class _RepliesState extends State<Replies> {
                     posts.removeWhere((element) => element.id == postId);
                   });
                 }
+            }
+          },
+        ),
+        BlocListener<UserDetailCubit, UserDetailState>(
+          listener: (context, state) {
+            if (state is UserUpdated) {
+              // Update posts
+              List<Post> userPosts =
+                  posts
+                      .where((post) => post.author.id == state.user.id)
+                      .toList();
+              if (userPosts.isNotEmpty) {
+                setState(() {
+                  for (Post post in userPosts) {
+                    posts[posts.indexWhere((p) => p.id == post.id)] = post
+                        .copyWith(author: state.user);
+                  }
+                });
+              }
             }
           },
         ),

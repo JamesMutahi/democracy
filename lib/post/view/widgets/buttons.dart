@@ -196,7 +196,7 @@ class RepostButton extends StatelessWidget {
                         ),
                         CustomBottomSheetContainer(
                           text: 'Repost',
-                          iconData: Symbols.loop_rounded,
+                          iconData: Icons.loop_rounded,
                           onTap: () {
                             Navigator.pop(context);
                             context.read<WebsocketBloc>().add(

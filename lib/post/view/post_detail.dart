@@ -70,12 +70,6 @@ class _PostDetailState extends State<PostDetail> {
                 }
                 if (post.replyTo?.id == _post.id) {
                   _setPostState(post.replyTo!);
-                  final snackBar = getSnackBar(
-                    context: context,
-                    message: 'Reply sent',
-                    status: SnackBarStatus.success,
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 }
               case PostDeleted(:final postId):
                 if (_post.id == postId) {
