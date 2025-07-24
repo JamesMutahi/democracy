@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
+import 'package:democracy/chat/bloc/message_detail/message_detail_cubit.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
-import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/poll/view/poll_tile.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
@@ -50,7 +50,7 @@ class _MessagesState extends State<Messages> {
               message: message,
               alignedRight: alignedRight,
               child: Text(
-                message.text,
+                'Message was deleted',
                 style: TextStyle(color: Theme.of(context).disabledColor),
               ),
             ),
@@ -124,7 +124,7 @@ class _MessagesState extends State<Messages> {
       widgets.add(SizedBox(height: messageMargin));
     });
 
-    return BlocListener<ChatDetailCubit, ChatDetailState>(
+    return BlocListener<MessageDetailCubit, MessageDetailState>(
       listener: (context, state) {
         if (state is MessageCreated) {
           setState(() {
@@ -170,9 +170,7 @@ class MessageCard extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment:
           alignedRight ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-      children: [
-        Text(message.text),
-      ],
+      children: [Text(message.text)],
     );
   }
 }
@@ -189,7 +187,7 @@ class MessageTime extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var timeFormat = DateFormat('hh:mm');
+    var timeFormat = DateFormat('hh:mm a');
     return Align(
       alignment: alignedRight ? Alignment.topRight : Alignment.topLeft,
       child: Container(
@@ -209,7 +207,7 @@ class MessageTime extends StatelessWidget {
                 )
                 : SizedBox.shrink(),
             Text(
-              timeFormat.format(message.createdAt),
+              timeFormat.format(message.createdAt).toLowerCase(),
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
                 color: Theme.of(context).disabledColor,
               ),

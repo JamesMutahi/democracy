@@ -4,8 +4,8 @@ import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/bloc/replies/replies_cubit.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/app/utils/view/failure_retry_button.dart';
+import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
-import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,7 +19,7 @@ class Replies extends StatefulWidget {
 }
 
 class _RepliesState extends State<Replies> {
-  List<Post> posts = [];
+  List<Post> _posts = [];
   bool failure = false;
   bool loading = true;
 
@@ -49,7 +49,7 @@ class _RepliesState extends State<Replies> {
             if (state is RepliesLoaded) {
               if (widget.post.id == state.postId) {
                 setState(() {
-                  posts = state.posts.toList();
+                  _posts = state.posts.toList();
                   loading = false;
                   failure = false;
                 });
@@ -71,87 +71,45 @@ class _RepliesState extends State<Replies> {
               case PostCreated(post: final post):
                 if (widget.post.id == post.replyTo?.id) {
                   setState(() {
-                    posts.add(post);
+                    _posts.add(post);
                   });
                 }
-                if (posts.any((element) => element.id == post.repostOf?.id)) {
-                  setState(() {
-                    posts[posts.indexWhere(
-                          (element) => element.id == post.repostOf!.id,
-                        )] =
-                        post.repostOf!;
-                  });
-                }
-                if (posts.any((element) => element.id == post.replyTo?.id)) {
-                  setState(() {
-                    posts[posts.indexWhere(
-                          (element) => element.id == post.replyTo!.id,
-                        )] =
-                        post.replyTo!;
-                  });
-                }
-              case PostUpdated(post: final post):
-                if (posts.any((element) => element.id == post.id)) {
-                  setState(() {
-                    posts[posts.indexWhere(
-                          (element) => element.id == post.id,
-                        )] =
-                        post;
-                  });
-                }
-              case PostDeleted(:final postId):
-                if (posts.any((element) => element.id == postId)) {
-                  setState(() {
-                    posts.removeWhere((element) => element.id == postId);
-                  });
-                }
-            }
-          },
-        ),
-        BlocListener<UserDetailCubit, UserDetailState>(
-          listener: (context, state) {
-            if (state is UserUpdated) {
-              // Update posts
-              List<Post> userPosts =
-                  posts
-                      .where((post) => post.author.id == state.user.id)
-                      .toList();
-              if (userPosts.isNotEmpty) {
-                setState(() {
-                  for (Post post in userPosts) {
-                    posts[posts.indexWhere((p) => p.id == post.id)] = post
-                        .copyWith(author: state.user);
-                  }
-                });
-              }
             }
           },
         ),
       ],
-      child:
-          loading
-              ? Container(
-                margin: EdgeInsets.only(top: 20),
-                child: BottomLoader(),
-              )
-              : failure
-              ? FailureRetryButton(
-                onPressed: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getReplies(post: widget.post),
-                  );
-                },
-              )
-              : ListView.builder(
-                padding: EdgeInsets.only(bottom: 50),
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemBuilder: (BuildContext context, int index) {
-                  Post post = posts[index];
-                  return PostTile(key: ValueKey(post.id), post: post);
-                },
-                itemCount: posts.length,
-              ),
+      child: PostListener(
+        posts: _posts,
+        onPostsUpdated: (posts) {
+          setState(() {
+            _posts = posts;
+          });
+        },
+        child:
+            loading
+                ? Container(
+                  margin: EdgeInsets.only(top: 20),
+                  child: BottomLoader(),
+                )
+                : failure
+                ? FailureRetryButton(
+                  onPressed: () {
+                    context.read<WebsocketBloc>().add(
+                      WebsocketEvent.getReplies(post: widget.post),
+                    );
+                  },
+                )
+                : ListView.builder(
+                  padding: EdgeInsets.only(bottom: 50),
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemBuilder: (BuildContext context, int index) {
+                    Post post = _posts[index];
+                    return PostTile(key: ValueKey(post.id), post: post);
+                  },
+                  itemCount: _posts.length,
+                ),
+      ),
     );
   }
 }

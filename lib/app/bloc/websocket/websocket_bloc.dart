@@ -70,6 +70,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_ReportPost>((event, emit) {
       _onReportPost(emit, event);
     });
+    on<_GetFollowingPosts>((event, emit) {
+      _onGetFollowingPosts(emit, event);
+    });
     on<_GetReplies>((event, emit) {
       _onGetReplies(emit, event);
     });
@@ -297,6 +300,18 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'action': 'report',
         'data': {'issue': event.issue, 'post': event.post.id},
       },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onGetFollowingPosts(
+    Emitter<WebsocketState> emit,
+    _GetFollowingPosts event,
+  ) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': postsStream,
+      'payload': {'action': 'following', 'request_id': postRequestId},
     };
     _channel.sink.add(jsonEncode(message));
   }

@@ -1,27 +1,35 @@
 import 'package:bloc/bloc.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:equatable/equatable.dart';
 
 part 'post_list_state.dart';
-part 'post_list_cubit.freezed.dart';
 
 class PostListCubit extends Cubit<PostListState> {
-  PostListCubit() : super(const PostListState.initial());
+  PostListCubit() : super(const PostListState());
 
   void websocketFailure({required String error}) {
-    if (state is PostListInitial || state is PostListLoading) {
-      emit(PostListFailure(error: error));
+    if (state.status == PostListStatus.initial ||
+        state.status == PostListStatus.loading) {
+      emit(state.copyWith(status: PostListStatus.failure));
     }
   }
 
   void loadPosts({required Map<String, dynamic> payload}) {
     if (payload['response_status'] == 200) {
       final List<Post> posts = List.from(
-        payload['data'].map((e) => Post.fromJson(e)),
+        payload['data']['results'].map((e) => Post.fromJson(e)),
       );
-      emit(PostListLoaded(posts: posts));
+      emit(
+        state.copyWith(
+          status: PostListStatus.success,
+          posts: [...state.posts, ...posts],
+          currentPage: payload['data']['current_page'],
+          hasNext: payload['data']['has_next'],
+          hasPrevious: payload['data']['has_previous'],
+        ),
+      );
     } else {
-      emit(PostListFailure(error: payload['errors'].toString()));
+      emit(state.copyWith(status: PostListStatus.failure));
     }
   }
 }

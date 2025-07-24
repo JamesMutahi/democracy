@@ -4,14 +4,8 @@ part of 'chat_detail_cubit.dart';
 class ChatDetailState with _$ChatDetailState {
   const factory ChatDetailState.initial() = ChatDetailInitial;
   const factory ChatDetailState.loading() = ChatDetailLoading;
-  const factory ChatDetailState.chatCreated({required Chat chat}) = ChatCreated;
-  const factory ChatDetailState.chatUpdated({required Chat chat}) = ChatUpdated;
-  const factory ChatDetailState.messageCreated({required Message message}) =
-      MessageCreated;
-  const factory ChatDetailState.messageUpdated({required Message message}) =
-      MessageUpdated;
-  const factory ChatDetailState.messageDeleted({required int messageId}) =
-      MessageDeleted;
+  const factory ChatDetailState.created({required Chat chat}) = ChatCreated;
+  const factory ChatDetailState.updated({required Chat chat}) = ChatUpdated;
   const factory ChatDetailState.directMessageSent() = DirectMessageSent;
   const factory ChatDetailState.failure({required String error}) =
       ChatDetailFailure;

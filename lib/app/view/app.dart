@@ -8,11 +8,13 @@ import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/auth/view/login.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
+import 'package:democracy/chat/bloc/message_detail/message_detail_cubit.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_cubit.dart';
 import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
 import 'package:democracy/poll/bloc/polls/polls_cubit.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
+import 'package:democracy/post/bloc/following/following_cubit.dart';
 import 'package:democracy/post/bloc/likes/likes_cubit.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/bloc/post_list/post_list_cubit.dart';
@@ -175,6 +177,10 @@ class _Listeners extends StatelessWidget {
                         context.read<PostDetailCubit>().reported(
                           payload: message['payload'],
                         );
+                      case 'following':
+                        context.read<FollowingCubit>().loadPosts(
+                          payload: message['payload'],
+                        );
                       case 'replies':
                         context.read<RepliesCubit>().loadReplies(
                           payload: message['payload'],
@@ -204,32 +210,32 @@ class _Listeners extends StatelessWidget {
                         );
                       case 'create':
                         if (message['payload']['request_id'] == chatRequestId) {
-                          context.read<ChatDetailCubit>().chatCreated(
+                          context.read<ChatDetailCubit>().created(
                             payload: message['payload'],
                           );
                         }
                         if (message['payload']['request_id'] ==
                             messageRequestId) {
-                          context.read<ChatDetailCubit>().messageCreated(
+                          context.read<MessageDetailCubit>().created(
                             payload: message['payload'],
                           );
                         }
                       case 'update':
                         if (message['payload']['request_id'] ==
                             messageRequestId) {
-                          context.read<ChatDetailCubit>().messageUpdated(
+                          context.read<MessageDetailCubit>().updated(
                             payload: message['payload'],
                           );
                         }
                         if (message['payload']['request_id'] == chatRequestId) {
-                          context.read<ChatDetailCubit>().chatUpdated(
+                          context.read<ChatDetailCubit>().updated(
                             payload: message['payload'],
                           );
                         }
                       case 'delete':
                         if (message['payload']['request_id'] ==
                             messageRequestId) {
-                          context.read<ChatDetailCubit>().messageDeleted(
+                          context.read<MessageDetailCubit>().deleted(
                             payload: message['payload'],
                           );
                         }

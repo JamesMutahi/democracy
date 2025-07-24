@@ -36,9 +36,8 @@ class _MessagePageState extends State<MessagePage>
                 }
                 return Stack(
                   children: [
-                    Chats(key: UniqueKey(), chats: chats, currentUser: user),
+                    Chats(chats: chats, currentUser: user),
                     Align(
-
                       alignment: Alignment.bottomRight,
                       child: Container(
                         margin: EdgeInsets.only(right: 10, bottom: 10),

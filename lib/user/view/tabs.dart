@@ -1,8 +1,8 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/bottom_loader.dart';
 import 'package:democracy/app/utils/view/failure_retry_button.dart';
-import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/models/post.dart';
+import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/post/bloc/likes/likes_cubit.dart';
@@ -21,7 +21,7 @@ class UserPosts extends StatefulWidget {
 }
 
 class _UserPostsState extends State<UserPosts> {
-  List<Post> posts = [];
+  List<Post> _posts = [];
   bool failure = false;
   bool loading = true;
 
@@ -51,7 +51,7 @@ class _UserPostsState extends State<UserPosts> {
             if (state is UserPostsLoaded) {
               if (widget.user.id == state.userId) {
                 setState(() {
-                  posts = state.posts.toList();
+                  _posts = state.posts.toList();
                   loading = false;
                   failure = false;
                 });
@@ -67,37 +67,24 @@ class _UserPostsState extends State<UserPosts> {
             }
           },
         ),
-        BlocListener<PostDetailCubit, PostDetailState>(
-          listener: (context, state) {
-            switch (state) {
-              case PostUpdated(post: final post):
-                if (posts.any((element) => element.id == post.id)) {
-                  setState(() {
-                    posts[posts.indexWhere(
-                          (element) => element.id == post.id,
-                        )] =
-                        post;
-                  });
-                }
-              case PostDeleted(:final postId):
-                if (posts.any((element) => element.id == postId)) {
-                  setState(() {
-                    posts.removeWhere((element) => element.id == postId);
-                  });
-                }
-            }
+      ],
+      child: PostListener(
+        posts: _posts,
+        onPostsUpdated: (posts) {
+          setState(() {
+            _posts = posts;
+          });
+        },
+        child: PostListView(
+          posts: _posts,
+          loading: loading,
+          failure: failure,
+          onFailure: () {
+            context.read<WebsocketBloc>().add(
+              WebsocketEvent.loadUserReplies(user: widget.user),
+            );
           },
         ),
-      ],
-      child: PostListView(
-        posts: posts,
-        loading: loading,
-        failure: failure,
-        onFailure: () {
-          context.read<WebsocketBloc>().add(
-            WebsocketEvent.loadUserReplies(user: widget.user),
-          );
-        },
       ),
     );
   }
@@ -113,7 +100,7 @@ class UserReplies extends StatefulWidget {
 }
 
 class _UserRepliesState extends State<UserReplies> {
-  List<Post> posts = [];
+  List<Post> _posts = [];
   bool failure = false;
   bool loading = true;
 
@@ -143,7 +130,7 @@ class _UserRepliesState extends State<UserReplies> {
             if (state is UserRepliesLoaded) {
               if (widget.user.id == state.userId) {
                 setState(() {
-                  posts = state.posts.toList();
+                  _posts = state.posts.toList();
                   loading = false;
                   failure = false;
                 });
@@ -159,37 +146,24 @@ class _UserRepliesState extends State<UserReplies> {
             }
           },
         ),
-        BlocListener<PostDetailCubit, PostDetailState>(
-          listener: (context, state) {
-            switch (state) {
-              case PostUpdated(post: final post):
-                if (posts.any((element) => element.id == post.id)) {
-                  setState(() {
-                    posts[posts.indexWhere(
-                          (element) => element.id == post.id,
-                        )] =
-                        post;
-                  });
-                }
-              case PostDeleted(:final postId):
-                if (posts.any((element) => element.id == postId)) {
-                  setState(() {
-                    posts.removeWhere((element) => element.id == postId);
-                  });
-                }
-            }
+      ],
+      child: PostListener(
+        posts: _posts,
+        onPostsUpdated: (posts) {
+          setState(() {
+            _posts = posts;
+          });
+        },
+        child: PostListView(
+          posts: _posts,
+          loading: loading,
+          failure: failure,
+          onFailure: () {
+            context.read<WebsocketBloc>().add(
+              WebsocketEvent.loadUserReplies(user: widget.user),
+            );
           },
         ),
-      ],
-      child: PostListView(
-        posts: posts,
-        loading: loading,
-        failure: failure,
-        onFailure: () {
-          context.read<WebsocketBloc>().add(
-            WebsocketEvent.loadUserReplies(user: widget.user),
-          );
-        },
       ),
     );
   }
@@ -205,7 +179,7 @@ class Likes extends StatefulWidget {
 }
 
 class _LikesState extends State<Likes> {
-  List<Post> posts = [];
+  List<Post> _posts = [];
   bool failure = false;
   bool loading = true;
 
@@ -235,7 +209,7 @@ class _LikesState extends State<Likes> {
             if (state is LikesLoaded) {
               if (widget.user.id == state.userId) {
                 setState(() {
-                  posts = state.posts.toList();
+                  _posts = state.posts.toList();
                   loading = false;
                   failure = false;
                 });
@@ -251,37 +225,24 @@ class _LikesState extends State<Likes> {
             }
           },
         ),
-        BlocListener<PostDetailCubit, PostDetailState>(
-          listener: (context, state) {
-            switch (state) {
-              case PostUpdated(post: final post):
-                if (posts.any((element) => element.id == post.id)) {
-                  setState(() {
-                    posts[posts.indexWhere(
-                          (element) => element.id == post.id,
-                        )] =
-                        post;
-                  });
-                }
-              case PostDeleted(:final postId):
-                if (posts.any((element) => element.id == postId)) {
-                  setState(() {
-                    posts.removeWhere((element) => element.id == postId);
-                  });
-                }
-            }
+      ],
+      child: PostListener(
+        posts: _posts,
+        onPostsUpdated: (posts) {
+          setState(() {
+            _posts = posts;
+          });
+        },
+        child: PostListView(
+          posts: _posts,
+          loading: loading,
+          failure: failure,
+          onFailure: () {
+            context.read<WebsocketBloc>().add(
+              WebsocketEvent.loadUserReplies(user: widget.user),
+            );
           },
         ),
-      ],
-      child: PostListView(
-        posts: posts,
-        loading: loading,
-        failure: failure,
-        onFailure: () {
-          context.read<WebsocketBloc>().add(
-            WebsocketEvent.loadUserReplies(user: widget.user),
-          );
-        },
       ),
     );
   }

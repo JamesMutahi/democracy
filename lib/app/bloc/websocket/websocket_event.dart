@@ -27,6 +27,7 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     required String issue,
     required Post post,
   }) = _ReportPost;
+  const factory WebsocketEvent.getFollowingPosts() = _GetFollowingPosts;
   const factory WebsocketEvent.getReplies({required Post post}) = _GetReplies;
   const factory WebsocketEvent.unsubscribeReplies({required Post post}) =
       _UnsubscribeReplies;

@@ -1,6 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
+import 'package:democracy/chat/bloc/message_detail/message_detail_cubit.dart';
 import 'package:democracy/chat/view/chat_detail.dart' show ChatDetail;
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
@@ -45,6 +46,18 @@ class _ChatsState extends State<Chats> {
                 });
               }
             }
+            if (state is ChatDetailFailure) {
+              final snackBar = getSnackBar(
+                context: context,
+                message: state.error,
+                status: SnackBarStatus.failure,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+          },
+        ),
+        BlocListener<MessageDetailCubit, MessageDetailState>(
+          listener: (context, state) {
             if (state is MessageCreated) {
               if (_chats.any((element) => element.id == state.message.chat)) {
                 setState(() {
@@ -81,7 +94,7 @@ class _ChatsState extends State<Chats> {
                 });
               }
             }
-            if (state is ChatDetailFailure) {
+            if (state is MessageDetailFailure) {
               final snackBar = getSnackBar(
                 context: context,
                 message: state.error,
@@ -97,9 +110,12 @@ class _ChatsState extends State<Chats> {
         shrinkWrap: true,
         itemBuilder: (BuildContext context, int index) {
           Chat chat = _chats[index];
-          User otherUser = chat.users.firstWhere(
-            (u) => u.id != widget.currentUser.id,
-          );
+          User otherUser = widget.currentUser;
+          if (chat.users.length > 1) {
+            otherUser = chat.users.firstWhere(
+              (u) => u.id != widget.currentUser.id,
+            );
+          }
           return ChatTile(
             chat: chat,
             currentUser: widget.currentUser,
@@ -131,27 +147,42 @@ class ChatTile extends StatefulWidget {
 class _ChatTileState extends State<ChatTile> {
   @override
   Widget build(BuildContext context) {
+    String lastMessagePrefix =
+        widget.otherUser.id == widget.currentUser.id ? 'You: ' : '';
     return ListTile(
       key: ValueKey(widget.chat.id),
       leading: ProfileImage(user: widget.otherUser),
-      title: Text(widget.otherUser.name),
+      title: Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(
+              text: widget.otherUser.name,
+              style: TextStyle(overflow: TextOverflow.ellipsis),
+            ),
+            TextSpan(
+              text: ' @${widget.otherUser.username}',
+              style: TextStyle(
+                overflow: TextOverflow.ellipsis,
+                color: Theme.of(context).colorScheme.outline,
+              ),
+            ),
+          ],
+        ),
+      ),
       subtitle:
           widget.chat.lastMessage == null
               ? Text('')
-              : Text(
-                widget.chat.lastMessage!.text,
-                style: TextStyle(
-                  overflow: TextOverflow.ellipsis,
-                  color:
-                      widget.chat.lastMessage!.isDeleted
-                          ? Theme.of(context).disabledColor
-                          : Theme.of(context).hintColor,
-                  fontStyle:
-                      widget.chat.lastMessage!.isDeleted
-                          ? FontStyle.italic
-                          : FontStyle.normal,
-                ),
-              ),
+              : widget.chat.lastMessage!.text.isNotEmpty
+              ? _LastMessageText(
+                text: '$lastMessagePrefix${widget.chat.lastMessage!.text}',
+              )
+              : widget.chat.lastMessage!.post != null
+              ? _LastMessageText(text: '${lastMessagePrefix}Shared a post')
+              : widget.chat.lastMessage!.poll != null
+              ? _LastMessageText(text: '${lastMessagePrefix}Shared a poll')
+              : widget.chat.lastMessage!.survey != null
+              ? _LastMessageText(text: '${lastMessagePrefix}Shared a survey')
+              : Text(''),
       trailing:
           widget.chat.lastMessage == null
               ? SizedBox.shrink()
@@ -181,6 +212,23 @@ class _ChatTileState extends State<ChatTile> {
       onLongPress: () {
         //   TODO: Show dialog for chat actions - block/delete
       },
+    );
+  }
+}
+
+class _LastMessageText extends StatelessWidget {
+  const _LastMessageText({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: TextStyle(
+        overflow: TextOverflow.ellipsis,
+        color: Theme.of(context).disabledColor,
+      ),
     );
   }
 }

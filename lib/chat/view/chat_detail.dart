@@ -28,7 +28,10 @@ class ChatDetail extends StatelessWidget {
         if (state is Authenticated) {
           currentUser = state.user;
         }
-        User otherUser = chat.users.firstWhere((u) => u.id != currentUser.id);
+        User otherUser = currentUser;
+        if (chat.users.length > 1) {
+          otherUser = chat.users.firstWhere((u) => u.id != currentUser.id);
+        }
         return ChatScaffold(
           chat: chat,
           currentUser: currentUser,

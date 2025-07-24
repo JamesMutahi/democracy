@@ -27,7 +27,7 @@ class _PollPageState extends State<PollPage>
         switch (state) {
           case PollsLoaded(:final polls):
             return (polls.isNotEmpty)
-                ? Polls(key: UniqueKey(), polls: polls)
+                ? Polls(polls: polls)
                 : NoResults(text: 'No polls');
           case PollsFailure():
             return FailureRetryButton(
