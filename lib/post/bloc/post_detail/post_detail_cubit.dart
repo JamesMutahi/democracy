@@ -21,8 +21,22 @@ class PostDetailCubit extends Cubit<PostDetailState> {
   void updated({required Map<String, dynamic> payload}) {
     emit(PostDetailLoading());
     if (payload['response_status'] == 200) {
-      final Post post = Post.fromJson(payload['data']);
-      emit(PostUpdated(post: post));
+      emit(
+        PostUpdated(
+          postId: payload['pk'],
+          body: payload['data']['body'],
+          likes: payload['data']['likes'],
+          isLiked: payload['data']['is_liked'],
+          bookmarks: payload['data']['bookmarks'],
+          isBookmarked: payload['data']['is_bookmarked'],
+          views: payload['data']['views'],
+          replies: payload['data']['replies'],
+          reposts: payload['data']['reposts'],
+          isEdited: payload['data']['is_edited'],
+          isDeleted: payload['data']['is_deleted'],
+          isActive: payload['data']['is_active'],
+        ),
+      );
     } else {
       emit(PostDetailFailure(error: payload['errors'][0].toString()));
     }

@@ -16,14 +16,18 @@ import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class PostTile extends StatelessWidget {
-  const PostTile({super.key, required this.post, this.isDependency = false});
+  const PostTile({
+    super.key,
+    required this.post,
+    this.isDependency = false,
+  });
 
   final Post post;
   final bool isDependency;
 
   @override
   Widget build(BuildContext context) {
-    var numberFormat = NumberFormat.compact(locale: "en_UK");
+    bool showAsRepost = post.body.isEmpty && post.repostOf != null;
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         late User user;
@@ -36,12 +40,17 @@ class PostTile extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder:
-                    (context) => PostDetail(post: post, key: ValueKey(post.id)),
+                    (context) => PostDetail(
+                      key: ValueKey(post.id),
+                      post: showAsRepost ? post.repostOf! : post,
+                      showAsRepost: showAsRepost,
+                      repost: post,
+                    ),
               ),
             );
           },
           child:
-              post.repostOf != null && post.body.isEmpty
+              showAsRepost
                   ? Column(
                     children: [
                       Container(
@@ -69,143 +78,139 @@ class PostTile extends StatelessWidget {
                           ],
                         ),
                       ),
-                      PostTile(post: post.repostOf!),
+                      _PostContainer(post: post.repostOf!, isDependency: false),
                     ],
                   )
-                  : Container(
-                    padding: EdgeInsets.only(
-                      left: 15,
-                      right: 15,
-                      top: 10,
-                      bottom: 5,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color:
-                              (isDependency)
-                                  ? Colors.transparent
-                                  : Theme.of(
-                                    context,
-                                  ).disabledColor.withAlpha(30),
+                  : _PostContainer(post: post, isDependency: isDependency),
+        );
+      },
+    );
+  }
+}
+
+class _PostContainer extends StatelessWidget {
+  const _PostContainer({required this.post, required this.isDependency});
+
+  final Post post;
+  final bool isDependency;
+
+  @override
+  Widget build(BuildContext context) {
+    var numberFormat = NumberFormat.compact(locale: "en_UK");
+    return Container(
+      padding: EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 5),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color:
+                (isDependency)
+                    ? Colors.transparent
+                    : Theme.of(context).disabledColor.withAlpha(30),
+          ),
+        ),
+      ),
+      child:
+          post.isDeleted
+              ? PostDeletedWidget()
+              : Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ProfileImage(user: post.author),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              post.author.name,
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                            isDependency
+                                ? SizedBox.shrink()
+                                : Row(
+                                  children: [
+                                    TimeDifferenceInfo(
+                                      publishedAt: post.publishedAt,
+                                    ),
+                                    isDependency
+                                        ? SizedBox.shrink()
+                                        : PostMorePopUp(post: post),
+                                  ],
+                                ),
+                          ],
                         ),
-                      ),
-                    ),
-                    child:
-                        post.isDeleted
-                            ? PostDeletedWidget()
+                        PostBody(post: post),
+                        (post.repostOf == null)
+                            ? SizedBox.shrink()
+                            : isDependency
+                            ? SizedBox.shrink()
+                            : DependencyContainer(
+                              child: PostTile(
+                                post: post.repostOf!,
+                                isDependency: true,
+                              ),
+                            ),
+                        (post.poll == null)
+                            ? SizedBox.shrink()
+                            : DependencyContainer(
+                              child: PollTile(
+                                poll: post.poll!,
+                                isChildOfPost: true,
+                              ),
+                            ),
+                        (post.survey == null)
+                            ? SizedBox.shrink()
+                            : DependencyContainer(
+                              child: SurveyTile(
+                                survey: post.survey!,
+                                isChildOfPost: true,
+                              ),
+                            ),
+                        SizedBox(height: 5),
+                        isDependency
+                            ? SizedBox.shrink()
                             : Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                ProfileImage(user: post.author),
-                                SizedBox(width: 10),
-                                Expanded(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            post.author.name,
-                                            style:
-                                                Theme.of(
-                                                  context,
-                                                ).textTheme.bodyLarge,
-                                          ),
-                                          isDependency
-                                              ? SizedBox.shrink()
-                                              : Row(
-                                                children: [
-                                                  TimeDifferenceInfo(
-                                                    publishedAt:
-                                                        post.publishedAt,
-                                                  ),
-                                                  isDependency
-                                                      ? SizedBox.shrink()
-                                                      : PostMorePopUp(
-                                                        post: post,
-                                                      ),
-                                                ],
-                                              ),
-                                        ],
-                                      ),
-                                      PostBody(post: post),
-                                      (post.repostOf == null)
-                                          ? SizedBox.shrink()
-                                          : isDependency
-                                          ? SizedBox.shrink()
-                                          : DependencyContainer(
-                                            child: PostTile(
-                                              post: post.repostOf!,
-                                              isDependency: true,
-                                            ),
-                                          ),
-                                      (post.poll == null)
-                                          ? SizedBox.shrink()
-                                          : DependencyContainer(
-                                            child: PollTile(
-                                              poll: post.poll!,
-                                              isChildOfPost: true,
-                                            ),
-                                          ),
-                                      (post.survey == null)
-                                          ? SizedBox.shrink()
-                                          : DependencyContainer(
-                                            child: SurveyTile(
-                                              survey: post.survey!,
-                                              isChildOfPost: true,
-                                            ),
-                                          ),
-                                      SizedBox(height: 5),
-                                      isDependency
-                                          ? SizedBox.shrink()
-                                          : Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              ReplyButton(
-                                                post: post,
-                                                numberFormat: numberFormat,
-                                              ),
-                                              RepostButton(
-                                                post: post,
-                                                numberFormat: numberFormat,
-                                              ),
-                                              LikeButton(
-                                                post: post,
-                                                numberFormat: numberFormat,
-                                              ),
-                                              ViewsButton(
-                                                post: post,
-                                                numberFormat: numberFormat,
-                                              ),
-                                              Row(
-                                                children: [
-                                                  BookmarkButton(
-                                                    post: post,
-                                                    showTrailing: false,
-                                                    numberFormat: numberFormat,
-                                                  ),
-                                                  ShareButton(post: post),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                    ],
-                                  ),
+                                ReplyButton(
+                                  post: post,
+                                  numberFormat: numberFormat,
+                                ),
+                                RepostButton(
+                                  post: post,
+                                  numberFormat: numberFormat,
+                                ),
+                                LikeButton(
+                                  post: post,
+                                  numberFormat: numberFormat,
+                                ),
+                                ViewsButton(
+                                  post: post,
+                                  numberFormat: numberFormat,
+                                ),
+                                Row(
+                                  children: [
+                                    BookmarkButton(
+                                      post: post,
+                                      showTrailing: false,
+                                      numberFormat: numberFormat,
+                                    ),
+                                    ShareButton(post: post),
+                                  ],
                                 ),
                               ],
                             ),
+                      ],
+                    ),
                   ),
-        );
-      },
+                ],
+              ),
     );
   }
 }

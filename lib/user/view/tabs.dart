@@ -273,7 +273,10 @@ class PostListView extends StatelessWidget {
           shrinkWrap: true,
           itemBuilder: (BuildContext context, int index) {
             Post post = posts[index];
-            return PostTile(key: ValueKey(post.id), post: post);
+            return PostTile(
+              key: ValueKey(post.id),
+              post: post,
+            );
           },
           itemCount: posts.length,
         );

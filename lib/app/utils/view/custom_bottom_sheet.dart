@@ -29,6 +29,7 @@ class CustomBottomSheet extends StatelessWidget {
         ),
       ),
       Container(
+        margin: EdgeInsets.only(bottom: 10),
         padding: EdgeInsets.only(left: 15),
         decoration: BoxDecoration(
           border: Border(
@@ -40,7 +41,7 @@ class CustomBottomSheet extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(title),
+            Text(title, style: Theme.of(context).textTheme.titleMedium),
             IconButton(
               onPressed: () => Navigator.pop(context),
               icon: Icon(Symbols.close),

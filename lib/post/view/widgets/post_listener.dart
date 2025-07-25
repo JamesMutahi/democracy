@@ -24,20 +24,49 @@ class PostListener extends StatelessWidget {
         BlocListener<PostDetailCubit, PostDetailState>(
           listener: (context, state) {
             switch (state) {
-              case PostUpdated(post: final post):
+              case PostUpdated():
                 // Update posts
-                if (posts.any((element) => element.id == post.id)) {
-                  posts[posts.indexWhere((element) => element.id == post.id)] =
-                      post;
+                if (posts.any((element) => element.id == state.postId)) {
+                  int postIndex = posts.indexWhere(
+                    (element) => element.id == state.postId,
+                  );
+                  posts[postIndex] = posts[postIndex].copyWith(
+                    body: state.body,
+                    likes: state.likes,
+                    isLiked: state.isLiked,
+                    bookmarks: state.bookmarks,
+                    isBookmarked: state.isBookmarked,
+                    views: state.views,
+                    replies: state.replies,
+                    reposts: state.reposts,
+                    isEdited: state.isEdited,
+                    isDeleted: state.isDeleted,
+                    isActive: state.isActive,
+                  );
                   onPostsUpdated(posts);
                 }
                 // Update reposts
-                if (posts.any((element) => element.repostOf?.id == post.id)) {
+                if (posts.any(
+                  (element) => element.repostOf?.id == state.postId,
+                )) {
                   for (Post p
                       in posts
-                          .where((e) => e.repostOf?.id == state.post.id)
+                          .where((e) => e.repostOf?.id == state.postId)
                           .toList()) {
-                    posts[posts.indexOf(p)] = p.copyWith(repostOf: state.post);
+                    Post repost = p.repostOf!.copyWith(
+                      body: state.body,
+                      likes: state.likes,
+                      isLiked: state.isLiked,
+                      bookmarks: state.bookmarks,
+                      isBookmarked: state.isBookmarked,
+                      views: state.views,
+                      replies: state.replies,
+                      reposts: state.reposts,
+                      isEdited: state.isEdited,
+                      isDeleted: state.isDeleted,
+                      isActive: state.isActive,
+                    );
+                    posts[posts.indexOf(p)] = p.copyWith(repostOf: repost);
                   }
                   onPostsUpdated(posts);
                 }

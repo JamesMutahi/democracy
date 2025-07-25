@@ -37,7 +37,10 @@ class _PostListState extends State<PostList> {
               ? (_posts.length > 2)
                   ? const BottomLoader()
                   : SizedBox.shrink()
-              : PostTile(key: ValueKey(post.id), post: post);
+              : PostTile(
+                key: ValueKey(post.id),
+                post: post,
+              );
         },
         itemCount: _posts.length,
       ),

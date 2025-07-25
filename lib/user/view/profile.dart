@@ -521,7 +521,7 @@ class _ProfilePopUpMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     List texts =
         isCurrentUser
-            ? ['Share']
+            ? ['Share', 'Drafts']
             : [
               'Share',
               user.isMuted ? 'Unmute' : 'Mute',
@@ -534,6 +534,9 @@ class _ProfilePopUpMenu extends StatelessWidget {
         switch (selected) {
           case 'Share':
             //   TODO: Create link for sharing
+            break;
+          case 'Drafts':
+            //   TODO: Open drafts
             break;
           case 'Mute':
             showDialog(

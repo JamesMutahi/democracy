@@ -48,9 +48,20 @@ class NotificationTile extends StatelessWidget {
           WebsocketEvent.markNotificationAsRead(notification: notification),
         );
         if (notification.post != null) {
+          bool showAsRepost =
+              notification.post!.body.isEmpty &&
+              notification.post!.repostOf != null;
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => PostDetail(post: notification.post!),
+              builder:
+                  (context) => PostDetail(
+                    post:
+                        showAsRepost
+                            ? notification.post!.repostOf!
+                            : notification.post!,
+                    showAsRepost: showAsRepost,
+                    repost: notification.post!,
+                  ),
             ),
           );
         }

@@ -25,9 +25,16 @@ import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class PostDetail extends StatefulWidget {
-  const PostDetail({super.key, required this.post});
+  const PostDetail({
+    super.key,
+    required this.post,
+    required this.showAsRepost,
+    required this.repost,
+  });
 
   final Post post;
+  final bool showAsRepost;
+  final Post repost;
 
   @override
   State<PostDetail> createState() => _PostDetailState();
@@ -37,38 +44,47 @@ class _PostDetailState extends State<PostDetail> {
   late Post _post = widget.post;
   bool isDeleted = false;
 
-  void _setPostState(post) {
-    setState(() {
-      _post = post;
-    });
-  }
-
-  void _navigateToProfilePage(User user) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => ProfilePage(user: _post.author)),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    var timeFormat = DateFormat('hh:mm a');
-    var dateFormat = DateFormat('dd/MM/yyyy');
-    var numberFormat = NumberFormat.compact(locale: "en_UK");
     return MultiBlocListener(
       listeners: [
         BlocListener<PostDetailCubit, PostDetailState>(
           listener: (context, state) {
             switch (state) {
-              case PostUpdated(:final post):
-                if (_post.id == post.id) {
-                  _setPostState(post);
+              case PostUpdated():
+                if (_post.id == state.postId) {
+                  setState(() {
+                    _post = _post.copyWith(
+                      body: state.body,
+                      likes: state.likes,
+                      isLiked: state.isLiked,
+                      bookmarks: state.bookmarks,
+                      isBookmarked: state.isBookmarked,
+                      views: state.views,
+                      replies: state.replies,
+                      reposts: state.reposts,
+                      isEdited: state.isEdited,
+                      isDeleted: state.isDeleted,
+                      isActive: state.isActive,
+                    );
+                  });
                 }
-              case PostCreated(:final post):
-                if (post.repostOf?.id == _post.id) {
-                  _setPostState(post.repostOf!);
-                }
-                if (post.replyTo?.id == _post.id) {
-                  _setPostState(post.replyTo!);
+                if (_post.repostOf?.id == state.postId) {
+                  setState(() {
+                    _post = _post.repostOf!.copyWith(
+                      body: state.body,
+                      likes: state.likes,
+                      isLiked: state.isLiked,
+                      bookmarks: state.bookmarks,
+                      isBookmarked: state.isBookmarked,
+                      views: state.views,
+                      replies: state.replies,
+                      reposts: state.reposts,
+                      isEdited: state.isEdited,
+                      isDeleted: state.isDeleted,
+                      isActive: state.isActive,
+                    );
+                  });
                 }
               case PostDeleted(:final postId):
                 if (_post.id == postId) {
@@ -108,197 +124,45 @@ class _PostDetailState extends State<PostDetail> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        _post.repostOf != null && _post.body.isEmpty
-                            ? BlocBuilder<AuthBloc, AuthState>(
-                              builder: (context, state) {
-                                late User user;
-                                if (state is Authenticated) {
-                                  user = state.user;
-                                }
-                                return Column(
+                        if (widget.showAsRepost)
+                          BlocBuilder<AuthBloc, AuthState>(
+                            builder: (context, state) {
+                              late User user;
+                              if (state is Authenticated) {
+                                user = state.user;
+                              }
+                              return Container(
+                                padding: EdgeInsets.only(
+                                  left: 15,
+                                  right: 15,
+                                  top: 10,
+                                  bottom: 5,
+                                ),
+                                child: Row(
                                   children: [
-                                    Container(
-                                      padding: EdgeInsets.only(
-                                        left: 15,
-                                        right: 15,
-                                        top: 10,
-                                        bottom: 5,
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Symbols.loop_rounded,
-                                            color:
-                                                Theme.of(
-                                                  context,
-                                                ).colorScheme.outline,
-                                          ),
-                                          SizedBox(width: 5),
-                                          Text(
-                                            user.id == _post.author.id
-                                                ? 'You reposted'
-                                                : '${_post.author.name} reposted',
-                                            style: TextStyle(
-                                              color:
-                                                  Theme.of(
-                                                    context,
-                                                  ).colorScheme.outline,
-                                            ),
-                                          ),
-                                        ],
+                                    Icon(
+                                      Symbols.loop_rounded,
+                                      color:
+                                          Theme.of(context).colorScheme.outline,
+                                    ),
+                                    SizedBox(width: 5),
+                                    Text(
+                                      user.id == _post.author.id
+                                          ? 'You reposted'
+                                          : '${_post.author.name} reposted',
+                                      style: TextStyle(
+                                        color:
+                                            Theme.of(
+                                              context,
+                                            ).colorScheme.outline,
                                       ),
                                     ),
-                                    PostTile(post: _post.repostOf!),
                                   ],
-                                );
-                              },
-                            )
-                            : Container(
-                              padding: EdgeInsets.only(
-                                left: 10,
-                                right: 10,
-                                top: 10,
-                                bottom: 5,
-                              ),
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  bottom: BorderSide(
-                                    color: Theme.of(
-                                      context,
-                                    ).disabledColor.withAlpha(30),
-                                  ),
                                 ),
-                              ),
-                              child:
-                                  _post.isDeleted
-                                      ? PostDeletedWidget()
-                                      : Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              InkWell(
-                                                onTap: () {
-                                                  _navigateToProfilePage(
-                                                    _post.author,
-                                                  );
-                                                },
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                        right: 8.0,
-                                                      ),
-                                                  child: Row(
-                                                    children: [
-                                                      ProfileImage(
-                                                        user: _post.author,
-                                                      ),
-                                                      SizedBox(width: 10),
-                                                      Text(
-                                                        _post.author.name,
-                                                        style:
-                                                            Theme.of(context)
-                                                                .textTheme
-                                                                .bodyLarge,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              PostMorePopUp(post: _post),
-                                            ],
-                                          ),
-                                          SizedBox(height: 5),
-                                          CustomText(
-                                            text: _post.body,
-                                            style:
-                                                Theme.of(
-                                                  context,
-                                                ).textTheme.bodyMedium!,
-                                            showAllText: true,
-                                            suffix: '',
-                                            onUserTagPressed: (userId) {
-                                              _navigateToProfilePage(
-                                                _post.taggedUsers.firstWhere(
-                                                  (user) =>
-                                                      user.id ==
-                                                      int.parse(userId),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                          SizedBox(height: 5),
-                                          (_post.repostOf == null)
-                                              ? SizedBox.shrink()
-                                              : DependencyContainer(
-                                                child: PostTile(
-                                                  post: _post.repostOf!,
-                                                  isDependency: true,
-                                                ),
-                                              ),
-                                          (_post.poll == null)
-                                              ? SizedBox.shrink()
-                                              : DependencyContainer(
-                                                child: PollTile(
-                                                  poll: _post.poll!,
-                                                  isChildOfPost: true,
-                                                ),
-                                              ),
-                                          (_post.survey == null)
-                                              ? SizedBox.shrink()
-                                              : DependencyContainer(
-                                                child: SurveyTile(
-                                                  survey: _post.survey!,
-                                                  isChildOfPost: true,
-                                                ),
-                                              ),
-                                          SizedBox(height: 5),
-                                          Align(
-                                            alignment: Alignment.bottomRight,
-                                            child: Text(
-                                              '${(_post.views > 0) ? '${_post.views} ${(_post.views == 1) ? 'View' : 'Views'} • ' : ''}'
-                                              '${timeFormat.format(_post.publishedAt)} • '
-                                              '${dateFormat.format(_post.publishedAt)}',
-                                              style: TextStyle(
-                                                color:
-                                                    Theme.of(
-                                                      context,
-                                                    ).disabledColor,
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(height: 5),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              ReplyButton(
-                                                post: _post,
-                                                numberFormat: numberFormat,
-                                              ),
-                                              RepostButton(
-                                                post: _post,
-                                                numberFormat: numberFormat,
-                                              ),
-                                              LikeButton(
-                                                post: _post,
-                                                numberFormat: numberFormat,
-                                              ),
-                                              BookmarkButton(
-                                                post: _post,
-                                                numberFormat: numberFormat,
-                                              ),
-                                              ShareButton(post: _post),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                            ),
+                              );
+                            },
+                          ),
+                        _PostContainer(post: _post),
                         Replies(key: ValueKey(_post.id), post: _post),
                       ],
                     ),
@@ -315,6 +179,126 @@ class _PostDetailState extends State<PostDetail> {
                 )
                 : BottomReplyTextField(post: _post),
       ),
+    );
+  }
+}
+
+class _PostContainer extends StatelessWidget {
+  const _PostContainer({required this.post});
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context) {
+    var timeFormat = DateFormat('hh:mm a');
+    var dateFormat = DateFormat('dd/MM/yyyy');
+    var numberFormat = NumberFormat.compact(locale: "en_UK");
+
+    void navigateToProfilePage(User user) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => ProfilePage(user: post.author)),
+      );
+    }
+
+    return Container(
+      padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 5),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: Theme.of(context).disabledColor.withAlpha(30),
+          ),
+        ),
+      ),
+      child:
+          post.isDeleted
+              ? PostDeletedWidget()
+              : Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          navigateToProfilePage(post.author);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: Row(
+                            children: [
+                              ProfileImage(user: post.author),
+                              SizedBox(width: 10),
+                              Text(
+                                post.author.name,
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      PostMorePopUp(post: post),
+                    ],
+                  ),
+                  SizedBox(height: 5),
+                  CustomText(
+                    text: post.body,
+                    style: Theme.of(context).textTheme.bodyMedium!,
+                    showAllText: true,
+                    suffix: '',
+                    onUserTagPressed: (userId) {
+                      navigateToProfilePage(
+                        post.taggedUsers.firstWhere(
+                          (user) => user.id == int.parse(userId),
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(height: 5),
+                  (post.repostOf == null)
+                      ? SizedBox.shrink()
+                      : DependencyContainer(
+                        child: PostTile(
+                          post: post.repostOf!,
+                          isDependency: true,
+                        ),
+                      ),
+                  (post.poll == null)
+                      ? SizedBox.shrink()
+                      : DependencyContainer(
+                        child: PollTile(poll: post.poll!, isChildOfPost: true),
+                      ),
+                  (post.survey == null)
+                      ? SizedBox.shrink()
+                      : DependencyContainer(
+                        child: SurveyTile(
+                          survey: post.survey!,
+                          isChildOfPost: true,
+                        ),
+                      ),
+                  SizedBox(height: 5),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Text(
+                      '${(post.views > 0) ? '${post.views} ${(post.views == 1) ? 'View' : 'Views'} • ' : ''}'
+                      '${timeFormat.format(post.publishedAt)} • '
+                      '${dateFormat.format(post.publishedAt)}',
+                      style: TextStyle(color: Theme.of(context).disabledColor),
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ReplyButton(post: post, numberFormat: numberFormat),
+                      RepostButton(post: post, numberFormat: numberFormat),
+                      LikeButton(post: post, numberFormat: numberFormat),
+                      BookmarkButton(post: post, numberFormat: numberFormat),
+                      ShareButton(post: post),
+                    ],
+                  ),
+                ],
+              ),
     );
   }
 }
