@@ -55,14 +55,15 @@ extension ChatDetailStatePatterns on ChatDetailState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ChatDetailInitial value)?  initial,TResult Function( ChatDetailLoading value)?  loading,TResult Function( ChatCreated value)?  created,TResult Function( ChatUpdated value)?  updated,TResult Function( DirectMessageSent value)?  directMessageSent,TResult Function( ChatDetailFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ChatDetailInitial value)?  initial,TResult Function( ChatDetailLoading value)?  loading,TResult Function( ChatCreated value)?  created,TResult Function( ChatUpdated value)?  updated,TResult Function( ChatDeleted value)?  deleted,TResult Function( DirectMessageSent value)?  directMessageSent,TResult Function( ChatDetailFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case ChatDetailInitial() when initial != null:
 return initial(_that);case ChatDetailLoading() when loading != null:
 return loading(_that);case ChatCreated() when created != null:
 return created(_that);case ChatUpdated() when updated != null:
-return updated(_that);case DirectMessageSent() when directMessageSent != null:
+return updated(_that);case ChatDeleted() when deleted != null:
+return deleted(_that);case DirectMessageSent() when directMessageSent != null:
 return directMessageSent(_that);case ChatDetailFailure() when failure != null:
 return failure(_that);case _:
   return orElse();
@@ -82,14 +83,15 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ChatDetailInitial value)  initial,required TResult Function( ChatDetailLoading value)  loading,required TResult Function( ChatCreated value)  created,required TResult Function( ChatUpdated value)  updated,required TResult Function( DirectMessageSent value)  directMessageSent,required TResult Function( ChatDetailFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ChatDetailInitial value)  initial,required TResult Function( ChatDetailLoading value)  loading,required TResult Function( ChatCreated value)  created,required TResult Function( ChatUpdated value)  updated,required TResult Function( ChatDeleted value)  deleted,required TResult Function( DirectMessageSent value)  directMessageSent,required TResult Function( ChatDetailFailure value)  failure,}){
 final _that = this;
 switch (_that) {
 case ChatDetailInitial():
 return initial(_that);case ChatDetailLoading():
 return loading(_that);case ChatCreated():
 return created(_that);case ChatUpdated():
-return updated(_that);case DirectMessageSent():
+return updated(_that);case ChatDeleted():
+return deleted(_that);case DirectMessageSent():
 return directMessageSent(_that);case ChatDetailFailure():
 return failure(_that);case _:
   throw StateError('Unexpected subclass');
@@ -108,14 +110,15 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ChatDetailInitial value)?  initial,TResult? Function( ChatDetailLoading value)?  loading,TResult? Function( ChatCreated value)?  created,TResult? Function( ChatUpdated value)?  updated,TResult? Function( DirectMessageSent value)?  directMessageSent,TResult? Function( ChatDetailFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ChatDetailInitial value)?  initial,TResult? Function( ChatDetailLoading value)?  loading,TResult? Function( ChatCreated value)?  created,TResult? Function( ChatUpdated value)?  updated,TResult? Function( ChatDeleted value)?  deleted,TResult? Function( DirectMessageSent value)?  directMessageSent,TResult? Function( ChatDetailFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case ChatDetailInitial() when initial != null:
 return initial(_that);case ChatDetailLoading() when loading != null:
 return loading(_that);case ChatCreated() when created != null:
 return created(_that);case ChatUpdated() when updated != null:
-return updated(_that);case DirectMessageSent() when directMessageSent != null:
+return updated(_that);case ChatDeleted() when deleted != null:
+return deleted(_that);case DirectMessageSent() when directMessageSent != null:
 return directMessageSent(_that);case ChatDetailFailure() when failure != null:
 return failure(_that);case _:
   return null;
@@ -134,13 +137,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Chat chat)?  created,TResult Function( Chat chat)?  updated,TResult Function()?  directMessageSent,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Chat chat)?  created,TResult Function( Chat chat)?  updated,TResult Function( int chatId)?  deleted,TResult Function()?  directMessageSent,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ChatDetailInitial() when initial != null:
 return initial();case ChatDetailLoading() when loading != null:
 return loading();case ChatCreated() when created != null:
 return created(_that.chat);case ChatUpdated() when updated != null:
-return updated(_that.chat);case DirectMessageSent() when directMessageSent != null:
+return updated(_that.chat);case ChatDeleted() when deleted != null:
+return deleted(_that.chatId);case DirectMessageSent() when directMessageSent != null:
 return directMessageSent();case ChatDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return orElse();
@@ -160,13 +164,14 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Chat chat)  created,required TResult Function( Chat chat)  updated,required TResult Function()  directMessageSent,required TResult Function( String error)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Chat chat)  created,required TResult Function( Chat chat)  updated,required TResult Function( int chatId)  deleted,required TResult Function()  directMessageSent,required TResult Function( String error)  failure,}) {final _that = this;
 switch (_that) {
 case ChatDetailInitial():
 return initial();case ChatDetailLoading():
 return loading();case ChatCreated():
 return created(_that.chat);case ChatUpdated():
-return updated(_that.chat);case DirectMessageSent():
+return updated(_that.chat);case ChatDeleted():
+return deleted(_that.chatId);case DirectMessageSent():
 return directMessageSent();case ChatDetailFailure():
 return failure(_that.error);case _:
   throw StateError('Unexpected subclass');
@@ -185,13 +190,14 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Chat chat)?  created,TResult? Function( Chat chat)?  updated,TResult? Function()?  directMessageSent,TResult? Function( String error)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Chat chat)?  created,TResult? Function( Chat chat)?  updated,TResult? Function( int chatId)?  deleted,TResult? Function()?  directMessageSent,TResult? Function( String error)?  failure,}) {final _that = this;
 switch (_that) {
 case ChatDetailInitial() when initial != null:
 return initial();case ChatDetailLoading() when loading != null:
 return loading();case ChatCreated() when created != null:
 return created(_that.chat);case ChatUpdated() when updated != null:
-return updated(_that.chat);case DirectMessageSent() when directMessageSent != null:
+return updated(_that.chat);case ChatDeleted() when deleted != null:
+return deleted(_that.chatId);case DirectMessageSent() when directMessageSent != null:
 return directMessageSent();case ChatDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return null;
@@ -413,6 +419,72 @@ $ChatCopyWith<$Res> get chat {
     return _then(_self.copyWith(chat: value));
   });
 }
+}
+
+/// @nodoc
+
+
+class ChatDeleted implements ChatDetailState {
+  const ChatDeleted({required this.chatId});
+  
+
+ final  int chatId;
+
+/// Create a copy of ChatDetailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ChatDeletedCopyWith<ChatDeleted> get copyWith => _$ChatDeletedCopyWithImpl<ChatDeleted>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatDeleted&&(identical(other.chatId, chatId) || other.chatId == chatId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,chatId);
+
+@override
+String toString() {
+  return 'ChatDetailState.deleted(chatId: $chatId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ChatDeletedCopyWith<$Res> implements $ChatDetailStateCopyWith<$Res> {
+  factory $ChatDeletedCopyWith(ChatDeleted value, $Res Function(ChatDeleted) _then) = _$ChatDeletedCopyWithImpl;
+@useResult
+$Res call({
+ int chatId
+});
+
+
+
+
+}
+/// @nodoc
+class _$ChatDeletedCopyWithImpl<$Res>
+    implements $ChatDeletedCopyWith<$Res> {
+  _$ChatDeletedCopyWithImpl(this._self, this._then);
+
+  final ChatDeleted _self;
+  final $Res Function(ChatDeleted) _then;
+
+/// Create a copy of ChatDetailState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? chatId = null,}) {
+  return _then(ChatDeleted(
+chatId: null == chatId ? _self.chatId : chatId // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
 }
 
 /// @nodoc

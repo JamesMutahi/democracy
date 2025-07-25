@@ -6,7 +6,9 @@ import 'package:democracy/app/utils/view/custom_text.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/app/utils/view/tagging.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
+import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
 import 'package:democracy/user/view/profile.dart';
 import 'package:democracy/user/models/user.dart';
@@ -98,9 +100,53 @@ class _PostDetailState extends State<PostDetail> {
         BlocListener<UserDetailCubit, UserDetailState>(
           listener: (context, state) {
             if (state is UserUpdated) {
+              // post
               if (_post.author.id == state.user.id) {
                 setState(() {
                   _post = _post.copyWith(author: state.user);
+                });
+              }
+              // repost
+              if (_post.author.id == state.user.id) {
+                Post repostOf = _post.repostOf!.copyWith(author: state.user);
+                setState(() {
+                  _post = _post.copyWith(repostOf: repostOf);
+                });
+              }
+            }
+          },
+        ),
+        BlocListener<PollDetailCubit, PollDetailState>(
+          listener: (context, state) {
+            if (state is PollUpdated) {
+              if (_post.poll?.id == state.poll.id) {
+                setState(() {
+                  _post = _post.copyWith(poll: state.poll);
+                });
+              }
+              if (_post.repostOf?.poll?.id == state.poll.id) {
+                setState(() {
+                  Post repostOf = _post.repostOf!.copyWith(poll: state.poll);
+                  _post = _post.copyWith(repostOf: repostOf);
+                });
+              }
+            }
+          },
+        ),
+        BlocListener<SurveyDetailCubit, SurveyDetailState>(
+          listener: (context, state) {
+            if (state is SurveyUpdated) {
+              if (_post.survey?.id == state.survey.id) {
+                setState(() {
+                  _post = _post.copyWith(survey: state.survey);
+                });
+              }
+              if (_post.repostOf?.survey?.id == state.survey.id) {
+                setState(() {
+                  Post repostOf = _post.repostOf!.copyWith(
+                    survey: state.survey,
+                  );
+                  _post = _post.copyWith(repostOf: repostOf);
                 });
               }
             }

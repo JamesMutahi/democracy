@@ -239,6 +239,11 @@ class _Listeners extends StatelessWidget {
                             payload: message['payload'],
                           );
                         }
+                        if (message['payload']['request_id'] == chatRequestId) {
+                          context.read<ChatDetailCubit>().deleted(
+                            payload: message['payload'],
+                          );
+                        }
                       case 'direct_message':
                         context.read<ChatDetailCubit>().directMessageSent(
                           payload: message['payload'],

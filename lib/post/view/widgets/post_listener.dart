@@ -1,6 +1,7 @@
 import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/models/post.dart';
+import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -117,9 +118,9 @@ class PostListener extends StatelessWidget {
             if (state is PollUpdated) {
               // Update posts
               List<Post> pollPosts =
-              posts
-                  .where((post) => post.poll?.id == state.poll.id)
-                  .toList();
+                  posts
+                      .where((post) => post.poll?.id == state.poll.id)
+                      .toList();
               if (pollPosts.isNotEmpty) {
                 for (Post post in pollPosts) {
                   posts[posts.indexWhere((p) => p.id == post.id)] = post
@@ -129,14 +130,45 @@ class PostListener extends StatelessWidget {
               }
               //   Update reposts
               List<Post> pollReposts =
-              posts
-                  .where(
-                    (post) => post.repostOf?.poll?.id == state.poll.id,
-              )
-                  .toList();
+                  posts
+                      .where((post) => post.repostOf?.poll?.id == state.poll.id)
+                      .toList();
               if (pollReposts.isNotEmpty) {
                 for (Post post in pollReposts) {
                   Post repostOf = post.repostOf!.copyWith(poll: state.poll);
+                  posts[posts.indexWhere((p) => p.id == post.id)] = post
+                      .copyWith(repostOf: repostOf);
+                }
+                onPostsUpdated(posts);
+              }
+            }
+          },
+        ),
+        BlocListener<SurveyDetailCubit, SurveyDetailState>(
+          listener: (context, state) {
+            if (state is SurveyUpdated) {
+              // Update posts
+              List<Post> surveyPosts =
+                  posts
+                      .where((post) => post.survey?.id == state.survey.id)
+                      .toList();
+              if (surveyPosts.isNotEmpty) {
+                for (Post post in surveyPosts) {
+                  posts[posts.indexWhere((p) => p.id == post.id)] = post
+                      .copyWith(survey: state.survey);
+                }
+                onPostsUpdated(posts);
+              }
+              //   Update reposts
+              List<Post> surveyReposts =
+                  posts
+                      .where(
+                        (post) => post.repostOf?.survey?.id == state.survey.id,
+                      )
+                      .toList();
+              if (surveyPosts.isNotEmpty) {
+                for (Post post in surveyReposts) {
+                  Post repostOf = post.repostOf!.copyWith(survey: state.survey);
                   posts[posts.indexWhere((p) => p.id == post.id)] = post
                       .copyWith(repostOf: repostOf);
                 }

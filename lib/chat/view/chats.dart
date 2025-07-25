@@ -46,6 +46,13 @@ class _ChatsState extends State<Chats> {
                 });
               }
             }
+            if (state is ChatDeleted) {
+              if (_chats.any((element) => element.id == state.chatId)) {
+                setState(() {
+                  _chats.removeWhere((element) => element.id == state.chatId);
+                });
+              }
+            }
             if (state is ChatDetailFailure) {
               final snackBar = getSnackBar(
                 context: context,

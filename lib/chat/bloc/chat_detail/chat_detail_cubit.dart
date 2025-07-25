@@ -28,6 +28,15 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     }
   }
 
+  void deleted({required Map<String, dynamic> payload}) {
+    emit(ChatDetailLoading());
+    if (payload['response_status'] == 204) {
+      emit(ChatDeleted(chatId: payload['pk']));
+    } else {
+      emit(ChatDetailFailure(error: payload['errors'][0]));
+    }
+  }
+
   void directMessageSent({required Map<String, dynamic> payload}) {
     emit(ChatDetailLoading());
     if (payload['response_status'] == 200) {
