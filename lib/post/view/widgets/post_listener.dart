@@ -103,8 +103,9 @@ class PostListener extends StatelessWidget {
                       .toList();
               if (userReposts.isNotEmpty) {
                 for (Post post in userReposts) {
-                  Post updated = post.repostOf!.copyWith(author: state.user);
-                  posts[posts.indexWhere((p) => p.id == post.id)] = updated;
+                  Post repostOf = post.repostOf!.copyWith(author: state.user);
+                  posts[posts.indexWhere((p) => p.id == post.id)] = post
+                      .copyWith(repostOf: repostOf);
                 }
                 onPostsUpdated(posts);
               }
@@ -115,25 +116,29 @@ class PostListener extends StatelessWidget {
           listener: (context, state) {
             if (state is PollUpdated) {
               // Update posts
-              if (posts.any((element) => element.poll?.id == state.poll.id)) {
-                List<Post> updatedPosts =
-                    posts
-                        .where((element) => element.poll?.id == state.poll.id)
-                        .toList();
-                for (Post post in updatedPosts) {
-                  post = post.copyWith(poll: state.poll);
+              List<Post> pollPosts =
+              posts
+                  .where((post) => post.poll?.id == state.poll.id)
+                  .toList();
+              if (pollPosts.isNotEmpty) {
+                for (Post post in pollPosts) {
+                  posts[posts.indexWhere((p) => p.id == post.id)] = post
+                      .copyWith(poll: state.poll);
                 }
                 onPostsUpdated(posts);
               }
-              // Update reposts
-              List<Post> updatedPosts =
-                  posts
-                      .where((post) => post.repostOf?.poll?.id == state.poll.id)
-                      .toList();
-              if (updatedPosts.isNotEmpty) {
-                for (Post post in updatedPosts) {
-                  Post updated = post.repostOf!.copyWith(poll: state.poll);
-                  posts[posts.indexWhere((p) => p.id == post.id)] = updated;
+              //   Update reposts
+              List<Post> pollReposts =
+              posts
+                  .where(
+                    (post) => post.repostOf?.poll?.id == state.poll.id,
+              )
+                  .toList();
+              if (pollReposts.isNotEmpty) {
+                for (Post post in pollReposts) {
+                  Post repostOf = post.repostOf!.copyWith(poll: state.poll);
+                  posts[posts.indexWhere((p) => p.id == post.id)] = post
+                      .copyWith(repostOf: repostOf);
                 }
                 onPostsUpdated(posts);
               }
