@@ -20,6 +20,12 @@ class _PollPageState extends State<PollPage>
   bool get wantKeepAlive => true;
 
   @override
+  void initState() {
+    context.read<WebsocketBloc>().add(WebsocketEvent.getPolls());
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return BlocBuilder<PollsCubit, PollsState>(

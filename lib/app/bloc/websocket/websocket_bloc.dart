@@ -100,6 +100,12 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_CreateChat>((event, emit) {
       _onCreateChat(emit, event);
     });
+    on<_SubscribeChat>((event, emit) {
+      _onSubscribeChat(emit, event);
+    });
+    on<_GetMessages>((event, emit) {
+      _onGetMessages(emit, event);
+    });
     on<_CreateMessage>((event, emit) {
       _onCreateMessage(emit, event);
     });
@@ -435,6 +441,38 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'action': 'create',
         'request_id': chatRequestId,
         'data': {'user': event.user.id},
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onSubscribeChat(
+    Emitter<WebsocketState> emit,
+    _SubscribeChat event,
+  ) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': chatsStream,
+      'payload': {
+        'action': 'subscribe',
+        'request_id': chatRequestId,
+        'pk': event.chat.id,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onGetMessages(
+    Emitter<WebsocketState> emit,
+    _GetMessages event,
+  ) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': chatsStream,
+      'payload': {
+        'action': 'messages',
+        'request_id': messageRequestId,
+        'pk': event.chat.id,
       },
     };
     _channel.sink.add(jsonEncode(message));

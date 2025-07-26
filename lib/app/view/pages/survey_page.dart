@@ -20,6 +20,12 @@ class _SurveyPageState extends State<SurveyPage>
   bool get wantKeepAlive => true;
 
   @override
+  void initState() {
+    context.read<WebsocketBloc>().add(WebsocketEvent.getSurveys());
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return BlocBuilder<SurveysCubit, SurveysState>(

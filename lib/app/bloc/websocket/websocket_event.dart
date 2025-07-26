@@ -46,6 +46,9 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   }) = _UnsubscribeUserProfilePosts;
   const factory WebsocketEvent.getChats() = _GetChats;
   const factory WebsocketEvent.createChat({required User user}) = _CreateChat;
+  const factory WebsocketEvent.subscribeChat({required Chat chat}) =
+      _SubscribeChat;
+  const factory WebsocketEvent.getMessages({required Chat chat}) = _GetMessages;
   const factory WebsocketEvent.createMessage({
     required Chat chat,
     required String text,

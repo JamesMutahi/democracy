@@ -16,15 +16,10 @@ _Chat _$ChatFromJson(Map<String, dynamic> json) => _Chat(
       json['last_message'] == null
           ? null
           : Message.fromJson(json['last_message'] as Map<String, dynamic>),
-  messages:
-      (json['messages'] as List<dynamic>)
-          .map((e) => Message.fromJson(e as Map<String, dynamic>))
-          .toList(),
 );
 
 Map<String, dynamic> _$ChatToJson(_Chat instance) => <String, dynamic>{
   'id': instance.id,
   'users': instance.users,
   'last_message': instance.lastMessage,
-  'messages': instance.messages,
 };

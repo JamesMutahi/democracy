@@ -9,6 +9,7 @@ import 'package:democracy/auth/view/login.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_cubit.dart';
+import 'package:democracy/chat/bloc/messages/messages_cubit.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_cubit.dart';
 import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
@@ -205,7 +206,11 @@ class _Listeners extends StatelessWidget {
                   case chatsStream:
                     switch (message['payload']['action']) {
                       case 'list':
-                        context.read<ChatsCubit>().loadChats(
+                        context.read<ChatsCubit>().loaded(
+                          payload: message['payload'],
+                        );
+                      case 'messages':
+                        context.read<MessagesCubit>().loaded(
                           payload: message['payload'],
                         );
                       case 'create':
@@ -221,14 +226,14 @@ class _Listeners extends StatelessWidget {
                           );
                         }
                       case 'update':
-                        if (message['payload']['request_id'] ==
-                            messageRequestId) {
-                          context.read<MessageDetailCubit>().updated(
+                        if (message['payload']['request_id'] == chatRequestId) {
+                          context.read<ChatDetailCubit>().updated(
                             payload: message['payload'],
                           );
                         }
-                        if (message['payload']['request_id'] == chatRequestId) {
-                          context.read<ChatDetailCubit>().updated(
+                        if (message['payload']['request_id'] ==
+                            messageRequestId) {
+                          context.read<MessageDetailCubit>().updated(
                             payload: message['payload'],
                           );
                         }

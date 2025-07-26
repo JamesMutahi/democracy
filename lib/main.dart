@@ -9,6 +9,7 @@ import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_cubit.dart';
+import 'package:democracy/chat/bloc/messages/messages_cubit.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_cubit.dart';
 import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
@@ -99,8 +100,9 @@ void main() async {
           BlocProvider(create: (context) => BookmarksCubit()),
           BlocProvider(create: (context) => LikesCubit()),
           BlocProvider(create: (context) => UserRepliesCubit()),
-          BlocProvider(create: (context) => ChatsCubit(), lazy: false),
+          BlocProvider(create: (context) => ChatsCubit()),
           BlocProvider(create: (context) => ChatDetailCubit()),
+          BlocProvider(create: (context) => MessagesCubit()),
           BlocProvider(create: (context) => MessageDetailCubit()),
           BlocProvider(create: (context) => MessageActionsCubit()),
           BlocProvider(create: (context) => SurveysCubit()),

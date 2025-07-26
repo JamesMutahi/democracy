@@ -3,10 +3,10 @@ import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_cubit.dart';
 import 'package:democracy/chat/view/chat_detail.dart' show ChatDetail;
+import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/models/chat.dart';
-import 'package:democracy/chat/models/message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,12 +27,28 @@ class _ChatsState extends State<Chats> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
+        BlocListener<NotificationDetailCubit, NotificationDetailState>(
+          listener: (context, state) {
+            if (state is NotificationCreated) {
+              if (!_chats.any(
+                (chat) => chat.id == state.notification.chat?.id,
+              )) {
+                setState(() {
+                  _chats.insert(0, state.notification.chat!);
+                });
+                context.read<WebsocketBloc>().add(
+                  WebsocketEvent.subscribeChat(chat: state.notification.chat!),
+                );
+              }
+            }
+          },
+        ),
         BlocListener<ChatDetailCubit, ChatDetailState>(
           listener: (context, state) {
             if (state is ChatCreated) {
               if (!_chats.any((chat) => chat.id == state.chat.id)) {
                 setState(() {
-                  _chats.add(state.chat);
+                  _chats.insert(0, state.chat);
                 });
               }
             }
@@ -74,9 +90,6 @@ class _ChatsState extends State<Chats> {
                   _chats[index] = _chats[index].copyWith(
                     lastMessage: state.message,
                   );
-                  List<Message> newMessages = _chats[index].messages.toList();
-                  newMessages.add(state.message);
-                  _chats[index] = _chats[index].copyWith(messages: newMessages);
                 });
               }
             }
@@ -85,13 +98,6 @@ class _ChatsState extends State<Chats> {
                 setState(() {
                   int chatIndex = _chats.indexWhere(
                     (chat) => chat.id == state.message.chat,
-                  );
-                  List<Message> newMessages =
-                      _chats[chatIndex].messages.toList();
-                  newMessages.removeWhere((m) => m.id == state.message.id);
-                  newMessages.add(state.message);
-                  _chats[chatIndex] = _chats[chatIndex].copyWith(
-                    messages: newMessages,
                   );
                   if (state.message.id == _chats[chatIndex].lastMessage!.id) {
                     _chats[chatIndex] = _chats[chatIndex].copyWith(
@@ -124,6 +130,7 @@ class _ChatsState extends State<Chats> {
             );
           }
           return ChatTile(
+            key: ValueKey(chat.id),
             chat: chat,
             currentUser: widget.currentUser,
             otherUser: otherUser,
@@ -155,9 +162,10 @@ class _ChatTileState extends State<ChatTile> {
   @override
   Widget build(BuildContext context) {
     String lastMessagePrefix =
-        widget.otherUser.id == widget.currentUser.id ? 'You: ' : '';
+        widget.chat.lastMessage?.user.id == widget.currentUser.id
+            ? 'You: '
+            : '';
     return ListTile(
-      key: ValueKey(widget.chat.id),
       leading: ProfileImage(user: widget.otherUser),
       title: Text.rich(
         TextSpan(

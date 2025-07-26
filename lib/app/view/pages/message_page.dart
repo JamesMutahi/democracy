@@ -22,6 +22,12 @@ class _MessagePageState extends State<MessagePage>
   bool get wantKeepAlive => true;
 
   @override
+  void initState() {
+    context.read<WebsocketBloc>().add(WebsocketEvent.getChats());
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return BlocBuilder<ChatsCubit, ChatsState>(

@@ -1,7 +1,10 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/view/bottom_loader.dart';
 import 'package:democracy/app/utils/view/bottom_text_form_field.dart';
+import 'package:democracy/app/utils/view/failure_retry_button.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/chat/bloc/messages/messages_cubit.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
@@ -69,6 +72,10 @@ class _ChatScaffoldState extends State<ChatScaffold> {
 
   @override
   void initState() {
+    context.read<MessagesCubit>().initialize();
+    context.read<WebsocketBloc>().add(
+      WebsocketEvent.getMessages(chat: widget.chat),
+    );
     context.read<WebsocketBloc>().add(
       WebsocketEvent.getUser(user: widget.otherUser),
     );
@@ -212,9 +219,26 @@ class _ChatScaffoldState extends State<ChatScaffold> {
                       ],
                     ),
                   )
-                  : Messages(
-                    messages: widget.chat.messages,
-                    currentUser: widget.currentUser,
+                  : BlocBuilder<MessagesCubit, MessagesState>(
+                    builder: (context, state) {
+                      switch (state.status) {
+                        case MessagesStatus.initial:
+                          return BottomLoader();
+                        case MessagesStatus.success:
+                          return Messages(
+                            messages: state.messages,
+                            currentUser: widget.currentUser,
+                          );
+                        case MessagesStatus.failure:
+                          return FailureRetryButton(
+                            onPressed: () {
+                              context.read<WebsocketBloc>().add(
+                                WebsocketEvent.getMessages(chat: widget.chat),
+                              );
+                            },
+                          );
+                      }
+                    },
                   ),
           bottomNavigationBar:
               otherUser.isBlocked && hideChat
