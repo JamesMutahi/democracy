@@ -439,7 +439,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'stream': chatsStream,
       'payload': {
         'action': 'create',
-        'request_id': chatRequestId,
+        'request_id': event.user.id,
         'data': {'user': event.user.id},
       },
     };

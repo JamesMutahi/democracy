@@ -117,15 +117,17 @@ class _ProfilePageState extends State<ProfilePage> {
           return BlocListener<ChatDetailCubit, ChatDetailState>(
             listener: (context, state) {
               if (state is ChatCreated) {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder:
-                        (context) => ChatDetail(
-                          key: ValueKey(state.chat.id),
-                          chat: state.chat,
-                        ),
-                  ),
-                );
+                if (state.userId == user.id) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder:
+                          (context) => ChatDetail(
+                            key: ValueKey(state.chat.id),
+                            chat: state.chat,
+                          ),
+                    ),
+                  );
+                }
               }
             },
             child: PopScope(

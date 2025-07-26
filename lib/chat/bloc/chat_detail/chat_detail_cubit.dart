@@ -12,7 +12,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     emit(ChatDetailLoading());
     if (payload['response_status'] == 201) {
       final Chat chat = Chat.fromJson(payload['data']);
-      emit(ChatCreated(chat: chat));
+      emit(ChatCreated(chat: chat, userId: payload['request_id']));
     } else {
       emit(ChatDetailFailure(error: payload['errors'][0]));
     }
@@ -42,7 +42,7 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     if (payload['response_status'] == 200) {
       emit(DirectMessageSent());
     } else {
-      emit(ChatDetailFailure(error: payload['errors'][0]));
+      emit(ChatDetailFailure(error: payload['errors']));
     }
   }
 }

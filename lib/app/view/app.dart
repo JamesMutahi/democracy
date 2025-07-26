@@ -214,7 +214,8 @@ class _Listeners extends StatelessWidget {
                           payload: message['payload'],
                         );
                       case 'create':
-                        if (message['payload']['request_id'] == chatRequestId) {
+                        if (message['payload']['request_id'] !=
+                            messageRequestId) {
                           context.read<ChatDetailCubit>().created(
                             payload: message['payload'],
                           );
