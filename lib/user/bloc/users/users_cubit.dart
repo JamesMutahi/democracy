@@ -1,28 +1,36 @@
 import 'package:bloc/bloc.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:equatable/equatable.dart';
 
 part 'users_state.dart';
-part 'users_cubit.freezed.dart';
 
 class UsersCubit extends Cubit<UsersState> {
-  UsersCubit() : super(const UsersInitial());
+  UsersCubit() : super(const UsersState());
 
   void websocketFailure({required String error}) {
-    if (state is UsersInitial || state is UsersLoading) {
-      emit(UsersFailure(error: error));
+    if (state.status == UsersStatus.initial ||
+        state.status == UsersStatus.loading) {
+      emit(state.copyWith(status: UsersStatus.failure));
     }
   }
 
   void loaded({required Map<String, dynamic> payload}) {
-    emit(UsersLoading());
+    emit(state.copyWith(status: UsersStatus.loading));
     if (payload['response_status'] == 200) {
-      List<User> users = List.from(
-        payload['data'].map((e) => User.fromJson(e)),
+      final List<User> users = List.from(
+        payload['data']['results'].map((e) => User.fromJson(e)),
       );
-      emit(UsersLoaded(users: users));
+      int currentPage = payload['data']['current_page'];
+      emit(
+        state.copyWith(
+          status: UsersStatus.success,
+          users: currentPage == 1 ? users : [...state.users, ...users],
+          currentPage: currentPage,
+          hasNext: payload['data']['has_next'],
+        ),
+      );
     } else {
-      emit(UsersFailure(error: payload['errors'].toString()));
+      emit(state.copyWith(status: UsersStatus.failure));
     }
   }
 }

@@ -30,8 +30,8 @@ class UserListView extends StatelessWidget {
         child: BlocBuilder<UsersCubit, UsersState>(
           builder: (context, state) {
             List<User> users = [];
-            switch (state) {
-              case UsersLoaded():
+            switch (state.status) {
+              case UsersStatus.success:
                 users = state.users.toList();
               default:
                 users = [];

@@ -13,6 +13,7 @@ import 'package:democracy/user/bloc/users/users_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class DirectMessage extends StatefulWidget {
   const DirectMessage({super.key, this.post, this.poll, this.survey});
@@ -29,6 +30,9 @@ class _DirectMessageState extends State<DirectMessage> {
   TextEditingController controller = TextEditingController();
   FocusNode focusNode = FocusNode();
   List<User> selectedUsers = [];
+  final RefreshController _refreshController = RefreshController(
+    initialRefresh: false,
+  );
 
   @override
   void dispose() {
@@ -38,7 +42,9 @@ class _DirectMessageState extends State<DirectMessage> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getUsers(searchTerm: ''));
+    context.read<WebsocketBloc>().add(
+      WebsocketEvent.getUsers(searchTerm: '', page: 1),
+    );
     super.initState();
   }
 
@@ -84,7 +90,7 @@ class _DirectMessageState extends State<DirectMessage> {
               child: TextFormField(
                 onChanged: (value) {
                   context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getUsers(searchTerm: value),
+                    WebsocketEvent.getUsers(searchTerm: value, page: 1),
                   );
                 },
                 onTapOutside: (event) {
@@ -104,52 +110,67 @@ class _DirectMessageState extends State<DirectMessage> {
                 ),
               ),
             ),
-            BlocBuilder<UsersCubit, UsersState>(
-              builder: (context, state) {
-                switch (state) {
-                  case UsersLoaded(:final users):
-                    return ListView.builder(
-                      padding: EdgeInsets.only(top: 5, bottom: 20),
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemBuilder: (BuildContext context, int index) {
-                        User user = users[index];
-                        return ListTile(
-                          key: ValueKey(user.id),
-                          onTap: () {
-                            setState(() {
-                              if (selectedUsers.contains(user)) {
-                                selectedUsers.remove(user);
-                              } else {
-                                selectedUsers.add(user);
-                              }
-                            });
+            Expanded(
+              child: BlocBuilder<UsersCubit, UsersState>(
+                builder: (context, state) {
+                  switch (state.status) {
+                    case UsersStatus.success:
+                      return SmartRefresher(
+                        enablePullDown: false,
+                        enablePullUp: state.hasNext ? true : false,
+                        controller: _refreshController,
+                        onLoading: () {
+                          context.read<WebsocketBloc>().add(
+                            WebsocketEvent.getUsers(
+                              searchTerm: controller.text,
+                              page: state.currentPage + 1,
+                            ),
+                          );
+                        },
+                        footer: ClassicFooter(),
+                        child: ListView.builder(
+                          padding: EdgeInsets.only(top: 5, bottom: 20),
+                          itemBuilder: (BuildContext context, int index) {
+                            User user = state.users[index];
+                            return ListTile(
+                              key: ValueKey(user.id),
+                              onTap: () {
+                                setState(() {
+                                  if (selectedUsers.contains(user)) {
+                                    selectedUsers.remove(user);
+                                  } else {
+                                    selectedUsers.add(user);
+                                  }
+                                });
+                              },
+                              selectedTileColor:
+                                  Theme.of(context).highlightColor,
+                              selected: selectedUsers.contains(user),
+                              leading: ProfileImage(user: user),
+                              title: Text(user.name),
+                              subtitle: Text(user.username),
+                              trailing:
+                                  selectedUsers.contains(user)
+                                      ? Icon(Symbols.check_rounded)
+                                      : SizedBox.shrink(),
+                            );
                           },
-                          selectedTileColor: Theme.of(context).highlightColor,
-                          selected: selectedUsers.contains(user),
-                          leading: ProfileImage(user: user),
-                          title: Text(user.name),
-                          subtitle: Text(user.username),
-                          trailing:
-                              selectedUsers.contains(user)
-                                  ? Icon(Symbols.check_rounded)
-                                  : SizedBox.shrink(),
-                        );
-                      },
-                      itemCount: users.length,
-                    );
-                  case UsersFailure():
-                    return FailureRetryButton(
-                      onPressed: () {
-                        context.read<WebsocketBloc>().add(
-                          WebsocketEvent.getUsers(searchTerm: ''),
-                        );
-                      },
-                    );
-                  default:
-                    return BottomLoader();
-                }
-              },
+                          itemCount: state.users.length,
+                        ),
+                      );
+                    case UsersStatus.failure:
+                      return FailureRetryButton(
+                        onPressed: () {
+                          context.read<WebsocketBloc>().add(
+                            WebsocketEvent.getUsers(searchTerm: '', page: 1),
+                          );
+                        },
+                      );
+                    default:
+                      return BottomLoader();
+                  }
+                },
+              ),
             ),
           ],
         ),

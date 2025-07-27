@@ -410,7 +410,7 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
   Widget build(BuildContext context) {
     return BlocListener<UsersCubit, UsersState>(
       listener: (context, state) {
-        if (state is UsersLoaded) {
+        if (state.status == UsersStatus.success) {
           setState(() {
             _view = SearchResultView.users;
             if (state.users.isEmpty) {
@@ -438,7 +438,10 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
         onSearch: (query, triggerChar) {
           if (triggerChar == "@") {
             context.read<WebsocketBloc>().add(
-              WebsocketEvent.getUsers(searchTerm: query.toLowerCase().trim()),
+              WebsocketEvent.getUsers(
+                searchTerm: query.toLowerCase().trim(),
+                page: 1,
+              ),
             );
           }
         },

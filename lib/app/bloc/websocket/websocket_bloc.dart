@@ -566,6 +566,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'action': 'list',
         'request_id': usersRequestId,
         'search_term': event.searchTerm,
+        'page': event.page,
       },
     };
     _channel.sink.add(jsonEncode(message));
