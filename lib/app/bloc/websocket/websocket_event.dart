@@ -65,7 +65,9 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   }) = _DeleteMessage;
   const factory WebsocketEvent.markChatAsRead({required Chat chat}) =
       _MarkChatAsRead;
-  const factory WebsocketEvent.getPolls() = _GetPolls;
+  const factory WebsocketEvent.getPolls({required int page}) = _GetPolls;
+  const factory WebsocketEvent.subscribePoll({required Poll poll}) =
+      _SubscribePoll;
   const factory WebsocketEvent.vote({required Option option}) = _Vote;
   const factory WebsocketEvent.submitReason({
     required Poll poll,

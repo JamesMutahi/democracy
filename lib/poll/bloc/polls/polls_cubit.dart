@@ -1,28 +1,36 @@
 import 'package:bloc/bloc.dart';
 import 'package:democracy/poll/models/poll.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:equatable/equatable.dart';
 
 part 'polls_state.dart';
-part 'polls_cubit.freezed.dart';
 
 class PollsCubit extends Cubit<PollsState> {
-  PollsCubit() : super(const PollsState.initial());
+  PollsCubit() : super(const PollsState());
 
   void websocketFailure({required String error}) {
-    if (state is PollsInitial || state is PollsLoading) {
-      emit(PollsFailure(error: error));
+    if (state.status == PollsStatus.initial ||
+        state.status == PollsStatus.loading) {
+      emit(state.copyWith(status: PollsStatus.failure));
     }
   }
 
   void loaded({required Map<String, dynamic> payload}) {
-    emit(PollsLoading());
+    emit(state.copyWith(status: PollsStatus.loading));
     if (payload['response_status'] == 200) {
       final List<Poll> polls = List.from(
-        payload['data'].map((e) => Poll.fromJson(e)),
+        payload['data']['results'].map((e) => Poll.fromJson(e)),
       );
-      emit(PollsLoaded(polls: polls));
+      int currentPage = payload['data']['current_page'];
+      emit(
+        state.copyWith(
+          status: PollsStatus.success,
+          polls: currentPage == 1 ? polls : [...state.polls, ...polls],
+          currentPage: currentPage,
+          hasNext: payload['data']['has_next'],
+        ),
+      );
     } else {
-      emit(PollsFailure(error: payload['errors'].toString()));
+      emit(state.copyWith(status: PollsStatus.failure));
     }
   }
 }

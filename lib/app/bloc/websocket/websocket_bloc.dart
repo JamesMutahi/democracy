@@ -143,7 +143,10 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       _onSendDirectMessage(emit, event);
     });
     on<_GetPolls>((event, emit) {
-      _onGetPolls(emit);
+      _onGetPolls(emit, event);
+    });
+    on<_SubscribePoll>((event, emit) {
+      _onSubscribePoll(emit, event);
     });
     on<_Vote>((event, emit) {
       _onVote(emit, event);
@@ -680,11 +683,31 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
-  Future _onGetPolls(Emitter<WebsocketState> emit) async {
+  Future _onGetPolls(Emitter<WebsocketState> emit, _GetPolls event) async {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': pollsStream,
-      'payload': {'action': 'list', 'request_id': pollRequestId},
+      'payload': {
+        'action': 'list',
+        'request_id': pollRequestId,
+        'page': event.page,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onSubscribePoll(
+    Emitter<WebsocketState> emit,
+    _SubscribePoll event,
+  ) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': pollsStream,
+      'payload': {
+        'action': 'subscribe',
+        'request_id': pollRequestId,
+        'pk': event.poll.id,
+      },
     };
     _channel.sink.add(jsonEncode(message));
   }

@@ -1,62 +1,159 @@
+import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/view/failure_retry_button.dart';
+import 'package:democracy/app/utils/view/loading_indicator.dart';
+import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
 import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
+import 'package:democracy/poll/bloc/polls/polls_cubit.dart';
 import 'package:democracy/poll/models/poll.dart';
 import 'package:democracy/poll/view/poll_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class Polls extends StatefulWidget {
-  const Polls({super.key, required this.polls});
-
-  final List<Poll> polls;
+  const Polls({super.key});
 
   @override
   State<Polls> createState() => _PollsState();
 }
 
 class _PollsState extends State<Polls> {
-  final _scrollController = ScrollController();
-  late final List<Poll> _polls = widget.polls.toList();
+  bool loading = true;
+  bool failure = false;
+  List<Poll> _polls = [];
+  int currentPage = 1;
+  bool hasNextPage = false;
+  final RefreshController _refreshController = RefreshController(
+    initialRefresh: false,
+  );
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<PollDetailCubit, PollDetailState>(
-      listener: (context, state) {
-        if (state is PollCreated) {
-          if (!_polls.any((poll) => poll.id == state.poll.id)) {
-            setState(() {
-              _polls.add(state.poll);
-            });
-          }
-        }
-        if (state is PollUpdated) {
-          if (_polls.any((poll) => poll.id == state.poll.id)) {
-            setState(() {
-              int index = _polls.indexWhere((poll) => poll.id == state.poll.id);
-              _polls[index] = state.poll;
-            });
-          }
-        }
-        if (state is PollDeleted) {
-          if (_polls.any((poll) => poll.id == state.pollId)) {
-            setState(() {
-              _polls.removeWhere((poll) => poll.id == state.pollId);
-            });
-          }
-        }
-      },
-      child: ListView.builder(
-        controller: _scrollController,
-        scrollDirection: Axis.vertical,
-        itemBuilder: (BuildContext context, int index) {
-          Poll poll = _polls[index];
-          return PollTile(
-            key: ValueKey(poll.id),
-            poll: poll,
-            isChildOfPost: false,
-          );
-        },
-        itemCount: _polls.length,
-      ),
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<PollsCubit, PollsState>(
+          listener: (context, state) {
+            if (state.status == PollsStatus.success) {
+              setState(() {
+                loading = false;
+                failure = false;
+                _polls = state.polls;
+                currentPage = state.currentPage;
+                hasNextPage = state.hasNext;
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshCompleted();
+                }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadComplete();
+                }
+                _refreshController.loadComplete();
+              });
+            }
+            if (state.status == PollsStatus.loading) {
+              setState(() {
+                if (_refreshController.headerStatus !=
+                        RefreshStatus.refreshing &&
+                    _refreshController.footerStatus != LoadStatus.loading) {
+                  setState(() {
+                    loading = true;
+                    failure = false;
+                  });
+                }
+              });
+            }
+            if (state.status == PollsStatus.failure) {
+              setState(() {
+                loading = false;
+                failure = true;
+              });
+            }
+          },
+        ),
+        BlocListener<NotificationDetailCubit, NotificationDetailState>(
+          listener: (context, state) {
+            if (state is NotificationCreated) {
+              if (!_polls.any(
+                (poll) => poll.id == state.notification.poll?.id,
+              )) {
+                setState(() {
+                  _polls.insert(0, state.notification.poll!);
+                });
+                context.read<WebsocketBloc>().add(
+                  WebsocketEvent.subscribePoll(poll: state.notification.poll!),
+                );
+              }
+            }
+          },
+        ),
+        BlocListener<PollDetailCubit, PollDetailState>(
+          listener: (context, state) {
+            if (state is PollCreated) {
+              if (!_polls.any((poll) => poll.id == state.poll.id)) {
+                setState(() {
+                  _polls.insert(0, state.poll);
+                });
+              }
+            }
+            if (state is PollUpdated) {
+              if (_polls.any((poll) => poll.id == state.poll.id)) {
+                setState(() {
+                  int index = _polls.indexWhere(
+                    (poll) => poll.id == state.poll.id,
+                  );
+                  _polls[index] = state.poll;
+                });
+              }
+            }
+            if (state is PollDeleted) {
+              if (_polls.any((poll) => poll.id == state.pollId)) {
+                setState(() {
+                  _polls.removeWhere((poll) => poll.id == state.pollId);
+                });
+              }
+            }
+          },
+        ),
+      ],
+      child:
+          loading
+              ? LoadingIndicator()
+              : failure
+              ? FailureRetryButton(
+                onPressed: () {
+                  context.read<WebsocketBloc>().add(
+                    WebsocketEvent.getPolls(page: 1),
+                  );
+                },
+              )
+              : SmartRefresher(
+                enablePullDown: true,
+                enablePullUp: hasNextPage ? true : false,
+                header: ClassicHeader(),
+                controller: _refreshController,
+                onRefresh: () {
+                  context.read<WebsocketBloc>().add(
+                    WebsocketEvent.getPolls(page: 1),
+                  );
+                },
+                onLoading: () {
+                  context.read<WebsocketBloc>().add(
+                    WebsocketEvent.getPolls(page: currentPage + 1),
+                  );
+                },
+                footer: ClassicFooter(),
+                child: ListView.builder(
+                  itemBuilder: (BuildContext context, int index) {
+                    Poll poll = _polls[index];
+                    return PollTile(
+                      key: ValueKey(poll.id),
+                      poll: poll,
+                      isChildOfPost: false,
+                    );
+                  },
+                  itemCount: _polls.length,
+                ),
+              ),
     );
   }
 }
