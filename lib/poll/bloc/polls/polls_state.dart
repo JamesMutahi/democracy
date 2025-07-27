@@ -6,25 +6,25 @@ final class PollsState extends Equatable {
   const PollsState({
     this.status = PollsStatus.initial,
     this.polls = const [],
-    this.currentPage = 1,
+    this.since,
     this.hasNext = false,
   });
 
   final PollsStatus status;
   final List<Poll> polls;
-  final int currentPage;
+  final int? since;
   final bool hasNext;
 
   PollsState copyWith({
     PollsStatus? status,
     List<Poll>? polls,
-    int? currentPage,
+    int? since,
     bool? hasNext,
   }) {
     return PollsState(
       status: status ?? this.status,
       polls: polls ?? this.polls,
-      currentPage: currentPage ?? this.currentPage,
+      since: since ?? this.since,
       hasNext: hasNext ?? this.hasNext,
     );
   }
@@ -32,7 +32,7 @@ final class PollsState extends Equatable {
   @override
   String toString() {
     return '''PollsState { status: $status, polls: ${polls.length}, 
-    currentPage: $currentPage, hasNext: $hasNext }''';
+    since: $since, hasNext: $hasNext }''';
   }
 
   @override

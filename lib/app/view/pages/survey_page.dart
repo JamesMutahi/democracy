@@ -17,7 +17,7 @@ class _SurveyPageState extends State<SurveyPage>
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getSurveys(page: 1));
+    context.read<WebsocketBloc>().add(WebsocketEvent.getSurveys());
     super.initState();
   }
 

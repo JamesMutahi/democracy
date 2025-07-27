@@ -20,12 +20,12 @@ class SurveysCubit extends Cubit<SurveysState> {
       final List<Survey> surveys = List.from(
         payload['data']['results'].map((e) => Survey.fromJson(e)),
       );
-      int currentPage = payload['data']['current_page'];
+      int? since = payload['data']['since'];
       emit(
         state.copyWith(
           status: SurveysStatus.success,
-          surveys: currentPage == 1 ? surveys : [...state.surveys, ...surveys],
-          currentPage: currentPage,
+          surveys: since == null ? surveys : [...state.surveys, ...surveys],
+          since: since,
           hasNext: payload['data']['has_next'],
         ),
       );

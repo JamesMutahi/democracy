@@ -44,13 +44,13 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.unsubscribeUserProfilePosts({
     required User user,
   }) = _UnsubscribeUserProfilePosts;
-  const factory WebsocketEvent.getChats({required int page}) = _GetChats;
+  const factory WebsocketEvent.getChats({Chat? since}) = _GetChats;
   const factory WebsocketEvent.createChat({required User user}) = _CreateChat;
   const factory WebsocketEvent.subscribeChat({required Chat chat}) =
       _SubscribeChat;
   const factory WebsocketEvent.getMessages({
     required Chat chat,
-    required int page,
+    Message? since,
   }) = _GetMessages;
   const factory WebsocketEvent.createMessage({
     required Chat chat,
@@ -68,7 +68,7 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   }) = _DeleteMessage;
   const factory WebsocketEvent.markChatAsRead({required Chat chat}) =
       _MarkChatAsRead;
-  const factory WebsocketEvent.getPolls({required int page}) = _GetPolls;
+  const factory WebsocketEvent.getPolls({Poll? since}) = _GetPolls;
   const factory WebsocketEvent.subscribePoll({required Poll poll}) =
       _SubscribePoll;
   const factory WebsocketEvent.vote({required Option option}) = _Vote;
@@ -76,7 +76,7 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     required Poll poll,
     required String text,
   }) = _SubmitReason;
-  const factory WebsocketEvent.getSurveys({required int page}) = _GetSurveys;
+  const factory WebsocketEvent.getSurveys({Survey? since}) = _GetSurveys;
   const factory WebsocketEvent.submitResponse({
     required Survey survey,
     required DateTime startTime,

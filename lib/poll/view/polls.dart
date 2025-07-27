@@ -21,7 +21,6 @@ class _PollsState extends State<Polls> {
   bool loading = true;
   bool failure = false;
   List<Poll> _polls = [];
-  int currentPage = 1;
   bool hasNextPage = false;
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
@@ -38,7 +37,6 @@ class _PollsState extends State<Polls> {
                 loading = false;
                 failure = false;
                 _polls = state.polls;
-                currentPage = state.currentPage;
                 hasNextPage = state.hasNext;
                 if (_refreshController.headerStatus ==
                     RefreshStatus.refreshing) {
@@ -124,7 +122,7 @@ class _PollsState extends State<Polls> {
               ? FailureRetryButton(
                 onPressed: () {
                   context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getPolls(page: 1),
+                    WebsocketEvent.getPolls(),
                   );
                 },
               )
@@ -135,12 +133,12 @@ class _PollsState extends State<Polls> {
                 controller: _refreshController,
                 onRefresh: () {
                   context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getPolls(page: 1),
+                    WebsocketEvent.getPolls(),
                   );
                 },
                 onLoading: () {
                   context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getPolls(page: currentPage + 1),
+                    WebsocketEvent.getPolls(since: _polls.last),
                   );
                 },
                 footer: ClassicFooter(),

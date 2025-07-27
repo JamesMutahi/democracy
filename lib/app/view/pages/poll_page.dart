@@ -17,7 +17,7 @@ class _PollPageState extends State<PollPage>
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getPolls(page: 1));
+    context.read<WebsocketBloc>().add(WebsocketEvent.getPolls());
     super.initState();
   }
 

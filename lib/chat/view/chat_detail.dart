@@ -72,7 +72,7 @@ class _ChatScaffoldState extends State<ChatScaffold> {
   void initState() {
     context.read<MessagesCubit>().initialize();
     context.read<WebsocketBloc>().add(
-      WebsocketEvent.getMessages(chat: widget.chat, page: 1),
+      WebsocketEvent.getMessages(chat: widget.chat),
     );
     context.read<WebsocketBloc>().add(
       WebsocketEvent.getUser(user: widget.otherUser),
@@ -204,10 +204,7 @@ class _ChatScaffoldState extends State<ChatScaffold> {
                         OutlinedButton(
                           onPressed: () {
                             context.read<WebsocketBloc>().add(
-                              WebsocketEvent.getMessages(
-                                chat: widget.chat,
-                                page: 1,
-                              ),
+                              WebsocketEvent.getMessages(chat: widget.chat),
                             );
                             setState(() {
                               hideChat = false;

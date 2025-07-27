@@ -20,12 +20,12 @@ class ChatsCubit extends Cubit<ChatsState> {
       final List<Chat> chats = List.from(
         payload['data']['results'].map((e) => Chat.fromJson(e)),
       );
-      int currentPage = payload['data']['current_page'];
+      int? since = payload['data']['since'];
       emit(
         state.copyWith(
           status: ChatsStatus.success,
-          chats: currentPage == 1 ? chats : [...state.chats, ...chats],
-          currentPage: currentPage,
+          chats: since == null ? chats : [...state.chats, ...chats],
+          since: since,
           hasNext: payload['data']['has_next'],
         ),
       );

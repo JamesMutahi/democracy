@@ -30,7 +30,6 @@ class _MessagesState extends State<Messages> {
   bool loading = true;
   bool failure = false;
   List<Message> _messages = [];
-  int currentPage = 1;
   bool hasNextPage = false;
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
@@ -142,7 +141,6 @@ class _MessagesState extends State<Messages> {
                 loading = false;
                 failure = false;
                 _messages = state.messages;
-                currentPage = state.currentPage;
                 hasNextPage = state.hasNext;
                 if (_refreshController.headerStatus ==
                     RefreshStatus.refreshing) {
@@ -210,7 +208,7 @@ class _MessagesState extends State<Messages> {
               ? FailureRetryButton(
                 onPressed: () {
                   context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getMessages(chat: widget.chat, page: 1),
+                    WebsocketEvent.getMessages(chat: widget.chat),
                   );
                 },
               )
@@ -219,19 +217,13 @@ class _MessagesState extends State<Messages> {
                 enablePullDown: false,
                 enablePullUp: hasNextPage ? true : false,
                 controller: _refreshController,
-                onRefresh: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getMessages(
-                      chat: widget.chat,
-                      page: currentPage + 1,
-                    ),
-                  );
-                },
                 onLoading: () {
+                  print(_messages.last.id);
+                  print(_messages.first.id);
                   context.read<WebsocketBloc>().add(
                     WebsocketEvent.getMessages(
                       chat: widget.chat,
-                      page: currentPage + 1,
+                      since: _messages.last,
                     ),
                   );
                 },

@@ -434,7 +434,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'list',
         'request_id': chatRequestId,
-        'page': event.page,
+        'since': event.since?.id,
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -479,8 +479,8 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'messages',
         'request_id': messageRequestId,
-        'pk': event.chat.id,
-        'page': event.page,
+        'chat': event.chat.id,
+        'since': event.since?.id,
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -696,7 +696,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'list',
         'request_id': pollRequestId,
-        'page': event.page,
+        'since': event.since?.id,
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -758,7 +758,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'list',
         'request_id': surveyRequestId,
-        'page': event.page,
+        'since': event.since?.id,
       },
     };
     _channel.sink.add(jsonEncode(message));

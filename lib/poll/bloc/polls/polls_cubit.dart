@@ -20,12 +20,12 @@ class PollsCubit extends Cubit<PollsState> {
       final List<Poll> polls = List.from(
         payload['data']['results'].map((e) => Poll.fromJson(e)),
       );
-      int currentPage = payload['data']['current_page'];
+      int? since = payload['data']['since'];
       emit(
         state.copyWith(
           status: PollsStatus.success,
-          polls: currentPage == 1 ? polls : [...state.polls, ...polls],
-          currentPage: currentPage,
+          polls: since == null ?  polls : [...state.polls, ...polls],
+          since: since,
           hasNext: payload['data']['has_next'],
         ),
       );

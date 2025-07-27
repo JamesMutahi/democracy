@@ -6,25 +6,25 @@ final class ChatsState extends Equatable {
   const ChatsState({
     this.status = ChatsStatus.initial,
     this.chats = const [],
-    this.currentPage = 1,
+    this.since,
     this.hasNext = false,
   });
 
   final ChatsStatus status;
   final List<Chat> chats;
-  final int currentPage;
+  final int? since;
   final bool hasNext;
 
   ChatsState copyWith({
     ChatsStatus? status,
     List<Chat>? chats,
-    int? currentPage,
+    int? since,
     bool? hasNext,
   }) {
     return ChatsState(
       status: status ?? this.status,
       chats: chats ?? this.chats,
-      currentPage: currentPage ?? this.currentPage,
+      since: since ?? this.since,
       hasNext: hasNext ?? this.hasNext,
     );
   }
@@ -32,7 +32,7 @@ final class ChatsState extends Equatable {
   @override
   String toString() {
     return '''ChatsState { status: $status, chats: ${chats.length}, 
-    currentPage: $currentPage, hasNext: $hasNext }''';
+    since: $since, hasNext: $hasNext }''';
   }
 
   @override

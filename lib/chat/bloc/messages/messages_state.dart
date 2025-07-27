@@ -6,25 +6,25 @@ final class MessagesState extends Equatable {
   const MessagesState({
     this.status = MessagesStatus.initial,
     this.messages = const [],
-    this.currentPage = 1,
+    this.since,
     this.hasNext = false,
   });
 
   final MessagesStatus status;
   final List<Message> messages;
-  final int currentPage;
+  final int? since;
   final bool hasNext;
 
   MessagesState copyWith({
     MessagesStatus? status,
     List<Message>? messages,
-    int? currentPage,
+    int? since,
     bool? hasNext,
   }) {
     return MessagesState(
       status: status ?? this.status,
       messages: messages ?? this.messages,
-      currentPage: currentPage ?? this.currentPage,
+      since: since ?? this.since,
       hasNext: hasNext ?? this.hasNext,
     );
   }
@@ -32,7 +32,7 @@ final class MessagesState extends Equatable {
   @override
   String toString() {
     return '''MessagesState { status: $status, messages: ${messages.length}, 
-     currentPage: $currentPage, hasNext: $hasNext }''';
+     since: $since, hasNext: $hasNext }''';
   }
 
   @override

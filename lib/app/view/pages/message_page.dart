@@ -18,7 +18,7 @@ class _MessagePageState extends State<MessagePage>
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getChats(page: 1));
+    context.read<WebsocketBloc>().add(WebsocketEvent.getChats());
     super.initState();
   }
 

@@ -26,7 +26,6 @@ class _ChatsState extends State<Chats> {
   bool loading = true;
   bool failure = false;
   List<Chat> _chats = [];
-  int currentPage = 1;
   bool hasNextPage = false;
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
@@ -43,7 +42,6 @@ class _ChatsState extends State<Chats> {
                 loading = false;
                 failure = false;
                 _chats = state.chats;
-                currentPage = state.currentPage;
                 hasNextPage = state.hasNext;
                 if (_refreshController.headerStatus ==
                     RefreshStatus.refreshing) {
@@ -173,7 +171,7 @@ class _ChatsState extends State<Chats> {
               ? FailureRetryButton(
                 onPressed: () {
                   context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getPolls(page: 1),
+                    WebsocketEvent.getChats(),
                   );
                 },
               )
@@ -190,12 +188,12 @@ class _ChatsState extends State<Chats> {
                     controller: _refreshController,
                     onRefresh: () {
                       context.read<WebsocketBloc>().add(
-                        WebsocketEvent.getChats(page: 1),
+                        WebsocketEvent.getChats(),
                       );
                     },
                     onLoading: () {
                       context.read<WebsocketBloc>().add(
-                        WebsocketEvent.getChats(page: currentPage + 1),
+                        WebsocketEvent.getChats(since: _chats.last),
                       );
                     },
                     footer: ClassicFooter(),

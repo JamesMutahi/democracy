@@ -152,13 +152,13 @@ class _Listeners extends StatelessWidget {
                   WebsocketEvent.getNotifications(),
                 );
                 context.read<WebsocketBloc>().add(
-                  WebsocketEvent.getPolls(page: 1),
+                  WebsocketEvent.getPolls(),
                 );
                 context.read<WebsocketBloc>().add(
-                  WebsocketEvent.getSurveys(page: 1),
+                  WebsocketEvent.getSurveys(),
                 );
                 context.read<WebsocketBloc>().add(
-                  WebsocketEvent.getChats(page: 1),
+                  WebsocketEvent.getChats(),
                 );
               case WebsocketSuccess(:final message):
                 switch (message['stream']) {
