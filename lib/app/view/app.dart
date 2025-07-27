@@ -154,7 +154,9 @@ class _Listeners extends StatelessWidget {
                 context.read<WebsocketBloc>().add(
                   WebsocketEvent.getPolls(page: 1),
                 );
-                context.read<WebsocketBloc>().add(WebsocketEvent.getSurveys());
+                context.read<WebsocketBloc>().add(
+                  WebsocketEvent.getSurveys(page: 1),
+                );
                 context.read<WebsocketBloc>().add(
                   WebsocketEvent.getChats(page: 1),
                 );

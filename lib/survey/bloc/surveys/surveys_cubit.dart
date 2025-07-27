@@ -1,28 +1,36 @@
 import 'package:bloc/bloc.dart';
 import 'package:democracy/survey/models/survey.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:equatable/equatable.dart';
 
 part 'surveys_state.dart';
-part 'surveys_cubit.freezed.dart';
 
 class SurveysCubit extends Cubit<SurveysState> {
-  SurveysCubit() : super(const SurveysState.initial());
+  SurveysCubit() : super(const SurveysState());
 
   void websocketFailure({required String error}) {
-    if (state is SurveysInitial || state is SurveysLoading) {
-      emit(SurveysFailure(error: error));
+    if (state.status == SurveysStatus.initial ||
+        state.status == SurveysStatus.loading) {
+      emit(state.copyWith(status: SurveysStatus.failure));
     }
   }
 
   void loaded({required Map<String, dynamic> payload}) {
-    emit(SurveysLoading());
+    emit(state.copyWith(status: SurveysStatus.loading));
     if (payload['response_status'] == 200) {
       final List<Survey> surveys = List.from(
-        payload['data'].map((e) => Survey.fromJson(e)),
+        payload['data']['results'].map((e) => Survey.fromJson(e)),
       );
-      emit(SurveysLoaded(surveys: surveys));
+      int currentPage = payload['data']['current_page'];
+      emit(
+        state.copyWith(
+          status: SurveysStatus.success,
+          surveys: currentPage == 1 ? surveys : [...state.surveys, ...surveys],
+          currentPage: currentPage,
+          hasNext: payload['data']['has_next'],
+        ),
+      );
     } else {
-      emit(SurveysFailure(error: payload['errors'].toString()));
+      emit(state.copyWith(status: SurveysStatus.failure));
     }
   }
 }

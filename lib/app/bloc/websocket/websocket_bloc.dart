@@ -155,7 +155,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       _onSubmitReason(emit, event);
     });
     on<_GetSurveys>((event, emit) {
-      _onGetSurveys(emit);
+      _onGetSurveys(emit, event);
     });
     on<_SubmitResponse>((event, emit) {
       _onSubmitResponse(emit, event);
@@ -746,14 +746,18 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
-  Future _onGetSurveys(Emitter<WebsocketState> emit) async {
+  Future _onGetSurveys(Emitter<WebsocketState> emit, _GetSurveys event) async {
     if (state is WebsocketFailure) {
       await _onConnect(emit);
     }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': surveysStream,
-      'payload': {'action': 'list', 'request_id': surveyRequestId},
+      'payload': {
+        'action': 'list',
+        'request_id': surveyRequestId,
+        'page': event.page,
+      },
     };
     _channel.sink.add(jsonEncode(message));
   }

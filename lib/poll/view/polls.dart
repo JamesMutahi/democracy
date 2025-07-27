@@ -29,7 +29,6 @@ class _PollsState extends State<Polls> {
 
   @override
   Widget build(BuildContext context) {
-    _polls.sort((a, b) => a.startTime.compareTo(b.endTime));
     return MultiBlocListener(
       listeners: [
         BlocListener<PollsCubit, PollsState>(
@@ -79,6 +78,7 @@ class _PollsState extends State<Polls> {
               )) {
                 setState(() {
                   _polls.add(state.notification.poll!);
+                  _polls.sort((a, b) => a.startTime.compareTo(b.endTime));
                 });
                 context.read<WebsocketBloc>().add(
                   WebsocketEvent.subscribePoll(poll: state.notification.poll!),
@@ -93,6 +93,7 @@ class _PollsState extends State<Polls> {
               if (!_polls.any((poll) => poll.id == state.poll.id)) {
                 setState(() {
                   _polls.add(state.poll);
+                  _polls.sort((a, b) => a.startTime.compareTo(b.endTime));
                 });
               }
             }

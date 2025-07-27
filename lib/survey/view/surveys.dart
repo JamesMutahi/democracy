@@ -1,27 +1,75 @@
+import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/view/failure_retry_button.dart';
+import 'package:democracy/app/utils/view/loading_indicator.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
 import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
+import 'package:democracy/survey/bloc/surveys/surveys_cubit.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class Surveys extends StatefulWidget {
-  const Surveys({super.key, required this.surveys});
-
-  final List<Survey> surveys;
+  const Surveys({super.key});
 
   @override
   State<Surveys> createState() => _SurveysState();
 }
 
 class _SurveysState extends State<Surveys> {
-  final _scrollController = ScrollController();
-  late final List<Survey> _surveys = widget.surveys.toList();
+  bool loading = true;
+  bool failure = false;
+  List<Survey> _surveys = [];
+  int currentPage = 1;
+  bool hasNextPage = false;
+  final RefreshController _refreshController = RefreshController(
+    initialRefresh: false,
+  );
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
+        BlocListener<SurveysCubit, SurveysState>(
+          listener: (context, state) {
+            if (state.status == SurveysStatus.success) {
+              setState(() {
+                loading = false;
+                failure = false;
+                _surveys = state.surveys;
+                currentPage = state.currentPage;
+                hasNextPage = state.hasNext;
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshCompleted();
+                }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadComplete();
+                }
+                _refreshController.loadComplete();
+              });
+            }
+            if (state.status == SurveysStatus.loading) {
+              setState(() {
+                if (_refreshController.headerStatus !=
+                        RefreshStatus.refreshing &&
+                    _refreshController.footerStatus != LoadStatus.loading) {
+                  setState(() {
+                    loading = true;
+                    failure = false;
+                  });
+                }
+              });
+            }
+            if (state.status == SurveysStatus.failure) {
+              setState(() {
+                loading = false;
+                failure = true;
+              });
+            }
+          },
+        ),
         BlocListener<AnswerCubit, AnswerState>(
           listener: (context, state) {
             if (state.status == AnswerStatus.submitted) {
@@ -65,19 +113,45 @@ class _SurveysState extends State<Surveys> {
           },
         ),
       ],
-      child: ListView.builder(
-        controller: _scrollController,
-        scrollDirection: Axis.vertical,
-        itemBuilder: (BuildContext context, int index) {
-          Survey survey = _surveys[index];
-          return SurveyTile(
-            key: ValueKey(survey.id),
-            survey: survey,
-            isChildOfPost: false,
-          );
-        },
-        itemCount: _surveys.length,
-      ),
+      child:
+          loading
+              ? LoadingIndicator()
+              : failure
+              ? FailureRetryButton(
+                onPressed: () {
+                  context.read<WebsocketBloc>().add(
+                    WebsocketEvent.getSurveys(page: 1),
+                  );
+                },
+              )
+              : SmartRefresher(
+                enablePullDown: true,
+                enablePullUp: hasNextPage ? true : false,
+                header: ClassicHeader(),
+                controller: _refreshController,
+                onRefresh: () {
+                  context.read<WebsocketBloc>().add(
+                    WebsocketEvent.getSurveys(page: 1),
+                  );
+                },
+                onLoading: () {
+                  context.read<WebsocketBloc>().add(
+                    WebsocketEvent.getSurveys(page: currentPage + 1),
+                  );
+                },
+                footer: ClassicFooter(),
+                child: ListView.builder(
+                  itemBuilder: (BuildContext context, int index) {
+                    Survey survey = _surveys[index];
+                    return SurveyTile(
+                      key: ValueKey(survey.id),
+                      survey: survey,
+                      isChildOfPost: false,
+                    );
+                  },
+                  itemCount: _surveys.length,
+                ),
+              ),
     );
   }
 }
