@@ -18,23 +18,19 @@ class MessagesCubit extends Cubit<MessagesState> {
   }
 
   void loaded({required Map<String, dynamic> payload}) {
-    if (state.hasReachedMax) return;
-
+    emit(state.copyWith(status: MessagesStatus.loading));
     if (payload['response_status'] == 200) {
       final List<Message> messages = List.from(
-        payload['data'].map((e) => Message.fromJson(e)),
+        payload['data']['results'].map((e) => Message.fromJson(e)),
       );
-
-      if (messages.isEmpty) {
-        return emit(
-          state.copyWith(status: MessagesStatus.success, hasReachedMax: true),
-        );
-      }
-
+      int currentPage = payload['data']['current_page'];
       emit(
         state.copyWith(
           status: MessagesStatus.success,
-          messages: [...state.messages, ...messages],
+          messages:
+              currentPage == 1 ? messages : [...state.messages, ...messages],
+          currentPage: currentPage,
+          hasNext: payload['data']['has_next'],
         ),
       );
     } else {
@@ -42,4 +38,3 @@ class MessagesCubit extends Cubit<MessagesState> {
     }
   }
 }
-

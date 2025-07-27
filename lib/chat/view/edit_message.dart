@@ -1,6 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/bottom_text_form_field.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/models/message.dart';
@@ -9,8 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EditMessage extends StatefulWidget {
-  const EditMessage({super.key, required this.message});
+  const EditMessage({super.key, required this.chat, required this.message});
 
+  final Chat chat;
   final Message message;
 
   @override
@@ -48,7 +50,7 @@ class _EditMessageState extends State<EditMessage> {
           if (state is Authenticated) {
             user = state.user;
           }
-          return Messages(messages: [widget.message], currentUser: user);
+          return Messages(chat: widget.chat, currentUser: user);
         },
       ),
       bottomNavigationBar: BottomTextFormField(

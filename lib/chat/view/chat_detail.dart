@@ -1,7 +1,5 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/utils/view/bottom_loader.dart';
 import 'package:democracy/app/utils/view/bottom_text_form_field.dart';
-import 'package:democracy/app/utils/view/failure_retry_button.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/messages/messages_cubit.dart';
@@ -74,7 +72,7 @@ class _ChatScaffoldState extends State<ChatScaffold> {
   void initState() {
     context.read<MessagesCubit>().initialize();
     context.read<WebsocketBloc>().add(
-      WebsocketEvent.getMessages(chat: widget.chat),
+      WebsocketEvent.getMessages(chat: widget.chat, page: 1),
     );
     context.read<WebsocketBloc>().add(
       WebsocketEvent.getUser(user: widget.otherUser),
@@ -178,7 +176,11 @@ class _ChatScaffoldState extends State<ChatScaffold> {
                     ),
             actions: [
               showMessageActions
-                  ? _MessageActions(messages: messages, otherUser: otherUser)
+                  ? _MessageActions(
+                    chat: widget.chat,
+                    messages: messages,
+                    otherUser: otherUser,
+                  )
                   : SizedBox.shrink(),
               ChatPopUpMenu(
                 chat: widget.chat,
@@ -201,6 +203,12 @@ class _ChatScaffoldState extends State<ChatScaffold> {
                         SizedBox(height: 10),
                         OutlinedButton(
                           onPressed: () {
+                            context.read<WebsocketBloc>().add(
+                              WebsocketEvent.getMessages(
+                                chat: widget.chat,
+                                page: 1,
+                              ),
+                            );
                             setState(() {
                               hideChat = false;
                             });
@@ -219,26 +227,9 @@ class _ChatScaffoldState extends State<ChatScaffold> {
                       ],
                     ),
                   )
-                  : BlocBuilder<MessagesCubit, MessagesState>(
-                    builder: (context, state) {
-                      switch (state.status) {
-                        case MessagesStatus.initial:
-                          return BottomLoader();
-                        case MessagesStatus.success:
-                          return Messages(
-                            messages: state.messages,
-                            currentUser: widget.currentUser,
-                          );
-                        case MessagesStatus.failure:
-                          return FailureRetryButton(
-                            onPressed: () {
-                              context.read<WebsocketBloc>().add(
-                                WebsocketEvent.getMessages(chat: widget.chat),
-                              );
-                            },
-                          );
-                      }
-                    },
+                  : Messages(
+                    chat: widget.chat,
+                    currentUser: widget.currentUser,
                   ),
           bottomNavigationBar:
               otherUser.isBlocked && hideChat
@@ -374,8 +365,13 @@ class ChatPopUpMenu extends StatelessWidget {
 }
 
 class _MessageActions extends StatelessWidget {
-  const _MessageActions({required this.otherUser, required this.messages});
+  const _MessageActions({
+    required this.chat,
+    required this.otherUser,
+    required this.messages,
+  });
 
+  final Chat chat;
   final User otherUser;
   final Set<Message> messages;
 
@@ -394,8 +390,10 @@ class _MessageActions extends StatelessWidget {
                       PageRouteBuilder(
                         opaque: false,
                         pageBuilder:
-                            (_, __, ___) =>
-                                EditMessage(message: messages.first),
+                            (_, __, ___) => EditMessage(
+                              chat: chat,
+                              message: messages.first,
+                            ),
                       ),
                     );
                   },

@@ -1,5 +1,10 @@
 import 'package:collection/collection.dart';
+import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/view/failure_retry_button.dart';
+import 'package:democracy/app/utils/view/loading_indicator.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_cubit.dart';
+import 'package:democracy/chat/bloc/messages/messages_cubit.dart';
+import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/models/message.dart';
@@ -9,15 +14,12 @@ import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class Messages extends StatefulWidget {
-  const Messages({
-    super.key,
-    required this.messages,
-    required this.currentUser,
-  });
+  const Messages({super.key, required this.chat, required this.currentUser});
 
-  final List<Message> messages;
+  final Chat chat;
   final User currentUser;
 
   @override
@@ -25,7 +27,14 @@ class Messages extends StatefulWidget {
 }
 
 class _MessagesState extends State<Messages> {
-  late final List<Message> _messages = widget.messages.toList();
+  bool loading = true;
+  bool failure = false;
+  List<Message> _messages = [];
+  int currentPage = 1;
+  bool hasNextPage = false;
+  final RefreshController _refreshController = RefreshController(
+    initialRefresh: false,
+  );
   double messageMargin = 10;
 
   @override
@@ -124,32 +133,111 @@ class _MessagesState extends State<Messages> {
       widgets.add(SizedBox(height: messageMargin));
     });
 
-    return BlocListener<MessageDetailCubit, MessageDetailState>(
-      listener: (context, state) {
-        if (state is MessageCreated) {
-          setState(() {
-            _messages.add(state.message);
-          });
-        }
-        if (state is MessageUpdated) {
-          if (_messages.any((element) => element.id == state.message.id)) {
-            setState(() {
-              _messages[_messages.indexWhere(
-                    (message) => message.id == state.message.id,
-                  )] =
-                  state.message;
-            });
-          }
-        }
-        if (state is MessageDeleted) {
-          if (_messages.any((element) => element.id == state.messageId)) {
-            setState(() {
-              _messages.removeWhere((element) => element.id == state.messageId);
-            });
-          }
-        }
-      },
-      child: ListView(reverse: true, children: widgets),
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<MessagesCubit, MessagesState>(
+          listener: (context, state) {
+            if (state.status == MessagesStatus.success) {
+              setState(() {
+                loading = false;
+                failure = false;
+                _messages = state.messages;
+                currentPage = state.currentPage;
+                hasNextPage = state.hasNext;
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshCompleted();
+                }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadComplete();
+                }
+                _refreshController.loadComplete();
+              });
+            }
+            if (state.status == MessagesStatus.loading) {
+              setState(() {
+                if (_refreshController.headerStatus !=
+                        RefreshStatus.refreshing &&
+                    _refreshController.footerStatus != LoadStatus.loading) {
+                  setState(() {
+                    loading = true;
+                    failure = false;
+                  });
+                }
+              });
+            }
+            if (state.status == MessagesStatus.failure) {
+              setState(() {
+                loading = false;
+                failure = true;
+              });
+            }
+          },
+        ),
+        BlocListener<MessageDetailCubit, MessageDetailState>(
+          listener: (context, state) {
+            if (state is MessageCreated) {
+              setState(() {
+                _messages.add(state.message);
+              });
+            }
+            if (state is MessageUpdated) {
+              if (_messages.any((element) => element.id == state.message.id)) {
+                setState(() {
+                  _messages[_messages.indexWhere(
+                        (message) => message.id == state.message.id,
+                      )] =
+                      state.message;
+                });
+              }
+            }
+            if (state is MessageDeleted) {
+              if (_messages.any((element) => element.id == state.messageId)) {
+                setState(() {
+                  _messages.removeWhere(
+                    (element) => element.id == state.messageId,
+                  );
+                });
+              }
+            }
+          },
+        ),
+      ],
+      child:
+          loading
+              ? LoadingIndicator()
+              : failure
+              ? FailureRetryButton(
+                onPressed: () {
+                  context.read<WebsocketBloc>().add(
+                    WebsocketEvent.getMessages(chat: widget.chat, page: 1),
+                  );
+                },
+              )
+              : SmartRefresher(
+                // Messages are listed in reverse, down is up and up is down...lol
+                enablePullDown: false,
+                enablePullUp: hasNextPage ? true : false,
+                controller: _refreshController,
+                onRefresh: () {
+                  context.read<WebsocketBloc>().add(
+                    WebsocketEvent.getMessages(
+                      chat: widget.chat,
+                      page: currentPage + 1,
+                    ),
+                  );
+                },
+                onLoading: () {
+                  context.read<WebsocketBloc>().add(
+                    WebsocketEvent.getMessages(
+                      chat: widget.chat,
+                      page: currentPage + 1,
+                    ),
+                  );
+                },
+                footer: ClassicFooter(),
+                child: ListView(reverse: true, children: widgets),
+              ),
     );
   }
 }

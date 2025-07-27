@@ -480,6 +480,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'action': 'messages',
         'request_id': messageRequestId,
         'pk': event.chat.id,
+        'page': event.page,
       },
     };
     _channel.sink.add(jsonEncode(message));

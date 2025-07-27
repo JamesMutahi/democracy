@@ -1,34 +1,38 @@
 part of 'messages_cubit.dart';
 
-enum MessagesStatus { initial, success, failure }
+enum MessagesStatus { initial, loading, success, failure }
 
 final class MessagesState extends Equatable {
   const MessagesState({
     this.status = MessagesStatus.initial,
     this.messages = const [],
-    this.hasReachedMax = false,
+    this.currentPage = 1,
+    this.hasNext = false,
   });
 
   final MessagesStatus status;
   final List<Message> messages;
-  final bool hasReachedMax;
+  final int currentPage;
+  final bool hasNext;
 
   MessagesState copyWith({
     MessagesStatus? status,
     List<Message>? messages,
-    bool? hasReachedMax,
+    int? currentPage,
+    bool? hasNext,
   }) {
     return MessagesState(
       status: status ?? this.status,
       messages: messages ?? this.messages,
-      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      currentPage: currentPage ?? this.currentPage,
+      hasNext: hasNext ?? this.hasNext,
     );
   }
 
   @override
   String toString() {
     return '''MessagesState { status: $status, messages: ${messages.length}, 
-    hasReachedMax: $hasReachedMax }''';
+     currentPage: $currentPage, hasNext: $hasNext }''';
   }
 
   @override
