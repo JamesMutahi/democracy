@@ -1,28 +1,36 @@
 import 'package:bloc/bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:equatable/equatable.dart';
 
 part 'chats_state.dart';
-part 'chats_cubit.freezed.dart';
 
 class ChatsCubit extends Cubit<ChatsState> {
-  ChatsCubit() : super(const ChatsState.initial());
+  ChatsCubit() : super(const ChatsState());
 
   void websocketFailure({required String error}) {
-    if (state is ChatsInitial || state is ChatsLoading) {
-      emit(ChatsFailure(error: error));
+    if (state.status == ChatsStatus.initial ||
+        state.status == ChatsStatus.loading) {
+      emit(state.copyWith(status: ChatsStatus.failure));
     }
   }
 
   void loaded({required Map<String, dynamic> payload}) {
-    emit(ChatsLoading());
+    emit(state.copyWith(status: ChatsStatus.loading));
     if (payload['response_status'] == 200) {
       final List<Chat> chats = List.from(
-        payload['data'].map((e) => Chat.fromJson(e)),
+        payload['data']['results'].map((e) => Chat.fromJson(e)),
       );
-      emit(ChatsLoaded(chats: chats));
+      int currentPage = payload['data']['current_page'];
+      emit(
+        state.copyWith(
+          status: ChatsStatus.success,
+          chats: currentPage == 1 ? chats : [...state.chats, ...chats],
+          currentPage: currentPage,
+          hasNext: payload['data']['has_next'],
+        ),
+      );
     } else {
-      emit(ChatsFailure(error: payload['errors'].toString()));
+      emit(state.copyWith(status: ChatsStatus.failure));
     }
   }
 }

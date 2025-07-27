@@ -1,6 +1,10 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/view/failure_retry_button.dart';
+import 'package:democracy/app/utils/view/loading_indicator.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
+import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_cubit.dart';
 import 'package:democracy/chat/view/chat_detail.dart' show ChatDetail;
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
@@ -9,24 +13,68 @@ import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class Chats extends StatefulWidget {
-  const Chats({super.key, required this.chats, required this.currentUser});
-
-  final List<Chat> chats;
-  final User currentUser;
+  const Chats({super.key});
 
   @override
   State<Chats> createState() => _ChatsState();
 }
 
 class _ChatsState extends State<Chats> {
-  late final List<Chat> _chats = widget.chats.toList();
+  bool loading = true;
+  bool failure = false;
+  List<Chat> _chats = [];
+  int currentPage = 1;
+  bool hasNextPage = false;
+  final RefreshController _refreshController = RefreshController(
+    initialRefresh: false,
+  );
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
+        BlocListener<ChatsCubit, ChatsState>(
+          listener: (context, state) {
+            if (state.status == ChatsStatus.success) {
+              setState(() {
+                loading = false;
+                failure = false;
+                _chats = state.chats;
+                currentPage = state.currentPage;
+                hasNextPage = state.hasNext;
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshCompleted();
+                }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadComplete();
+                }
+                _refreshController.loadComplete();
+              });
+            }
+            if (state.status == ChatsStatus.loading) {
+              setState(() {
+                if (_refreshController.headerStatus !=
+                        RefreshStatus.refreshing &&
+                    _refreshController.footerStatus != LoadStatus.loading) {
+                  setState(() {
+                    loading = true;
+                    failure = false;
+                  });
+                }
+              });
+            }
+            if (state.status == ChatsStatus.failure) {
+              setState(() {
+                loading = false;
+                failure = true;
+              });
+            }
+          },
+        ),
         BlocListener<NotificationDetailCubit, NotificationDetailState>(
           listener: (context, state) {
             if (state is NotificationCreated) {
@@ -118,26 +166,62 @@ class _ChatsState extends State<Chats> {
           },
         ),
       ],
-      child: ListView.builder(
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        itemBuilder: (BuildContext context, int index) {
-          Chat chat = _chats[index];
-          User otherUser = widget.currentUser;
-          if (chat.users.length > 1) {
-            otherUser = chat.users.firstWhere(
-              (u) => u.id != widget.currentUser.id,
-            );
-          }
-          return ChatTile(
-            key: ValueKey(chat.id),
-            chat: chat,
-            currentUser: widget.currentUser,
-            otherUser: otherUser,
-          );
-        },
-        itemCount: _chats.length,
-      ),
+      child:
+          loading
+              ? LoadingIndicator()
+              : failure
+              ? FailureRetryButton(
+                onPressed: () {
+                  context.read<WebsocketBloc>().add(
+                    WebsocketEvent.getPolls(page: 1),
+                  );
+                },
+              )
+              : BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, state) {
+                  late User currentUser;
+                  if (state is Authenticated) {
+                    currentUser = state.user;
+                  }
+                  return SmartRefresher(
+                    enablePullDown: true,
+                    enablePullUp: hasNextPage ? true : false,
+                    header: ClassicHeader(),
+                    controller: _refreshController,
+                    onRefresh: () {
+                      context.read<WebsocketBloc>().add(
+                        WebsocketEvent.getChats(page: 1),
+                      );
+                    },
+                    onLoading: () {
+                      context.read<WebsocketBloc>().add(
+                        WebsocketEvent.getChats(page: currentPage + 1),
+                      );
+                    },
+                    footer: ClassicFooter(),
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemBuilder: (BuildContext context, int index) {
+                        Chat chat = _chats[index];
+                        User otherUser = currentUser;
+                        if (chat.users.length > 1) {
+                          otherUser = chat.users.firstWhere(
+                            (u) => u.id != currentUser.id,
+                          );
+                        }
+                        return ChatTile(
+                          key: ValueKey(chat.id),
+                          chat: chat,
+                          currentUser: currentUser,
+                          otherUser: otherUser,
+                        );
+                      },
+                      itemCount: _chats.length,
+                    ),
+                  );
+                },
+              ),
     );
   }
 }

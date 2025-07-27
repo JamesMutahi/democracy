@@ -47,7 +47,6 @@ class _DirectMessageState extends State<DirectMessage> {
     return BlocListener<ChatDetailCubit, ChatDetailState>(
       listener: (context, state) {
         if (state is DirectMessageSent) {
-          context.read<WebsocketBloc>().add(WebsocketEvent.getChats());
           Navigator.pop(context);
           final snackBar = getSnackBar(
             context: context,

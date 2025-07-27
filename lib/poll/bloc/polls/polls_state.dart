@@ -8,14 +8,12 @@ final class PollsState extends Equatable {
     this.polls = const [],
     this.currentPage = 1,
     this.hasNext = false,
-    this.hasPrevious = false,
   });
 
   final PollsStatus status;
   final List<Poll> polls;
   final int currentPage;
   final bool hasNext;
-  final bool hasPrevious;
 
   PollsState copyWith({
     PollsStatus? status,
@@ -34,7 +32,7 @@ final class PollsState extends Equatable {
   @override
   String toString() {
     return '''PollsState { status: $status, polls: ${polls.length}, 
-    currentPage: $currentPage, hasNext: $hasNext, hasPrevious: $hasPrevious }''';
+    currentPage: $currentPage, hasNext: $hasNext }''';
   }
 
   @override

@@ -95,7 +95,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       _onUnsubscribeUserProfilePosts(emit, event);
     });
     on<_GetChats>((event, emit) {
-      _onGetChats(emit);
+      _onGetChats(emit, event);
     });
     on<_CreateChat>((event, emit) {
       _onCreateChat(emit, event);
@@ -427,11 +427,15 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
-  Future _onGetChats(Emitter<WebsocketState> emit) async {
+  Future _onGetChats(Emitter<WebsocketState> emit, _GetChats event) async {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': chatsStream,
-      'payload': {'action': 'list', 'request_id': chatRequestId},
+      'payload': {
+        'action': 'list',
+        'request_id': chatRequestId,
+        'page': event.page,
+      },
     };
     _channel.sink.add(jsonEncode(message));
   }
@@ -457,7 +461,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Map<String, dynamic> message = {
       'stream': chatsStream,
       'payload': {
-        'action': 'subscribe',
+        'action': 'join_chat',
         'request_id': chatRequestId,
         'pk': event.chat.id,
       },
