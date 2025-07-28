@@ -61,10 +61,19 @@ class _SurveysState extends State<Surveys> {
               });
             }
             if (state.status == SurveysStatus.failure) {
-              setState(() {
-                loading = false;
-                failure = true;
-              });
+              if (_refreshController.headerStatus != RefreshStatus.refreshing &&
+                  _refreshController.footerStatus != LoadStatus.loading) {
+                setState(() {
+                  loading = false;
+                  failure = true;
+                });
+              }
+              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+                _refreshController.refreshFailed();
+              }
+              if (_refreshController.footerStatus == LoadStatus.loading) {
+                _refreshController.loadFailed();
+              }
             }
           },
         ),
@@ -134,7 +143,7 @@ class _SurveysState extends State<Surveys> {
                 },
                 onLoading: () {
                   context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getSurveys(since: _surveys.last),
+                    WebsocketEvent.getSurveys(lastSurvey: _surveys.last),
                   );
                 },
                 footer: ClassicFooter(),

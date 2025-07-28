@@ -23,12 +23,12 @@ class MessagesCubit extends Cubit<MessagesState> {
       final List<Message> messages = List.from(
         payload['data']['results'].map((e) => Message.fromJson(e)),
       );
-      int? since = payload['data']['since'];
+      int? lastMessage = payload['data']['last_message'];
       emit(
         state.copyWith(
           status: MessagesStatus.success,
-          messages: since == null ? messages : [...state.messages, ...messages],
-          since: since,
+          messages:
+              lastMessage == null ? messages : [...state.messages, ...messages],
           hasNext: payload['data']['has_next'],
         ),
       );

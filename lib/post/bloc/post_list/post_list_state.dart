@@ -8,14 +8,12 @@ final class PostListState extends Equatable {
     this.posts = const [],
     this.currentPage = 1,
     this.hasNext = false,
-    this.hasPrevious = false,
   });
 
   final PostListStatus status;
   final List<Post> posts;
   final int currentPage;
   final bool hasNext;
-  final bool hasPrevious;
 
   PostListState copyWith({
     PostListStatus? status,
@@ -29,14 +27,13 @@ final class PostListState extends Equatable {
       posts: posts ?? this.posts,
       currentPage: currentPage ?? this.currentPage,
       hasNext: hasNext ?? this.hasNext,
-      hasPrevious: hasPrevious ?? this.hasPrevious,
     );
   }
 
   @override
   String toString() {
     return '''PostListState { status: $status, posts: ${posts.length}, 
-    currentPage: $currentPage, hasNext: $hasNext, hasPrevious: $hasPrevious }''';
+    currentPage: $currentPage, hasNext: $hasNext }''';
   }
 
   @override

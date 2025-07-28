@@ -1,22 +1,35 @@
 import 'package:bloc/bloc.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:equatable/equatable.dart';
 
 part 'bookmarks_state.dart';
-part 'bookmarks_cubit.freezed.dart';
 
 class BookmarksCubit extends Cubit<BookmarksState> {
-  BookmarksCubit() : super(const BookmarksState.initial());
+  BookmarksCubit() : super(const BookmarksState());
+
+  void websocketFailure({required String error}) {
+    if (state.status == BookmarksStatus.initial ||
+        state.status == BookmarksStatus.loading) {
+      emit(state.copyWith(status: BookmarksStatus.failure));
+    }
+  }
 
   void loaded({required Map<String, dynamic> payload}) {
-    emit(BookmarksLoading());
+    emit(state.copyWith(status: BookmarksStatus.loading));
     if (payload['response_status'] == 200) {
       final List<Post> posts = List.from(
-        payload['data'].map((e) => Post.fromJson(e)),
+        payload['data']['results'].map((e) => Post.fromJson(e)),
       );
-      emit(BookmarksLoaded(posts: posts));
+      int? lastPost = payload['data']['last_post'];
+      emit(
+        state.copyWith(
+          status: BookmarksStatus.success,
+          posts: lastPost == null ? posts : [...state.posts, ...posts],
+          hasNext: payload['data']['has_next'],
+        ),
+      );
     } else {
-      emit(BookmarksFailure());
+      emit(state.copyWith(status: BookmarksStatus.failure));
     }
   }
 }

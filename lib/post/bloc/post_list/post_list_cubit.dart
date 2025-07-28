@@ -14,7 +14,7 @@ class PostListCubit extends Cubit<PostListState> {
     }
   }
 
-  void loadPosts({required Map<String, dynamic> payload}) {
+  void loaded({required Map<String, dynamic> payload}) {
     if (payload['response_status'] == 200) {
       final List<Post> posts = List.from(
         payload['data']['results'].map((e) => Post.fromJson(e)),
@@ -25,7 +25,6 @@ class PostListCubit extends Cubit<PostListState> {
           posts: [...state.posts, ...posts],
           currentPage: payload['data']['current_page'],
           hasNext: payload['data']['has_next'],
-          hasPrevious: payload['data']['has_previous'],
         ),
       );
     } else {

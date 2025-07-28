@@ -1,12 +1,39 @@
 part of 'likes_cubit.dart';
 
-@freezed
-class LikesState with _$LikesState {
-  const factory LikesState.initial() = LikesInitial;
-  const factory LikesState.loading() = LikesLoading;
-  const factory LikesState.loaded({
-    required int userId,
-    required List<Post> posts,
-  }) = LikesLoaded;
-  const factory LikesState.failure({required int userId}) = LikesFailure;
+enum LikesStatus { initial, loading, success, failure }
+
+final class LikesState extends Equatable {
+  const LikesState({
+    this.status = LikesStatus.initial,
+    this.posts = const [],
+    this.userId,
+    this.hasNext = false,
+  });
+
+  final LikesStatus status;
+  final List<Post> posts;
+  final int? userId;
+  final bool hasNext;
+
+  LikesState copyWith({
+    LikesStatus? status,
+    List<Post>? posts,
+    int? userId,
+    bool? hasNext,
+  }) {
+    return LikesState(
+      status: status ?? this.status,
+      posts: posts ?? this.posts,
+      userId: userId ?? this.userId,
+      hasNext: hasNext ?? this.hasNext,
+    );
+  }
+
+  @override
+  String toString() {
+    return '''LikesState { status: $status, posts: ${posts.length}, userId: $userId, hasNext: $hasNext }''';
+  }
+
+  @override
+  List<Object> get props => [status, posts];
 }

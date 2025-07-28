@@ -66,10 +66,19 @@ class _ChatsState extends State<Chats> {
               });
             }
             if (state.status == ChatsStatus.failure) {
-              setState(() {
-                loading = false;
-                failure = true;
-              });
+              if (_refreshController.headerStatus != RefreshStatus.refreshing &&
+                  _refreshController.footerStatus != LoadStatus.loading) {
+                setState(() {
+                  loading = false;
+                  failure = true;
+                });
+              }
+              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+                _refreshController.refreshFailed();
+              }
+              if (_refreshController.footerStatus == LoadStatus.loading) {
+                _refreshController.loadFailed();
+              }
             }
           },
         ),
@@ -193,7 +202,7 @@ class _ChatsState extends State<Chats> {
                     },
                     onLoading: () {
                       context.read<WebsocketBloc>().add(
-                        WebsocketEvent.getChats(since: _chats.last),
+                        WebsocketEvent.getChats(lastChat: _chats.last),
                       );
                     },
                     footer: ClassicFooter(),

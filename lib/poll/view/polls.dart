@@ -61,10 +61,19 @@ class _PollsState extends State<Polls> {
               });
             }
             if (state.status == PollsStatus.failure) {
-              setState(() {
-                loading = false;
-                failure = true;
-              });
+              if (_refreshController.headerStatus != RefreshStatus.refreshing &&
+                  _refreshController.footerStatus != LoadStatus.loading) {
+                setState(() {
+                  loading = false;
+                  failure = true;
+                });
+              }
+              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+                _refreshController.refreshFailed();
+              }
+              if (_refreshController.footerStatus == LoadStatus.loading) {
+                _refreshController.loadFailed();
+              }
             }
           },
         ),
@@ -138,7 +147,7 @@ class _PollsState extends State<Polls> {
                 },
                 onLoading: () {
                   context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getPolls(since: _polls.last),
+                    WebsocketEvent.getPolls(lastPoll: _polls.last),
                   );
                 },
                 footer: ClassicFooter(),

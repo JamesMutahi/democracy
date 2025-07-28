@@ -165,10 +165,19 @@ class _MessagesState extends State<Messages> {
               });
             }
             if (state.status == MessagesStatus.failure) {
-              setState(() {
-                loading = false;
-                failure = true;
-              });
+              if (_refreshController.headerStatus != RefreshStatus.refreshing &&
+                  _refreshController.footerStatus != LoadStatus.loading) {
+                setState(() {
+                  loading = false;
+                  failure = true;
+                });
+              }
+              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+                _refreshController.refreshFailed();
+              }
+              if (_refreshController.footerStatus == LoadStatus.loading) {
+                _refreshController.loadFailed();
+              }
             }
           },
         ),
@@ -218,12 +227,10 @@ class _MessagesState extends State<Messages> {
                 enablePullUp: hasNextPage ? true : false,
                 controller: _refreshController,
                 onLoading: () {
-                  print(_messages.last.id);
-                  print(_messages.first.id);
                   context.read<WebsocketBloc>().add(
                     WebsocketEvent.getMessages(
                       chat: widget.chat,
-                      since: _messages.last,
+                      lastMessage: _messages.last,
                     ),
                   );
                 },

@@ -83,7 +83,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       _onLoadUserPosts(emit, event);
     });
     on<_LoadBookmarks>((event, emit) {
-      _onLoadBookmarks(emit);
+      _onLoadBookmarks(emit, event);
     });
     on<_LoadLikedPosts>((event, emit) {
       _onLoadLikedPosts(emit, event);
@@ -320,7 +320,11 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
-      'payload': {'action': 'following', 'request_id': postRequestId},
+      'payload': {
+        'action': 'following',
+        'request_id': postRequestId,
+        'last_post': event.lastPost?.id,
+      },
     };
     _channel.sink.add(jsonEncode(message));
   }
@@ -333,6 +337,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'action': 'replies',
         'request_id': event.post.id,
         'pk': event.post.id,
+        'last_post': event.lastPost?.id,
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -365,16 +370,20 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'action': 'user_posts',
         'request_id': event.user.id,
         'user': event.user.id,
+        'last_post': event.lastPost?.id,
       },
     };
     _channel.sink.add(jsonEncode(message));
   }
 
-  Future _onLoadBookmarks(Emitter<WebsocketState> emit) async {
+  Future _onLoadBookmarks(
+    Emitter<WebsocketState> emit,
+    _LoadBookmarks event,
+  ) async {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
-      'payload': {'action': 'bookmarks'},
+      'payload': {'action': 'bookmarks', 'last_post': event.lastPost?.id},
     };
     _channel.sink.add(jsonEncode(message));
   }
@@ -390,6 +399,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'action': 'liked_posts',
         'request_id': event.user.id,
         'user': event.user.id,
+        'last_post': event.lastPost?.id,
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -406,6 +416,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'action': 'user_replies',
         'request_id': event.user.id,
         'user': event.user.id,
+        'last_post': event.lastPost?.id,
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -434,7 +445,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'list',
         'request_id': chatRequestId,
-        'since': event.since?.id,
+        'last_chat': event.lastChat?.id,
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -480,7 +491,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'action': 'messages',
         'request_id': messageRequestId,
         'chat': event.chat.id,
-        'since': event.since?.id,
+        'last_message': event.lastMessage?.id,
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -696,7 +707,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'list',
         'request_id': pollRequestId,
-        'since': event.since?.id,
+        'last_poll': event.lastPoll?.id,
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -758,7 +769,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'list',
         'request_id': surveyRequestId,
-        'since': event.since?.id,
+        'last_survey': event.lastSurvey?.id,
       },
     };
     _channel.sink.add(jsonEncode(message));

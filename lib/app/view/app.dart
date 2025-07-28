@@ -165,7 +165,7 @@ class _Listeners extends StatelessWidget {
                   case postsStream:
                     switch (message['payload']['action']) {
                       case 'list':
-                        context.read<PostListCubit>().loadPosts(
+                        context.read<PostListCubit>().loaded(
                           payload: message['payload'],
                         );
                       case 'create':
@@ -185,11 +185,11 @@ class _Listeners extends StatelessWidget {
                           payload: message['payload'],
                         );
                       case 'following':
-                        context.read<FollowingCubit>().loadPosts(
+                        context.read<FollowingCubit>().loaded(
                           payload: message['payload'],
                         );
                       case 'replies':
-                        context.read<RepliesCubit>().loadReplies(
+                        context.read<RepliesCubit>().loaded(
                           payload: message['payload'],
                         );
                       case 'user_posts':

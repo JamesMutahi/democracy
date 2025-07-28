@@ -1,34 +1,33 @@
 part of 'following_cubit.dart';
 
-enum FollowingStatus { initial, success, failure }
+enum FollowingStatus { initial, loading, success, failure }
 
 final class FollowingState extends Equatable {
   const FollowingState({
     this.status = FollowingStatus.initial,
     this.posts = const [],
-    this.hasReachedMax = false,
+    this.hasNext = false,
   });
 
   final FollowingStatus status;
   final List<Post> posts;
-  final bool hasReachedMax;
+  final bool hasNext;
 
   FollowingState copyWith({
     FollowingStatus? status,
     List<Post>? posts,
-    bool? hasReachedMax,
+    bool? hasNext,
   }) {
     return FollowingState(
       status: status ?? this.status,
       posts: posts ?? this.posts,
-      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      hasNext: hasNext ?? this.hasNext,
     );
   }
 
   @override
   String toString() {
-    return '''FollowingState { status: $status, posts: ${posts.length}, 
-    hasReachedMax: $hasReachedMax }''';
+    return '''FollowingState { status: $status, posts: ${posts.length}, hasNext: $hasNext }''';
   }
 
   @override

@@ -1,28 +1,36 @@
 import 'package:bloc/bloc.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:equatable/equatable.dart';
 
 part 'replies_state.dart';
-part 'replies_cubit.freezed.dart';
 
 class RepliesCubit extends Cubit<RepliesState> {
-  RepliesCubit() : super(const RepliesState.initial());
+  RepliesCubit() : super(const RepliesState());
 
   void websocketFailure({required String error}) {
-    if (state is RepliesInitial || state is RepliesLoading) {
-      emit(RepliesFailure(postId: null));
+    if (state.status == RepliesStatus.initial ||
+        state.status == RepliesStatus.loading) {
+      emit(state.copyWith(status: RepliesStatus.failure));
     }
   }
 
-  void loadReplies({required Map<String, dynamic> payload}) {
-    emit(RepliesLoading());
+  void loaded({required Map<String, dynamic> payload}) {
+    emit(state.copyWith(status: RepliesStatus.loading));
     if (payload['response_status'] == 200) {
       final List<Post> posts = List.from(
-        payload['data'].map((e) => Post.fromJson(e)),
+        payload['data']['results'].map((e) => Post.fromJson(e)),
       );
-      emit(RepliesLoaded(postId: payload['request_id'], posts: posts));
+      int? lastPost = payload['data']['last_post'];
+      emit(
+        state.copyWith(
+          status: RepliesStatus.success,
+          posts: lastPost == null ? posts : [...state.posts, ...posts],
+          postId: payload['request_id'],
+          hasNext: payload['data']['has_next'],
+        ),
+      );
     } else {
-      emit(RepliesFailure(postId: payload['request_id']));
+      emit(state.copyWith(status: RepliesStatus.failure));
     }
   }
 }

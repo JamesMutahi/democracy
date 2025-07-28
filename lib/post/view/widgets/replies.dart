@@ -46,7 +46,7 @@ class _RepliesState extends State<Replies> {
         ),
         BlocListener<RepliesCubit, RepliesState>(
           listener: (context, state) {
-            if (state is RepliesLoaded) {
+            if (state.status == RepliesStatus.success) {
               if (widget.post.id == state.postId) {
                 setState(() {
                   _posts = state.posts.toList();
@@ -55,7 +55,7 @@ class _RepliesState extends State<Replies> {
                 });
               }
             }
-            if (state is RepliesFailure) {
+            if (state.status == RepliesStatus.failure) {
               if (widget.post.id == state.postId || state.postId == null) {
                 setState(() {
                   failure = true;

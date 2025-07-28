@@ -1,5 +1,6 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/chat/view/chats.dart';
+import 'package:democracy/chat/view/create_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -35,7 +36,10 @@ class _MessagePageState extends State<MessagePage>
             child: FloatingActionButton(
               heroTag: 'message',
               onPressed: () {
-                //   TODO:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CreateMessage()),
+                );
               },
               mini: true,
               child: Icon(Symbols.add_rounded),

@@ -14,6 +14,7 @@ import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -121,69 +122,103 @@ class FollowingTab extends StatefulWidget {
 }
 
 class _FollowingTabState extends State<FollowingTab> {
-  final _scrollController = ScrollController();
+  bool loading = true;
+  bool failure = false;
+  List<Post> _posts = [];
+  bool hasNextPage = false;
+  final RefreshController _refreshController = RefreshController(
+    initialRefresh: false,
+  );
 
   @override
   void initState() {
     context.read<WebsocketBloc>().add(WebsocketEvent.getFollowingPosts());
     super.initState();
-    _scrollController.addListener(_onScroll);
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FollowingCubit, FollowingState>(
-      builder: (context, state) {
-        switch (state.status) {
-          case FollowingStatus.failure:
-            return FailureRetryButton(
-              onPressed: () {
-                context.read<WebsocketBloc>().add(
-                  WebsocketEvent.getFollowingPosts(),
-                );
-              },
-            );
-          case FollowingStatus.success:
-            if (state.posts.isEmpty) {
-              // TODO: Show text to follow some people
-              return const Center(child: Text('No posts'));
+    return BlocListener<FollowingCubit, FollowingState>(
+      listener: (context, state) {
+        if (state.status == FollowingStatus.loading) {
+          setState(() {
+            if (_refreshController.headerStatus != RefreshStatus.refreshing &&
+                _refreshController.footerStatus != LoadStatus.loading) {
+              setState(() {
+                loading = true;
+                failure = false;
+              });
             }
-            return ListView.builder(
-              itemBuilder: (BuildContext context, int index) {
-                Post post = state.posts[index];
-                return index >= state.posts.length
-                    ? const BottomLoader()
-                    : PostTile(key: ValueKey(post.id), post: post);
-              },
-              itemCount:
-                  state.hasReachedMax
-                      ? state.posts.length
-                      : state.posts.length + 1,
-              controller: _scrollController,
-            );
-          default:
-            return LoadingIndicator();
+          });
+        }
+        if (state.status == FollowingStatus.success) {
+          setState(() {
+            loading = false;
+            failure = false;
+            _posts = state.posts;
+            hasNextPage = state.hasNext;
+            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+              _refreshController.refreshCompleted();
+            }
+            if (_refreshController.footerStatus == LoadStatus.loading) {
+              _refreshController.loadComplete();
+            }
+            _refreshController.loadComplete();
+          });
+        }
+        if (state.status == FollowingStatus.failure) {
+          if (_refreshController.headerStatus != RefreshStatus.refreshing &&
+              _refreshController.footerStatus != LoadStatus.loading) {
+            setState(() {
+              loading = false;
+              failure = true;
+            });
+          }
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshFailed();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadFailed();
+          }
         }
       },
+      child:
+          loading
+              ? LoadingIndicator()
+              : failure
+              ? FailureRetryButton(
+                onPressed: () {
+                  context.read<WebsocketBloc>().add(
+                    WebsocketEvent.getFollowingPosts(),
+                  );
+                },
+              )
+              : SmartRefresher(
+                enablePullDown: true,
+                enablePullUp: hasNextPage ? true : false,
+                header: ClassicHeader(),
+                controller: _refreshController,
+                onRefresh: () {
+                  context.read<WebsocketBloc>().add(
+                    WebsocketEvent.getFollowingPosts(),
+                  );
+                },
+                onLoading: () {
+                  context.read<WebsocketBloc>().add(
+                    WebsocketEvent.getFollowingPosts(lastPost: _posts.last),
+                  );
+                },
+                footer: ClassicFooter(),
+                child: ListView.builder(
+                  itemBuilder: (BuildContext context, int index) {
+                    Post post = _posts[index];
+                    return index >= _posts.length
+                        ? const BottomLoader()
+                        : PostTile(key: ValueKey(post.id), post: post);
+                  },
+                  itemCount: _posts.length,
+                ),
+              ),
     );
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _onScroll() {
-    if (_isBottom) {
-      context.read<WebsocketBloc>().add(WebsocketEvent.getFollowingPosts());
-    }
-  }
-
-  bool get _isBottom {
-    if (!_scrollController.hasClients) return false;
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.offset;
-    return currentScroll >= (maxScroll * 0.9);
   }
 }

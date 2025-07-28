@@ -10,6 +10,7 @@ import 'package:democracy/post/bloc/user_posts/user_posts_cubit.dart';
 import 'package:democracy/post/bloc/user_replies/user_replies_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class UserPosts extends StatefulWidget {
   const UserPosts({super.key, required this.user});
@@ -21,9 +22,13 @@ class UserPosts extends StatefulWidget {
 }
 
 class _UserPostsState extends State<UserPosts> {
-  List<Post> _posts = [];
-  bool failure = false;
   bool loading = true;
+  bool failure = false;
+  List<Post> _posts = [];
+  bool hasNextPage = false;
+  final RefreshController _refreshController = RefreshController(
+    initialRefresh: false,
+  );
 
   @override
   void initState() {
@@ -48,21 +53,49 @@ class _UserPostsState extends State<UserPosts> {
         ),
         BlocListener<UserPostsCubit, UserPostsState>(
           listener: (context, state) {
-            if (state is UserPostsLoaded) {
+            if (state.status == UserPostsStatus.success) {
               if (widget.user.id == state.userId) {
                 setState(() {
                   _posts = state.posts.toList();
                   loading = false;
                   failure = false;
+                  hasNextPage = state.hasNext;
+                  if (_refreshController.headerStatus ==
+                      RefreshStatus.refreshing) {
+                    _refreshController.refreshCompleted();
+                  }
+                  if (_refreshController.footerStatus == LoadStatus.loading) {
+                    _refreshController.loadComplete();
+                  }
+                  _refreshController.loadComplete();
                 });
               }
             }
-            if (state is UserPostsFailure) {
-              if (widget.user.id == state.userId) {
+            if (state.status == UserPostsStatus.loading) {
+              setState(() {
+                if (_refreshController.headerStatus !=
+                        RefreshStatus.refreshing &&
+                    _refreshController.footerStatus != LoadStatus.loading) {
+                  setState(() {
+                    loading = true;
+                    failure = false;
+                  });
+                }
+              });
+            }
+            if (state.status == UserPostsStatus.failure) {
+              if (_refreshController.headerStatus != RefreshStatus.refreshing &&
+                  _refreshController.footerStatus != LoadStatus.loading) {
                 setState(() {
-                  failure = true;
                   loading = false;
+                  failure = true;
                 });
+              }
+              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+                _refreshController.refreshFailed();
+              }
+              if (_refreshController.footerStatus == LoadStatus.loading) {
+                _refreshController.loadFailed();
               }
             }
           },
@@ -79,9 +112,24 @@ class _UserPostsState extends State<UserPosts> {
           posts: _posts,
           loading: loading,
           failure: failure,
+          refreshController: _refreshController,
+          enablePullUp: hasNextPage ? true : false,
+          onRefresh: () {
+            context.read<WebsocketBloc>().add(
+              WebsocketEvent.loadUserPosts(user: widget.user),
+            );
+          },
+          onLoading: () {
+            context.read<WebsocketBloc>().add(
+              WebsocketEvent.loadUserPosts(
+                user: widget.user,
+                lastPost: _posts.last,
+              ),
+            );
+          },
           onFailure: () {
             context.read<WebsocketBloc>().add(
-              WebsocketEvent.loadUserReplies(user: widget.user),
+              WebsocketEvent.loadUserPosts(user: widget.user),
             );
           },
         ),
@@ -100,9 +148,13 @@ class UserReplies extends StatefulWidget {
 }
 
 class _UserRepliesState extends State<UserReplies> {
-  List<Post> _posts = [];
-  bool failure = false;
   bool loading = true;
+  bool failure = false;
+  List<Post> _posts = [];
+  bool hasNextPage = false;
+  final RefreshController _refreshController = RefreshController(
+    initialRefresh: false,
+  );
 
   @override
   void initState() {
@@ -127,21 +179,49 @@ class _UserRepliesState extends State<UserReplies> {
         ),
         BlocListener<UserRepliesCubit, UserRepliesState>(
           listener: (context, state) {
-            if (state is UserRepliesLoaded) {
+            if (state.status == UserRepliesStatus.success) {
               if (widget.user.id == state.userId) {
                 setState(() {
                   _posts = state.posts.toList();
                   loading = false;
                   failure = false;
+                  hasNextPage = state.hasNext;
+                  if (_refreshController.headerStatus ==
+                      RefreshStatus.refreshing) {
+                    _refreshController.refreshCompleted();
+                  }
+                  if (_refreshController.footerStatus == LoadStatus.loading) {
+                    _refreshController.loadComplete();
+                  }
+                  _refreshController.loadComplete();
                 });
               }
             }
-            if (state is UserRepliesFailure) {
-              if (widget.user.id == state.userId) {
+            if (state.status == UserRepliesStatus.loading) {
+              setState(() {
+                if (_refreshController.headerStatus !=
+                    RefreshStatus.refreshing &&
+                    _refreshController.footerStatus != LoadStatus.loading) {
+                  setState(() {
+                    loading = true;
+                    failure = false;
+                  });
+                }
+              });
+            }
+            if (state.status == UserRepliesStatus.failure) {
+              if (_refreshController.headerStatus != RefreshStatus.refreshing &&
+                  _refreshController.footerStatus != LoadStatus.loading) {
                 setState(() {
-                  failure = true;
                   loading = false;
+                  failure = true;
                 });
+              }
+              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+                _refreshController.refreshFailed();
+              }
+              if (_refreshController.footerStatus == LoadStatus.loading) {
+                _refreshController.loadFailed();
               }
             }
           },
@@ -158,6 +238,21 @@ class _UserRepliesState extends State<UserReplies> {
           posts: _posts,
           loading: loading,
           failure: failure,
+          refreshController: _refreshController,
+          enablePullUp: hasNextPage ? true : false,
+          onRefresh: () {
+            context.read<WebsocketBloc>().add(
+              WebsocketEvent.loadUserReplies(user: widget.user),
+            );
+          },
+          onLoading: () {
+            context.read<WebsocketBloc>().add(
+              WebsocketEvent.loadUserReplies(
+                user: widget.user,
+                lastPost: _posts.last,
+              ),
+            );
+          },
           onFailure: () {
             context.read<WebsocketBloc>().add(
               WebsocketEvent.loadUserReplies(user: widget.user),
@@ -179,9 +274,13 @@ class Likes extends StatefulWidget {
 }
 
 class _LikesState extends State<Likes> {
-  List<Post> _posts = [];
-  bool failure = false;
   bool loading = true;
+  bool failure = false;
+  List<Post> _posts = [];
+  bool hasNextPage = false;
+  final RefreshController _refreshController = RefreshController(
+    initialRefresh: false,
+  );
 
   @override
   void initState() {
@@ -206,7 +305,7 @@ class _LikesState extends State<Likes> {
         ),
         BlocListener<LikesCubit, LikesState>(
           listener: (context, state) {
-            if (state is LikesLoaded) {
+            if (state.status == LikesStatus.success) {
               if (widget.user.id == state.userId) {
                 setState(() {
                   _posts = state.posts.toList();
@@ -215,12 +314,61 @@ class _LikesState extends State<Likes> {
                 });
               }
             }
-            if (state is LikesFailure) {
+            if (state.status == LikesStatus.failure) {
               if (widget.user.id == state.userId) {
                 setState(() {
                   failure = true;
                   loading = false;
                 });
+              }
+            }
+          },
+        ),
+        BlocListener<LikesCubit, LikesState>(
+          listener: (context, state) {
+            if (state.status == LikesStatus.success) {
+              if (widget.user.id == state.userId) {
+                setState(() {
+                  _posts = state.posts.toList();
+                  loading = false;
+                  failure = false;
+                  hasNextPage = state.hasNext;
+                  if (_refreshController.headerStatus ==
+                      RefreshStatus.refreshing) {
+                    _refreshController.refreshCompleted();
+                  }
+                  if (_refreshController.footerStatus == LoadStatus.loading) {
+                    _refreshController.loadComplete();
+                  }
+                  _refreshController.loadComplete();
+                });
+              }
+            }
+            if (state.status == LikesStatus.loading) {
+              setState(() {
+                if (_refreshController.headerStatus !=
+                    RefreshStatus.refreshing &&
+                    _refreshController.footerStatus != LoadStatus.loading) {
+                  setState(() {
+                    loading = true;
+                    failure = false;
+                  });
+                }
+              });
+            }
+            if (state.status == LikesStatus.failure) {
+              if (_refreshController.headerStatus != RefreshStatus.refreshing &&
+                  _refreshController.footerStatus != LoadStatus.loading) {
+                setState(() {
+                  loading = false;
+                  failure = true;
+                });
+              }
+              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+                _refreshController.refreshFailed();
+              }
+              if (_refreshController.footerStatus == LoadStatus.loading) {
+                _refreshController.loadFailed();
               }
             }
           },
@@ -237,9 +385,24 @@ class _LikesState extends State<Likes> {
           posts: _posts,
           loading: loading,
           failure: failure,
+          refreshController: _refreshController,
+          enablePullUp: hasNextPage ? true : false,
+          onRefresh: () {
+            context.read<WebsocketBloc>().add(
+              WebsocketEvent.loadLikedPosts(user: widget.user),
+            );
+          },
+          onLoading: () {
+            context.read<WebsocketBloc>().add(
+              WebsocketEvent.loadLikedPosts(
+                user: widget.user,
+                lastPost: _posts.last,
+              ),
+            );
+          },
           onFailure: () {
             context.read<WebsocketBloc>().add(
-              WebsocketEvent.loadUserReplies(user: widget.user),
+              WebsocketEvent.loadLikedPosts(user: widget.user),
             );
           },
         ),
@@ -254,12 +417,20 @@ class PostListView extends StatelessWidget {
     required this.posts,
     required this.loading,
     required this.failure,
+    required this.refreshController,
+    required this.enablePullUp,
+    required this.onRefresh,
+    required this.onLoading,
     required this.onFailure,
   });
 
   final List<Post> posts;
   final bool loading;
   final bool failure;
+  final RefreshController refreshController;
+  final bool enablePullUp;
+  final VoidCallback onRefresh;
+  final VoidCallback onLoading;
   final VoidCallback onFailure;
 
   @override
@@ -268,17 +439,23 @@ class PostListView extends StatelessWidget {
         ? Container(margin: EdgeInsets.only(top: 20), child: BottomLoader())
         : failure
         ? FailureRetryButton(onPressed: onFailure)
-        : ListView.builder(
-          padding: EdgeInsets.only(bottom: 50),
-          shrinkWrap: true,
-          itemBuilder: (BuildContext context, int index) {
-            Post post = posts[index];
-            return PostTile(
-              key: ValueKey(post.id),
-              post: post,
-            );
-          },
-          itemCount: posts.length,
+        : SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: enablePullUp,
+          header: ClassicHeader(),
+          controller: refreshController,
+          onRefresh: onRefresh,
+          onLoading: onLoading,
+          footer: ClassicFooter(),
+          child: ListView.builder(
+            padding: EdgeInsets.only(bottom: 50),
+            shrinkWrap: true,
+            itemBuilder: (BuildContext context, int index) {
+              Post post = posts[index];
+              return PostTile(key: ValueKey(post.id), post: post);
+            },
+            itemCount: posts.length,
+          ),
         );
   }
 }
