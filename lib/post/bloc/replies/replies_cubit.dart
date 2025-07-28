@@ -8,10 +8,7 @@ class RepliesCubit extends Cubit<RepliesState> {
   RepliesCubit() : super(const RepliesState());
 
   void websocketFailure({required String error}) {
-    if (state.status == RepliesStatus.initial ||
-        state.status == RepliesStatus.loading) {
-      emit(state.copyWith(status: RepliesStatus.failure));
-    }
+    emit(state.copyWith(status: RepliesStatus.failure));
   }
 
   void loaded({required Map<String, dynamic> payload}) {

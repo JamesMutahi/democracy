@@ -53,21 +53,8 @@ class _ChatsState extends State<Chats> {
                 _refreshController.loadComplete();
               });
             }
-            if (state.status == ChatsStatus.loading) {
-              setState(() {
-                if (_refreshController.headerStatus !=
-                        RefreshStatus.refreshing &&
-                    _refreshController.footerStatus != LoadStatus.loading) {
-                  setState(() {
-                    loading = true;
-                    failure = false;
-                  });
-                }
-              });
-            }
             if (state.status == ChatsStatus.failure) {
-              if (_refreshController.headerStatus != RefreshStatus.refreshing &&
-                  _refreshController.footerStatus != LoadStatus.loading) {
+              if (loading) {
                 setState(() {
                   loading = false;
                   failure = true;

@@ -8,10 +8,7 @@ class FollowingCubit extends Cubit<FollowingState> {
   FollowingCubit() : super(FollowingState());
 
   void websocketFailure({required String error}) {
-    if (state.status == FollowingStatus.initial ||
-        state.status == FollowingStatus.loading) {
-      emit(state.copyWith(status: FollowingStatus.failure));
-    }
+    emit(state.copyWith(status: FollowingStatus.failure));
   }
 
   void loaded({required Map<String, dynamic> payload}) {

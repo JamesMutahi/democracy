@@ -48,21 +48,8 @@ class _SurveysState extends State<Surveys> {
                 _refreshController.loadComplete();
               });
             }
-            if (state.status == SurveysStatus.loading) {
-              setState(() {
-                if (_refreshController.headerStatus !=
-                        RefreshStatus.refreshing &&
-                    _refreshController.footerStatus != LoadStatus.loading) {
-                  setState(() {
-                    loading = true;
-                    failure = false;
-                  });
-                }
-              });
-            }
             if (state.status == SurveysStatus.failure) {
-              if (_refreshController.headerStatus != RefreshStatus.refreshing &&
-                  _refreshController.footerStatus != LoadStatus.loading) {
+              if (loading) {
                 setState(() {
                   loading = false;
                   failure = true;

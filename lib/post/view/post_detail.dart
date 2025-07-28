@@ -167,51 +167,55 @@ class _PostDetailState extends State<PostDetail> {
                       WebsocketEvent.unsubscribeReplies(post: widget.post),
                     );
                   },
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
+                  child: NestedScrollView(
+                    headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+                      return [
                         if (widget.showAsRepost)
-                          BlocBuilder<AuthBloc, AuthState>(
-                            builder: (context, state) {
-                              late User user;
-                              if (state is Authenticated) {
-                                user = state.user;
-                              }
-                              return Container(
-                                padding: EdgeInsets.only(
-                                  left: 15,
-                                  right: 15,
-                                  top: 10,
-                                  bottom: 5,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Symbols.loop_rounded,
-                                      color:
-                                          Theme.of(context).colorScheme.outline,
-                                    ),
-                                    SizedBox(width: 5),
-                                    Text(
-                                      user.id == _post.author.id
-                                          ? 'You reposted'
-                                          : '${_post.author.name} reposted',
-                                      style: TextStyle(
+                          SliverToBoxAdapter(
+                            child: BlocBuilder<AuthBloc, AuthState>(
+                              builder: (context, state) {
+                                late User user;
+                                if (state is Authenticated) {
+                                  user = state.user;
+                                }
+                                return Container(
+                                  padding: EdgeInsets.only(
+                                    left: 15,
+                                    right: 15,
+                                    top: 10,
+                                    bottom: 5,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Symbols.loop_rounded,
                                         color:
                                             Theme.of(
                                               context,
                                             ).colorScheme.outline,
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
+                                      SizedBox(width: 5),
+                                      Text(
+                                        user.id == _post.author.id
+                                            ? 'You reposted'
+                                            : '${_post.author.name} reposted',
+                                        style: TextStyle(
+                                          color:
+                                              Theme.of(
+                                                context,
+                                              ).colorScheme.outline,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
                           ),
-                        _PostContainer(post: _post),
-                        Replies(key: ValueKey(_post.id), post: _post),
-                      ],
-                    ),
+                        SliverToBoxAdapter(child: _PostContainer(post: _post)),
+                      ];
+                    },
+                    body: Replies(key: ValueKey(_post.id), post: _post),
                   ),
                 ),
         bottomNavigationBar:

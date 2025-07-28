@@ -140,17 +140,6 @@ class _FollowingTabState extends State<FollowingTab> {
   Widget build(BuildContext context) {
     return BlocListener<FollowingCubit, FollowingState>(
       listener: (context, state) {
-        if (state.status == FollowingStatus.loading) {
-          setState(() {
-            if (_refreshController.headerStatus != RefreshStatus.refreshing &&
-                _refreshController.footerStatus != LoadStatus.loading) {
-              setState(() {
-                loading = true;
-                failure = false;
-              });
-            }
-          });
-        }
         if (state.status == FollowingStatus.success) {
           setState(() {
             loading = false;
@@ -167,8 +156,7 @@ class _FollowingTabState extends State<FollowingTab> {
           });
         }
         if (state.status == FollowingStatus.failure) {
-          if (_refreshController.headerStatus != RefreshStatus.refreshing &&
-              _refreshController.footerStatus != LoadStatus.loading) {
+          if (loading) {
             setState(() {
               loading = false;
               failure = true;

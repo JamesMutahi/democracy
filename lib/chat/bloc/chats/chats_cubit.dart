@@ -8,10 +8,7 @@ class ChatsCubit extends Cubit<ChatsState> {
   ChatsCubit() : super(const ChatsState());
 
   void websocketFailure({required String error}) {
-    if (state.status == ChatsStatus.initial ||
-        state.status == ChatsStatus.loading) {
-      emit(state.copyWith(status: ChatsStatus.failure));
-    }
+    emit(state.copyWith(status: ChatsStatus.failure));
   }
 
   void loaded({required Map<String, dynamic> payload}) {

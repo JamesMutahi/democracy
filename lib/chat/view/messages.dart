@@ -152,21 +152,8 @@ class _MessagesState extends State<Messages> {
                 _refreshController.loadComplete();
               });
             }
-            if (state.status == MessagesStatus.loading) {
-              setState(() {
-                if (_refreshController.headerStatus !=
-                        RefreshStatus.refreshing &&
-                    _refreshController.footerStatus != LoadStatus.loading) {
-                  setState(() {
-                    loading = true;
-                    failure = false;
-                  });
-                }
-              });
-            }
             if (state.status == MessagesStatus.failure) {
-              if (_refreshController.headerStatus != RefreshStatus.refreshing &&
-                  _refreshController.footerStatus != LoadStatus.loading) {
+              if (loading) {
                 setState(() {
                   loading = false;
                   failure = true;

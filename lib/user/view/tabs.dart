@@ -1,9 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/utils/view/bottom_loader.dart';
-import 'package:democracy/app/utils/view/failure_retry_button.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
-import 'package:democracy/post/view/widgets/post_tile.dart';
+import 'package:democracy/post/view/widgets/post_listview.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/post/bloc/likes/likes_cubit.dart';
 import 'package:democracy/post/bloc/user_posts/user_posts_cubit.dart';
@@ -71,21 +69,8 @@ class _UserPostsState extends State<UserPosts> {
                 });
               }
             }
-            if (state.status == UserPostsStatus.loading) {
-              setState(() {
-                if (_refreshController.headerStatus !=
-                        RefreshStatus.refreshing &&
-                    _refreshController.footerStatus != LoadStatus.loading) {
-                  setState(() {
-                    loading = true;
-                    failure = false;
-                  });
-                }
-              });
-            }
             if (state.status == UserPostsStatus.failure) {
-              if (_refreshController.headerStatus != RefreshStatus.refreshing &&
-                  _refreshController.footerStatus != LoadStatus.loading) {
+              if (loading) {
                 setState(() {
                   loading = false;
                   failure = true;
@@ -113,6 +98,7 @@ class _UserPostsState extends State<UserPosts> {
           loading: loading,
           failure: failure,
           refreshController: _refreshController,
+          enablePullDown: true,
           enablePullUp: hasNextPage ? true : false,
           onRefresh: () {
             context.read<WebsocketBloc>().add(
@@ -197,21 +183,8 @@ class _UserRepliesState extends State<UserReplies> {
                 });
               }
             }
-            if (state.status == UserRepliesStatus.loading) {
-              setState(() {
-                if (_refreshController.headerStatus !=
-                    RefreshStatus.refreshing &&
-                    _refreshController.footerStatus != LoadStatus.loading) {
-                  setState(() {
-                    loading = true;
-                    failure = false;
-                  });
-                }
-              });
-            }
             if (state.status == UserRepliesStatus.failure) {
-              if (_refreshController.headerStatus != RefreshStatus.refreshing &&
-                  _refreshController.footerStatus != LoadStatus.loading) {
+              if (loading) {
                 setState(() {
                   loading = false;
                   failure = true;
@@ -239,6 +212,7 @@ class _UserRepliesState extends State<UserReplies> {
           loading: loading,
           failure: failure,
           refreshController: _refreshController,
+          enablePullDown: true,
           enablePullUp: hasNextPage ? true : false,
           onRefresh: () {
             context.read<WebsocketBloc>().add(
@@ -344,21 +318,8 @@ class _LikesState extends State<Likes> {
                 });
               }
             }
-            if (state.status == LikesStatus.loading) {
-              setState(() {
-                if (_refreshController.headerStatus !=
-                    RefreshStatus.refreshing &&
-                    _refreshController.footerStatus != LoadStatus.loading) {
-                  setState(() {
-                    loading = true;
-                    failure = false;
-                  });
-                }
-              });
-            }
             if (state.status == LikesStatus.failure) {
-              if (_refreshController.headerStatus != RefreshStatus.refreshing &&
-                  _refreshController.footerStatus != LoadStatus.loading) {
+              if (loading) {
                 setState(() {
                   loading = false;
                   failure = true;
@@ -386,6 +347,7 @@ class _LikesState extends State<Likes> {
           loading: loading,
           failure: failure,
           refreshController: _refreshController,
+          enablePullDown: true,
           enablePullUp: hasNextPage ? true : false,
           onRefresh: () {
             context.read<WebsocketBloc>().add(
@@ -408,55 +370,6 @@ class _LikesState extends State<Likes> {
         ),
       ),
     );
-  }
-}
-
-class PostListView extends StatelessWidget {
-  const PostListView({
-    super.key,
-    required this.posts,
-    required this.loading,
-    required this.failure,
-    required this.refreshController,
-    required this.enablePullUp,
-    required this.onRefresh,
-    required this.onLoading,
-    required this.onFailure,
-  });
-
-  final List<Post> posts;
-  final bool loading;
-  final bool failure;
-  final RefreshController refreshController;
-  final bool enablePullUp;
-  final VoidCallback onRefresh;
-  final VoidCallback onLoading;
-  final VoidCallback onFailure;
-
-  @override
-  Widget build(BuildContext context) {
-    return loading
-        ? Container(margin: EdgeInsets.only(top: 20), child: BottomLoader())
-        : failure
-        ? FailureRetryButton(onPressed: onFailure)
-        : SmartRefresher(
-          enablePullDown: true,
-          enablePullUp: enablePullUp,
-          header: ClassicHeader(),
-          controller: refreshController,
-          onRefresh: onRefresh,
-          onLoading: onLoading,
-          footer: ClassicFooter(),
-          child: ListView.builder(
-            padding: EdgeInsets.only(bottom: 50),
-            shrinkWrap: true,
-            itemBuilder: (BuildContext context, int index) {
-              Post post = posts[index];
-              return PostTile(key: ValueKey(post.id), post: post);
-            },
-            itemCount: posts.length,
-          ),
-        );
   }
 }
 

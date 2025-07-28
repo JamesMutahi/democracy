@@ -1,13 +1,12 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/utils/view/bottom_loader.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/bloc/replies/replies_cubit.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:democracy/app/utils/view/failure_retry_button.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
-import 'package:democracy/post/view/widgets/post_tile.dart';
+import 'package:democracy/post/view/widgets/post_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class Replies extends StatefulWidget {
   const Replies({super.key, required this.post});
@@ -19,9 +18,13 @@ class Replies extends StatefulWidget {
 }
 
 class _RepliesState extends State<Replies> {
-  List<Post> _posts = [];
-  bool failure = false;
   bool loading = true;
+  bool failure = false;
+  List<Post> _posts = [];
+  bool hasNextPage = false;
+  final RefreshController _refreshController = RefreshController(
+    initialRefresh: false,
+  );
 
   @override
   void initState() {
@@ -52,15 +55,33 @@ class _RepliesState extends State<Replies> {
                   _posts = state.posts.toList();
                   loading = false;
                   failure = false;
+                  hasNextPage = state.hasNext;
+                  if (_refreshController.headerStatus ==
+                      RefreshStatus.refreshing) {
+                    _refreshController.refreshCompleted();
+                  }
+                  if (_refreshController.footerStatus == LoadStatus.loading) {
+                    _refreshController.loadComplete();
+                  }
+                  _refreshController.loadComplete();
                 });
               }
             }
             if (state.status == RepliesStatus.failure) {
-              if (widget.post.id == state.postId || state.postId == null) {
-                setState(() {
-                  failure = true;
-                  loading = false;
-                });
+              if (widget.post.id == state.postId) {
+                if (loading) {
+                  setState(() {
+                    loading = false;
+                    failure = true;
+                  });
+                }
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshFailed();
+                }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadFailed();
+                }
               }
             }
           },
@@ -85,30 +106,33 @@ class _RepliesState extends State<Replies> {
             _posts = posts;
           });
         },
-        child:
-            loading
-                ? Container(
-                  margin: EdgeInsets.only(top: 20),
-                  child: BottomLoader(),
-                )
-                : failure
-                ? FailureRetryButton(
-                  onPressed: () {
-                    context.read<WebsocketBloc>().add(
-                      WebsocketEvent.getReplies(post: widget.post),
-                    );
-                  },
-                )
-                : ListView.builder(
-                  padding: EdgeInsets.only(bottom: 50),
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (BuildContext context, int index) {
-                    Post post = _posts[index];
-                    return PostTile(key: ValueKey(post.id), post: post);
-                  },
-                  itemCount: _posts.length,
-                ),
+        child: PostListView(
+          physics: NeverScrollableScrollPhysics(),
+          posts: _posts,
+          loading: loading,
+          failure: failure,
+          refreshController: _refreshController,
+          enablePullDown: true,
+          enablePullUp: hasNextPage ? true : false,
+          onRefresh: () {
+            context.read<WebsocketBloc>().add(
+              WebsocketEvent.getReplies(post: widget.post),
+            );
+          },
+          onLoading: () {
+            context.read<WebsocketBloc>().add(
+              WebsocketEvent.getReplies(
+                post: widget.post,
+                lastPost: _posts.last,
+              ),
+            );
+          },
+          onFailure: () {
+            context.read<WebsocketBloc>().add(
+              WebsocketEvent.getReplies(post: widget.post),
+            );
+          },
+        ),
       ),
     );
   }

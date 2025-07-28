@@ -8,10 +8,7 @@ class SurveysCubit extends Cubit<SurveysState> {
   SurveysCubit() : super(const SurveysState());
 
   void websocketFailure({required String error}) {
-    if (state.status == SurveysStatus.initial ||
-        state.status == SurveysStatus.loading) {
-      emit(state.copyWith(status: SurveysStatus.failure));
-    }
+    emit(state.copyWith(status: SurveysStatus.failure));
   }
 
   void loaded({required Map<String, dynamic> payload}) {
@@ -24,7 +21,8 @@ class SurveysCubit extends Cubit<SurveysState> {
       emit(
         state.copyWith(
           status: SurveysStatus.success,
-          surveys: lastSurvey == null ? surveys : [...state.surveys, ...surveys],
+          surveys:
+              lastSurvey == null ? surveys : [...state.surveys, ...surveys],
           hasNext: payload['data']['has_next'],
         ),
       );

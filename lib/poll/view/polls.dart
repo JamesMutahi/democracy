@@ -48,21 +48,8 @@ class _PollsState extends State<Polls> {
                 _refreshController.loadComplete();
               });
             }
-            if (state.status == PollsStatus.loading) {
-              setState(() {
-                if (_refreshController.headerStatus !=
-                        RefreshStatus.refreshing &&
-                    _refreshController.footerStatus != LoadStatus.loading) {
-                  setState(() {
-                    loading = true;
-                    failure = false;
-                  });
-                }
-              });
-            }
             if (state.status == PollsStatus.failure) {
-              if (_refreshController.headerStatus != RefreshStatus.refreshing &&
-                  _refreshController.footerStatus != LoadStatus.loading) {
+              if (loading) {
                 setState(() {
                   loading = false;
                   failure = true;
@@ -130,9 +117,7 @@ class _PollsState extends State<Polls> {
               : failure
               ? FailureRetryButton(
                 onPressed: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getPolls(),
-                  );
+                  context.read<WebsocketBloc>().add(WebsocketEvent.getPolls());
                 },
               )
               : SmartRefresher(
@@ -141,9 +126,7 @@ class _PollsState extends State<Polls> {
                 header: ClassicHeader(),
                 controller: _refreshController,
                 onRefresh: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getPolls(),
-                  );
+                  context.read<WebsocketBloc>().add(WebsocketEvent.getPolls());
                 },
                 onLoading: () {
                   context.read<WebsocketBloc>().add(

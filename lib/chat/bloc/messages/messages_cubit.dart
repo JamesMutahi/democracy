@@ -8,9 +8,7 @@ class MessagesCubit extends Cubit<MessagesState> {
   MessagesCubit() : super(MessagesState());
 
   void websocketFailure({required String error}) {
-    if (state.status == MessagesStatus.initial) {
-      emit(state.copyWith(status: MessagesStatus.failure));
-    }
+    emit(state.copyWith(status: MessagesStatus.failure));
   }
 
   void initialize() {
