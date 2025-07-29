@@ -166,6 +166,10 @@ class _ProfilePageState extends State<ProfilePage> {
                             SliverPersistentHeader(
                               delegate: _TabBarAppBarDelegate(
                                 TabBar(
+                                  dividerColor:
+                                      Theme.of(
+                                        context,
+                                      ).colorScheme.outlineVariant,
                                   tabs: [
                                     Tab(text: 'Posts'),
                                     Tab(text: 'Replies'),

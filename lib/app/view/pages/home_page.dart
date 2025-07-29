@@ -1,6 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
+import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/post/bloc/following/following_cubit.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/bloc/post_list/post_list_cubit.dart';
@@ -14,9 +15,10 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.user});
+  const HomePage({super.key, required this.user, required this.notifications});
 
   final User user;
+  final List<n_.Notification> notifications;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -57,7 +59,11 @@ class _HomePageState extends State<HomePage>
                 snap: true,
                 automaticallyImplyLeading: false,
                 forceElevated: true,
-                flexibleSpace: CustomAppBar(user: widget.user, extras: []),
+                flexibleSpace: CustomAppBar(
+                  user: widget.user,
+                  notifications: widget.notifications,
+                  extras: [],
+                ),
                 bottom: TabBar(
                   tabs: [Tab(text: 'For You'), Tab(text: 'Following')],
                 ),

@@ -10,9 +10,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class CustomAppBar extends StatelessWidget {
-  const CustomAppBar({super.key, required this.user, required this.extras});
+  const CustomAppBar({
+    super.key,
+    required this.user,
+    required this.notifications,
+    required this.extras,
+  });
 
   final User user;
+  final List<n_.Notification> notifications;
   final List<Widget> extras;
 
   @override
@@ -23,11 +29,14 @@ class CustomAppBar extends StatelessWidget {
         onTap: () {
           Scaffold.of(context).openDrawer();
         },
-        child: ProfileImage(user: user),
+        child: Container(
+          margin: EdgeInsets.only(left: 15),
+          child: ProfileImage(user: user),
+        ),
       ),
     ];
     widgets.addAll(extras);
-    widgets.add(NotificationButton());
+    widgets.add(NotificationButton(notifications: notifications));
     return Builder(
       builder: (context) {
         return SizedBox(
@@ -52,7 +61,7 @@ class AppBarSearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Flexible(
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        margin: EdgeInsets.symmetric(vertical: 7, horizontal: 10),
         child: SearchBar(
           padding: WidgetStateProperty.all(
             EdgeInsets.only(left: 15, right: 10),
@@ -72,13 +81,13 @@ class AppBarSearchBar extends StatelessWidget {
 }
 
 class NotificationButton extends StatelessWidget {
-  const NotificationButton({super.key});
+  const NotificationButton({super.key, required this.notifications});
+
+  final List<n_.Notification> notifications;
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.all(Radius.circular(20)),
-      splashColor: Theme.of(context).colorScheme.secondaryFixedDim,
+    return GestureDetector(
       onTap: () {
         context.read<WebsocketBloc>().add(WebsocketEvent.getNotifications());
         Navigator.push(
@@ -101,7 +110,23 @@ class NotificationButton extends StatelessWidget {
               size: 20,
             ),
           ),
-          NotificationCount(),
+          notifications.isEmpty
+              ? SizedBox.shrink()
+              : Positioned(
+                top: -1,
+                right: 4,
+                child: Container(
+                  padding: EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primaryFixedDim,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Text(
+                    notifications.length.toString(),
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                ),
+              ),
         ],
       ),
     );

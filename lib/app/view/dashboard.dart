@@ -4,6 +4,9 @@ import 'package:democracy/app/view/widgets/bottom_nav_bar.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/app/view/widgets/drawer.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
+import 'package:democracy/notification/bloc/notifications/notifications_cubit.dart';
+import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,6 +25,7 @@ class _DashboardState extends State<Dashboard> {
   DateTime? currentBackPressTime;
   bool canPopNow = false;
   int requiredSeconds = 2;
+  List<n_.Notification> unreadNotifications = [];
 
   @override
   Widget build(BuildContext context) {
@@ -77,13 +81,62 @@ class _DashboardState extends State<Dashboard> {
             onPopInvokedWithResult: (didPop, __) {
               onPopInvoked(didPop);
             },
-            child: BlocListener<BottomNavBarCubit, BottomNavBarState>(
-              listener: (context, state) {
-                switch (state) {
-                  case BottomNavBarPageChanged(:final page):
-                    pageController.jumpToPage(page);
-                }
-              },
+            child: MultiBlocListener(
+              listeners: [
+                BlocListener<BottomNavBarCubit, BottomNavBarState>(
+                  listener: (context, state) {
+                    switch (state) {
+                      case BottomNavBarPageChanged(:final page):
+                        pageController.jumpToPage(page);
+                    }
+                  },
+                ),
+                BlocListener<NotificationsCubit, NotificationsState>(
+                  listener: (context, state) {
+                    if (state is NotificationsLoaded) {
+                      setState(() {
+                        unreadNotifications =
+                            state.notifications
+                                .where((n) => n.isRead == false)
+                                .toList();
+                      });
+                    }
+                  },
+                ),
+                BlocListener<NotificationDetailCubit, NotificationDetailState>(
+                  listener: (context, state) {
+                    if (state is NotificationCreated) {
+                      setState(() {
+                        unreadNotifications.add(state.notification);
+                      });
+                    }
+                    if (state is NotificationUpdated) {
+                      if (unreadNotifications.any(
+                        (n) => n.id == state.notification.id,
+                      )) {
+                        if (state.notification.isRead) {
+                          setState(() {
+                            unreadNotifications.removeWhere(
+                              (n) => n.id == state.notification.id,
+                            );
+                          });
+                        }
+                      }
+                    }
+                    if (state is NotificationDeleted) {
+                      if (unreadNotifications.any(
+                        (n) => n.id == state.notificationId,
+                      )) {
+                        setState(() {
+                          unreadNotifications.removeWhere(
+                            (n) => n.id == state.notificationId,
+                          );
+                        });
+                      }
+                    }
+                  },
+                ),
+              ],
               child: AnnotatedRegion<SystemUiOverlayStyle>(
                 value:
                     isDarkMode
@@ -108,11 +161,20 @@ class _DashboardState extends State<Dashboard> {
                     physics: const NeverScrollableScrollPhysics(),
                     controller: pageController,
                     children: [
-                      HomePage(user: user),
-                      ExplorePage(user: user),
-                      PollPage(user: user),
-                      SurveyPage(user: user),
-                      MessagePage(user: user),
+                      HomePage(user: user, notifications: unreadNotifications),
+                      ExplorePage(
+                        user: user,
+                        notifications: unreadNotifications,
+                      ),
+                      PollPage(user: user, notifications: unreadNotifications),
+                      SurveyPage(
+                        user: user,
+                        notifications: unreadNotifications,
+                      ),
+                      MessagePage(
+                        user: user,
+                        notifications: unreadNotifications,
+                      ),
                     ],
                   ),
                 ),

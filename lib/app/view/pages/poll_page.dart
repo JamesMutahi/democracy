@@ -1,14 +1,16 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
+import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/poll/view/polls.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PollPage extends StatefulWidget {
-  const PollPage({super.key, required this.user});
+  const PollPage({super.key, required this.user, required this.notifications});
 
   final User user;
+  final List<n_.Notification> notifications;
 
   @override
   State<PollPage> createState() => _PollPageState();
@@ -38,6 +40,7 @@ class _PollPageState extends State<PollPage>
             forceElevated: true,
             flexibleSpace: CustomAppBar(
               user: widget.user,
+              notifications: widget.notifications,
               extras: [AppBarSearchBar(hintText: 'Search polls')],
             ),
           ),

@@ -226,7 +226,7 @@ class _ReasonWidgetState extends State<ReasonWidget> {
           const SizedBox(height: 10),
           const Text(
             'Your reason for the decision is greatly appreciated '
-            'and will help in the betterment of the country.',
+            'and will help in better understanding what people want.',
           ),
           const SizedBox(height: 10),
           SingleChildScrollView(
@@ -255,7 +255,7 @@ class _ReasonWidgetState extends State<ReasonWidget> {
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Theme.of(context).scaffoldBackgroundColor,
-                hintText: widget.pollHasEnded ? '' : 'Reason...',
+                hintText: widget.pollHasEnded ? '' : 'Enter reason',
                 hintStyle: TextStyle(color: Theme.of(context).hintColor),
                 prefixIconConstraints: const BoxConstraints(
                   minWidth: 0,
