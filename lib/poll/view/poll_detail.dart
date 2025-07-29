@@ -57,51 +57,68 @@ class _PollDetailState extends State<PollDetail> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(_poll.description),
-                SizedBox(height: 5),
+                SizedBox(height: 10),
                 TimeLeft(
                   key: UniqueKey(),
                   startTime: _poll.startTime,
                   endTime: _poll.endTime,
                 ),
-                SizedBox(height: 5),
-                ..._poll.options.map((option) {
-                  return AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child:
-                        (pollHasEnded || userHasVoted && !changingVote)
-                            ? PollPercentIndicator(
-                              key: ValueKey(option.id),
-                              poll: _poll,
-                              option: option,
-                              animateToInitialPercent: true,
-                            )
-                            : OptionTile(
-                              option: option,
-                              onTap: () {
-                                if (pollHasStarted) {
-                                  context.read<WebsocketBloc>().add(
-                                    WebsocketEvent.vote(option: option),
-                                  );
-                                  setState(() {
-                                    changingVote = false;
-                                  });
-                                } else {
-                                  final snackBar = getSnackBar(
-                                    context: context,
-                                    message: 'Not started',
-                                    status: SnackBarStatus.info,
-                                  );
-                                  ScaffoldMessenger.of(
-                                    context,
-                                  ).clearSnackBars();
-                                  ScaffoldMessenger.of(
-                                    context,
-                                  ).showSnackBar(snackBar);
-                                }
-                              },
-                            ),
-                  );
-                }),
+                SizedBox(height: 10),
+                Container(
+                  padding: EdgeInsets.only(
+                    top: 10,
+                    left: 10,
+                    right: 10,
+                    bottom: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).splashColor,
+                    borderRadius: BorderRadius.all(const Radius.circular(8)),
+                  ),
+                  child: Column(
+                    children: [
+                      ..._poll.options.map((option) {
+                        return AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child:
+                              (pollHasEnded || userHasVoted && !changingVote)
+                                  ? PollPercentIndicator(
+                                    key: ValueKey(option.id),
+                                    poll: _poll,
+                                    option: option,
+                                    animateToInitialPercent: true,
+                                  )
+                                  : OptionTile(
+                                    option: option,
+                                    onTap: () {
+                                      if (pollHasStarted) {
+                                        context.read<WebsocketBloc>().add(
+                                          WebsocketEvent.vote(option: option),
+                                        );
+                                        setState(() {
+                                          changingVote = false;
+                                        });
+                                      } else {
+                                        final snackBar = getSnackBar(
+                                          context: context,
+                                          message: 'Not started',
+                                          status: SnackBarStatus.info,
+                                        );
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).clearSnackBars();
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(snackBar);
+                                      }
+                                    },
+                                  ),
+                        );
+                      }),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 10),
                 userHasVoted && !pollHasEnded
                     ? changingVote
                         ? SizedBox.shrink()
@@ -145,7 +162,7 @@ class OptionTile extends StatelessWidget {
     double optionHeight = 40;
     return Container(
       key: UniqueKey(),
-      margin: EdgeInsets.only(bottom: 8),
+      margin: EdgeInsets.symmetric(vertical: 10),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(8),
@@ -205,6 +222,13 @@ class _ReasonWidgetState extends State<ReasonWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Divider(),
+          const SizedBox(height: 10),
+          const Text(
+            'Your reason for the decision is greatly appreciated '
+            'and will help in the betterment of the country.',
+          ),
+          const SizedBox(height: 10),
           SingleChildScrollView(
             scrollDirection: Axis.vertical,
             reverse: true,
@@ -231,7 +255,7 @@ class _ReasonWidgetState extends State<ReasonWidget> {
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Theme.of(context).scaffoldBackgroundColor,
-                hintText: widget.pollHasEnded ? '' : 'Give a reason',
+                hintText: widget.pollHasEnded ? '' : 'Reason...',
                 hintStyle: TextStyle(color: Theme.of(context).hintColor),
                 prefixIconConstraints: const BoxConstraints(
                   minWidth: 0,

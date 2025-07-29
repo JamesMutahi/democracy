@@ -36,6 +36,7 @@ class PollTile extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
         decoration: BoxDecoration(
+          color: Theme.of(context).splashColor,
           border: Border(
             bottom: BorderSide(
               color:
@@ -279,11 +280,10 @@ class PollPercentIndicator extends StatelessWidget {
         backgroundColor: Theme.of(context).canvasColor,
         progressColor:
             poll.totalVotes == 0
-                ? Theme.of(
+                ? Theme.of(context).splashColor.withValues(alpha: 0.0)
+                : Theme.of(
                   context,
-                ).colorScheme.onPrimaryFixedVariant.withValues(alpha: 0.0)
-                : Theme.of(context).colorScheme.onPrimaryFixedVariant
-                    .withValues(alpha: option.votes / poll.totalVotes),
+                ).splashColor.withValues(alpha: option.votes / poll.totalVotes),
         center: Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 14),

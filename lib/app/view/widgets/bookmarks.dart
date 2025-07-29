@@ -1,10 +1,8 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/utils/view/failure_retry_button.dart';
-import 'package:democracy/app/utils/view/loading_indicator.dart';
 import 'package:democracy/post/models/post.dart';
+import 'package:democracy/post/view/widgets/post_listview.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
-import 'package:democracy/post/view/post_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
@@ -75,38 +73,38 @@ class _BookmarksState extends State<Bookmarks> {
             }
           }
         },
-        child:
-            loading
-                ? LoadingIndicator()
-                : failure
-                ? FailureRetryButton(
-                  onPressed: () {
-                    context.read<WebsocketBloc>().add(
-                      WebsocketEvent.loadBookmarks(user: widget.user),
-                    );
-                  },
-                )
-                : SmartRefresher(
-                  enablePullDown: true,
-                  enablePullUp: hasNextPage ? true : false,
-                  header: ClassicHeader(),
-                  controller: _refreshController,
-                  onRefresh: () {
-                    context.read<WebsocketBloc>().add(
-                      WebsocketEvent.loadBookmarks(user: widget.user),
-                    );
-                  },
-                  onLoading: () {
-                    context.read<WebsocketBloc>().add(
-                      WebsocketEvent.loadBookmarks(
-                        user: widget.user,
-                        lastPost: _posts.last,
-                      ),
-                    );
-                  },
-                  footer: ClassicFooter(),
-                  child: PostList(key: UniqueKey(), posts: _posts),
-                ),
+        child: PostListView(
+          physics: NeverScrollableScrollPhysics(),
+          posts: _posts,
+          loading: loading,
+          failure: failure,
+          onPostsUpdated: (posts) {
+            setState(() {
+              _posts = posts;
+            });
+          },
+          refreshController: _refreshController,
+          enablePullDown: true,
+          enablePullUp: hasNextPage ? true : false,
+          onRefresh: () {
+            context.read<WebsocketBloc>().add(
+              WebsocketEvent.loadBookmarks(user: widget.user),
+            );
+          },
+          onLoading: () {
+            context.read<WebsocketBloc>().add(
+              WebsocketEvent.loadBookmarks(
+                user: widget.user,
+                lastPost: _posts.last,
+              ),
+            );
+          },
+          onFailure: () {
+            context.read<WebsocketBloc>().add(
+              WebsocketEvent.loadBookmarks(user: widget.user),
+            );
+          },
+        ),
       ),
     );
   }

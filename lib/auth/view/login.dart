@@ -59,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
                             onPressed: null,
                             child: SpinKitThreeBounce(
                               size: 40,
-                              color: Colors.green.shade900,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                           );
                         default:

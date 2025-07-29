@@ -2,7 +2,6 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/bloc/replies/replies_cubit.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -99,40 +98,34 @@ class _RepliesState extends State<Replies> {
           },
         ),
       ],
-      child: PostListener(
+      child: PostListView(
+        physics: NeverScrollableScrollPhysics(),
         posts: _posts,
+        loading: loading,
+        failure: failure,
         onPostsUpdated: (posts) {
           setState(() {
             _posts = posts;
           });
         },
-        child: PostListView(
-          physics: NeverScrollableScrollPhysics(),
-          posts: _posts,
-          loading: loading,
-          failure: failure,
-          refreshController: _refreshController,
-          enablePullDown: true,
-          enablePullUp: hasNextPage ? true : false,
-          onRefresh: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.getReplies(post: widget.post),
-            );
-          },
-          onLoading: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.getReplies(
-                post: widget.post,
-                lastPost: _posts.last,
-              ),
-            );
-          },
-          onFailure: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.getReplies(post: widget.post),
-            );
-          },
-        ),
+        refreshController: _refreshController,
+        enablePullDown: true,
+        enablePullUp: hasNextPage ? true : false,
+        onRefresh: () {
+          context.read<WebsocketBloc>().add(
+            WebsocketEvent.getReplies(post: widget.post),
+          );
+        },
+        onLoading: () {
+          context.read<WebsocketBloc>().add(
+            WebsocketEvent.getReplies(post: widget.post, lastPost: _posts.last),
+          );
+        },
+        onFailure: () {
+          context.read<WebsocketBloc>().add(
+            WebsocketEvent.getReplies(post: widget.post),
+          );
+        },
       ),
     );
   }

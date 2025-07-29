@@ -1,6 +1,5 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/post/bloc/likes/likes_cubit.dart';
@@ -86,39 +85,36 @@ class _UserPostsState extends State<UserPosts> {
           },
         ),
       ],
-      child: PostListener(
+      child: PostListView(
         posts: _posts,
+        loading: loading,
+        failure: failure,
+        refreshController: _refreshController,
+        enablePullDown: true,
+        enablePullUp: hasNextPage ? true : false,
         onPostsUpdated: (posts) {
           setState(() {
             _posts = posts;
           });
         },
-        child: PostListView(
-          posts: _posts,
-          loading: loading,
-          failure: failure,
-          refreshController: _refreshController,
-          enablePullDown: true,
-          enablePullUp: hasNextPage ? true : false,
-          onRefresh: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.loadUserPosts(user: widget.user),
-            );
-          },
-          onLoading: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.loadUserPosts(
-                user: widget.user,
-                lastPost: _posts.last,
-              ),
-            );
-          },
-          onFailure: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.loadUserPosts(user: widget.user),
-            );
-          },
-        ),
+        onRefresh: () {
+          context.read<WebsocketBloc>().add(
+            WebsocketEvent.loadUserPosts(user: widget.user),
+          );
+        },
+        onLoading: () {
+          context.read<WebsocketBloc>().add(
+            WebsocketEvent.loadUserPosts(
+              user: widget.user,
+              lastPost: _posts.last,
+            ),
+          );
+        },
+        onFailure: () {
+          context.read<WebsocketBloc>().add(
+            WebsocketEvent.loadUserPosts(user: widget.user),
+          );
+        },
       ),
     );
   }
@@ -200,39 +196,36 @@ class _UserRepliesState extends State<UserReplies> {
           },
         ),
       ],
-      child: PostListener(
+      child: PostListView(
         posts: _posts,
+        loading: loading,
+        failure: failure,
+        refreshController: _refreshController,
+        enablePullDown: true,
+        enablePullUp: hasNextPage ? true : false,
         onPostsUpdated: (posts) {
           setState(() {
             _posts = posts;
           });
         },
-        child: PostListView(
-          posts: _posts,
-          loading: loading,
-          failure: failure,
-          refreshController: _refreshController,
-          enablePullDown: true,
-          enablePullUp: hasNextPage ? true : false,
-          onRefresh: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.loadUserReplies(user: widget.user),
-            );
-          },
-          onLoading: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.loadUserReplies(
-                user: widget.user,
-                lastPost: _posts.last,
-              ),
-            );
-          },
-          onFailure: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.loadUserReplies(user: widget.user),
-            );
-          },
-        ),
+        onRefresh: () {
+          context.read<WebsocketBloc>().add(
+            WebsocketEvent.loadUserReplies(user: widget.user),
+          );
+        },
+        onLoading: () {
+          context.read<WebsocketBloc>().add(
+            WebsocketEvent.loadUserReplies(
+              user: widget.user,
+              lastPost: _posts.last,
+            ),
+          );
+        },
+        onFailure: () {
+          context.read<WebsocketBloc>().add(
+            WebsocketEvent.loadUserReplies(user: widget.user),
+          );
+        },
       ),
     );
   }
@@ -335,39 +328,36 @@ class _LikesState extends State<Likes> {
           },
         ),
       ],
-      child: PostListener(
+      child: PostListView(
         posts: _posts,
+        loading: loading,
+        failure: failure,
+        refreshController: _refreshController,
+        enablePullDown: true,
+        enablePullUp: hasNextPage ? true : false,
         onPostsUpdated: (posts) {
           setState(() {
             _posts = posts;
           });
         },
-        child: PostListView(
-          posts: _posts,
-          loading: loading,
-          failure: failure,
-          refreshController: _refreshController,
-          enablePullDown: true,
-          enablePullUp: hasNextPage ? true : false,
-          onRefresh: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.loadLikedPosts(user: widget.user),
-            );
-          },
-          onLoading: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.loadLikedPosts(
-                user: widget.user,
-                lastPost: _posts.last,
-              ),
-            );
-          },
-          onFailure: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.loadLikedPosts(user: widget.user),
-            );
-          },
-        ),
+        onRefresh: () {
+          context.read<WebsocketBloc>().add(
+            WebsocketEvent.loadLikedPosts(user: widget.user),
+          );
+        },
+        onLoading: () {
+          context.read<WebsocketBloc>().add(
+            WebsocketEvent.loadLikedPosts(
+              user: widget.user,
+              lastPost: _posts.last,
+            ),
+          );
+        },
+        onFailure: () {
+          context.read<WebsocketBloc>().add(
+            WebsocketEvent.loadLikedPosts(user: widget.user),
+          );
+        },
       ),
     );
   }

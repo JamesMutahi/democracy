@@ -140,9 +140,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   WebsocketEvent.unsubscribeUserProfilePosts(user: user),
                 );
               },
-              child: SafeArea(
-                child: Scaffold(
-                  body: DefaultTabController(
+              child: Scaffold(
+                body: SafeArea(
+                  bottom: false,
+                  child: DefaultTabController(
                     length: 4,
                     child: NestedScrollView(
                       controller: _scrollController,
