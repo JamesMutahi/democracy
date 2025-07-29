@@ -36,53 +36,51 @@ class _LoginPageState extends State<LoginPage> {
         }
       },
       child: Scaffold(
-        body: SafeArea(
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Sign In',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+        body: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Sign In',
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
                 ),
-                const SizedBox(height: 15),
-                SizedBox(
-                  height: 50,
-                  child: BlocBuilder<LoginCubit, LoginState>(
-                    builder: (context, state) {
-                      switch (state) {
-                        case LoginLoading():
-                          return FilledButton.tonal(
-                            onPressed: null,
-                            child: SpinKitThreeBounce(
-                              size: 40,
-                              color: Theme.of(context).colorScheme.primary,
+              ),
+              const SizedBox(height: 15),
+              SizedBox(
+                height: 50,
+                child: BlocBuilder<LoginCubit, LoginState>(
+                  builder: (context, state) {
+                    switch (state) {
+                      case LoginLoading():
+                        return FilledButton.tonal(
+                          onPressed: null,
+                          child: SpinKitThreeBounce(
+                            size: 40,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        );
+                      default:
+                        return FilledButton(
+                          onPressed: () {
+                            context.read<LoginCubit>().login(
+                              email: '${dotenv.env['FAKE_EMAIL']}',
+                              password: '${dotenv.env['FAKE_PASSWORD']}',
+                            );
+                          },
+                          child: const Center(
+                            child: Text(
+                              'Login via eCitizen',
+                              style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                          );
-                        default:
-                          return FilledButton(
-                            onPressed: () {
-                              context.read<LoginCubit>().login(
-                                email: '${dotenv.env['FAKE_EMAIL']}',
-                                password: '${dotenv.env['FAKE_PASSWORD']}',
-                              );
-                            },
-                            child: const Center(
-                              child: Text(
-                                'Login via eCitizen',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          );
-                      }
-                    },
-                  ),
+                          ),
+                        );
+                    }
+                  },
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

@@ -64,7 +64,6 @@ class SurveyTile extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
         decoration: BoxDecoration(
-          color: Theme.of(context).splashColor,
           border: Border(
             bottom: BorderSide(
               color:

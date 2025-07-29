@@ -1,5 +1,5 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/view/widgets/appbar_title.dart';
+import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/survey/view/surveys.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +36,10 @@ class _SurveyPageState extends State<SurveyPage>
             snap: true,
             automaticallyImplyLeading: false,
             forceElevated: true,
-            title: AppBarTitle(user: widget.user, extras: []),
+            flexibleSpace: CustomAppBar(
+              user: widget.user,
+              extras: [AppBarSearchBar(hintText: 'Search surveys')],
+            ),
           ),
         ];
       },

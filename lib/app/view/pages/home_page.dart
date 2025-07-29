@@ -1,6 +1,6 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
-import 'package:democracy/app/view/widgets/appbar_title.dart';
+import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/post/bloc/following/following_cubit.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/bloc/post_list/post_list_cubit.dart';
@@ -30,46 +30,43 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return SafeArea(
-      bottom: false,
-      child: BlocListener<PostDetailCubit, PostDetailState>(
-        listener: (context, state) {
-          if (state is PostCreated) {
-            String message =
-                state.post.status == PostStatus.published
-                    ? state.post.replyTo == null
-                        ? 'Posted'
-                        : 'Reply sent'
-                    : 'Post saved as draft';
-            final snackBar = getSnackBar(
-              context: context,
-              message: message,
-              status: SnackBarStatus.success,
-            );
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          }
-        },
-        child: DefaultTabController(
-          length: 2,
-          child: NestedScrollView(
-            headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-              return [
-                SliverAppBar(
-                  floating: true,
-                  snap: true,
-                  automaticallyImplyLeading: false,
-                  forceElevated: true,
-                  title: AppBarTitle(user: widget.user, extras: []),
-                  bottom: TabBar(
-                    tabs: [Tab(text: 'For You'), Tab(text: 'Following')],
-                  ),
+    return BlocListener<PostDetailCubit, PostDetailState>(
+      listener: (context, state) {
+        if (state is PostCreated) {
+          String message =
+              state.post.status == PostStatus.published
+                  ? state.post.replyTo == null
+                      ? 'Posted'
+                      : 'Reply sent'
+                  : 'Post saved as draft';
+          final snackBar = getSnackBar(
+            context: context,
+            message: message,
+            status: SnackBarStatus.success,
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+      },
+      child: DefaultTabController(
+        length: 2,
+        child: NestedScrollView(
+          headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+            return [
+              SliverAppBar(
+                floating: true,
+                snap: true,
+                automaticallyImplyLeading: false,
+                forceElevated: true,
+                flexibleSpace: CustomAppBar(user: widget.user, extras: []),
+                bottom: TabBar(
+                  tabs: [Tab(text: 'For You'), Tab(text: 'Following')],
                 ),
-              ];
-            },
-            body: TabBarView(
-              physics: NeverScrollableScrollPhysics(),
-              children: [ForYouTab(), FollowingTab()],
-            ),
+              ),
+            ];
+          },
+          body: TabBarView(
+            physics: NeverScrollableScrollPhysics(),
+            children: [ForYouTab(), FollowingTab()],
           ),
         ),
       ),
@@ -158,7 +155,6 @@ class _ForYouTabState extends State<ForYouTab> {
                     MaterialPageRoute(builder: (context) => PostCreate()),
                   );
                 },
-                mini: true,
                 child: Icon(Symbols.post_add_rounded),
               ),
             ),

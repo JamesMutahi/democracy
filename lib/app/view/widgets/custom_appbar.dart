@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-class AppBarTitle extends StatelessWidget {
-  const AppBarTitle({super.key, required this.user, required this.extras});
+class CustomAppBar extends StatelessWidget {
+  const CustomAppBar({super.key, required this.user, required this.extras});
 
   final User user;
   final List<Widget> extras;
@@ -30,11 +30,43 @@ class AppBarTitle extends StatelessWidget {
     widgets.add(NotificationButton());
     return Builder(
       builder: (context) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: widgets,
+        return SizedBox(
+          height: 60,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: widgets,
+          ),
         );
       },
+    );
+  }
+}
+
+class AppBarSearchBar extends StatelessWidget {
+  const AppBarSearchBar({super.key, required this.hintText});
+
+  final String hintText;
+
+  @override
+  Widget build(BuildContext context) {
+    return Flexible(
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        child: SearchBar(
+          padding: WidgetStateProperty.all(
+            EdgeInsets.only(left: 15, right: 10),
+          ),
+          leading: Icon(Symbols.search_rounded),
+          hintText: hintText,
+          hintStyle: WidgetStateProperty.all(
+            TextStyle(color: Theme.of(context).hintColor),
+          ),
+          onTapOutside: (event) {
+            FocusManager.instance.primaryFocus?.unfocus();
+          },
+        ),
+      ),
     );
   }
 }
@@ -44,21 +76,20 @@ class NotificationButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        InkWell(
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-          splashColor: Theme.of(context).colorScheme.secondaryFixedDim,
-          onTap: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.getNotifications(),
-            );
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Notifications()),
-            );
-          },
-          child: Container(
+    return InkWell(
+      borderRadius: BorderRadius.all(Radius.circular(20)),
+      splashColor: Theme.of(context).colorScheme.secondaryFixedDim,
+      onTap: () {
+        context.read<WebsocketBloc>().add(WebsocketEvent.getNotifications());
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Notifications()),
+        );
+      },
+      child: Stack(
+        children: [
+          Container(
+            margin: EdgeInsets.only(right: 15),
             padding: EdgeInsets.all(8.5),
             decoration: BoxDecoration(
               border: Border.all(color: Theme.of(context).disabledColor),
@@ -70,9 +101,9 @@ class NotificationButton extends StatelessWidget {
               size: 20,
             ),
           ),
-        ),
-        NotificationCount(),
-      ],
+          NotificationCount(),
+        ],
+      ),
     );
   }
 }
@@ -140,12 +171,12 @@ class _NotificationCountState extends State<NotificationCount> {
           unreadNotifications.isEmpty
               ? SizedBox.shrink()
               : Positioned(
-                top: -4,
-                right: 0,
+                top: -1,
+                right: 4,
                 child: Container(
                   padding: EdgeInsets.all(4),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColorDark,
+                    color: Theme.of(context).colorScheme.primaryFixedDim,
                     shape: BoxShape.circle,
                   ),
                   child: Text(

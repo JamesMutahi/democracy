@@ -20,7 +20,7 @@ abstract final class AppTheme {
   // The FlexColorScheme defined light mode ThemeData.
   static ThemeData light = FlexThemeData.light(
     // Using FlexColorScheme built-in FlexScheme enum based colors
-    scheme: FlexScheme.aquaBlue,
+    scheme: FlexScheme.shadSlate,
     // Input color modifiers.
     swapLegacyOnMaterial3: true,
     // Surface color adjustments.
@@ -144,7 +144,7 @@ abstract final class AppTheme {
   // The FlexColorScheme defined dark mode ThemeData.
   static ThemeData dark = FlexThemeData.dark(
     // Using FlexColorScheme built-in FlexScheme enum based colors.
-    scheme: FlexScheme.aquaBlue,
+    scheme: FlexScheme.shadSlate,
     // Input color modifiers.
     swapLegacyOnMaterial3: true,
     // Convenience direct styling properties.

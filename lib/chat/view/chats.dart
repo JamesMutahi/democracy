@@ -166,9 +166,7 @@ class _ChatsState extends State<Chats> {
               : failure
               ? FailureRetryButton(
                 onPressed: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getChats(),
-                  );
+                  context.read<WebsocketBloc>().add(WebsocketEvent.getChats());
                 },
               )
               : BlocBuilder<AuthBloc, AuthState>(
@@ -256,7 +254,7 @@ class _ChatTileState extends State<ChatTile> {
               text: ' @${widget.otherUser.username}',
               style: TextStyle(
                 overflow: TextOverflow.ellipsis,
-                color: Theme.of(context).colorScheme.outline,
+                color: Theme.of(context).hintColor,
               ),
             ),
           ],
@@ -320,7 +318,7 @@ class _LastMessageText extends StatelessWidget {
       text,
       style: TextStyle(
         overflow: TextOverflow.ellipsis,
-        color: Theme.of(context).disabledColor,
+        color: Theme.of(context).hintColor,
       ),
     );
   }

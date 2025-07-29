@@ -1,5 +1,5 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/view/widgets/appbar_title.dart';
+import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/chat/view/chats.dart';
 import 'package:democracy/chat/view/create_message.dart';
 import 'package:democracy/user/models/user.dart';
@@ -38,7 +38,10 @@ class _MessagePageState extends State<MessagePage>
             snap: true,
             automaticallyImplyLeading: false,
             forceElevated: true,
-            title: AppBarTitle(user: widget.user, extras: []),
+            flexibleSpace: CustomAppBar(
+              user: widget.user,
+              extras: [AppBarSearchBar(hintText: 'Search messages')],
+            ),
           ),
         ];
       },
@@ -57,7 +60,6 @@ class _MessagePageState extends State<MessagePage>
                     MaterialPageRoute(builder: (context) => CreateMessage()),
                   );
                 },
-                mini: true,
                 child: Icon(Symbols.add_rounded),
               ),
             ),

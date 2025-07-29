@@ -36,7 +36,6 @@ class PollTile extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
         decoration: BoxDecoration(
-          color: Theme.of(context).splashColor,
           border: Border(
             bottom: BorderSide(
               color:
@@ -117,6 +116,71 @@ class PollPopUp extends StatelessWidget {
         }
       },
       texts: ['Post', 'Share'],
+    );
+  }
+}
+
+class PollPercentIndicator extends StatelessWidget {
+  const PollPercentIndicator({
+    super.key,
+    required this.poll,
+    required this.option,
+    required this.animateToInitialPercent,
+  });
+
+  final Poll poll;
+  final Option option;
+  final bool animateToInitialPercent;
+
+  @override
+  Widget build(BuildContext context) {
+    double optionHeight = 40;
+    double percent = poll.totalVotes == 0 ? 0 : option.votes / poll.totalVotes;
+    return Container(
+      margin: EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(const Radius.circular(8)),
+      ),
+      child: LinearPercentIndicator(
+        lineHeight: optionHeight,
+        barRadius: const Radius.circular(8),
+        padding: EdgeInsets.zero,
+        percent: percent,
+        animation: true,
+        animateFromLastPercent: true,
+        animateToInitialPercent: animateToInitialPercent,
+        animationDuration: 500,
+        backgroundColor: Theme.of(
+          context,
+        ).colorScheme.secondaryFixedDim.withValues(alpha: 0.3),
+        progressColor:
+            poll.totalVotes == 0
+                ? Theme.of(
+                  context,
+                ).colorScheme.primaryFixedDim.withValues(alpha: 0.0)
+                : Theme.of(context).colorScheme.primaryFixedDim.withValues(
+                  alpha: (option.votes / poll.totalVotes) / 2,
+                ),
+        center: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          child: Row(
+            children: [
+              Text(option.text),
+              SizedBox(width: 20),
+              if (poll.votedOption == option.id)
+                const Icon(Icons.check_circle_outline_rounded, size: 16),
+              const Spacer(),
+              Text(
+                poll.totalVotes == 0
+                    ? "0 votes"
+                    : '${(option.votes / poll.totalVotes * 100).toStringAsFixed(1)}%',
+                // style: votedPercentageTextStyle,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -243,67 +307,6 @@ class _TimeLeftState extends State<TimeLeft> {
           style: TextStyle(color: Theme.of(context).disabledColor),
         ),
       ],
-    );
-  }
-}
-
-class PollPercentIndicator extends StatelessWidget {
-  const PollPercentIndicator({
-    super.key,
-    required this.poll,
-    required this.option,
-    required this.animateToInitialPercent,
-  });
-
-  final Poll poll;
-  final Option option;
-  final bool animateToInitialPercent;
-
-  @override
-  Widget build(BuildContext context) {
-    double optionHeight = 40;
-    double percent = poll.totalVotes == 0 ? 0 : option.votes / poll.totalVotes;
-    return Container(
-      margin: EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(const Radius.circular(8)),
-      ),
-      child: LinearPercentIndicator(
-        lineHeight: optionHeight,
-        barRadius: const Radius.circular(8),
-        padding: EdgeInsets.zero,
-        percent: percent,
-        animation: true,
-        animateFromLastPercent: true,
-        animateToInitialPercent: animateToInitialPercent,
-        animationDuration: 500,
-        backgroundColor: Theme.of(context).canvasColor,
-        progressColor:
-            poll.totalVotes == 0
-                ? Theme.of(context).splashColor.withValues(alpha: 0.0)
-                : Theme.of(
-                  context,
-                ).splashColor.withValues(alpha: option.votes / poll.totalVotes),
-        center: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 14),
-          child: Row(
-            children: [
-              Text(option.text),
-              SizedBox(width: 20),
-              if (poll.votedOption == option.id)
-                const Icon(Icons.check_circle_outline_rounded, size: 16),
-              const Spacer(),
-              Text(
-                poll.totalVotes == 0
-                    ? "0 votes"
-                    : '${(option.votes / poll.totalVotes * 100).toStringAsFixed(1)}%',
-                // style: votedPercentageTextStyle,
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

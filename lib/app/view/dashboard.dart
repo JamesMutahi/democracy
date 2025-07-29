@@ -6,6 +6,7 @@ import 'package:democracy/app/view/widgets/drawer.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Dashboard extends StatefulWidget {
@@ -24,6 +25,8 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
+    final Brightness brightness = MediaQuery.of(context).platformBrightness;
+    final bool isDarkMode = brightness == Brightness.dark;
     ScaffoldFeatureController showSnackBar({required SnackBar snackBar}) {
       ScaffoldMessenger.of(context).clearSnackBars();
       return ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -69,30 +72,49 @@ class _DashboardState extends State<Dashboard> {
           key: _key,
           resizeToAvoidBottomInset: false,
           drawer: AppDrawer(user: user),
-          body: SafeArea(
-            bottom: false,
-            child: PopScope(
-              canPop: canPopNow,
-              onPopInvokedWithResult: (didPop, __) {
-                onPopInvoked(didPop);
+          body: PopScope(
+            canPop: canPopNow,
+            onPopInvokedWithResult: (didPop, __) {
+              onPopInvoked(didPop);
+            },
+            child: BlocListener<BottomNavBarCubit, BottomNavBarState>(
+              listener: (context, state) {
+                switch (state) {
+                  case BottomNavBarPageChanged(:final page):
+                    pageController.jumpToPage(page);
+                }
               },
-              child: BlocListener<BottomNavBarCubit, BottomNavBarState>(
-                listener: (context, state) {
-                  switch (state) {
-                    case BottomNavBarPageChanged(:final page):
-                      pageController.jumpToPage(page);
-                  }
-                },
-                child: PageView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  controller: pageController,
-                  children: [
-                    HomePage(user: user),
-                    ExplorePage(user: user),
-                    PollPage(user: user),
-                    SurveyPage(user: user),
-                    MessagePage(user: user),
-                  ],
+              child: AnnotatedRegion<SystemUiOverlayStyle>(
+                value:
+                    isDarkMode
+                        ? SystemUiOverlayStyle.dark.copyWith(
+                          statusBarColor:
+                              Theme.of(context).appBarTheme.backgroundColor,
+                          statusBarIconBrightness: Brightness.light,
+                          systemNavigationBarColor:
+                              Theme.of(context).appBarTheme.backgroundColor,
+                          systemNavigationBarIconBrightness: Brightness.light,
+                        )
+                        : SystemUiOverlayStyle.light.copyWith(
+                          statusBarColor:
+                              Theme.of(context).appBarTheme.backgroundColor,
+                          statusBarIconBrightness: Brightness.dark,
+                          systemNavigationBarColor:
+                              Theme.of(context).appBarTheme.backgroundColor,
+                          systemNavigationBarIconBrightness: Brightness.dark,
+                        ),
+                child: SafeArea(
+                  child: PageView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    controller: pageController,
+                    children: [
+                      HomePage(user: user),
+                      ExplorePage(user: user),
+                      PollPage(user: user),
+                      SurveyPage(user: user),
+                      MessagePage(user: user),
+                    ],
+                  ),
                 ),
               ),
             ),
