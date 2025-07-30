@@ -5,7 +5,9 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.connect() = _Connect;
   const factory WebsocketEvent.changeState({required WebsocketState state}) =
       _ChangeState;
-  const factory WebsocketEvent.getPosts() = _GetPosts;
+  const factory WebsocketEvent.getPosts({String? searchTerm, Post? lastPost}) =
+      _GetPosts;
+  const factory WebsocketEvent.getForYouPosts() = _GetForYouPosts;
   const factory WebsocketEvent.createPost({
     required String body,
     required PostStatus status,
@@ -56,10 +58,8 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.unsubscribeUserProfilePosts({
     required User user,
   }) = _UnsubscribeUserProfilePosts;
-  const factory WebsocketEvent.getChats({
-    String? searchTerm,
-    Chat? lastChat,
-  }) = _GetChats;
+  const factory WebsocketEvent.getChats({String? searchTerm, Chat? lastChat}) =
+      _GetChats;
   const factory WebsocketEvent.createChat({required User user}) = _CreateChat;
   const factory WebsocketEvent.subscribeChat({required Chat chat}) =
       _SubscribeChat;

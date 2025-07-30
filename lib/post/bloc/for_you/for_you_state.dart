@@ -1,28 +1,28 @@
-part of 'post_list_cubit.dart';
+part of 'for_you_cubit.dart';
 
-enum PostListStatus { initial, loading, success, failure }
+enum ForYouStatus { initial, loading, success, failure }
 
-final class PostListState extends Equatable {
-  const PostListState({
-    this.status = PostListStatus.initial,
+final class ForYouState extends Equatable {
+  const ForYouState({
+    this.status = ForYouStatus.initial,
     this.posts = const [],
     this.currentPage = 1,
     this.hasNext = false,
   });
 
-  final PostListStatus status;
+  final ForYouStatus status;
   final List<Post> posts;
   final int currentPage;
   final bool hasNext;
 
-  PostListState copyWith({
-    PostListStatus? status,
+  ForYouState copyWith({
+    ForYouStatus? status,
     List<Post>? posts,
     int? currentPage,
     bool? hasNext,
     bool? hasPrevious,
   }) {
-    return PostListState(
+    return ForYouState(
       status: status ?? this.status,
       posts: posts ?? this.posts,
       currentPage: currentPage ?? this.currentPage,
@@ -32,7 +32,7 @@ final class PostListState extends Equatable {
 
   @override
   String toString() {
-    return '''PostListState { status: $status, posts: ${posts.length}, 
+    return '''ForYouState { status: $status, posts: ${posts.length}, 
     currentPage: $currentPage, hasNext: $hasNext }''';
   }
 

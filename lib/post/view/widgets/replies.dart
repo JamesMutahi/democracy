@@ -109,13 +109,9 @@ class _RepliesState extends State<Replies> {
           });
         },
         refreshController: _refreshController,
-        enablePullDown: true,
+        enablePullDown: false,
         enablePullUp: hasNextPage ? true : false,
-        onRefresh: () {
-          context.read<WebsocketBloc>().add(
-            WebsocketEvent.getReplies(post: widget.post),
-          );
-        },
+        onRefresh: () {},
         onLoading: () {
           context.read<WebsocketBloc>().add(
             WebsocketEvent.getReplies(post: widget.post, lastPost: _posts.last),

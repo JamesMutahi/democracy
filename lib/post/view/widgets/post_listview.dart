@@ -44,7 +44,7 @@ class PostListView extends StatelessWidget {
           posts: posts,
           onPostsUpdated: onPostsUpdated,
           child: SmartRefresher(
-            enablePullDown: false,
+            enablePullDown: enablePullDown,
             enablePullUp: enablePullUp,
             header: ClassicHeader(),
             controller: refreshController,

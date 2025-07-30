@@ -49,8 +49,11 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       _onConnect(emit);
     });
     on<_ChangeState>((event, emit) => emit(event.state));
+    on<_GetForYouPosts>((event, emit) {
+      _onGetForYouPosts(emit);
+    });
     on<_GetPosts>((event, emit) {
-      _onGetPosts(emit);
+      _onGetPosts(emit, event);
     });
     on<_CreatePost>((event, emit) {
       _onCreatePost(emit, event);
@@ -215,11 +218,25 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     }
   }
 
-  Future _onGetPosts(Emitter<WebsocketState> emit) async {
+  Future _onGetForYouPosts(Emitter<WebsocketState> emit) async {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
-      'payload': {"action": 'list', "request_id": postRequestId},
+      'payload': {"action": 'for_you', 'request_id': postRequestId},
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onGetPosts(Emitter<WebsocketState> emit, _GetPosts event) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': postsStream,
+      'payload': {
+        "action": 'list',
+        "request_id": postRequestId,
+        'search_term': event.searchTerm,
+        'last_post': event.lastPost?.id,
+      },
     };
     _channel.sink.add(jsonEncode(message));
   }

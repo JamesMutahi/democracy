@@ -2,15 +2,15 @@ import 'package:bloc/bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:equatable/equatable.dart';
 
-part 'post_list_state.dart';
+part 'for_you_state.dart';
 
-class PostListCubit extends Cubit<PostListState> {
-  PostListCubit() : super(const PostListState());
+class ForYouCubit extends Cubit<ForYouState> {
+  ForYouCubit() : super(const ForYouState());
 
   void websocketFailure({required String error}) {
-    if (state.status == PostListStatus.initial ||
-        state.status == PostListStatus.loading) {
-      emit(state.copyWith(status: PostListStatus.failure));
+    if (state.status == ForYouStatus.initial ||
+        state.status == ForYouStatus.loading) {
+      emit(state.copyWith(status: ForYouStatus.failure));
     }
   }
 
@@ -21,14 +21,14 @@ class PostListCubit extends Cubit<PostListState> {
       );
       emit(
         state.copyWith(
-          status: PostListStatus.success,
+          status: ForYouStatus.success,
           posts: [...state.posts, ...posts],
           currentPage: payload['data']['current_page'],
           hasNext: payload['data']['has_next'],
         ),
       );
     } else {
-      emit(state.copyWith(status: PostListStatus.failure));
+      emit(state.copyWith(status: ForYouStatus.failure));
     }
   }
 }

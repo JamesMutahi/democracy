@@ -16,9 +16,10 @@ import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
 import 'package:democracy/poll/bloc/polls/polls_cubit.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
 import 'package:democracy/post/bloc/following/following_cubit.dart';
+import 'package:democracy/post/bloc/for_you/for_you_cubit.dart';
 import 'package:democracy/post/bloc/likes/likes_cubit.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
-import 'package:democracy/post/bloc/post_list/post_list_cubit.dart';
+import 'package:democracy/post/bloc/posts/posts_cubit.dart';
 import 'package:democracy/post/bloc/replies/replies_cubit.dart';
 import 'package:democracy/post/bloc/user_posts/user_posts_cubit.dart';
 import 'package:democracy/post/bloc/user_replies/user_replies_cubit.dart';
@@ -92,7 +93,8 @@ void main() async {
           BlocProvider(create: (context) => SurveyBottomNavigationBloc()),
           BlocProvider(create: (context) => PollsCubit()),
           BlocProvider(create: (context) => PollDetailCubit()),
-          BlocProvider(create: (context) => PostListCubit()),
+          BlocProvider(create: (context) => ForYouCubit()),
+          BlocProvider(create: (context) => PostsCubit()),
           BlocProvider(create: (context) => PostDetailCubit()),
           BlocProvider(create: (context) => FollowingCubit()),
           BlocProvider(create: (context) => RepliesCubit()),

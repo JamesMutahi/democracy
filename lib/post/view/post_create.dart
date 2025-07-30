@@ -71,7 +71,9 @@ class _PostCreateState extends State<PostCreate> {
           if (didPop) {
             return;
           }
-          _disablePostButton
+          widget.isReply
+              ? Navigator.pop(context)
+              : _disablePostButton
               ? Navigator.pop(context)
               : showDialog(
                 context: context,

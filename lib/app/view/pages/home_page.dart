@@ -3,8 +3,8 @@ import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/post/bloc/following/following_cubit.dart';
+import 'package:democracy/post/bloc/for_you/for_you_cubit.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
-import 'package:democracy/post/bloc/post_list/post_list_cubit.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/post_create.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
@@ -99,9 +99,9 @@ class _ForYouTabState extends State<ForYouTab> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<PostListCubit, PostListState>(
+    return BlocListener<ForYouCubit, ForYouState>(
       listener: (context, state) {
-        if (state.status == PostListStatus.success) {
+        if (state.status == ForYouStatus.success) {
           setState(() {
             _posts = state.posts.toList();
             loading = false;
@@ -116,7 +116,7 @@ class _ForYouTabState extends State<ForYouTab> {
             _refreshController.loadComplete();
           });
         }
-        if (state.status == PostListStatus.failure) {
+        if (state.status == ForYouStatus.failure) {
           if (loading) {
             setState(() {
               loading = false;
@@ -144,7 +144,7 @@ class _ForYouTabState extends State<ForYouTab> {
               });
             },
             refreshController: _refreshController,
-            enablePullDown: true,
+            enablePullDown: false,
             enablePullUp: hasNextPage ? true : false,
             onRefresh: () {},
             onLoading: () {},

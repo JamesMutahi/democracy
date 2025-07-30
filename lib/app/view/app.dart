@@ -16,9 +16,10 @@ import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
 import 'package:democracy/poll/bloc/polls/polls_cubit.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
 import 'package:democracy/post/bloc/following/following_cubit.dart';
+import 'package:democracy/post/bloc/for_you/for_you_cubit.dart';
 import 'package:democracy/post/bloc/likes/likes_cubit.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
-import 'package:democracy/post/bloc/post_list/post_list_cubit.dart';
+import 'package:democracy/post/bloc/posts/posts_cubit.dart';
 import 'package:democracy/post/bloc/replies/replies_cubit.dart';
 import 'package:democracy/app/utils/view/app_theme.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
@@ -147,25 +148,25 @@ class _Listeners extends StatelessWidget {
           listener: (context, state) {
             switch (state) {
               case WebsocketConnected():
-                context.read<WebsocketBloc>().add(WebsocketEvent.getPosts());
+                context.read<WebsocketBloc>().add(
+                  WebsocketEvent.getForYouPosts(),
+                );
                 context.read<WebsocketBloc>().add(
                   WebsocketEvent.getNotifications(),
                 );
-                context.read<WebsocketBloc>().add(
-                  WebsocketEvent.getPolls(),
-                );
-                context.read<WebsocketBloc>().add(
-                  WebsocketEvent.getSurveys(),
-                );
-                context.read<WebsocketBloc>().add(
-                  WebsocketEvent.getChats(),
-                );
+                context.read<WebsocketBloc>().add(WebsocketEvent.getPolls());
+                context.read<WebsocketBloc>().add(WebsocketEvent.getSurveys());
+                context.read<WebsocketBloc>().add(WebsocketEvent.getChats());
               case WebsocketSuccess(:final message):
                 switch (message['stream']) {
                   case postsStream:
                     switch (message['payload']['action']) {
+                      case 'for_you':
+                        context.read<ForYouCubit>().loaded(
+                          payload: message['payload'],
+                        );
                       case 'list':
-                        context.read<PostListCubit>().loaded(
+                        context.read<PostsCubit>().loaded(
                           payload: message['payload'],
                         );
                       case 'create':
@@ -344,7 +345,8 @@ class _Listeners extends StatelessWidget {
                     }
                 }
               case WebsocketFailure(:final error):
-                context.read<PostListCubit>().websocketFailure(error: error);
+                context.read<ForYouCubit>().websocketFailure(error: error);
+                context.read<PostsCubit>().websocketFailure(error: error);
                 context.read<RepliesCubit>().websocketFailure(error: error);
                 context.read<SurveysCubit>().websocketFailure(error: error);
                 context.read<PollsCubit>().websocketFailure(error: error);

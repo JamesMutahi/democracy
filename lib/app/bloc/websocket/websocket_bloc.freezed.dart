@@ -61,13 +61,14 @@ extension WebsocketEventPatterns on WebsocketEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Connect value)?  connect,TResult Function( _ChangeState value)?  changeState,TResult Function( _GetPosts value)?  getPosts,TResult Function( _CreatePost value)?  createPost,TResult Function( _UpdatePost value)?  updatePost,TResult Function( _LikePost value)?  likePost,TResult Function( _BookmarkPost value)?  bookmarkPost,TResult Function( _DeletePost value)?  deletePost,TResult Function( _ReportPost value)?  reportPost,TResult Function( _GetFollowingPosts value)?  getFollowingPosts,TResult Function( _GetReplies value)?  getReplies,TResult Function( _UnsubscribeReplies value)?  unsubscribeReplies,TResult Function( _GetUserPosts value)?  getUserPosts,TResult Function( _GetBookmarks value)?  getBookmarks,TResult Function( _GetLikedPosts value)?  getLikedPosts,TResult Function( _GetUserReplies value)?  getUserReplies,TResult Function( _UnsubscribeUser value)?  unsubscribeUser,TResult Function( _UnsubscribeUserProfilePosts value)?  unsubscribeUserProfilePosts,TResult Function( _GetChats value)?  getChats,TResult Function( _CreateChat value)?  createChat,TResult Function( _SubscribeChat value)?  subscribeChat,TResult Function( _GetMessages value)?  getMessages,TResult Function( _CreateMessage value)?  createMessage,TResult Function( _EditMessage value)?  editMessage,TResult Function( _DeleteMessage value)?  deleteMessage,TResult Function( _MarkChatAsRead value)?  markChatAsRead,TResult Function( _GetPolls value)?  getPolls,TResult Function( _SubscribePoll value)?  subscribePoll,TResult Function( _Vote value)?  vote,TResult Function( _SubmitReason value)?  submitReason,TResult Function( _GetSurveys value)?  getSurveys,TResult Function( _SubmitResponse value)?  submitResponse,TResult Function( _GetUsers value)?  getUsers,TResult Function( _GetUser value)?  getUser,TResult Function( _UpdateUser value)?  updateUser,TResult Function( _MuteUser value)?  muteUser,TResult Function( _BlockUser value)?  blockUser,TResult Function( _FollowUser value)?  followUser,TResult Function( _SendDirectMessage value)?  sendDirectMessage,TResult Function( _GetNotifications value)?  getNotifications,TResult Function( _MarkNotificationAsRead value)?  markNotificationAsRead,TResult Function( _Disconnect value)?  disconnect,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Connect value)?  connect,TResult Function( _ChangeState value)?  changeState,TResult Function( _GetPosts value)?  getPosts,TResult Function( _GetForYouPosts value)?  getForYouPosts,TResult Function( _CreatePost value)?  createPost,TResult Function( _UpdatePost value)?  updatePost,TResult Function( _LikePost value)?  likePost,TResult Function( _BookmarkPost value)?  bookmarkPost,TResult Function( _DeletePost value)?  deletePost,TResult Function( _ReportPost value)?  reportPost,TResult Function( _GetFollowingPosts value)?  getFollowingPosts,TResult Function( _GetReplies value)?  getReplies,TResult Function( _UnsubscribeReplies value)?  unsubscribeReplies,TResult Function( _GetUserPosts value)?  getUserPosts,TResult Function( _GetBookmarks value)?  getBookmarks,TResult Function( _GetLikedPosts value)?  getLikedPosts,TResult Function( _GetUserReplies value)?  getUserReplies,TResult Function( _UnsubscribeUser value)?  unsubscribeUser,TResult Function( _UnsubscribeUserProfilePosts value)?  unsubscribeUserProfilePosts,TResult Function( _GetChats value)?  getChats,TResult Function( _CreateChat value)?  createChat,TResult Function( _SubscribeChat value)?  subscribeChat,TResult Function( _GetMessages value)?  getMessages,TResult Function( _CreateMessage value)?  createMessage,TResult Function( _EditMessage value)?  editMessage,TResult Function( _DeleteMessage value)?  deleteMessage,TResult Function( _MarkChatAsRead value)?  markChatAsRead,TResult Function( _GetPolls value)?  getPolls,TResult Function( _SubscribePoll value)?  subscribePoll,TResult Function( _Vote value)?  vote,TResult Function( _SubmitReason value)?  submitReason,TResult Function( _GetSurveys value)?  getSurveys,TResult Function( _SubmitResponse value)?  submitResponse,TResult Function( _GetUsers value)?  getUsers,TResult Function( _GetUser value)?  getUser,TResult Function( _UpdateUser value)?  updateUser,TResult Function( _MuteUser value)?  muteUser,TResult Function( _BlockUser value)?  blockUser,TResult Function( _FollowUser value)?  followUser,TResult Function( _SendDirectMessage value)?  sendDirectMessage,TResult Function( _GetNotifications value)?  getNotifications,TResult Function( _MarkNotificationAsRead value)?  markNotificationAsRead,TResult Function( _Disconnect value)?  disconnect,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Connect() when connect != null:
 return connect(_that);case _ChangeState() when changeState != null:
 return changeState(_that);case _GetPosts() when getPosts != null:
-return getPosts(_that);case _CreatePost() when createPost != null:
+return getPosts(_that);case _GetForYouPosts() when getForYouPosts != null:
+return getForYouPosts(_that);case _CreatePost() when createPost != null:
 return createPost(_that);case _UpdatePost() when updatePost != null:
 return updatePost(_that);case _LikePost() when likePost != null:
 return likePost(_that);case _BookmarkPost() when bookmarkPost != null:
@@ -124,13 +125,14 @@ return disconnect(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Connect value)  connect,required TResult Function( _ChangeState value)  changeState,required TResult Function( _GetPosts value)  getPosts,required TResult Function( _CreatePost value)  createPost,required TResult Function( _UpdatePost value)  updatePost,required TResult Function( _LikePost value)  likePost,required TResult Function( _BookmarkPost value)  bookmarkPost,required TResult Function( _DeletePost value)  deletePost,required TResult Function( _ReportPost value)  reportPost,required TResult Function( _GetFollowingPosts value)  getFollowingPosts,required TResult Function( _GetReplies value)  getReplies,required TResult Function( _UnsubscribeReplies value)  unsubscribeReplies,required TResult Function( _GetUserPosts value)  getUserPosts,required TResult Function( _GetBookmarks value)  getBookmarks,required TResult Function( _GetLikedPosts value)  getLikedPosts,required TResult Function( _GetUserReplies value)  getUserReplies,required TResult Function( _UnsubscribeUser value)  unsubscribeUser,required TResult Function( _UnsubscribeUserProfilePosts value)  unsubscribeUserProfilePosts,required TResult Function( _GetChats value)  getChats,required TResult Function( _CreateChat value)  createChat,required TResult Function( _SubscribeChat value)  subscribeChat,required TResult Function( _GetMessages value)  getMessages,required TResult Function( _CreateMessage value)  createMessage,required TResult Function( _EditMessage value)  editMessage,required TResult Function( _DeleteMessage value)  deleteMessage,required TResult Function( _MarkChatAsRead value)  markChatAsRead,required TResult Function( _GetPolls value)  getPolls,required TResult Function( _SubscribePoll value)  subscribePoll,required TResult Function( _Vote value)  vote,required TResult Function( _SubmitReason value)  submitReason,required TResult Function( _GetSurveys value)  getSurveys,required TResult Function( _SubmitResponse value)  submitResponse,required TResult Function( _GetUsers value)  getUsers,required TResult Function( _GetUser value)  getUser,required TResult Function( _UpdateUser value)  updateUser,required TResult Function( _MuteUser value)  muteUser,required TResult Function( _BlockUser value)  blockUser,required TResult Function( _FollowUser value)  followUser,required TResult Function( _SendDirectMessage value)  sendDirectMessage,required TResult Function( _GetNotifications value)  getNotifications,required TResult Function( _MarkNotificationAsRead value)  markNotificationAsRead,required TResult Function( _Disconnect value)  disconnect,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Connect value)  connect,required TResult Function( _ChangeState value)  changeState,required TResult Function( _GetPosts value)  getPosts,required TResult Function( _GetForYouPosts value)  getForYouPosts,required TResult Function( _CreatePost value)  createPost,required TResult Function( _UpdatePost value)  updatePost,required TResult Function( _LikePost value)  likePost,required TResult Function( _BookmarkPost value)  bookmarkPost,required TResult Function( _DeletePost value)  deletePost,required TResult Function( _ReportPost value)  reportPost,required TResult Function( _GetFollowingPosts value)  getFollowingPosts,required TResult Function( _GetReplies value)  getReplies,required TResult Function( _UnsubscribeReplies value)  unsubscribeReplies,required TResult Function( _GetUserPosts value)  getUserPosts,required TResult Function( _GetBookmarks value)  getBookmarks,required TResult Function( _GetLikedPosts value)  getLikedPosts,required TResult Function( _GetUserReplies value)  getUserReplies,required TResult Function( _UnsubscribeUser value)  unsubscribeUser,required TResult Function( _UnsubscribeUserProfilePosts value)  unsubscribeUserProfilePosts,required TResult Function( _GetChats value)  getChats,required TResult Function( _CreateChat value)  createChat,required TResult Function( _SubscribeChat value)  subscribeChat,required TResult Function( _GetMessages value)  getMessages,required TResult Function( _CreateMessage value)  createMessage,required TResult Function( _EditMessage value)  editMessage,required TResult Function( _DeleteMessage value)  deleteMessage,required TResult Function( _MarkChatAsRead value)  markChatAsRead,required TResult Function( _GetPolls value)  getPolls,required TResult Function( _SubscribePoll value)  subscribePoll,required TResult Function( _Vote value)  vote,required TResult Function( _SubmitReason value)  submitReason,required TResult Function( _GetSurveys value)  getSurveys,required TResult Function( _SubmitResponse value)  submitResponse,required TResult Function( _GetUsers value)  getUsers,required TResult Function( _GetUser value)  getUser,required TResult Function( _UpdateUser value)  updateUser,required TResult Function( _MuteUser value)  muteUser,required TResult Function( _BlockUser value)  blockUser,required TResult Function( _FollowUser value)  followUser,required TResult Function( _SendDirectMessage value)  sendDirectMessage,required TResult Function( _GetNotifications value)  getNotifications,required TResult Function( _MarkNotificationAsRead value)  markNotificationAsRead,required TResult Function( _Disconnect value)  disconnect,}){
 final _that = this;
 switch (_that) {
 case _Connect():
 return connect(_that);case _ChangeState():
 return changeState(_that);case _GetPosts():
-return getPosts(_that);case _CreatePost():
+return getPosts(_that);case _GetForYouPosts():
+return getForYouPosts(_that);case _CreatePost():
 return createPost(_that);case _UpdatePost():
 return updatePost(_that);case _LikePost():
 return likePost(_that);case _BookmarkPost():
@@ -186,13 +188,14 @@ return disconnect(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Connect value)?  connect,TResult? Function( _ChangeState value)?  changeState,TResult? Function( _GetPosts value)?  getPosts,TResult? Function( _CreatePost value)?  createPost,TResult? Function( _UpdatePost value)?  updatePost,TResult? Function( _LikePost value)?  likePost,TResult? Function( _BookmarkPost value)?  bookmarkPost,TResult? Function( _DeletePost value)?  deletePost,TResult? Function( _ReportPost value)?  reportPost,TResult? Function( _GetFollowingPosts value)?  getFollowingPosts,TResult? Function( _GetReplies value)?  getReplies,TResult? Function( _UnsubscribeReplies value)?  unsubscribeReplies,TResult? Function( _GetUserPosts value)?  getUserPosts,TResult? Function( _GetBookmarks value)?  getBookmarks,TResult? Function( _GetLikedPosts value)?  getLikedPosts,TResult? Function( _GetUserReplies value)?  getUserReplies,TResult? Function( _UnsubscribeUser value)?  unsubscribeUser,TResult? Function( _UnsubscribeUserProfilePosts value)?  unsubscribeUserProfilePosts,TResult? Function( _GetChats value)?  getChats,TResult? Function( _CreateChat value)?  createChat,TResult? Function( _SubscribeChat value)?  subscribeChat,TResult? Function( _GetMessages value)?  getMessages,TResult? Function( _CreateMessage value)?  createMessage,TResult? Function( _EditMessage value)?  editMessage,TResult? Function( _DeleteMessage value)?  deleteMessage,TResult? Function( _MarkChatAsRead value)?  markChatAsRead,TResult? Function( _GetPolls value)?  getPolls,TResult? Function( _SubscribePoll value)?  subscribePoll,TResult? Function( _Vote value)?  vote,TResult? Function( _SubmitReason value)?  submitReason,TResult? Function( _GetSurveys value)?  getSurveys,TResult? Function( _SubmitResponse value)?  submitResponse,TResult? Function( _GetUsers value)?  getUsers,TResult? Function( _GetUser value)?  getUser,TResult? Function( _UpdateUser value)?  updateUser,TResult? Function( _MuteUser value)?  muteUser,TResult? Function( _BlockUser value)?  blockUser,TResult? Function( _FollowUser value)?  followUser,TResult? Function( _SendDirectMessage value)?  sendDirectMessage,TResult? Function( _GetNotifications value)?  getNotifications,TResult? Function( _MarkNotificationAsRead value)?  markNotificationAsRead,TResult? Function( _Disconnect value)?  disconnect,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Connect value)?  connect,TResult? Function( _ChangeState value)?  changeState,TResult? Function( _GetPosts value)?  getPosts,TResult? Function( _GetForYouPosts value)?  getForYouPosts,TResult? Function( _CreatePost value)?  createPost,TResult? Function( _UpdatePost value)?  updatePost,TResult? Function( _LikePost value)?  likePost,TResult? Function( _BookmarkPost value)?  bookmarkPost,TResult? Function( _DeletePost value)?  deletePost,TResult? Function( _ReportPost value)?  reportPost,TResult? Function( _GetFollowingPosts value)?  getFollowingPosts,TResult? Function( _GetReplies value)?  getReplies,TResult? Function( _UnsubscribeReplies value)?  unsubscribeReplies,TResult? Function( _GetUserPosts value)?  getUserPosts,TResult? Function( _GetBookmarks value)?  getBookmarks,TResult? Function( _GetLikedPosts value)?  getLikedPosts,TResult? Function( _GetUserReplies value)?  getUserReplies,TResult? Function( _UnsubscribeUser value)?  unsubscribeUser,TResult? Function( _UnsubscribeUserProfilePosts value)?  unsubscribeUserProfilePosts,TResult? Function( _GetChats value)?  getChats,TResult? Function( _CreateChat value)?  createChat,TResult? Function( _SubscribeChat value)?  subscribeChat,TResult? Function( _GetMessages value)?  getMessages,TResult? Function( _CreateMessage value)?  createMessage,TResult? Function( _EditMessage value)?  editMessage,TResult? Function( _DeleteMessage value)?  deleteMessage,TResult? Function( _MarkChatAsRead value)?  markChatAsRead,TResult? Function( _GetPolls value)?  getPolls,TResult? Function( _SubscribePoll value)?  subscribePoll,TResult? Function( _Vote value)?  vote,TResult? Function( _SubmitReason value)?  submitReason,TResult? Function( _GetSurveys value)?  getSurveys,TResult? Function( _SubmitResponse value)?  submitResponse,TResult? Function( _GetUsers value)?  getUsers,TResult? Function( _GetUser value)?  getUser,TResult? Function( _UpdateUser value)?  updateUser,TResult? Function( _MuteUser value)?  muteUser,TResult? Function( _BlockUser value)?  blockUser,TResult? Function( _FollowUser value)?  followUser,TResult? Function( _SendDirectMessage value)?  sendDirectMessage,TResult? Function( _GetNotifications value)?  getNotifications,TResult? Function( _MarkNotificationAsRead value)?  markNotificationAsRead,TResult? Function( _Disconnect value)?  disconnect,}){
 final _that = this;
 switch (_that) {
 case _Connect() when connect != null:
 return connect(_that);case _ChangeState() when changeState != null:
 return changeState(_that);case _GetPosts() when getPosts != null:
-return getPosts(_that);case _CreatePost() when createPost != null:
+return getPosts(_that);case _GetForYouPosts() when getForYouPosts != null:
+return getForYouPosts(_that);case _CreatePost() when createPost != null:
 return createPost(_that);case _UpdatePost() when updatePost != null:
 return updatePost(_that);case _LikePost() when likePost != null:
 return likePost(_that);case _BookmarkPost() when bookmarkPost != null:
@@ -248,12 +251,13 @@ return disconnect(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  connect,TResult Function( WebsocketState state)?  changeState,TResult Function()?  getPosts,TResult Function( String body,  PostStatus status,  Post? repostOf,  Post? replyTo,  Poll? poll,  Survey? survey,  List<int> taggedUserIds)?  createPost,TResult Function( int id,  String body)?  updatePost,TResult Function( Post post)?  likePost,TResult Function( Post post)?  bookmarkPost,TResult Function( Post post)?  deletePost,TResult Function( String issue,  Post post)?  reportPost,TResult Function( Post? lastPost)?  getFollowingPosts,TResult Function( Post post,  Post? lastPost)?  getReplies,TResult Function( Post post)?  unsubscribeReplies,TResult Function( User user,  Post? lastPost)?  getUserPosts,TResult Function( User user,  Post? lastPost)?  getBookmarks,TResult Function( User user,  Post? lastPost)?  getLikedPosts,TResult Function( User user,  Post? lastPost)?  getUserReplies,TResult Function( User user)?  unsubscribeUser,TResult Function( User user)?  unsubscribeUserProfilePosts,TResult Function( String? searchTerm,  Chat? lastChat)?  getChats,TResult Function( User user)?  createChat,TResult Function( Chat chat)?  subscribeChat,TResult Function( Chat chat,  Message? lastMessage)?  getMessages,TResult Function( Chat chat,  String text,  Post? post,  Poll? poll,  Survey? survey)?  createMessage,TResult Function( int messageId,  String text)?  editMessage,TResult Function( List<Message> messages)?  deleteMessage,TResult Function( Chat chat)?  markChatAsRead,TResult Function( String? searchTerm,  Poll? lastPoll)?  getPolls,TResult Function( Poll poll)?  subscribePoll,TResult Function( Option option)?  vote,TResult Function( Poll poll,  String text)?  submitReason,TResult Function( String? searchTerm,  Survey? lastSurvey)?  getSurveys,TResult Function( Survey survey,  DateTime startTime,  DateTime endTime,  List<TextAnswer> textAnswers,  List<ChoiceAnswer> choiceAnswers)?  submitResponse,TResult Function( String? searchTerm,  int page)?  getUsers,TResult Function( User user)?  getUser,TResult Function( User user,  String name,  String status,  String? imagePath,  String? coverPhotoPath)?  updateUser,TResult Function( User user)?  muteUser,TResult Function( User user)?  blockUser,TResult Function( User user)?  followUser,TResult Function( List<User> users,  String text,  Post? post,  Poll? poll,  Survey? survey)?  sendDirectMessage,TResult Function()?  getNotifications,TResult Function( Notification notification)?  markNotificationAsRead,TResult Function()?  disconnect,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  connect,TResult Function( WebsocketState state)?  changeState,TResult Function( String? searchTerm,  Post? lastPost)?  getPosts,TResult Function()?  getForYouPosts,TResult Function( String body,  PostStatus status,  Post? repostOf,  Post? replyTo,  Poll? poll,  Survey? survey,  List<int> taggedUserIds)?  createPost,TResult Function( int id,  String body)?  updatePost,TResult Function( Post post)?  likePost,TResult Function( Post post)?  bookmarkPost,TResult Function( Post post)?  deletePost,TResult Function( String issue,  Post post)?  reportPost,TResult Function( Post? lastPost)?  getFollowingPosts,TResult Function( Post post,  Post? lastPost)?  getReplies,TResult Function( Post post)?  unsubscribeReplies,TResult Function( User user,  Post? lastPost)?  getUserPosts,TResult Function( User user,  Post? lastPost)?  getBookmarks,TResult Function( User user,  Post? lastPost)?  getLikedPosts,TResult Function( User user,  Post? lastPost)?  getUserReplies,TResult Function( User user)?  unsubscribeUser,TResult Function( User user)?  unsubscribeUserProfilePosts,TResult Function( String? searchTerm,  Chat? lastChat)?  getChats,TResult Function( User user)?  createChat,TResult Function( Chat chat)?  subscribeChat,TResult Function( Chat chat,  Message? lastMessage)?  getMessages,TResult Function( Chat chat,  String text,  Post? post,  Poll? poll,  Survey? survey)?  createMessage,TResult Function( int messageId,  String text)?  editMessage,TResult Function( List<Message> messages)?  deleteMessage,TResult Function( Chat chat)?  markChatAsRead,TResult Function( String? searchTerm,  Poll? lastPoll)?  getPolls,TResult Function( Poll poll)?  subscribePoll,TResult Function( Option option)?  vote,TResult Function( Poll poll,  String text)?  submitReason,TResult Function( String? searchTerm,  Survey? lastSurvey)?  getSurveys,TResult Function( Survey survey,  DateTime startTime,  DateTime endTime,  List<TextAnswer> textAnswers,  List<ChoiceAnswer> choiceAnswers)?  submitResponse,TResult Function( String? searchTerm,  int page)?  getUsers,TResult Function( User user)?  getUser,TResult Function( User user,  String name,  String status,  String? imagePath,  String? coverPhotoPath)?  updateUser,TResult Function( User user)?  muteUser,TResult Function( User user)?  blockUser,TResult Function( User user)?  followUser,TResult Function( List<User> users,  String text,  Post? post,  Poll? poll,  Survey? survey)?  sendDirectMessage,TResult Function()?  getNotifications,TResult Function( Notification notification)?  markNotificationAsRead,TResult Function()?  disconnect,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Connect() when connect != null:
 return connect();case _ChangeState() when changeState != null:
 return changeState(_that.state);case _GetPosts() when getPosts != null:
-return getPosts();case _CreatePost() when createPost != null:
+return getPosts(_that.searchTerm,_that.lastPost);case _GetForYouPosts() when getForYouPosts != null:
+return getForYouPosts();case _CreatePost() when createPost != null:
 return createPost(_that.body,_that.status,_that.repostOf,_that.replyTo,_that.poll,_that.survey,_that.taggedUserIds);case _UpdatePost() when updatePost != null:
 return updatePost(_that.id,_that.body);case _LikePost() when likePost != null:
 return likePost(_that.post);case _BookmarkPost() when bookmarkPost != null:
@@ -310,12 +314,13 @@ return disconnect();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  connect,required TResult Function( WebsocketState state)  changeState,required TResult Function()  getPosts,required TResult Function( String body,  PostStatus status,  Post? repostOf,  Post? replyTo,  Poll? poll,  Survey? survey,  List<int> taggedUserIds)  createPost,required TResult Function( int id,  String body)  updatePost,required TResult Function( Post post)  likePost,required TResult Function( Post post)  bookmarkPost,required TResult Function( Post post)  deletePost,required TResult Function( String issue,  Post post)  reportPost,required TResult Function( Post? lastPost)  getFollowingPosts,required TResult Function( Post post,  Post? lastPost)  getReplies,required TResult Function( Post post)  unsubscribeReplies,required TResult Function( User user,  Post? lastPost)  getUserPosts,required TResult Function( User user,  Post? lastPost)  getBookmarks,required TResult Function( User user,  Post? lastPost)  getLikedPosts,required TResult Function( User user,  Post? lastPost)  getUserReplies,required TResult Function( User user)  unsubscribeUser,required TResult Function( User user)  unsubscribeUserProfilePosts,required TResult Function( String? searchTerm,  Chat? lastChat)  getChats,required TResult Function( User user)  createChat,required TResult Function( Chat chat)  subscribeChat,required TResult Function( Chat chat,  Message? lastMessage)  getMessages,required TResult Function( Chat chat,  String text,  Post? post,  Poll? poll,  Survey? survey)  createMessage,required TResult Function( int messageId,  String text)  editMessage,required TResult Function( List<Message> messages)  deleteMessage,required TResult Function( Chat chat)  markChatAsRead,required TResult Function( String? searchTerm,  Poll? lastPoll)  getPolls,required TResult Function( Poll poll)  subscribePoll,required TResult Function( Option option)  vote,required TResult Function( Poll poll,  String text)  submitReason,required TResult Function( String? searchTerm,  Survey? lastSurvey)  getSurveys,required TResult Function( Survey survey,  DateTime startTime,  DateTime endTime,  List<TextAnswer> textAnswers,  List<ChoiceAnswer> choiceAnswers)  submitResponse,required TResult Function( String? searchTerm,  int page)  getUsers,required TResult Function( User user)  getUser,required TResult Function( User user,  String name,  String status,  String? imagePath,  String? coverPhotoPath)  updateUser,required TResult Function( User user)  muteUser,required TResult Function( User user)  blockUser,required TResult Function( User user)  followUser,required TResult Function( List<User> users,  String text,  Post? post,  Poll? poll,  Survey? survey)  sendDirectMessage,required TResult Function()  getNotifications,required TResult Function( Notification notification)  markNotificationAsRead,required TResult Function()  disconnect,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  connect,required TResult Function( WebsocketState state)  changeState,required TResult Function( String? searchTerm,  Post? lastPost)  getPosts,required TResult Function()  getForYouPosts,required TResult Function( String body,  PostStatus status,  Post? repostOf,  Post? replyTo,  Poll? poll,  Survey? survey,  List<int> taggedUserIds)  createPost,required TResult Function( int id,  String body)  updatePost,required TResult Function( Post post)  likePost,required TResult Function( Post post)  bookmarkPost,required TResult Function( Post post)  deletePost,required TResult Function( String issue,  Post post)  reportPost,required TResult Function( Post? lastPost)  getFollowingPosts,required TResult Function( Post post,  Post? lastPost)  getReplies,required TResult Function( Post post)  unsubscribeReplies,required TResult Function( User user,  Post? lastPost)  getUserPosts,required TResult Function( User user,  Post? lastPost)  getBookmarks,required TResult Function( User user,  Post? lastPost)  getLikedPosts,required TResult Function( User user,  Post? lastPost)  getUserReplies,required TResult Function( User user)  unsubscribeUser,required TResult Function( User user)  unsubscribeUserProfilePosts,required TResult Function( String? searchTerm,  Chat? lastChat)  getChats,required TResult Function( User user)  createChat,required TResult Function( Chat chat)  subscribeChat,required TResult Function( Chat chat,  Message? lastMessage)  getMessages,required TResult Function( Chat chat,  String text,  Post? post,  Poll? poll,  Survey? survey)  createMessage,required TResult Function( int messageId,  String text)  editMessage,required TResult Function( List<Message> messages)  deleteMessage,required TResult Function( Chat chat)  markChatAsRead,required TResult Function( String? searchTerm,  Poll? lastPoll)  getPolls,required TResult Function( Poll poll)  subscribePoll,required TResult Function( Option option)  vote,required TResult Function( Poll poll,  String text)  submitReason,required TResult Function( String? searchTerm,  Survey? lastSurvey)  getSurveys,required TResult Function( Survey survey,  DateTime startTime,  DateTime endTime,  List<TextAnswer> textAnswers,  List<ChoiceAnswer> choiceAnswers)  submitResponse,required TResult Function( String? searchTerm,  int page)  getUsers,required TResult Function( User user)  getUser,required TResult Function( User user,  String name,  String status,  String? imagePath,  String? coverPhotoPath)  updateUser,required TResult Function( User user)  muteUser,required TResult Function( User user)  blockUser,required TResult Function( User user)  followUser,required TResult Function( List<User> users,  String text,  Post? post,  Poll? poll,  Survey? survey)  sendDirectMessage,required TResult Function()  getNotifications,required TResult Function( Notification notification)  markNotificationAsRead,required TResult Function()  disconnect,}) {final _that = this;
 switch (_that) {
 case _Connect():
 return connect();case _ChangeState():
 return changeState(_that.state);case _GetPosts():
-return getPosts();case _CreatePost():
+return getPosts(_that.searchTerm,_that.lastPost);case _GetForYouPosts():
+return getForYouPosts();case _CreatePost():
 return createPost(_that.body,_that.status,_that.repostOf,_that.replyTo,_that.poll,_that.survey,_that.taggedUserIds);case _UpdatePost():
 return updatePost(_that.id,_that.body);case _LikePost():
 return likePost(_that.post);case _BookmarkPost():
@@ -371,12 +376,13 @@ return disconnect();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  connect,TResult? Function( WebsocketState state)?  changeState,TResult? Function()?  getPosts,TResult? Function( String body,  PostStatus status,  Post? repostOf,  Post? replyTo,  Poll? poll,  Survey? survey,  List<int> taggedUserIds)?  createPost,TResult? Function( int id,  String body)?  updatePost,TResult? Function( Post post)?  likePost,TResult? Function( Post post)?  bookmarkPost,TResult? Function( Post post)?  deletePost,TResult? Function( String issue,  Post post)?  reportPost,TResult? Function( Post? lastPost)?  getFollowingPosts,TResult? Function( Post post,  Post? lastPost)?  getReplies,TResult? Function( Post post)?  unsubscribeReplies,TResult? Function( User user,  Post? lastPost)?  getUserPosts,TResult? Function( User user,  Post? lastPost)?  getBookmarks,TResult? Function( User user,  Post? lastPost)?  getLikedPosts,TResult? Function( User user,  Post? lastPost)?  getUserReplies,TResult? Function( User user)?  unsubscribeUser,TResult? Function( User user)?  unsubscribeUserProfilePosts,TResult? Function( String? searchTerm,  Chat? lastChat)?  getChats,TResult? Function( User user)?  createChat,TResult? Function( Chat chat)?  subscribeChat,TResult? Function( Chat chat,  Message? lastMessage)?  getMessages,TResult? Function( Chat chat,  String text,  Post? post,  Poll? poll,  Survey? survey)?  createMessage,TResult? Function( int messageId,  String text)?  editMessage,TResult? Function( List<Message> messages)?  deleteMessage,TResult? Function( Chat chat)?  markChatAsRead,TResult? Function( String? searchTerm,  Poll? lastPoll)?  getPolls,TResult? Function( Poll poll)?  subscribePoll,TResult? Function( Option option)?  vote,TResult? Function( Poll poll,  String text)?  submitReason,TResult? Function( String? searchTerm,  Survey? lastSurvey)?  getSurveys,TResult? Function( Survey survey,  DateTime startTime,  DateTime endTime,  List<TextAnswer> textAnswers,  List<ChoiceAnswer> choiceAnswers)?  submitResponse,TResult? Function( String? searchTerm,  int page)?  getUsers,TResult? Function( User user)?  getUser,TResult? Function( User user,  String name,  String status,  String? imagePath,  String? coverPhotoPath)?  updateUser,TResult? Function( User user)?  muteUser,TResult? Function( User user)?  blockUser,TResult? Function( User user)?  followUser,TResult? Function( List<User> users,  String text,  Post? post,  Poll? poll,  Survey? survey)?  sendDirectMessage,TResult? Function()?  getNotifications,TResult? Function( Notification notification)?  markNotificationAsRead,TResult? Function()?  disconnect,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  connect,TResult? Function( WebsocketState state)?  changeState,TResult? Function( String? searchTerm,  Post? lastPost)?  getPosts,TResult? Function()?  getForYouPosts,TResult? Function( String body,  PostStatus status,  Post? repostOf,  Post? replyTo,  Poll? poll,  Survey? survey,  List<int> taggedUserIds)?  createPost,TResult? Function( int id,  String body)?  updatePost,TResult? Function( Post post)?  likePost,TResult? Function( Post post)?  bookmarkPost,TResult? Function( Post post)?  deletePost,TResult? Function( String issue,  Post post)?  reportPost,TResult? Function( Post? lastPost)?  getFollowingPosts,TResult? Function( Post post,  Post? lastPost)?  getReplies,TResult? Function( Post post)?  unsubscribeReplies,TResult? Function( User user,  Post? lastPost)?  getUserPosts,TResult? Function( User user,  Post? lastPost)?  getBookmarks,TResult? Function( User user,  Post? lastPost)?  getLikedPosts,TResult? Function( User user,  Post? lastPost)?  getUserReplies,TResult? Function( User user)?  unsubscribeUser,TResult? Function( User user)?  unsubscribeUserProfilePosts,TResult? Function( String? searchTerm,  Chat? lastChat)?  getChats,TResult? Function( User user)?  createChat,TResult? Function( Chat chat)?  subscribeChat,TResult? Function( Chat chat,  Message? lastMessage)?  getMessages,TResult? Function( Chat chat,  String text,  Post? post,  Poll? poll,  Survey? survey)?  createMessage,TResult? Function( int messageId,  String text)?  editMessage,TResult? Function( List<Message> messages)?  deleteMessage,TResult? Function( Chat chat)?  markChatAsRead,TResult? Function( String? searchTerm,  Poll? lastPoll)?  getPolls,TResult? Function( Poll poll)?  subscribePoll,TResult? Function( Option option)?  vote,TResult? Function( Poll poll,  String text)?  submitReason,TResult? Function( String? searchTerm,  Survey? lastSurvey)?  getSurveys,TResult? Function( Survey survey,  DateTime startTime,  DateTime endTime,  List<TextAnswer> textAnswers,  List<ChoiceAnswer> choiceAnswers)?  submitResponse,TResult? Function( String? searchTerm,  int page)?  getUsers,TResult? Function( User user)?  getUser,TResult? Function( User user,  String name,  String status,  String? imagePath,  String? coverPhotoPath)?  updateUser,TResult? Function( User user)?  muteUser,TResult? Function( User user)?  blockUser,TResult? Function( User user)?  followUser,TResult? Function( List<User> users,  String text,  Post? post,  Poll? poll,  Survey? survey)?  sendDirectMessage,TResult? Function()?  getNotifications,TResult? Function( Notification notification)?  markNotificationAsRead,TResult? Function()?  disconnect,}) {final _that = this;
 switch (_that) {
 case _Connect() when connect != null:
 return connect();case _ChangeState() when changeState != null:
 return changeState(_that.state);case _GetPosts() when getPosts != null:
-return getPosts();case _CreatePost() when createPost != null:
+return getPosts(_that.searchTerm,_that.lastPost);case _GetForYouPosts() when getForYouPosts != null:
+return getForYouPosts();case _CreatePost() when createPost != null:
 return createPost(_that.body,_that.status,_that.repostOf,_that.replyTo,_that.poll,_that.survey,_that.taggedUserIds);case _UpdatePost() when updatePost != null:
 return updatePost(_that.id,_that.body);case _LikePost() when likePost != null:
 return likePost(_that.post);case _BookmarkPost() when bookmarkPost != null:
@@ -546,7 +552,93 @@ $WebsocketStateCopyWith<$Res> get state {
 
 
 class _GetPosts with DiagnosticableTreeMixin implements WebsocketEvent {
-  const _GetPosts();
+  const _GetPosts({this.searchTerm, this.lastPost});
+  
+
+ final  String? searchTerm;
+ final  Post? lastPost;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$GetPostsCopyWith<_GetPosts> get copyWith => __$GetPostsCopyWithImpl<_GetPosts>(this, _$identity);
+
+
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'WebsocketEvent.getPosts'))
+    ..add(DiagnosticsProperty('searchTerm', searchTerm))..add(DiagnosticsProperty('lastPost', lastPost));
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetPosts&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&(identical(other.lastPost, lastPost) || other.lastPost == lastPost));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,searchTerm,lastPost);
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  return 'WebsocketEvent.getPosts(searchTerm: $searchTerm, lastPost: $lastPost)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$GetPostsCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
+  factory _$GetPostsCopyWith(_GetPosts value, $Res Function(_GetPosts) _then) = __$GetPostsCopyWithImpl;
+@useResult
+$Res call({
+ String? searchTerm, Post? lastPost
+});
+
+
+$PostCopyWith<$Res>? get lastPost;
+
+}
+/// @nodoc
+class __$GetPostsCopyWithImpl<$Res>
+    implements _$GetPostsCopyWith<$Res> {
+  __$GetPostsCopyWithImpl(this._self, this._then);
+
+  final _GetPosts _self;
+  final $Res Function(_GetPosts) _then;
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? searchTerm = freezed,Object? lastPost = freezed,}) {
+  return _then(_GetPosts(
+searchTerm: freezed == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
+as String?,lastPost: freezed == lastPost ? _self.lastPost : lastPost // ignore: cast_nullable_to_non_nullable
+as Post?,
+  ));
+}
+
+/// Create a copy of WebsocketEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PostCopyWith<$Res>? get lastPost {
+    if (_self.lastPost == null) {
+    return null;
+  }
+
+  return $PostCopyWith<$Res>(_self.lastPost!, (value) {
+    return _then(_self.copyWith(lastPost: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _GetForYouPosts with DiagnosticableTreeMixin implements WebsocketEvent {
+  const _GetForYouPosts();
   
 
 
@@ -556,13 +648,13 @@ class _GetPosts with DiagnosticableTreeMixin implements WebsocketEvent {
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
-    ..add(DiagnosticsProperty('type', 'WebsocketEvent.getPosts'))
+    ..add(DiagnosticsProperty('type', 'WebsocketEvent.getForYouPosts'))
     ;
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetPosts);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetForYouPosts);
 }
 
 
@@ -571,7 +663,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'WebsocketEvent.getPosts()';
+  return 'WebsocketEvent.getForYouPosts()';
 }
 
 
