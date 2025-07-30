@@ -88,12 +88,12 @@ class _BookmarksState extends State<Bookmarks> {
           enablePullUp: hasNextPage ? true : false,
           onRefresh: () {
             context.read<WebsocketBloc>().add(
-              WebsocketEvent.loadBookmarks(user: widget.user),
+              WebsocketEvent.getBookmarks(user: widget.user),
             );
           },
           onLoading: () {
             context.read<WebsocketBloc>().add(
-              WebsocketEvent.loadBookmarks(
+              WebsocketEvent.getBookmarks(
                 user: widget.user,
                 lastPost: _posts.last,
               ),
@@ -101,7 +101,7 @@ class _BookmarksState extends State<Bookmarks> {
           },
           onFailure: () {
             context.read<WebsocketBloc>().add(
-              WebsocketEvent.loadBookmarks(user: widget.user),
+              WebsocketEvent.getBookmarks(user: widget.user),
             );
           },
         ),

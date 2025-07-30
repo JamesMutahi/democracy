@@ -47,7 +47,16 @@ class _MessagePageState extends State<MessagePage>
             flexibleSpace: CustomAppBar(
               user: widget.user,
               notifications: widget.notifications,
-              extras: [AppBarSearchBar(hintText: 'Search messages')],
+              extras: [
+                AppBarSearchBar(
+                  hintText: 'Search messages',
+                  onChanged: (value) {
+                    context.read<WebsocketBloc>().add(
+                      WebsocketEvent.getChats(searchTerm: value),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         ];

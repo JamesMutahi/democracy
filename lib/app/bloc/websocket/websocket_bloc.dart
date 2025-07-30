@@ -79,16 +79,16 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_UnsubscribeReplies>((event, emit) {
       _onUnsubscribeReplies(emit, event);
     });
-    on<_LoadUserPosts>((event, emit) {
+    on<_GetUserPosts>((event, emit) {
       _onLoadUserPosts(emit, event);
     });
-    on<_LoadBookmarks>((event, emit) {
+    on<_GetBookmarks>((event, emit) {
       _onLoadBookmarks(emit, event);
     });
-    on<_LoadLikedPosts>((event, emit) {
+    on<_GetLikedPosts>((event, emit) {
       _onLoadLikedPosts(emit, event);
     });
-    on<_LoadUserReplies>((event, emit) {
+    on<_GetUserReplies>((event, emit) {
       _onLoadUserReplies(emit, event);
     });
     on<_UnsubscribeUserProfilePosts>((event, emit) {
@@ -361,7 +361,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
 
   Future _onLoadUserPosts(
     Emitter<WebsocketState> emit,
-    _LoadUserPosts event,
+    _GetUserPosts event,
   ) async {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
@@ -378,7 +378,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
 
   Future _onLoadBookmarks(
     Emitter<WebsocketState> emit,
-    _LoadBookmarks event,
+    _GetBookmarks event,
   ) async {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
@@ -390,7 +390,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
 
   Future _onLoadLikedPosts(
     Emitter<WebsocketState> emit,
-    _LoadLikedPosts event,
+    _GetLikedPosts event,
   ) async {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
@@ -407,7 +407,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
 
   Future _onLoadUserReplies(
     Emitter<WebsocketState> emit,
-    _LoadUserReplies event,
+    _GetUserReplies event,
   ) async {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
@@ -445,6 +445,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'list',
         'request_id': chatRequestId,
+        'search_term': event.searchTerm,
         'last_chat': event.lastChat?.id,
       },
     };
@@ -707,6 +708,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'list',
         'request_id': pollRequestId,
+        'search_term': event.searchTerm,
         'last_poll': event.lastPoll?.id,
       },
     };
@@ -769,6 +771,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'list',
         'request_id': surveyRequestId,
+        'search_term': event.searchTerm,
         'last_survey': event.lastSurvey?.id,
       },
     };

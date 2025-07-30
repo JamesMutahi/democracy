@@ -14,6 +14,7 @@ import 'package:democracy/chat/models/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class Chats extends StatefulWidget {
@@ -226,7 +227,11 @@ class _ChatTileState extends State<ChatTile> {
           ],
         ),
       ),
-      subtitle:
+      subtitle: Row(
+        children: [
+          if (widget.chat.lastMessage!.isRead &&
+              widget.chat.lastMessage!.user.id == widget.currentUser.id)
+            _ReadIcon(),
           widget.chat.lastMessage == null
               ? Text('')
               : widget.chat.lastMessage!.text.isNotEmpty
@@ -240,6 +245,8 @@ class _ChatTileState extends State<ChatTile> {
               : widget.chat.lastMessage!.survey != null
               ? _LastMessageText(text: '${lastMessagePrefix}Shared a survey')
               : Text(''),
+        ],
+      ),
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -297,6 +304,15 @@ class _LastMessageText extends StatelessWidget {
         color: Theme.of(context).hintColor,
       ),
     );
+  }
+}
+
+class _ReadIcon extends StatelessWidget {
+  const _ReadIcon();
+
+  @override
+  Widget build(BuildContext context) {
+    return Icon(Symbols.done_all, size: 17, color: Colors.lightBlueAccent);
   }
 }
 

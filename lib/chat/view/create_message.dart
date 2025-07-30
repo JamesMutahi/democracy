@@ -27,7 +27,7 @@ class _CreateMessageState extends State<CreateMessage> {
   @override
   void initState() {
     context.read<WebsocketBloc>().add(
-      WebsocketEvent.getUsers(searchTerm: '', page: 1),
+      WebsocketEvent.getUsers(page: 1),
     );
     super.initState();
   }
@@ -138,7 +138,7 @@ class _CreateMessageState extends State<CreateMessage> {
                       return FailureRetryButton(
                         onPressed: () {
                           context.read<WebsocketBloc>().add(
-                            WebsocketEvent.getUsers(searchTerm: '', page: 1),
+                            WebsocketEvent.getUsers(page: 1),
                           );
                         },
                       );

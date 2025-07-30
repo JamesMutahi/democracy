@@ -53,9 +53,14 @@ class CustomAppBar extends StatelessWidget {
 }
 
 class AppBarSearchBar extends StatelessWidget {
-  const AppBarSearchBar({super.key, required this.hintText});
+  const AppBarSearchBar({
+    super.key,
+    required this.hintText,
+    required this.onChanged,
+  });
 
   final String hintText;
+  final void Function(String) onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +79,7 @@ class AppBarSearchBar extends StatelessWidget {
           onTapOutside: (event) {
             FocusManager.instance.primaryFocus?.unfocus();
           },
+          onChanged: onChanged,
         ),
       ),
     );

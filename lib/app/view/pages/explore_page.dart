@@ -26,7 +26,9 @@ class ExplorePage extends StatelessWidget {
             flexibleSpace: CustomAppBar(
               user: user,
               notifications: notifications,
-              extras: [AppBarSearchBar(hintText: 'Search')],
+              extras: [
+                AppBarSearchBar(hintText: 'Search', onChanged: (value) {}),
+              ],
             ),
           ),
         ];

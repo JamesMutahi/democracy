@@ -42,9 +42,7 @@ class _DirectMessageState extends State<DirectMessage> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(
-      WebsocketEvent.getUsers(searchTerm: '', page: 1),
-    );
+    context.read<WebsocketBloc>().add(WebsocketEvent.getUsers(page: 1));
     super.initState();
   }
 
@@ -162,7 +160,7 @@ class _DirectMessageState extends State<DirectMessage> {
                       return FailureRetryButton(
                         onPressed: () {
                           context.read<WebsocketBloc>().add(
-                            WebsocketEvent.getUsers(searchTerm: '', page: 1),
+                            WebsocketEvent.getUsers(page: 1),
                           );
                         },
                       );

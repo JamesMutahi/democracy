@@ -45,7 +45,16 @@ class _SurveyPageState extends State<SurveyPage>
             flexibleSpace: CustomAppBar(
               user: widget.user,
               notifications: widget.notifications,
-              extras: [AppBarSearchBar(hintText: 'Search surveys')],
+              extras: [
+                AppBarSearchBar(
+                  hintText: 'Search surveys',
+                  onChanged: (value) {
+                    context.read<WebsocketBloc>().add(
+                      WebsocketEvent.getSurveys(searchTerm: value),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         ];

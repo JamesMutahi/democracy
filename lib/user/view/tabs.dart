@@ -30,7 +30,7 @@ class _UserPostsState extends State<UserPosts> {
   @override
   void initState() {
     context.read<WebsocketBloc>().add(
-      WebsocketEvent.loadUserPosts(user: widget.user),
+      WebsocketEvent.getUserPosts(user: widget.user),
     );
     super.initState();
   }
@@ -43,7 +43,7 @@ class _UserPostsState extends State<UserPosts> {
           listener: (context, state) {
             if (state is WebsocketConnected) {
               context.read<WebsocketBloc>().add(
-                WebsocketEvent.loadUserPosts(user: widget.user),
+                WebsocketEvent.getUserPosts(user: widget.user),
               );
             }
           },
@@ -99,12 +99,12 @@ class _UserPostsState extends State<UserPosts> {
         },
         onRefresh: () {
           context.read<WebsocketBloc>().add(
-            WebsocketEvent.loadUserPosts(user: widget.user),
+            WebsocketEvent.getUserPosts(user: widget.user),
           );
         },
         onLoading: () {
           context.read<WebsocketBloc>().add(
-            WebsocketEvent.loadUserPosts(
+            WebsocketEvent.getUserPosts(
               user: widget.user,
               lastPost: _posts.last,
             ),
@@ -112,7 +112,7 @@ class _UserPostsState extends State<UserPosts> {
         },
         onFailure: () {
           context.read<WebsocketBloc>().add(
-            WebsocketEvent.loadUserPosts(user: widget.user),
+            WebsocketEvent.getUserPosts(user: widget.user),
           );
         },
       ),
@@ -141,7 +141,7 @@ class _UserRepliesState extends State<UserReplies> {
   @override
   void initState() {
     context.read<WebsocketBloc>().add(
-      WebsocketEvent.loadUserReplies(user: widget.user),
+      WebsocketEvent.getUserReplies(user: widget.user),
     );
     super.initState();
   }
@@ -154,7 +154,7 @@ class _UserRepliesState extends State<UserReplies> {
           listener: (context, state) {
             if (state is WebsocketConnected) {
               context.read<WebsocketBloc>().add(
-                WebsocketEvent.loadUserReplies(user: widget.user),
+                WebsocketEvent.getUserReplies(user: widget.user),
               );
             }
           },
@@ -210,12 +210,12 @@ class _UserRepliesState extends State<UserReplies> {
         },
         onRefresh: () {
           context.read<WebsocketBloc>().add(
-            WebsocketEvent.loadUserReplies(user: widget.user),
+            WebsocketEvent.getUserReplies(user: widget.user),
           );
         },
         onLoading: () {
           context.read<WebsocketBloc>().add(
-            WebsocketEvent.loadUserReplies(
+            WebsocketEvent.getUserReplies(
               user: widget.user,
               lastPost: _posts.last,
             ),
@@ -223,7 +223,7 @@ class _UserRepliesState extends State<UserReplies> {
         },
         onFailure: () {
           context.read<WebsocketBloc>().add(
-            WebsocketEvent.loadUserReplies(user: widget.user),
+            WebsocketEvent.getUserReplies(user: widget.user),
           );
         },
       ),
@@ -252,7 +252,7 @@ class _LikesState extends State<Likes> {
   @override
   void initState() {
     context.read<WebsocketBloc>().add(
-      WebsocketEvent.loadLikedPosts(user: widget.user),
+      WebsocketEvent.getLikedPosts(user: widget.user),
     );
     super.initState();
   }
@@ -265,7 +265,7 @@ class _LikesState extends State<Likes> {
           listener: (context, state) {
             if (state is WebsocketConnected) {
               context.read<WebsocketBloc>().add(
-                WebsocketEvent.loadLikedPosts(user: widget.user),
+                WebsocketEvent.getLikedPosts(user: widget.user),
               );
             }
           },
@@ -342,12 +342,12 @@ class _LikesState extends State<Likes> {
         },
         onRefresh: () {
           context.read<WebsocketBloc>().add(
-            WebsocketEvent.loadLikedPosts(user: widget.user),
+            WebsocketEvent.getLikedPosts(user: widget.user),
           );
         },
         onLoading: () {
           context.read<WebsocketBloc>().add(
-            WebsocketEvent.loadLikedPosts(
+            WebsocketEvent.getLikedPosts(
               user: widget.user,
               lastPost: _posts.last,
             ),
@@ -355,7 +355,7 @@ class _LikesState extends State<Likes> {
         },
         onFailure: () {
           context.read<WebsocketBloc>().add(
-            WebsocketEvent.loadLikedPosts(user: widget.user),
+            WebsocketEvent.getLikedPosts(user: widget.user),
           );
         },
       ),

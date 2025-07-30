@@ -59,7 +59,7 @@ class AppDrawer extends StatelessWidget {
                 onTap: () {
                   Navigator.pop(context);
                   context.read<WebsocketBloc>().add(
-                    WebsocketEvent.loadBookmarks(user: user),
+                    WebsocketEvent.getBookmarks(user: user),
                   );
                   Navigator.of(context).push(
                     MaterialPageRoute(

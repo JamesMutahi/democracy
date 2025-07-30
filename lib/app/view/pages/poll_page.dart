@@ -41,7 +41,16 @@ class _PollPageState extends State<PollPage>
             flexibleSpace: CustomAppBar(
               user: widget.user,
               notifications: widget.notifications,
-              extras: [AppBarSearchBar(hintText: 'Search polls')],
+              extras: [
+                AppBarSearchBar(
+                  hintText: 'Search polls',
+                  onChanged: (value) {
+                    context.read<WebsocketBloc>().add(
+                      WebsocketEvent.getPolls(searchTerm: value),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         ];

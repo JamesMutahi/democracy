@@ -35,28 +35,31 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   }) = _GetReplies;
   const factory WebsocketEvent.unsubscribeReplies({required Post post}) =
       _UnsubscribeReplies;
-  const factory WebsocketEvent.loadUserPosts({
+  const factory WebsocketEvent.getUserPosts({
     required User user,
     Post? lastPost,
-  }) = _LoadUserPosts;
-  const factory WebsocketEvent.loadBookmarks({
+  }) = _GetUserPosts;
+  const factory WebsocketEvent.getBookmarks({
     required User user,
     Post? lastPost,
-  }) = _LoadBookmarks;
-  const factory WebsocketEvent.loadLikedPosts({
+  }) = _GetBookmarks;
+  const factory WebsocketEvent.getLikedPosts({
     required User user,
     Post? lastPost,
-  }) = _LoadLikedPosts;
-  const factory WebsocketEvent.loadUserReplies({
+  }) = _GetLikedPosts;
+  const factory WebsocketEvent.getUserReplies({
     required User user,
     Post? lastPost,
-  }) = _LoadUserReplies;
+  }) = _GetUserReplies;
   const factory WebsocketEvent.unsubscribeUser({required User user}) =
       _UnsubscribeUser;
   const factory WebsocketEvent.unsubscribeUserProfilePosts({
     required User user,
   }) = _UnsubscribeUserProfilePosts;
-  const factory WebsocketEvent.getChats({Chat? lastChat}) = _GetChats;
+  const factory WebsocketEvent.getChats({
+    String? searchTerm,
+    Chat? lastChat,
+  }) = _GetChats;
   const factory WebsocketEvent.createChat({required User user}) = _CreateChat;
   const factory WebsocketEvent.subscribeChat({required Chat chat}) =
       _SubscribeChat;
@@ -80,7 +83,8 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   }) = _DeleteMessage;
   const factory WebsocketEvent.markChatAsRead({required Chat chat}) =
       _MarkChatAsRead;
-  const factory WebsocketEvent.getPolls({Poll? lastPoll}) = _GetPolls;
+  const factory WebsocketEvent.getPolls({String? searchTerm, Poll? lastPoll}) =
+      _GetPolls;
   const factory WebsocketEvent.subscribePoll({required Poll poll}) =
       _SubscribePoll;
   const factory WebsocketEvent.vote({required Option option}) = _Vote;
@@ -88,7 +92,10 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     required Poll poll,
     required String text,
   }) = _SubmitReason;
-  const factory WebsocketEvent.getSurveys({Survey? lastSurvey}) = _GetSurveys;
+  const factory WebsocketEvent.getSurveys({
+    String? searchTerm,
+    Survey? lastSurvey,
+  }) = _GetSurveys;
   const factory WebsocketEvent.submitResponse({
     required Survey survey,
     required DateTime startTime,
@@ -97,7 +104,7 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     required List<ChoiceAnswer> choiceAnswers,
   }) = _SubmitResponse;
   const factory WebsocketEvent.getUsers({
-    required String searchTerm,
+    String? searchTerm,
     required int page,
   }) = _GetUsers;
   const factory WebsocketEvent.getUser({required User user}) = _GetUser;
