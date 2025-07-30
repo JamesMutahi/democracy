@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/view/bottom_loader.dart';
 import 'package:democracy/app/utils/view/failure_retry_button.dart';
-import 'package:democracy/app/utils/view/loading_indicator.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_cubit.dart';
 import 'package:democracy/chat/bloc/messages/messages_cubit.dart';
 import 'package:democracy/chat/models/chat.dart';
@@ -199,7 +199,7 @@ class _MessagesState extends State<Messages> {
       ],
       child:
           loading
-              ? LoadingIndicator()
+              ? BottomLoader()
               : failure
               ? FailureRetryButton(
                 onPressed: () {
@@ -266,8 +266,8 @@ class MessageTime extends StatelessWidget {
       alignment: alignedRight ? Alignment.topRight : Alignment.topLeft,
       child: Container(
         margin: EdgeInsets.only(
-          left: alignedRight ? 0 : 20,
-          right: alignedRight ? 20 : 0,
+          left: alignedRight ? 0 : 10,
+          right: alignedRight ? 10 : 0,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -377,8 +377,24 @@ class _AlignmentContainerState extends State<AlignmentContainer> {
                   horizontal: 15,
                 ),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
-                  color: Theme.of(context).canvasColor,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(15),
+                    topRight: Radius.circular(15),
+                    bottomLeft:
+                        widget.alignedRight
+                            ? Radius.circular(15)
+                            : Radius.circular(0),
+                    bottomRight:
+                        widget.alignedRight
+                            ? Radius.circular(0)
+                            : Radius.circular(15),
+                  ),
+                  color:
+                      widget.alignedRight
+                          ? Theme.of(
+                            context,
+                          ).colorScheme.primaryContainer.withValues(alpha: 0.6)
+                          : Theme.of(context).colorScheme.tertiaryContainer,
                 ),
                 child: widget.child,
               ),

@@ -133,9 +133,7 @@ class LikeButton extends StatelessWidget {
         Symbols.favorite_rounded,
         size: 20,
         color:
-            post.isLiked
-                ? Theme.of(context).colorScheme.error
-                : Theme.of(context).colorScheme.outline,
+            post.isLiked ? Colors.red : Theme.of(context).colorScheme.outline,
         fill: post.isLiked ? 1 : 0,
       ),
       trailing:

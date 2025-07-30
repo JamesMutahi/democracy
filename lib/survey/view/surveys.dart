@@ -1,6 +1,6 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/view/bottom_loader.dart';
 import 'package:democracy/app/utils/view/failure_retry_button.dart';
-import 'package:democracy/app/utils/view/loading_indicator.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
 import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
 import 'package:democracy/survey/bloc/surveys/surveys_cubit.dart';
@@ -109,7 +109,7 @@ class _SurveysState extends State<Surveys> {
       ],
       child:
           loading
-              ? LoadingIndicator()
+              ? BottomLoader()
               : failure
               ? FailureRetryButton(
                 onPressed: () {

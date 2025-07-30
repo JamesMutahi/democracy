@@ -1,11 +1,12 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/view/bottom_loader.dart';
 import 'package:democracy/app/utils/view/failure_retry_button.dart';
-import 'package:democracy/app/utils/view/loading_indicator.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_cubit.dart';
+import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/view/chat_detail.dart' show ChatDetail;
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
 import 'package:democracy/user/models/user.dart';
@@ -13,6 +14,7 @@ import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class Chats extends StatefulWidget {
@@ -162,7 +164,7 @@ class _ChatsState extends State<Chats> {
       ],
       child:
           loading
-              ? LoadingIndicator()
+              ? BottomLoader()
               : failure
               ? FailureRetryButton(
                 onPressed: () {
@@ -274,13 +276,20 @@ class _ChatTileState extends State<ChatTile> {
               : widget.chat.lastMessage!.survey != null
               ? _LastMessageText(text: '${lastMessagePrefix}Shared a survey')
               : Text(''),
-      trailing:
+      trailing: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          if (widget.chat.lastMessage != null)
+            _ChatTime(widget.chat.lastMessage!),
           widget.chat.lastMessage == null
               ? SizedBox.shrink()
               : widget.chat.lastMessage!.isRead ||
                   widget.currentUser.id == widget.chat.lastMessage!.user.id
               ? SizedBox.shrink()
               : Icon(Icons.circle_rounded, size: 10, color: Colors.greenAccent),
+        ],
+      ),
       onTap: () {
         if (widget.chat.lastMessage != null) {
           if (!widget.chat.lastMessage!.isRead &&
@@ -320,6 +329,31 @@ class _LastMessageText extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
         color: Theme.of(context).hintColor,
       ),
+    );
+  }
+}
+
+class _ChatTime extends StatelessWidget {
+  const _ChatTime(this.lastMessage);
+
+  final Message lastMessage;
+
+  @override
+  Widget build(BuildContext context) {
+    String date = DateFormat.yMMMMd().format(lastMessage.createdAt);
+    String text = date;
+    if (DateFormat.yMMMMd().format(DateTime.now()) == date) {
+      text = 'Today';
+    }
+    if (DateFormat.yMMMMd().format(
+          DateTime.now().subtract(Duration(days: 1)),
+        ) ==
+        date) {
+      text = 'Yesterday';
+    }
+    return Container(
+      margin: EdgeInsets.only(bottom: 5),
+      child: Text(text, style: TextStyle(color: Theme.of(context).hintColor)),
     );
   }
 }

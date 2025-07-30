@@ -43,7 +43,6 @@ class CustomText extends StatelessWidget {
 
   TextSpan _copyWith(TextSpan span, {String? text}) {
     return TextSpan(
-      style: style,
       recognizer: span.recognizer,
       children: span.children,
       text: text ?? span.text,
@@ -148,7 +147,7 @@ class CustomText extends StatelessWidget {
           ),
         );
       } else {
-        _addText(TextSpan(text: element.text, style: style));
+        _addText(TextSpan(text: element.text));
       }
     }
 
@@ -164,7 +163,7 @@ class CustomText extends StatelessWidget {
         ),
       );
     }
-    return TextSpan(children: _spans, style: style);
+    return TextSpan(children: _spans);
   }
 
   @override
@@ -179,7 +178,7 @@ class CustomText extends StatelessWidget {
         recognizer: TapGestureRecognizer()..onTap = onParentPressed,
       );
     }
-    return RichText(text: child);
+    return Text.rich(child);
   }
 }
 

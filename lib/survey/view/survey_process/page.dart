@@ -1,4 +1,5 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/view/bottom_loader.dart';
 import 'package:democracy/poll/view/poll_tile.dart' show TimeLeft;
 import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
 import 'package:democracy/survey/bloc/survey_process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
@@ -6,7 +7,6 @@ import 'package:democracy/survey/bloc/survey_process/page/page_bloc.dart';
 import 'package:democracy/survey/models/question.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/survey_process/widgets/index.dart';
-import 'package:democracy/app/utils/view/loading_indicator.dart';
 import 'package:democracy/app/utils/view/no_results.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:flutter/material.dart';
@@ -205,7 +205,7 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
                     ),
                   );
                 default:
-                  return const LoadingIndicator();
+                  return const BottomLoader();
               }
             },
           ),

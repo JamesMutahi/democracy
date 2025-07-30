@@ -58,13 +58,14 @@ class _HomePageState extends State<HomePage>
                 floating: true,
                 snap: true,
                 automaticallyImplyLeading: false,
-                forceElevated: true,
                 flexibleSpace: CustomAppBar(
                   user: widget.user,
                   notifications: widget.notifications,
                   extras: [],
                 ),
                 bottom: TabBar(
+                  dividerColor: Theme.of(context).colorScheme.outlineVariant,
+                  labelStyle: Theme.of(context).textTheme.titleMedium,
                   tabs: [Tab(text: 'For You'), Tab(text: 'Following')],
                 ),
               ),
