@@ -204,11 +204,14 @@ class _ChatsState extends State<Chats> {
                             (u) => u.id != currentUser.id,
                           );
                         }
-                        return ChatTile(
-                          key: ValueKey(chat.id),
-                          chat: chat,
-                          currentUser: currentUser,
-                          otherUser: otherUser,
+                        return Visibility(
+                          visible: chat.lastMessage != null,
+                          child: ChatTile(
+                            key: ValueKey(chat.id),
+                            chat: chat,
+                            currentUser: currentUser,
+                            otherUser: otherUser,
+                          ),
                         );
                       },
                       itemCount: _chats.length,

@@ -62,12 +62,17 @@ class _MessagePageState extends State<MessagePage>
               child: FloatingActionButton(
                 heroTag: 'message',
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CreateMessage()),
+                  showModalBottomSheet(
+                    context: context,
+                    showDragHandle: true,
+                    isScrollControlled: true,
+                    useSafeArea: true,
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    shape: const BeveledRectangleBorder(),
+                    builder: (context) => CreateMessage(),
                   );
                 },
-                child: Icon(Symbols.add_rounded),
+                child: Icon(Symbols.send_rounded),
               ),
             ),
           ),

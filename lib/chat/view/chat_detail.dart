@@ -179,7 +179,7 @@ class _ChatScaffoldState extends State<ChatScaffold> {
                   ? _MessageActions(
                     chat: widget.chat,
                     messages: messages,
-                    otherUser: otherUser,
+                    currentUser: widget.currentUser,
                   )
                   : SizedBox.shrink(),
               ChatPopUpMenu(
@@ -364,12 +364,12 @@ class ChatPopUpMenu extends StatelessWidget {
 class _MessageActions extends StatelessWidget {
   const _MessageActions({
     required this.chat,
-    required this.otherUser,
+    required this.currentUser,
     required this.messages,
   });
 
   final Chat chat;
-  final User otherUser;
+  final User currentUser;
   final Set<Message> messages;
 
   @override
@@ -377,27 +377,23 @@ class _MessageActions extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        (messages.length == 1 &&
-                !messages.any((message) => message.user.id == otherUser.id))
-            ? (DateTime.now().difference(messages.first.createdAt) <
-                    Duration(minutes: 15))
-                ? IconButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      PageRouteBuilder(
-                        opaque: false,
-                        pageBuilder:
-                            (_, __, ___) => EditMessage(
-                              chat: chat,
-                              message: messages.first,
-                            ),
-                      ),
-                    );
-                  },
-                  icon: Icon(Symbols.edit_rounded),
-                )
-                : SizedBox.shrink()
-            : SizedBox.shrink(),
+        if (messages.length == 1)
+          if (!messages.any((message) => message.user.id != currentUser.id))
+            if (DateTime.now().difference(messages.first.createdAt) <
+                Duration(minutes: 15))
+              IconButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    PageRouteBuilder(
+                      opaque: false,
+                      pageBuilder:
+                          (_, __, ___) =>
+                              EditMessage(chat: chat, message: messages.first),
+                    ),
+                  );
+                },
+                icon: Icon(Symbols.edit_rounded),
+              ),
         IconButton(
           onPressed: () async {
             context.read<MessageActionsCubit>().closeActionButtons();
@@ -412,7 +408,7 @@ class _MessageActions extends StatelessWidget {
           },
           icon: Icon(Symbols.content_copy),
         ),
-        (messages.any((message) => message.user.id == otherUser.id))
+        (messages.any((message) => message.user.id != currentUser.id))
             ? SizedBox.shrink()
             : IconButton(
               onPressed: () {

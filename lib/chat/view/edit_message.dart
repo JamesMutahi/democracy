@@ -1,8 +1,6 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/bottom_text_form_field.dart';
-import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
-import 'package:democracy/user/models/user.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/view/messages.dart';
@@ -44,14 +42,18 @@ class _EditMessageState extends State<EditMessage> {
         context,
       ).scaffoldBackgroundColor.withValues(alpha: 0.75),
       appBar: AppBar(title: Text('Edit message')),
-      body: BlocBuilder<AuthBloc, AuthState>(
-        builder: (context, state) {
-          late User user;
-          if (state is Authenticated) {
-            user = state.user;
-          }
-          return Messages(chat: widget.chat, currentUser: user);
-        },
+      body: ListView(
+        reverse: true,
+        children: [
+          SizedBox(height: 10),
+          MessageTime(message: widget.message, alignedRight: true),
+          AlignmentContainer(
+            key: ValueKey(widget.message.id),
+            message: widget.message,
+            alignedRight: true,
+            child: MessageCard(alignedRight: true, message: widget.message),
+          ),
+        ],
       ),
       bottomNavigationBar: BottomTextFormField(
         focusNode: _focusNode,

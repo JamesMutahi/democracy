@@ -48,7 +48,6 @@ class _MessagesState extends State<Messages> {
     List<Widget> widgets = [];
     groupByDate.forEach((date, list) {
       // ListView is in reverse so objects are set in reverse order as well
-      widgets.add(SizedBox(height: messageMargin));
       for (Message message in list) {
         bool alignedRight = widget.currentUser.id == message.user.id;
         widgets.add(SizedBox(height: messageMargin));
