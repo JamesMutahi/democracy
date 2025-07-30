@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Chat {
 
- int get id; List<User> get users;@JsonKey(name: 'last_message') Message? get lastMessage;
+ int get id; List<User> get users;@JsonKey(name: 'last_message') Message? get lastMessage;@JsonKey(name: 'unread_messages') int get unreadMessages;
 /// Create a copy of Chat
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $ChatCopyWith<Chat> get copyWith => _$ChatCopyWithImpl<Chat>(this as Chat, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Chat&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other.users, users)&&(identical(other.lastMessage, lastMessage) || other.lastMessage == lastMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Chat&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other.users, users)&&(identical(other.lastMessage, lastMessage) || other.lastMessage == lastMessage)&&(identical(other.unreadMessages, unreadMessages) || other.unreadMessages == unreadMessages));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(users),lastMessage);
+int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(users),lastMessage,unreadMessages);
 
 @override
 String toString() {
-  return 'Chat(id: $id, users: $users, lastMessage: $lastMessage)';
+  return 'Chat(id: $id, users: $users, lastMessage: $lastMessage, unreadMessages: $unreadMessages)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $ChatCopyWith<$Res>  {
   factory $ChatCopyWith(Chat value, $Res Function(Chat) _then) = _$ChatCopyWithImpl;
 @useResult
 $Res call({
- int id, List<User> users,@JsonKey(name: 'last_message') Message? lastMessage
+ int id, List<User> users,@JsonKey(name: 'last_message') Message? lastMessage,@JsonKey(name: 'unread_messages') int unreadMessages
 });
 
 
@@ -65,12 +65,13 @@ class _$ChatCopyWithImpl<$Res>
 
 /// Create a copy of Chat
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? users = null,Object? lastMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? users = null,Object? lastMessage = freezed,Object? unreadMessages = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,users: null == users ? _self.users : users // ignore: cast_nullable_to_non_nullable
 as List<User>,lastMessage: freezed == lastMessage ? _self.lastMessage : lastMessage // ignore: cast_nullable_to_non_nullable
-as Message?,
+as Message?,unreadMessages: null == unreadMessages ? _self.unreadMessages : unreadMessages // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 /// Create a copy of Chat
@@ -164,10 +165,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  List<User> users, @JsonKey(name: 'last_message')  Message? lastMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  List<User> users, @JsonKey(name: 'last_message')  Message? lastMessage, @JsonKey(name: 'unread_messages')  int unreadMessages)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Chat() when $default != null:
-return $default(_that.id,_that.users,_that.lastMessage);case _:
+return $default(_that.id,_that.users,_that.lastMessage,_that.unreadMessages);case _:
   return orElse();
 
 }
@@ -185,10 +186,10 @@ return $default(_that.id,_that.users,_that.lastMessage);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  List<User> users, @JsonKey(name: 'last_message')  Message? lastMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  List<User> users, @JsonKey(name: 'last_message')  Message? lastMessage, @JsonKey(name: 'unread_messages')  int unreadMessages)  $default,) {final _that = this;
 switch (_that) {
 case _Chat():
-return $default(_that.id,_that.users,_that.lastMessage);}
+return $default(_that.id,_that.users,_that.lastMessage,_that.unreadMessages);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -202,10 +203,10 @@ return $default(_that.id,_that.users,_that.lastMessage);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  List<User> users, @JsonKey(name: 'last_message')  Message? lastMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  List<User> users, @JsonKey(name: 'last_message')  Message? lastMessage, @JsonKey(name: 'unread_messages')  int unreadMessages)?  $default,) {final _that = this;
 switch (_that) {
 case _Chat() when $default != null:
-return $default(_that.id,_that.users,_that.lastMessage);case _:
+return $default(_that.id,_that.users,_that.lastMessage,_that.unreadMessages);case _:
   return null;
 
 }
@@ -217,7 +218,7 @@ return $default(_that.id,_that.users,_that.lastMessage);case _:
 @JsonSerializable()
 
 class _Chat implements Chat {
-  const _Chat({required this.id, required final  List<User> users, @JsonKey(name: 'last_message') required this.lastMessage}): _users = users;
+  const _Chat({required this.id, required final  List<User> users, @JsonKey(name: 'last_message') required this.lastMessage, @JsonKey(name: 'unread_messages') required this.unreadMessages}): _users = users;
   factory _Chat.fromJson(Map<String, dynamic> json) => _$ChatFromJson(json);
 
 @override final  int id;
@@ -229,6 +230,7 @@ class _Chat implements Chat {
 }
 
 @override@JsonKey(name: 'last_message') final  Message? lastMessage;
+@override@JsonKey(name: 'unread_messages') final  int unreadMessages;
 
 /// Create a copy of Chat
 /// with the given fields replaced by the non-null parameter values.
@@ -243,16 +245,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Chat&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other._users, _users)&&(identical(other.lastMessage, lastMessage) || other.lastMessage == lastMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Chat&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other._users, _users)&&(identical(other.lastMessage, lastMessage) || other.lastMessage == lastMessage)&&(identical(other.unreadMessages, unreadMessages) || other.unreadMessages == unreadMessages));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(_users),lastMessage);
+int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(_users),lastMessage,unreadMessages);
 
 @override
 String toString() {
-  return 'Chat(id: $id, users: $users, lastMessage: $lastMessage)';
+  return 'Chat(id: $id, users: $users, lastMessage: $lastMessage, unreadMessages: $unreadMessages)';
 }
 
 
@@ -263,7 +265,7 @@ abstract mixin class _$ChatCopyWith<$Res> implements $ChatCopyWith<$Res> {
   factory _$ChatCopyWith(_Chat value, $Res Function(_Chat) _then) = __$ChatCopyWithImpl;
 @override @useResult
 $Res call({
- int id, List<User> users,@JsonKey(name: 'last_message') Message? lastMessage
+ int id, List<User> users,@JsonKey(name: 'last_message') Message? lastMessage,@JsonKey(name: 'unread_messages') int unreadMessages
 });
 
 
@@ -280,12 +282,13 @@ class __$ChatCopyWithImpl<$Res>
 
 /// Create a copy of Chat
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? users = null,Object? lastMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? users = null,Object? lastMessage = freezed,Object? unreadMessages = null,}) {
   return _then(_Chat(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,users: null == users ? _self._users : users // ignore: cast_nullable_to_non_nullable
 as List<User>,lastMessage: freezed == lastMessage ? _self.lastMessage : lastMessage // ignore: cast_nullable_to_non_nullable
-as Message?,
+as Message?,unreadMessages: null == unreadMessages ? _self.unreadMessages : unreadMessages // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

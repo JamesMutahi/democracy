@@ -5,7 +5,6 @@ import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
-import 'package:democracy/chat/bloc/message_detail/message_detail_cubit.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/view/chat_detail.dart' show ChatDetail;
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
@@ -114,44 +113,6 @@ class _ChatsState extends State<Chats> {
               }
             }
             if (state is ChatDetailFailure) {
-              final snackBar = getSnackBar(
-                context: context,
-                message: state.error,
-                status: SnackBarStatus.failure,
-              );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            }
-          },
-        ),
-        BlocListener<MessageDetailCubit, MessageDetailState>(
-          listener: (context, state) {
-            if (state is MessageCreated) {
-              if (_chats.any((element) => element.id == state.message.chat)) {
-                setState(() {
-                  int index = _chats.indexWhere(
-                    (chat) => chat.id == state.message.chat,
-                  );
-                  _chats[index] = _chats[index].copyWith(
-                    lastMessage: state.message,
-                  );
-                });
-              }
-            }
-            if (state is MessageUpdated) {
-              if (_chats.any((element) => element.id == state.message.chat)) {
-                setState(() {
-                  int chatIndex = _chats.indexWhere(
-                    (chat) => chat.id == state.message.chat,
-                  );
-                  if (state.message.id == _chats[chatIndex].lastMessage!.id) {
-                    _chats[chatIndex] = _chats[chatIndex].copyWith(
-                      lastMessage: state.message,
-                    );
-                  }
-                });
-              }
-            }
-            if (state is MessageDetailFailure) {
               final snackBar = getSnackBar(
                 context: context,
                 message: state.error,
@@ -281,16 +242,19 @@ class _ChatTileState extends State<ChatTile> {
               : Text(''),
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (widget.chat.lastMessage != null)
             _ChatTime(widget.chat.lastMessage!),
-          widget.chat.lastMessage == null
-              ? SizedBox.shrink()
-              : widget.chat.lastMessage!.isRead ||
-                  widget.currentUser.id == widget.chat.lastMessage!.user.id
-              ? SizedBox.shrink()
-              : Icon(Icons.circle_rounded, size: 10, color: Colors.greenAccent),
+          if (widget.chat.unreadMessages > 0)
+            CircleAvatar(
+              radius: 8,
+              backgroundColor: Colors.green,
+              child: Text(
+                widget.chat.unreadMessages.toString(),
+                style: Theme.of(context).textTheme.labelSmall,
+              ),
+            ),
         ],
       ),
       onTap: () {

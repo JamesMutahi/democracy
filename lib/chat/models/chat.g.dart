@@ -16,10 +16,12 @@ _Chat _$ChatFromJson(Map<String, dynamic> json) => _Chat(
       json['last_message'] == null
           ? null
           : Message.fromJson(json['last_message'] as Map<String, dynamic>),
+  unreadMessages: (json['unread_messages'] as num).toInt(),
 );
 
 Map<String, dynamic> _$ChatToJson(_Chat instance) => <String, dynamic>{
   'id': instance.id,
   'users': instance.users,
   'last_message': instance.lastMessage,
+  'unread_messages': instance.unreadMessages,
 };

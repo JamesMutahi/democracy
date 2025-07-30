@@ -101,7 +101,7 @@ class NotificationButton extends StatelessWidget {
             margin: EdgeInsets.only(right: 15),
             padding: EdgeInsets.all(8.5),
             decoration: BoxDecoration(
-              border: Border.all(color: Theme.of(context).disabledColor),
+              border: Border.all(color: Theme.of(context).colorScheme.outline),
               borderRadius: BorderRadius.all(Radius.circular(20)),
             ),
             child: Icon(
@@ -114,13 +114,9 @@ class NotificationButton extends StatelessWidget {
               ? SizedBox.shrink()
               : Positioned(
                 top: -1,
-                right: 4,
-                child: Container(
-                  padding: EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primaryFixedDim,
-                    shape: BoxShape.circle,
-                  ),
+                right: 9,
+                child: CircleAvatar(
+                  radius: 10,
                   child: Text(
                     notifications.length.toString(),
                     style: Theme.of(context).textTheme.labelSmall,
