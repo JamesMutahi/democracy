@@ -118,16 +118,17 @@ class CustomBottomSheetContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Theme.of(context).disabledColor.withAlpha(30),
+        ),
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
       child: InkWell(
         onTap: onTap,
-        child: Container(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        child: Padding(
           padding: EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Theme.of(context).disabledColor.withAlpha(30),
-            ),
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [Text(text), Icon(iconData)],

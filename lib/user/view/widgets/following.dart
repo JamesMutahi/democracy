@@ -112,7 +112,7 @@ class _FollowersTabState extends State<_FollowersTab> {
         failure: failure,
         refreshController: _refreshController,
         enablePullDown: true,
-        enablePullUp: true,
+        enablePullUp: hasNextPage ? true : false,
         onUserTap: (user) {
           Navigator.push(
             context,
@@ -211,7 +211,7 @@ class _FollowingTabState extends State<_FollowingTab> {
         failure: failure,
         refreshController: _refreshController,
         enablePullDown: true,
-        enablePullUp: true,
+        enablePullUp: hasNextPage ? true : false,
         onUserTap: (user) {
           Navigator.push(
             context,

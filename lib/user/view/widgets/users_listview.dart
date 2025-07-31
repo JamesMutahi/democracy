@@ -11,7 +11,7 @@ class UsersListView extends StatelessWidget {
   const UsersListView({
     super.key,
     required this.users,
-    required this.selectedUsers,
+    this.selectedUsers = const [],
     required this.loading,
     required this.failure,
     required this.refreshController,
@@ -51,7 +51,7 @@ class UsersListView extends StatelessWidget {
           footer: ClassicFooter(),
           child:
               users.isEmpty
-                  ? NoResults(text: 'Nobody here')
+                  ? NoResults(text: 'No results')
                   : ListView.builder(
                     itemBuilder: (BuildContext context, int index) {
                       User user = users[index];

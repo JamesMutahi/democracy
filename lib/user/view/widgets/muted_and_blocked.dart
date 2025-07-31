@@ -109,7 +109,7 @@ class _MutedTabState extends State<_MutedTab> {
         failure: failure,
         refreshController: _refreshController,
         enablePullDown: true,
-        enablePullUp: true,
+        enablePullUp: hasNextPage ? true : false,
         onUserTap: (user) {
           Navigator.push(
             context,
@@ -197,7 +197,7 @@ class _BlockedTabState extends State<_BlockedTab> {
         failure: failure,
         refreshController: _refreshController,
         enablePullDown: true,
-        enablePullUp: true,
+        enablePullUp: hasNextPage ? true : false,
         onUserTap: (user) {
           Navigator.push(
             context,

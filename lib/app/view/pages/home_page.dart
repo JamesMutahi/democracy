@@ -71,9 +71,29 @@ class _HomePageState extends State<HomePage>
               ),
             ];
           },
-          body: TabBarView(
-            physics: NeverScrollableScrollPhysics(),
-            children: [ForYouTab(), FollowingTab()],
+          body: Stack(
+            children: [
+              TabBarView(
+                physics: NeverScrollableScrollPhysics(),
+                children: [ForYouTab(), FollowingTab()],
+              ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Container(
+                  margin: EdgeInsets.only(right: 10, bottom: 10),
+                  child: FloatingActionButton(
+                    heroTag: 'posts',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => PostCreate()),
+                      );
+                    },
+                    child: Icon(Symbols.post_add_rounded),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -130,42 +150,21 @@ class _ForYouTabState extends State<ForYouTab> {
           }
         }
       },
-
-      child: Stack(
-        children: [
-          PostListView(
-            posts: _posts,
-            loading: loading,
-            failure: failure,
-            onPostsUpdated: (posts) {
-              setState(() {
-                _posts = posts;
-              });
-            },
-            refreshController: _refreshController,
-            enablePullDown: false,
-            enablePullUp: hasNextPage ? true : false,
-            onRefresh: () {},
-            onLoading: () {},
-            onFailure: () {},
-          ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Container(
-              margin: EdgeInsets.only(right: 10, bottom: 10),
-              child: FloatingActionButton(
-                heroTag: 'posts',
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => PostCreate()),
-                  );
-                },
-                child: Icon(Symbols.post_add_rounded),
-              ),
-            ),
-          ),
-        ],
+      child: PostListView(
+        posts: _posts,
+        loading: loading,
+        failure: failure,
+        onPostsUpdated: (posts) {
+          setState(() {
+            _posts = posts;
+          });
+        },
+        refreshController: _refreshController,
+        enablePullDown: false,
+        enablePullUp: hasNextPage ? true : false,
+        onRefresh: () {},
+        onLoading: () {},
+        onFailure: () {},
       ),
     );
   }

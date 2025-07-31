@@ -66,7 +66,7 @@ class _DirectMessageState extends State<DirectMessage> {
             }
           },
         ),
-      BlocListener<UsersCubit, UsersState>(
+        BlocListener<UsersCubit, UsersState>(
           listener: (context, state) {
             if (state.status == UsersStatus.success) {
               setState(() {
@@ -98,7 +98,7 @@ class _DirectMessageState extends State<DirectMessage> {
               }
             }
           },
-      ),
+        ),
       ],
       child: Scaffold(
         appBar: AppBar(
@@ -125,26 +125,60 @@ class _DirectMessageState extends State<DirectMessage> {
                   ),
                 ),
               ),
-              child: TextFormField(
-                onChanged: (value) {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getUsers(searchTerm: value),
-                  );
-                },
-                onTapOutside: (event) {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                },
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Theme.of(context).scaffoldBackgroundColor,
-                  hintText: 'Search for people',
-                  hintStyle: TextStyle(color: Theme.of(context).hintColor),
-                  prefixIcon: Icon(Symbols.search_rounded),
-                  prefixIconConstraints: const BoxConstraints(
-                    minWidth: 0,
-                    minHeight: 0,
-                  ),
-                  border: InputBorder.none,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    if (selectedUsers.isNotEmpty)
+                      ...selectedUsers.map((user) {
+                        return Container(
+                          margin: EdgeInsets.only(right: 2.5),
+                          child: InputChip(
+                            label: Text(user.name),
+                            deleteIcon: Icon(Icons.close),
+                            onDeleted: () {
+                              setState(() {
+                                selectedUsers.remove(user);
+                              });
+                            },
+                            showCheckmark: true,
+                          ),
+                        );
+                      }),
+                    SizedBox(
+                      width:
+                          selectedUsers.length < 2
+                              ? MediaQuery.of(context).size.width
+                              : 200,
+                      child: TextFormField(
+                        onChanged: (value) {
+                          context.read<WebsocketBloc>().add(
+                            WebsocketEvent.getUsers(searchTerm: value),
+                          );
+                        },
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Theme.of(context).scaffoldBackgroundColor,
+                          hintText:
+                              selectedUsers.isEmpty
+                                  ? 'Search for people'
+                                  : null,
+                          hintStyle: TextStyle(
+                            color: Theme.of(context).hintColor,
+                          ),
+                          prefixIcon:
+                              selectedUsers.isEmpty
+                                  ? Icon(Symbols.search_rounded)
+                                  : null,
+                          prefixIconConstraints: const BoxConstraints(
+                            minWidth: 0,
+                            minHeight: 0,
+                          ),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

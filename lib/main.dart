@@ -2,7 +2,7 @@ import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
 import 'package:democracy/app/bloc/theme/theme_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/view/app.dart';
+import 'package:democracy/app.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
