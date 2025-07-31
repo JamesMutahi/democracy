@@ -15,7 +15,7 @@ import 'package:democracy/notification/bloc/notifications/notifications_cubit.da
 import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
 import 'package:democracy/poll/bloc/polls/polls_cubit.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
-import 'package:democracy/post/bloc/following/following_cubit.dart';
+import 'package:democracy/post/bloc/following_posts/following_posts_cubit.dart';
 import 'package:democracy/post/bloc/for_you/for_you_cubit.dart';
 import 'package:democracy/post/bloc/likes/likes_cubit.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
@@ -28,6 +28,10 @@ import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
 import 'package:democracy/survey/bloc/survey_process/page/page_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
 import 'package:democracy/survey/bloc/surveys/surveys_cubit.dart';
+import 'package:democracy/user/bloc/blocked/blocked_cubit.dart';
+import 'package:democracy/user/bloc/followers/followers_cubit.dart';
+import 'package:democracy/user/bloc/following/following_cubit.dart';
+import 'package:democracy/user/bloc/muted/muted_cubit.dart';
 import 'package:democracy/user/bloc/users/users_cubit.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
 import 'package:dio/dio.dart';
@@ -96,7 +100,7 @@ void main() async {
           BlocProvider(create: (context) => ForYouCubit()),
           BlocProvider(create: (context) => PostsCubit()),
           BlocProvider(create: (context) => PostDetailCubit()),
-          BlocProvider(create: (context) => FollowingCubit()),
+          BlocProvider(create: (context) => FollowingPostsCubit()),
           BlocProvider(create: (context) => RepliesCubit()),
           BlocProvider(create: (context) => UserPostsCubit()),
           BlocProvider(create: (context) => BookmarksCubit()),
@@ -114,6 +118,10 @@ void main() async {
           BlocProvider(create: (context) => NotificationDetailCubit()),
           BlocProvider(create: (context) => UsersCubit()),
           BlocProvider(create: (context) => UserDetailCubit()),
+          BlocProvider(create: (context) => MutedCubit()),
+          BlocProvider(create: (context) => BlockedCubit()),
+          BlocProvider(create: (context) => FollowingCubit()),
+          BlocProvider(create: (context) => FollowersCubit()),
         ],
         child: const MyApp(),
       ),

@@ -66,6 +66,39 @@ class _DirectMessageState extends State<DirectMessage> {
             }
           },
         ),
+      BlocListener<UsersCubit, UsersState>(
+          listener: (context, state) {
+            if (state.status == UsersStatus.success) {
+              setState(() {
+                _users = state.users;
+                loading = false;
+                failure = false;
+                currentPage = currentPage;
+                hasNextPage = hasNextPage;
+              });
+              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+                _refreshController.refreshCompleted();
+              }
+              if (_refreshController.footerStatus == LoadStatus.loading) {
+                _refreshController.loadComplete();
+              }
+            }
+            if (state.status == UsersStatus.failure) {
+              if (loading) {
+                setState(() {
+                  loading = false;
+                  failure = true;
+                });
+              }
+              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+                _refreshController.refreshFailed();
+              }
+              if (_refreshController.footerStatus == LoadStatus.loading) {
+                _refreshController.loadFailed();
+              }
+            }
+          },
+      ),
       ],
       child: Scaffold(
         appBar: AppBar(
@@ -123,25 +156,6 @@ class _DirectMessageState extends State<DirectMessage> {
                 refreshController: _refreshController,
                 enablePullUp: hasNextPage ? true : false,
                 selectedUsers: selectedUsers,
-                onStatusChange: (status, users, currentPage, hasNextPage) {
-                  if (status == UsersStatus.success) {
-                    setState(() {
-                      _users = users;
-                      loading = false;
-                      failure = false;
-                      currentPage = currentPage;
-                      hasNextPage = hasNextPage;
-                    });
-                  }
-                  if (status == UsersStatus.failure) {
-                    if (loading) {
-                      setState(() {
-                        loading = false;
-                        failure = true;
-                      });
-                    }
-                  }
-                },
                 onUserTap: (user) {
                   setState(() {
                     if (selectedUsers.contains(user)) {

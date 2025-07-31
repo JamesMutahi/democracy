@@ -103,10 +103,14 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     required List<TextAnswer> textAnswers,
     required List<ChoiceAnswer> choiceAnswers,
   }) = _SubmitResponse;
-  const factory WebsocketEvent.getUsers({
-    String? searchTerm,
-    int? page,
-  }) = _GetUsers;
+  const factory WebsocketEvent.getUsers({String? searchTerm, int? page}) =
+      _GetUsers;
+  const factory WebsocketEvent.getFollowers({required User user, int? page}) =
+      _GetFollowers;
+  const factory WebsocketEvent.getFollowing({required User user, int? page}) =
+      _GetFollowing;
+  const factory WebsocketEvent.getMuted({int? page}) = _GetMuted;
+  const factory WebsocketEvent.getBlocked({int? page}) = _GetBlocked;
   const factory WebsocketEvent.getUser({required User user}) = _GetUser;
   const factory WebsocketEvent.updateUser({
     required User user,

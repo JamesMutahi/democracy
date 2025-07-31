@@ -15,7 +15,7 @@ import 'package:democracy/notification/bloc/notifications/notifications_cubit.da
 import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
 import 'package:democracy/poll/bloc/polls/polls_cubit.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
-import 'package:democracy/post/bloc/following/following_cubit.dart';
+import 'package:democracy/post/bloc/following_posts/following_posts_cubit.dart';
 import 'package:democracy/post/bloc/for_you/for_you_cubit.dart';
 import 'package:democracy/post/bloc/likes/likes_cubit.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
@@ -29,6 +29,10 @@ import 'package:democracy/post/bloc/user_replies/user_replies_cubit.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
 import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
 import 'package:democracy/survey/bloc/surveys/surveys_cubit.dart';
+import 'package:democracy/user/bloc/blocked/blocked_cubit.dart';
+import 'package:democracy/user/bloc/followers/followers_cubit.dart';
+import 'package:democracy/user/bloc/following/following_cubit.dart';
+import 'package:democracy/user/bloc/muted/muted_cubit.dart';
 import 'package:democracy/user/bloc/users/users_cubit.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
 import 'package:flutter/material.dart';
@@ -186,7 +190,7 @@ class _Listeners extends StatelessWidget {
                           payload: message['payload'],
                         );
                       case 'following':
-                        context.read<FollowingCubit>().loaded(
+                        context.read<FollowingPostsCubit>().loaded(
                           payload: message['payload'],
                         );
                       case 'replies':
@@ -321,6 +325,22 @@ class _Listeners extends StatelessWidget {
                         );
                       case 'update':
                         context.read<UserDetailCubit>().updated(
+                          payload: message['payload'],
+                        );
+                      case 'following':
+                        context.read<FollowingCubit>().loaded(
+                          payload: message['payload'],
+                        );
+                      case 'followers':
+                        context.read<FollowersCubit>().loaded(
+                          payload: message['payload'],
+                        );
+                      case 'muted':
+                        context.read<MutedCubit>().loaded(
+                          payload: message['payload'],
+                        );
+                      case 'blocked':
+                        context.read<BlockedCubit>().loaded(
                           payload: message['payload'],
                         );
                     }

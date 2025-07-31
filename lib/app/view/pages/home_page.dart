@@ -2,7 +2,7 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
-import 'package:democracy/post/bloc/following/following_cubit.dart';
+import 'package:democracy/post/bloc/following_posts/following_posts_cubit.dart';
 import 'package:democracy/post/bloc/for_you/for_you_cubit.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/models/post.dart';
@@ -195,9 +195,9 @@ class _FollowingTabState extends State<FollowingTab> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<FollowingCubit, FollowingState>(
+    return BlocListener<FollowingPostsCubit, FollowingPostsState>(
       listener: (context, state) {
-        if (state.status == FollowingStatus.success) {
+        if (state.status == FollowingPostsStatus.success) {
           setState(() {
             loading = false;
             failure = false;
@@ -211,7 +211,7 @@ class _FollowingTabState extends State<FollowingTab> {
             }
           });
         }
-        if (state.status == FollowingStatus.failure) {
+        if (state.status == FollowingPostsStatus.failure) {
           if (loading) {
             setState(() {
               loading = false;

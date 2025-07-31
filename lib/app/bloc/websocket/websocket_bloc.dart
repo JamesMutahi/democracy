@@ -124,6 +124,18 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_GetUsers>((event, emit) {
       _onGetUsers(emit, event);
     });
+    on<_GetFollowers>((event, emit) {
+      _onGetFollowers(emit, event);
+    });
+    on<_GetFollowing>((event, emit) {
+      _onGetFollowing(emit, event);
+    });
+    on<_GetMuted>((event, emit) {
+      _onGetMuted(emit, event);
+    });
+    on<_GetBlocked>((event, emit) {
+      _onGetBlocked(emit, event);
+    });
     on<_GetUser>((event, emit) {
       _onGetUser(emit, event);
     });
@@ -596,6 +608,66 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'action': 'list',
         'request_id': usersRequestId,
         'search_term': event.searchTerm,
+        'page': event.page,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onGetFollowers(
+    Emitter<WebsocketState> emit,
+    _GetFollowers event,
+  ) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': usersStream,
+      'payload': {
+        'action': 'followers',
+        'request_id': usersRequestId,
+        'pk': event.user.id,
+        'page': event.page,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onGetFollowing(
+    Emitter<WebsocketState> emit,
+    _GetFollowing event,
+  ) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': usersStream,
+      'payload': {
+        'action': 'following',
+        'request_id': usersRequestId,
+        'pk': event.user.id,
+        'page': event.page,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onGetMuted(Emitter<WebsocketState> emit, _GetMuted event) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': usersStream,
+      'payload': {
+        'action': 'muted',
+        'request_id': usersRequestId,
+        'page': event.page,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onGetBlocked(Emitter<WebsocketState> emit, _GetBlocked event) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': usersStream,
+      'payload': {
+        'action': 'blocked',
+        'request_id': usersRequestId,
         'page': event.page,
       },
     };

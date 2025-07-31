@@ -7,8 +7,8 @@ import 'package:democracy/user/models/user.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/view/chat_detail.dart';
 import 'package:democracy/user/view/edit_profile.dart';
-import 'package:democracy/user/view/following.dart';
-import 'package:democracy/user/view/tabs.dart';
+import 'package:democracy/user/view/widgets/following.dart';
+import 'package:democracy/user/view/widgets/tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -651,7 +651,7 @@ class _UserDetails extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Following()),
+                MaterialPageRoute(builder: (context) => Following(user: user)),
               );
             },
             child: Row(
