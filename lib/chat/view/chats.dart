@@ -52,7 +52,6 @@ class _ChatsState extends State<Chats> {
                 if (_refreshController.footerStatus == LoadStatus.loading) {
                   _refreshController.loadComplete();
                 }
-                _refreshController.loadComplete();
               });
             }
             if (state.status == ChatsStatus.failure) {
@@ -312,7 +311,11 @@ class _ReadIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Icon(Symbols.done_all, size: 17, color: Colors.lightBlueAccent);
+    return Icon(
+      Symbols.done_all,
+      size: Theme.of(context).textTheme.bodyMedium?.fontSize,
+      color: Colors.lightBlueAccent,
+    );
   }
 }
 

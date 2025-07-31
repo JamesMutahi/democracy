@@ -113,7 +113,6 @@ class _ForYouTabState extends State<ForYouTab> {
             if (_refreshController.footerStatus == LoadStatus.loading) {
               _refreshController.loadComplete();
             }
-            _refreshController.loadComplete();
           });
         }
         if (state.status == ForYouStatus.failure) {
@@ -210,7 +209,6 @@ class _FollowingTabState extends State<FollowingTab> {
             if (_refreshController.footerStatus == LoadStatus.loading) {
               _refreshController.loadComplete();
             }
-            _refreshController.loadComplete();
           });
         }
         if (state.status == FollowingStatus.failure) {

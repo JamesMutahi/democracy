@@ -64,7 +64,6 @@ class _UserPostsState extends State<UserPosts> {
                   if (_refreshController.footerStatus == LoadStatus.loading) {
                     _refreshController.loadComplete();
                   }
-                  _refreshController.loadComplete();
                 });
               }
             }
@@ -175,7 +174,6 @@ class _UserRepliesState extends State<UserReplies> {
                   if (_refreshController.footerStatus == LoadStatus.loading) {
                     _refreshController.loadComplete();
                   }
-                  _refreshController.loadComplete();
                 });
               }
             }
@@ -307,7 +305,6 @@ class _LikesState extends State<Likes> {
                   if (_refreshController.footerStatus == LoadStatus.loading) {
                     _refreshController.loadComplete();
                   }
-                  _refreshController.loadComplete();
                 });
               }
             }

@@ -91,12 +91,12 @@ class PostMorePopUp extends StatelessWidget {
 class PostTileButton extends StatelessWidget {
   const PostTileButton({
     super.key,
-    required this.icon,
+    required this.child,
     this.trailing,
     required this.onTap,
   });
 
-  final Icon icon;
+  final Widget child;
   final Text? trailing;
   final VoidCallback onTap;
 
@@ -109,7 +109,7 @@ class PostTileButton extends StatelessWidget {
           customBorder: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          child: Padding(padding: const EdgeInsets.all(7.5), child: icon),
+          child: Padding(padding: const EdgeInsets.all(7.5), child: child),
         ),
         (trailing == null) ? SizedBox.shrink() : trailing!,
       ],
@@ -129,13 +129,6 @@ class LikeButton extends StatelessWidget {
       onTap: () {
         context.read<WebsocketBloc>().add(WebsocketEvent.likePost(post: post));
       },
-      icon: Icon(
-        Symbols.favorite_rounded,
-        size: 20,
-        color:
-            post.isLiked ? Colors.red : Theme.of(context).colorScheme.outline,
-        fill: post.isLiked ? 1 : 0,
-      ),
       trailing:
           (post.likes > 0)
               ? Text(
@@ -143,6 +136,12 @@ class LikeButton extends StatelessWidget {
                 style: TextStyle(color: Theme.of(context).colorScheme.outline),
               )
               : null,
+      child: PostButtonIcon(
+        iconData: Symbols.favorite_rounded,
+        color:
+            post.isLiked ? Colors.red : Theme.of(context).colorScheme.outline,
+        fill: post.isLiked ? 1 : 0,
+      ),
     );
   }
 }
@@ -218,14 +217,6 @@ class RepostButton extends StatelessWidget {
                   },
                 );
               },
-      icon: Icon(
-        Symbols.loop_rounded,
-        size: 20,
-        color:
-            post.author.hasBlocked
-                ? Theme.of(context).disabledColor
-                : Theme.of(context).colorScheme.outline,
-      ),
       trailing:
           (post.reposts > 0)
               ? Text(
@@ -238,6 +229,13 @@ class RepostButton extends StatelessWidget {
                 ),
               )
               : null,
+      child: PostButtonIcon(
+        iconData: Symbols.loop_rounded,
+        color:
+            post.author.hasBlocked
+                ? Theme.of(context).disabledColor
+                : Theme.of(context).colorScheme.outline,
+      ),
     );
   }
 }
@@ -273,14 +271,6 @@ class ReplyButton extends StatelessWidget {
                   ),
                 );
               },
-      icon: Icon(
-        Symbols.message_rounded,
-        size: 20,
-        color:
-            post.author.hasBlocked
-                ? Theme.of(context).disabledColor
-                : Theme.of(context).colorScheme.outline,
-      ),
       trailing:
           (post.replies > 0)
               ? Text(
@@ -293,6 +283,13 @@ class ReplyButton extends StatelessWidget {
                 ),
               )
               : null,
+      child: PostButtonIcon(
+        iconData: Symbols.message_rounded,
+        color:
+            post.author.hasBlocked
+                ? Theme.of(context).disabledColor
+                : Theme.of(context).colorScheme.outline,
+      ),
     );
   }
 }
@@ -311,11 +308,6 @@ class ViewsButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return PostTileButton(
       onTap: () {},
-      icon: Icon(
-        Symbols.poll_rounded,
-        size: 20,
-        color: Theme.of(context).colorScheme.outline,
-      ),
       trailing:
           (post.views > 0)
               ? Text(
@@ -323,6 +315,7 @@ class ViewsButton extends StatelessWidget {
                 style: TextStyle(color: Theme.of(context).colorScheme.outline),
               )
               : null,
+      child: PostButtonIcon(iconData: Symbols.poll_rounded),
     );
   }
 }
@@ -347,15 +340,6 @@ class BookmarkButton extends StatelessWidget {
           WebsocketEvent.bookmarkPost(post: post),
         );
       },
-      icon: Icon(
-        Symbols.bookmark_rounded,
-        size: 20,
-        color:
-            post.isBookmarked
-                ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).colorScheme.outline,
-        fill: post.isBookmarked ? 1 : 0,
-      ),
       trailing:
           (post.bookmarks > 0 && showTrailing)
               ? Text(
@@ -363,6 +347,14 @@ class BookmarkButton extends StatelessWidget {
                 style: TextStyle(color: Theme.of(context).colorScheme.outline),
               )
               : null,
+      child: PostButtonIcon(
+        iconData: Symbols.bookmark_rounded,
+        color:
+            post.isBookmarked
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.outline,
+        fill: post.isBookmarked ? 1 : 0,
+      ),
     );
   }
 }
@@ -384,11 +376,30 @@ class ShareButton extends StatelessWidget {
           },
         );
       },
-      icon: Icon(
-        Symbols.share_rounded,
-        size: 20,
-        color: Theme.of(context).colorScheme.outline,
-      ),
+      child: PostButtonIcon(iconData: Symbols.share_rounded),
+    );
+  }
+}
+
+class PostButtonIcon extends StatelessWidget {
+  const PostButtonIcon({
+    super.key,
+    required this.iconData,
+    this.color,
+    this.fill = 0,
+  });
+
+  final IconData iconData;
+  final Color? color;
+  final double fill;
+
+  @override
+  Widget build(BuildContext context) {
+    return Icon(
+      iconData,
+      size: 20,
+      color: color ?? Theme.of(context).colorScheme.outline,
+      fill: fill,
     );
   }
 }

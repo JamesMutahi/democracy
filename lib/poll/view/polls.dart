@@ -45,7 +45,6 @@ class _PollsState extends State<Polls> {
                 if (_refreshController.footerStatus == LoadStatus.loading) {
                   _refreshController.loadComplete();
                 }
-                _refreshController.loadComplete();
               });
             }
             if (state.status == PollsStatus.failure) {

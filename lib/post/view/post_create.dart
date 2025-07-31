@@ -393,7 +393,11 @@ class PostExtraButton extends StatelessWidget {
           border: Border.all(color: Theme.of(context).disabledColor),
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
-        child: Icon(iconData, color: Theme.of(context).disabledColor, size: 20),
+        child: Icon(
+          iconData,
+          color: Theme.of(context).disabledColor,
+          size: Theme.of(context).textTheme.bodyLarge?.fontSize,
+        ),
       ),
     );
   }

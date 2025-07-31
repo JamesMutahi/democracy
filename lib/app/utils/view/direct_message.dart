@@ -1,8 +1,5 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/utils/view/bottom_loader.dart';
 import 'package:democracy/app/utils/view/bottom_text_form_field.dart';
-import 'package:democracy/app/utils/view/failure_retry_button.dart';
-import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
@@ -10,6 +7,7 @@ import 'package:democracy/poll/models/poll.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/user/bloc/users/users_cubit.dart';
+import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -29,7 +27,12 @@ class DirectMessage extends StatefulWidget {
 class _DirectMessageState extends State<DirectMessage> {
   TextEditingController controller = TextEditingController();
   FocusNode focusNode = FocusNode();
+  bool loading = true;
+  bool failure = false;
+  List<User> _users = [];
   List<User> selectedUsers = [];
+  int currentPage = 1;
+  bool hasNextPage = false;
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
   );
@@ -42,24 +45,28 @@ class _DirectMessageState extends State<DirectMessage> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getUsers(page: 1));
+    context.read<WebsocketBloc>().add(WebsocketEvent.getUsers());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ChatDetailCubit, ChatDetailState>(
-      listener: (context, state) {
-        if (state is DirectMessageSent) {
-          Navigator.pop(context);
-          final snackBar = getSnackBar(
-            context: context,
-            message: 'Direct message sent',
-            status: SnackBarStatus.success,
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<ChatDetailCubit, ChatDetailState>(
+          listener: (context, state) {
+            if (state is DirectMessageSent) {
+              Navigator.pop(context);
+              final snackBar = getSnackBar(
+                context: context,
+                message: 'Direct message sent',
+                status: SnackBarStatus.success,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+          },
+        ),
+      ],
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -88,7 +95,7 @@ class _DirectMessageState extends State<DirectMessage> {
               child: TextFormField(
                 onChanged: (value) {
                   context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getUsers(searchTerm: value, page: 1),
+                    WebsocketEvent.getUsers(searchTerm: value),
                   );
                 },
                 onTapOutside: (event) {
@@ -109,64 +116,53 @@ class _DirectMessageState extends State<DirectMessage> {
               ),
             ),
             Expanded(
-              child: BlocBuilder<UsersCubit, UsersState>(
-                builder: (context, state) {
-                  switch (state.status) {
-                    case UsersStatus.success:
-                      return SmartRefresher(
-                        enablePullDown: false,
-                        enablePullUp: state.hasNext ? true : false,
-                        controller: _refreshController,
-                        onLoading: () {
-                          context.read<WebsocketBloc>().add(
-                            WebsocketEvent.getUsers(
-                              searchTerm: controller.text,
-                              page: state.currentPage + 1,
-                            ),
-                          );
-                        },
-                        footer: ClassicFooter(),
-                        child: ListView.builder(
-                          padding: EdgeInsets.only(top: 5, bottom: 20),
-                          itemBuilder: (BuildContext context, int index) {
-                            User user = state.users[index];
-                            return ListTile(
-                              key: ValueKey(user.id),
-                              onTap: () {
-                                setState(() {
-                                  if (selectedUsers.contains(user)) {
-                                    selectedUsers.remove(user);
-                                  } else {
-                                    selectedUsers.add(user);
-                                  }
-                                });
-                              },
-                              selectedTileColor:
-                                  Theme.of(context).highlightColor,
-                              selected: selectedUsers.contains(user),
-                              leading: ProfileImage(user: user),
-                              title: Text(user.name),
-                              subtitle: Text(user.username),
-                              trailing:
-                                  selectedUsers.contains(user)
-                                      ? Icon(Symbols.check_rounded)
-                                      : SizedBox.shrink(),
-                            );
-                          },
-                          itemCount: state.users.length,
-                        ),
-                      );
-                    case UsersStatus.failure:
-                      return FailureRetryButton(
-                        onPressed: () {
-                          context.read<WebsocketBloc>().add(
-                            WebsocketEvent.getUsers(page: 1),
-                          );
-                        },
-                      );
-                    default:
-                      return BottomLoader();
+              child: UsersListView(
+                users: _users,
+                loading: loading,
+                failure: failure,
+                refreshController: _refreshController,
+                enablePullUp: hasNextPage ? true : false,
+                selectedUsers: selectedUsers,
+                onStatusChange: (status, users, currentPage, hasNextPage) {
+                  if (status == UsersStatus.success) {
+                    setState(() {
+                      _users = users;
+                      loading = false;
+                      failure = false;
+                      currentPage = currentPage;
+                      hasNextPage = hasNextPage;
+                    });
                   }
+                  if (status == UsersStatus.failure) {
+                    if (loading) {
+                      setState(() {
+                        loading = false;
+                        failure = true;
+                      });
+                    }
+                  }
+                },
+                onUserTap: (user) {
+                  setState(() {
+                    if (selectedUsers.contains(user)) {
+                      selectedUsers.remove(user);
+                    } else {
+                      selectedUsers.add(user);
+                    }
+                  });
+                },
+                onLoading: () {
+                  context.read<WebsocketBloc>().add(
+                    WebsocketEvent.getUsers(
+                      searchTerm: controller.text,
+                      page: currentPage + 1,
+                    ),
+                  );
+                },
+                onFailure: () {
+                  context.read<WebsocketBloc>().add(
+                    WebsocketEvent.getUsers(page: currentPage),
+                  );
                 },
               ),
             ),

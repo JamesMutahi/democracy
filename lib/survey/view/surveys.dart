@@ -45,7 +45,6 @@ class _SurveysState extends State<Surveys> {
                 if (_refreshController.footerStatus == LoadStatus.loading) {
                   _refreshController.loadComplete();
                 }
-                _refreshController.loadComplete();
               });
             }
             if (state.status == SurveysStatus.failure) {

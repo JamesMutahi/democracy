@@ -93,7 +93,7 @@ class NavBarItem extends StatelessWidget {
               Text(
                 label,
                 style: TextStyle(
-                  fontSize: 10,
+                  fontSize: Theme.of(context).textTheme.labelSmall?.fontSize,
                   fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
                   color:
                       isActive

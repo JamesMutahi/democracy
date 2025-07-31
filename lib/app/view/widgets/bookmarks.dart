@@ -54,7 +54,6 @@ class _BookmarksState extends State<Bookmarks> {
               if (_refreshController.footerStatus == LoadStatus.loading) {
                 _refreshController.loadComplete();
               }
-              _refreshController.loadComplete();
             });
           }
           if (state.status == BookmarksStatus.failure) {

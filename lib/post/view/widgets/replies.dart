@@ -62,7 +62,6 @@ class _RepliesState extends State<Replies> {
                   if (_refreshController.footerStatus == LoadStatus.loading) {
                     _refreshController.loadComplete();
                   }
-                  _refreshController.loadComplete();
                 });
               }
             }

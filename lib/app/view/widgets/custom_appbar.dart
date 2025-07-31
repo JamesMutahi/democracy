@@ -198,7 +198,7 @@ class _NotificationCountState extends State<NotificationCount> {
           unreadNotifications.isEmpty
               ? SizedBox.shrink()
               : Positioned(
-                top: -1,
+                top: 0,
                 right: 4,
                 child: Container(
                   padding: EdgeInsets.all(4),

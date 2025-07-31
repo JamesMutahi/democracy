@@ -105,7 +105,7 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   }) = _SubmitResponse;
   const factory WebsocketEvent.getUsers({
     String? searchTerm,
-    required int page,
+    int? page,
   }) = _GetUsers;
   const factory WebsocketEvent.getUser({required User user}) = _GetUser;
   const factory WebsocketEvent.updateUser({

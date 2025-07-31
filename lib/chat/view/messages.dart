@@ -148,7 +148,6 @@ class _MessagesState extends State<Messages> {
                 if (_refreshController.footerStatus == LoadStatus.loading) {
                   _refreshController.loadComplete();
                 }
-                _refreshController.loadComplete();
               });
             }
             if (state.status == MessagesStatus.failure) {

@@ -116,20 +116,22 @@ class CustomBottomSheetContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: Theme.of(context).disabledColor.withAlpha(30),
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Theme.of(context).disabledColor.withAlpha(30),
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [Text(text), Icon(iconData)],
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [Text(text), Icon(iconData)],
+          ),
         ),
       ),
     );

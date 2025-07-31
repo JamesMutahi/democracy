@@ -79,7 +79,6 @@ class _ExplorePageState extends State<ExplorePage> {
               if (_refreshController.footerStatus == LoadStatus.loading) {
                 _refreshController.loadComplete();
               }
-              _refreshController.loadComplete();
             });
           }
           if (state.status == PostsStatus.failure) {
