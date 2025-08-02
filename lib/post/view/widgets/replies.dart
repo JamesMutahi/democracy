@@ -90,7 +90,10 @@ class _RepliesState extends State<Replies> {
               case PostCreated(post: final post):
                 if (widget.post.id == post.replyTo?.id) {
                   setState(() {
-                    _posts.add(post);
+                    int index = _posts.indexWhere(
+                      (element) => element.author.id != post.author.id,
+                    );
+                    _posts.insert(index, post);
                   });
                 }
             }
@@ -110,6 +113,11 @@ class _RepliesState extends State<Replies> {
         refreshController: _refreshController,
         enablePullDown: false,
         enablePullUp: hasNextPage ? true : false,
+        hasThread:
+            _posts
+                .where((element) => element.author.id == widget.post.author.id)
+                .length >
+            1,
         onRefresh: () {},
         onLoading: () {
           context.read<WebsocketBloc>().add(

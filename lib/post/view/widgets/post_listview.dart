@@ -16,6 +16,7 @@ class PostListView extends StatelessWidget {
     required this.refreshController,
     required this.enablePullDown,
     required this.enablePullUp,
+    this.hasThread = false,
     required this.onPostsUpdated,
     required this.onRefresh,
     required this.onLoading,
@@ -29,6 +30,7 @@ class PostListView extends StatelessWidget {
   final RefreshController refreshController;
   final bool enablePullDown;
   final bool enablePullUp;
+  final bool hasThread;
   final void Function(List<Post>) onPostsUpdated;
   final VoidCallback onRefresh;
   final VoidCallback onLoading;
@@ -55,7 +57,33 @@ class PostListView extends StatelessWidget {
               physics: physics,
               itemBuilder: (BuildContext context, int index) {
                 Post post = posts[index];
-                return PostTile(key: ValueKey(post.id), post: post);
+                bool showTopThread = false;
+                bool showBottomThread = false;
+                if (hasThread) {
+                  if (index == 0) {
+                    showTopThread = false;
+                    showBottomThread = true;
+                  } else {
+                    if (posts[index - 1].author.id == post.author.id) {
+                      showTopThread = true;
+                    }
+                    if (posts.length != index + 1) {
+                      if (posts[index + 1].author.id == post.author.id) {
+                        showBottomThread = true;
+                      } else {
+                        showBottomThread = false;
+                      }
+                    } else {
+                      showBottomThread = false;
+                    }
+                  }
+                }
+                return PostTile(
+                  key: ValueKey(post.id),
+                  post: post,
+                  showTopThread: showTopThread,
+                  showBottomThread: showBottomThread,
+                );
               },
               itemCount: posts.length,
             ),

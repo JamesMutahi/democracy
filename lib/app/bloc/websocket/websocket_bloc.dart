@@ -295,7 +295,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'like',
         'request_id': postRequestId,
-        'data': {'pk': event.post.id},
+        'pk': event.post.id,
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -311,7 +311,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'bookmark',
         'request_id': postRequestId,
-        'data': {'pk': event.post.id},
+        'pk': event.post.id,
       },
     };
     _channel.sink.add(jsonEncode(message));

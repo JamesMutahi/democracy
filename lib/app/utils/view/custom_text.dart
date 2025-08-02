@@ -70,7 +70,7 @@ class CustomText extends StatelessWidget {
         _spans.add(
           TextSpan(
             text: _suffix,
-            style: style.copyWith(color: Colors.pink),
+            style: style.copyWith(color: Colors.blue),
             recognizer: TapGestureRecognizer()..onTap = onSuffixPressed,
           ),
         );
@@ -158,7 +158,7 @@ class CustomText extends StatelessWidget {
       _spans.add(
         TextSpan(
           text: _suffix,
-          style: style.copyWith(color: Colors.pink),
+          style: style.copyWith(color: Colors.blue),
           recognizer: TapGestureRecognizer()..onTap = onSuffixPressed,
         ),
       );

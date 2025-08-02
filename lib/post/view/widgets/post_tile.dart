@@ -20,10 +20,14 @@ class PostTile extends StatelessWidget {
     super.key,
     required this.post,
     this.isDependency = false,
+    this.showTopThread = false,
+    this.showBottomThread = false,
   });
 
   final Post post;
   final bool isDependency;
+  final bool showTopThread;
+  final bool showBottomThread;
 
   @override
   Widget build(BuildContext context) {
@@ -78,10 +82,41 @@ class PostTile extends StatelessWidget {
                           ],
                         ),
                       ),
-                      _PostContainer(post: post.repostOf!, isDependency: false),
+                      _PostContainer(
+                        post: post.repostOf!,
+                        isDependency: false,
+                        showBottomThread: showBottomThread,
+                      ),
                     ],
                   )
-                  : _PostContainer(post: post, isDependency: isDependency),
+                  : (showTopThread || showBottomThread)
+                  ? Stack(
+                    children: [
+                      Positioned(
+                        left:
+                            23 + 15, // 23 -> circle avatar radius, 15 -> margin
+                        top: showBottomThread ? 0 : null,
+                        bottom: showBottomThread ? 0 : null,
+                        child: Container(
+                          margin:
+                              showTopThread ? null : EdgeInsets.only(top: 10),
+                          height: showBottomThread ? null : 10,
+                          width: 2,
+                          color: Theme.of(context).colorScheme.outlineVariant,
+                        ),
+                      ),
+                      _PostContainer(
+                        post: post,
+                        isDependency: false,
+                        showBottomThread: showBottomThread,
+                      ),
+                    ],
+                  )
+                  : _PostContainer(
+                    post: post,
+                    isDependency: isDependency,
+                    showBottomThread: false,
+                  ),
         );
       },
     );
@@ -89,10 +124,15 @@ class PostTile extends StatelessWidget {
 }
 
 class _PostContainer extends StatelessWidget {
-  const _PostContainer({required this.post, required this.isDependency});
+  const _PostContainer({
+    required this.post,
+    required this.isDependency,
+    required this.showBottomThread,
+  });
 
   final Post post;
   final bool isDependency;
+  final bool showBottomThread;
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +143,7 @@ class _PostContainer extends StatelessWidget {
         border: Border(
           bottom: BorderSide(
             color:
-                (isDependency)
+                (isDependency || showBottomThread)
                     ? Colors.transparent
                     : Theme.of(context).disabledColor.withAlpha(30),
           ),
@@ -116,7 +156,11 @@ class _PostContainer extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ProfileImage(user: post.author),
+                  CircleAvatar(
+                    radius: 23,
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    child: ProfileImage(user: post.author),
+                  ),
                   SizedBox(width: 10),
                   Expanded(
                     child: Column(
