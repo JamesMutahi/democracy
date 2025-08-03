@@ -83,16 +83,22 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       _onUnsubscribeReplies(emit, event);
     });
     on<_GetUserPosts>((event, emit) {
-      _onLoadUserPosts(emit, event);
+      _onGetUserPosts(emit, event);
     });
     on<_GetBookmarks>((event, emit) {
-      _onLoadBookmarks(emit, event);
+      _onGetBookmarks(emit, event);
     });
     on<_GetLikedPosts>((event, emit) {
-      _onLoadLikedPosts(emit, event);
+      _onGetLikedPosts(emit, event);
+    });
+    on<_GetDraftPosts>((event, emit) {
+      _onGetDraftPosts(emit);
+    });
+    on<_UnsubscribeDraftPosts>((event, emit) {
+      _onUnsubscribeDraftPosts(emit);
     });
     on<_GetUserReplies>((event, emit) {
-      _onLoadUserReplies(emit, event);
+      _onGetUserReplies(emit, event);
     });
     on<_UnsubscribeUserProfilePosts>((event, emit) {
       _onUnsubscribeUserProfilePosts(emit, event);
@@ -388,7 +394,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
-  Future _onLoadUserPosts(
+  Future _onGetUserPosts(
     Emitter<WebsocketState> emit,
     _GetUserPosts event,
   ) async {
@@ -405,7 +411,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
-  Future _onLoadBookmarks(
+  Future _onGetBookmarks(
     Emitter<WebsocketState> emit,
     _GetBookmarks event,
   ) async {
@@ -417,7 +423,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
-  Future _onLoadLikedPosts(
+  Future _onGetLikedPosts(
     Emitter<WebsocketState> emit,
     _GetLikedPosts event,
   ) async {
@@ -434,7 +440,34 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
-  Future _onLoadUserReplies(
+  Future _onGetDraftPosts(
+      Emitter<WebsocketState> emit,
+      ) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': postsStream,
+      'payload': {
+        'action': 'draft_posts',
+        'request_id': postRequestId,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onUnsubscribeDraftPosts(Emitter<WebsocketState> emit) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': postsStream,
+      'payload': {
+        'action': 'unsubscribe_draft_posts',
+        'request_id': postRequestId,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+
+  Future _onGetUserReplies(
     Emitter<WebsocketState> emit,
     _GetUserReplies event,
   ) async {

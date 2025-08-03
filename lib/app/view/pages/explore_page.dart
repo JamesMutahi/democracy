@@ -97,33 +97,29 @@ class _ExplorePageState extends State<ExplorePage> {
           }
         },
 
-        child: Stack(
-          children: [
-            PostListView(
-              posts: _posts,
-              loading: loading,
-              failure: failure,
-              onPostsUpdated: (posts) {
-                setState(() {
-                  _posts = posts;
-                });
-              },
-              refreshController: _refreshController,
-              enablePullDown: true,
-              enablePullUp: hasNextPage ? true : false,
-              onRefresh: () {
-                context.read<WebsocketBloc>().add(WebsocketEvent.getPosts());
-              },
-              onLoading: () {
-                context.read<WebsocketBloc>().add(
-                  WebsocketEvent.getPosts(lastPost: _posts.last),
-                );
-              },
-              onFailure: () {
-                context.read<WebsocketBloc>().add(WebsocketEvent.getPosts());
-              },
-            ),
-          ],
+        child: PostListView(
+          posts: _posts,
+          loading: loading,
+          failure: failure,
+          onPostsUpdated: (posts) {
+            setState(() {
+              _posts = posts;
+            });
+          },
+          refreshController: _refreshController,
+          enablePullDown: true,
+          enablePullUp: hasNextPage ? true : false,
+          onRefresh: () {
+            context.read<WebsocketBloc>().add(WebsocketEvent.getPosts());
+          },
+          onLoading: () {
+            context.read<WebsocketBloc>().add(
+              WebsocketEvent.getPosts(lastPost: _posts.last),
+            );
+          },
+          onFailure: () {
+            context.read<WebsocketBloc>().add(WebsocketEvent.getPosts());
+          },
         ),
       ),
     );

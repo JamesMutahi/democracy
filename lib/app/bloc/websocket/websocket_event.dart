@@ -49,6 +49,8 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     required User user,
     Post? lastPost,
   }) = _GetLikedPosts;
+  const factory WebsocketEvent.getDraftPosts({Post? lastPost}) = _GetDraftPosts;
+  const factory WebsocketEvent.unsubscribeDraftPosts() = _UnsubscribeDraftPosts;
   const factory WebsocketEvent.getUserReplies({
     required User user,
     Post? lastPost,

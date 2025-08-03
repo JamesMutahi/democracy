@@ -7,6 +7,7 @@ import 'package:democracy/user/models/user.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/view/chat_detail.dart';
 import 'package:democracy/user/view/edit_profile.dart';
+import 'package:democracy/user/view/widgets/draft_posts.dart';
 import 'package:democracy/user/view/widgets/following.dart';
 import 'package:democracy/user/view/widgets/tabs.dart';
 import 'package:flutter/material.dart';
@@ -543,8 +544,10 @@ class _ProfilePopUpMenu extends StatelessWidget {
             //   TODO: Create link for sharing
             break;
           case 'Drafts':
-            //   TODO: Open drafts
-            break;
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => DraftsPosts()),
+            );
           case 'Mute':
             showDialog(
               context: context,
