@@ -1,19 +1,20 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/post/bloc/draft_posts/draft_posts_cubit.dart';
 import 'package:democracy/post/models/post.dart';
+import 'package:democracy/post/view/post_update.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
-class DraftsPosts extends StatefulWidget {
-  const DraftsPosts({super.key});
+class DraftPosts extends StatefulWidget {
+  const DraftPosts({super.key});
 
   @override
-  State<DraftsPosts> createState() => _DraftsPostsState();
+  State<DraftPosts> createState() => _DraftsPostsState();
 }
 
-class _DraftsPostsState extends State<DraftsPosts> {
+class _DraftsPostsState extends State<DraftPosts> {
   bool loading = true;
   bool failure = false;
   List<Post> _posts = [];
@@ -38,7 +39,7 @@ class _DraftsPostsState extends State<DraftsPosts> {
         );
       },
       child: Scaffold(
-        appBar: AppBar(title: Text('Draft posts')),
+        appBar: AppBar(title: Text('Drafts')),
         body: BlocListener<DraftPostsCubit, DraftPostsState>(
           listener: (context, state) {
             if (state.status == DraftPostsStatus.success) {
@@ -71,18 +72,11 @@ class _DraftsPostsState extends State<DraftsPosts> {
               }
             }
           },
-          child: PostListView(
-            posts: _posts,
-            loading: loading,
-            failure: failure,
-            onPostsUpdated: (posts) {
-              setState(() {
-                _posts = posts;
-              });
-            },
-            refreshController: _refreshController,
+          child: SmartRefresher(
             enablePullDown: true,
-            enablePullUp: hasNextPage ? true : false,
+            enablePullUp: true,
+            header: ClassicHeader(),
+            controller: _refreshController,
             onRefresh: () {
               context.read<WebsocketBloc>().add(WebsocketEvent.getDraftPosts());
             },
@@ -91,9 +85,31 @@ class _DraftsPostsState extends State<DraftsPosts> {
                 WebsocketEvent.getDraftPosts(lastPost: _posts.last),
               );
             },
-            onFailure: () {
-              context.read<WebsocketBloc>().add(WebsocketEvent.getDraftPosts());
-            },
+            footer: ClassicFooter(),
+            child: ListView.builder(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              itemBuilder: (BuildContext context, int index) {
+                Post post = _posts[index];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => PostUpdate()),
+                    );
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(top: 10),
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                    ),
+                    child: Text(post.body),
+                  ),
+                );
+              },
+              itemCount: _posts.length,
+            ),
           ),
         ),
       ),

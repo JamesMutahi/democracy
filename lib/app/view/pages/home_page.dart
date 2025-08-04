@@ -1,6 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
+import 'package:democracy/app/view/widgets/expandable_fab.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/post/bloc/following_posts/following_posts_cubit.dart';
 import 'package:democracy/post/bloc/for_you/for_you_cubit.dart';
@@ -9,9 +10,9 @@ import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/post_create.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
 import 'package:democracy/user/models/user.dart';
+import 'package:democracy/post/view/draft_posts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class HomePage extends StatefulWidget {
@@ -81,16 +82,7 @@ class _HomePageState extends State<HomePage>
                 alignment: Alignment.bottomRight,
                 child: Container(
                   margin: EdgeInsets.only(right: 10, bottom: 10),
-                  child: FloatingActionButton(
-                    heroTag: 'posts',
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => PostCreate()),
-                      );
-                    },
-                    child: Icon(Symbols.post_add_rounded),
-                  ),
+                  child: ExpandableFab(distance: 112),
                 ),
               ),
             ],

@@ -30,6 +30,14 @@ class PostMorePopUp extends StatelessWidget {
         return MorePopUp(
           onSelected: (selected) {
             switch (selected) {
+              case 'Share':
+                showModalBottomSheet<void>(
+                  context: context,
+                  shape: const BeveledRectangleBorder(),
+                  builder: (BuildContext context) {
+                    return ShareBottomSheet(post: post);
+                  },
+                );
               case 'Delete':
                 showDialog(
                   context: context,
@@ -76,8 +84,9 @@ class PostMorePopUp extends StatelessWidget {
           },
           texts:
               user.id == post.author.id
-                  ? ['Delete']
+                  ? ['Share', 'Delete']
                   : [
+                    'Share',
                     post.author.isMuted ? 'Unmute' : 'Mute',
                     post.author.isBlocked ? 'Unblock' : 'Block',
                     'Report',
@@ -315,7 +324,7 @@ class ViewsButton extends StatelessWidget {
                 style: TextStyle(color: Theme.of(context).colorScheme.outline),
               )
               : null,
-      child: PostButtonIcon(iconData: Symbols.poll_rounded),
+      child: PostButtonIcon(iconData: Symbols.visibility),
     );
   }
 }
@@ -355,28 +364,6 @@ class BookmarkButton extends StatelessWidget {
                 : Theme.of(context).colorScheme.outline,
         fill: post.isBookmarked ? 1 : 0,
       ),
-    );
-  }
-}
-
-class ShareButton extends StatelessWidget {
-  const ShareButton({super.key, required this.post});
-
-  final Post post;
-
-  @override
-  Widget build(BuildContext context) {
-    return PostTileButton(
-      onTap: () {
-        showModalBottomSheet<void>(
-          context: context,
-          shape: const BeveledRectangleBorder(),
-          builder: (BuildContext context) {
-            return ShareBottomSheet(post: post);
-          },
-        );
-      },
-      child: PostButtonIcon(iconData: Symbols.share_rounded),
     );
   }
 }

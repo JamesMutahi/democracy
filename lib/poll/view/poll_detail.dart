@@ -58,10 +58,22 @@ class _PollDetailState extends State<PollDetail> {
               children: [
                 Text(_poll.description),
                 SizedBox(height: 10),
-                TimeLeft(
-                  key: UniqueKey(),
-                  startTime: _poll.startTime,
-                  endTime: _poll.endTime,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TimeLeft(
+                      key: UniqueKey(),
+                      startTime: _poll.startTime,
+                      endTime: _poll.endTime,
+                    ),
+                    if (pollHasStarted)
+                      Text(
+                        '${_poll.totalVotes} ${_poll.totalVotes == 1 ? 'vote' : 'votes'}',
+                        style: TextStyle(
+                          color: Theme.of(context).disabledColor,
+                        ),
+                      ),
+                  ],
                 ),
                 SizedBox(height: 10),
                 Container(

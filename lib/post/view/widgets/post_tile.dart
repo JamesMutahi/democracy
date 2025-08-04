@@ -234,19 +234,13 @@ class _PostContainer extends StatelessWidget {
                                   post: post,
                                   numberFormat: numberFormat,
                                 ),
-                                ViewsButton(
+                                BookmarkButton(
                                   post: post,
                                   numberFormat: numberFormat,
                                 ),
-                                Row(
-                                  children: [
-                                    BookmarkButton(
-                                      post: post,
-                                      showTrailing: false,
-                                      numberFormat: numberFormat,
-                                    ),
-                                    ShareButton(post: post),
-                                  ],
+                                ViewsButton(
+                                  post: post,
+                                  numberFormat: numberFormat,
                                 ),
                               ],
                             ),

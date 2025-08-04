@@ -16,7 +16,7 @@ import 'package:democracy/poll/view/poll_tile.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
-import 'package:democracy/post/view/widgets/replies.dart';
+import 'package:democracy/post/view/replies.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:democracy/user/bloc/users/users_cubit.dart';
 import 'package:flutter/material.dart';
@@ -330,7 +330,6 @@ class _PostContainer extends StatelessWidget {
                   Align(
                     alignment: Alignment.bottomRight,
                     child: Text(
-                      '${(post.views > 0) ? '${post.views} ${(post.views == 1) ? 'View' : 'Views'} • ' : ''}'
                       '${timeFormat.format(post.publishedAt)} • '
                       '${dateFormat.format(post.publishedAt)}',
                       style: TextStyle(color: Theme.of(context).disabledColor),
@@ -344,7 +343,7 @@ class _PostContainer extends StatelessWidget {
                       RepostButton(post: post, numberFormat: numberFormat),
                       LikeButton(post: post, numberFormat: numberFormat),
                       BookmarkButton(post: post, numberFormat: numberFormat),
-                      ShareButton(post: post),
+                      ViewsButton(post: post, numberFormat: numberFormat),
                     ],
                   ),
                 ],
