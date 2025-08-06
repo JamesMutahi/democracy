@@ -3,6 +3,7 @@ import 'package:democracy/app/utils/view/failure_retry_button.dart';
 import 'package:democracy/app/utils/view/no_results.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/user/models/user.dart';
+import 'package:democracy/user/view/widgets/profile_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
@@ -17,6 +18,7 @@ class UsersListView extends StatelessWidget {
     required this.refreshController,
     this.enablePullDown = false,
     required this.enablePullUp,
+    this.showProfileButtons = false,
     required this.onUserTap,
     this.onRefresh,
     required this.onLoading,
@@ -30,6 +32,7 @@ class UsersListView extends StatelessWidget {
   final RefreshController refreshController;
   final bool enablePullDown;
   final bool enablePullUp;
+  final bool showProfileButtons;
   final void Function(User) onUserTap;
   final VoidCallback? onRefresh;
   final VoidCallback onLoading;
@@ -62,9 +65,25 @@ class UsersListView extends StatelessWidget {
                         title: Text(user.name),
                         subtitle: Text("@${user.username}"),
                         trailing:
-                            selectedUsers.contains(user)
-                                ? Icon(Symbols.check_rounded)
-                                : SizedBox.shrink(),
+                            showProfileButtons
+                                ? user.isBlocked
+                                    ? BlockedButton(user: user)
+                                    : Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        if (user.isMuted)
+                                          Row(
+                                            children: [
+                                              MutedButton(user: user),
+                                              SizedBox(width: 7),
+                                            ],
+                                          ),
+                                        FollowButton(user: user),
+                                      ],
+                                    )
+                                : (selectedUsers.contains(user)
+                                    ? Icon(Symbols.check_rounded)
+                                    : SizedBox.shrink()),
                         onTap: () {
                           onUserTap(user);
                         },

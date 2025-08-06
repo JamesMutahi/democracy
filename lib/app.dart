@@ -153,6 +153,12 @@ class _Listeners extends StatelessWidget {
           listener: (context, state) {
             switch (state) {
               case WebsocketConnected():
+                final snackBar = getSnackBar(
+                  context: context,
+                  message: 'Connected',
+                  status: SnackBarStatus.success,
+                );
+                showSnackBar(snackBar: snackBar);
                 context.read<WebsocketBloc>().add(
                   WebsocketEvent.getForYouPosts(),
                 );

@@ -1,6 +1,5 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/dialogs.dart';
-import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
 import 'package:democracy/user/models/user.dart';
@@ -9,6 +8,7 @@ import 'package:democracy/chat/view/chat_detail.dart';
 import 'package:democracy/user/view/edit_profile.dart';
 import 'package:democracy/post/view/draft_posts.dart';
 import 'package:democracy/user/view/widgets/following.dart';
+import 'package:democracy/user/view/widgets/profile_buttons.dart';
 import 'package:democracy/user/view/widgets/tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -135,7 +135,7 @@ class _ProfilePageState extends State<ProfilePage> {
               canPop: true,
               onPopInvokedWithResult: (_, __) {
                 context.read<WebsocketBloc>().add(
-                  WebsocketEvent.unsubscribeUser(user: user),
+                  WebsocketEvent.unsubscribeUsers(users: [user]),
                 );
                 context.read<WebsocketBloc>().add(
                   WebsocketEvent.unsubscribeUserProfilePosts(user: user),
@@ -365,84 +365,19 @@ class ProfileAppBarDelegate extends SliverPersistentHeaderDelegate {
                       : Row(
                         children: [
                           user.isBlocked
-                              ? OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  side: BorderSide(color: Colors.red),
-                                ),
-                                onPressed: () {
-                                  context.read<WebsocketBloc>().add(
-                                    WebsocketEvent.blockUser(user: user),
-                                  );
-                                },
-                                child: Text(
-                                  'Blocked',
-                                  style: TextStyle(color: Colors.red),
-                                ),
-                              )
+                              ? BlockedButton(user: user)
                               : Row(
                                 children: [
-                                  if (user.isMuted && !user.isBlocked)
+                                  if (user.isMuted)
                                     Row(
                                       children: [
-                                        ProfileButton(
-                                          icon: Icon(
-                                            Symbols.volume_off_rounded,
-                                            color: Colors.red,
-                                          ),
-
-                                          onTap: () {
-                                            context.read<WebsocketBloc>().add(
-                                              WebsocketEvent.muteUser(
-                                                user: user,
-                                              ),
-                                            );
-                                          },
-                                        ),
+                                        MutedButton(user: user),
                                         SizedBox(width: 7),
                                       ],
                                     ),
-                                  ProfileButton(
-                                    icon:
-                                        user.hasBlocked
-                                            ? Icon(
-                                              Symbols.email_rounded,
-                                              color:
-                                                  Theme.of(
-                                                    context,
-                                                  ).disabledColor,
-                                            )
-                                            : Icon(Symbols.email_rounded),
-                                    onTap:
-                                        user.hasBlocked
-                                            ? () {
-                                              final snackBar = getSnackBar(
-                                                context: context,
-                                                message: 'Blocked',
-                                                status: SnackBarStatus.failure,
-                                              );
-                                              ScaffoldMessenger.of(
-                                                context,
-                                              ).showSnackBar(snackBar);
-                                            }
-                                            : () {
-                                              context.read<WebsocketBloc>().add(
-                                                WebsocketEvent.createChat(
-                                                  user: user,
-                                                ),
-                                              );
-                                            },
-                                  ),
+                                  MessageButton(user: user),
                                   SizedBox(width: 7),
-                                  OutlinedButton(
-                                    onPressed: () {
-                                      context.read<WebsocketBloc>().add(
-                                        WebsocketEvent.followUser(user: user),
-                                      );
-                                    },
-                                    child: Text(
-                                      user.isFollowed ? 'Unfollow' : 'Follow',
-                                    ),
-                                  ),
+                                  FollowButton(user: user),
                                 ],
                               ),
                         ],
@@ -578,29 +513,6 @@ class _ProfilePopUpMenu extends StatelessWidget {
             }),
           ],
       icon: Icon(Symbols.more_vert_rounded),
-    );
-  }
-}
-
-class ProfileButton extends StatelessWidget {
-  const ProfileButton({super.key, required this.icon, required this.onTap});
-
-  final Icon icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      customBorder: CircleBorder(),
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(7),
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: Theme.of(context).colorScheme.outline),
-        ),
-        child: icon,
-      ),
     );
   }
 }

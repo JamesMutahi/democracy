@@ -55,8 +55,8 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     required User user,
     Post? lastPost,
   }) = _GetUserReplies;
-  const factory WebsocketEvent.unsubscribeUser({required User user}) =
-      _UnsubscribeUser;
+  const factory WebsocketEvent.unsubscribeUsers({required List<User> users}) =
+      _UnsubscribeUsers;
   const factory WebsocketEvent.unsubscribeUserProfilePosts({
     required User user,
   }) = _UnsubscribeUserProfilePosts;

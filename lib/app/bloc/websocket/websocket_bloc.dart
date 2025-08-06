@@ -157,8 +157,8 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_FollowUser>((event, emit) {
       _onFollowUser(emit, event);
     });
-    on<_UnsubscribeUser>((event, emit) {
-      _onUnsubscribeUser(emit, event);
+    on<_UnsubscribeUsers>((event, emit) {
+      _onUnsubscribeUsers(emit, event);
     });
     on<_SendDirectMessage>((event, emit) {
       _onSendDirectMessage(emit, event);
@@ -196,10 +196,11 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     emit(WebsocketLoading());
     try {
       String? token = await authRepository.getToken();
-      final wsUrl = Uri.parse('${dotenv.env['WEBSOCKET_URL']}');
+      String url = dotenv.env['WEBSOCKET_URL']!;
+      final wsUrl = Uri.parse(url);
       _channel = IOWebSocketChannel.connect(
         wsUrl,
-        headers: {'Authorization': 'Token $token'},
+        headers: {'Authorization': 'Token $token', 'origin': url},
       );
       await _channel.ready;
       add(_ChangeState(state: WebsocketConnected()));
@@ -440,16 +441,11 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
-  Future _onGetDraftPosts(
-      Emitter<WebsocketState> emit,
-      ) async {
+  Future _onGetDraftPosts(Emitter<WebsocketState> emit) async {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': postsStream,
-      'payload': {
-        'action': 'draft_posts',
-        'request_id': postRequestId,
-      },
+      'payload': {'action': 'draft_posts', 'request_id': postRequestId},
     };
     _channel.sink.add(jsonEncode(message));
   }
@@ -465,7 +461,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     };
     _channel.sink.add(jsonEncode(message));
   }
-
 
   Future _onGetUserReplies(
     Emitter<WebsocketState> emit,
@@ -784,17 +779,18 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
-  Future _onUnsubscribeUser(
+  Future _onUnsubscribeUsers(
     Emitter<WebsocketState> emit,
-    _UnsubscribeUser event,
+    _UnsubscribeUsers event,
   ) async {
     emit(WebsocketLoading());
+    List<int> userIds = event.users.map((user) => user.id).toList();
     Map<String, dynamic> message = {
       'stream': usersStream,
       'payload': {
         'action': 'unsubscribe',
         'request_id': usersRequestId,
-        'pk': event.user.id,
+        'pks': userIds,
       },
     };
     _channel.sink.add(jsonEncode(message));

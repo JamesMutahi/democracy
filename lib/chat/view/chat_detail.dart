@@ -156,7 +156,7 @@ class _ChatScaffoldState extends State<ChatScaffold> {
             context.read<MessageActionsCubit>().closeActionButtons();
           }
           context.read<WebsocketBloc>().add(
-            WebsocketEvent.unsubscribeUser(user: otherUser),
+            WebsocketEvent.unsubscribeUsers(users: [otherUser]),
           );
         },
         child: Scaffold(
