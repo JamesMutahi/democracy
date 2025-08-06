@@ -1,7 +1,6 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/user/bloc/blocked/blocked_cubit.dart';
 import 'package:democracy/user/bloc/muted/muted_cubit.dart';
-import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/profile.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
@@ -106,20 +105,6 @@ class _MutedTabState extends State<_MutedTab> {
             }
           },
         ),
-        BlocListener<UserDetailCubit, UserDetailState>(
-          listener: (context, state) {
-            if (state is UserUpdated) {
-              if (_users.any((user) => user.id == state.user.id)) {
-                setState(() {
-                  int index = _users.indexWhere(
-                    (user) => user.id == state.user.id,
-                  );
-                  _users[index] = state.user;
-                });
-              }
-            }
-          },
-        ),
       ],
       child: PopScope(
         canPop: true,
@@ -137,6 +122,11 @@ class _MutedTabState extends State<_MutedTab> {
           enablePullDown: true,
           enablePullUp: hasNextPage ? true : false,
           showProfileButtons: true,
+          onUsersUpdated: (users) {
+            setState(() {
+              _users = users;
+            });
+          },
           onUserTap: (user) {
             Navigator.push(
               context,
@@ -221,20 +211,6 @@ class _BlockedTabState extends State<_BlockedTab> {
             }
           },
         ),
-        BlocListener<UserDetailCubit, UserDetailState>(
-          listener: (context, state) {
-            if (state is UserUpdated) {
-              if (_users.any((user) => user.id == state.user.id)) {
-                setState(() {
-                  int index = _users.indexWhere(
-                    (user) => user.id == state.user.id,
-                  );
-                  _users[index] = state.user;
-                });
-              }
-            }
-          },
-        ),
       ],
       child: PopScope(
         canPop: true,
@@ -252,6 +228,11 @@ class _BlockedTabState extends State<_BlockedTab> {
           enablePullDown: true,
           enablePullUp: hasNextPage ? true : false,
           showProfileButtons: true,
+          onUsersUpdated: (users) {
+            setState(() {
+              _users = users;
+            });
+          },
           onUserTap: (user) {
             Navigator.push(
               context,

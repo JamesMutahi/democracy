@@ -113,6 +113,12 @@ class _FollowersTabState extends State<_FollowersTab> {
         refreshController: _refreshController,
         enablePullDown: true,
         enablePullUp: hasNextPage ? true : false,
+        showProfileButtons: true,
+        onUsersUpdated: (users) {
+          setState(() {
+            _users = users;
+          });
+        },
         onUserTap: (user) {
           Navigator.push(
             context,
@@ -212,6 +218,12 @@ class _FollowingTabState extends State<_FollowingTab> {
         refreshController: _refreshController,
         enablePullDown: true,
         enablePullUp: hasNextPage ? true : false,
+        showProfileButtons: true,
+        onUsersUpdated: (users) {
+          setState(() {
+            _users = users;
+          });
+        },
         onUserTap: (user) {
           Navigator.push(
             context,
