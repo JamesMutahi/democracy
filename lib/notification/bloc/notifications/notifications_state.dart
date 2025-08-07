@@ -1,12 +1,35 @@
 part of 'notifications_cubit.dart';
 
-@freezed
-class NotificationsState with _$NotificationsState {
-  const factory NotificationsState.initial() = NotificationsInitial;
-  const factory NotificationsState.loading() = NotificationsLoading;
-  const factory NotificationsState.loaded({
-    required List<Notification> notifications,
-  }) = NotificationsLoaded;
-  const factory NotificationsState.failure({required String error}) =
-      NotificationsFailure;
+enum NotificationsStatus { initial, loading, success, failure }
+
+final class NotificationsState extends Equatable {
+  const NotificationsState({
+    this.status = NotificationsStatus.initial,
+    this.notifications = const [],
+    this.hasNext = false,
+  });
+
+  final NotificationsStatus status;
+  final List<Notification> notifications;
+  final bool hasNext;
+
+  NotificationsState copyWith({
+    NotificationsStatus? status,
+    List<Notification>? notifications,
+    bool? hasNext,
+  }) {
+    return NotificationsState(
+      status: status ?? this.status,
+      notifications: notifications ?? this.notifications,
+      hasNext: hasNext ?? this.hasNext,
+    );
+  }
+
+  @override
+  String toString() {
+    return '''NotificationsState { status: $status, notifications: ${notifications.length}, hasNext: $hasNext }''';
+  }
+
+  @override
+  List<Object> get props => [status, notifications];
 }

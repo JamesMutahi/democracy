@@ -73,7 +73,7 @@ class _DraftsPostsState extends State<DraftPosts> {
           },
           child: SmartRefresher(
             enablePullDown: true,
-            enablePullUp: true,
+            enablePullUp: hasNextPage,
             header: ClassicHeader(),
             controller: _refreshController,
             onRefresh: () {

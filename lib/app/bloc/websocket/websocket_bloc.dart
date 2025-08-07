@@ -182,7 +182,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       _onSubmitResponse(emit, event);
     });
     on<_GetNotifications>((event, emit) {
-      _onGetNotifications(emit);
+      _onGetNotifications(emit, event);
     });
     on<_MarkNotificationAsRead>((event, emit) {
       _onMarkNotificationAsRead(emit, event);
@@ -932,14 +932,21 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
-  Future _onGetNotifications(Emitter<WebsocketState> emit) async {
+  Future _onGetNotifications(
+    Emitter<WebsocketState> emit,
+    _GetNotifications event,
+  ) async {
     if (state is WebsocketFailure) {
       await _onConnect(emit);
     }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': notificationsStream,
-      'payload': {'action': 'list', 'request_id': notificationRequestId},
+      'payload': {
+        'action': 'list',
+        'request_id': notificationRequestId,
+        'last_notification': event.lastNotification?.id,
+      },
     };
     _channel.sink.add(jsonEncode(message));
   }
