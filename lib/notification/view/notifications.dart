@@ -1,4 +1,6 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/view/bottom_loader.dart';
+import 'package:democracy/app/utils/view/failure_retry_button.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_cubit.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
@@ -21,7 +23,6 @@ class _NotificationsState extends State<Notifications> {
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
   );
-  bool hasNextPage = false;
 
   @override
   void initState() {
@@ -31,107 +32,106 @@ class _NotificationsState extends State<Notifications> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<NotificationsCubit, NotificationsState>(
-          listener: (context, state) {
-            if (state.status == NotificationsStatus.success) {
-              setState(() {
-                _notifications = state.notifications.toList();
-                loading = false;
-                failure = false;
-                hasNextPage = state.hasNext;
+    return Scaffold(
+      appBar: AppBar(title: Text('Notifications')),
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<NotificationsCubit, NotificationsState>(
+            listener: (context, state) {
+              if (state is NotificationsLoaded) {
+                setState(() {
+                  _notifications = state.notifications.toList();
+                  loading = false;
+                  failure = false;
+                });
                 if (_refreshController.headerStatus ==
                     RefreshStatus.refreshing) {
                   _refreshController.refreshCompleted();
                 }
-                if (_refreshController.footerStatus == LoadStatus.loading) {
-                  _refreshController.loadComplete();
+              }
+              if (state is NotificationsLoaded) {
+                if (loading) {
+                  setState(() {
+                    loading = false;
+                    failure = true;
+                  });
                 }
-              });
-            }
-            if (state.status == NotificationsStatus.failure) {
-              if (loading) {
-                setState(() {
-                  loading = false;
-                  failure = true;
-                });
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshFailed();
+                }
               }
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshFailed();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadFailed();
-              }
-            }
-          },
-        ),
-        BlocListener<NotificationDetailCubit, NotificationDetailState>(
-          listener: (context, state) {
-            if (state is NotificationCreated) {
-              if (!_notifications.any(
-                (notification) => notification.id == state.notification.id,
-              )) {
-                setState(() {
-                  _notifications.add(state.notification);
-                });
-              }
-            }
-            if (state is NotificationUpdated) {
-              if (_notifications.any(
-                (notification) => notification.id == state.notification.id,
-              )) {
-                setState(() {
-                  int index = _notifications.indexWhere(
-                    (notification) => notification.id == state.notification.id,
-                  );
-                  _notifications[index] = state.notification;
-                });
-              }
-            }
-            if (state is NotificationDeleted) {
-              if (_notifications.any(
-                (notification) => notification.id == state.notificationId,
-              )) {
-                setState(() {
-                  _notifications.removeWhere(
-                    (notification) => notification.id == state.notificationId,
-                  );
-                });
-              }
-            }
-          },
-        ),
-      ],
-      child: Scaffold(
-        appBar: AppBar(title: Text('Notifications')),
-        body: SmartRefresher(
-          enablePullDown: true,
-          enablePullUp: hasNextPage,
-          header: ClassicHeader(),
-          controller: _refreshController,
-          onRefresh: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.getNotifications(),
-            );
-          },
-          onLoading: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.getNotifications(
-                lastNotification: _notifications.last,
-              ),
-            );
-          },
-          footer: ClassicFooter(),
-          child: ListView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 15),
-            itemBuilder: (BuildContext context, int index) {
-              n_.Notification notification = _notifications[index];
-              return NotificationTile(notification: notification);
             },
-            itemCount: _notifications.length,
           ),
-        ),
+          BlocListener<NotificationDetailCubit, NotificationDetailState>(
+            listener: (context, state) {
+              if (state is NotificationCreated) {
+                if (!_notifications.any(
+                  (notification) => notification.id == state.notification.id,
+                )) {
+                  setState(() {
+                    _notifications.add(state.notification);
+                  });
+                }
+              }
+              if (state is NotificationUpdated) {
+                if (_notifications.any(
+                  (notification) => notification.id == state.notification.id,
+                )) {
+                  setState(() {
+                    int index = _notifications.indexWhere(
+                      (notification) =>
+                          notification.id == state.notification.id,
+                    );
+                    _notifications[index] = state.notification;
+                  });
+                }
+              }
+              if (state is NotificationDeleted) {
+                if (_notifications.any(
+                  (notification) => notification.id == state.notificationId,
+                )) {
+                  setState(() {
+                    _notifications.removeWhere(
+                      (notification) => notification.id == state.notificationId,
+                    );
+                  });
+                }
+              }
+            },
+          ),
+        ],
+        child:
+            loading
+                ? BottomLoader()
+                : failure
+                ? FailureRetryButton(
+                  onPressed: () {
+                    context.read<WebsocketBloc>().add(
+                      WebsocketEvent.getNotifications(),
+                    );
+                  },
+                )
+                : SmartRefresher(
+                  enablePullDown: true,
+                  enablePullUp: false,
+                  header: ClassicHeader(),
+                  controller: _refreshController,
+                  onRefresh: () {
+                    context.read<WebsocketBloc>().add(
+                      WebsocketEvent.getNotifications(),
+                    );
+                  },
+                  footer: ClassicFooter(),
+                  child: ListView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    itemBuilder: (BuildContext context, int index) {
+                      n_.Notification notification = _notifications[index];
+                      return NotificationTile(notification: notification);
+                    },
+                    itemCount: _notifications.length,
+                  ),
+                ),
       ),
     );
   }

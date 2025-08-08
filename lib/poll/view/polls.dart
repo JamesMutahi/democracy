@@ -121,7 +121,7 @@ class _PollsState extends State<Polls> {
               )
               : SmartRefresher(
                 enablePullDown: true,
-                enablePullUp: hasNextPage ? true : false,
+                enablePullUp: hasNextPage,
                 header: ClassicHeader(),
                 controller: _refreshController,
                 onRefresh: () {

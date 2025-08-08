@@ -1,35 +1,28 @@
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:democracy/notification/models/notification.dart';
 
 part 'notifications_state.dart';
+part 'notifications_cubit.freezed.dart';
 
 class NotificationsCubit extends Cubit<NotificationsState> {
-  NotificationsCubit() : super(const NotificationsState());
+  NotificationsCubit() : super(const NotificationsState.initial());
 
   void websocketFailure({required String error}) {
-    emit(state.copyWith(status: NotificationsStatus.failure));
+    if (state is NotificationsInitial || state is NotificationsLoading) {
+      emit(NotificationsFailure(error: error));
+    }
   }
 
   void loaded({required Map<String, dynamic> payload}) {
-    emit(state.copyWith(status: NotificationsStatus.loading));
+    emit(NotificationsLoading());
     if (payload['response_status'] == 200) {
-      final List<Notification> notifications = List.from(
-        payload['data']['results'].map((e) => Notification.fromJson(e)),
+      List<Notification> notifications = List.from(
+        payload['data'].map((e) => Notification.fromJson(e)),
       );
-      int? lastNotification = payload['data']['last_notification'];
-      emit(
-        state.copyWith(
-          status: NotificationsStatus.success,
-          notifications:
-              lastNotification == null
-                  ? notifications
-                  : [...state.notifications, ...notifications],
-          hasNext: payload['data']['has_next'],
-        ),
-      );
+      emit(NotificationsLoaded(notifications: notifications));
     } else {
-      emit(state.copyWith(status: NotificationsStatus.failure));
+      emit(NotificationsFailure(error: payload['errors'].toString()));
     }
   }
 }

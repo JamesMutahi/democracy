@@ -112,7 +112,7 @@ class _RepliesState extends State<Replies> {
         },
         refreshController: _refreshController,
         enablePullDown: false,
-        enablePullUp: hasNextPage ? true : false,
+        enablePullUp: hasNextPage,
         hasThread:
             _posts
                 .where((element) => element.author.id == widget.post.author.id)

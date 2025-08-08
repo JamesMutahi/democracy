@@ -151,7 +151,7 @@ class _ForYouTabState extends State<ForYouTab> {
         },
         refreshController: _refreshController,
         enablePullDown: false,
-        enablePullUp: hasNextPage ? true : false,
+        enablePullUp: hasNextPage,
         onRefresh: () {},
         onLoading: () {},
         onFailure: () {},
@@ -226,7 +226,7 @@ class _FollowingTabState extends State<FollowingTab> {
         },
         refreshController: _refreshController,
         enablePullDown: true,
-        enablePullUp: hasNextPage ? true : false,
+        enablePullUp: hasNextPage,
         onRefresh: () {
           context.read<WebsocketBloc>().add(WebsocketEvent.getFollowingPosts());
         },

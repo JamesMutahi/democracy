@@ -131,9 +131,7 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     Poll? poll,
     Survey? survey,
   }) = _SendDirectMessage;
-  const factory WebsocketEvent.getNotifications({
-    Notification? lastNotification,
-  }) = _GetNotifications;
+  const factory WebsocketEvent.getNotifications() = _GetNotifications;
   const factory WebsocketEvent.markNotificationAsRead({
     required Notification notification,
   }) = _MarkNotificationAsRead;

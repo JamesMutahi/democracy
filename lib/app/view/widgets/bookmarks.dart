@@ -84,7 +84,7 @@ class _BookmarksState extends State<Bookmarks> {
           },
           refreshController: _refreshController,
           enablePullDown: true,
-          enablePullUp: hasNextPage ? true : false,
+          enablePullUp: hasNextPage,
           onRefresh: () {
             context.read<WebsocketBloc>().add(
               WebsocketEvent.getBookmarks(user: widget.user),

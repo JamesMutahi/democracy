@@ -182,13 +182,13 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       _onSubmitResponse(emit, event);
     });
     on<_GetNotifications>((event, emit) {
-      _onGetNotifications(emit, event);
+      _onGetNotifications(emit);
     });
     on<_MarkNotificationAsRead>((event, emit) {
       _onMarkNotificationAsRead(emit, event);
     });
-    on<_Disconnect>((event, emit) {
-      _channel.sink.close();
+    on<_Disconnect>((event, emit) async {
+      await _channel.sink.close();
     });
   }
 
@@ -197,9 +197,8 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     try {
       String? token = await authRepository.getToken();
       String url = dotenv.env['WEBSOCKET_URL']!;
-      final wsUrl = Uri.parse(url);
       _channel = IOWebSocketChannel.connect(
-        wsUrl,
+        Uri.parse(url),
         headers: {'Authorization': 'Token $token', 'origin': url},
       );
       await _channel.ready;
@@ -932,21 +931,14 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
-  Future _onGetNotifications(
-    Emitter<WebsocketState> emit,
-    _GetNotifications event,
-  ) async {
+  Future _onGetNotifications(Emitter<WebsocketState> emit) async {
     if (state is WebsocketFailure) {
       await _onConnect(emit);
     }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': notificationsStream,
-      'payload': {
-        'action': 'list',
-        'request_id': notificationRequestId,
-        'last_notification': event.lastNotification?.id,
-      },
+      'payload': {'action': 'list', 'request_id': notificationRequestId},
     };
     _channel.sink.add(jsonEncode(message));
   }

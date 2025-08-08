@@ -140,7 +140,7 @@ class _ChatsState extends State<Chats> {
                   }
                   return SmartRefresher(
                     enablePullDown: true,
-                    enablePullUp: hasNextPage ? true : false,
+                    enablePullUp: hasNextPage,
                     header: ClassicHeader(),
                     controller: _refreshController,
                     onRefresh: () {

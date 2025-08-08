@@ -209,7 +209,7 @@ class _MessagesState extends State<Messages> {
               : SmartRefresher(
                 // Messages are listed in reverse, down is up and up is down...lol
                 enablePullDown: false,
-                enablePullUp: hasNextPage ? true : false,
+                enablePullUp: hasNextPage,
                 controller: _refreshController,
                 onLoading: () {
                   context.read<WebsocketBloc>().add(

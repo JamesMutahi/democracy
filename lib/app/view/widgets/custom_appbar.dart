@@ -1,4 +1,3 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_cubit.dart';
@@ -95,7 +94,6 @@ class NotificationButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.read<WebsocketBloc>().add(WebsocketEvent.getNotifications());
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Notifications()),
@@ -150,7 +148,7 @@ class _NotificationCountState extends State<NotificationCount> {
       listeners: [
         BlocListener<NotificationsCubit, NotificationsState>(
           listener: (context, state) {
-            if (state.status == NotificationsStatus.success) {
+            if (state is NotificationsLoaded) {
               setState(() {
                 unreadNotifications =
                     state.notifications

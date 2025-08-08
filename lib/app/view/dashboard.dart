@@ -93,7 +93,7 @@ class _DashboardState extends State<Dashboard> {
                 ),
                 BlocListener<NotificationsCubit, NotificationsState>(
                   listener: (context, state) {
-                    if (state.status == NotificationsStatus.success) {
+                    if (state is NotificationsLoaded) {
                       setState(() {
                         unreadNotifications =
                             state.notifications
