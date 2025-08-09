@@ -5,6 +5,7 @@ import 'package:democracy/notification/bloc/notification_detail/notification_det
 import 'package:democracy/notification/bloc/notifications/notifications_cubit.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/notification/view/notification_tile.dart';
+import 'package:democracy/notification/view/preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
@@ -33,7 +34,21 @@ class _NotificationsState extends State<Notifications> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Notifications')),
+      appBar: AppBar(
+        title: Text('Notifications'),
+        actionsPadding: EdgeInsets.only(right: 15),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PreferencesPage()),
+              );
+            },
+            icon: Icon(Icons.tune_rounded),
+          ),
+        ],
+      ),
       body: MultiBlocListener(
         listeners: [
           BlocListener<NotificationsCubit, NotificationsState>(

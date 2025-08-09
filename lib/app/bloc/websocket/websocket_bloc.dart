@@ -187,6 +187,12 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_MarkNotificationAsRead>((event, emit) {
       _onMarkNotificationAsRead(emit, event);
     });
+    on<_GetPreferences>((event, emit) {
+      _onGetPreferences(emit);
+    });
+    on<_UpdatePreferences>((event, emit) {
+      _onUpdatePreferences(emit, event);
+    });
     on<_Disconnect>((event, emit) async {
       await _channel.sink.close();
     });
@@ -879,9 +885,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onGetSurveys(Emitter<WebsocketState> emit, _GetSurveys event) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': surveysStream,
@@ -932,9 +935,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onGetNotifications(Emitter<WebsocketState> emit) async {
-    if (state is WebsocketFailure) {
-      await _onConnect(emit);
-    }
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
       'stream': notificationsStream,
@@ -954,6 +954,39 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'action': 'mark_as_read',
         'request_id': notificationRequestId,
         'pk': event.notification.id,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onGetPreferences(Emitter<WebsocketState> emit) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': notificationsStream,
+      'payload': {'action': 'preferences', 'request_id': notificationRequestId},
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onUpdatePreferences(
+    Emitter<WebsocketState> emit,
+    _UpdatePreferences event,
+  ) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': notificationsStream,
+      'payload': {
+        'action': 'update_preferences',
+        'request_id': notificationRequestId,
+        'data': {
+          'allow_notifications': event.allowNotifications,
+          'follow_notifications': event.followNotificationsOn,
+          'tag_notifications': event.tagNotificationsOn,
+          'like_notifications': event.likeNotificationsOn,
+          'reply_notifications': event.replyNotificationsOn,
+          'repost_notifications': event.repostNotificationsOn,
+          'message_notifications': event.messageNotificationsOn,
+        },
       },
     };
     _channel.sink.add(jsonEncode(message));

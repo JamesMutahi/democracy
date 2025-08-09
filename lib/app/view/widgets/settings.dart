@@ -1,3 +1,4 @@
+import 'package:democracy/notification/view/preferences.dart';
 import 'package:democracy/user/view/widgets/muted_and_blocked.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +20,16 @@ class Settings extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) => const MutedAndBlocked(),
                 ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.tune_rounded),
+            title: const Text('Preferences'),
+            subtitle: const Text("Manage your notification preferences"),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const PreferencesPage()),
               );
             },
           ),

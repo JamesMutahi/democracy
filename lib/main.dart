@@ -12,6 +12,7 @@ import 'package:democracy/chat/bloc/message_detail/message_detail_cubit.dart';
 import 'package:democracy/chat/bloc/messages/messages_cubit.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_cubit.dart';
+import 'package:democracy/notification/bloc/preferences/preferences_cubit.dart';
 import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
 import 'package:democracy/poll/bloc/polls/polls_cubit.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
@@ -124,6 +125,7 @@ void main() async {
           BlocProvider(create: (context) => BlockedCubit()),
           BlocProvider(create: (context) => FollowingCubit()),
           BlocProvider(create: (context) => FollowersCubit()),
+          BlocProvider(create: (context) => PreferencesCubit()),
         ],
         child: const MyApp(),
       ),
