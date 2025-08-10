@@ -1,7 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
-import 'package:democracy/post/view/widgets/user_posts_pop_scope.dart';
+import 'package:democracy/post/view/widgets/posts_pop_scope.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/post/bloc/likes/likes_cubit.dart';
 import 'package:democracy/post/bloc/user_posts/user_posts_cubit.dart';
@@ -85,7 +85,7 @@ class _UserPostsState extends State<UserPosts> {
           },
         ),
       ],
-      child: UserPostsPopScope(
+      child: PostsPopScope(
         user: widget.user,
         posts: _posts,
         child: PostListView(
@@ -199,7 +199,7 @@ class _UserRepliesState extends State<UserReplies> {
           },
         ),
       ],
-      child: UserPostsPopScope(
+      child: PostsPopScope(
         user: widget.user,
         posts: _posts,
         child: PostListView(
@@ -334,7 +334,7 @@ class _LikesState extends State<Likes> {
           },
         ),
       ],
-      child: UserPostsPopScope(
+      child: PostsPopScope(
         user: widget.user,
         posts: _posts,
         child: PostListView(
