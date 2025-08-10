@@ -26,28 +26,29 @@ class _PreferencesPageState extends State<PreferencesPage> {
 
   void updatePreferences({
     bool? allowNotifications,
-    bool? tagNotificationsOn,
-    bool? likeNotificationsOn,
-    bool? replyNotificationsOn,
-    bool? repostNotificationsOn,
-    bool? messageNotificationsOn,
-    bool? followNotificationsOn,
+    bool? allowTagNotifications,
+    bool? allowLikeNotifications,
+    bool? allowReplyNotifications,
+    bool? allowRepostNotifications,
+    bool? allowMessageNotifications,
+    bool? allowFollowNotifications,
   }) {
     context.read<WebsocketBloc>().add(
       WebsocketEvent.updatePreferences(
         allowNotifications:
             allowNotifications ?? preferences.allowNotifications,
-        tagNotificationsOn: tagNotificationsOn ?? preferences.tagNotifications,
-        likeNotificationsOn:
-            likeNotificationsOn ?? preferences.likeNotifications,
-        replyNotificationsOn:
-            replyNotificationsOn ?? preferences.replyNotifications,
-        repostNotificationsOn:
-            repostNotificationsOn ?? preferences.repostNotifications,
-        messageNotificationsOn:
-            messageNotificationsOn ?? preferences.messageNotifications,
-        followNotificationsOn:
-            followNotificationsOn ?? preferences.followNotifications,
+        allowTagNotifications:
+            allowTagNotifications ?? preferences.allowTagNotifications,
+        allowLikeNotifications:
+            allowLikeNotifications ?? preferences.allowLikeNotifications,
+        allowReplyNotifications:
+            allowReplyNotifications ?? preferences.allowReplyNotifications,
+        allowRepostNotifications:
+            allowRepostNotifications ?? preferences.allowRepostNotifications,
+        allowMessageNotifications:
+            allowMessageNotifications ?? preferences.allowMessageNotifications,
+        allowFollowNotifications:
+            allowFollowNotifications ?? preferences.allowFollowNotifications,
       ),
     );
   }
@@ -95,12 +96,12 @@ class _PreferencesPageState extends State<PreferencesPage> {
                               setState(() {
                                 updatePreferences(
                                   allowNotifications: value,
-                                  tagNotificationsOn: value,
-                                  likeNotificationsOn: value,
-                                  replyNotificationsOn: value,
-                                  repostNotificationsOn: value,
-                                  messageNotificationsOn: value,
-                                  followNotificationsOn: value,
+                                  allowTagNotifications: value,
+                                  allowLikeNotifications: value,
+                                  allowReplyNotifications: value,
+                                  allowRepostNotifications: value,
+                                  allowMessageNotifications: value,
+                                  allowFollowNotifications: value,
                                 );
                               });
                             },
@@ -135,37 +136,39 @@ class _PreferencesPageState extends State<PreferencesPage> {
                                     ),
                                     SwitchRow(
                                       text: 'Tags',
-                                      value: preferences.tagNotifications,
+                                      value: preferences.allowTagNotifications,
                                       onChanged: (value) {
                                         updatePreferences(
-                                          tagNotificationsOn: value,
+                                          allowTagNotifications: value,
                                         );
                                       },
                                     ),
                                     SwitchRow(
                                       text: 'Likes',
-                                      value: preferences.likeNotifications,
+                                      value: preferences.allowLikeNotifications,
                                       onChanged: (value) {
                                         updatePreferences(
-                                          likeNotificationsOn: value,
+                                          allowLikeNotifications: value,
                                         );
                                       },
                                     ),
                                     SwitchRow(
                                       text: 'Replies',
-                                      value: preferences.replyNotifications,
+                                      value:
+                                          preferences.allowReplyNotifications,
                                       onChanged: (value) {
                                         updatePreferences(
-                                          replyNotificationsOn: value,
+                                          allowReplyNotifications: value,
                                         );
                                       },
                                     ),
                                     SwitchRow(
                                       text: 'Reposts',
-                                      value: preferences.repostNotifications,
+                                      value:
+                                          preferences.allowRepostNotifications,
                                       onChanged: (value) {
                                         updatePreferences(
-                                          repostNotificationsOn: value,
+                                          allowRepostNotifications: value,
                                         );
                                       },
                                     ),
@@ -180,10 +183,11 @@ class _PreferencesPageState extends State<PreferencesPage> {
                                     SwitchRow(
                                       text:
                                           'Receive notifications on new messages',
-                                      value: preferences.messageNotifications,
+                                      value:
+                                          preferences.allowMessageNotifications,
                                       onChanged: (value) {
                                         updatePreferences(
-                                          messageNotificationsOn: value,
+                                          allowMessageNotifications: value,
                                         );
                                       },
                                     ),
@@ -198,10 +202,11 @@ class _PreferencesPageState extends State<PreferencesPage> {
                                     SwitchRow(
                                       text:
                                           'Receive notifications on new followers',
-                                      value: preferences.followNotifications,
+                                      value:
+                                          preferences.allowFollowNotifications,
                                       onChanged: (value) {
                                         updatePreferences(
-                                          followNotificationsOn: value,
+                                          allowFollowNotifications: value,
                                         );
                                       },
                                     ),

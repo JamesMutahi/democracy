@@ -377,6 +377,9 @@ class ProfileAppBarDelegate extends SliverPersistentHeaderDelegate {
                                     ),
                                   MessageButton(user: user),
                                   SizedBox(width: 7),
+                                  if (user.isFollowed)
+                                    NotificationButton(user: user),
+                                  SizedBox(width: 7),
                                   FollowButton(user: user),
                                 ],
                               ),

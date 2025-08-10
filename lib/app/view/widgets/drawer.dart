@@ -113,8 +113,6 @@ class LogoutDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      icon: const Icon(Icons.warning_amber_rounded, size: 40),
-      iconColor: Colors.amber,
       title: Center(child: Text('Log out')),
       content: Text(
         'Are you sure you want to log out?',

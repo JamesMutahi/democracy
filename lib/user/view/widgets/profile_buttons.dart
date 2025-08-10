@@ -72,6 +72,29 @@ class MessageButton extends StatelessWidget {
   }
 }
 
+class NotificationButton extends StatelessWidget {
+  const NotificationButton({super.key, required this.user});
+
+  final User user;
+
+  @override
+  Widget build(BuildContext context) {
+    return ProfileButton(
+      icon:
+          user.isNotifying
+              ? Icon(Symbols.notifications_active_rounded)
+              : Icon(
+                Symbols.notifications_off_rounded,
+              ),
+      onTap: () {
+        context.read<WebsocketBloc>().add(
+          WebsocketEvent.changeUserNotificationStatus(user: user),
+        );
+      },
+    );
+  }
+}
+
 class FollowButton extends StatelessWidget {
   const FollowButton({super.key, required this.user});
 

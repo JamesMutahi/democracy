@@ -157,6 +157,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_FollowUser>((event, emit) {
       _onFollowUser(emit, event);
     });
+    on<_ChangeUserNotificationStatus>((event, emit) {
+      _onChangeUserNotificationStatus(emit, event);
+    });
     on<_UnsubscribeUsers>((event, emit) {
       _onUnsubscribeUsers(emit, event);
     });
@@ -784,6 +787,22 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
+  Future _onChangeUserNotificationStatus(
+    Emitter<WebsocketState> emit,
+    _ChangeUserNotificationStatus event,
+  ) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': usersStream,
+      'payload': {
+        'action': 'notify',
+        'request_id': usersRequestId,
+        'pk': event.user.id,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
   Future _onUnsubscribeUsers(
     Emitter<WebsocketState> emit,
     _UnsubscribeUsers event,
@@ -980,12 +999,12 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'request_id': notificationRequestId,
         'data': {
           'allow_notifications': event.allowNotifications,
-          'follow_notifications': event.followNotificationsOn,
-          'tag_notifications': event.tagNotificationsOn,
-          'like_notifications': event.likeNotificationsOn,
-          'reply_notifications': event.replyNotificationsOn,
-          'repost_notifications': event.repostNotificationsOn,
-          'message_notifications': event.messageNotificationsOn,
+          'allow_follow_notifications': event.allowFollowNotifications,
+          'allow_tag_notifications': event.allowTagNotifications,
+          'allow_like_notifications': event.allowLikeNotifications,
+          'allow_reply_notifications': event.allowReplyNotifications,
+          'allow_repost_notifications': event.allowRepostNotifications,
+          'allow_message_notifications': event.allowMessageNotifications,
         },
       },
     };

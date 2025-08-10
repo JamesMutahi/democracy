@@ -138,12 +138,15 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.getPreferences() = _GetPreferences;
   const factory WebsocketEvent.updatePreferences({
     required bool allowNotifications,
-    required bool tagNotificationsOn,
-    required bool likeNotificationsOn,
-    required bool replyNotificationsOn,
-    required bool repostNotificationsOn,
-    required bool messageNotificationsOn,
-    required bool followNotificationsOn,
+    required bool allowTagNotifications,
+    required bool allowLikeNotifications,
+    required bool allowReplyNotifications,
+    required bool allowRepostNotifications,
+    required bool allowMessageNotifications,
+    required bool allowFollowNotifications,
   }) = _UpdatePreferences;
+  const factory WebsocketEvent.changeUserNotificationStatus({
+    required User user,
+  }) = _ChangeUserNotificationStatus;
   const factory WebsocketEvent.disconnect() = _Disconnect;
 }

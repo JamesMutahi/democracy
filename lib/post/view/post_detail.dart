@@ -107,7 +107,7 @@ class _PostDetailState extends State<PostDetail> {
                 });
               }
               // repost
-              if (_post.author.id == state.user.id) {
+              if (_post.repostOf?.author.id == state.user.id) {
                 Post repostOf = _post.repostOf!.copyWith(author: state.user);
                 setState(() {
                   _post = _post.copyWith(repostOf: repostOf);

@@ -18,6 +18,7 @@ User user1 = User(
   isBlocked: false,
   hasBlocked: false,
   isFollowed: false,
+  isNotifying: false,
 );
 
 User user2 = User(
@@ -38,4 +39,5 @@ User user2 = User(
   isBlocked: false,
   hasBlocked: false,
   isFollowed: false,
+  isNotifying: false,
 );

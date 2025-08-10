@@ -23,6 +23,7 @@ sealed class User with _$User {
     @JsonKey(name: 'is_blocked') required bool isBlocked,
     @JsonKey(name: 'has_blocked') required bool hasBlocked,
     @JsonKey(name: 'is_followed') required bool isFollowed,
+    @JsonKey(name: 'is_notifying') required bool isNotifying,
   }) = _User;
 
   factory User.fromJson(Map<String, Object?> json) => _$UserFromJson(json);
