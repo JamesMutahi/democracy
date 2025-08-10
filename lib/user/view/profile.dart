@@ -137,9 +137,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 context.read<WebsocketBloc>().add(
                   WebsocketEvent.unsubscribeUsers(users: [user]),
                 );
-                context.read<WebsocketBloc>().add(
-                  WebsocketEvent.unsubscribeUserProfilePosts(user: user),
-                );
               },
               child: Scaffold(
                 body: SafeArea(

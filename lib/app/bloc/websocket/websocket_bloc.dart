@@ -94,14 +94,11 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_GetDraftPosts>((event, emit) {
       _onGetDraftPosts(emit);
     });
-    on<_UnsubscribeDraftPosts>((event, emit) {
-      _onUnsubscribeDraftPosts(emit);
-    });
     on<_GetUserReplies>((event, emit) {
       _onGetUserReplies(emit, event);
     });
-    on<_UnsubscribeUserProfilePosts>((event, emit) {
-      _onUnsubscribeUserProfilePosts(emit, event);
+    on<_UnsubscribeUserPosts>((event, emit) {
+      _onUnsubscribeUserPosts(emit, event);
     });
     on<_GetChats>((event, emit) {
       _onGetChats(emit, event);
@@ -208,7 +205,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       String url = dotenv.env['WEBSOCKET_URL']!;
       _channel = IOWebSocketChannel.connect(
         Uri.parse(url),
-        headers: {'Authorization': 'Token $token', 'origin': url},
+        headers: {'Authorization': 'Token $token', 'Origin': url},
       );
       await _channel.ready;
       add(_ChangeState(state: WebsocketConnected()));
@@ -458,18 +455,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
-  Future _onUnsubscribeDraftPosts(Emitter<WebsocketState> emit) async {
-    emit(WebsocketLoading());
-    Map<String, dynamic> message = {
-      'stream': postsStream,
-      'payload': {
-        'action': 'unsubscribe_draft_posts',
-        'request_id': postRequestId,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
   Future _onGetUserReplies(
     Emitter<WebsocketState> emit,
     _GetUserReplies event,
@@ -487,17 +472,18 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
-  Future _onUnsubscribeUserProfilePosts(
+  Future _onUnsubscribeUserPosts(
     Emitter<WebsocketState> emit,
-    _UnsubscribeUserProfilePosts event,
+    _UnsubscribeUserPosts event,
   ) async {
     emit(WebsocketLoading());
+    List<int> postIds = event.posts.map((post) => post.id).toList();
     Map<String, dynamic> message = {
       'stream': postsStream,
       'payload': {
-        'action': 'unsubscribe_user_profile_posts',
+        'action': 'unsubscribe_user_posts',
         'request_id': event.user.id,
-        'user': event.user.id,
+        'pks': postIds,
       },
     };
     _channel.sink.add(jsonEncode(message));

@@ -2,6 +2,7 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/post/bloc/draft_posts/draft_posts_cubit.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/post_update.dart';
+import 'package:democracy/post/view/widgets/user_posts_pop_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
@@ -30,13 +31,8 @@ class _DraftsPostsState extends State<DraftPosts> {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: true,
-      onPopInvokedWithResult: (_, __) {
-        context.read<WebsocketBloc>().add(
-          WebsocketEvent.unsubscribeDraftPosts(),
-        );
-      },
+    return UserPostsPopScope(
+      posts: _posts,
       child: Scaffold(
         appBar: AppBar(title: Text('Drafts')),
         body: BlocListener<DraftPostsCubit, DraftPostsState>(

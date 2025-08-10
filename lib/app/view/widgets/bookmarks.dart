@@ -1,6 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
+import 'package:democracy/post/view/widgets/user_posts_pop_scope.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
 import 'package:flutter/material.dart';
@@ -27,82 +28,88 @@ class _BookmarksState extends State<Bookmarks> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Bookmarks')),
-      body: BlocListener<BookmarksCubit, BookmarksState>(
-        listener: (context, state) {
-          if (state.status == BookmarksStatus.loading) {
-            setState(() {
+    return UserPostsPopScope(
+      user: widget.user,
+      posts: _posts,
+      child: Scaffold(
+        appBar: AppBar(title: Text('Bookmarks')),
+        body: BlocListener<BookmarksCubit, BookmarksState>(
+          listener: (context, state) {
+            if (state.status == BookmarksStatus.loading) {
+              setState(() {
+                if (_refreshController.headerStatus !=
+                        RefreshStatus.refreshing &&
+                    _refreshController.footerStatus != LoadStatus.loading) {
+                  setState(() {
+                    loading = true;
+                    failure = false;
+                  });
+                }
+              });
+            }
+            if (state.status == BookmarksStatus.success) {
+              setState(() {
+                loading = false;
+                failure = false;
+                _posts = state.posts;
+                hasNextPage = state.hasNext;
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshCompleted();
+                }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadComplete();
+                }
+              });
+            }
+            if (state.status == BookmarksStatus.failure) {
               if (_refreshController.headerStatus != RefreshStatus.refreshing &&
                   _refreshController.footerStatus != LoadStatus.loading) {
                 setState(() {
-                  loading = true;
-                  failure = false;
+                  loading = false;
+                  failure = true;
                 });
               }
-            });
-          }
-          if (state.status == BookmarksStatus.success) {
-            setState(() {
-              loading = false;
-              failure = false;
-              _posts = state.posts;
-              hasNextPage = state.hasNext;
               if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshCompleted();
+                _refreshController.refreshFailed();
               }
               if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadComplete();
+                _refreshController.loadFailed();
               }
-            });
-          }
-          if (state.status == BookmarksStatus.failure) {
-            if (_refreshController.headerStatus != RefreshStatus.refreshing &&
-                _refreshController.footerStatus != LoadStatus.loading) {
+            }
+          },
+          child: PostListView(
+            physics: NeverScrollableScrollPhysics(),
+            posts: _posts,
+            loading: loading,
+            failure: failure,
+            onPostsUpdated: (posts) {
               setState(() {
-                loading = false;
-                failure = true;
+                _posts = posts;
               });
-            }
-            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-              _refreshController.refreshFailed();
-            }
-            if (_refreshController.footerStatus == LoadStatus.loading) {
-              _refreshController.loadFailed();
-            }
-          }
-        },
-        child: PostListView(
-          physics: NeverScrollableScrollPhysics(),
-          posts: _posts,
-          loading: loading,
-          failure: failure,
-          onPostsUpdated: (posts) {
-            setState(() {
-              _posts = posts;
-            });
-          },
-          refreshController: _refreshController,
-          enablePullDown: true,
-          enablePullUp: hasNextPage,
-          onRefresh: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.getBookmarks(user: widget.user),
-            );
-          },
-          onLoading: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.getBookmarks(
-                user: widget.user,
-                lastPost: _posts.last,
-              ),
-            );
-          },
-          onFailure: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.getBookmarks(user: widget.user),
-            );
-          },
+            },
+            refreshController: _refreshController,
+            enablePullDown: true,
+            enablePullUp: hasNextPage,
+            onRefresh: () {
+              context.read<WebsocketBloc>().add(
+                WebsocketEvent.getBookmarks(user: widget.user),
+              );
+            },
+            onLoading: () {
+              context.read<WebsocketBloc>().add(
+                WebsocketEvent.getBookmarks(
+                  user: widget.user,
+                  lastPost: _posts.last,
+                ),
+              );
+            },
+            onFailure: () {
+              context.read<WebsocketBloc>().add(
+                WebsocketEvent.getBookmarks(user: widget.user),
+              );
+            },
+          ),
         ),
       ),
     );

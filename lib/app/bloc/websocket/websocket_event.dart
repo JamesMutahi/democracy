@@ -50,16 +50,16 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     Post? lastPost,
   }) = _GetLikedPosts;
   const factory WebsocketEvent.getDraftPosts({Post? lastPost}) = _GetDraftPosts;
-  const factory WebsocketEvent.unsubscribeDraftPosts() = _UnsubscribeDraftPosts;
   const factory WebsocketEvent.getUserReplies({
     required User user,
     Post? lastPost,
   }) = _GetUserReplies;
   const factory WebsocketEvent.unsubscribeUsers({required List<User> users}) =
       _UnsubscribeUsers;
-  const factory WebsocketEvent.unsubscribeUserProfilePosts({
+  const factory WebsocketEvent.unsubscribeUserPosts({
     required User user,
-  }) = _UnsubscribeUserProfilePosts;
+    required List<Post> posts,
+  }) = _UnsubscribeUserPosts;
   const factory WebsocketEvent.getChats({String? searchTerm, Chat? lastChat}) =
       _GetChats;
   const factory WebsocketEvent.createChat({required User user}) = _CreateChat;

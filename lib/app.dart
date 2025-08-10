@@ -193,6 +193,13 @@ class _Listeners extends StatelessWidget {
                         context.read<PostDetailCubit>().deleted(
                           payload: message['payload'],
                         );
+                      case 'bookmark':
+                        final snackBar = getSnackBar(
+                          context: context,
+                          message: message['payload']['data']['message'],
+                          status: SnackBarStatus.info,
+                        );
+                        showSnackBar(snackBar: snackBar);
                       case 'report':
                         context.read<PostDetailCubit>().reported(
                           payload: message['payload'],
