@@ -346,6 +346,34 @@ class _Listeners extends StatelessWidget {
                         context.read<UserDetailCubit>().updated(
                           payload: message['payload'],
                         );
+                      case 'mute':
+                        context.read<UserDetailCubit>().updated(
+                          payload: message['payload'],
+                        );
+                        if (message['payload']['response_status'] == 200) {
+                          late String msg;
+                          if (message['payload']['data']['is_muted']) {
+                            msg = 'Muted';
+                          } else {
+                            msg = 'Mute removed';
+                          }
+                          final snackBar = getSnackBar(
+                            context: context,
+                            message: msg,
+                            status: SnackBarStatus.info,
+                            action: SnackBarAction(
+                              label: 'Undo',
+                              onPressed: () {
+                                context.read<WebsocketBloc>().add(
+                                  WebsocketEvent.muteUser(
+                                    id: message['payload']['data']['id'],
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                          showSnackBar(snackBar: snackBar);
+                        }
                       case 'following':
                         context.read<FollowingCubit>().loaded(
                           payload: message['payload'],

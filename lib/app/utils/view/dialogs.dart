@@ -17,7 +17,9 @@ class BlockDialog extends StatelessWidget {
           'or message you. You will also not receive '
           'notifications from them.',
       onYesPressed: () {
-        context.read<WebsocketBloc>().add(WebsocketEvent.blockUser(user: user));
+        context.read<WebsocketBloc>().add(
+          WebsocketEvent.blockUser(id: user.id),
+        );
       },
     );
   }
@@ -37,7 +39,7 @@ class MuteDialog extends StatelessWidget {
           'You will continue receiving notifications. '
           'They will not know they have been muted.',
       onYesPressed: () {
-        context.read<WebsocketBloc>().add(WebsocketEvent.muteUser(user: user));
+        context.read<WebsocketBloc>().add(WebsocketEvent.muteUser(id: user.id));
       },
     );
   }

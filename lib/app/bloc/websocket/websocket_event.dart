@@ -121,8 +121,8 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     required String? imagePath,
     required String? coverPhotoPath,
   }) = _UpdateUser;
-  const factory WebsocketEvent.muteUser({required User user}) = _MuteUser;
-  const factory WebsocketEvent.blockUser({required User user}) = _BlockUser;
+  const factory WebsocketEvent.muteUser({required int id}) = _MuteUser;
+  const factory WebsocketEvent.blockUser({required int id}) = _BlockUser;
   const factory WebsocketEvent.followUser({required User user}) = _FollowUser;
   const factory WebsocketEvent.sendDirectMessage({
     required List<User> users,

@@ -741,7 +741,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'mute',
         'request_id': usersRequestId,
-        'pk': event.user.id,
+        'pk': event.id,
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -754,7 +754,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'block',
         'request_id': usersRequestId,
-        'pk': event.user.id,
+        'pk': event.id,
       },
     };
     _channel.sink.add(jsonEncode(message));

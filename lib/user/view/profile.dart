@@ -490,7 +490,7 @@ class _ProfilePopUpMenu extends StatelessWidget {
             );
           case 'Unmute':
             context.read<WebsocketBloc>().add(
-              WebsocketEvent.muteUser(user: user),
+              WebsocketEvent.muteUser(id: user.id),
             );
           case 'Block':
             showDialog(
@@ -499,7 +499,7 @@ class _ProfilePopUpMenu extends StatelessWidget {
             );
           case 'Unblock':
             context.read<WebsocketBloc>().add(
-              WebsocketEvent.blockUser(user: user),
+              WebsocketEvent.blockUser(id: user.id),
             );
         }
       },

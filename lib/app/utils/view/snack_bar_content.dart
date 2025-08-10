@@ -7,20 +7,19 @@ SnackBar getSnackBar({
   required BuildContext context,
   required String message,
   required SnackBarStatus status,
+  SnackBarAction? action,
 }) {
   final snackBar = SnackBar(
     // dismissDirection: DismissDirection.up,
     behavior: SnackBarBehavior.floating,
     backgroundColor: Theme.of(context).cardColor,
     // margin: EdgeInsets.only(
-      // bottom: MediaQuery.of(context).size.height - 100,
-      // left: 10,
-      // right: 10,
+    // bottom: MediaQuery.of(context).size.height - 100,
+    // left: 10,
+    // right: 10,
     // ),
-    content: SnackBarContent(
-      message: message,
-      status: status,
-    ),
+    action: action,
+    content: SnackBarContent(message: message, status: status),
   );
   return snackBar;
 }

@@ -254,7 +254,7 @@ class _ChatScaffoldState extends State<ChatScaffold> {
                         ),
                         onPressed: () {
                           context.read<WebsocketBloc>().add(
-                            WebsocketEvent.blockUser(user: otherUser),
+                            WebsocketEvent.blockUser(id: otherUser.id),
                           );
                         },
                         child: Text('Unblock'),
@@ -336,11 +336,11 @@ class ChatPopUpMenu extends StatelessWidget {
         switch (selected) {
           case 'Block':
             context.read<WebsocketBloc>().add(
-              WebsocketEvent.blockUser(user: otherUser),
+              WebsocketEvent.blockUser(id: otherUser.id),
             );
           case 'Unblock':
             context.read<WebsocketBloc>().add(
-              WebsocketEvent.blockUser(user: otherUser),
+              WebsocketEvent.blockUser(id: otherUser.id),
             );
         }
       },

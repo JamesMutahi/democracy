@@ -15,7 +15,9 @@ class BlockedButton extends StatelessWidget {
     return OutlinedButton(
       style: OutlinedButton.styleFrom(side: BorderSide(color: Colors.red)),
       onPressed: () {
-        context.read<WebsocketBloc>().add(WebsocketEvent.blockUser(user: user));
+        context.read<WebsocketBloc>().add(
+          WebsocketEvent.blockUser(id: user.id),
+        );
       },
       child: Text('Blocked', style: TextStyle(color: Colors.red)),
     );
@@ -32,7 +34,7 @@ class MutedButton extends StatelessWidget {
     return ProfileButton(
       icon: Icon(Symbols.volume_off_rounded, color: Colors.red),
       onTap: () {
-        context.read<WebsocketBloc>().add(WebsocketEvent.muteUser(user: user));
+        context.read<WebsocketBloc>().add(WebsocketEvent.muteUser(id: user.id));
       },
     );
   }
@@ -83,9 +85,7 @@ class NotificationButton extends StatelessWidget {
       icon:
           user.isNotifying
               ? Icon(Symbols.notifications_active_rounded)
-              : Icon(
-                Symbols.notifications_off_rounded,
-              ),
+              : Icon(Symbols.notifications_off_rounded),
       onTap: () {
         context.read<WebsocketBloc>().add(
           WebsocketEvent.changeUserNotificationStatus(user: user),

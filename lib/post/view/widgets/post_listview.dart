@@ -17,6 +17,7 @@ class PostListView extends StatelessWidget {
     required this.enablePullDown,
     required this.enablePullUp,
     this.hasThread = false,
+    this.checkVisibility = false,
     required this.onPostsUpdated,
     required this.onRefresh,
     required this.onLoading,
@@ -31,6 +32,7 @@ class PostListView extends StatelessWidget {
   final bool enablePullDown;
   final bool enablePullUp;
   final bool hasThread;
+  final bool checkVisibility;
   final void Function(List<Post>) onPostsUpdated;
   final VoidCallback onRefresh;
   final VoidCallback onLoading;
@@ -83,6 +85,7 @@ class PostListView extends StatelessWidget {
                   post: post,
                   showTopThread: showTopThread,
                   showBottomThread: showBottomThread,
+                  checkVisibility: checkVisibility,
                 );
               },
               itemCount: posts.length,

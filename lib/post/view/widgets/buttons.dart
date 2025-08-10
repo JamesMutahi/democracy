@@ -59,7 +59,7 @@ class PostMorePopUp extends StatelessWidget {
                 );
               case 'Unmute':
                 context.read<WebsocketBloc>().add(
-                  WebsocketEvent.muteUser(user: post.author),
+                  WebsocketEvent.muteUser(id: post.author.id),
                 );
               case 'Block':
                 showDialog(
@@ -68,7 +68,7 @@ class PostMorePopUp extends StatelessWidget {
                 );
               case 'Unblock':
                 context.read<WebsocketBloc>().add(
-                  WebsocketEvent.blockUser(user: post.author),
+                  WebsocketEvent.blockUser(id: post.author.id),
                 );
               case 'Report':
                 showModalBottomSheet(

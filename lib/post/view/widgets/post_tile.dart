@@ -22,103 +22,117 @@ class PostTile extends StatelessWidget {
     this.isDependency = false,
     this.showTopThread = false,
     this.showBottomThread = false,
+    this.checkVisibility = false,
   });
 
   final Post post;
   final bool isDependency;
   final bool showTopThread;
   final bool showBottomThread;
+  final bool checkVisibility;
 
   @override
   Widget build(BuildContext context) {
     bool showAsRepost = post.body.isEmpty && post.repostOf != null;
-    return BlocBuilder<AuthBloc, AuthState>(
-      builder: (context, state) {
-        late User user;
-        if (state is Authenticated) {
-          user = state.user;
-        }
-        return InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder:
-                    (context) => PostDetail(
-                      key: ValueKey(post.id),
-                      post: showAsRepost ? post.repostOf! : post,
-                      showAsRepost: showAsRepost,
-                      repost: post,
-                    ),
-              ),
-            );
-          },
-          child:
-              showAsRepost
-                  ? Column(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.only(
-                          left: 15,
-                          right: 15,
-                          top: 10,
-                          bottom: 5,
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Symbols.loop_rounded,
-                              color: Theme.of(context).colorScheme.outline,
-                            ),
-                            SizedBox(width: 5),
-                            Text(
-                              user.id == post.author.id
-                                  ? 'You reposted'
-                                  : '${post.author.name} reposted',
-                              style: TextStyle(
+    bool visible = true;
+    if (checkVisibility && !isDependency) {
+      if (post.author.isBlocked) {
+        visible = false;
+      }
+      if (post.author.isMuted) {
+        visible = false;
+      }
+    }
+    return Visibility(
+      visible: visible,
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          late User user;
+          if (state is Authenticated) {
+            user = state.user;
+          }
+          return InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) => PostDetail(
+                        key: ValueKey(post.id),
+                        post: showAsRepost ? post.repostOf! : post,
+                        showAsRepost: showAsRepost,
+                        repost: post,
+                      ),
+                ),
+              );
+            },
+            child:
+                showAsRepost
+                    ? Column(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.only(
+                            left: 15,
+                            right: 15,
+                            top: 10,
+                            bottom: 5,
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Symbols.loop_rounded,
                                 color: Theme.of(context).colorScheme.outline,
                               ),
-                            ),
-                          ],
+                              SizedBox(width: 5),
+                              Text(
+                                user.id == post.author.id
+                                    ? 'You reposted'
+                                    : '${post.author.name} reposted',
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.outline,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      _PostContainer(
-                        post: post.repostOf!,
-                        isDependency: false,
-                        showBottomThread: showBottomThread,
-                      ),
-                    ],
-                  )
-                  : (showTopThread || showBottomThread)
-                  ? Stack(
-                    children: [
-                      Positioned(
-                        left:
-                            23 + 15, // 23 -> circle avatar radius, 15 -> margin
-                        top: showBottomThread ? 0 : null,
-                        bottom: showBottomThread ? 0 : null,
-                        child: Container(
-                          margin:
-                              showTopThread ? null : EdgeInsets.only(top: 10),
-                          height: showBottomThread ? null : 10,
-                          width: 2,
-                          color: Theme.of(context).colorScheme.outlineVariant,
+                        _PostContainer(
+                          post: post.repostOf!,
+                          isDependency: false,
+                          showBottomThread: showBottomThread,
                         ),
-                      ),
-                      _PostContainer(
-                        post: post,
-                        isDependency: false,
-                        showBottomThread: showBottomThread,
-                      ),
-                    ],
-                  )
-                  : _PostContainer(
-                    post: post,
-                    isDependency: isDependency,
-                    showBottomThread: false,
-                  ),
-        );
-      },
+                      ],
+                    )
+                    : (showTopThread || showBottomThread)
+                    ? Stack(
+                      children: [
+                        Positioned(
+                          // 23 -> circle avatar radius, 15 -> margin
+                          left: 23 + 15,
+                          top: showBottomThread ? 0 : null,
+                          bottom: showBottomThread ? 0 : null,
+                          child: Container(
+                            margin:
+                                showTopThread ? null : EdgeInsets.only(top: 10),
+                            height: showBottomThread ? null : 10,
+                            width: 2,
+                            color: Theme.of(context).colorScheme.outlineVariant,
+                          ),
+                        ),
+                        _PostContainer(
+                          post: post,
+                          isDependency: false,
+                          showBottomThread: showBottomThread,
+                        ),
+                      ],
+                    )
+                    : _PostContainer(
+                      post: post,
+                      isDependency: isDependency,
+                      showBottomThread: false,
+                    ),
+          );
+        },
+      ),
     );
   }
 }
