@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/bottom_loader.dart';
+import 'package:democracy/app/utils/view/custom_text.dart';
 import 'package:democracy/app/utils/view/failure_retry_button.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_cubit.dart';
 import 'package:democracy/chat/bloc/messages/messages_cubit.dart';
@@ -242,7 +243,42 @@ class MessageCard extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment:
           alignedRight ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-      children: [Text(message.text)],
+      children: [MessageBody(text: message.text)],
+    );
+  }
+}
+
+class MessageBody extends StatefulWidget {
+  const MessageBody({super.key, required this.text});
+
+  final String text;
+
+  @override
+  State<MessageBody> createState() => _MessageBodyState();
+}
+
+class _MessageBodyState extends State<MessageBody> {
+  String suffix = '...Show more';
+  bool readMore = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomText(
+      text: widget.text,
+      style: Theme.of(context).textTheme.bodyMedium!,
+      suffix: suffix,
+      showAllText: readMore,
+      onSuffixPressed: () {
+        setState(() {
+          if (readMore) {
+            suffix = '...Show more';
+            readMore = false;
+          } else {
+            suffix = '\nShow less';
+            readMore = true;
+          }
+        });
+      },
     );
   }
 }

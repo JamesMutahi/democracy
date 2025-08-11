@@ -210,18 +210,14 @@ class _ChatTileState extends State<ChatTile> {
     return ListTile(
       leading: ProfileImage(user: widget.otherUser),
       title: Text.rich(
+        maxLines: 1,
+        style: TextStyle(overflow: TextOverflow.ellipsis),
         TextSpan(
           children: [
-            TextSpan(
-              text: widget.otherUser.name,
-              style: TextStyle(overflow: TextOverflow.ellipsis),
-            ),
+            TextSpan(text: widget.otherUser.name),
             TextSpan(
               text: ' @${widget.otherUser.username}',
-              style: TextStyle(
-                overflow: TextOverflow.ellipsis,
-                color: Theme.of(context).hintColor,
-              ),
+              style: TextStyle(color: Theme.of(context).hintColor),
             ),
           ],
         ),
@@ -296,11 +292,14 @@ class _LastMessageText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: TextStyle(
-        overflow: TextOverflow.ellipsis,
-        color: Theme.of(context).hintColor,
+    return Flexible(
+      child: Text(
+        text,
+        maxLines: 1,
+        style: TextStyle(
+          overflow: TextOverflow.ellipsis,
+          color: Theme.of(context).hintColor,
+        ),
       ),
     );
   }

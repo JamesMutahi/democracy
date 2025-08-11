@@ -156,7 +156,7 @@ class _EditProfileState extends State<EditProfile> {
                         autofocus: false,
                         minLines: 1,
                         maxLines: 2,
-                        maxLength: 255,
+                        maxLength: 50,
                         decoration: InputDecoration(
                           label: Text('Name'),
                           counterText: '',

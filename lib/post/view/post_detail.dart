@@ -103,7 +103,7 @@ class _PostDetailState extends State<PostDetail> {
                   });
                 }
               case PostDeleted(:final postId):
-                if (_post.id == postId) {
+                if (_post.id == postId || widget.repost.id == postId) {
                   setState(() {
                     isDeleted = true;
                   });
@@ -238,7 +238,6 @@ class _PostDetailState extends State<PostDetail> {
                                   left: 15,
                                   right: 15,
                                   top: 10,
-                                  bottom: 5,
                                 ),
                                 child: Row(
                                   mainAxisAlignment:
@@ -255,9 +254,9 @@ class _PostDetailState extends State<PostDetail> {
                                         ),
                                         SizedBox(width: 5),
                                         Text(
-                                          user.id == _post.author.id
+                                          user.id == widget.repost.author.id
                                               ? 'You reposted'
-                                              : '${_post.author.name} reposted',
+                                              : '${widget.repost.author.name} reposted',
                                           style: TextStyle(
                                             color:
                                                 Theme.of(
@@ -267,23 +266,8 @@ class _PostDetailState extends State<PostDetail> {
                                         ),
                                       ],
                                     ),
-                                    if (user.id == _post.author.id)
-                                      IconButton(
-                                        onPressed: () {
-                                          context.read<WebsocketBloc>().add(
-                                            WebsocketEvent.deletePost(
-                                              post: _post,
-                                            ),
-                                          );
-                                        },
-                                        icon: Icon(
-                                          Symbols.delete_outline_rounded,
-                                          color:
-                                              Theme.of(
-                                                context,
-                                              ).colorScheme.outline,
-                                        ),
-                                      ),
+                                    if (user.id == widget.repost.author.id)
+                                      RepostDeleteButton(post: widget.repost),
                                   ],
                                 ),
                               );

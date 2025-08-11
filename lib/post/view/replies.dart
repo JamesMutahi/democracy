@@ -112,11 +112,9 @@ class _RepliesState extends State<Replies> {
         },
         child:
             loading
-                ? Center(
-                  child: Container(
-                    margin: EdgeInsets.only(top: 50),
-                    child: BottomLoader(),
-                  ),
+                ? Container(
+                  margin: EdgeInsets.only(top: 50),
+                  child: BottomLoader(),
                 )
                 : failure
                 ? FailureRetryButton(

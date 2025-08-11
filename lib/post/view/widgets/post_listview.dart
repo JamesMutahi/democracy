@@ -54,7 +54,6 @@ class PostListView extends StatelessWidget {
             onLoading: onLoading,
             footer: ClassicFooter(),
             child: ListView.builder(
-              shrinkWrap: true,
               physics: physics,
               itemBuilder: (BuildContext context, int index) {
                 Post post = posts[index];

@@ -126,6 +126,37 @@ class PostTileButton extends StatelessWidget {
   }
 }
 
+class RepostDeleteButton extends StatelessWidget {
+  const RepostDeleteButton({super.key, required this.post});
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder:
+              (context) => CustomDialog(
+                title: 'Delete',
+                content: 'Are you sure you want to delete this repost?',
+                onYesPressed: () {
+                  context.read<WebsocketBloc>().add(
+                    WebsocketEvent.deletePost(post: post),
+                  );
+                },
+              ),
+        );
+      },
+      icon: Icon(
+        Symbols.delete_outline_rounded,
+        color: Theme.of(context).colorScheme.outline,
+      ),
+    );
+  }
+}
+
 class LikeButton extends StatelessWidget {
   const LikeButton({super.key, required this.post, required this.numberFormat});
 

@@ -168,9 +168,12 @@ class _ChatScaffoldState extends State<ChatScaffold> {
                       children: [
                         ProfileImage(user: otherUser),
                         SizedBox(width: 10),
-                        Text(
-                          otherUser.name,
-                          style: TextStyle(overflow: TextOverflow.ellipsis),
+                        Flexible(
+                          child: Text(
+                            otherUser.name,
+                            maxLines: 1,
+                            style: TextStyle(overflow: TextOverflow.ellipsis),
+                          ),
                         ),
                       ],
                     ),

@@ -75,23 +75,31 @@ class PostTile extends StatelessWidget {
                             left: 15,
                             right: 15,
                             top: 10,
-                            bottom: 5,
                           ),
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Icon(
-                                Symbols.loop_rounded,
-                                color: Theme.of(context).colorScheme.outline,
+                              Row(
+                                children: [
+                                  Icon(
+                                    Symbols.loop_rounded,
+                                    color:
+                                        Theme.of(context).colorScheme.outline,
+                                  ),
+                                  SizedBox(width: 5),
+                                  Text(
+                                    user.id == post.author.id
+                                        ? 'You reposted'
+                                        : '${post.author.name} reposted',
+                                    style: TextStyle(
+                                      color:
+                                          Theme.of(context).colorScheme.outline,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              SizedBox(width: 5),
-                              Text(
-                                user.id == post.author.id
-                                    ? 'You reposted'
-                                    : '${post.author.name} reposted',
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.outline,
-                                ),
-                              ),
+                              if (user.id == post.author.id)
+                                RepostDeleteButton(post: post),
                             ],
                           ),
                         ),
@@ -185,9 +193,13 @@ class _PostContainer extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              post.author.name,
-                              style: Theme.of(context).textTheme.bodyLarge,
+                            Flexible(
+                              child: Text(
+                                post.author.name,
+                                style: Theme.of(context).textTheme.bodyLarge
+                                    ?.copyWith(overflow: TextOverflow.ellipsis),
+                                maxLines: 1,
+                              ),
                             ),
                             isDependency
                                 ? SizedBox.shrink()

@@ -185,6 +185,10 @@ class _Listeners extends StatelessWidget {
                         context.read<PostDetailCubit>().created(
                           payload: message['payload'],
                         );
+                      case 'retrieve':
+                        context.read<PostDetailCubit>().loaded(
+                          payload: message['payload'],
+                        );
                       case 'update':
                         context.read<PostDetailCubit>().updated(
                           payload: message['payload'],
@@ -366,6 +370,34 @@ class _Listeners extends StatelessWidget {
                               onPressed: () {
                                 context.read<WebsocketBloc>().add(
                                   WebsocketEvent.muteUser(
+                                    id: message['payload']['data']['id'],
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                          showSnackBar(snackBar: snackBar);
+                        }
+                      case 'block':
+                        context.read<UserDetailCubit>().updated(
+                          payload: message['payload'],
+                        );
+                        if (message['payload']['response_status'] == 200) {
+                          late String msg;
+                          if (message['payload']['data']['is_blocked']) {
+                            msg = 'Blocked';
+                          } else {
+                            msg = 'Block removed';
+                          }
+                          final snackBar = getSnackBar(
+                            context: context,
+                            message: msg,
+                            status: SnackBarStatus.info,
+                            action: SnackBarAction(
+                              label: 'Undo',
+                              onPressed: () {
+                                context.read<WebsocketBloc>().add(
+                                  WebsocketEvent.blockUser(
                                     id: message['payload']['data']['id'],
                                   ),
                                 );
