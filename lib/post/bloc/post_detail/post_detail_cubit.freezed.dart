@@ -55,13 +55,14 @@ extension PostDetailStatePatterns on PostDetailState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( PostDetailLoading value)?  loading,TResult Function( PostCreated value)?  created,TResult Function( PostUpdated value)?  updated,TResult Function( PostDeleted value)?  deleted,TResult Function( PostReported value)?  reported,TResult Function( PostDetailFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( PostDetailLoading value)?  loading,TResult Function( PostCreated value)?  created,TResult Function( PostLoaded value)?  loaded,TResult Function( PostUpdated value)?  updated,TResult Function( PostDeleted value)?  deleted,TResult Function( PostReported value)?  reported,TResult Function( PostDetailFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case PostDetailLoading() when loading != null:
 return loading(_that);case PostCreated() when created != null:
-return created(_that);case PostUpdated() when updated != null:
+return created(_that);case PostLoaded() when loaded != null:
+return loaded(_that);case PostUpdated() when updated != null:
 return updated(_that);case PostDeleted() when deleted != null:
 return deleted(_that);case PostReported() when reported != null:
 return reported(_that);case PostDetailFailure() when failure != null:
@@ -83,13 +84,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( PostDetailLoading value)  loading,required TResult Function( PostCreated value)  created,required TResult Function( PostUpdated value)  updated,required TResult Function( PostDeleted value)  deleted,required TResult Function( PostReported value)  reported,required TResult Function( PostDetailFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( PostDetailLoading value)  loading,required TResult Function( PostCreated value)  created,required TResult Function( PostLoaded value)  loaded,required TResult Function( PostUpdated value)  updated,required TResult Function( PostDeleted value)  deleted,required TResult Function( PostReported value)  reported,required TResult Function( PostDetailFailure value)  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial():
 return initial(_that);case PostDetailLoading():
 return loading(_that);case PostCreated():
-return created(_that);case PostUpdated():
+return created(_that);case PostLoaded():
+return loaded(_that);case PostUpdated():
 return updated(_that);case PostDeleted():
 return deleted(_that);case PostReported():
 return reported(_that);case PostDetailFailure():
@@ -110,13 +112,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( PostDetailLoading value)?  loading,TResult? Function( PostCreated value)?  created,TResult? Function( PostUpdated value)?  updated,TResult? Function( PostDeleted value)?  deleted,TResult? Function( PostReported value)?  reported,TResult? Function( PostDetailFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( PostDetailLoading value)?  loading,TResult? Function( PostCreated value)?  created,TResult? Function( PostLoaded value)?  loaded,TResult? Function( PostUpdated value)?  updated,TResult? Function( PostDeleted value)?  deleted,TResult? Function( PostReported value)?  reported,TResult? Function( PostDetailFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case PostDetailLoading() when loading != null:
 return loading(_that);case PostCreated() when created != null:
-return created(_that);case PostUpdated() when updated != null:
+return created(_that);case PostLoaded() when loaded != null:
+return loaded(_that);case PostUpdated() when updated != null:
 return updated(_that);case PostDeleted() when deleted != null:
 return deleted(_that);case PostReported() when reported != null:
 return reported(_that);case PostDetailFailure() when failure != null:
@@ -137,12 +140,13 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Post post)?  created,TResult Function( int postId,  String body,  int likes,  bool isLiked,  int bookmarks,  bool isBookmarked,  int views,  int replies,  int reposts,  bool isEdited,  bool isDeleted,  bool isActive)?  updated,TResult Function( int postId)?  deleted,TResult Function()?  reported,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Post post)?  created,TResult Function( Post post)?  loaded,TResult Function( int postId,  String body,  int likes,  bool isLiked,  int bookmarks,  bool isBookmarked,  int views,  int replies,  int reposts,  bool isEdited,  bool isDeleted,  bool isActive)?  updated,TResult Function( int postId)?  deleted,TResult Function()?  reported,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case PostDetailLoading() when loading != null:
 return loading();case PostCreated() when created != null:
-return created(_that.post);case PostUpdated() when updated != null:
+return created(_that.post);case PostLoaded() when loaded != null:
+return loaded(_that.post);case PostUpdated() when updated != null:
 return updated(_that.postId,_that.body,_that.likes,_that.isLiked,_that.bookmarks,_that.isBookmarked,_that.views,_that.replies,_that.reposts,_that.isEdited,_that.isDeleted,_that.isActive);case PostDeleted() when deleted != null:
 return deleted(_that.postId);case PostReported() when reported != null:
 return reported();case PostDetailFailure() when failure != null:
@@ -164,12 +168,13 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Post post)  created,required TResult Function( int postId,  String body,  int likes,  bool isLiked,  int bookmarks,  bool isBookmarked,  int views,  int replies,  int reposts,  bool isEdited,  bool isDeleted,  bool isActive)  updated,required TResult Function( int postId)  deleted,required TResult Function()  reported,required TResult Function( String error)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Post post)  created,required TResult Function( Post post)  loaded,required TResult Function( int postId,  String body,  int likes,  bool isLiked,  int bookmarks,  bool isBookmarked,  int views,  int replies,  int reposts,  bool isEdited,  bool isDeleted,  bool isActive)  updated,required TResult Function( int postId)  deleted,required TResult Function()  reported,required TResult Function( String error)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case PostDetailLoading():
 return loading();case PostCreated():
-return created(_that.post);case PostUpdated():
+return created(_that.post);case PostLoaded():
+return loaded(_that.post);case PostUpdated():
 return updated(_that.postId,_that.body,_that.likes,_that.isLiked,_that.bookmarks,_that.isBookmarked,_that.views,_that.replies,_that.reposts,_that.isEdited,_that.isDeleted,_that.isActive);case PostDeleted():
 return deleted(_that.postId);case PostReported():
 return reported();case PostDetailFailure():
@@ -190,12 +195,13 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Post post)?  created,TResult? Function( int postId,  String body,  int likes,  bool isLiked,  int bookmarks,  bool isBookmarked,  int views,  int replies,  int reposts,  bool isEdited,  bool isDeleted,  bool isActive)?  updated,TResult? Function( int postId)?  deleted,TResult? Function()?  reported,TResult? Function( String error)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Post post)?  created,TResult? Function( Post post)?  loaded,TResult? Function( int postId,  String body,  int likes,  bool isLiked,  int bookmarks,  bool isBookmarked,  int views,  int replies,  int reposts,  bool isEdited,  bool isDeleted,  bool isActive)?  updated,TResult? Function( int postId)?  deleted,TResult? Function()?  reported,TResult? Function( String error)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case PostDetailLoading() when loading != null:
 return loading();case PostCreated() when created != null:
-return created(_that.post);case PostUpdated() when updated != null:
+return created(_that.post);case PostLoaded() when loaded != null:
+return loaded(_that.post);case PostUpdated() when updated != null:
 return updated(_that.postId,_that.body,_that.likes,_that.isLiked,_that.bookmarks,_that.isBookmarked,_that.views,_that.replies,_that.reposts,_that.isEdited,_that.isDeleted,_that.isActive);case PostDeleted() when deleted != null:
 return deleted(_that.postId);case PostReported() when reported != null:
 return reported();case PostDetailFailure() when failure != null:
@@ -329,6 +335,81 @@ class _$PostCreatedCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? post = null,}) {
   return _then(PostCreated(
+post: null == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
+as Post,
+  ));
+}
+
+/// Create a copy of PostDetailState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PostCopyWith<$Res> get post {
+  
+  return $PostCopyWith<$Res>(_self.post, (value) {
+    return _then(_self.copyWith(post: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class PostLoaded implements PostDetailState {
+  const PostLoaded({required this.post});
+  
+
+ final  Post post;
+
+/// Create a copy of PostDetailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PostLoadedCopyWith<PostLoaded> get copyWith => _$PostLoadedCopyWithImpl<PostLoaded>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostLoaded&&(identical(other.post, post) || other.post == post));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,post);
+
+@override
+String toString() {
+  return 'PostDetailState.loaded(post: $post)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $PostLoadedCopyWith<$Res> implements $PostDetailStateCopyWith<$Res> {
+  factory $PostLoadedCopyWith(PostLoaded value, $Res Function(PostLoaded) _then) = _$PostLoadedCopyWithImpl;
+@useResult
+$Res call({
+ Post post
+});
+
+
+$PostCopyWith<$Res> get post;
+
+}
+/// @nodoc
+class _$PostLoadedCopyWithImpl<$Res>
+    implements $PostLoadedCopyWith<$Res> {
+  _$PostLoadedCopyWithImpl(this._self, this._then);
+
+  final PostLoaded _self;
+  final $Res Function(PostLoaded) _then;
+
+/// Create a copy of PostDetailState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? post = null,}) {
+  return _then(PostLoaded(
 post: null == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
 as Post,
   ));

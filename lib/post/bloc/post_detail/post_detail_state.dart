@@ -5,6 +5,7 @@ class PostDetailState with _$PostDetailState {
   const factory PostDetailState.initial() = _Initial;
   const factory PostDetailState.loading() = PostDetailLoading;
   const factory PostDetailState.created({required Post post}) = PostCreated;
+  const factory PostDetailState.loaded({required Post post}) = PostLoaded;
   const factory PostDetailState.updated({
     required int postId,
     required String body,

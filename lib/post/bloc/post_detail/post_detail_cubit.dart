@@ -18,6 +18,16 @@ class PostDetailCubit extends Cubit<PostDetailState> {
     }
   }
 
+  void loaded({required Map<String, dynamic> payload}) {
+    emit(PostDetailLoading());
+    if (payload['response_status'] == 200) {
+      final Post post = Post.fromJson(payload['data']);
+      emit(PostLoaded(post: post));
+    } else {
+      emit(PostDetailFailure(error: payload['errors'][0].toString()));
+    }
+  }
+
   void updated({required Map<String, dynamic> payload}) {
     emit(PostDetailLoading());
     if (payload['response_status'] == 200) {

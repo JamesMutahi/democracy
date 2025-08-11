@@ -58,6 +58,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_CreatePost>((event, emit) {
       _onCreatePost(emit, event);
     });
+    on<_GetPost>((event, emit) {
+      _onGetPost(emit, event);
+    });
     on<_UpdatePost>((event, emit) {
       _onUpdatePost(emit, event);
     });
@@ -282,6 +285,19 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
               event.status == PostStatus.published ? 'published' : 'draft',
           'tagged_user_ids': event.taggedUserIds,
         },
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onGetPost(Emitter<WebsocketState> emit, _GetPost event) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': postsStream,
+      'payload': {
+        'action': 'retrieve',
+        'request_id': postRequestId,
+        'pk': event.post.id,
       },
     };
     _channel.sink.add(jsonEncode(message));

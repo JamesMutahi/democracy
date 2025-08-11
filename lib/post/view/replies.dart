@@ -1,8 +1,11 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/view/bottom_loader.dart';
+import 'package:democracy/app/utils/view/failure_retry_button.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/bloc/replies/replies_cubit.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:democracy/post/view/widgets/post_listview.dart';
+import 'package:democracy/post/view/widgets/post_listener.dart';
+import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
@@ -100,35 +103,63 @@ class _RepliesState extends State<Replies> {
           },
         ),
       ],
-      child: PostListView(
-        physics: NeverScrollableScrollPhysics(),
+      child: PostListener(
         posts: _posts,
-        loading: loading,
-        failure: failure,
         onPostsUpdated: (posts) {
           setState(() {
             _posts = posts;
           });
         },
-        refreshController: _refreshController,
-        enablePullDown: false,
-        enablePullUp: hasNextPage,
-        hasThread:
-            _posts
-                .where((element) => element.author.id == widget.post.author.id)
-                .length >
-            1,
-        onRefresh: () {},
-        onLoading: () {
-          context.read<WebsocketBloc>().add(
-            WebsocketEvent.getReplies(post: widget.post, lastPost: _posts.last),
-          );
-        },
-        onFailure: () {
-          context.read<WebsocketBloc>().add(
-            WebsocketEvent.getReplies(post: widget.post),
-          );
-        },
+        child:
+            loading
+                ? Center(
+                  child: Container(
+                    margin: EdgeInsets.only(top: 50),
+                    child: BottomLoader(),
+                  ),
+                )
+                : failure
+                ? FailureRetryButton(
+                  onPressed: () {
+                    context.read<WebsocketBloc>().add(
+                      WebsocketEvent.getReplies(post: widget.post),
+                    );
+                  },
+                )
+                : ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (BuildContext context, int index) {
+                    Post post = _posts[index];
+                    bool showTopThread = false;
+                    bool showBottomThread = false;
+                    if (index == 0) {
+                      showTopThread = false;
+                      showBottomThread = true;
+                    } else {
+                      if (_posts[index - 1].author.id == post.author.id) {
+                        showTopThread = true;
+                      }
+                      if (_posts.length != index + 1) {
+                        if (_posts[index + 1].author.id == post.author.id) {
+                          showBottomThread = true;
+                        } else {
+                          showBottomThread = false;
+                        }
+                      } else {
+                        showBottomThread = false;
+                      }
+                    }
+                    return PostTile(
+                      key: ValueKey(post.id),
+                      post: post,
+                      showTopThread: showTopThread,
+                      showBottomThread: showBottomThread,
+                      checkVisibility: true,
+                    );
+                  },
+                  itemCount: _posts.length,
+                ),
       ),
     );
   }

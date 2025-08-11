@@ -7,6 +7,7 @@ import 'package:democracy/app/utils/view/profile_image.dart';
 import 'package:democracy/app/utils/view/tagging.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
+import 'package:democracy/post/bloc/replies/replies_cubit.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
@@ -25,6 +26,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:fluttertagger/fluttertagger.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class PostDetail extends StatefulWidget {
   const PostDetail({
@@ -45,6 +47,9 @@ class PostDetail extends StatefulWidget {
 class _PostDetailState extends State<PostDetail> {
   late Post _post = widget.post;
   bool isDeleted = false;
+  final RefreshController _controller = RefreshController(
+    initialRefresh: false,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +58,14 @@ class _PostDetailState extends State<PostDetail> {
         BlocListener<PostDetailCubit, PostDetailState>(
           listener: (context, state) {
             switch (state) {
+              case PostLoaded(:final post):
+                if (_post.id == post.id) {
+                  setState(() {
+                    _post = post;
+                  });
+                }
               case PostUpdated():
+                // update post
                 if (_post.id == state.postId) {
                   setState(() {
                     _post = _post.copyWith(
@@ -71,21 +83,23 @@ class _PostDetailState extends State<PostDetail> {
                     );
                   });
                 }
+                // update post's repost_of
                 if (_post.repostOf?.id == state.postId) {
+                  Post repostOf = _post.repostOf!.copyWith(
+                    body: state.body,
+                    likes: state.likes,
+                    isLiked: state.isLiked,
+                    bookmarks: state.bookmarks,
+                    isBookmarked: state.isBookmarked,
+                    views: state.views,
+                    replies: state.replies,
+                    reposts: state.reposts,
+                    isEdited: state.isEdited,
+                    isDeleted: state.isDeleted,
+                    isActive: state.isActive,
+                  );
                   setState(() {
-                    _post = _post.repostOf!.copyWith(
-                      body: state.body,
-                      likes: state.likes,
-                      isLiked: state.isLiked,
-                      bookmarks: state.bookmarks,
-                      isBookmarked: state.isBookmarked,
-                      views: state.views,
-                      replies: state.replies,
-                      reposts: state.reposts,
-                      isEdited: state.isEdited,
-                      isDeleted: state.isDeleted,
-                      isActive: state.isActive,
-                    );
+                    _post = _post.copyWith(repostOf: repostOf);
                   });
                 }
               case PostDeleted(:final postId):
@@ -119,11 +133,13 @@ class _PostDetailState extends State<PostDetail> {
         BlocListener<PollDetailCubit, PollDetailState>(
           listener: (context, state) {
             if (state is PollUpdated) {
+              // post
               if (_post.poll?.id == state.poll.id) {
                 setState(() {
                   _post = _post.copyWith(poll: state.poll);
                 });
               }
+              // repost
               if (_post.repostOf?.poll?.id == state.poll.id) {
                 setState(() {
                   Post repostOf = _post.repostOf!.copyWith(poll: state.poll);
@@ -136,11 +152,13 @@ class _PostDetailState extends State<PostDetail> {
         BlocListener<SurveyDetailCubit, SurveyDetailState>(
           listener: (context, state) {
             if (state is SurveyUpdated) {
+              // post
               if (_post.survey?.id == state.survey.id) {
                 setState(() {
                   _post = _post.copyWith(survey: state.survey);
                 });
               }
+              // repost
               if (_post.repostOf?.survey?.id == state.survey.id) {
                 setState(() {
                   Post repostOf = _post.repostOf!.copyWith(
@@ -148,6 +166,32 @@ class _PostDetailState extends State<PostDetail> {
                   );
                   _post = _post.copyWith(repostOf: repostOf);
                 });
+              }
+            }
+          },
+        ),
+        BlocListener<RepliesCubit, RepliesState>(
+          listener: (context, state) {
+            if (state.status == RepliesStatus.success) {
+              if (widget.post.id == state.postId) {
+                setState(() {
+                  if (_controller.headerStatus == RefreshStatus.refreshing) {
+                    _controller.refreshCompleted();
+                  }
+                  if (_controller.footerStatus == LoadStatus.loading) {
+                    _controller.loadComplete();
+                  }
+                });
+              }
+            }
+            if (state.status == RepliesStatus.failure) {
+              if (widget.post.id == state.postId) {
+                if (_controller.headerStatus == RefreshStatus.refreshing) {
+                  _controller.refreshFailed();
+                }
+                if (_controller.footerStatus == LoadStatus.loading) {
+                  _controller.loadFailed();
+                }
               }
             }
           },
@@ -167,55 +211,88 @@ class _PostDetailState extends State<PostDetail> {
                       WebsocketEvent.unsubscribeReplies(post: widget.post),
                     );
                   },
-                  child: NestedScrollView(
-                    headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-                      return [
+                  child: SmartRefresher(
+                    enablePullDown: true,
+                    enablePullUp: false,
+                    header: ClassicHeader(),
+                    controller: _controller,
+                    onRefresh: () {
+                      context.read<WebsocketBloc>().add(
+                        WebsocketEvent.getPost(post: widget.post),
+                      );
+                      context.read<WebsocketBloc>().add(
+                        WebsocketEvent.getReplies(post: widget.post),
+                      );
+                    },
+                    child: ListView(
+                      children: [
                         if (widget.showAsRepost)
-                          SliverToBoxAdapter(
-                            child: BlocBuilder<AuthBloc, AuthState>(
-                              builder: (context, state) {
-                                late User user;
-                                if (state is Authenticated) {
-                                  user = state.user;
-                                }
-                                return Container(
-                                  padding: EdgeInsets.only(
-                                    left: 15,
-                                    right: 15,
-                                    top: 10,
-                                    bottom: 5,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Symbols.loop_rounded,
-                                        color:
-                                            Theme.of(
-                                              context,
-                                            ).colorScheme.outline,
-                                      ),
-                                      SizedBox(width: 5),
-                                      Text(
-                                        user.id == _post.author.id
-                                            ? 'You reposted'
-                                            : '${_post.author.name} reposted',
-                                        style: TextStyle(
+                          BlocBuilder<AuthBloc, AuthState>(
+                            builder: (context, state) {
+                              late User user;
+                              if (state is Authenticated) {
+                                user = state.user;
+                              }
+                              return Container(
+                                padding: EdgeInsets.only(
+                                  left: 15,
+                                  right: 15,
+                                  top: 10,
+                                  bottom: 5,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Symbols.loop_rounded,
+                                          color:
+                                              Theme.of(
+                                                context,
+                                              ).colorScheme.outline,
+                                        ),
+                                        SizedBox(width: 5),
+                                        Text(
+                                          user.id == _post.author.id
+                                              ? 'You reposted'
+                                              : '${_post.author.name} reposted',
+                                          style: TextStyle(
+                                            color:
+                                                Theme.of(
+                                                  context,
+                                                ).colorScheme.outline,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    if (user.id == _post.author.id)
+                                      IconButton(
+                                        onPressed: () {
+                                          context.read<WebsocketBloc>().add(
+                                            WebsocketEvent.deletePost(
+                                              post: _post,
+                                            ),
+                                          );
+                                        },
+                                        icon: Icon(
+                                          Symbols.delete_outline_rounded,
                                           color:
                                               Theme.of(
                                                 context,
                                               ).colorScheme.outline,
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
+                                  ],
+                                ),
+                              );
+                            },
                           ),
-                        SliverToBoxAdapter(child: _PostContainer(post: _post)),
-                      ];
-                    },
-                    body: Replies(key: ValueKey(_post.id), post: _post),
+                        _PostContainer(post: _post),
+                        Replies(key: ValueKey(_post.id), post: _post),
+                      ],
+                    ),
                   ),
                 ),
         bottomNavigationBar:
