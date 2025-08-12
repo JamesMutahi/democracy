@@ -95,6 +95,16 @@ class _ChatsState extends State<Chats> {
                 });
               }
             }
+            if (state is ChatLoaded) {
+              if (_chats.any((chat) => chat.id == state.chat.id)) {
+                setState(() {
+                  int index = _chats.indexWhere(
+                    (chat) => chat.id == state.chat.id,
+                  );
+                  _chats[index] = state.chat;
+                });
+              }
+            }
             if (state is ChatUpdated) {
               if (_chats.any((chat) => chat.id == state.chat.id)) {
                 setState(() {
@@ -111,6 +121,18 @@ class _ChatsState extends State<Chats> {
                   _chats.removeWhere((element) => element.id == state.chatId);
                 });
               }
+            }
+            if (state is DirectMessageSent) {
+              setState(() {
+                for (Chat chat in state.chats) {
+                  if (_chats.any((c) => c.id == chat.id)) {
+                    int index = _chats.indexWhere((chat) => chat.id == chat.id);
+                    _chats[index] = chat;
+                  } else {
+                    _chats.insert(0, chat);
+                  }
+                }
+              });
             }
             if (state is ChatDetailFailure) {
               final snackBar = getSnackBar(

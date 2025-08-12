@@ -77,9 +77,9 @@ class MyApp extends StatelessWidget {
               builder: (context, state) {
                 switch (state) {
                   case Unauthenticated():
-                    return LoginPage();
+                    return TextThemeMod(child: LoginPage());
                   case Authenticated():
-                    return Dashboard();
+                    return TextThemeMod(child: Dashboard());
                   default:
                     return SplashPage();
                 }
@@ -88,6 +88,23 @@ class MyApp extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class TextThemeMod extends StatelessWidget {
+  const TextThemeMod({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    return Theme(
+      data: theme.copyWith(
+        textTheme: theme.textTheme.apply(fontSizeFactor: 1.05),
+      ),
+      child: child,
     );
   }
 }
@@ -260,6 +277,10 @@ class _Listeners extends StatelessWidget {
                             payload: message['payload'],
                           );
                         }
+                      case 'retrieve':
+                        context.read<ChatDetailCubit>().loaded(
+                          payload: message['payload'],
+                        );
                       case 'update':
                         if (message['payload']['request_id'] == chatRequestId) {
                           context.read<ChatDetailCubit>().updated(
@@ -469,30 +490,6 @@ class _Listeners extends StatelessWidget {
         ),
       ],
       child: child,
-    );
-  }
-}
-
-class ConnSnackBarContent extends StatelessWidget {
-  const ConnSnackBarContent({
-    super.key,
-    required this.text,
-    required this.iconColor,
-  });
-
-  final String text;
-  final Color iconColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Icon(Icons.wifi_outlined, color: iconColor),
-          Text(text, style: Theme.of(context).textTheme.bodyMedium),
-        ],
-      ),
     );
   }
 }

@@ -88,7 +88,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
                         children: [
                           Text(
                             'Notifications',
-                            style: Theme.of(context).textTheme.headlineSmall,
+                            style: Theme.of(context).textTheme.titleMedium,
                           ),
                           Switch(
                             value: preferences.allowNotifications,
@@ -127,7 +127,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
                                       style:
                                           Theme.of(
                                             context,
-                                          ).textTheme.titleLarge,
+                                          ).textTheme.titleMedium,
                                     ),
                                     const SizedBox(height: 10),
                                     const Text(
@@ -178,7 +178,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
                                       style:
                                           Theme.of(
                                             context,
-                                          ).textTheme.titleLarge,
+                                          ).textTheme.titleMedium,
                                     ),
                                     SwitchRow(
                                       text:
@@ -197,7 +197,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
                                       style:
                                           Theme.of(
                                             context,
-                                          ).textTheme.titleLarge,
+                                          ).textTheme.titleMedium,
                                     ),
                                     SwitchRow(
                                       text:

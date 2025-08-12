@@ -331,7 +331,10 @@ class ChatPopUpMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List texts = [otherUser.isBlocked ? 'Unblock' : 'Block'];
+    List texts =
+        currentUser.id == otherUser.id
+            ? []
+            : [otherUser.isBlocked ? 'Unblock' : 'Block'];
     return PopupMenuButton<String>(
       padding: EdgeInsets.zero,
       menuPadding: EdgeInsets.zero,

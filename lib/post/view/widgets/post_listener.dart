@@ -25,6 +25,26 @@ class PostListener extends StatelessWidget {
         BlocListener<PostDetailCubit, PostDetailState>(
           listener: (context, state) {
             switch (state) {
+              case PostLoaded(:final post):
+                // Update posts
+                if (posts.any((element) => element.id == post.id)) {
+                  int postIndex = posts.indexWhere(
+                    (element) => element.id == state.post.id,
+                  );
+                  posts[postIndex] = post;
+                  onPostsUpdated(posts);
+                }
+                // Update reposts
+                List<Post> reposts =
+                    posts
+                        .where((e) => e.repostOf?.id == state.post.id)
+                        .toList();
+                if (posts.any((element) => element.repostOf?.id == post.id)) {
+                  for (Post p in reposts) {
+                    posts[posts.indexOf(p)] = p.copyWith(repostOf: post);
+                  }
+                  onPostsUpdated(posts);
+                }
               case PostUpdated():
                 // Update posts
                 if (posts.any((element) => element.id == state.postId)) {

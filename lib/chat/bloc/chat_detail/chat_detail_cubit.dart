@@ -18,6 +18,16 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
     }
   }
 
+  void loaded({required Map<String, dynamic> payload}) {
+    emit(ChatDetailLoading());
+    if (payload['response_status'] == 200) {
+      final Chat chat = Chat.fromJson(payload['data']);
+      emit(ChatLoaded(chat: chat));
+    } else {
+      emit(ChatDetailFailure(error: payload['errors'][0]));
+    }
+  }
+
   void updated({required Map<String, dynamic> payload}) {
     emit(ChatDetailLoading());
     if (payload['response_status'] == 200) {
@@ -40,7 +50,10 @@ class ChatDetailCubit extends Cubit<ChatDetailState> {
   void directMessageSent({required Map<String, dynamic> payload}) {
     emit(ChatDetailLoading());
     if (payload['response_status'] == 200) {
-      emit(DirectMessageSent());
+      final List<Chat> chats = List.from(
+        payload['data'].map((e) => Chat.fromJson(e)),
+      );
+      emit(DirectMessageSent(chats: chats));
     } else {
       emit(ChatDetailFailure(error: payload['errors']));
     }

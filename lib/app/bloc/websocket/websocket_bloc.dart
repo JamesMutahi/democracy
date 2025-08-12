@@ -106,6 +106,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_GetChats>((event, emit) {
       _onGetChats(emit, event);
     });
+    on<_GetChat>((event, emit) {
+      _onGetChat(emit, event);
+    });
     on<_CreateChat>((event, emit) {
       _onCreateChat(emit, event);
     });
@@ -514,6 +517,19 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'request_id': chatRequestId,
         'search_term': event.searchTerm,
         'last_chat': event.lastChat?.id,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onGetChat(Emitter<WebsocketState> emit, _GetChat event) async {
+    emit(WebsocketLoading());
+    Map<String, dynamic> message = {
+      'stream': chatsStream,
+      'payload': {
+        'action': 'retrieve',
+        'request_id': chatRequestId,
+        'pk': event.chat.id,
       },
     };
     _channel.sink.add(jsonEncode(message));

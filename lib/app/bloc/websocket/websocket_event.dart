@@ -63,6 +63,7 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   }) = _UnsubscribeUserPosts;
   const factory WebsocketEvent.getChats({String? searchTerm, Chat? lastChat}) =
       _GetChats;
+  const factory WebsocketEvent.getChat({required Chat chat}) = _GetChat;
   const factory WebsocketEvent.createChat({required User user}) = _CreateChat;
   const factory WebsocketEvent.subscribeChat({required Chat chat}) =
       _SubscribeChat;

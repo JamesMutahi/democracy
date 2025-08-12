@@ -8,9 +8,11 @@ class ChatDetailState with _$ChatDetailState {
     required Chat chat,
     required int userId,
   }) = ChatCreated;
+  const factory ChatDetailState.loaded({required Chat chat}) = ChatLoaded;
   const factory ChatDetailState.updated({required Chat chat}) = ChatUpdated;
   const factory ChatDetailState.deleted({required int chatId}) = ChatDeleted;
-  const factory ChatDetailState.directMessageSent() = DirectMessageSent;
+  const factory ChatDetailState.directMessageSent({required List<Chat> chats}) =
+      DirectMessageSent;
   const factory ChatDetailState.failure({required String error}) =
       ChatDetailFailure;
 }
