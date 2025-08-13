@@ -65,38 +65,52 @@ class _ExplorePageState extends State<ExplorePage> {
           ),
         ];
       },
-      body: BlocListener<PostsCubit, PostsState>(
-        listener: (context, state) {
-          if (state.status == PostsStatus.success) {
-            setState(() {
-              _posts = state.posts.toList();
-              loading = false;
-              failure = false;
-              hasNextPage = state.hasNext;
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshCompleted();
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<PostsCubit, PostsState>(
+            listener: (context, state) {
+              if (state.status == PostsStatus.success) {
+                setState(() {
+                  _posts = state.posts.toList();
+                  loading = false;
+                  failure = false;
+                  hasNextPage = state.hasNext;
+                  if (_refreshController.headerStatus ==
+                      RefreshStatus.refreshing) {
+                    _refreshController.refreshCompleted();
+                  }
+                  if (_refreshController.footerStatus == LoadStatus.loading) {
+                    _refreshController.loadComplete();
+                  }
+                });
               }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadComplete();
+              if (state.status == PostsStatus.failure) {
+                if (loading) {
+                  setState(() {
+                    loading = false;
+                    failure = true;
+                  });
+                }
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshFailed();
+                }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadFailed();
+                }
               }
-            });
-          }
-          if (state.status == PostsStatus.failure) {
-            if (loading) {
-              setState(() {
-                loading = false;
-                failure = true;
-              });
-            }
-            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-              _refreshController.refreshFailed();
-            }
-            if (_refreshController.footerStatus == LoadStatus.loading) {
-              _refreshController.loadFailed();
-            }
-          }
-        },
-
+            },
+          ),
+          BlocListener<WebsocketBloc, WebsocketState>(
+            listener: (context, state) {
+              if (state is WebsocketConnected) {
+                context.read<WebsocketBloc>().add(
+                  WebsocketEvent.resubscribePosts(posts: _posts),
+                );
+              }
+            },
+          ),
+        ],
         child: PostListView(
           posts: _posts,
           loading: loading,

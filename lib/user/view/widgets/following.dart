@@ -73,38 +73,51 @@ class _FollowersTabState extends State<_FollowersTab> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<FollowersCubit, FollowersState>(
-      listener: (context, state) {
-        if (state.status == FollowersStatus.success) {
-          setState(() {
-            _users = state.users;
-            loading = false;
-            failure = false;
-            currentPage = currentPage;
-            hasNextPage = hasNextPage;
-          });
-          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-            _refreshController.refreshCompleted();
-          }
-          if (_refreshController.footerStatus == LoadStatus.loading) {
-            _refreshController.loadComplete();
-          }
-        }
-        if (state.status == FollowersStatus.failure) {
-          if (loading) {
-            setState(() {
-              loading = false;
-              failure = true;
-            });
-          }
-          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-            _refreshController.refreshFailed();
-          }
-          if (_refreshController.footerStatus == LoadStatus.loading) {
-            _refreshController.loadFailed();
-          }
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<WebsocketBloc, WebsocketState>(
+          listener: (context, state) {
+            if (state is WebsocketConnected) {
+              context.read<WebsocketBloc>().add(
+                WebsocketEvent.resubscribeUsers(users: _users),
+              );
+            }
+          },
+        ),
+        BlocListener<FollowersCubit, FollowersState>(
+          listener: (context, state) {
+            if (state.status == FollowersStatus.success) {
+              setState(() {
+                _users = state.users;
+                loading = false;
+                failure = false;
+                currentPage = currentPage;
+                hasNextPage = hasNextPage;
+              });
+              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+                _refreshController.refreshCompleted();
+              }
+              if (_refreshController.footerStatus == LoadStatus.loading) {
+                _refreshController.loadComplete();
+              }
+            }
+            if (state.status == FollowersStatus.failure) {
+              if (loading) {
+                setState(() {
+                  loading = false;
+                  failure = true;
+                });
+              }
+              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+                _refreshController.refreshFailed();
+              }
+              if (_refreshController.footerStatus == LoadStatus.loading) {
+                _refreshController.loadFailed();
+              }
+            }
+          },
+        ),
+      ],
       child: UsersListView(
         users: _users,
         selectedUsers: selectedUsers,
@@ -178,38 +191,51 @@ class _FollowingTabState extends State<_FollowingTab> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<FollowingCubit, FollowingState>(
-      listener: (context, state) {
-        if (state.status == FollowingStatus.success) {
-          setState(() {
-            _users = state.users;
-            loading = false;
-            failure = false;
-            currentPage = currentPage;
-            hasNextPage = hasNextPage;
-          });
-          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-            _refreshController.refreshCompleted();
-          }
-          if (_refreshController.footerStatus == LoadStatus.loading) {
-            _refreshController.loadComplete();
-          }
-        }
-        if (state.status == FollowingStatus.failure) {
-          if (loading) {
-            setState(() {
-              loading = false;
-              failure = true;
-            });
-          }
-          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-            _refreshController.refreshFailed();
-          }
-          if (_refreshController.footerStatus == LoadStatus.loading) {
-            _refreshController.loadFailed();
-          }
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<WebsocketBloc, WebsocketState>(
+          listener: (context, state) {
+            if (state is WebsocketConnected) {
+              context.read<WebsocketBloc>().add(
+                WebsocketEvent.resubscribeUsers(users: _users),
+              );
+            }
+          },
+        ),
+        BlocListener<FollowingCubit, FollowingState>(
+          listener: (context, state) {
+            if (state.status == FollowingStatus.success) {
+              setState(() {
+                _users = state.users;
+                loading = false;
+                failure = false;
+                currentPage = currentPage;
+                hasNextPage = hasNextPage;
+              });
+              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+                _refreshController.refreshCompleted();
+              }
+              if (_refreshController.footerStatus == LoadStatus.loading) {
+                _refreshController.loadComplete();
+              }
+            }
+            if (state.status == FollowingStatus.failure) {
+              if (loading) {
+                setState(() {
+                  loading = false;
+                  failure = true;
+                });
+              }
+              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+                _refreshController.refreshFailed();
+              }
+              if (_refreshController.footerStatus == LoadStatus.loading) {
+                _refreshController.loadFailed();
+              }
+            }
+          },
+        ),
+      ],
       child: UsersListView(
         users: _users,
         selectedUsers: selectedUsers,

@@ -44,7 +44,7 @@ class _RepliesState extends State<Replies> {
           listener: (context, state) {
             if (state is WebsocketConnected) {
               context.read<WebsocketBloc>().add(
-                WebsocketEvent.getReplies(post: widget.post),
+                WebsocketEvent.resubscribePosts(posts: _posts),
               );
             }
           },

@@ -1,4 +1,5 @@
 import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
+import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/view/pages/index.dart';
 import 'package:democracy/app/view/widgets/bottom_nav_bar.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
@@ -26,6 +27,12 @@ class _DashboardState extends State<Dashboard> {
   bool canPopNow = false;
   int requiredSeconds = 2;
   List<n_.Notification> unreadNotifications = [];
+
+  @override
+  void initState() {
+    context.read<WebsocketBloc>().add(WebsocketEvent.getNotifications());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

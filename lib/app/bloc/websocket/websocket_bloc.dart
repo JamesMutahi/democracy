@@ -52,6 +52,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_GetForYouPosts>((event, emit) {
       _onGetForYouPosts(emit);
     });
+    on<_ResubscribePosts>((event, emit) {
+      _onResubscribePosts(emit, event);
+    });
     on<_GetPosts>((event, emit) {
       _onGetPosts(emit, event);
     });
@@ -106,6 +109,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_GetChats>((event, emit) {
       _onGetChats(emit, event);
     });
+    on<_ResubscribeChats>((event, emit) {
+      _onResubscribeChats(emit, event);
+    });
     on<_GetChat>((event, emit) {
       _onGetChat(emit, event);
     });
@@ -132,6 +138,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     });
     on<_GetUsers>((event, emit) {
       _onGetUsers(emit, event);
+    });
+    on<_ResubscribeUsers>((event, emit) {
+      _onResubscribeUsers(emit, event);
     });
     on<_GetFollowers>((event, emit) {
       _onGetFollowers(emit, event);
@@ -172,6 +181,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_GetPolls>((event, emit) {
       _onGetPolls(emit, event);
     });
+    on<_ResubscribePolls>((event, emit) {
+      _onResubscribePolls(emit, event);
+    });
     on<_SubscribePoll>((event, emit) {
       _onSubscribePoll(emit, event);
     });
@@ -183,6 +195,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     });
     on<_GetSurveys>((event, emit) {
       _onGetSurveys(emit, event);
+    });
+    on<_ResubscribeSurveys>((event, emit) {
+      _onResubscribeSurveys(emit, event);
     });
     on<_SubmitResponse>((event, emit) {
       _onSubmitResponse(emit, event);
@@ -253,6 +268,26 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Map<String, dynamic> message = {
       'stream': postsStream,
       'payload': {"action": 'for_you', 'request_id': postRequestId},
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onResubscribePosts(
+    Emitter<WebsocketState> emit,
+    _ResubscribePosts event,
+  ) async {
+    emit(WebsocketLoading());
+    List<int> postIds = event.posts.map((post) => post.id).toList();
+    List<Post> reposts =
+        event.posts.where((post) => post.repostOf != null).toList();
+    postIds.addAll(reposts.map((post) => post.id).toList());
+    Map<String, dynamic> message = {
+      'stream': postsStream,
+      'payload': {
+        "action": 'resubscribe',
+        'request_id': postRequestId,
+        'pks': postIds,
+      },
     };
     _channel.sink.add(jsonEncode(message));
   }
@@ -522,6 +557,23 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
+  Future _onResubscribeChats(
+    Emitter<WebsocketState> emit,
+    _ResubscribeChats event,
+  ) async {
+    emit(WebsocketLoading());
+    List<int> chatIds = event.chats.map((chat) => chat.id).toList();
+    Map<String, dynamic> message = {
+      'stream': chatsStream,
+      'payload': {
+        "action": 'resubscribe',
+        'request_id': chatRequestId,
+        'pks': chatIds,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
   Future _onGetChat(Emitter<WebsocketState> emit, _GetChat event) async {
     emit(WebsocketLoading());
     Map<String, dynamic> message = {
@@ -663,6 +715,23 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'request_id': usersRequestId,
         'search_term': event.searchTerm,
         'page': event.page,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onResubscribeUsers(
+    Emitter<WebsocketState> emit,
+    _ResubscribeUsers event,
+  ) async {
+    emit(WebsocketLoading());
+    List<int> userIds = event.users.map((user) => user.id).toList();
+    Map<String, dynamic> message = {
+      'stream': usersStream,
+      'payload': {
+        "action": 'resubscribe',
+        'request_id': usersRequestId,
+        'pks': userIds,
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -875,6 +944,23 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
+  Future _onResubscribePolls(
+    Emitter<WebsocketState> emit,
+    _ResubscribePolls event,
+  ) async {
+    emit(WebsocketLoading());
+    List<int> pollIds = event.polls.map((poll) => poll.id).toList();
+    Map<String, dynamic> message = {
+      'stream': pollsStream,
+      'payload': {
+        "action": 'resubscribe',
+        'request_id': pollRequestId,
+        'pks': pollIds,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
   Future _onSubscribePoll(
     Emitter<WebsocketState> emit,
     _SubscribePoll event,
@@ -930,6 +1016,23 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'request_id': surveyRequestId,
         'search_term': event.searchTerm,
         'last_survey': event.lastSurvey?.id,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onResubscribeSurveys(
+      Emitter<WebsocketState> emit,
+      _ResubscribeSurveys event,
+      ) async {
+    emit(WebsocketLoading());
+    List<int> surveyIds = event.surveys.map((survey) => survey.id).toList();
+    Map<String, dynamic> message = {
+      'stream': surveysStream,
+      'payload': {
+        "action": 'resubscribe',
+        'request_id': surveyRequestId,
+        'pks': surveyIds,
       },
     };
     _channel.sink.add(jsonEncode(message));

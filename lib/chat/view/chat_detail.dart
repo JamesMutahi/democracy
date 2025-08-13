@@ -143,7 +143,7 @@ class _ChatScaffoldState extends State<ChatScaffold> {
           listener: (context, state) {
             if (state is WebsocketConnected) {
               context.read<WebsocketBloc>().add(
-                WebsocketEvent.getUser(user: otherUser),
+                WebsocketEvent.resubscribeUsers(users: [otherUser]),
               );
             }
           },

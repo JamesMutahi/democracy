@@ -108,38 +108,58 @@ class _ForYouTabState extends State<ForYouTab> {
   );
 
   @override
+  void initState() {
+    super.initState();
+    context.read<WebsocketBloc>().add(WebsocketEvent.getForYouPosts());
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocListener<ForYouCubit, ForYouState>(
-      listener: (context, state) {
-        if (state.status == ForYouStatus.success) {
-          setState(() {
-            _posts = state.posts.toList();
-            loading = false;
-            failure = false;
-            hasNextPage = state.hasNext;
-            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-              _refreshController.refreshCompleted();
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<ForYouCubit, ForYouState>(
+          listener: (context, state) {
+            if (state.status == ForYouStatus.success) {
+              setState(() {
+                _posts = state.posts.toList();
+                loading = false;
+                failure = false;
+                hasNextPage = state.hasNext;
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshCompleted();
+                }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadComplete();
+                }
+              });
             }
-            if (_refreshController.footerStatus == LoadStatus.loading) {
-              _refreshController.loadComplete();
+            if (state.status == ForYouStatus.failure) {
+              if (loading) {
+                setState(() {
+                  loading = false;
+                  failure = true;
+                });
+              }
+              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+                _refreshController.refreshFailed();
+              }
+              if (_refreshController.footerStatus == LoadStatus.loading) {
+                _refreshController.loadFailed();
+              }
             }
-          });
-        }
-        if (state.status == ForYouStatus.failure) {
-          if (loading) {
-            setState(() {
-              loading = false;
-              failure = true;
-            });
-          }
-          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-            _refreshController.refreshFailed();
-          }
-          if (_refreshController.footerStatus == LoadStatus.loading) {
-            _refreshController.loadFailed();
-          }
-        }
-      },
+          },
+        ),
+        BlocListener<WebsocketBloc, WebsocketState>(
+          listener: (context, state) {
+            if (state is WebsocketConnected) {
+              context.read<WebsocketBloc>().add(
+                WebsocketEvent.resubscribePosts(posts: _posts),
+              );
+            }
+          },
+        ),
+      ],
       child: PostListView(
         posts: _posts,
         loading: loading,
@@ -191,37 +211,51 @@ class _FollowingTabState extends State<FollowingTab> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<FollowingPostsCubit, FollowingPostsState>(
-      listener: (context, state) {
-        if (state.status == FollowingPostsStatus.success) {
-          setState(() {
-            loading = false;
-            failure = false;
-            _posts = state.posts;
-            hasNextPage = state.hasNext;
-            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-              _refreshController.refreshCompleted();
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<FollowingPostsCubit, FollowingPostsState>(
+          listener: (context, state) {
+            if (state.status == FollowingPostsStatus.success) {
+              setState(() {
+                loading = false;
+                failure = false;
+                _posts = state.posts;
+                hasNextPage = state.hasNext;
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshCompleted();
+                }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadComplete();
+                }
+              });
             }
-            if (_refreshController.footerStatus == LoadStatus.loading) {
-              _refreshController.loadComplete();
+            if (state.status == FollowingPostsStatus.failure) {
+              if (loading) {
+                setState(() {
+                  loading = false;
+                  failure = true;
+                });
+              }
+              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+                _refreshController.refreshFailed();
+              }
+              if (_refreshController.footerStatus == LoadStatus.loading) {
+                _refreshController.loadFailed();
+              }
             }
-          });
-        }
-        if (state.status == FollowingPostsStatus.failure) {
-          if (loading) {
-            setState(() {
-              loading = false;
-              failure = true;
-            });
-          }
-          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-            _refreshController.refreshFailed();
-          }
-          if (_refreshController.footerStatus == LoadStatus.loading) {
-            _refreshController.loadFailed();
-          }
-        }
-      },
+          },
+        ),
+        BlocListener<WebsocketBloc, WebsocketState>(
+          listener: (context, state) {
+            if (state is WebsocketConnected) {
+              context.read<WebsocketBloc>().add(
+                WebsocketEvent.resubscribePosts(posts: _posts),
+              );
+            }
+          },
+        ),
+      ],
       child: PostListView(
         posts: _posts,
         loading: loading,

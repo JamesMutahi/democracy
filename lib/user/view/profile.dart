@@ -102,7 +102,7 @@ class _ProfilePageState extends State<ProfilePage> {
           listener: (context, state) {
             if (state is WebsocketConnected) {
               context.read<WebsocketBloc>().add(
-                WebsocketEvent.getUser(user: widget.user),
+                WebsocketEvent.resubscribeUsers(users: [widget.user]),
               );
             }
           },

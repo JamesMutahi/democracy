@@ -126,7 +126,7 @@ class _ChatsState extends State<Chats> {
               setState(() {
                 for (Chat chat in state.chats) {
                   if (_chats.any((c) => c.id == chat.id)) {
-                    int index = _chats.indexWhere((chat) => chat.id == chat.id);
+                    int index = _chats.indexWhere((c) => c.id == chat.id);
                     _chats[index] = chat;
                   } else {
                     _chats.insert(0, chat);

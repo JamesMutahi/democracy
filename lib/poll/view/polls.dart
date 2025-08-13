@@ -30,6 +30,15 @@ class _PollsState extends State<Polls> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
+        BlocListener<WebsocketBloc, WebsocketState>(
+          listener: (context, state) {
+            if (state is WebsocketConnected) {
+              context.read<WebsocketBloc>().add(
+                WebsocketEvent.resubscribePolls(polls: _polls),
+              );
+            }
+          },
+        ),
         BlocListener<PollsCubit, PollsState>(
           listener: (context, state) {
             if (state.status == PollsStatus.success) {

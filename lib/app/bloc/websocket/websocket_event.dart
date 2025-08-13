@@ -8,6 +8,8 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.getPosts({String? searchTerm, Post? lastPost}) =
       _GetPosts;
   const factory WebsocketEvent.getForYouPosts() = _GetForYouPosts;
+  const factory WebsocketEvent.resubscribePosts({required List<Post> posts}) =
+      _ResubscribePosts;
   const factory WebsocketEvent.createPost({
     required String body,
     required PostStatus status,
@@ -63,6 +65,8 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   }) = _UnsubscribeUserPosts;
   const factory WebsocketEvent.getChats({String? searchTerm, Chat? lastChat}) =
       _GetChats;
+  const factory WebsocketEvent.resubscribeChats({required List<Chat> chats}) =
+      _ResubscribeChats;
   const factory WebsocketEvent.getChat({required Chat chat}) = _GetChat;
   const factory WebsocketEvent.createChat({required User user}) = _CreateChat;
   const factory WebsocketEvent.subscribeChat({required Chat chat}) =
@@ -89,6 +93,8 @@ abstract class WebsocketEvent with _$WebsocketEvent {
       _MarkChatAsRead;
   const factory WebsocketEvent.getPolls({String? searchTerm, Poll? lastPoll}) =
       _GetPolls;
+  const factory WebsocketEvent.resubscribePolls({required List<Poll> polls}) =
+      _ResubscribePolls;
   const factory WebsocketEvent.subscribePoll({required Poll poll}) =
       _SubscribePoll;
   const factory WebsocketEvent.vote({required Option option}) = _Vote;
@@ -100,6 +106,9 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     String? searchTerm,
     Survey? lastSurvey,
   }) = _GetSurveys;
+  const factory WebsocketEvent.resubscribeSurveys({
+    required List<Survey> surveys,
+  }) = _ResubscribeSurveys;
   const factory WebsocketEvent.submitResponse({
     required Survey survey,
     required DateTime startTime,
@@ -109,6 +118,8 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   }) = _SubmitResponse;
   const factory WebsocketEvent.getUsers({String? searchTerm, int? page}) =
       _GetUsers;
+  const factory WebsocketEvent.resubscribeUsers({required List<User> users}) =
+      _ResubscribeUsers;
   const factory WebsocketEvent.getFollowers({required User user, int? page}) =
       _GetFollowers;
   const factory WebsocketEvent.getFollowing({required User user, int? page}) =

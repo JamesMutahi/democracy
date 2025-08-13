@@ -17,7 +17,7 @@ import 'package:democracy/poll/view/poll_tile.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
-import 'package:democracy/post/view/replies.dart';
+import 'package:democracy/post/view/widgets/replies.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:democracy/user/bloc/users/users_cubit.dart';
 import 'package:flutter/material.dart';

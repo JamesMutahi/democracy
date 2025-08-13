@@ -73,17 +73,27 @@ class MyApp extends StatelessWidget {
           darkTheme: AppTheme.dark,
           themeMode: themeMode,
           home: _Listeners(
-            child: BlocBuilder<AuthBloc, AuthState>(
-              builder: (context, state) {
-                switch (state) {
-                  case Unauthenticated():
-                    return TextThemeMod(child: LoginPage());
-                  case Authenticated():
-                    return TextThemeMod(child: Dashboard());
-                  default:
-                    return SplashPage();
-                }
-              },
+            child: TextThemeMod(
+              child: BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, state) {
+                  switch (state) {
+                    case Unauthenticated():
+                      return LoginPage();
+                    case Authenticated():
+                      bool loading = true;
+                      return BlocBuilder<WebsocketBloc, WebsocketState>(
+                        builder: (context, socketState) {
+                          if (socketState is WebsocketConnected) {
+                            loading = false;
+                          }
+                          return loading ? SplashPage() : Dashboard();
+                        },
+                      );
+                    default:
+                      return SplashPage();
+                  }
+                },
+              ),
             ),
           ),
         );
@@ -177,15 +187,6 @@ class _Listeners extends StatelessWidget {
                   status: SnackBarStatus.success,
                 );
                 showSnackBar(snackBar: snackBar);
-                context.read<WebsocketBloc>().add(
-                  WebsocketEvent.getForYouPosts(),
-                );
-                context.read<WebsocketBloc>().add(
-                  WebsocketEvent.getNotifications(),
-                );
-                context.read<WebsocketBloc>().add(WebsocketEvent.getPolls());
-                context.read<WebsocketBloc>().add(WebsocketEvent.getSurveys());
-                context.read<WebsocketBloc>().add(WebsocketEvent.getChats());
               case WebsocketSuccess(:final message):
                 switch (message['stream']) {
                   case postsStream:

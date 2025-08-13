@@ -72,6 +72,15 @@ class _MutedTabState extends State<_MutedTab> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
+        BlocListener<WebsocketBloc, WebsocketState>(
+          listener: (context, state) {
+            if (state is WebsocketConnected) {
+              context.read<WebsocketBloc>().add(
+                WebsocketEvent.resubscribeUsers(users: _users),
+              );
+            }
+          },
+        ),
         BlocListener<MutedCubit, MutedState>(
           listener: (context, state) {
             if (state.status == MutedStatus.success) {
@@ -178,6 +187,15 @@ class _BlockedTabState extends State<_BlockedTab> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
+        BlocListener<WebsocketBloc, WebsocketState>(
+          listener: (context, state) {
+            if (state is WebsocketConnected) {
+              context.read<WebsocketBloc>().add(
+                WebsocketEvent.resubscribeUsers(users: _users),
+              );
+            }
+          },
+        ),
         BlocListener<BlockedCubit, BlockedState>(
           listener: (context, state) {
             if (state.status == BlockedStatus.success) {
