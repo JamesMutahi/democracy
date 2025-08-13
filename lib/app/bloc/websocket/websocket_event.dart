@@ -10,6 +10,10 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.getForYouPosts() = _GetForYouPosts;
   const factory WebsocketEvent.resubscribePosts({required List<Post> posts}) =
       _ResubscribePosts;
+  const factory WebsocketEvent.resubscribeUserPosts({
+    required User user,
+    required List<Post> posts,
+  }) = _ResubscribeUserPosts;
   const factory WebsocketEvent.createPost({
     required String body,
     required PostStatus status,

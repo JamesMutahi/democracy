@@ -33,51 +33,69 @@ class _BookmarksState extends State<Bookmarks> {
       posts: _posts,
       child: Scaffold(
         appBar: AppBar(title: Text('Bookmarks')),
-        body: BlocListener<BookmarksCubit, BookmarksState>(
-          listener: (context, state) {
-            if (state.status == BookmarksStatus.loading) {
-              setState(() {
-                if (_refreshController.headerStatus !=
-                        RefreshStatus.refreshing &&
-                    _refreshController.footerStatus != LoadStatus.loading) {
+        body: MultiBlocListener(
+          listeners: [
+            BlocListener<BookmarksCubit, BookmarksState>(
+              listener: (context, state) {
+                if (state.status == BookmarksStatus.loading) {
                   setState(() {
-                    loading = true;
-                    failure = false;
+                    if (_refreshController.headerStatus !=
+                            RefreshStatus.refreshing &&
+                        _refreshController.footerStatus != LoadStatus.loading) {
+                      setState(() {
+                        loading = true;
+                        failure = false;
+                      });
+                    }
                   });
                 }
-              });
-            }
-            if (state.status == BookmarksStatus.success) {
-              setState(() {
-                loading = false;
-                failure = false;
-                _posts = state.posts;
-                hasNextPage = state.hasNext;
-                if (_refreshController.headerStatus ==
-                    RefreshStatus.refreshing) {
-                  _refreshController.refreshCompleted();
+                if (state.status == BookmarksStatus.success) {
+                  setState(() {
+                    loading = false;
+                    failure = false;
+                    _posts = state.posts;
+                    hasNextPage = state.hasNext;
+                    if (_refreshController.headerStatus ==
+                        RefreshStatus.refreshing) {
+                      _refreshController.refreshCompleted();
+                    }
+                    if (_refreshController.footerStatus == LoadStatus.loading) {
+                      _refreshController.loadComplete();
+                    }
+                  });
                 }
-                if (_refreshController.footerStatus == LoadStatus.loading) {
-                  _refreshController.loadComplete();
+                if (state.status == BookmarksStatus.failure) {
+                  if (_refreshController.headerStatus !=
+                          RefreshStatus.refreshing &&
+                      _refreshController.footerStatus != LoadStatus.loading) {
+                    setState(() {
+                      loading = false;
+                      failure = true;
+                    });
+                  }
+                  if (_refreshController.headerStatus ==
+                      RefreshStatus.refreshing) {
+                    _refreshController.refreshFailed();
+                  }
+                  if (_refreshController.footerStatus == LoadStatus.loading) {
+                    _refreshController.loadFailed();
+                  }
                 }
-              });
-            }
-            if (state.status == BookmarksStatus.failure) {
-              if (_refreshController.headerStatus != RefreshStatus.refreshing &&
-                  _refreshController.footerStatus != LoadStatus.loading) {
-                setState(() {
-                  loading = false;
-                  failure = true;
-                });
-              }
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshFailed();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadFailed();
-              }
-            }
-          },
+              },
+            ),
+            BlocListener<WebsocketBloc, WebsocketState>(
+              listener: (context, state) {
+                if (state is WebsocketConnected) {
+                  context.read<WebsocketBloc>().add(
+                    WebsocketEvent.resubscribeUserPosts(
+                      user: widget.user,
+                      posts: _posts,
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
           child: PostListView(
             physics: NeverScrollableScrollPhysics(),
             posts: _posts,

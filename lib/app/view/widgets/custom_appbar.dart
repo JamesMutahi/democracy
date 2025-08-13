@@ -23,14 +23,13 @@ class CustomAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> widgets = [
-      InkWell(
-        borderRadius: BorderRadius.all(Radius.circular(50)),
-        onTap: () {
-          Scaffold.of(context).openDrawer();
-        },
-        child: Container(
-          margin: EdgeInsets.only(left: 15),
-          child: ProfileImage(user: user),
+      Container(
+        margin: EdgeInsets.only(left: 15),
+        child: ProfileImage(
+          user: user,
+          onTap: () {
+            Scaffold.of(context).openDrawer();
+          },
         ),
       ),
     ];

@@ -86,7 +86,10 @@ class _DraftsPostsState extends State<DraftPosts> {
                   listener: (context, state) {
                     if (state is WebsocketConnected) {
                       context.read<WebsocketBloc>().add(
-                        WebsocketEvent.resubscribePosts(posts: _posts),
+                        WebsocketEvent.resubscribeUserPosts(
+                          user: user,
+                          posts: _posts,
+                        ),
                       );
                     }
                   },

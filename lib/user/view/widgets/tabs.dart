@@ -40,15 +40,6 @@ class _UserPostsState extends State<UserPosts> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state is WebsocketConnected) {
-              context.read<WebsocketBloc>().add(
-                WebsocketEvent.resubscribePosts(posts: _posts),
-              );
-            }
-          },
-        ),
         BlocListener<UserPostsCubit, UserPostsState>(
           listener: (context, state) {
             if (state.status == UserPostsStatus.success) {
@@ -81,6 +72,18 @@ class _UserPostsState extends State<UserPosts> {
               if (_refreshController.footerStatus == LoadStatus.loading) {
                 _refreshController.loadFailed();
               }
+            }
+          },
+        ),
+        BlocListener<WebsocketBloc, WebsocketState>(
+          listener: (context, state) {
+            if (state is WebsocketConnected) {
+              context.read<WebsocketBloc>().add(
+                WebsocketEvent.resubscribeUserPosts(
+                  user: widget.user,
+                  posts: _posts,
+                ),
+              );
             }
           },
         ),
@@ -154,15 +157,6 @@ class _UserRepliesState extends State<UserReplies> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state is WebsocketConnected) {
-              context.read<WebsocketBloc>().add(
-                WebsocketEvent.resubscribePosts(posts: _posts),
-              );
-            }
-          },
-        ),
         BlocListener<UserRepliesCubit, UserRepliesState>(
           listener: (context, state) {
             if (state.status == UserRepliesStatus.success) {
@@ -195,6 +189,18 @@ class _UserRepliesState extends State<UserReplies> {
               if (_refreshController.footerStatus == LoadStatus.loading) {
                 _refreshController.loadFailed();
               }
+            }
+          },
+        ),
+        BlocListener<WebsocketBloc, WebsocketState>(
+          listener: (context, state) {
+            if (state is WebsocketConnected) {
+              context.read<WebsocketBloc>().add(
+                WebsocketEvent.resubscribeUserPosts(
+                  user: widget.user,
+                  posts: _posts,
+                ),
+              );
             }
           },
         ),
@@ -268,15 +274,6 @@ class _LikesState extends State<Likes> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state is WebsocketConnected) {
-              context.read<WebsocketBloc>().add(
-                WebsocketEvent.resubscribePosts(posts: _posts),
-              );
-            }
-          },
-        ),
         BlocListener<LikesCubit, LikesState>(
           listener: (context, state) {
             if (state.status == LikesStatus.success) {
@@ -330,6 +327,18 @@ class _LikesState extends State<Likes> {
               if (_refreshController.footerStatus == LoadStatus.loading) {
                 _refreshController.loadFailed();
               }
+            }
+          },
+        ),
+        BlocListener<WebsocketBloc, WebsocketState>(
+          listener: (context, state) {
+            if (state is WebsocketConnected) {
+              context.read<WebsocketBloc>().add(
+                WebsocketEvent.resubscribeUserPosts(
+                  user: widget.user,
+                  posts: _posts,
+                ),
+              );
             }
           },
         ),
