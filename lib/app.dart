@@ -38,6 +38,7 @@ import 'package:democracy/user/bloc/muted/muted_cubit.dart';
 import 'package:democracy/user/bloc/users/users_cubit.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
@@ -73,20 +74,18 @@ class MyApp extends StatelessWidget {
           darkTheme: AppTheme.dark,
           themeMode: themeMode,
           home: _Listeners(
-            child: TextThemeMod(
+            child: ThemeMod(
               child: BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, state) {
                   switch (state) {
                     case Unauthenticated():
                       return LoginPage();
                     case Authenticated():
-                      bool loading = true;
                       return BlocBuilder<WebsocketBloc, WebsocketState>(
                         builder: (context, socketState) {
-                          if (socketState is WebsocketConnected) {
-                            loading = false;
-                          }
-                          return loading ? SplashPage() : Dashboard();
+                          return socketState.initialConnectionAchieved
+                              ? Dashboard()
+                              : SplashPage();
                         },
                       );
                     default:
@@ -102,19 +101,37 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class TextThemeMod extends StatelessWidget {
-  const TextThemeMod({super.key, required this.child});
+class ThemeMod extends StatelessWidget {
+  const ThemeMod({super.key, required this.child});
 
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final Brightness brightness = MediaQuery.of(context).platformBrightness;
+    final bool isDarkMode = brightness == Brightness.dark;
     return Theme(
       data: theme.copyWith(
         textTheme: theme.textTheme.apply(fontSizeFactor: 1.05),
       ),
-      child: child,
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value:
+            isDarkMode
+                ? SystemUiOverlayStyle.dark.copyWith(
+                  statusBarColor: theme.appBarTheme.backgroundColor,
+                  statusBarIconBrightness: Brightness.light,
+                  systemNavigationBarColor: theme.appBarTheme.backgroundColor,
+                  systemNavigationBarIconBrightness: Brightness.light,
+                )
+                : SystemUiOverlayStyle.light.copyWith(
+                  statusBarColor: theme.appBarTheme.backgroundColor,
+                  statusBarIconBrightness: Brightness.dark,
+                  systemNavigationBarColor: theme.appBarTheme.backgroundColor,
+                  systemNavigationBarIconBrightness: Brightness.dark,
+                ),
+        child: SafeArea(child: child),
+      ),
     );
   }
 }
@@ -179,313 +196,313 @@ class _Listeners extends StatelessWidget {
         ),
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
-            switch (state) {
-              case WebsocketConnected():
-                final snackBar = getSnackBar(
-                  context: context,
-                  message: 'Connected',
-                  status: SnackBarStatus.success,
-                );
-                showSnackBar(snackBar: snackBar);
-              case WebsocketSuccess(:final message):
-                switch (message['stream']) {
-                  case postsStream:
-                    switch (message['payload']['action']) {
-                      case 'for_you':
-                        context.read<ForYouCubit>().loaded(
+            if (state.status == WebsocketStatus.connected) {
+              final snackBar = getSnackBar(
+                context: context,
+                message: 'Connected',
+                status: SnackBarStatus.success,
+              );
+              showSnackBar(snackBar: snackBar);
+            }
+            if (state.status == WebsocketStatus.success) {
+              final message = state.message;
+              switch (message['stream']) {
+                case postsStream:
+                  switch (message['payload']['action']) {
+                    case 'for_you':
+                      context.read<ForYouCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                    case 'list':
+                      context.read<PostsCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                    case 'create':
+                      context.read<PostDetailCubit>().created(
+                        payload: message['payload'],
+                      );
+                    case 'retrieve':
+                      context.read<PostDetailCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                    case 'update':
+                      context.read<PostDetailCubit>().updated(
+                        payload: message['payload'],
+                      );
+                    case 'delete':
+                      context.read<PostDetailCubit>().deleted(
+                        payload: message['payload'],
+                      );
+                    case 'bookmark':
+                      final snackBar = getSnackBar(
+                        context: context,
+                        message: message['payload']['data']['message'],
+                        status: SnackBarStatus.info,
+                      );
+                      showSnackBar(snackBar: snackBar);
+                    case 'report':
+                      context.read<PostDetailCubit>().reported(
+                        payload: message['payload'],
+                      );
+                    case 'following':
+                      context.read<FollowingPostsCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                    case 'replies':
+                      context.read<RepliesCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                    case 'user_posts':
+                      context.read<UserPostsCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                    case 'bookmarks':
+                      context.read<BookmarksCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                    case 'liked_posts':
+                      context.read<LikesCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                    case 'user_replies':
+                      context.read<UserRepliesCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                    case 'draft_posts':
+                      context.read<DraftPostsCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                  }
+                case chatsStream:
+                  switch (message['payload']['action']) {
+                    case 'list':
+                      context.read<ChatsCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                    case 'messages':
+                      context.read<MessagesCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                    case 'create':
+                      if (message['payload']['request_id'] !=
+                          messageRequestId) {
+                        context.read<ChatDetailCubit>().created(
                           payload: message['payload'],
                         );
-                      case 'list':
-                        context.read<PostsCubit>().loaded(
+                      }
+                      if (message['payload']['request_id'] ==
+                          messageRequestId) {
+                        context.read<MessageDetailCubit>().created(
                           payload: message['payload'],
                         );
-                      case 'create':
-                        context.read<PostDetailCubit>().created(
+                      }
+                    case 'retrieve':
+                      context.read<ChatDetailCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                    case 'update':
+                      if (message['payload']['request_id'] == chatRequestId) {
+                        context.read<ChatDetailCubit>().updated(
                           payload: message['payload'],
                         );
-                      case 'retrieve':
-                        context.read<PostDetailCubit>().loaded(
+                      }
+                      if (message['payload']['request_id'] ==
+                          messageRequestId) {
+                        context.read<MessageDetailCubit>().updated(
                           payload: message['payload'],
                         );
-                      case 'update':
-                        context.read<PostDetailCubit>().updated(
+                      }
+                    case 'delete':
+                      if (message['payload']['request_id'] ==
+                          messageRequestId) {
+                        context.read<MessageDetailCubit>().deleted(
                           payload: message['payload'],
                         );
-                      case 'delete':
-                        context.read<PostDetailCubit>().deleted(
+                      }
+                      if (message['payload']['request_id'] == chatRequestId) {
+                        context.read<ChatDetailCubit>().deleted(
                           payload: message['payload'],
                         );
-                      case 'bookmark':
+                      }
+                    case 'direct_message':
+                      context.read<ChatDetailCubit>().directMessageSent(
+                        payload: message['payload'],
+                      );
+                  }
+                case pollsStream:
+                  switch (message['payload']['action']) {
+                    case 'list':
+                      context.read<PollsCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                    case 'create':
+                      context.read<PollDetailCubit>().created(
+                        payload: message['payload'],
+                      );
+                    case 'update':
+                      context.read<PollDetailCubit>().updated(
+                        payload: message['payload'],
+                      );
+                    case 'delete':
+                      context.read<PollDetailCubit>().deleted(
+                        payload: message['payload'],
+                      );
+                  }
+                case surveysStream:
+                  switch (message['payload']['action']) {
+                    case 'list':
+                      context.read<SurveysCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                    case 'create':
+                      if (message['payload']['request_id'] == surveyRequestId) {
+                        context.read<SurveyDetailCubit>().created(
+                          payload: message['payload'],
+                        );
+                      }
+                      if (message['payload']['request_id'] ==
+                          responseRequestId) {
+                        context.read<AnswerCubit>().submitted(
+                          payload: message['payload'],
+                        );
+                      }
+                    case 'update':
+                      context.read<SurveyDetailCubit>().updated(
+                        payload: message['payload'],
+                      );
+                    case 'delete':
+                      context.read<SurveyDetailCubit>().deleted(
+                        payload: message['payload'],
+                      );
+                  }
+                case usersStream:
+                  switch (message['payload']['action']) {
+                    case 'list':
+                      context.read<UsersCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                    case 'retrieve':
+                      context.read<UserDetailCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                    case 'update':
+                      context.read<UserDetailCubit>().updated(
+                        payload: message['payload'],
+                      );
+                    case 'mute':
+                      context.read<UserDetailCubit>().updated(
+                        payload: message['payload'],
+                      );
+                      if (message['payload']['response_status'] == 200) {
+                        late String msg;
+                        if (message['payload']['data']['is_muted']) {
+                          msg = 'Muted';
+                        } else {
+                          msg = 'Mute removed';
+                        }
                         final snackBar = getSnackBar(
                           context: context,
-                          message: message['payload']['data']['message'],
+                          message: msg,
                           status: SnackBarStatus.info,
+                          action: SnackBarAction(
+                            label: 'Undo',
+                            onPressed: () {
+                              context.read<WebsocketBloc>().add(
+                                WebsocketEvent.muteUser(
+                                  id: message['payload']['data']['id'],
+                                ),
+                              );
+                            },
+                          ),
                         );
                         showSnackBar(snackBar: snackBar);
-                      case 'report':
-                        context.read<PostDetailCubit>().reported(
-                          payload: message['payload'],
-                        );
-                      case 'following':
-                        context.read<FollowingPostsCubit>().loaded(
-                          payload: message['payload'],
-                        );
-                      case 'replies':
-                        context.read<RepliesCubit>().loaded(
-                          payload: message['payload'],
-                        );
-                      case 'user_posts':
-                        context.read<UserPostsCubit>().loaded(
-                          payload: message['payload'],
-                        );
-                      case 'bookmarks':
-                        context.read<BookmarksCubit>().loaded(
-                          payload: message['payload'],
-                        );
-                      case 'liked_posts':
-                        context.read<LikesCubit>().loaded(
-                          payload: message['payload'],
-                        );
-                      case 'user_replies':
-                        context.read<UserRepliesCubit>().loaded(
-                          payload: message['payload'],
-                        );
-                      case 'draft_posts':
-                        context.read<DraftPostsCubit>().loaded(
-                          payload: message['payload'],
-                        );
-                    }
-                  case chatsStream:
-                    switch (message['payload']['action']) {
-                      case 'list':
-                        context.read<ChatsCubit>().loaded(
-                          payload: message['payload'],
-                        );
-                      case 'messages':
-                        context.read<MessagesCubit>().loaded(
-                          payload: message['payload'],
-                        );
-                      case 'create':
-                        if (message['payload']['request_id'] !=
-                            messageRequestId) {
-                          context.read<ChatDetailCubit>().created(
-                            payload: message['payload'],
-                          );
+                      }
+                    case 'block':
+                      context.read<UserDetailCubit>().updated(
+                        payload: message['payload'],
+                      );
+                      if (message['payload']['response_status'] == 200) {
+                        late String msg;
+                        if (message['payload']['data']['is_blocked']) {
+                          msg = 'Blocked';
+                        } else {
+                          msg = 'Block removed';
                         }
-                        if (message['payload']['request_id'] ==
-                            messageRequestId) {
-                          context.read<MessageDetailCubit>().created(
-                            payload: message['payload'],
-                          );
-                        }
-                      case 'retrieve':
-                        context.read<ChatDetailCubit>().loaded(
-                          payload: message['payload'],
+                        final snackBar = getSnackBar(
+                          context: context,
+                          message: msg,
+                          status: SnackBarStatus.info,
+                          action: SnackBarAction(
+                            label: 'Undo',
+                            onPressed: () {
+                              context.read<WebsocketBloc>().add(
+                                WebsocketEvent.blockUser(
+                                  id: message['payload']['data']['id'],
+                                ),
+                              );
+                            },
+                          ),
                         );
-                      case 'update':
-                        if (message['payload']['request_id'] == chatRequestId) {
-                          context.read<ChatDetailCubit>().updated(
-                            payload: message['payload'],
-                          );
-                        }
-                        if (message['payload']['request_id'] ==
-                            messageRequestId) {
-                          context.read<MessageDetailCubit>().updated(
-                            payload: message['payload'],
-                          );
-                        }
-                      case 'delete':
-                        if (message['payload']['request_id'] ==
-                            messageRequestId) {
-                          context.read<MessageDetailCubit>().deleted(
-                            payload: message['payload'],
-                          );
-                        }
-                        if (message['payload']['request_id'] == chatRequestId) {
-                          context.read<ChatDetailCubit>().deleted(
-                            payload: message['payload'],
-                          );
-                        }
-                      case 'direct_message':
-                        context.read<ChatDetailCubit>().directMessageSent(
-                          payload: message['payload'],
-                        );
-                    }
-                  case pollsStream:
-                    switch (message['payload']['action']) {
-                      case 'list':
-                        context.read<PollsCubit>().loaded(
-                          payload: message['payload'],
-                        );
-                      case 'create':
-                        context.read<PollDetailCubit>().created(
-                          payload: message['payload'],
-                        );
-                      case 'update':
-                        context.read<PollDetailCubit>().updated(
-                          payload: message['payload'],
-                        );
-                      case 'delete':
-                        context.read<PollDetailCubit>().deleted(
-                          payload: message['payload'],
-                        );
-                    }
-                  case surveysStream:
-                    switch (message['payload']['action']) {
-                      case 'list':
-                        context.read<SurveysCubit>().loaded(
-                          payload: message['payload'],
-                        );
-                      case 'create':
-                        if (message['payload']['request_id'] ==
-                            surveyRequestId) {
-                          context.read<SurveyDetailCubit>().created(
-                            payload: message['payload'],
-                          );
-                        }
-                        if (message['payload']['request_id'] ==
-                            responseRequestId) {
-                          context.read<AnswerCubit>().submitted(
-                            payload: message['payload'],
-                          );
-                        }
-                      case 'update':
-                        context.read<SurveyDetailCubit>().updated(
-                          payload: message['payload'],
-                        );
-                      case 'delete':
-                        context.read<SurveyDetailCubit>().deleted(
-                          payload: message['payload'],
-                        );
-                    }
-                  case usersStream:
-                    switch (message['payload']['action']) {
-                      case 'list':
-                        context.read<UsersCubit>().loaded(
-                          payload: message['payload'],
-                        );
-                      case 'retrieve':
-                        context.read<UserDetailCubit>().loaded(
-                          payload: message['payload'],
-                        );
-                      case 'update':
-                        context.read<UserDetailCubit>().updated(
-                          payload: message['payload'],
-                        );
-                      case 'mute':
-                        context.read<UserDetailCubit>().updated(
-                          payload: message['payload'],
-                        );
-                        if (message['payload']['response_status'] == 200) {
-                          late String msg;
-                          if (message['payload']['data']['is_muted']) {
-                            msg = 'Muted';
-                          } else {
-                            msg = 'Mute removed';
-                          }
-                          final snackBar = getSnackBar(
-                            context: context,
-                            message: msg,
-                            status: SnackBarStatus.info,
-                            action: SnackBarAction(
-                              label: 'Undo',
-                              onPressed: () {
-                                context.read<WebsocketBloc>().add(
-                                  WebsocketEvent.muteUser(
-                                    id: message['payload']['data']['id'],
-                                  ),
-                                );
-                              },
-                            ),
-                          );
-                          showSnackBar(snackBar: snackBar);
-                        }
-                      case 'block':
-                        context.read<UserDetailCubit>().updated(
-                          payload: message['payload'],
-                        );
-                        if (message['payload']['response_status'] == 200) {
-                          late String msg;
-                          if (message['payload']['data']['is_blocked']) {
-                            msg = 'Blocked';
-                          } else {
-                            msg = 'Block removed';
-                          }
-                          final snackBar = getSnackBar(
-                            context: context,
-                            message: msg,
-                            status: SnackBarStatus.info,
-                            action: SnackBarAction(
-                              label: 'Undo',
-                              onPressed: () {
-                                context.read<WebsocketBloc>().add(
-                                  WebsocketEvent.blockUser(
-                                    id: message['payload']['data']['id'],
-                                  ),
-                                );
-                              },
-                            ),
-                          );
-                          showSnackBar(snackBar: snackBar);
-                        }
-                      case 'following':
-                        context.read<FollowingCubit>().loaded(
-                          payload: message['payload'],
-                        );
-                      case 'followers':
-                        context.read<FollowersCubit>().loaded(
-                          payload: message['payload'],
-                        );
-                      case 'muted':
-                        context.read<MutedCubit>().loaded(
-                          payload: message['payload'],
-                        );
-                      case 'blocked':
-                        context.read<BlockedCubit>().loaded(
-                          payload: message['payload'],
-                        );
-                    }
-                  case notificationsStream:
-                    switch (message['payload']['action']) {
-                      case 'list':
-                        context.read<NotificationsCubit>().loaded(
-                          payload: message['payload'],
-                        );
-                      case 'create':
-                        context.read<NotificationDetailCubit>().created(
-                          payload: message['payload'],
-                        );
-                      case 'update':
-                        context.read<NotificationDetailCubit>().updated(
-                          payload: message['payload'],
-                        );
-                      case 'delete':
-                        context.read<NotificationDetailCubit>().deleted(
-                          payload: message['payload'],
-                        );
-                      case 'preferences':
-                      case 'update_preferences':
-                        context.read<PreferencesCubit>().loaded(
-                          payload: message['payload'],
-                        );
-                    }
-                }
-              case WebsocketFailure(:final error):
-                context.read<ForYouCubit>().websocketFailure(error: error);
-                context.read<PostsCubit>().websocketFailure(error: error);
-                context.read<RepliesCubit>().websocketFailure(error: error);
-                context.read<SurveysCubit>().websocketFailure(error: error);
-                context.read<PollsCubit>().websocketFailure(error: error);
-                context.read<ChatsCubit>().websocketFailure(error: error);
-                context.read<NotificationsCubit>().websocketFailure(
-                  error: error,
-                );
-                final snackBar = getSnackBar(
-                  context: context,
-                  message: error,
-                  status: SnackBarStatus.failure,
-                );
-                showSnackBar(snackBar: snackBar);
+                        showSnackBar(snackBar: snackBar);
+                      }
+                    case 'following':
+                      context.read<FollowingCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                    case 'followers':
+                      context.read<FollowersCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                    case 'muted':
+                      context.read<MutedCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                    case 'blocked':
+                      context.read<BlockedCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                  }
+                case notificationsStream:
+                  switch (message['payload']['action']) {
+                    case 'list':
+                      context.read<NotificationsCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                    case 'create':
+                      context.read<NotificationDetailCubit>().created(
+                        payload: message['payload'],
+                      );
+                    case 'update':
+                      context.read<NotificationDetailCubit>().updated(
+                        payload: message['payload'],
+                      );
+                    case 'delete':
+                      context.read<NotificationDetailCubit>().deleted(
+                        payload: message['payload'],
+                      );
+                    case 'preferences':
+                    case 'update_preferences':
+                      context.read<PreferencesCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                  }
+              }
+            }
+            if (state.status == WebsocketStatus.failure) {
+              String error = 'Server connection lost';
+              context.read<ForYouCubit>().websocketFailure(error: error);
+              context.read<PostsCubit>().websocketFailure(error: error);
+              context.read<RepliesCubit>().websocketFailure(error: error);
+              context.read<SurveysCubit>().websocketFailure(error: error);
+              context.read<PollsCubit>().websocketFailure(error: error);
+              context.read<ChatsCubit>().websocketFailure(error: error);
+              context.read<NotificationsCubit>().websocketFailure(error: error);
+              final snackBar = getSnackBar(
+                context: context,
+                message: error,
+                status: SnackBarStatus.failure,
+              );
+              showSnackBar(snackBar: snackBar);
             }
           },
         ),

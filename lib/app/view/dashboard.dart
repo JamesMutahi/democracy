@@ -10,7 +10,6 @@ import 'package:democracy/notification/bloc/notifications/notifications_cubit.da
 import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Dashboard extends StatefulWidget {
@@ -36,8 +35,6 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    final Brightness brightness = MediaQuery.of(context).platformBrightness;
-    final bool isDarkMode = brightness == Brightness.dark;
     ScaffoldFeatureController showSnackBar({required SnackBar snackBar}) {
       ScaffoldMessenger.of(context).clearSnackBars();
       return ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -144,47 +141,16 @@ class _DashboardState extends State<Dashboard> {
                   },
                 ),
               ],
-              child: AnnotatedRegion<SystemUiOverlayStyle>(
-                value:
-                    isDarkMode
-                        ? SystemUiOverlayStyle.dark.copyWith(
-                          statusBarColor:
-                              Theme.of(context).appBarTheme.backgroundColor,
-                          statusBarIconBrightness: Brightness.light,
-                          systemNavigationBarColor:
-                              Theme.of(context).appBarTheme.backgroundColor,
-                          systemNavigationBarIconBrightness: Brightness.light,
-                        )
-                        : SystemUiOverlayStyle.light.copyWith(
-                          statusBarColor:
-                              Theme.of(context).appBarTheme.backgroundColor,
-                          statusBarIconBrightness: Brightness.dark,
-                          systemNavigationBarColor:
-                              Theme.of(context).appBarTheme.backgroundColor,
-                          systemNavigationBarIconBrightness: Brightness.dark,
-                        ),
-                child: SafeArea(
-                  child: PageView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    controller: pageController,
-                    children: [
-                      HomePage(user: user, notifications: unreadNotifications),
-                      ExplorePage(
-                        user: user,
-                        notifications: unreadNotifications,
-                      ),
-                      PollPage(user: user, notifications: unreadNotifications),
-                      SurveyPage(
-                        user: user,
-                        notifications: unreadNotifications,
-                      ),
-                      MessagePage(
-                        user: user,
-                        notifications: unreadNotifications,
-                      ),
-                    ],
-                  ),
-                ),
+              child: PageView(
+                physics: const NeverScrollableScrollPhysics(),
+                controller: pageController,
+                children: [
+                  HomePage(user: user, notifications: unreadNotifications),
+                  ExplorePage(user: user, notifications: unreadNotifications),
+                  PollPage(user: user, notifications: unreadNotifications),
+                  SurveyPage(user: user, notifications: unreadNotifications),
+                  MessagePage(user: user, notifications: unreadNotifications),
+                ],
               ),
             ),
           ),

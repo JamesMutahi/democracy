@@ -14,6 +14,10 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     required User user,
     required List<Post> posts,
   }) = _ResubscribeUserPosts;
+  const factory WebsocketEvent.resubscribeReplies({
+    required Post post,
+    required List<Post> replies,
+  }) = _ResubscribeReplies;
   const factory WebsocketEvent.createPost({
     required String body,
     required PostStatus status,

@@ -14,6 +14,7 @@ import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/choice_answer.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/models/text_answer.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -44,7 +45,7 @@ const String notificationRequestId = 'notifications';
 
 class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   WebsocketBloc({required this.authRepository})
-    : super(const WebsocketInitial()) {
+    : super(const WebsocketState()) {
     on<_Connect>((event, emit) async {
       _onConnect(emit);
     });
@@ -54,6 +55,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     });
     on<_ResubscribePosts>((event, emit) {
       _onResubscribePosts(emit, event);
+    });
+    on<_ResubscribeReplies>((event, emit) {
+      _onResubscribeReplies(emit, event);
     });
     on<_ResubscribeUserPosts>((event, emit) {
       _onResubscribeUserPosts(emit, event);
@@ -219,11 +223,12 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     });
     on<_Disconnect>((event, emit) async {
       await _channel.sink.close();
+      emit(WebsocketState());
     });
   }
 
   Future _onConnect(Emitter<WebsocketState> emit) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     try {
       String? token = await authRepository.getToken();
       String url = dotenv.env['WEBSOCKET_URL']!;
@@ -232,27 +237,30 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         headers: {'Authorization': 'Token $token', 'Origin': url},
       );
       await _channel.ready;
-      add(_ChangeState(state: WebsocketConnected()));
+      add(
+        _ChangeState(
+          state: state.copyWith(
+            status: WebsocketStatus.connected,
+            initialConnectionAchieved: true,
+          ),
+        ),
+      );
       _channel.stream.listen(
         (message) {
           add(
-            _ChangeState(state: WebsocketSuccess(message: jsonDecode(message))),
-          );
-        },
-        onDone: () {
-          add(
             _ChangeState(
-              state: WebsocketFailure(error: 'Server connection lost'),
+              state: state.copyWith(
+                status: WebsocketStatus.success,
+                message: jsonDecode(message),
+              ),
             ),
           );
-          Future.delayed(Duration(seconds: 10)).then((value) {
-            add(_Connect());
-          });
         },
+        onDone: () {},
         onError: (error) {
           add(
             _ChangeState(
-              state: WebsocketFailure(error: 'Server connection lost'),
+              state: state.copyWith(status: WebsocketStatus.failure),
             ),
           );
           debugPrint('ws error $error');
@@ -262,12 +270,12 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         },
       );
     } catch (e) {
-      add(_ChangeState(state: WebsocketFailure(error: e.toString())));
+      add(_ChangeState(state: state.copyWith(status: WebsocketStatus.failure)));
     }
   }
 
   Future _onGetForYouPosts(Emitter<WebsocketState> emit) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': postsStream,
       'payload': {"action": 'for_you', 'request_id': postRequestId},
@@ -279,7 +287,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _ResubscribePosts event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     List<int> postIds = event.posts.map((post) => post.id).toList();
     List<Post> reposts =
         event.posts.where((post) => post.repostOf != null).toList();
@@ -296,7 +304,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onGetPosts(Emitter<WebsocketState> emit, _GetPosts event) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': postsStream,
       'payload': {
@@ -310,7 +318,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onCreatePost(Emitter<WebsocketState> emit, _CreatePost event) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': postsStream,
       'payload': {
@@ -332,7 +340,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onGetPost(Emitter<WebsocketState> emit, _GetPost event) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': postsStream,
       'payload': {
@@ -345,7 +353,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onUpdatePost(Emitter<WebsocketState> emit, _UpdatePost event) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': postsStream,
       'payload': {
@@ -358,7 +366,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onLikePost(Emitter<WebsocketState> emit, _LikePost event) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': postsStream,
       'payload': {
@@ -374,7 +382,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _BookmarkPost event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': postsStream,
       'payload': {
@@ -387,7 +395,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onDeletePost(Emitter<WebsocketState> emit, _DeletePost event) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': postsStream,
       'payload': {
@@ -400,7 +408,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onReportPost(Emitter<WebsocketState> emit, _ReportPost event) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': postsStream,
       'payload': {
@@ -415,7 +423,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _GetFollowingPosts event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': postsStream,
       'payload': {
@@ -428,7 +436,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onGetReplies(Emitter<WebsocketState> emit, _GetReplies event) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': postsStream,
       'payload': {
@@ -445,7 +453,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _UnsubscribeReplies event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': postsStream,
       'payload': {
@@ -461,7 +469,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _GetUserPosts event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': postsStream,
       'payload': {
@@ -478,7 +486,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _GetBookmarks event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': postsStream,
       'payload': {'action': 'bookmarks', 'last_post': event.lastPost?.id},
@@ -490,7 +498,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _GetLikedPosts event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': postsStream,
       'payload': {
@@ -504,7 +512,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onGetDraftPosts(Emitter<WebsocketState> emit) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': postsStream,
       'payload': {'action': 'draft_posts', 'request_id': postRequestId},
@@ -516,7 +524,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _GetUserReplies event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': postsStream,
       'payload': {
@@ -533,7 +541,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _UnsubscribeUserPosts event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     List<int> postIds = event.posts.map((post) => post.id).toList();
     Map<String, dynamic> message = {
       'stream': postsStream,
@@ -546,14 +554,34 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
+  Future _onResubscribeReplies(
+    Emitter<WebsocketState> emit,
+    _ResubscribeReplies event,
+  ) async {
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    List<int> postIds = event.replies.map((post) => post.id).toList();
+    List<Post> reposts =
+        event.replies.where((post) => post.repostOf != null).toList();
+    postIds.addAll(reposts.map((post) => post.id).toList());
+    Map<String, dynamic> message = {
+      'stream': postsStream,
+      'payload': {
+        "action": 'resubscribe_replies',
+        'request_id': event.post.id,
+        'pks': postIds,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
   Future _onResubscribeUserPosts(
-      Emitter<WebsocketState> emit,
-      _ResubscribeUserPosts event,
-      ) async {
-    emit(WebsocketLoading());
+    Emitter<WebsocketState> emit,
+    _ResubscribeUserPosts event,
+  ) async {
+    emit(state.copyWith(status: WebsocketStatus.loading));
     List<int> postIds = event.posts.map((post) => post.id).toList();
     List<Post> reposts =
-    event.posts.where((post) => post.repostOf != null).toList();
+        event.posts.where((post) => post.repostOf != null).toList();
     postIds.addAll(reposts.map((post) => post.id).toList());
     Map<String, dynamic> message = {
       'stream': postsStream,
@@ -566,9 +594,8 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
-
   Future _onGetChats(Emitter<WebsocketState> emit, _GetChats event) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': chatsStream,
       'payload': {
@@ -585,7 +612,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _ResubscribeChats event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     List<int> chatIds = event.chats.map((chat) => chat.id).toList();
     Map<String, dynamic> message = {
       'stream': chatsStream,
@@ -599,7 +626,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onGetChat(Emitter<WebsocketState> emit, _GetChat event) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': chatsStream,
       'payload': {
@@ -612,7 +639,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onCreateChat(Emitter<WebsocketState> emit, _CreateChat event) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': chatsStream,
       'payload': {
@@ -628,7 +655,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _SubscribeChat event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': chatsStream,
       'payload': {
@@ -644,7 +671,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _GetMessages event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': chatsStream,
       'payload': {
@@ -661,7 +688,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _CreateMessage event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': chatsStream,
       'payload': {
@@ -683,7 +710,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _EditMessage event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': chatsStream,
       'payload': {
@@ -700,7 +727,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _DeleteMessage event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     for (Message msg in event.messages) {
       Map<String, dynamic> message = {
         'stream': chatsStream,
@@ -718,7 +745,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _MarkChatAsRead event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': chatsStream,
       'payload': {
@@ -731,7 +758,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onGetUsers(Emitter<WebsocketState> emit, _GetUsers event) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': usersStream,
       'payload': {
@@ -748,7 +775,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _ResubscribeUsers event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     List<int> userIds = event.users.map((user) => user.id).toList();
     Map<String, dynamic> message = {
       'stream': usersStream,
@@ -765,7 +792,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _GetFollowers event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': usersStream,
       'payload': {
@@ -782,7 +809,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _GetFollowing event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': usersStream,
       'payload': {
@@ -796,7 +823,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onGetMuted(Emitter<WebsocketState> emit, _GetMuted event) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': usersStream,
       'payload': {
@@ -809,7 +836,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onGetBlocked(Emitter<WebsocketState> emit, _GetBlocked event) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': usersStream,
       'payload': {
@@ -822,7 +849,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onGetUser(Emitter<WebsocketState> emit, _GetUser event) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': usersStream,
       'payload': {
@@ -835,7 +862,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onUpdateUser(Emitter<WebsocketState> emit, _UpdateUser event) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': usersStream,
       'payload': {
@@ -860,7 +887,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onMuteUser(Emitter<WebsocketState> emit, _MuteUser event) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': usersStream,
       'payload': {
@@ -873,7 +900,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onBlockUser(Emitter<WebsocketState> emit, _BlockUser event) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': usersStream,
       'payload': {
@@ -886,7 +913,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onFollowUser(Emitter<WebsocketState> emit, _FollowUser event) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': usersStream,
       'payload': {
@@ -902,7 +929,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _ChangeUserNotificationStatus event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': usersStream,
       'payload': {
@@ -918,7 +945,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _UnsubscribeUsers event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     List<int> userIds = event.users.map((user) => user.id).toList();
     Map<String, dynamic> message = {
       'stream': usersStream,
@@ -935,7 +962,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _SendDirectMessage event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     List<int> userPks = event.users.map((user) => user.id).toList();
     Map<String, dynamic> message = {
       'stream': chatsStream,
@@ -955,7 +982,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onGetPolls(Emitter<WebsocketState> emit, _GetPolls event) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': pollsStream,
       'payload': {
@@ -972,7 +999,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _ResubscribePolls event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     List<int> pollIds = event.polls.map((poll) => poll.id).toList();
     Map<String, dynamic> message = {
       'stream': pollsStream,
@@ -989,7 +1016,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _SubscribePoll event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': pollsStream,
       'payload': {
@@ -1002,7 +1029,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onVote(Emitter<WebsocketState> emit, _Vote event) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': pollsStream,
       'payload': {
@@ -1018,7 +1045,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _SubmitReason event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': pollsStream,
       'payload': {
@@ -1032,7 +1059,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onGetSurveys(Emitter<WebsocketState> emit, _GetSurveys event) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': surveysStream,
       'payload': {
@@ -1046,10 +1073,10 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onResubscribeSurveys(
-      Emitter<WebsocketState> emit,
-      _ResubscribeSurveys event,
-      ) async {
-    emit(WebsocketLoading());
+    Emitter<WebsocketState> emit,
+    _ResubscribeSurveys event,
+  ) async {
+    emit(state.copyWith(status: WebsocketStatus.loading));
     List<int> surveyIds = event.surveys.map((survey) => survey.id).toList();
     Map<String, dynamic> message = {
       'stream': surveysStream,
@@ -1066,7 +1093,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _SubmitResponse event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     List<Map<String, dynamic>> textAnswers = [];
     List<Map<String, dynamic>> choiceAnswers = [];
     for (TextAnswer textAnswer in event.textAnswers) {
@@ -1099,7 +1126,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onGetNotifications(Emitter<WebsocketState> emit) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': notificationsStream,
       'payload': {'action': 'list', 'request_id': notificationRequestId},
@@ -1111,7 +1138,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _MarkNotificationAsRead event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': notificationsStream,
       'payload': {
@@ -1124,7 +1151,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onGetPreferences(Emitter<WebsocketState> emit) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': notificationsStream,
       'payload': {'action': 'preferences', 'request_id': notificationRequestId},
@@ -1136,7 +1163,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Emitter<WebsocketState> emit,
     _UpdatePreferences event,
   ) async {
-    emit(WebsocketLoading());
+    emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': notificationsStream,
       'payload': {

@@ -32,7 +32,7 @@ class _SurveysState extends State<Surveys> {
       listeners: [
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
-            if (state is WebsocketConnected) {
+            if (state.status == WebsocketStatus.connected) {
               context.read<WebsocketBloc>().add(
                 WebsocketEvent.resubscribeSurveys(surveys: _surveys),
               );

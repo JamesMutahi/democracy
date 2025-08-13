@@ -74,7 +74,7 @@ class _MutedTabState extends State<_MutedTab> {
       listeners: [
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
-            if (state is WebsocketConnected) {
+            if (state.status == WebsocketStatus.connected) {
               context.read<WebsocketBloc>().add(
                 WebsocketEvent.resubscribeUsers(users: _users),
               );
@@ -189,7 +189,7 @@ class _BlockedTabState extends State<_BlockedTab> {
       listeners: [
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
-            if (state is WebsocketConnected) {
+            if (state.status == WebsocketStatus.connected) {
               context.read<WebsocketBloc>().add(
                 WebsocketEvent.resubscribeUsers(users: _users),
               );

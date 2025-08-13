@@ -77,7 +77,7 @@ class _FollowersTabState extends State<_FollowersTab> {
       listeners: [
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
-            if (state is WebsocketConnected) {
+            if (state.status == WebsocketStatus.connected) {
               context.read<WebsocketBloc>().add(
                 WebsocketEvent.resubscribeUsers(users: _users),
               );
@@ -195,7 +195,7 @@ class _FollowingTabState extends State<_FollowingTab> {
       listeners: [
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
-            if (state is WebsocketConnected) {
+            if (state.status == WebsocketStatus.connected) {
               context.read<WebsocketBloc>().add(
                 WebsocketEvent.resubscribeUsers(users: _users),
               );

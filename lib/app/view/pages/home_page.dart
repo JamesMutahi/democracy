@@ -152,7 +152,7 @@ class _ForYouTabState extends State<ForYouTab> {
         ),
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
-            if (state is WebsocketConnected) {
+            if (state.status == WebsocketStatus.connected) {
               context.read<WebsocketBloc>().add(
                 WebsocketEvent.resubscribePosts(posts: _posts),
               );
@@ -248,7 +248,7 @@ class _FollowingTabState extends State<FollowingTab> {
         ),
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
-            if (state is WebsocketConnected) {
+            if (state.status == WebsocketStatus.connected) {
               context.read<WebsocketBloc>().add(
                 WebsocketEvent.resubscribePosts(posts: _posts),
               );

@@ -77,7 +77,7 @@ class _UserPostsState extends State<UserPosts> {
         ),
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
-            if (state is WebsocketConnected) {
+            if (state.status == WebsocketStatus.connected) {
               context.read<WebsocketBloc>().add(
                 WebsocketEvent.resubscribeUserPosts(
                   user: widget.user,
@@ -194,7 +194,7 @@ class _UserRepliesState extends State<UserReplies> {
         ),
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
-            if (state is WebsocketConnected) {
+            if (state.status == WebsocketStatus.connected) {
               context.read<WebsocketBloc>().add(
                 WebsocketEvent.resubscribeUserPosts(
                   user: widget.user,
@@ -332,7 +332,7 @@ class _LikesState extends State<Likes> {
         ),
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
-            if (state is WebsocketConnected) {
+            if (state.status == WebsocketStatus.connected) {
               context.read<WebsocketBloc>().add(
                 WebsocketEvent.resubscribeUserPosts(
                   user: widget.user,

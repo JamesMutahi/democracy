@@ -1,17 +1,37 @@
 part of 'websocket_bloc.dart';
 
-@freezed
-abstract class WebsocketState with _$WebsocketState {
-  const factory WebsocketState.initial() = WebsocketInitial;
+enum WebsocketStatus { initial, loading, connected, success, failure }
 
-  const factory WebsocketState.loading() = WebsocketLoading;
+final class WebsocketState extends Equatable {
+  const WebsocketState({
+    this.status = WebsocketStatus.initial,
+    this.initialConnectionAchieved = false,
+    this.message = const {},
+  });
 
-  const factory WebsocketState.connected() = WebsocketConnected;
+  final WebsocketStatus status;
+  final bool initialConnectionAchieved;
+  final Map<String, dynamic> message;
 
-  const factory WebsocketState.success({
-    required Map<String, dynamic> message,
-  }) = WebsocketSuccess;
+  WebsocketState copyWith({
+    WebsocketStatus? status,
+    bool? initialConnectionAchieved,
+    Map<String, dynamic>? message,
+    int? userId,
+  }) {
+    return WebsocketState(
+      status: status ?? this.status,
+      initialConnectionAchieved:
+          initialConnectionAchieved ?? this.initialConnectionAchieved,
+      message: message ?? this.message,
+    );
+  }
 
-  const factory WebsocketState.failure({required String error}) =
-      WebsocketFailure;
+  @override
+  String toString() {
+    return '''WebsocketState { status: $status, message: $message }''';
+  }
+
+  @override
+  List<Object> get props => [status, initialConnectionAchieved, message];
 }
