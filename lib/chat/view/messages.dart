@@ -38,6 +38,14 @@ class _MessagesState extends State<Messages> {
   double messageMargin = 10;
 
   @override
+  void initState() {
+    context.read<WebsocketBloc>().add(
+      WebsocketEvent.getMessages(chat: widget.chat),
+    );
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     _messages.sort((a, b) => b.id.compareTo(a.id));
 

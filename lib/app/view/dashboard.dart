@@ -80,77 +80,79 @@ class _DashboardState extends State<Dashboard> {
           key: _key,
           resizeToAvoidBottomInset: false,
           drawer: AppDrawer(user: user),
-          body: PopScope(
-            canPop: canPopNow,
-            onPopInvokedWithResult: (didPop, __) {
-              onPopInvoked(didPop);
-            },
-            child: MultiBlocListener(
-              listeners: [
-                BlocListener<BottomNavBarCubit, BottomNavBarState>(
-                  listener: (context, state) {
-                    switch (state) {
-                      case BottomNavBarPageChanged(:final page):
-                        pageController.jumpToPage(page);
-                    }
-                  },
-                ),
-                BlocListener<NotificationsCubit, NotificationsState>(
-                  listener: (context, state) {
-                    if (state is NotificationsLoaded) {
-                      setState(() {
-                        unreadNotifications =
-                            state.notifications
-                                .where((n) => n.isRead == false)
-                                .toList();
-                      });
-                    }
-                  },
-                ),
-                BlocListener<NotificationDetailCubit, NotificationDetailState>(
-                  listener: (context, state) {
-                    if (state is NotificationCreated) {
-                      setState(() {
-                        unreadNotifications.add(state.notification);
-                      });
-                    }
-                    if (state is NotificationUpdated) {
-                      if (unreadNotifications.any(
-                        (n) => n.id == state.notification.id,
-                      )) {
-                        if (state.notification.isRead) {
+          body: SafeArea(
+            child: PopScope(
+              canPop: canPopNow,
+              onPopInvokedWithResult: (didPop, __) {
+                onPopInvoked(didPop);
+              },
+              child: MultiBlocListener(
+                listeners: [
+                  BlocListener<BottomNavBarCubit, BottomNavBarState>(
+                    listener: (context, state) {
+                      switch (state) {
+                        case BottomNavBarPageChanged(:final page):
+                          pageController.jumpToPage(page);
+                      }
+                    },
+                  ),
+                  BlocListener<NotificationsCubit, NotificationsState>(
+                    listener: (context, state) {
+                      if (state is NotificationsLoaded) {
+                        setState(() {
+                          unreadNotifications =
+                              state.notifications
+                                  .where((n) => n.isRead == false)
+                                  .toList();
+                        });
+                      }
+                    },
+                  ),
+                  BlocListener<NotificationDetailCubit, NotificationDetailState>(
+                    listener: (context, state) {
+                      if (state is NotificationCreated) {
+                        setState(() {
+                          unreadNotifications.add(state.notification);
+                        });
+                      }
+                      if (state is NotificationUpdated) {
+                        if (unreadNotifications.any(
+                          (n) => n.id == state.notification.id,
+                        )) {
+                          if (state.notification.isRead) {
+                            setState(() {
+                              unreadNotifications.removeWhere(
+                                (n) => n.id == state.notification.id,
+                              );
+                            });
+                          }
+                        }
+                      }
+                      if (state is NotificationDeleted) {
+                        if (unreadNotifications.any(
+                          (n) => n.id == state.notificationId,
+                        )) {
                           setState(() {
                             unreadNotifications.removeWhere(
-                              (n) => n.id == state.notification.id,
+                              (n) => n.id == state.notificationId,
                             );
                           });
                         }
                       }
-                    }
-                    if (state is NotificationDeleted) {
-                      if (unreadNotifications.any(
-                        (n) => n.id == state.notificationId,
-                      )) {
-                        setState(() {
-                          unreadNotifications.removeWhere(
-                            (n) => n.id == state.notificationId,
-                          );
-                        });
-                      }
-                    }
-                  },
-                ),
-              ],
-              child: PageView(
-                physics: const NeverScrollableScrollPhysics(),
-                controller: pageController,
-                children: [
-                  HomePage(user: user, notifications: unreadNotifications),
-                  ExplorePage(user: user, notifications: unreadNotifications),
-                  PollPage(user: user, notifications: unreadNotifications),
-                  SurveyPage(user: user, notifications: unreadNotifications),
-                  MessagePage(user: user, notifications: unreadNotifications),
+                    },
+                  ),
                 ],
+                child: PageView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  controller: pageController,
+                  children: [
+                    HomePage(user: user, notifications: unreadNotifications),
+                    ExplorePage(user: user, notifications: unreadNotifications),
+                    PollPage(user: user, notifications: unreadNotifications),
+                    SurveyPage(user: user, notifications: unreadNotifications),
+                    MessagePage(user: user, notifications: unreadNotifications),
+                  ],
+                ),
               ),
             ),
           ),

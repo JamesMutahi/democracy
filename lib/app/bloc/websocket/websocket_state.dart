@@ -17,7 +17,6 @@ final class WebsocketState extends Equatable {
     WebsocketStatus? status,
     bool? initialConnectionAchieved,
     Map<String, dynamic>? message,
-    int? userId,
   }) {
     return WebsocketState(
       status: status ?? this.status,

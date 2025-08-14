@@ -6,7 +6,6 @@ import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 class MessagePage extends StatefulWidget {
   const MessagePage({
@@ -81,7 +80,7 @@ class _MessagePageState extends State<MessagePage>
                     builder: (context) => CreateMessage(),
                   );
                 },
-                child: Icon(Symbols.send_rounded),
+                child: Icon(Icons.send_rounded),
               ),
             ),
           ),

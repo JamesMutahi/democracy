@@ -119,18 +119,18 @@ class ThemeMod extends StatelessWidget {
         value:
             isDarkMode
                 ? SystemUiOverlayStyle.dark.copyWith(
-                  statusBarColor: theme.appBarTheme.backgroundColor,
+                  // statusBarColor: theme.appBarTheme.backgroundColor,
                   statusBarIconBrightness: Brightness.light,
                   systemNavigationBarColor: theme.appBarTheme.backgroundColor,
                   systemNavigationBarIconBrightness: Brightness.light,
                 )
                 : SystemUiOverlayStyle.light.copyWith(
-                  statusBarColor: theme.appBarTheme.backgroundColor,
+                  // statusBarColor: theme.appBarTheme.backgroundColor,
                   statusBarIconBrightness: Brightness.dark,
                   systemNavigationBarColor: theme.appBarTheme.backgroundColor,
                   systemNavigationBarIconBrightness: Brightness.dark,
                 ),
-        child: SafeArea(child: child),
+        child: child,
       ),
     );
   }

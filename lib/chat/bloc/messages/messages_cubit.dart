@@ -11,10 +11,6 @@ class MessagesCubit extends Cubit<MessagesState> {
     emit(state.copyWith(status: MessagesStatus.failure));
   }
 
-  void initialize() {
-    emit(MessagesState());
-  }
-
   void loaded({required Map<String, dynamic> payload}) {
     emit(state.copyWith(status: MessagesStatus.loading));
     if (payload['response_status'] == 200) {
