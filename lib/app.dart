@@ -119,13 +119,13 @@ class ThemeMod extends StatelessWidget {
         value:
             isDarkMode
                 ? SystemUiOverlayStyle.dark.copyWith(
-                  // statusBarColor: theme.appBarTheme.backgroundColor,
+                  statusBarColor: theme.appBarTheme.backgroundColor,
                   statusBarIconBrightness: Brightness.light,
                   systemNavigationBarColor: theme.appBarTheme.backgroundColor,
                   systemNavigationBarIconBrightness: Brightness.light,
                 )
                 : SystemUiOverlayStyle.light.copyWith(
-                  // statusBarColor: theme.appBarTheme.backgroundColor,
+                  statusBarColor: theme.appBarTheme.backgroundColor,
                   statusBarIconBrightness: Brightness.dark,
                   systemNavigationBarColor: theme.appBarTheme.backgroundColor,
                   systemNavigationBarIconBrightness: Brightness.dark,
@@ -404,16 +404,14 @@ class _Listeners extends StatelessWidget {
                           context: context,
                           message: msg,
                           status: SnackBarStatus.info,
-                          action: SnackBarAction(
-                            label: 'Undo',
-                            onPressed: () {
-                              context.read<WebsocketBloc>().add(
-                                WebsocketEvent.muteUser(
-                                  id: message['payload']['data']['id'],
-                                ),
-                              );
-                            },
-                          ),
+                          actionLabel: 'Undo',
+                          onActionPressed: () {
+                            context.read<WebsocketBloc>().add(
+                              WebsocketEvent.muteUser(
+                                id: message['payload']['data']['id'],
+                              ),
+                            );
+                          },
                         );
                         showSnackBar(snackBar: snackBar);
                       }
@@ -432,16 +430,14 @@ class _Listeners extends StatelessWidget {
                           context: context,
                           message: msg,
                           status: SnackBarStatus.info,
-                          action: SnackBarAction(
-                            label: 'Undo',
-                            onPressed: () {
-                              context.read<WebsocketBloc>().add(
-                                WebsocketEvent.blockUser(
-                                  id: message['payload']['data']['id'],
-                                ),
-                              );
-                            },
-                          ),
+                          actionLabel: 'Undo',
+                          onActionPressed: () {
+                            context.read<WebsocketBloc>().add(
+                              WebsocketEvent.blockUser(
+                                id: message['payload']['data']['id'],
+                              ),
+                            );
+                          },
                         );
                         showSnackBar(snackBar: snackBar);
                       }

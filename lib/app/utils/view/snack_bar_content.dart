@@ -7,19 +7,20 @@ SnackBar getSnackBar({
   required BuildContext context,
   required String message,
   required SnackBarStatus status,
-  SnackBarAction? action,
+  String? actionLabel,
+  VoidCallback? onActionPressed,
 }) {
   final snackBar = SnackBar(
-    // dismissDirection: DismissDirection.up,
     behavior: SnackBarBehavior.floating,
-    backgroundColor: Theme.of(context).cardColor,
-    // margin: EdgeInsets.only(
-    // bottom: MediaQuery.of(context).size.height - 100,
-    // left: 10,
-    // right: 10,
-    // ),
-    action: action,
     content: SnackBarContent(message: message, status: status),
+    action:
+        actionLabel == null
+            ? null
+            : SnackBarAction(
+              label: actionLabel,
+              textColor: Theme.of(context).disabledColor,
+              onPressed: onActionPressed!,
+            ),
   );
   return snackBar;
 }
@@ -56,21 +57,17 @@ class SnackBarContent extends StatelessWidget {
           size: 10.0,
         );
     }
-    return Center(
-      child: Row(
-        children: [
-          icon,
-          Flexible(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Text(
-                message,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        icon,
+        Flexible(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: Text(message, style: Theme.of(context).textTheme.bodyMedium),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
