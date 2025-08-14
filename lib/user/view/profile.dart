@@ -164,6 +164,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             SliverPersistentHeader(
                               delegate: _TabBarAppBarDelegate(
                                 TabBar(
+                                  labelStyle:
+                                      Theme.of(context).textTheme.titleMedium,
                                   dividerColor:
                                       Theme.of(
                                         context,
@@ -323,7 +325,7 @@ class ProfileAppBarDelegate extends SliverPersistentHeaderDelegate {
                 radius: 50,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 child: CircleAvatar(
-                  radius: 45,
+                  radius: 47,
                   child: Container(
                     decoration: BoxDecoration(
                       image: DecorationImage(

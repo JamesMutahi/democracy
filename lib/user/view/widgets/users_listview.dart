@@ -1,7 +1,7 @@
 import 'package:democracy/app/utils/view/bottom_loader.dart';
 import 'package:democracy/app/utils/view/failure_retry_button.dart';
 import 'package:democracy/app/utils/view/no_results.dart';
-import 'package:democracy/app/utils/view/profile_image.dart';
+import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
 import 'package:democracy/user/models/user.dart';

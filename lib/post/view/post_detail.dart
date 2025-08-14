@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/bottom_text_form_field.dart';
 import 'package:democracy/app/utils/view/custom_text.dart';
-import 'package:democracy/app/utils/view/profile_image.dart';
+import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/app/utils/view/tagging.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';

@@ -60,7 +60,12 @@ class _HomePageState extends State<HomePage>
                 flexibleSpace: CustomAppBar(
                   user: widget.user,
                   notifications: widget.notifications,
-                  extras: [],
+                  extras: [
+                    Text(
+                      'People of Kenya',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ],
                 ),
                 bottom: TabBar(
                   dividerColor: Theme.of(context).colorScheme.outlineVariant,

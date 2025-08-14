@@ -1,4 +1,4 @@
-import 'package:democracy/app/utils/view/profile_image.dart';
+import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/bloc/users/users_cubit.dart';
 import 'package:flutter/material.dart';

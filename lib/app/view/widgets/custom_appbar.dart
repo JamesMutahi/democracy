@@ -1,4 +1,4 @@
-import 'package:democracy/app/utils/view/profile_image.dart';
+import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_cubit.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;

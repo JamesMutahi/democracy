@@ -1,7 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/bottom_loader.dart';
 import 'package:democracy/app/utils/view/failure_retry_button.dart';
-import 'package:democracy/app/utils/view/profile_image.dart';
+import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
@@ -11,6 +11,7 @@ import 'package:democracy/notification/bloc/notification_detail/notification_det
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/models/chat.dart';
+import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -231,19 +232,7 @@ class _ChatTileState extends State<ChatTile> {
             : '';
     return ListTile(
       leading: ProfileImage(user: widget.otherUser),
-      title: Text.rich(
-        maxLines: 1,
-        style: TextStyle(overflow: TextOverflow.ellipsis),
-        TextSpan(
-          children: [
-            TextSpan(text: widget.otherUser.name),
-            TextSpan(
-              text: ' @${widget.otherUser.username}',
-              style: TextStyle(color: Theme.of(context).hintColor),
-            ),
-          ],
-        ),
-      ),
+      title: ProfileName(user: widget.otherUser),
       subtitle: Row(
         children: [
           if (widget.chat.lastMessage!.isRead &&

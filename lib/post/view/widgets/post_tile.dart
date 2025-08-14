@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:democracy/app/utils/view/custom_text.dart';
-import 'package:democracy/app/utils/view/profile_image.dart';
+import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/user/models/user.dart';
@@ -10,6 +10,7 @@ import 'package:democracy/poll/view/poll_tile.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/post_detail.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
+import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -193,14 +194,7 @@ class _PostContainer extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Flexible(
-                              child: Text(
-                                post.author.name,
-                                style: Theme.of(context).textTheme.bodyLarge
-                                    ?.copyWith(overflow: TextOverflow.ellipsis),
-                                maxLines: 1,
-                              ),
-                            ),
+                            ProfileName(user: post.author),
                             isDependency
                                 ? SizedBox.shrink()
                                 : Row(
