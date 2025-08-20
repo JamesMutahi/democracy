@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/models/chat.dart';
@@ -32,6 +33,7 @@ const String chatsStream = 'chats';
 const String surveysStream = 'surveys';
 const String usersStream = 'users';
 const String notificationsStream = 'notifications';
+const String petitionsStream = 'petitions';
 
 // Request ids
 const String postRequestId = 'posts';
@@ -42,6 +44,7 @@ const String surveyRequestId = 'surveys';
 const String responseRequestId = 'responses';
 const String usersRequestId = 'users';
 const String notificationRequestId = 'notifications';
+const String petitionRequestId = 'petitions';
 
 class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   WebsocketBloc({required this.authRepository})
@@ -220,6 +223,12 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     });
     on<_UpdatePreferences>((event, emit) {
       _onUpdatePreferences(emit, event);
+    });
+    on<_GetPetitions>((event, emit) {
+      _onGetPetitions(emit, event);
+    });
+    on<_ResubscribePetitions>((event, emit) {
+      _onResubscribePetitions(emit, event);
     });
     on<_Disconnect>((event, emit) async {
       await _channel.sink.close();
@@ -1178,6 +1187,41 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
           'allow_repost_notifications': event.allowRepostNotifications,
           'allow_message_notifications': event.allowMessageNotifications,
         },
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onGetPetitions(
+    Emitter<WebsocketState> emit,
+    _GetPetitions event,
+  ) async {
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    Map<String, dynamic> message = {
+      'stream': petitionsStream,
+      'payload': {
+        "action": 'list',
+        "request_id": petitionRequestId,
+        'search_term': event.searchTerm,
+        'last_petition': event.lastPetition?.id,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onResubscribePetitions(
+    Emitter<WebsocketState> emit,
+    _ResubscribePetitions event,
+  ) async {
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    List<int> petitionIds =
+        event.petitions.map((petition) => petition.id).toList();
+    Map<String, dynamic> message = {
+      'stream': petitionsStream,
+      'payload': {
+        "action": 'resubscribe',
+        'request_id': petitionRequestId,
+        'pks': petitionIds,
       },
     };
     _channel.sink.add(jsonEncode(message));

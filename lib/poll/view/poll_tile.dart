@@ -14,12 +14,12 @@ class PollTile extends StatelessWidget {
   const PollTile({
     super.key,
     required this.poll,
-    required this.isChildOfPost,
+    required this.isDependency,
     this.animateToInitialPercent = false,
   });
 
   final Poll poll;
-  final bool isChildOfPost;
+  final bool isDependency;
   final bool animateToInitialPercent;
 
   @override
@@ -39,7 +39,7 @@ class PollTile extends StatelessWidget {
           border: Border(
             bottom: BorderSide(
               color:
-                  isChildOfPost
+                  isDependency
                       ? Colors.transparent
                       : Theme.of(context).disabledColor.withAlpha(30),
             ),
@@ -53,7 +53,7 @@ class PollTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(poll.name, style: Theme.of(context).textTheme.titleMedium),
-                isChildOfPost ? SizedBox.shrink() : PollPopUp(poll: poll),
+                isDependency ? SizedBox.shrink() : PollPopUp(poll: poll),
               ],
             ),
             SizedBox(height: 5),
@@ -65,7 +65,7 @@ class PollTile extends StatelessWidget {
                   startTime: poll.startTime,
                   endTime: poll.endTime,
                 ),
-                isChildOfPost
+                isDependency
                     ? SizedBox.shrink()
                     : pollHasStarted
                     ? Text(

@@ -1,6 +1,5 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
-import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/post/bloc/posts/posts_cubit.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
@@ -17,7 +16,7 @@ class ExplorePage extends StatefulWidget {
   });
 
   final User user;
-  final List<n_.Notification> notifications;
+  final int notifications;
 
   @override
   State<ExplorePage> createState() => _ExplorePageState();

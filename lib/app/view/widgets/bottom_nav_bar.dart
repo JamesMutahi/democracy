@@ -1,4 +1,5 @@
 import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -23,7 +24,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           {'name': 'Home', 'iconData': Symbols.home_rounded},
           {'name': 'Explore', 'iconData': Symbols.search_rounded},
           {'name': 'Polls', 'iconData': Symbols.how_to_vote},
-          {'name': 'Surveys', 'iconData': Symbols.assignment_rounded},
+          {'name': 'Forms', 'iconData': Symbols.edit_document},
           {'name': 'Messages', 'iconData': Symbols.email_rounded},
         ];
         return BottomAppBar(
@@ -31,6 +32,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           height: 65.0,
           elevation: 100.0,
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment:
                 ResponsiveBreakpoints.of(context).isMobile
                     ? MainAxisAlignment.spaceEvenly
@@ -79,6 +81,7 @@ class NavBarItem extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconTheme(
                 data: Theme.of(context).iconTheme.copyWith(
@@ -92,14 +95,17 @@ class NavBarItem extends StatelessWidget {
               ),
               Text(
                 label,
-                style: TextStyle(
-                  fontSize: Theme.of(context).textTheme.labelSmall?.fontSize,
-                  fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-                  color:
-                      isActive
-                          ? Theme.of(context).colorScheme.primary
-                          : Theme.of(context).colorScheme.outline,
-                ),
+                style:
+                    isActive
+                        ? TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.primary,
+                        )
+                        : TextStyle(
+                          fontSize: 10,
+                          color: Theme.of(context).colorScheme.outline,
+                        ),
               ),
             ],
           ),

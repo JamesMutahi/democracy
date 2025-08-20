@@ -220,50 +220,47 @@ class _PostContainer extends StatelessWidget {
                                 isDependency: true,
                               ),
                             ),
-                        (post.poll == null)
-                            ? SizedBox.shrink()
-                            : DependencyContainer(
-                              child: PollTile(
-                                poll: post.poll!,
-                                isChildOfPost: true,
-                              ),
+                        if (post.poll != null)
+                          DependencyContainer(
+                            child: PollTile(
+                              poll: post.poll!,
+                              isDependency: true,
                             ),
-                        (post.survey == null)
-                            ? SizedBox.shrink()
-                            : DependencyContainer(
-                              child: SurveyTile(
-                                survey: post.survey!,
-                                isChildOfPost: true,
-                              ),
+                          ),
+                        if (post.survey != null)
+                          DependencyContainer(
+                            child: SurveyTile(
+                              survey: post.survey!,
+                              isDependency: true,
                             ),
+                          ),
                         SizedBox(height: 5),
-                        isDependency
-                            ? SizedBox.shrink()
-                            : Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                ReplyButton(
-                                  post: post,
-                                  numberFormat: numberFormat,
-                                ),
-                                RepostButton(
-                                  post: post,
-                                  numberFormat: numberFormat,
-                                ),
-                                LikeButton(
-                                  post: post,
-                                  numberFormat: numberFormat,
-                                ),
-                                BookmarkButton(
-                                  post: post,
-                                  numberFormat: numberFormat,
-                                ),
-                                ViewsButton(
-                                  post: post,
-                                  numberFormat: numberFormat,
-                                ),
-                              ],
-                            ),
+                        if (!isDependency)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ReplyButton(
+                                post: post,
+                                numberFormat: numberFormat,
+                              ),
+                              RepostButton(
+                                post: post,
+                                numberFormat: numberFormat,
+                              ),
+                              LikeButton(
+                                post: post,
+                                numberFormat: numberFormat,
+                              ),
+                              BookmarkButton(
+                                post: post,
+                                numberFormat: numberFormat,
+                              ),
+                              ViewsButton(
+                                post: post,
+                                numberFormat: numberFormat,
+                              ),
+                            ],
+                          ),
                       ],
                     ),
                   ),

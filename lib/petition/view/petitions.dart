@@ -1,26 +1,25 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/bottom_loader.dart';
 import 'package:democracy/app/utils/view/failure_retry_button.dart';
-import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
-import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
-import 'package:democracy/survey/bloc/surveys/surveys_cubit.dart';
-import 'package:democracy/survey/models/survey.dart';
-import 'package:democracy/survey/view/survey_tile.dart';
+import 'package:democracy/petition/bloc/petition_detail/petition_detail_cubit.dart';
+import 'package:democracy/petition/bloc/petitions/petitions_cubit.dart';
+import 'package:democracy/petition/models/petition.dart';
+import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
-class Surveys extends StatefulWidget {
-  const Surveys({super.key});
+class Petitions extends StatefulWidget {
+  const Petitions({super.key});
 
   @override
-  State<Surveys> createState() => _SurveysState();
+  State<Petitions> createState() => _PetitionsState();
 }
 
-class _SurveysState extends State<Surveys> {
+class _PetitionsState extends State<Petitions> {
   bool loading = true;
   bool failure = false;
-  List<Survey> _surveys = [];
+  List<Petition> _petitions = [];
   bool hasNextPage = false;
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
@@ -34,18 +33,18 @@ class _SurveysState extends State<Surveys> {
           listener: (context, state) {
             if (state.status == WebsocketStatus.connected) {
               context.read<WebsocketBloc>().add(
-                WebsocketEvent.resubscribeSurveys(surveys: _surveys),
+                WebsocketEvent.resubscribePetitions(petitions: _petitions),
               );
             }
           },
         ),
-        BlocListener<SurveysCubit, SurveysState>(
+        BlocListener<PetitionsCubit, PetitionsState>(
           listener: (context, state) {
-            if (state.status == SurveysStatus.success) {
+            if (state.status == PetitionsStatus.success) {
               setState(() {
                 loading = false;
                 failure = false;
-                _surveys = state.surveys;
+                _petitions = state.petitions;
                 hasNextPage = state.hasNext;
                 if (_refreshController.headerStatus ==
                     RefreshStatus.refreshing) {
@@ -56,7 +55,7 @@ class _SurveysState extends State<Surveys> {
                 }
               });
             }
-            if (state.status == SurveysStatus.failure) {
+            if (state.status == PetitionsStatus.failure) {
               if (loading) {
                 setState(() {
                   loading = false;
@@ -72,43 +71,37 @@ class _SurveysState extends State<Surveys> {
             }
           },
         ),
-        BlocListener<AnswerCubit, AnswerState>(
+        BlocListener<PetitionDetailCubit, PetitionDetailState>(
           listener: (context, state) {
-            if (state.status == AnswerStatus.submitted) {
-              if (_surveys.any((survey) => survey.id == state.survey!.id)) {
+            if (state is PetitionCreated) {
+              if (!_petitions.any(
+                (petition) => petition.id == state.petition.id,
+              )) {
                 setState(() {
-                  int index = _surveys.indexWhere(
-                    (survey) => survey.id == state.survey!.id,
+                  _petitions.add(state.petition);
+                });
+              }
+            }
+            if (state is PetitionUpdated) {
+              if (_petitions.any(
+                (petition) => petition.id == state.petition.id,
+              )) {
+                setState(() {
+                  int index = _petitions.indexWhere(
+                    (petition) => petition.id == state.petition.id,
                   );
-                  _surveys[index] = state.survey!;
+                  _petitions[index] = state.petition;
                 });
               }
             }
-          },
-        ),
-        BlocListener<SurveyDetailCubit, SurveyDetailState>(
-          listener: (context, state) {
-            if (state is SurveyCreated) {
-              if (!_surveys.any((survey) => survey.id == state.survey.id)) {
+            if (state is PetitionDeleted) {
+              if (_petitions.any(
+                (petition) => petition.id == state.petitionId,
+              )) {
                 setState(() {
-                  _surveys.add(state.survey);
-                });
-              }
-            }
-            if (state is SurveyUpdated) {
-              if (_surveys.any((survey) => survey.id == state.survey.id)) {
-                setState(() {
-                  int index = _surveys.indexWhere(
-                    (survey) => survey.id == state.survey.id,
+                  _petitions.removeWhere(
+                    (petition) => petition.id == state.petitionId,
                   );
-                  _surveys[index] = state.survey;
-                });
-              }
-            }
-            if (state is SurveyDeleted) {
-              if (_surveys.any((survey) => survey.id == state.surveyId)) {
-                setState(() {
-                  _surveys.removeWhere((survey) => survey.id == state.surveyId);
                 });
               }
             }
@@ -122,7 +115,7 @@ class _SurveysState extends State<Surveys> {
               ? FailureRetryButton(
                 onPressed: () {
                   context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getSurveys(),
+                    WebsocketEvent.getPetitions(),
                   );
                 },
               )
@@ -133,25 +126,24 @@ class _SurveysState extends State<Surveys> {
                 controller: _refreshController,
                 onRefresh: () {
                   context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getSurveys(),
+                    WebsocketEvent.getPetitions(),
                   );
                 },
                 onLoading: () {
                   context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getSurveys(lastSurvey: _surveys.last),
+                    WebsocketEvent.getPetitions(lastPetition: _petitions.last),
                   );
                 },
                 footer: ClassicFooter(),
                 child: ListView.builder(
                   itemBuilder: (BuildContext context, int index) {
-                    Survey survey = _surveys[index];
-                    return SurveyTile(
-                      key: ValueKey(survey.id),
-                      survey: survey,
-                      isDependency: false,
+                    Petition petition = _petitions[index];
+                    return PetitionTile(
+                      key: ValueKey(petition.id),
+                      petition: petition,
                     );
                   },
-                  itemCount: _surveys.length,
+                  itemCount: _petitions.length,
                 ),
               ),
     );

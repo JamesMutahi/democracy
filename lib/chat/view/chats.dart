@@ -307,10 +307,7 @@ class _LastMessageText extends StatelessWidget {
       child: Text(
         text,
         maxLines: 1,
-        style: TextStyle(
-          overflow: TextOverflow.ellipsis,
-          color: Theme.of(context).hintColor,
-        ),
+        style: TextStyle(overflow: TextOverflow.ellipsis),
       ),
     );
   }
@@ -336,15 +333,13 @@ class _ChatTime extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String date = DateFormat.yMMMMd().format(lastMessage.createdAt);
+    var dateFormat = DateFormat('dd/MM/yyyy');
+    String date = dateFormat.format(lastMessage.createdAt);
     String text = date;
-    if (DateFormat.yMMMMd().format(DateTime.now()) == date) {
+    if (dateFormat.format(DateTime.now()) == date) {
       text = 'Today';
     }
-    if (DateFormat.yMMMMd().format(
-          DateTime.now().subtract(Duration(days: 1)),
-        ) ==
-        date) {
+    if (dateFormat.format(DateTime.now().subtract(Duration(days: 1))) == date) {
       text = 'Yesterday';
     }
     return Container(

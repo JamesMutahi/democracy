@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
@@ -18,6 +19,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:fluttertagger/fluttertagger.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class PostCreate extends StatefulWidget {
@@ -41,6 +43,8 @@ class PostCreate extends StatefulWidget {
 class _PostCreateState extends State<PostCreate> {
   final _controller = FlutterTaggerController();
   bool _disablePostButton = true;
+  List<File> files = [];
+  int fileLimit = 4;
 
   void createPost({PostStatus status = PostStatus.published}) {
     context.read<WebsocketBloc>().add(
@@ -169,6 +173,9 @@ class _PostCreateState extends State<PostCreate> {
                               }
                             },
                             autofocus: true,
+                            onTapOutside: (event) {
+                              FocusScope.of(context).unfocus();
+                            },
                             minLines: 1,
                             maxLines: 7,
                             keyboardType: TextInputType.multiline,
@@ -199,32 +206,41 @@ class _PostCreateState extends State<PostCreate> {
                       ),
                     ],
                   ),
-                  (widget.post == null)
-                      ? SizedBox.shrink()
-                      : DependencyContainer(
-                        child: PostTile(post: widget.post!, isDependency: true),
+
+                  if (widget.post != null)
+                    DependencyContainer(
+                      child: PostTile(post: widget.post!, isDependency: true),
+                    ),
+                  if (widget.poll != null)
+                    DependencyContainer(
+                      child: PollTile(poll: widget.poll!, isDependency: true),
+                    ),
+                  if (widget.survey != null)
+                    DependencyContainer(
+                      child: SurveyTile(
+                        survey: widget.survey!,
+                        isDependency: true,
                       ),
-                  (widget.poll == null)
-                      ? SizedBox.shrink()
-                      : DependencyContainer(
-                        child: PollTile(
-                          poll: widget.poll!,
-                          isChildOfPost: true,
-                        ),
-                      ),
-                  (widget.survey == null)
-                      ? SizedBox.shrink()
-                      : DependencyContainer(
-                        child: SurveyTile(
-                          survey: widget.survey!,
-                          isChildOfPost: true,
-                        ),
-                      ),
+                    ),
                 ],
               ),
             ),
           ),
-          bottomNavigationBar: _BottomNavBar(controller: _controller),
+          bottomNavigationBar: _BottomNavBar(
+            controller: _controller,
+            onPickMedia: () async {
+              List<File> newFiles = await ImagePickerUtil.pickMedia(
+                limit: files.isEmpty ? fileLimit : fileLimit - files.length,
+              );
+              if (newFiles.isNotEmpty) {
+                setState(() {
+                  files.addAll(newFiles);
+                });
+              }
+            },
+            files: files,
+            fileLimit: fileLimit,
+          ),
         ),
       ),
     );
@@ -232,9 +248,17 @@ class _PostCreateState extends State<PostCreate> {
 }
 
 class _BottomNavBar extends StatefulWidget {
-  const _BottomNavBar({required this.controller});
+  const _BottomNavBar({
+    required this.controller,
+    required this.onPickMedia,
+    required this.files,
+    required this.fileLimit,
+  });
 
   final FlutterTaggerController controller;
+  final VoidCallback onPickMedia;
+  final List<File> files;
+  final int fileLimit;
 
   @override
   State<_BottomNavBar> createState() => _BottomNavBarState();
@@ -349,15 +373,28 @@ class _BottomNavBarState extends State<_BottomNavBar>
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   PostExtraButton(
                     iconData: Symbols.gallery_thumbnail_rounded,
-                    onTap: () {},
+                    text: 'Gallery',
+                    onTap:
+                        widget.files.length == widget.fileLimit
+                            ? () {
+                              // TODO
+                            }
+                            : widget.onPickMedia,
                   ),
                   SizedBox(width: 15),
                   PostExtraButton(
                     iconData: Symbols.edit_calendar_rounded,
+                    text: 'Schedule',
+                    onTap: () {},
+                  ),
+                  SizedBox(width: 15),
+                  PostExtraButton(
+                    iconData: Symbols.location_pin_rounded,
+                    text: 'Location',
                     onTap: () {},
                   ),
                 ],
@@ -374,10 +411,12 @@ class PostExtraButton extends StatelessWidget {
   const PostExtraButton({
     super.key,
     required this.iconData,
+    required this.text,
     required this.onTap,
   });
 
   final IconData iconData;
+  final String text;
   final VoidCallback onTap;
 
   @override
@@ -387,16 +426,18 @@ class PostExtraButton extends StatelessWidget {
       splashColor: Theme.of(context).colorScheme.secondaryFixedDim,
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.all(5),
+        padding: EdgeInsets.all(7),
         decoration: BoxDecoration(
           // color: Theme.of(context).canvasColor,
           border: Border.all(color: Theme.of(context).disabledColor),
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
-        child: Icon(
-          iconData,
-          color: Theme.of(context).disabledColor,
-          size: Theme.of(context).textTheme.bodyLarge?.fontSize,
+        child: Row(
+          children: [
+            Icon(iconData, size: 20),
+            SizedBox(width: 2.5),
+            Text(text),
+          ],
         ),
       ),
     );
@@ -467,6 +508,46 @@ class SaveDraftDialog extends StatelessWidget {
       ],
       actionsAlignment: MainAxisAlignment.center,
       buttonPadding: const EdgeInsets.all(20.0),
+    );
+  }
+}
+
+class ImagePickerUtil {
+  static final ImagePicker _picker = ImagePicker();
+
+  static Future<List<File>> pickMedia({required int limit}) async {
+    final pickedFiles = await _picker.pickMultipleMedia(
+      imageQuality: 100,
+      limit: limit,
+    );
+    if (pickedFiles.isNotEmpty) {
+      return pickedFiles.map((xFile) => File(xFile.path)).toList();
+    }
+    return [];
+  }
+}
+
+class Thumbnail extends StatelessWidget {
+  const Thumbnail({super.key, required this.thumbnail});
+
+  final File thumbnail;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 100,
+      width: 100,
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+      padding: const EdgeInsets.only(right: 10, bottom: 10),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Image.file(
+          thumbnail,
+          height: 150,
+          width: 150,
+          fit: BoxFit.cover,
+        ),
+      ),
     );
   }
 }

@@ -11,11 +11,11 @@ class SurveyTile extends StatelessWidget {
   const SurveyTile({
     super.key,
     required this.survey,
-    required this.isChildOfPost,
+    required this.isDependency,
   });
 
   final Survey survey;
-  final bool isChildOfPost;
+  final bool isDependency;
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +67,7 @@ class SurveyTile extends StatelessWidget {
           border: Border(
             bottom: BorderSide(
               color:
-                  isChildOfPost
+                  isDependency
                       ? Colors.transparent
                       : Theme.of(context).disabledColor.withAlpha(30),
             ),
@@ -84,31 +84,29 @@ class SurveyTile extends StatelessWidget {
                   survey.name,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                isChildOfPost
-                    ? SizedBox.shrink()
-                    : MorePopUp(
-                      onSelected: (selected) {
-                        switch (selected) {
-                          case 'Post':
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => PostCreate(survey: survey),
-                              ),
-                            );
-                          case 'Share':
-                            showModalBottomSheet<void>(
-                              context: context,
-                              shape: const BeveledRectangleBorder(),
-                              builder: (BuildContext context) {
-                                return ShareBottomSheet(survey: survey);
-                              },
-                            );
-                        }
-                      },
-                      texts: ['Post', 'Share'],
-                    ),
+                if (!isDependency)
+                  MorePopUp(
+                    onSelected: (selected) {
+                      switch (selected) {
+                        case 'Post':
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PostCreate(survey: survey),
+                            ),
+                          );
+                        case 'Share':
+                          showModalBottomSheet<void>(
+                            context: context,
+                            shape: const BeveledRectangleBorder(),
+                            builder: (BuildContext context) {
+                              return ShareBottomSheet(survey: survey);
+                            },
+                          );
+                      }
+                    },
+                    texts: ['Post', 'Share'],
+                  ),
               ],
             ),
             SizedBox(height: 5),
@@ -120,7 +118,7 @@ class SurveyTile extends StatelessWidget {
             SizedBox(height: 5),
             Text(survey.description),
             SizedBox(height: 10),
-            isChildOfPost
+            isDependency
                 ? Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,

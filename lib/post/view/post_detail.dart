@@ -366,27 +366,21 @@ class _PostContainer extends StatelessWidget {
                     },
                   ),
                   SizedBox(height: 5),
-                  (post.repostOf == null)
-                      ? SizedBox.shrink()
-                      : DependencyContainer(
-                        child: PostTile(
-                          post: post.repostOf!,
-                          isDependency: true,
-                        ),
+                  if (post.repostOf != null)
+                    DependencyContainer(
+                      child: PostTile(post: post.repostOf!, isDependency: true),
+                    ),
+                  if (post.poll != null)
+                    DependencyContainer(
+                      child: PollTile(poll: post.poll!, isDependency: true),
+                    ),
+                  if (post.survey != null)
+                    DependencyContainer(
+                      child: SurveyTile(
+                        survey: post.survey!,
+                        isDependency: true,
                       ),
-                  (post.poll == null)
-                      ? SizedBox.shrink()
-                      : DependencyContainer(
-                        child: PollTile(poll: post.poll!, isChildOfPost: true),
-                      ),
-                  (post.survey == null)
-                      ? SizedBox.shrink()
-                      : DependencyContainer(
-                        child: SurveyTile(
-                          survey: post.survey!,
-                          isChildOfPost: true,
-                        ),
-                      ),
+                    ),
                   SizedBox(height: 5),
                   Align(
                     alignment: Alignment.bottomRight,

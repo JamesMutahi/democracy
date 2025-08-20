@@ -108,7 +108,10 @@ class _DashboardState extends State<Dashboard> {
                       }
                     },
                   ),
-                  BlocListener<NotificationDetailCubit, NotificationDetailState>(
+                  BlocListener<
+                    NotificationDetailCubit,
+                    NotificationDetailState
+                  >(
                     listener: (context, state) {
                       if (state is NotificationCreated) {
                         setState(() {
@@ -146,11 +149,26 @@ class _DashboardState extends State<Dashboard> {
                   physics: const NeverScrollableScrollPhysics(),
                   controller: pageController,
                   children: [
-                    HomePage(user: user, notifications: unreadNotifications),
-                    ExplorePage(user: user, notifications: unreadNotifications),
-                    PollPage(user: user, notifications: unreadNotifications),
-                    SurveyPage(user: user, notifications: unreadNotifications),
-                    MessagePage(user: user, notifications: unreadNotifications),
+                    HomePage(
+                      user: user,
+                      notifications: unreadNotifications.length,
+                    ),
+                    ExplorePage(
+                      user: user,
+                      notifications: unreadNotifications.length,
+                    ),
+                    PollPage(
+                      user: user,
+                      notifications: unreadNotifications.length,
+                    ),
+                    FormsPage(
+                      user: user,
+                      notifications: unreadNotifications.length,
+                    ),
+                    MessagePage(
+                      user: user,
+                      notifications: unreadNotifications.length,
+                    ),
                   ],
                 ),
               ),

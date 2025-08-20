@@ -2,7 +2,6 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/expandable_fab.dart';
-import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/post/bloc/following_posts/following_posts_cubit.dart';
 import 'package:democracy/post/bloc/for_you/for_you_cubit.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
@@ -17,7 +16,7 @@ class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.user, required this.notifications});
 
   final User user;
-  final List<n_.Notification> notifications;
+  final int notifications;
 
   @override
   State<HomePage> createState() => _HomePageState();

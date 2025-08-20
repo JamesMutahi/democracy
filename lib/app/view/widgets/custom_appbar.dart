@@ -17,7 +17,7 @@ class CustomAppBar extends StatelessWidget {
   });
 
   final User user;
-  final List<n_.Notification> notifications;
+  final int notifications;
   final List<Widget> extras;
 
   @override
@@ -38,7 +38,7 @@ class CustomAppBar extends StatelessWidget {
     return Builder(
       builder: (context) {
         return SizedBox(
-          height: 60,
+          height: 55,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -53,10 +53,12 @@ class CustomAppBar extends StatelessWidget {
 class AppBarSearchBar extends StatelessWidget {
   const AppBarSearchBar({
     super.key,
+    this.controller,
     required this.hintText,
     required this.onChanged,
   });
 
+  final TextEditingController? controller;
   final String hintText;
   final void Function(String) onChanged;
 
@@ -66,6 +68,7 @@ class AppBarSearchBar extends StatelessWidget {
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 7, horizontal: 10),
         child: SearchBar(
+          controller: controller,
           padding: WidgetStateProperty.all(
             EdgeInsets.only(left: 15, right: 10),
           ),
@@ -87,7 +90,7 @@ class AppBarSearchBar extends StatelessWidget {
 class NotificationButton extends StatelessWidget {
   const NotificationButton({super.key, required this.notifications});
 
-  final List<n_.Notification> notifications;
+  final int notifications;
 
   @override
   Widget build(BuildContext context) {
@@ -113,19 +116,18 @@ class NotificationButton extends StatelessWidget {
               size: 20,
             ),
           ),
-          notifications.isEmpty
-              ? SizedBox.shrink()
-              : Positioned(
-                top: -1,
-                right: 9,
-                child: CircleAvatar(
-                  radius: 10,
-                  child: Text(
-                    notifications.length.toString(),
-                    style: Theme.of(context).textTheme.labelSmall,
-                  ),
+          if (notifications > 0)
+            Positioned(
+              top: -1,
+              right: 9,
+              child: CircleAvatar(
+                radius: 10,
+                child: Text(
+                  notifications.toString(),
+                  style: Theme.of(context).textTheme.labelSmall,
                 ),
               ),
+            ),
         ],
       ),
     );

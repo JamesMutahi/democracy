@@ -108,7 +108,7 @@ class _MessagesState extends State<Messages> {
               AlignmentContainer(
                 message: message,
                 alignedRight: alignedRight,
-                child: PollTile(poll: message.poll!, isChildOfPost: true),
+                child: PollTile(poll: message.poll!, isDependency: true),
               ),
             );
           }
@@ -120,7 +120,7 @@ class _MessagesState extends State<Messages> {
               AlignmentContainer(
                 message: message,
                 alignedRight: alignedRight,
-                child: SurveyTile(survey: message.survey!, isChildOfPost: true),
+                child: SurveyTile(survey: message.survey!, isDependency: true),
               ),
             );
           }

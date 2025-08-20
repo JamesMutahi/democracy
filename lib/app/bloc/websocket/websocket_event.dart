@@ -169,5 +169,12 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.changeUserNotificationStatus({
     required User user,
   }) = _ChangeUserNotificationStatus;
+  const factory WebsocketEvent.getPetitions({
+    String? searchTerm,
+    Petition? lastPetition,
+  }) = _GetPetitions;
+  const factory WebsocketEvent.resubscribePetitions({
+    required List<Petition> petitions,
+  }) = _ResubscribePetitions;
   const factory WebsocketEvent.disconnect() = _Disconnect;
 }

@@ -148,7 +148,7 @@ class _PollsState extends State<Polls> {
                     return PollTile(
                       key: ValueKey(poll.id),
                       poll: poll,
-                      isChildOfPost: false,
+                      isDependency: false,
                     );
                   },
                   itemCount: _polls.length,

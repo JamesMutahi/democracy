@@ -2,7 +2,6 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/chat/view/chats.dart';
 import 'package:democracy/chat/view/create_message.dart';
-import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +14,7 @@ class MessagePage extends StatefulWidget {
   });
 
   final User user;
-  final List<n_.Notification> notifications;
+  final int notifications;
 
   @override
   State<MessagePage> createState() => _MessagePageState();

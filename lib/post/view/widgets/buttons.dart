@@ -149,10 +149,7 @@ class RepostDeleteButton extends StatelessWidget {
               ),
         );
       },
-      icon: Icon(
-        Symbols.delete_outline_rounded,
-        color: Theme.of(context).colorScheme.outline,
-      ),
+      icon: PostButtonIcon(iconData: Symbols.delete_outline_rounded),
     );
   }
 }
