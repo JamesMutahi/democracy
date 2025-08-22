@@ -35,6 +35,12 @@ class _ChatsState extends State<Chats> {
   );
 
   @override
+  void initState() {
+    context.read<WebsocketBloc>().add(WebsocketEvent.getChats());
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [

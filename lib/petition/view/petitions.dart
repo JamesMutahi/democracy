@@ -26,6 +26,12 @@ class _PetitionsState extends State<Petitions> {
   );
 
   @override
+  void initState() {
+    context.read<WebsocketBloc>().add(WebsocketEvent.getPetitions());
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
@@ -141,6 +147,7 @@ class _PetitionsState extends State<Petitions> {
                     return PetitionTile(
                       key: ValueKey(petition.id),
                       petition: petition,
+                      isDependency: false,
                     );
                   },
                   itemCount: _petitions.length,

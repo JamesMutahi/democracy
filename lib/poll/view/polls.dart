@@ -27,6 +27,12 @@ class _PollsState extends State<Polls> {
   );
 
   @override
+  void initState() {
+    context.read<WebsocketBloc>().add(WebsocketEvent.getPolls());
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [

@@ -1,5 +1,4 @@
 import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';

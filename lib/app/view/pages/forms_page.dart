@@ -33,12 +33,14 @@ class _FormsPageState extends State<FormsPage>
     _tabController.addListener(_handleTabSelection);
   }
 
-  void _handleTabSelection() {
+  Future<void> _handleTabSelection() async {
     if (_tabController.indexIsChanging) {
-      setState(() {
-        _currentTabIndex = _tabController.index;
-        _searchController.clear();
-      });
+      if (_tabController.animation!.isCompleted) {
+        setState(() {
+          _currentTabIndex = _tabController.index;
+          _searchController.clear();
+        });
+      }
     }
   }
 
@@ -94,30 +96,10 @@ class _FormsPageState extends State<FormsPage>
         body: TabBarView(
           controller: _tabController,
           physics: NeverScrollableScrollPhysics(),
-          children: [SurveysTab(), PetitionsTab()],
+          children: [Surveys(), PetitionsTab()],
         ),
       ),
     );
-  }
-}
-
-class SurveysTab extends StatefulWidget {
-  const SurveysTab({super.key});
-
-  @override
-  State<SurveysTab> createState() => _SurveysTabState();
-}
-
-class _SurveysTabState extends State<SurveysTab> {
-  @override
-  void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getSurveys());
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Surveys();
   }
 }
 
@@ -129,12 +111,6 @@ class PetitionsTab extends StatefulWidget {
 }
 
 class _PetitionsTabState extends State<PetitionsTab> {
-  @override
-  void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getPetitions());
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Stack(

@@ -14,7 +14,6 @@ class PetitionsCubit extends Cubit<PetitionsState> {
   void loaded({required Map<String, dynamic> payload}) {
     emit(state.copyWith(status: PetitionsStatus.loading));
     if (payload['response_status'] == 200) {
-      print(payload['data']['results']);
       final List<Petition> petitions = List.from(
         payload['data']['results'].map((e) => Petition.fromJson(e)),
       );

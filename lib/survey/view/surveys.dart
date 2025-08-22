@@ -27,6 +27,12 @@ class _SurveysState extends State<Surveys> {
   );
 
   @override
+  void initState() {
+    context.read<WebsocketBloc>().add(WebsocketEvent.getSurveys());
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
