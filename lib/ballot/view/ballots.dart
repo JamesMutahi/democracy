@@ -1,26 +1,26 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/bottom_loader.dart';
 import 'package:democracy/app/utils/view/failure_retry_button.dart';
+import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_cubit.dart';
+import 'package:democracy/ballot/bloc/ballots/ballots_cubit.dart';
+import 'package:democracy/ballot/models/ballot.dart';
+import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
-import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
-import 'package:democracy/poll/bloc/polls/polls_cubit.dart';
-import 'package:democracy/poll/models/poll.dart';
-import 'package:democracy/poll/view/poll_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
-class Polls extends StatefulWidget {
-  const Polls({super.key});
+class Ballots extends StatefulWidget {
+  const Ballots({super.key});
 
   @override
-  State<Polls> createState() => _PollsState();
+  State<Ballots> createState() => _BallotsState();
 }
 
-class _PollsState extends State<Polls> {
+class _BallotsState extends State<Ballots> {
   bool loading = true;
   bool failure = false;
-  List<Poll> _polls = [];
+  List<Ballot> _ballots = [];
   bool hasNextPage = false;
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
@@ -28,7 +28,7 @@ class _PollsState extends State<Polls> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getPolls());
+    context.read<WebsocketBloc>().add(WebsocketEvent.getBallots());
     super.initState();
   }
 
@@ -40,18 +40,18 @@ class _PollsState extends State<Polls> {
           listener: (context, state) {
             if (state.status == WebsocketStatus.connected) {
               context.read<WebsocketBloc>().add(
-                WebsocketEvent.resubscribePolls(polls: _polls),
+                WebsocketEvent.resubscribeBallots(ballots: _ballots),
               );
             }
           },
         ),
-        BlocListener<PollsCubit, PollsState>(
+        BlocListener<BallotsCubit, BallotsState>(
           listener: (context, state) {
-            if (state.status == PollsStatus.success) {
+            if (state.status == BallotsStatus.success) {
               setState(() {
                 loading = false;
                 failure = false;
-                _polls = state.polls;
+                _ballots = state.ballots;
                 hasNextPage = state.hasNext;
                 if (_refreshController.headerStatus ==
                     RefreshStatus.refreshing) {
@@ -62,7 +62,7 @@ class _PollsState extends State<Polls> {
                 }
               });
             }
-            if (state.status == PollsStatus.failure) {
+            if (state.status == BallotsStatus.failure) {
               if (loading) {
                 setState(() {
                   loading = false;
@@ -81,44 +81,46 @@ class _PollsState extends State<Polls> {
         BlocListener<NotificationDetailCubit, NotificationDetailState>(
           listener: (context, state) {
             if (state is NotificationCreated) {
-              if (!_polls.any(
-                (poll) => poll.id == state.notification.poll?.id,
+              if (!_ballots.any(
+                (ballot) => ballot.id == state.notification.ballot?.id,
               )) {
                 setState(() {
-                  _polls.add(state.notification.poll!);
-                  _polls.sort((a, b) => a.startTime.compareTo(b.endTime));
+                  _ballots.add(state.notification.ballot!);
+                  _ballots.sort((a, b) => a.startTime.compareTo(b.endTime));
                 });
                 context.read<WebsocketBloc>().add(
-                  WebsocketEvent.subscribePoll(poll: state.notification.poll!),
+                  WebsocketEvent.subscribeBallot(
+                    ballot: state.notification.ballot!,
+                  ),
                 );
               }
             }
           },
         ),
-        BlocListener<PollDetailCubit, PollDetailState>(
+        BlocListener<BallotDetailCubit, BallotDetailState>(
           listener: (context, state) {
-            if (state is PollCreated) {
-              if (!_polls.any((poll) => poll.id == state.poll.id)) {
+            if (state is BallotCreated) {
+              if (!_ballots.any((ballot) => ballot.id == state.ballot.id)) {
                 setState(() {
-                  _polls.add(state.poll);
-                  _polls.sort((a, b) => a.startTime.compareTo(b.endTime));
+                  _ballots.add(state.ballot);
+                  _ballots.sort((a, b) => a.startTime.compareTo(b.endTime));
                 });
               }
             }
-            if (state is PollUpdated) {
-              if (_polls.any((poll) => poll.id == state.poll.id)) {
+            if (state is BallotUpdated) {
+              if (_ballots.any((ballot) => ballot.id == state.ballot.id)) {
                 setState(() {
-                  int index = _polls.indexWhere(
-                    (poll) => poll.id == state.poll.id,
+                  int index = _ballots.indexWhere(
+                    (ballot) => ballot.id == state.ballot.id,
                   );
-                  _polls[index] = state.poll;
+                  _ballots[index] = state.ballot;
                 });
               }
             }
-            if (state is PollDeleted) {
-              if (_polls.any((poll) => poll.id == state.pollId)) {
+            if (state is BallotDeleted) {
+              if (_ballots.any((ballot) => ballot.id == state.ballotId)) {
                 setState(() {
-                  _polls.removeWhere((poll) => poll.id == state.pollId);
+                  _ballots.removeWhere((ballot) => ballot.id == state.ballotId);
                 });
               }
             }
@@ -131,7 +133,9 @@ class _PollsState extends State<Polls> {
               : failure
               ? FailureRetryButton(
                 onPressed: () {
-                  context.read<WebsocketBloc>().add(WebsocketEvent.getPolls());
+                  context.read<WebsocketBloc>().add(
+                    WebsocketEvent.getBallots(),
+                  );
                 },
               )
               : SmartRefresher(
@@ -140,24 +144,26 @@ class _PollsState extends State<Polls> {
                 header: ClassicHeader(),
                 controller: _refreshController,
                 onRefresh: () {
-                  context.read<WebsocketBloc>().add(WebsocketEvent.getPolls());
+                  context.read<WebsocketBloc>().add(
+                    WebsocketEvent.getBallots(),
+                  );
                 },
                 onLoading: () {
                   context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getPolls(lastPoll: _polls.last),
+                    WebsocketEvent.getBallots(lastBallot: _ballots.last),
                   );
                 },
                 footer: ClassicFooter(),
                 child: ListView.builder(
                   itemBuilder: (BuildContext context, int index) {
-                    Poll poll = _polls[index];
-                    return PollTile(
-                      key: ValueKey(poll.id),
-                      poll: poll,
+                    Ballot ballot = _ballots[index];
+                    return BallotTile(
+                      key: ValueKey(ballot.id),
+                      ballot: ballot,
                       isDependency: false,
                     );
                   },
-                  itemCount: _polls.length,
+                  itemCount: _ballots.length,
                 ),
               ),
     );

@@ -4,9 +4,9 @@ import 'package:democracy/survey/models/survey.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'survey_bottom_navigation_bloc.freezed.dart';
 part 'survey_bottom_navigation_event.dart';
 part 'survey_bottom_navigation_state.dart';
-part 'survey_bottom_navigation_bloc.freezed.dart';
 
 class SurveyBottomNavigationBloc
     extends Bloc<SurveyBottomNavigationEvent, SurveyBottomNavigationState> {

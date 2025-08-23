@@ -1,15 +1,15 @@
-import 'package:democracy/poll/models/option.dart';
-import 'package:democracy/poll/models/reason.dart';
+import 'package:democracy/ballot/models/option.dart';
+import 'package:democracy/ballot/models/reason.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'poll.freezed.dart';
-part 'poll.g.dart';
+part 'ballot.freezed.dart';
+part 'ballot.g.dart';
 
 @freezed
-sealed class Poll with _$Poll {
-  const factory Poll({
+sealed class Ballot with _$Ballot {
+  const factory Ballot({
     required final int id,
-    required String name,
+    required String title,
     required String description,
     @JsonKey(name: 'start_time') required DateTime startTime,
     @JsonKey(name: 'end_time') required DateTime endTime,
@@ -17,7 +17,7 @@ sealed class Poll with _$Poll {
     @JsonKey(name: 'voted_option') required int? votedOption,
     required List<Option> options,
     required Reason? reason,
-  }) = _Poll;
+  }) = _Ballot;
 
-  factory Poll.fromJson(Map<String, Object?> json) => _$PollFromJson(json);
+  factory Ballot.fromJson(Map<String, Object?> json) => _$BallotFromJson(json);
 }

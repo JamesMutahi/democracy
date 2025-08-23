@@ -2,18 +2,18 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/app/utils/view/tagging.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
-import 'package:democracy/user/models/user.dart';
-import 'package:democracy/poll/models/poll.dart';
-import 'package:democracy/poll/view/poll_tile.dart';
+import 'package:democracy/ballot/models/ballot.dart';
+import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:democracy/user/bloc/users/users_cubit.dart';
+import 'package:democracy/user/models/user.dart';
+import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,13 +26,13 @@ class PostCreate extends StatefulWidget {
   const PostCreate({
     super.key,
     this.post,
-    this.poll,
+    this.ballot,
     this.survey,
     this.isReply = false,
   });
 
   final Post? post;
-  final Poll? poll;
+  final Ballot? ballot;
   final Survey? survey;
   final bool isReply;
 
@@ -53,7 +53,7 @@ class _PostCreateState extends State<PostCreate> {
         status: status,
         replyTo: widget.isReply ? widget.post : null,
         repostOf: widget.isReply ? null : widget.post,
-        poll: widget.poll,
+        ballot: widget.ballot,
         survey: widget.survey,
         taggedUserIds:
             _controller.tags.map((tag) => int.parse(tag.id)).toList(),
@@ -211,9 +211,12 @@ class _PostCreateState extends State<PostCreate> {
                     DependencyContainer(
                       child: PostTile(post: widget.post!, isDependency: true),
                     ),
-                  if (widget.poll != null)
+                  if (widget.ballot != null)
                     DependencyContainer(
-                      child: PollTile(poll: widget.poll!, isDependency: true),
+                      child: BallotTile(
+                        ballot: widget.ballot!,
+                        isDependency: true,
+                      ),
                     ),
                   if (widget.survey != null)
                     DependencyContainer(

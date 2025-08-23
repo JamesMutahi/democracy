@@ -1,8 +1,8 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/view/custom_bottom_sheet.dart';
 import 'package:democracy/app/utils/view/dialogs.dart';
 import 'package:democracy/app/utils/view/more_pop_up.dart';
 import 'package:democracy/app/utils/view/report.dart';
-import 'package:democracy/app/utils/view/custom_bottom_sheet.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/post/models/post.dart';
@@ -242,7 +242,7 @@ class RepostButton extends StatelessWidget {
                                         ? post.repostOf
                                         : post,
                                 replyTo: null,
-                                poll: null,
+                                ballot: null,
                                 survey: null,
                                 taggedUserIds: [],
                               ),

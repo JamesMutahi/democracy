@@ -1,12 +1,12 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/bottom_text_form_field.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
-import 'package:democracy/user/models/user.dart';
+import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
-import 'package:democracy/poll/models/poll.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/user/bloc/users/users_cubit.dart';
+import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,10 +14,10 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class DirectMessage extends StatefulWidget {
-  const DirectMessage({super.key, this.post, this.poll, this.survey});
+  const DirectMessage({super.key, this.post, this.ballot, this.survey});
 
   final Post? post;
-  final Poll? poll;
+  final Ballot? ballot;
   final Survey? survey;
 
   @override
@@ -234,7 +234,7 @@ class _DirectMessageState extends State<DirectMessage> {
                         users: selectedUsers,
                         text: controller.text,
                         post: widget.post,
-                        poll: widget.poll,
+                        ballot: widget.ballot,
                         survey: widget.survey,
                       ),
                     );

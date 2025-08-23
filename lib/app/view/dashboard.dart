@@ -1,8 +1,8 @@
 import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/app/view/pages/index.dart';
 import 'package:democracy/app/view/widgets/bottom_nav_bar.dart';
-import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/app/view/widgets/drawer.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
@@ -157,7 +157,7 @@ class _DashboardState extends State<Dashboard> {
                       user: user,
                       notifications: unreadNotifications.length,
                     ),
-                    PollPage(
+                    BallotPage(
                       user: user,
                       notifications: unreadNotifications.length,
                     ),

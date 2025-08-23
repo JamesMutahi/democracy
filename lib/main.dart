@@ -1,13 +1,15 @@
+import 'package:democracy/app.dart';
 import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
 import 'package:democracy/app/bloc/theme/theme_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
-import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
-import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
+import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_cubit.dart';
+import 'package:democracy/ballot/bloc/ballots/ballots_cubit.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
+import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
+import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_cubit.dart';
 import 'package:democracy/chat/bloc/messages/messages_cubit.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
@@ -15,8 +17,6 @@ import 'package:democracy/notification/bloc/notifications/notifications_cubit.da
 import 'package:democracy/notification/bloc/preferences/preferences_cubit.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_cubit.dart';
 import 'package:democracy/petition/bloc/petitions/petitions_cubit.dart';
-import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
-import 'package:democracy/poll/bloc/polls/polls_cubit.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
 import 'package:democracy/post/bloc/draft_posts/draft_posts_cubit.dart';
 import 'package:democracy/post/bloc/following_posts/following_posts_cubit.dart';
@@ -36,8 +36,8 @@ import 'package:democracy/user/bloc/blocked/blocked_cubit.dart';
 import 'package:democracy/user/bloc/followers/followers_cubit.dart';
 import 'package:democracy/user/bloc/following/following_cubit.dart';
 import 'package:democracy/user/bloc/muted/muted_cubit.dart';
-import 'package:democracy/user/bloc/users/users_cubit.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
+import 'package:democracy/user/bloc/users/users_cubit.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -99,8 +99,8 @@ void main() async {
           BlocProvider(create: (context) => PageBloc()),
           BlocProvider(create: (context) => PageBloc()),
           BlocProvider(create: (context) => SurveyBottomNavigationBloc()),
-          BlocProvider(create: (context) => PollsCubit()),
-          BlocProvider(create: (context) => PollDetailCubit()),
+          BlocProvider(create: (context) => BallotsCubit()),
+          BlocProvider(create: (context) => BallotDetailCubit()),
           BlocProvider(create: (context) => ForYouCubit()),
           BlocProvider(create: (context) => PostsCubit()),
           BlocProvider(create: (context) => PostDetailCubit()),

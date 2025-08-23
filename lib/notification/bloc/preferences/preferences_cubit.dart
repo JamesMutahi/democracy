@@ -2,8 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:democracy/notification/models/preferences.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'preferences_state.dart';
 part 'preferences_cubit.freezed.dart';
+part 'preferences_state.dart';
 
 class PreferencesCubit extends Cubit<PreferencesState> {
   PreferencesCubit() : super(const PreferencesState.initial());

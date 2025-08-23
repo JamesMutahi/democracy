@@ -22,10 +22,7 @@ class PostsPopScope extends StatelessWidget {
       canPop: true,
       onPopInvokedWithResult: (_, __) {
         context.read<WebsocketBloc>().add(
-          WebsocketEvent.unsubscribeUserPosts(
-            user: user,
-            posts: posts,
-          ),
+          WebsocketEvent.unsubscribeUserPosts(user: user, posts: posts),
         );
       },
       child: child,

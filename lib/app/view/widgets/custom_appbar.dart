@@ -1,9 +1,9 @@
-import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_cubit.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/notification/view/notifications.dart';
 import 'package:democracy/user/models/user.dart';
+import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -143,6 +143,7 @@ class NotificationCount extends StatefulWidget {
 
 class _NotificationCountState extends State<NotificationCount> {
   List<n_.Notification> unreadNotifications = [];
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(

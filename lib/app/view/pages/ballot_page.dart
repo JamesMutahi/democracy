@@ -1,21 +1,25 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
-import 'package:democracy/poll/view/polls.dart';
+import 'package:democracy/ballot/view/ballots.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PollPage extends StatefulWidget {
-  const PollPage({super.key, required this.user, required this.notifications});
+class BallotPage extends StatefulWidget {
+  const BallotPage({
+    super.key,
+    required this.user,
+    required this.notifications,
+  });
 
   final User user;
   final int notifications;
 
   @override
-  State<PollPage> createState() => _PollPageState();
+  State<BallotPage> createState() => _BallotPageState();
 }
 
-class _PollPageState extends State<PollPage>
+class _BallotPageState extends State<BallotPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
@@ -36,10 +40,10 @@ class _PollPageState extends State<PollPage>
               notifications: widget.notifications,
               extras: [
                 AppBarSearchBar(
-                  hintText: 'Search polls',
+                  hintText: 'Search ballots',
                   onChanged: (value) {
                     context.read<WebsocketBloc>().add(
-                      WebsocketEvent.getPolls(searchTerm: value),
+                      WebsocketEvent.getBallots(searchTerm: value),
                     );
                   },
                 ),
@@ -48,7 +52,7 @@ class _PollPageState extends State<PollPage>
           ),
         ];
       },
-      body: Polls(),
+      body: Ballots(),
     );
   }
 }

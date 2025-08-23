@@ -1,36 +1,36 @@
 import 'dart:async';
 
-import 'package:democracy/app/utils/view/more_pop_up.dart';
 import 'package:democracy/app/utils/view/custom_bottom_sheet.dart';
-import 'package:democracy/poll/models/option.dart';
-import 'package:democracy/poll/models/poll.dart';
-import 'package:democracy/poll/view/poll_detail.dart';
+import 'package:democracy/app/utils/view/more_pop_up.dart';
+import 'package:democracy/ballot/models/ballot.dart';
+import 'package:democracy/ballot/models/option.dart';
+import 'package:democracy/ballot/view/ballot_detail.dart';
 import 'package:democracy/post/view/post_create.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
-class PollTile extends StatelessWidget {
-  const PollTile({
+class BallotTile extends StatelessWidget {
+  const BallotTile({
     super.key,
-    required this.poll,
+    required this.ballot,
     required this.isDependency,
     this.animateToInitialPercent = false,
   });
 
-  final Poll poll;
+  final Ballot ballot;
   final bool isDependency;
   final bool animateToInitialPercent;
 
   @override
   Widget build(BuildContext context) {
-    bool pollHasStarted =
-        poll.startTime.difference(DateTime.now()) < Duration(seconds: 0);
+    bool ballotHasStarted =
+        ballot.startTime.difference(DateTime.now()) < Duration(seconds: 0);
     return InkWell(
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => PollDetail(poll: poll)),
+          MaterialPageRoute(builder: (context) => BallotDetail(ballot: ballot)),
         );
       },
       child: Container(
@@ -52,8 +52,11 @@ class PollTile extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(poll.name, style: Theme.of(context).textTheme.titleMedium),
-                isDependency ? SizedBox.shrink() : PollPopUp(poll: poll),
+                Text(
+                  ballot.title,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                isDependency ? SizedBox.shrink() : BallotPopUp(ballot: ballot),
               ],
             ),
             SizedBox(height: 5),
@@ -61,25 +64,25 @@ class PollTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TimeLeft(
-                  key: ValueKey('poll ${poll.id}'),
-                  startTime: poll.startTime,
-                  endTime: poll.endTime,
+                  key: ValueKey('ballot ${ballot.id}'),
+                  startTime: ballot.startTime,
+                  endTime: ballot.endTime,
                 ),
                 isDependency
                     ? SizedBox.shrink()
-                    : pollHasStarted
+                    : ballotHasStarted
                     ? Text(
-                      '${poll.totalVotes} ${poll.totalVotes == 1 ? 'vote' : 'votes'}',
+                      '${ballot.totalVotes} ${ballot.totalVotes == 1 ? 'vote' : 'votes'}',
                       style: TextStyle(color: Theme.of(context).disabledColor),
                     )
                     : SizedBox.shrink(),
               ],
             ),
             SizedBox(height: 10),
-            ...poll.options.map((option) {
-              return PollPercentIndicator(
+            ...ballot.options.map((option) {
+              return BallotPercentIndicator(
                 key: UniqueKey(),
-                poll: poll,
+                ballot: ballot,
                 option: option,
                 animateToInitialPercent: animateToInitialPercent,
               );
@@ -91,10 +94,11 @@ class PollTile extends StatelessWidget {
   }
 }
 
-class PollPopUp extends StatelessWidget {
-  const PollPopUp({super.key, required this.poll});
+class BallotPopUp extends StatelessWidget {
+  const BallotPopUp({super.key, required this.ballot});
 
-  final Poll poll;
+  final Ballot ballot;
+
   @override
   Widget build(BuildContext context) {
     return MorePopUp(
@@ -103,14 +107,16 @@ class PollPopUp extends StatelessWidget {
           case 'Post':
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => PostCreate(poll: poll)),
+              MaterialPageRoute(
+                builder: (context) => PostCreate(ballot: ballot),
+              ),
             );
           case 'Share':
             showModalBottomSheet<void>(
               context: context,
               shape: const BeveledRectangleBorder(),
               builder: (BuildContext context) {
-                return ShareBottomSheet(poll: poll);
+                return ShareBottomSheet(ballot: ballot);
               },
             );
         }
@@ -120,22 +126,23 @@ class PollPopUp extends StatelessWidget {
   }
 }
 
-class PollPercentIndicator extends StatelessWidget {
-  const PollPercentIndicator({
+class BallotPercentIndicator extends StatelessWidget {
+  const BallotPercentIndicator({
     super.key,
-    required this.poll,
+    required this.ballot,
     required this.option,
     required this.animateToInitialPercent,
   });
 
-  final Poll poll;
+  final Ballot ballot;
   final Option option;
   final bool animateToInitialPercent;
 
   @override
   Widget build(BuildContext context) {
     double optionHeight = 40;
-    double percent = poll.totalVotes == 0 ? 0 : option.votes / poll.totalVotes;
+    double percent =
+        ballot.totalVotes == 0 ? 0 : option.votes / ballot.totalVotes;
     return Container(
       margin: EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
@@ -154,12 +161,12 @@ class PollPercentIndicator extends StatelessWidget {
           context,
         ).colorScheme.secondaryFixedDim.withValues(alpha: 0.3),
         progressColor:
-            poll.totalVotes == 0
+            ballot.totalVotes == 0
                 ? Theme.of(
                   context,
                 ).colorScheme.primaryFixedDim.withValues(alpha: 0.0)
                 : Theme.of(context).colorScheme.primaryFixedDim.withValues(
-                  alpha: (option.votes / poll.totalVotes) / 2,
+                  alpha: (option.votes / ballot.totalVotes) / 2,
                 ),
         center: Container(
           width: double.infinity,
@@ -168,13 +175,13 @@ class PollPercentIndicator extends StatelessWidget {
             children: [
               Text(option.text),
               SizedBox(width: 20),
-              if (poll.votedOption == option.id)
+              if (ballot.votedOption == option.id)
                 const Icon(Icons.check_circle_outline_rounded, size: 16),
               const Spacer(),
               Text(
-                poll.totalVotes == 0
+                ballot.totalVotes == 0
                     ? "0 votes"
-                    : '${(option.votes / poll.totalVotes * 100).toStringAsFixed(1)}%',
+                    : '${(option.votes / ballot.totalVotes * 100).toStringAsFixed(1)}%',
                 // style: votedPercentageTextStyle,
               ),
             ],

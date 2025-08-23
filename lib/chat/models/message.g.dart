@@ -15,10 +15,10 @@ _Message _$MessageFromJson(Map<String, dynamic> json) => _Message(
       json['post'] == null
           ? null
           : Post.fromJson(json['post'] as Map<String, dynamic>),
-  poll:
-      json['poll'] == null
+  ballot:
+      json['ballot'] == null
           ? null
-          : Poll.fromJson(json['poll'] as Map<String, dynamic>),
+          : Ballot.fromJson(json['ballot'] as Map<String, dynamic>),
   survey:
       json['survey'] == null
           ? null
@@ -36,7 +36,7 @@ Map<String, dynamic> _$MessageToJson(_Message instance) => <String, dynamic>{
   'user': instance.user,
   'text': instance.text,
   'post': instance.post,
-  'poll': instance.poll,
+  'ballot': instance.ballot,
   'survey': instance.survey,
   'is_read': instance.isRead,
   'is_edited': instance.isEdited,

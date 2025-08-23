@@ -2,8 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'survey_detail_state.dart';
 part 'survey_detail_cubit.freezed.dart';
+part 'survey_detail_state.dart';
 
 class SurveyDetailCubit extends Cubit<SurveyDetailState> {
   SurveyDetailCubit() : super(const SurveyDetailState.initial());

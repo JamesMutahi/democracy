@@ -1,15 +1,15 @@
 import 'dart:async';
 
 import 'package:democracy/app/utils/view/custom_text.dart';
-import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
-import 'package:democracy/post/view/widgets/buttons.dart';
-import 'package:democracy/user/models/user.dart';
-import 'package:democracy/user/view/profile.dart';
-import 'package:democracy/poll/view/poll_tile.dart';
+import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/post_detail.dart';
+import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
+import 'package:democracy/user/models/user.dart';
+import 'package:democracy/user/view/profile.dart';
+import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -220,10 +220,10 @@ class _PostContainer extends StatelessWidget {
                                 isDependency: true,
                               ),
                             ),
-                        if (post.poll != null)
+                        if (post.ballot != null)
                           DependencyContainer(
-                            child: PollTile(
-                              poll: post.poll!,
+                            child: BallotTile(
+                              ballot: post.ballot!,
                               isDependency: true,
                             ),
                           ),

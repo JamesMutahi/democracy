@@ -1,6 +1,6 @@
-import 'package:democracy/user/models/user.dart';
-import 'package:democracy/poll/models/poll.dart';
+import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/survey/models/survey.dart';
+import 'package:democracy/user/models/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'post.freezed.dart';
@@ -37,7 +37,7 @@ sealed class Post with _$Post {
     @JsonKey(name: 'published_at') required DateTime publishedAt,
     @JsonKey(name: 'reply_to') required Post? replyTo,
     @JsonKey(name: 'repost_of') required Post? repostOf,
-    required Poll? poll,
+    required Ballot? ballot,
     required Survey? survey,
     @JsonKey(name: 'tagged_users') required List<User> taggedUsers,
   }) = _Post;

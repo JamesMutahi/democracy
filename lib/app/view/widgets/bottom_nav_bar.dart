@@ -22,7 +22,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         List items = [
           {'name': 'Home', 'iconData': Symbols.home_rounded},
           {'name': 'Explore', 'iconData': Symbols.search_rounded},
-          {'name': 'Polls', 'iconData': Symbols.how_to_vote},
+          {'name': 'Ballots', 'iconData': Symbols.how_to_vote},
           {'name': 'Forms', 'iconData': Symbols.edit_document},
           {'name': 'Messages', 'iconData': Symbols.email_rounded},
         ];

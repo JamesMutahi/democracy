@@ -5,17 +5,20 @@ class AuthProvider {
 
   final Dio dio;
 
-  Future<String> login({required String email, required String password}) async {
+  Future<String> login({
+    required String email,
+    required String password,
+  }) async {
     try {
-    Response response = await dio.post(
-      'auth/login/',
-      data: {'email': email, 'password': password},
-    );
-    if (response.statusCode == 200) {
-      return response.data['token'];
-    } else {
-      return Future.error(response.data['error'][0]);
-    }
+      Response response = await dio.post(
+        'auth/login/',
+        data: {'email': email, 'password': password},
+      );
+      if (response.statusCode == 200) {
+        return response.data['token'];
+      } else {
+        return Future.error(response.data['error'][0]);
+      }
     } on DioException {
       return Future.error(
         'Unable to login at this time. Please try again later',

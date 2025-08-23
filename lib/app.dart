@@ -2,10 +2,15 @@ import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
 import 'package:democracy/app/bloc/theme/theme_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/view/app_theme.dart';
+import 'package:democracy/app/utils/view/snack_bar_content.dart';
+import 'package:democracy/app/utils/view/splash_page.dart';
 import 'package:democracy/app/view/dashboard.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/auth/view/login.dart';
+import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_cubit.dart';
+import 'package:democracy/ballot/bloc/ballots/ballots_cubit.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_cubit.dart';
@@ -15,8 +20,6 @@ import 'package:democracy/notification/bloc/notifications/notifications_cubit.da
 import 'package:democracy/notification/bloc/preferences/preferences_cubit.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_cubit.dart';
 import 'package:democracy/petition/bloc/petitions/petitions_cubit.dart';
-import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
-import 'package:democracy/poll/bloc/polls/polls_cubit.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
 import 'package:democracy/post/bloc/draft_posts/draft_posts_cubit.dart';
 import 'package:democracy/post/bloc/following_posts/following_posts_cubit.dart';
@@ -25,9 +28,6 @@ import 'package:democracy/post/bloc/likes/likes_cubit.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/bloc/posts/posts_cubit.dart';
 import 'package:democracy/post/bloc/replies/replies_cubit.dart';
-import 'package:democracy/app/utils/view/app_theme.dart';
-import 'package:democracy/app/utils/view/snack_bar_content.dart';
-import 'package:democracy/app/utils/view/splash_page.dart';
 import 'package:democracy/post/bloc/user_posts/user_posts_cubit.dart';
 import 'package:democracy/post/bloc/user_replies/user_replies_cubit.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
@@ -37,8 +37,8 @@ import 'package:democracy/user/bloc/blocked/blocked_cubit.dart';
 import 'package:democracy/user/bloc/followers/followers_cubit.dart';
 import 'package:democracy/user/bloc/following/following_cubit.dart';
 import 'package:democracy/user/bloc/muted/muted_cubit.dart';
-import 'package:democracy/user/bloc/users/users_cubit.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
+import 'package:democracy/user/bloc/users/users_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -331,22 +331,22 @@ class _Listeners extends StatelessWidget {
                         payload: message['payload'],
                       );
                   }
-                case pollsStream:
+                case ballotsStream:
                   switch (message['payload']['action']) {
                     case 'list':
-                      context.read<PollsCubit>().loaded(
+                      context.read<BallotsCubit>().loaded(
                         payload: message['payload'],
                       );
                     case 'create':
-                      context.read<PollDetailCubit>().created(
+                      context.read<BallotDetailCubit>().created(
                         payload: message['payload'],
                       );
                     case 'update':
-                      context.read<PollDetailCubit>().updated(
+                      context.read<BallotDetailCubit>().updated(
                         payload: message['payload'],
                       );
                     case 'delete':
-                      context.read<PollDetailCubit>().deleted(
+                      context.read<BallotDetailCubit>().deleted(
                         payload: message['payload'],
                       );
                   }
@@ -511,7 +511,7 @@ class _Listeners extends StatelessWidget {
               context.read<PostsCubit>().websocketFailure(error: error);
               context.read<RepliesCubit>().websocketFailure(error: error);
               context.read<SurveysCubit>().websocketFailure(error: error);
-              context.read<PollsCubit>().websocketFailure(error: error);
+              context.read<BallotsCubit>().websocketFailure(error: error);
               context.read<ChatsCubit>().websocketFailure(error: error);
               context.read<NotificationsCubit>().websocketFailure(error: error);
               final snackBar = getSnackBar(

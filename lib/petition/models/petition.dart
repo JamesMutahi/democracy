@@ -8,6 +8,7 @@ part 'petition.g.dart';
 sealed class Petition with _$Petition {
   const factory Petition({
     required final int id,
+    required final User author,
     required String title,
     required String description,
     required String? image,

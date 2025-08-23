@@ -88,7 +88,7 @@ class QuestionTile extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(question.text, style: TextStyle(fontWeight: FontWeight.bold),),
+          Text(question.text, style: TextStyle(fontWeight: FontWeight.bold)),
           ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),

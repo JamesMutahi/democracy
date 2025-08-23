@@ -13,11 +13,7 @@ final class ChatsState extends Equatable {
   final List<Chat> chats;
   final bool hasNext;
 
-  ChatsState copyWith({
-    ChatsStatus? status,
-    List<Chat>? chats,
-    bool? hasNext,
-  }) {
+  ChatsState copyWith({ChatsStatus? status, List<Chat>? chats, bool? hasNext}) {
     return ChatsState(
       status: status ?? this.status,
       chats: chats ?? this.chats,

@@ -3,23 +3,23 @@ import 'dart:async';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/bottom_text_form_field.dart';
 import 'package:democracy/app/utils/view/custom_text.dart';
-import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/app/utils/view/tagging.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
-import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
-import 'package:democracy/post/bloc/replies/replies_cubit.dart';
-import 'package:democracy/post/view/widgets/buttons.dart';
-import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
-import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
-import 'package:democracy/user/view/profile.dart';
-import 'package:democracy/user/models/user.dart';
-import 'package:democracy/poll/view/poll_tile.dart';
+import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_cubit.dart';
+import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
+import 'package:democracy/post/bloc/replies/replies_cubit.dart';
 import 'package:democracy/post/models/post.dart';
+import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/post/view/widgets/replies.dart';
+import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
+import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
 import 'package:democracy/user/bloc/users/users_cubit.dart';
+import 'package:democracy/user/models/user.dart';
+import 'package:democracy/user/view/profile.dart';
+import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -130,19 +130,21 @@ class _PostDetailState extends State<PostDetail> {
             }
           },
         ),
-        BlocListener<PollDetailCubit, PollDetailState>(
+        BlocListener<BallotDetailCubit, BallotDetailState>(
           listener: (context, state) {
-            if (state is PollUpdated) {
+            if (state is BallotUpdated) {
               // post
-              if (_post.poll?.id == state.poll.id) {
+              if (_post.ballot?.id == state.ballot.id) {
                 setState(() {
-                  _post = _post.copyWith(poll: state.poll);
+                  _post = _post.copyWith(ballot: state.ballot);
                 });
               }
               // repost
-              if (_post.repostOf?.poll?.id == state.poll.id) {
+              if (_post.repostOf?.ballot?.id == state.ballot.id) {
                 setState(() {
-                  Post repostOf = _post.repostOf!.copyWith(poll: state.poll);
+                  Post repostOf = _post.repostOf!.copyWith(
+                    ballot: state.ballot,
+                  );
                   _post = _post.copyWith(repostOf: repostOf);
                 });
               }
@@ -370,9 +372,12 @@ class _PostContainer extends StatelessWidget {
                     DependencyContainer(
                       child: PostTile(post: post.repostOf!, isDependency: true),
                     ),
-                  if (post.poll != null)
+                  if (post.ballot != null)
                     DependencyContainer(
-                      child: PollTile(poll: post.poll!, isDependency: true),
+                      child: BallotTile(
+                        ballot: post.ballot!,
+                        isDependency: true,
+                      ),
                     ),
                   if (post.survey != null)
                     DependencyContainer(
@@ -549,7 +554,7 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
                           status: PostStatus.published,
                           replyTo: widget.post,
                           repostOf: null,
-                          poll: null,
+                          ballot: null,
                           survey: null,
                           taggedUserIds:
                               _controller.tags

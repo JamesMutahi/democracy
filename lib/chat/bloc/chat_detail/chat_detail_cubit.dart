@@ -2,8 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'chat_detail_state.dart';
 part 'chat_detail_cubit.freezed.dart';
+part 'chat_detail_state.dart';
 
 class ChatDetailCubit extends Cubit<ChatDetailState> {
   ChatDetailCubit() : super(const ChatDetailState.initial());

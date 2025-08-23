@@ -22,6 +22,7 @@ class SingleChoiceWidget extends StatefulWidget {
 
 class _SingleChoiceWidgetState extends State<SingleChoiceWidget> {
   String? errorText;
+
   @override
   Widget build(BuildContext context) {
     List<Choice> choices = widget.question.choices.toList();

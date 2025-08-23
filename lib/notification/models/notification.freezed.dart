@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Notification {
 
- int get id; String get text;@JsonKey(name: 'is_read') bool get isRead; Post? get post; Poll? get poll; Survey? get survey; Chat? get chat;@JsonKey(name: 'created_at') DateTime get createdAt;
+ int get id; String get text;@JsonKey(name: 'is_read') bool get isRead; Post? get post; Ballot? get ballot; Survey? get survey; Chat? get chat;@JsonKey(name: 'created_at') DateTime get createdAt;
 /// Create a copy of Notification
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $NotificationCopyWith<Notification> get copyWith => _$NotificationCopyWithImpl<N
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Notification&&(identical(other.id, id) || other.id == id)&&(identical(other.text, text) || other.text == text)&&(identical(other.isRead, isRead) || other.isRead == isRead)&&(identical(other.post, post) || other.post == post)&&(identical(other.poll, poll) || other.poll == poll)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.chat, chat) || other.chat == chat)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Notification&&(identical(other.id, id) || other.id == id)&&(identical(other.text, text) || other.text == text)&&(identical(other.isRead, isRead) || other.isRead == isRead)&&(identical(other.post, post) || other.post == post)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.chat, chat) || other.chat == chat)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,text,isRead,post,poll,survey,chat,createdAt);
+int get hashCode => Object.hash(runtimeType,id,text,isRead,post,ballot,survey,chat,createdAt);
 
 @override
 String toString() {
-  return 'Notification(id: $id, text: $text, isRead: $isRead, post: $post, poll: $poll, survey: $survey, chat: $chat, createdAt: $createdAt)';
+  return 'Notification(id: $id, text: $text, isRead: $isRead, post: $post, ballot: $ballot, survey: $survey, chat: $chat, createdAt: $createdAt)';
 }
 
 
@@ -48,11 +48,11 @@ abstract mixin class $NotificationCopyWith<$Res>  {
   factory $NotificationCopyWith(Notification value, $Res Function(Notification) _then) = _$NotificationCopyWithImpl;
 @useResult
 $Res call({
- int id, String text,@JsonKey(name: 'is_read') bool isRead, Post? post, Poll? poll, Survey? survey, Chat? chat,@JsonKey(name: 'created_at') DateTime createdAt
+ int id, String text,@JsonKey(name: 'is_read') bool isRead, Post? post, Ballot? ballot, Survey? survey, Chat? chat,@JsonKey(name: 'created_at') DateTime createdAt
 });
 
 
-$PostCopyWith<$Res>? get post;$PollCopyWith<$Res>? get poll;$SurveyCopyWith<$Res>? get survey;$ChatCopyWith<$Res>? get chat;
+$PostCopyWith<$Res>? get post;$BallotCopyWith<$Res>? get ballot;$SurveyCopyWith<$Res>? get survey;$ChatCopyWith<$Res>? get chat;
 
 }
 /// @nodoc
@@ -65,14 +65,14 @@ class _$NotificationCopyWithImpl<$Res>
 
 /// Create a copy of Notification
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? text = null,Object? isRead = null,Object? post = freezed,Object? poll = freezed,Object? survey = freezed,Object? chat = freezed,Object? createdAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? text = null,Object? isRead = null,Object? post = freezed,Object? ballot = freezed,Object? survey = freezed,Object? chat = freezed,Object? createdAt = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,isRead: null == isRead ? _self.isRead : isRead // ignore: cast_nullable_to_non_nullable
 as bool,post: freezed == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
-as Post?,poll: freezed == poll ? _self.poll : poll // ignore: cast_nullable_to_non_nullable
-as Poll?,survey: freezed == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
+as Post?,ballot: freezed == ballot ? _self.ballot : ballot // ignore: cast_nullable_to_non_nullable
+as Ballot?,survey: freezed == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
 as Survey?,chat: freezed == chat ? _self.chat : chat // ignore: cast_nullable_to_non_nullable
 as Chat?,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,
@@ -94,13 +94,13 @@ $PostCopyWith<$Res>? get post {
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$PollCopyWith<$Res>? get poll {
-    if (_self.poll == null) {
+$BallotCopyWith<$Res>? get ballot {
+    if (_self.ballot == null) {
     return null;
   }
 
-  return $PollCopyWith<$Res>(_self.poll!, (value) {
-    return _then(_self.copyWith(poll: value));
+  return $BallotCopyWith<$Res>(_self.ballot!, (value) {
+    return _then(_self.copyWith(ballot: value));
   });
 }/// Create a copy of Notification
 /// with the given fields replaced by the non-null parameter values.
@@ -205,10 +205,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String text, @JsonKey(name: 'is_read')  bool isRead,  Post? post,  Poll? poll,  Survey? survey,  Chat? chat, @JsonKey(name: 'created_at')  DateTime createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String text, @JsonKey(name: 'is_read')  bool isRead,  Post? post,  Ballot? ballot,  Survey? survey,  Chat? chat, @JsonKey(name: 'created_at')  DateTime createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Notification() when $default != null:
-return $default(_that.id,_that.text,_that.isRead,_that.post,_that.poll,_that.survey,_that.chat,_that.createdAt);case _:
+return $default(_that.id,_that.text,_that.isRead,_that.post,_that.ballot,_that.survey,_that.chat,_that.createdAt);case _:
   return orElse();
 
 }
@@ -226,10 +226,10 @@ return $default(_that.id,_that.text,_that.isRead,_that.post,_that.poll,_that.sur
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String text, @JsonKey(name: 'is_read')  bool isRead,  Post? post,  Poll? poll,  Survey? survey,  Chat? chat, @JsonKey(name: 'created_at')  DateTime createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String text, @JsonKey(name: 'is_read')  bool isRead,  Post? post,  Ballot? ballot,  Survey? survey,  Chat? chat, @JsonKey(name: 'created_at')  DateTime createdAt)  $default,) {final _that = this;
 switch (_that) {
 case _Notification():
-return $default(_that.id,_that.text,_that.isRead,_that.post,_that.poll,_that.survey,_that.chat,_that.createdAt);}
+return $default(_that.id,_that.text,_that.isRead,_that.post,_that.ballot,_that.survey,_that.chat,_that.createdAt);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -243,10 +243,10 @@ return $default(_that.id,_that.text,_that.isRead,_that.post,_that.poll,_that.sur
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String text, @JsonKey(name: 'is_read')  bool isRead,  Post? post,  Poll? poll,  Survey? survey,  Chat? chat, @JsonKey(name: 'created_at')  DateTime createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String text, @JsonKey(name: 'is_read')  bool isRead,  Post? post,  Ballot? ballot,  Survey? survey,  Chat? chat, @JsonKey(name: 'created_at')  DateTime createdAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Notification() when $default != null:
-return $default(_that.id,_that.text,_that.isRead,_that.post,_that.poll,_that.survey,_that.chat,_that.createdAt);case _:
+return $default(_that.id,_that.text,_that.isRead,_that.post,_that.ballot,_that.survey,_that.chat,_that.createdAt);case _:
   return null;
 
 }
@@ -258,14 +258,14 @@ return $default(_that.id,_that.text,_that.isRead,_that.post,_that.poll,_that.sur
 @JsonSerializable()
 
 class _Notification implements Notification {
-  const _Notification({required this.id, required this.text, @JsonKey(name: 'is_read') required this.isRead, required this.post, required this.poll, required this.survey, required this.chat, @JsonKey(name: 'created_at') required this.createdAt});
+  const _Notification({required this.id, required this.text, @JsonKey(name: 'is_read') required this.isRead, required this.post, required this.ballot, required this.survey, required this.chat, @JsonKey(name: 'created_at') required this.createdAt});
   factory _Notification.fromJson(Map<String, dynamic> json) => _$NotificationFromJson(json);
 
 @override final  int id;
 @override final  String text;
 @override@JsonKey(name: 'is_read') final  bool isRead;
 @override final  Post? post;
-@override final  Poll? poll;
+@override final  Ballot? ballot;
 @override final  Survey? survey;
 @override final  Chat? chat;
 @override@JsonKey(name: 'created_at') final  DateTime createdAt;
@@ -283,16 +283,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Notification&&(identical(other.id, id) || other.id == id)&&(identical(other.text, text) || other.text == text)&&(identical(other.isRead, isRead) || other.isRead == isRead)&&(identical(other.post, post) || other.post == post)&&(identical(other.poll, poll) || other.poll == poll)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.chat, chat) || other.chat == chat)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Notification&&(identical(other.id, id) || other.id == id)&&(identical(other.text, text) || other.text == text)&&(identical(other.isRead, isRead) || other.isRead == isRead)&&(identical(other.post, post) || other.post == post)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.chat, chat) || other.chat == chat)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,text,isRead,post,poll,survey,chat,createdAt);
+int get hashCode => Object.hash(runtimeType,id,text,isRead,post,ballot,survey,chat,createdAt);
 
 @override
 String toString() {
-  return 'Notification(id: $id, text: $text, isRead: $isRead, post: $post, poll: $poll, survey: $survey, chat: $chat, createdAt: $createdAt)';
+  return 'Notification(id: $id, text: $text, isRead: $isRead, post: $post, ballot: $ballot, survey: $survey, chat: $chat, createdAt: $createdAt)';
 }
 
 
@@ -303,11 +303,11 @@ abstract mixin class _$NotificationCopyWith<$Res> implements $NotificationCopyWi
   factory _$NotificationCopyWith(_Notification value, $Res Function(_Notification) _then) = __$NotificationCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String text,@JsonKey(name: 'is_read') bool isRead, Post? post, Poll? poll, Survey? survey, Chat? chat,@JsonKey(name: 'created_at') DateTime createdAt
+ int id, String text,@JsonKey(name: 'is_read') bool isRead, Post? post, Ballot? ballot, Survey? survey, Chat? chat,@JsonKey(name: 'created_at') DateTime createdAt
 });
 
 
-@override $PostCopyWith<$Res>? get post;@override $PollCopyWith<$Res>? get poll;@override $SurveyCopyWith<$Res>? get survey;@override $ChatCopyWith<$Res>? get chat;
+@override $PostCopyWith<$Res>? get post;@override $BallotCopyWith<$Res>? get ballot;@override $SurveyCopyWith<$Res>? get survey;@override $ChatCopyWith<$Res>? get chat;
 
 }
 /// @nodoc
@@ -320,14 +320,14 @@ class __$NotificationCopyWithImpl<$Res>
 
 /// Create a copy of Notification
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? text = null,Object? isRead = null,Object? post = freezed,Object? poll = freezed,Object? survey = freezed,Object? chat = freezed,Object? createdAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? text = null,Object? isRead = null,Object? post = freezed,Object? ballot = freezed,Object? survey = freezed,Object? chat = freezed,Object? createdAt = null,}) {
   return _then(_Notification(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,isRead: null == isRead ? _self.isRead : isRead // ignore: cast_nullable_to_non_nullable
 as bool,post: freezed == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
-as Post?,poll: freezed == poll ? _self.poll : poll // ignore: cast_nullable_to_non_nullable
-as Poll?,survey: freezed == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
+as Post?,ballot: freezed == ballot ? _self.ballot : ballot // ignore: cast_nullable_to_non_nullable
+as Ballot?,survey: freezed == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
 as Survey?,chat: freezed == chat ? _self.chat : chat // ignore: cast_nullable_to_non_nullable
 as Chat?,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,
@@ -350,13 +350,13 @@ $PostCopyWith<$Res>? get post {
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$PollCopyWith<$Res>? get poll {
-    if (_self.poll == null) {
+$BallotCopyWith<$Res>? get ballot {
+    if (_self.ballot == null) {
     return null;
   }
 
-  return $PollCopyWith<$Res>(_self.poll!, (value) {
-    return _then(_self.copyWith(poll: value));
+  return $BallotCopyWith<$Res>(_self.ballot!, (value) {
+    return _then(_self.copyWith(ballot: value));
   });
 }/// Create a copy of Notification
 /// with the given fields replaced by the non-null parameter values.

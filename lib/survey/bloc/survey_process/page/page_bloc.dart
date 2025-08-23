@@ -3,9 +3,9 @@ import 'package:democracy/survey/models/question.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'page_bloc.freezed.dart';
 part 'page_event.dart';
 part 'page_state.dart';
-part 'page_bloc.freezed.dart';
 
 class PageBloc extends Bloc<PageEvent, PageState> {
   PageBloc() : super(const PageState.initial()) {

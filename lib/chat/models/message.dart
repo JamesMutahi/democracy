@@ -1,7 +1,7 @@
-import 'package:democracy/user/models/user.dart';
-import 'package:democracy/poll/models/poll.dart';
+import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
+import 'package:democracy/user/models/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'message.freezed.dart';
@@ -15,7 +15,7 @@ sealed class Message with _$Message {
     required final User user,
     required final String text,
     required final Post? post,
-    required final Poll? poll,
+    required final Ballot? ballot,
     required final Survey? survey,
     @JsonKey(name: 'is_read') required final bool isRead,
     @JsonKey(name: 'is_edited') required final bool isEdited,

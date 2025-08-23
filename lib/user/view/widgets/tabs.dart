@@ -1,11 +1,11 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/post/bloc/likes/likes_cubit.dart';
+import 'package:democracy/post/bloc/user_posts/user_posts_cubit.dart';
+import 'package:democracy/post/bloc/user_replies/user_replies_cubit.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
 import 'package:democracy/post/view/widgets/posts_pop_scope.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/post/bloc/likes/likes_cubit.dart';
-import 'package:democracy/post/bloc/user_posts/user_posts_cubit.dart';
-import 'package:democracy/post/bloc/user_replies/user_replies_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
@@ -382,8 +382,8 @@ class _LikesState extends State<Likes> {
   }
 }
 
-class Media extends StatelessWidget {
-  const Media({super.key, required this.user});
+class PetitionsTab extends StatelessWidget {
+  const PetitionsTab({super.key, required this.user});
 
   final User user;
 

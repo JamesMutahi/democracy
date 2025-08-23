@@ -1,4 +1,4 @@
-import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
+import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_cubit.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
@@ -133,29 +133,31 @@ class PostListener extends StatelessWidget {
             }
           },
         ),
-        BlocListener<PollDetailCubit, PollDetailState>(
+        BlocListener<BallotDetailCubit, BallotDetailState>(
           listener: (context, state) {
-            if (state is PollUpdated) {
+            if (state is BallotUpdated) {
               // Update posts
-              List<Post> pollPosts =
+              List<Post> ballotPosts =
                   posts
-                      .where((post) => post.poll?.id == state.poll.id)
+                      .where((post) => post.ballot?.id == state.ballot.id)
                       .toList();
-              if (pollPosts.isNotEmpty) {
-                for (Post post in pollPosts) {
+              if (ballotPosts.isNotEmpty) {
+                for (Post post in ballotPosts) {
                   posts[posts.indexWhere((p) => p.id == post.id)] = post
-                      .copyWith(poll: state.poll);
+                      .copyWith(ballot: state.ballot);
                 }
                 onPostsUpdated(posts);
               }
               //   Update reposts
-              List<Post> pollReposts =
+              List<Post> ballotReposts =
                   posts
-                      .where((post) => post.repostOf?.poll?.id == state.poll.id)
+                      .where(
+                        (post) => post.repostOf?.ballot?.id == state.ballot.id,
+                      )
                       .toList();
-              if (pollReposts.isNotEmpty) {
-                for (Post post in pollReposts) {
-                  Post repostOf = post.repostOf!.copyWith(poll: state.poll);
+              if (ballotReposts.isNotEmpty) {
+                for (Post post in ballotReposts) {
+                  Post repostOf = post.repostOf!.copyWith(ballot: state.ballot);
                   posts[posts.indexWhere((p) => p.id == post.id)] = post
                       .copyWith(repostOf: repostOf);
                 }

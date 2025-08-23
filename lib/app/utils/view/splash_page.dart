@@ -6,10 +6,6 @@ class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: LoadingIndicator(),
-      ),
-    );
+    return Scaffold(body: Center(child: LoadingIndicator()));
   }
 }

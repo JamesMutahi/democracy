@@ -1,5 +1,5 @@
-import 'package:democracy/user/models/user.dart';
 import 'package:democracy/chat/models/message.dart';
+import 'package:democracy/user/models/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'chat.freezed.dart';

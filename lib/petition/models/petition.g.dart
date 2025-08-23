@@ -8,6 +8,7 @@ part of 'petition.dart';
 
 _Petition _$PetitionFromJson(Map<String, dynamic> json) => _Petition(
   id: (json['id'] as num).toInt(),
+  author: User.fromJson(json['author'] as Map<String, dynamic>),
   title: json['title'] as String,
   description: json['description'] as String,
   image: json['image'] as String?,
@@ -23,6 +24,7 @@ _Petition _$PetitionFromJson(Map<String, dynamic> json) => _Petition(
 
 Map<String, dynamic> _$PetitionToJson(_Petition instance) => <String, dynamic>{
   'id': instance.id,
+  'author': instance.author,
   'title': instance.title,
   'description': instance.description,
   'image': instance.image,

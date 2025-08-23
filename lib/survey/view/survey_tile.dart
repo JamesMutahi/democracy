@@ -1,6 +1,6 @@
-import 'package:democracy/app/utils/view/more_pop_up.dart';
 import 'package:democracy/app/utils/view/custom_bottom_sheet.dart';
-import 'package:democracy/poll/view/poll_tile.dart' show TimeLeft;
+import 'package:democracy/app/utils/view/more_pop_up.dart';
+import 'package:democracy/ballot/view/ballot_tile.dart' show TimeLeft;
 import 'package:democracy/post/view/post_create.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/survey_process/page.dart';

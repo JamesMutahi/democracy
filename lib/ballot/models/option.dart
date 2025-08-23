@@ -7,7 +7,7 @@ part 'option.g.dart';
 sealed class Option with _$Option {
   const factory Option({
     required final int id,
-    required int poll,
+    required int ballot,
     required String text,
     required int votes,
   }) = _Option;

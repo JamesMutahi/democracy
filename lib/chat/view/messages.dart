@@ -3,15 +3,15 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/bottom_loader.dart';
 import 'package:democracy/app/utils/view/custom_text.dart';
 import 'package:democracy/app/utils/view/failure_retry_button.dart';
+import 'package:democracy/ballot/view/ballot_tile.dart';
+import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_cubit.dart';
 import 'package:democracy/chat/bloc/messages/messages_cubit.dart';
 import 'package:democracy/chat/models/chat.dart';
-import 'package:democracy/user/models/user.dart';
-import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/models/message.dart';
-import 'package:democracy/poll/view/poll_tile.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
+import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -100,7 +100,7 @@ class _MessagesState extends State<Messages> {
               ),
             );
           }
-          if (message.poll != null) {
+          if (message.ballot != null) {
             if (message.text.isNotEmpty) {
               widgets.add(SizedBox(height: messageMargin));
             }
@@ -108,7 +108,7 @@ class _MessagesState extends State<Messages> {
               AlignmentContainer(
                 message: message,
                 alignedRight: alignedRight,
-                child: PollTile(poll: message.poll!, isDependency: true),
+                child: BallotTile(ballot: message.ballot!, isDependency: true),
               ),
             );
           }

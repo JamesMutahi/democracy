@@ -2,8 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:democracy/notification/models/notification.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'notification_detail_state.dart';
 part 'notification_detail_cubit.freezed.dart';
+part 'notification_detail_state.dart';
 
 class NotificationDetailCubit extends Cubit<NotificationDetailState> {
   NotificationDetailCubit() : super(const NotificationDetailState.initial());

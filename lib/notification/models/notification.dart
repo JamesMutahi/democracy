@@ -1,5 +1,5 @@
+import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/models/chat.dart';
-import 'package:democracy/poll/models/poll.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -14,7 +14,7 @@ sealed class Notification with _$Notification {
     required final String text,
     @JsonKey(name: 'is_read') required final bool isRead,
     required final Post? post,
-    required final Poll? poll,
+    required final Ballot? ballot,
     required final Survey? survey,
     required final Chat? chat,
     @JsonKey(name: 'created_at') required final DateTime createdAt,

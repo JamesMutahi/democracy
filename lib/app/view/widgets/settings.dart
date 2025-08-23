@@ -29,7 +29,9 @@ class Settings extends StatelessWidget {
             subtitle: const Text("Manage your notification preferences"),
             onTap: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const PreferencesPage()),
+                MaterialPageRoute(
+                  builder: (context) => const PreferencesPage(),
+                ),
               );
             },
           ),

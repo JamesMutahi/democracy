@@ -1,39 +1,39 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
-import 'package:democracy/poll/bloc/poll_detail/poll_detail_cubit.dart';
-import 'package:democracy/poll/models/option.dart';
-import 'package:democracy/poll/models/poll.dart';
-import 'package:democracy/poll/view/poll_tile.dart';
+import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_cubit.dart';
+import 'package:democracy/ballot/models/ballot.dart';
+import 'package:democracy/ballot/models/option.dart';
+import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PollDetail extends StatefulWidget {
-  const PollDetail({super.key, required this.poll});
+class BallotDetail extends StatefulWidget {
+  const BallotDetail({super.key, required this.ballot});
 
-  final Poll poll;
+  final Ballot ballot;
 
   @override
-  State<PollDetail> createState() => _PollDetailState();
+  State<BallotDetail> createState() => _BallotDetailState();
 }
 
-class _PollDetailState extends State<PollDetail> {
-  late Poll _poll = widget.poll;
+class _BallotDetailState extends State<BallotDetail> {
+  late Ballot _ballot = widget.ballot;
   bool changingVote = false;
 
   @override
   Widget build(BuildContext context) {
-    bool pollHasStarted =
-        _poll.startTime.difference(DateTime.now()) < Duration(seconds: 0);
-    bool pollHasEnded =
-        _poll.endTime.difference(DateTime.now()) < Duration(seconds: 0);
-    bool userHasVoted = _poll.votedOption != null;
-    return BlocListener<PollDetailCubit, PollDetailState>(
+    bool votingHasStarted =
+        _ballot.startTime.difference(DateTime.now()) < Duration(seconds: 0);
+    bool votingHasEnded =
+        _ballot.endTime.difference(DateTime.now()) < Duration(seconds: 0);
+    bool userHasVoted = _ballot.votedOption != null;
+    return BlocListener<BallotDetailCubit, BallotDetailState>(
       listener: (context, state) {
-        if (state is PollUpdated) {
-          if (_poll.id == state.poll.id) {
-            if (_poll.votedOption != state.poll.votedOption) {
+        if (state is BallotUpdated) {
+          if (_ballot.id == state.ballot.id) {
+            if (_ballot.votedOption != state.ballot.votedOption) {
               setState(() {
-                _poll = state.poll;
+                _ballot = state.ballot;
               });
             }
           }
@@ -41,11 +41,11 @@ class _PollDetailState extends State<PollDetail> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(_poll.name, overflow: TextOverflow.ellipsis),
+          title: Text(_ballot.title, overflow: TextOverflow.ellipsis),
           actions: [
             Container(
               margin: EdgeInsets.only(right: 15),
-              child: PollPopUp(poll: _poll),
+              child: BallotPopUp(ballot: _ballot),
             ),
           ],
         ),
@@ -56,19 +56,19 @@ class _PollDetailState extends State<PollDetail> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(_poll.description),
+                Text(_ballot.description),
                 SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     TimeLeft(
                       key: UniqueKey(),
-                      startTime: _poll.startTime,
-                      endTime: _poll.endTime,
+                      startTime: _ballot.startTime,
+                      endTime: _ballot.endTime,
                     ),
-                    if (pollHasStarted)
+                    if (votingHasStarted)
                       Text(
-                        '${_poll.totalVotes} ${_poll.totalVotes == 1 ? 'vote' : 'votes'}',
+                        '${_ballot.totalVotes} ${_ballot.totalVotes == 1 ? 'vote' : 'votes'}',
                         style: TextStyle(
                           color: Theme.of(context).disabledColor,
                         ),
@@ -89,21 +89,21 @@ class _PollDetailState extends State<PollDetail> {
                   ),
                   child: Column(
                     children: [
-                      ..._poll.options.map((option) {
+                      ..._ballot.options.map((option) {
                         return AnimatedSwitcher(
                           duration: const Duration(milliseconds: 300),
                           child:
-                              (pollHasEnded || userHasVoted && !changingVote)
-                                  ? PollPercentIndicator(
+                              (votingHasEnded || userHasVoted && !changingVote)
+                                  ? BallotPercentIndicator(
                                     key: ValueKey(option.id),
-                                    poll: _poll,
+                                    ballot: _ballot,
                                     option: option,
                                     animateToInitialPercent: true,
                                   )
                                   : OptionTile(
                                     option: option,
                                     onTap: () {
-                                      if (pollHasStarted) {
+                                      if (votingHasStarted) {
                                         context.read<WebsocketBloc>().add(
                                           WebsocketEvent.vote(option: option),
                                         );
@@ -131,7 +131,7 @@ class _PollDetailState extends State<PollDetail> {
                   ),
                 ),
                 SizedBox(height: 10),
-                userHasVoted && !pollHasEnded
+                userHasVoted && !votingHasEnded
                     ? changingVote
                         ? SizedBox.shrink()
                         : Align(
@@ -149,9 +149,9 @@ class _PollDetailState extends State<PollDetail> {
                 SizedBox(height: 20),
                 !changingVote
                     ? ReasonWidget(
-                      poll: _poll,
-                      pollHasEnded: pollHasEnded,
-                      pollHasStarted: pollHasStarted,
+                      ballot: _ballot,
+                      votingHasEnded: votingHasEnded,
+                      votingHasStarted: votingHasStarted,
                     )
                     : SizedBox.shrink(),
               ],
@@ -196,31 +196,31 @@ class OptionTile extends StatelessWidget {
 class ReasonWidget extends StatefulWidget {
   const ReasonWidget({
     super.key,
-    required this.poll,
-    required this.pollHasEnded,
-    required this.pollHasStarted,
+    required this.ballot,
+    required this.votingHasEnded,
+    required this.votingHasStarted,
   });
 
-  final Poll poll;
-  final bool pollHasEnded;
-  final bool pollHasStarted;
+  final Ballot ballot;
+  final bool votingHasEnded;
+  final bool votingHasStarted;
 
   @override
   State<ReasonWidget> createState() => _ReasonWidgetState();
 }
 
 class _ReasonWidgetState extends State<ReasonWidget> {
-  late Poll _poll = widget.poll;
+  late Ballot _ballot = widget.ballot;
   late String reason = '';
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<PollDetailCubit, PollDetailState>(
+    return BlocListener<BallotDetailCubit, BallotDetailState>(
       listener: (context, state) {
-        if (state is PollUpdated) {
-          if (state.poll.reason?.text != _poll.reason?.text) {
+        if (state is BallotUpdated) {
+          if (state.ballot.reason?.text != _ballot.reason?.text) {
             setState(() {
-              _poll = state.poll;
+              _ballot = state.ballot;
             });
             final snackBar = getSnackBar(
               context: context,
@@ -245,21 +245,21 @@ class _ReasonWidgetState extends State<ReasonWidget> {
             scrollDirection: Axis.vertical,
             reverse: true,
             child: TextFormField(
-              initialValue: _poll.reason?.text,
+              initialValue: _ballot.reason?.text,
               onChanged: (value) {
                 setState(() {
                   reason = value;
                 });
               },
               readOnly:
-                  widget.pollHasEnded
+                  widget.votingHasEnded
                       ? true
-                      : widget.pollHasStarted
+                      : widget.votingHasStarted
                       ? false
                       : true,
               minLines: 1,
               maxLines: 10,
-              maxLength: widget.pollHasEnded ? null : 300,
+              maxLength: widget.votingHasEnded ? null : 300,
               keyboardType: TextInputType.multiline,
               onTapOutside: (event) {
                 FocusManager.instance.primaryFocus?.unfocus();
@@ -267,7 +267,7 @@ class _ReasonWidgetState extends State<ReasonWidget> {
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Theme.of(context).scaffoldBackgroundColor,
-                hintText: widget.pollHasEnded ? '' : 'Enter reason',
+                hintText: widget.votingHasEnded ? '' : 'Enter reason',
                 hintStyle: TextStyle(color: Theme.of(context).hintColor),
                 prefixIconConstraints: const BoxConstraints(
                   minWidth: 0,
@@ -291,14 +291,14 @@ class _ReasonWidgetState extends State<ReasonWidget> {
           ),
           SizedBox(height: 10),
           Visibility(
-            visible: !widget.pollHasEnded,
+            visible: !widget.votingHasEnded,
             child: Align(
               alignment: Alignment.topRight,
               child: OutlinedButton(
                 onPressed:
                     reason == ''
                         ? null
-                        : reason == _poll.reason?.text
+                        : reason == _ballot.reason?.text
                         ? null
                         : () {
                           showDialog(
@@ -309,7 +309,7 @@ class _ReasonWidgetState extends State<ReasonWidget> {
                                     Navigator.pop(context);
                                     context.read<WebsocketBloc>().add(
                                       WebsocketEvent.submitReason(
-                                        poll: _poll,
+                                        ballot: _ballot,
                                         text: reason,
                                       ),
                                     );

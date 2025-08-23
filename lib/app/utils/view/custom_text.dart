@@ -186,6 +186,7 @@ class CustomUserTagLinkifier extends Linkifier {
   ///This matches any string in this format
   ///"@{userId}#{userName}#"
   final _userTagRegex = RegExp(r'^(.*?)(\@\w+\#..+?\#)');
+
   @override
   List<LinkifyElement> parse(
     List<LinkifyElement> elements,
@@ -232,6 +233,7 @@ class CustomUserTagLinkifier extends Linkifier {
 class CustomUserTagElement extends LinkableElement {
   final String userId;
   final String name;
+
   CustomUserTagElement({required this.userId, required this.name})
     : super(userId, name);
 
@@ -258,6 +260,7 @@ class HashtagLinkifier extends Linkifier {
   ///This matches any string in this format
   ///"#{id}#{hashtagTitle}#"
   final _userTagRegex = RegExp(r'^(.*?)(\#\w+\#..+?\#)');
+
   @override
   List<LinkifyElement> parse(
     List<LinkifyElement> elements,
@@ -298,6 +301,7 @@ class HashtagLinkifier extends Linkifier {
 
 class HashtagElement extends LinkableElement {
   final String title;
+
   HashtagElement({required this.title}) : super(title, title);
 
   @override

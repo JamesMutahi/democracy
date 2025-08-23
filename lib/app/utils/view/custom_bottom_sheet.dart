@@ -1,5 +1,5 @@
 import 'package:democracy/app/utils/view/direct_message.dart';
-import 'package:democracy/poll/models/poll.dart';
+import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:flutter/material.dart';
@@ -63,10 +63,10 @@ class CustomBottomSheet extends StatelessWidget {
 }
 
 class ShareBottomSheet extends StatelessWidget {
-  const ShareBottomSheet({super.key, this.post, this.poll, this.survey});
+  const ShareBottomSheet({super.key, this.post, this.ballot, this.survey});
 
   final Post? post;
-  final Poll? poll;
+  final Ballot? ballot;
   final Survey? survey;
 
   @override
@@ -74,9 +74,9 @@ class ShareBottomSheet extends StatelessWidget {
     return CustomBottomSheet(
       title:
           post == null
-              ? poll == null
+              ? ballot == null
                   ? 'Share survey'
-                  : 'Share poll'
+                  : 'Share ballot'
               : 'Share post',
       children: [
         CustomBottomSheetContainer(
@@ -93,7 +93,7 @@ class ShareBottomSheet extends StatelessWidget {
               shape: const BeveledRectangleBorder(),
               builder:
                   (context) =>
-                      DirectMessage(post: post, poll: poll, survey: survey),
+                      DirectMessage(post: post, ballot: ballot, survey: survey),
             );
           },
         ),

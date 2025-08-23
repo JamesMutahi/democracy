@@ -1,12 +1,12 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/view/dialogs.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
-import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
-import 'package:democracy/user/models/user.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/view/chat_detail.dart';
-import 'package:democracy/user/view/edit_profile.dart';
 import 'package:democracy/post/view/draft_posts.dart';
+import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
+import 'package:democracy/user/models/user.dart';
+import 'package:democracy/user/view/edit_profile.dart';
 import 'package:democracy/user/view/widgets/following.dart';
 import 'package:democracy/user/view/widgets/profile_buttons.dart';
 import 'package:democracy/user/view/widgets/tabs.dart';
@@ -174,7 +174,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     Tab(text: 'Posts'),
                                     Tab(text: 'Replies'),
                                     Tab(text: 'Likes'),
-                                    Tab(text: 'Media'),
+                                    Tab(text: 'Petitions'),
                                   ],
                                 ),
                               ),
@@ -229,7 +229,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                     user: user,
                                   ),
                                   Likes(key: ValueKey(user.id), user: user),
-                                  Media(key: ValueKey(user.id), user: user),
+                                  PetitionsTab(
+                                    key: ValueKey(user.id),
+                                    user: user,
+                                  ),
                                 ],
                               ),
                     ),
@@ -412,6 +415,7 @@ class _TabBarAppBarDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   double get minExtent => _tabBar.preferredSize.height;
+
   @override
   double get maxExtent => _tabBar.preferredSize.height;
 

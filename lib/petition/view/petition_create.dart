@@ -18,10 +18,7 @@ class CreatePetition extends StatelessWidget {
               },
               icon: Icon(Symbols.close),
             ),
-            OutlinedButton(
-              onPressed:() {},
-              child: Text('Post'),
-            ),
+            OutlinedButton(onPressed: () {}, child: Text('Post')),
           ],
         ),
       ),

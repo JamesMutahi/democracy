@@ -6,5 +6,6 @@ abstract class PageEvent with _$PageEvent {
     required Survey survey,
     required int page,
   }) = _PageLoaded;
+
   const factory PageEvent.completed() = _PageCompleted;
 }

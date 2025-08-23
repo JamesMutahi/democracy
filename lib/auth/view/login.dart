@@ -1,5 +1,5 @@
-import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
+import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -13,7 +13,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   @override
   Widget build(BuildContext context) {
     return BlocListener<LoginCubit, LoginState>(

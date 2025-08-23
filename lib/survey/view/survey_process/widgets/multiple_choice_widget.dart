@@ -23,6 +23,7 @@ class MultipleChoiceWidget extends StatefulWidget {
 class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget> {
   String? errorText;
   List<Choice> selectedChoices = [];
+
   @override
   Widget build(BuildContext context) {
     for (ChoiceAnswer choiceAnswer in widget.choiceAnswers) {

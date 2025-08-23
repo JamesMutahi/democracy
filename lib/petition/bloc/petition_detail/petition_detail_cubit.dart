@@ -2,8 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'petition_detail_state.dart';
 part 'petition_detail_cubit.freezed.dart';
+part 'petition_detail_state.dart';
 
 class PetitionDetailCubit extends Cubit<PetitionDetailState> {
   PetitionDetailCubit() : super(const PetitionDetailState.initial());

@@ -20,6 +20,7 @@ class NumberWidget extends StatefulWidget {
 
 class _NumberWidgetState extends State<NumberWidget> {
   String? errorText;
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<AnswerCubit, AnswerState>(
