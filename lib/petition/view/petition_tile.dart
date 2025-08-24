@@ -2,6 +2,7 @@ import 'package:democracy/app/utils/view/more_pop_up.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class PetitionTile extends StatelessWidget {
   const PetitionTile({
@@ -44,7 +45,7 @@ class PetitionTile extends StatelessWidget {
                     bottomLeft: Radius.circular(12),
                   ),
                   image: DecorationImage(
-                    image: NetworkImage(petition.image!),
+                    image: NetworkImage(petition.image),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -69,65 +70,12 @@ class PetitionTile extends StatelessWidget {
                                 ?.copyWith(overflow: TextOverflow.ellipsis),
                           ),
                         ),
-                        MorePopUp(
-                          texts: ['Post', 'Share'],
-                          onSelected: (value) {
-                            switch (value) {
-                              case 'Post':
-                                // TODO
-                                break;
-                              case 'Share':
-                                // TODO
-                                break;
-                            }
-                          },
-                        ),
+                        _PetitionPopUp(),
                       ],
                     ),
                     SizedBox(height: 10),
                     if (petition.supporters > 0)
-                      Row(
-                        children: [
-                          Stack(
-                            children: [
-                              ...petition.recentSupporters.map((user) {
-                                return Container(
-                                  margin: EdgeInsets.only(
-                                    left:
-                                        petition.recentSupporters.indexOf(
-                                          user,
-                                        ) *
-                                        15,
-                                  ),
-                                  child: CircleAvatar(
-                                    radius: 15,
-                                    backgroundColor:
-                                        Theme.of(context).cardColor,
-                                    child: CircleAvatar(
-                                      radius: 13,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            image: NetworkImage(user.image),
-                                            fit: BoxFit.cover,
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            100,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }),
-                            ],
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            '${petition.supporters} ${petition.supporters == 1 ? 'supporter' : 'supporters'}',
-                          ),
-                        ],
-                      ),
+                      PetitionSupportersRow(petition: petition),
                   ],
                 ),
               ),
@@ -135,6 +83,73 @@ class PetitionTile extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _PetitionPopUp extends StatelessWidget {
+  const _PetitionPopUp();
+
+  @override
+  Widget build(BuildContext context) {
+    return MorePopUp(
+      texts: ['Post', 'Share'],
+      onSelected: (value) {
+        switch (value) {
+          case 'Post':
+            // TODO
+            break;
+          case 'Share':
+            // TODO
+            break;
+        }
+      },
+    );
+  }
+}
+
+class PetitionSupportersRow extends StatelessWidget {
+  const PetitionSupportersRow({super.key, required this.petition});
+
+  final Petition petition;
+
+  @override
+  Widget build(BuildContext context) {
+    var numberFormat = NumberFormat.compact(locale: "en_UK");
+    return Row(
+      children: [
+        Stack(
+          children: [
+            ...petition.recentSupporters.map((user) {
+              return Container(
+                margin: EdgeInsets.only(
+                  left: petition.recentSupporters.indexOf(user) * 15,
+                ),
+                child: CircleAvatar(
+                  radius: 15,
+                  backgroundColor: Theme.of(context).cardColor,
+                  child: CircleAvatar(
+                    radius: 13,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(user.image),
+                          fit: BoxFit.cover,
+                        ),
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ],
+        ),
+        SizedBox(width: 10),
+        Text(
+          '${numberFormat.format(petition.supporters)} ${petition.supporters == 1 ? 'supporter' : 'supporters'}',
+        ),
+      ],
     );
   }
 }

@@ -11,13 +11,14 @@ _Petition _$PetitionFromJson(Map<String, dynamic> json) => _Petition(
   author: User.fromJson(json['author'] as Map<String, dynamic>),
   title: json['title'] as String,
   description: json['description'] as String,
-  image: json['image'] as String?,
+  image: json['image'] as String,
   video: json['video'] as String?,
   supporters: (json['supporters'] as num).toInt(),
   recentSupporters:
       (json['recent_supporters'] as List<dynamic>)
           .map((e) => User.fromJson(e as Map<String, dynamic>))
           .toList(),
+  isSupported: json['is_supported'] as bool,
   startTime: DateTime.parse(json['start_time'] as String),
   endTime: DateTime.parse(json['end_time'] as String),
 );
@@ -31,6 +32,7 @@ Map<String, dynamic> _$PetitionToJson(_Petition instance) => <String, dynamic>{
   'video': instance.video,
   'supporters': instance.supporters,
   'recent_supporters': instance.recentSupporters,
+  'is_supported': instance.isSupported,
   'start_time': instance.startTime.toIso8601String(),
   'end_time': instance.endTime.toIso8601String(),
 };

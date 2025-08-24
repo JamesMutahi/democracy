@@ -232,6 +232,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_ResubscribePetitions>((event, emit) {
       _onResubscribePetitions(emit, event);
     });
+    on<_SupportPetition>((event, emit) {
+      _onSupportPetition(emit, event);
+    });
     on<_Disconnect>((event, emit) async {
       await _channel.sink.close();
       emit(WebsocketState());
@@ -1224,6 +1227,22 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         "action": 'resubscribe',
         'request_id': petitionRequestId,
         'pks': petitionIds,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onSupportPetition(
+    Emitter<WebsocketState> emit,
+    _SupportPetition event,
+  ) async {
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    Map<String, dynamic> message = {
+      'stream': petitionsStream,
+      'payload': {
+        "action": 'support',
+        'request_id': petitionRequestId,
+        'pk': event.petition.id,
       },
     };
     _channel.sink.add(jsonEncode(message));
