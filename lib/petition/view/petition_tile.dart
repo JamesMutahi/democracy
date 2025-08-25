@@ -145,7 +145,7 @@ class PetitionSupportersRow extends StatelessWidget {
             }),
           ],
         ),
-        SizedBox(width: 10),
+        if (petition.supporters > 0) SizedBox(width: 10),
         Text(
           '${numberFormat.format(petition.supporters)} ${petition.supporters == 1 ? 'supporter' : 'supporters'}',
         ),

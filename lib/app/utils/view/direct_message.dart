@@ -31,7 +31,6 @@ class _DirectMessageState extends State<DirectMessage> {
   bool failure = false;
   List<User> _users = [];
   List<User> selectedUsers = [];
-  int currentPage = 1;
   bool hasNextPage = false;
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
@@ -73,8 +72,7 @@ class _DirectMessageState extends State<DirectMessage> {
                 _users = state.users;
                 loading = false;
                 failure = false;
-                currentPage = currentPage;
-                hasNextPage = hasNextPage;
+                hasNextPage = state.hasNext;
               });
               if (_refreshController.headerStatus == RefreshStatus.refreshing) {
                 _refreshController.refreshCompleted();
@@ -203,13 +201,13 @@ class _DirectMessageState extends State<DirectMessage> {
                   context.read<WebsocketBloc>().add(
                     WebsocketEvent.getUsers(
                       searchTerm: controller.text,
-                      page: currentPage + 1,
+                      lastUser: _users.last,
                     ),
                   );
                 },
                 onFailure: () {
                   context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getUsers(page: currentPage),
+                    WebsocketEvent.getUsers(lastUser: _users.last),
                   );
                 },
               ),

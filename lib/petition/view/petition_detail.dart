@@ -4,6 +4,9 @@ import 'package:democracy/petition/bloc/petition_detail/petition_detail_cubit.da
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_tile.dart'
     show PetitionSupportersRow;
+import 'package:democracy/petition/view/supporters.dart';
+import 'package:democracy/user/view/widgets/profile_image.dart';
+import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -51,7 +54,7 @@ class _PetitionDetailState extends State<PetitionDetail> {
                   child: Text('This petition has been deleted by the author'),
                 )
                 : ListView(
-                  padding: EdgeInsets.all(15),
+                  padding: EdgeInsets.symmetric(vertical: 15),
                   children: [
                     Container(
                       height: MediaQuery.of(context).size.height / 4,
@@ -62,47 +65,70 @@ class _PetitionDetailState extends State<PetitionDetail> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
-                    Text(
-                      _petition.title,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        PetitionSupportersRow(petition: _petition),
-                        OutlinedButton(
-                          onPressed: () {
-                            context.read<WebsocketBloc>().add(
-                              WebsocketEvent.supportPetition(
-                                petition: _petition,
-                              ),
-                            );
-                          },
-                          child: Text(
-                            _petition.isSupported
-                                ? 'Remove support'
-                                : 'Support',
+                    Container(
+                      margin: EdgeInsets.only(top: 10, left: 20, right: 20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _petition.title,
+                            style: Theme.of(context).textTheme.titleLarge,
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Problem',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    CustomText(
-                      text: _petition.description,
-                      style: Theme.of(context).textTheme.bodyMedium!,
-                      showAllText: true,
-                      suffix: '',
-                    ),
-                    SizedBox(height: 10),
-                    OutlinedButton(
-                      onPressed: () {},
-                      child: Text('View supporters'),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              ProfileImage(user: _petition.author),
+                              SizedBox(width: 5),
+                              ProfileName(user: _petition.author),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) =>
+                                              Supporters(petition: _petition),
+                                    ),
+                                  );
+                                },
+                                child: PetitionSupportersRow(
+                                  petition: _petition,
+                                ),
+                              ),
+                              OutlinedButton(
+                                onPressed: () {
+                                  context.read<WebsocketBloc>().add(
+                                    WebsocketEvent.supportPetition(
+                                      petition: _petition,
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  _petition.isSupported
+                                      ? 'Remove support'
+                                      : 'Support',
+                                ),
+                              ),
+                            ],
+                          ),
+                          Text(
+                            'The problem',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          CustomText(
+                            text: _petition.description,
+                            style: Theme.of(context).textTheme.bodyMedium!,
+                            showAllText: true,
+                            suffix: '',
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

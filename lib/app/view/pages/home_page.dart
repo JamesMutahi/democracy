@@ -102,7 +102,11 @@ class ForYouTab extends StatefulWidget {
   State<ForYouTab> createState() => _ForYouTabState();
 }
 
-class _ForYouTabState extends State<ForYouTab> {
+class _ForYouTabState extends State<ForYouTab>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   bool loading = true;
   bool failure = false;
   List<Post> _posts = [];
@@ -119,6 +123,7 @@ class _ForYouTabState extends State<ForYouTab> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return MultiBlocListener(
       listeners: [
         BlocListener<ForYouCubit, ForYouState>(

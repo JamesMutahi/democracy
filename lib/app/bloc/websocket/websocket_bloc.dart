@@ -235,6 +235,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_SupportPetition>((event, emit) {
       _onSupportPetition(emit, event);
     });
+    on<_GetPetitionSupporters>((event, emit) {
+      _onGetPetitionSupporters(emit, event);
+    });
     on<_Disconnect>((event, emit) async {
       await _channel.sink.close();
       emit(WebsocketState());
@@ -779,7 +782,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'action': 'list',
         'request_id': usersRequestId,
         'search_term': event.searchTerm,
-        'page': event.page,
+        'last_user': event.lastUser?.id,
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -813,7 +816,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'action': 'followers',
         'request_id': usersRequestId,
         'pk': event.user.id,
-        'page': event.page,
+        'last_user': event.lastUser?.id,
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -830,7 +833,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'action': 'following',
         'request_id': usersRequestId,
         'pk': event.user.id,
-        'page': event.page,
+        'last_user': event.lastUser?.id,
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -843,7 +846,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'muted',
         'request_id': usersRequestId,
-        'page': event.page,
+        'last_user': event.lastUser?.id,
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -856,7 +859,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'blocked',
         'request_id': usersRequestId,
-        'page': event.page,
+        'last_user': event.lastUser?.id,
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -1242,6 +1245,22 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         "action": 'support',
         'request_id': petitionRequestId,
+        'pk': event.petition.id,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onGetPetitionSupporters(
+    Emitter<WebsocketState> emit,
+    _GetPetitionSupporters event,
+  ) async {
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    Map<String, dynamic> message = {
+      'stream': usersStream,
+      'payload': {
+        "action": 'petition_supporters',
+        'request_id': usersRequestId,
         'pk': event.petition.id,
       },
     };

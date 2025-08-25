@@ -345,10 +345,7 @@ class _BottomNavBarState extends State<_BottomNavBar>
               _view = SearchResultView.users;
             });
             context.read<WebsocketBloc>().add(
-              WebsocketEvent.getUsers(
-                searchTerm: query.toLowerCase().trim(),
-                page: 1,
-              ),
+              WebsocketEvent.getUsers(searchTerm: query.toLowerCase().trim()),
             );
           }
         },

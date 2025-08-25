@@ -501,10 +501,7 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
         onSearch: (query, triggerChar) {
           if (triggerChar == "@") {
             context.read<WebsocketBloc>().add(
-              WebsocketEvent.getUsers(
-                searchTerm: query.toLowerCase().trim(),
-                page: 1,
-              ),
+              WebsocketEvent.getUsers(searchTerm: query.toLowerCase().trim()),
             );
           }
         },

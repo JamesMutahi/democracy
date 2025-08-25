@@ -57,7 +57,6 @@ class _FollowersTabState extends State<_FollowersTab> {
   bool failure = false;
   List<User> _users = [];
   List<User> selectedUsers = [];
-  int currentPage = 1;
   bool hasNextPage = false;
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
@@ -91,8 +90,7 @@ class _FollowersTabState extends State<_FollowersTab> {
                 _users = state.users;
                 loading = false;
                 failure = false;
-                currentPage = currentPage;
-                hasNextPage = hasNextPage;
+                hasNextPage = state.hasNext;
               });
               if (_refreshController.headerStatus == RefreshStatus.refreshing) {
                 _refreshController.refreshCompleted();
@@ -147,7 +145,7 @@ class _FollowersTabState extends State<_FollowersTab> {
           context.read<WebsocketBloc>().add(
             WebsocketEvent.getFollowers(
               user: widget.user,
-              page: currentPage + 1,
+              lastUser: _users.last,
             ),
           );
         },
@@ -210,7 +208,7 @@ class _FollowingTabState extends State<_FollowingTab> {
                 loading = false;
                 failure = false;
                 currentPage = currentPage;
-                hasNextPage = hasNextPage;
+                hasNextPage = state.hasNext;
               });
               if (_refreshController.headerStatus == RefreshStatus.refreshing) {
                 _refreshController.refreshCompleted();
@@ -265,7 +263,7 @@ class _FollowingTabState extends State<_FollowingTab> {
           context.read<WebsocketBloc>().add(
             WebsocketEvent.getFollowing(
               user: widget.user,
-              page: currentPage + 1,
+              lastUser: _users.last,
             ),
           );
         },

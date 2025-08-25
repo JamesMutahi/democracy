@@ -21,7 +21,6 @@ class _CreateMessageState extends State<CreateMessage> {
   bool loading = true;
   bool failure = false;
   List<User> _users = [];
-  int currentPage = 1;
   bool hasNextPage = false;
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
@@ -29,7 +28,9 @@ class _CreateMessageState extends State<CreateMessage> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getUsers(page: 1));
+    context.read<WebsocketBloc>().add(
+      WebsocketEvent.getUsers(lastUser: _users.last),
+    );
     super.initState();
   }
 
@@ -60,8 +61,7 @@ class _CreateMessageState extends State<CreateMessage> {
                 _users = state.users;
                 loading = false;
                 failure = false;
-                currentPage = currentPage;
-                hasNextPage = hasNextPage;
+                hasNextPage = state.hasNext;
               });
               if (_refreshController.headerStatus == RefreshStatus.refreshing) {
                 _refreshController.refreshCompleted();
@@ -115,7 +115,10 @@ class _CreateMessageState extends State<CreateMessage> {
               child: TextFormField(
                 onChanged: (value) {
                   context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getUsers(searchTerm: value, page: 1),
+                    WebsocketEvent.getUsers(
+                      searchTerm: value,
+                      lastUser: _users.last,
+                    ),
                   );
                 },
                 onTapOutside: (event) {
@@ -151,13 +154,13 @@ class _CreateMessageState extends State<CreateMessage> {
                   context.read<WebsocketBloc>().add(
                     WebsocketEvent.getUsers(
                       searchTerm: controller.text,
-                      page: currentPage + 1,
+                      lastUser: _users.last,
                     ),
                   );
                 },
                 onFailure: () {
                   context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getUsers(page: currentPage),
+                    WebsocketEvent.getUsers(lastUser: _users.last),
                   );
                 },
               ),

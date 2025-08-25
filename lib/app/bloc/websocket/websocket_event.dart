@@ -169,21 +169,25 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     required List<ChoiceAnswer> choiceAnswers,
   }) = _SubmitResponse;
 
-  const factory WebsocketEvent.getUsers({String? searchTerm, int? page}) =
+  const factory WebsocketEvent.getUsers({String? searchTerm, User? lastUser}) =
       _GetUsers;
 
   const factory WebsocketEvent.resubscribeUsers({required List<User> users}) =
       _ResubscribeUsers;
 
-  const factory WebsocketEvent.getFollowers({required User user, int? page}) =
-      _GetFollowers;
+  const factory WebsocketEvent.getFollowers({
+    required User user,
+    User? lastUser,
+  }) = _GetFollowers;
 
-  const factory WebsocketEvent.getFollowing({required User user, int? page}) =
-      _GetFollowing;
+  const factory WebsocketEvent.getFollowing({
+    required User user,
+    User? lastUser,
+  }) = _GetFollowing;
 
-  const factory WebsocketEvent.getMuted({int? page}) = _GetMuted;
+  const factory WebsocketEvent.getMuted({User? lastUser}) = _GetMuted;
 
-  const factory WebsocketEvent.getBlocked({int? page}) = _GetBlocked;
+  const factory WebsocketEvent.getBlocked({User? lastUser}) = _GetBlocked;
 
   const factory WebsocketEvent.getUser({required User user}) = _GetUser;
 
@@ -240,5 +244,9 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   }) = _ResubscribePetitions;
   const factory WebsocketEvent.supportPetition({required Petition petition}) =
       _SupportPetition;
+  const factory WebsocketEvent.getPetitionSupporters({
+    required Petition petition,
+    User? lastUser,
+  }) = _GetPetitionSupporters;
   const factory WebsocketEvent.disconnect() = _Disconnect;
 }

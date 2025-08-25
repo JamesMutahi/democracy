@@ -20,12 +20,11 @@ class MutedCubit extends Cubit<MutedState> {
       final List<User> users = List.from(
         payload['data']['results'].map((e) => User.fromJson(e)),
       );
-      int currentPage = payload['data']['current_page'];
+      int? lastUser = payload['data']['last_user'];
       emit(
         state.copyWith(
           status: MutedStatus.success,
-          users: currentPage == 1 ? users : [...state.users, ...users],
-          currentPage: currentPage,
+          users: lastUser == null ? users : [...state.users, ...users],
           hasNext: payload['data']['has_next'],
         ),
       );

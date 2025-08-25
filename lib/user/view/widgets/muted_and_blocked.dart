@@ -56,7 +56,6 @@ class _MutedTabState extends State<_MutedTab> {
   bool failure = false;
   List<User> _users = [];
   List<User> selectedUsers = [];
-  int currentPage = 1;
   bool hasNextPage = false;
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
@@ -88,8 +87,7 @@ class _MutedTabState extends State<_MutedTab> {
                 _users = state.users;
                 loading = false;
                 failure = false;
-                currentPage = currentPage;
-                hasNextPage = hasNextPage;
+                hasNextPage = state.hasNext;
               });
               if (_refreshController.headerStatus == RefreshStatus.refreshing) {
                 _refreshController.refreshCompleted();
@@ -147,7 +145,7 @@ class _MutedTabState extends State<_MutedTab> {
           },
           onLoading: () {
             context.read<WebsocketBloc>().add(
-              WebsocketEvent.getMuted(page: currentPage + 1),
+              WebsocketEvent.getMuted(lastUser: _users.last),
             );
           },
           onFailure: () {
@@ -204,7 +202,7 @@ class _BlockedTabState extends State<_BlockedTab> {
                 loading = false;
                 failure = false;
                 currentPage = currentPage;
-                hasNextPage = hasNextPage;
+                hasNextPage = state.hasNext;
               });
               if (_refreshController.headerStatus == RefreshStatus.refreshing) {
                 _refreshController.refreshCompleted();
@@ -262,7 +260,7 @@ class _BlockedTabState extends State<_BlockedTab> {
           },
           onLoading: () {
             context.read<WebsocketBloc>().add(
-              WebsocketEvent.getBlocked(page: currentPage + 1),
+              WebsocketEvent.getBlocked(lastUser: _users.last),
             );
           },
           onFailure: () {

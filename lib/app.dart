@@ -20,6 +20,7 @@ import 'package:democracy/notification/bloc/notifications/notifications_cubit.da
 import 'package:democracy/notification/bloc/preferences/preferences_cubit.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_cubit.dart';
 import 'package:democracy/petition/bloc/petitions/petitions_cubit.dart';
+import 'package:democracy/petition/bloc/supporters/supporters_cubit.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
 import 'package:democracy/post/bloc/draft_posts/draft_posts_cubit.dart';
 import 'package:democracy/post/bloc/following_posts/following_posts_cubit.dart';
@@ -457,6 +458,10 @@ class _Listeners extends StatelessWidget {
                       );
                     case 'blocked':
                       context.read<BlockedCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                    case 'petition_supporters':
+                      context.read<SupportersCubit>().loaded(
                         payload: message['payload'],
                       );
                   }
