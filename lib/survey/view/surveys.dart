@@ -134,7 +134,7 @@ class _SurveysState extends State<Surveys> {
               )
               : SmartRefresher(
                 enablePullDown: true,
-                enablePullUp: hasNextPage ? true : false,
+                enablePullUp: hasNextPage,
                 header: ClassicHeader(),
                 controller: _refreshController,
                 onRefresh: () {

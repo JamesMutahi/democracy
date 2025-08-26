@@ -14,6 +14,7 @@ class PetitionDetailCubit extends Cubit<PetitionDetailState> {
       Petition petition = Petition.fromJson(payload['data']);
       emit(PetitionCreated(petition: petition));
     } else {
+      print(payload);
       emit(PetitionDetailFailure(error: payload['errors'][0]));
     }
   }

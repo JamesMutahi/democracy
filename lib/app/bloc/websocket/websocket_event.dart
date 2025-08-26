@@ -239,14 +239,24 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     String? searchTerm,
     Petition? lastPetition,
   }) = _GetPetitions;
+
+  const factory WebsocketEvent.createPetition({
+    required String title,
+    required String imagePath,
+    required String description,
+  }) = _CreatePetition;
+
   const factory WebsocketEvent.resubscribePetitions({
     required List<Petition> petitions,
   }) = _ResubscribePetitions;
+
   const factory WebsocketEvent.supportPetition({required Petition petition}) =
       _SupportPetition;
+
   const factory WebsocketEvent.getPetitionSupporters({
     required Petition petition,
     User? lastUser,
   }) = _GetPetitionSupporters;
+
   const factory WebsocketEvent.disconnect() = _Disconnect;
 }

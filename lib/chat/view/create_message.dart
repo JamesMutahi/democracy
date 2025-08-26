@@ -144,7 +144,7 @@ class _CreateMessageState extends State<CreateMessage> {
                 loading: loading,
                 failure: failure,
                 refreshController: _refreshController,
-                enablePullUp: hasNextPage ? true : false,
+                enablePullUp: hasNextPage,
                 onUserTap: (user) {
                   context.read<WebsocketBloc>().add(
                     WebsocketEvent.createChat(user: user),

@@ -16,8 +16,7 @@ sealed class Petition with _$Petition {
     required int supporters,
     @JsonKey(name: 'recent_supporters') required List<User> recentSupporters,
     @JsonKey(name: 'is_supported') required bool isSupported,
-    @JsonKey(name: 'start_time') required DateTime startTime,
-    @JsonKey(name: 'end_time') required DateTime endTime,
+    @JsonKey(name: 'created_at') required DateTime createdAt,
   }) = _Petition;
 
   factory Petition.fromJson(Map<String, Object?> json) =>

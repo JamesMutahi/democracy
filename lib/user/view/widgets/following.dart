@@ -123,7 +123,7 @@ class _FollowersTabState extends State<_FollowersTab> {
         failure: failure,
         refreshController: _refreshController,
         enablePullDown: true,
-        enablePullUp: hasNextPage ? true : false,
+        enablePullUp: hasNextPage,
         showProfileButtons: true,
         onUsersUpdated: (users) {
           setState(() {
@@ -241,7 +241,7 @@ class _FollowingTabState extends State<_FollowingTab> {
         failure: failure,
         refreshController: _refreshController,
         enablePullDown: true,
-        enablePullUp: hasNextPage ? true : false,
+        enablePullUp: hasNextPage,
         showProfileButtons: true,
         onUsersUpdated: (users) {
           setState(() {

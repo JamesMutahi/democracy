@@ -121,7 +121,7 @@ class _ExplorePageState extends State<ExplorePage> {
           },
           refreshController: _refreshController,
           enablePullDown: true,
-          enablePullUp: hasNextPage ? true : false,
+          enablePullUp: hasNextPage,
           checkVisibility: true,
           onRefresh: () {
             context.read<WebsocketBloc>().add(WebsocketEvent.getPosts());

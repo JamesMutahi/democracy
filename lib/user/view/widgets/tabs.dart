@@ -97,7 +97,7 @@ class _UserPostsState extends State<UserPosts> {
           failure: failure,
           refreshController: _refreshController,
           enablePullDown: true,
-          enablePullUp: hasNextPage ? true : false,
+          enablePullUp: hasNextPage,
           onPostsUpdated: (posts) {
             setState(() {
               _posts = posts;
@@ -214,7 +214,7 @@ class _UserRepliesState extends State<UserReplies> {
           failure: failure,
           refreshController: _refreshController,
           enablePullDown: true,
-          enablePullUp: hasNextPage ? true : false,
+          enablePullUp: hasNextPage,
           onPostsUpdated: (posts) {
             setState(() {
               _posts = posts;
@@ -352,7 +352,7 @@ class _LikesState extends State<Likes> {
           failure: failure,
           refreshController: _refreshController,
           enablePullDown: true,
-          enablePullUp: hasNextPage ? true : false,
+          enablePullUp: hasNextPage,
           onPostsUpdated: (posts) {
             setState(() {
               _posts = posts;

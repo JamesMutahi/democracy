@@ -1,12 +1,13 @@
 import 'dart:io';
 
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/view/media_tools.dart';
 import 'package:democracy/app/utils/view/snack_bar_content.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 class EditProfile extends StatefulWidget {
@@ -93,7 +94,7 @@ class _EditProfileState extends State<EditProfile> {
                     showDialog(
                       context: context,
                       builder: (context) {
-                        return _MediaDialog(
+                        return MediaDialog(
                           onCameraPressed: () async {
                             File? newImage = await ImagePickerUtil.takePhoto();
                             if (newImage != null) {
@@ -143,89 +144,28 @@ class _EditProfileState extends State<EditProfile> {
                   margin: EdgeInsets.only(left: 15, right: 15, top: 60),
                   child: Column(
                     children: [
-                      TextFormField(
+                      ProfileTextFormField(
                         initialValue: widget.user.name,
+                        label: 'Name',
                         onChanged: (value) {
                           setState(() {
                             name = value;
                           });
                         },
-                        onTapOutside: (event) {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                        },
-                        autofocus: false,
-                        minLines: 1,
                         maxLines: 2,
                         maxLength: 50,
-                        decoration: InputDecoration(
-                          label: Text('Name'),
-                          counterText: '',
-                          filled: true,
-                          fillColor: Theme.of(context).scaffoldBackgroundColor,
-                          hintStyle: TextStyle(
-                            color: Theme.of(context).hintColor,
-                          ),
-                          prefixIconConstraints: const BoxConstraints(
-                            minWidth: 0,
-                            minHeight: 0,
-                          ),
-                          border: InputBorder.none,
-                          focusedBorder: UnderlineInputBorder(
-                            borderRadius: BorderRadius.circular(0),
-                            borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                          ),
-                          enabledBorder: UnderlineInputBorder(
-                            borderRadius: BorderRadius.circular(0),
-                            borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.outline,
-                            ),
-                          ),
-                        ),
                       ),
                       SizedBox(height: 15),
-                      TextFormField(
+                      ProfileTextFormField(
                         initialValue: widget.user.status,
+                        label: 'Status',
                         onChanged: (value) {
                           setState(() {
                             status = value;
                           });
                         },
-                        onTapOutside: (event) {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                        },
-                        autofocus: false,
-                        minLines: 1,
                         maxLines: 4,
-                        keyboardType: TextInputType.multiline,
                         maxLength: 255,
-                        decoration: InputDecoration(
-                          label: Text('Status'),
-                          counterText: '',
-                          filled: true,
-                          fillColor: Theme.of(context).scaffoldBackgroundColor,
-                          hintStyle: TextStyle(
-                            color: Theme.of(context).hintColor,
-                          ),
-                          prefixIconConstraints: const BoxConstraints(
-                            minWidth: 0,
-                            minHeight: 0,
-                          ),
-                          border: InputBorder.none,
-                          focusedBorder: UnderlineInputBorder(
-                            borderRadius: BorderRadius.circular(0),
-                            borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                          ),
-                          enabledBorder: UnderlineInputBorder(
-                            borderRadius: BorderRadius.circular(0),
-                            borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.outline,
-                            ),
-                          ),
-                        ),
                       ),
                     ],
                   ),
@@ -240,7 +180,7 @@ class _EditProfileState extends State<EditProfile> {
                   showDialog(
                     context: context,
                     builder: (context) {
-                      return _MediaDialog(
+                      return MediaDialog(
                         onCameraPressed: () async {
                           File? newImage = await ImagePickerUtil.takePhoto();
                           if (newImage != null) {
@@ -314,6 +254,57 @@ class CameraAddButton extends StatelessWidget {
   }
 }
 
+class ProfileTextFormField extends StatelessWidget {
+  const ProfileTextFormField({
+    super.key,
+    required this.initialValue,
+    required this.label,
+    required this.onChanged,
+    required this.maxLines,
+    required this.maxLength,
+  });
+
+  final String initialValue;
+  final String label;
+  final void Function(String) onChanged;
+  final int maxLines;
+  final int maxLength;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      initialValue: initialValue,
+      onChanged: onChanged,
+      onTapOutside: (event) {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      autofocus: false,
+      minLines: 1,
+      maxLines: maxLines,
+      keyboardType: TextInputType.multiline,
+      maxLength: maxLength,
+      maxLengthEnforcement: MaxLengthEnforcement.enforced,
+      decoration: InputDecoration(
+        label: Text(label),
+        counterText: '',
+        filled: true,
+        fillColor: Theme.of(context).scaffoldBackgroundColor,
+        hintStyle: TextStyle(color: Theme.of(context).hintColor),
+        prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+        border: InputBorder.none,
+        focusedBorder: UnderlineInputBorder(
+          borderRadius: BorderRadius.circular(0),
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
+        ),
+        enabledBorder: UnderlineInputBorder(
+          borderRadius: BorderRadius.circular(0),
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.outline),
+        ),
+      ),
+    );
+  }
+}
+
 class _SaveDialog extends StatelessWidget {
   const _SaveDialog({required this.onYesPressed});
 
@@ -343,103 +334,5 @@ class _SaveDialog extends StatelessWidget {
       actionsAlignment: MainAxisAlignment.center,
       buttonPadding: const EdgeInsets.all(20.0),
     );
-  }
-}
-
-class _MediaDialog extends StatelessWidget {
-  const _MediaDialog({
-    required this.onCameraPressed,
-    required this.onGalleryPressed,
-  });
-
-  final VoidCallback onCameraPressed;
-  final VoidCallback onGalleryPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-              onCameraPressed();
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.horizontal(
-                  left: Radius.circular(10),
-                ),
-                color: Theme.of(context).colorScheme.secondaryContainer,
-              ),
-              padding: const EdgeInsets.all(30),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.camera_alt_rounded,
-                    color: Theme.of(context).colorScheme.tertiaryContainer,
-                  ),
-                  const SizedBox(width: 5),
-                  Text('Camera', style: Theme.of(context).textTheme.bodyMedium),
-                ],
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-              onGalleryPressed();
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.horizontal(
-                  right: Radius.circular(10),
-                ),
-                color: Theme.of(context).colorScheme.tertiaryContainer,
-              ),
-              padding: const EdgeInsets.all(30),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.image,
-                    color: Theme.of(context).colorScheme.secondaryContainer,
-                  ),
-                  const SizedBox(width: 5),
-                  Text(
-                    'Gallery',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ImagePickerUtil {
-  static final ImagePicker _picker = ImagePicker();
-
-  static Future<File?> getImage() async {
-    final pickedFile = await _picker.pickImage(
-      imageQuality: 100,
-      source: ImageSource.gallery,
-    );
-    if (pickedFile != null) {
-      return File(pickedFile.path);
-    }
-    return null;
-  }
-
-  static Future<File?> takePhoto() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
-    if (pickedFile != null) {
-      return File(pickedFile.path);
-    }
-    return null;
   }
 }

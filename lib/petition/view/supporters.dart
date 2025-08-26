@@ -97,7 +97,7 @@ class _SupportersState extends State<Supporters> {
             failure: failure,
             refreshController: _refreshController,
             enablePullDown: true,
-            enablePullUp: hasNextPage ? true : false,
+            enablePullUp: hasNextPage,
             showProfileButtons: true,
             onUsersUpdated: (users) {
               setState(() {

@@ -186,7 +186,7 @@ class _DirectMessageState extends State<DirectMessage> {
                 loading: loading,
                 failure: failure,
                 refreshController: _refreshController,
-                enablePullUp: hasNextPage ? true : false,
+                enablePullUp: hasNextPage,
                 selectedUsers: selectedUsers,
                 onUserTap: (user) {
                   setState(() {

@@ -229,6 +229,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_GetPetitions>((event, emit) {
       _onGetPetitions(emit, event);
     });
+    on<_CreatePetition>((event, emit) {
+      _onCreatePetition(emit, event);
+    });
     on<_ResubscribePetitions>((event, emit) {
       _onResubscribePetitions(emit, event);
     });
@@ -1212,6 +1215,26 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         "request_id": petitionRequestId,
         'search_term': event.searchTerm,
         'last_petition': event.lastPetition?.id,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onCreatePetition(
+    Emitter<WebsocketState> emit,
+    _CreatePetition event,
+  ) async {
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    Map<String, dynamic> message = {
+      'stream': petitionsStream,
+      'payload': {
+        'action': 'create',
+        'request_id': petitionRequestId,
+        'data': {
+          'title': event.title,
+          'image_base64': base64Encode(File(event.imagePath).readAsBytesSync()),
+          'description': event.description,
+        },
       },
     };
     _channel.sink.add(jsonEncode(message));

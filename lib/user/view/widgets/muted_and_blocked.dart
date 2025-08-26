@@ -127,7 +127,7 @@ class _MutedTabState extends State<_MutedTab> {
           failure: failure,
           refreshController: _refreshController,
           enablePullDown: true,
-          enablePullUp: hasNextPage ? true : false,
+          enablePullUp: hasNextPage,
           showProfileButtons: true,
           onUsersUpdated: (users) {
             setState(() {
@@ -242,7 +242,7 @@ class _BlockedTabState extends State<_BlockedTab> {
           failure: failure,
           refreshController: _refreshController,
           enablePullDown: true,
-          enablePullUp: hasNextPage ? true : false,
+          enablePullUp: hasNextPage,
           showProfileButtons: true,
           onUsersUpdated: (users) {
             setState(() {
