@@ -1,7 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/utils/view/bottom_loader.dart';
-import 'package:democracy/app/utils/view/no_results.dart';
-import 'package:democracy/app/utils/view/snack_bar_content.dart';
+import 'package:democracy/app/utils/bottom_loader.dart';
+import 'package:democracy/app/utils/no_results.dart';
+import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart' show TimeLeft;
 import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
 import 'package:democracy/survey/bloc/survey_process/page/page_bloc.dart';

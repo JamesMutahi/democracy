@@ -1,15 +1,14 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/utils/view/custom_text.dart';
+import 'package:democracy/app/utils/custom_text.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_cubit.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_tile.dart'
-    show PetitionSupportersRow;
+    show PetitionSupportersRow, PetitionPopUpMenu;
 import 'package:democracy/petition/view/supporters.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 class PetitionDetail extends StatefulWidget {
   const PetitionDetail({super.key, required this.petition});
@@ -132,44 +131,6 @@ class _PetitionDetailState extends State<PetitionDetail> {
                     ),
                   ],
                 ),
-      ),
-    );
-  }
-}
-
-class PetitionPopUpMenu extends StatelessWidget {
-  const PetitionPopUpMenu({super.key, required this.petition});
-
-  final Petition petition;
-
-  @override
-  Widget build(BuildContext context) {
-    List texts = ['Post', 'Share'];
-    return PopupMenuButton<String>(
-      padding: EdgeInsets.zero,
-      menuPadding: EdgeInsets.zero,
-      onSelected: (selected) {
-        switch (selected) {
-          case 'Post':
-            // TODO
-            break;
-          case 'Share':
-            // TODO
-            break;
-        }
-      },
-      itemBuilder:
-          (BuildContext context) => [
-            ...texts.map((text) {
-              return PopupMenuItem<String>(
-                value: text,
-                child: Text(text, textAlign: TextAlign.center),
-              );
-            }),
-          ],
-      icon: Icon(
-        Symbols.more_vert_rounded,
-        color: Theme.of(context).colorScheme.outline,
       ),
     );
   }

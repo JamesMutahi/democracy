@@ -2,9 +2,9 @@ import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
 import 'package:democracy/app/bloc/theme/theme_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/utils/view/app_theme.dart';
-import 'package:democracy/app/utils/view/snack_bar_content.dart';
-import 'package:democracy/app/utils/view/splash_page.dart';
+import 'package:democracy/app/utils/app_theme.dart';
+import 'package:democracy/app/utils/snack_bar_content.dart';
+import 'package:democracy/app/utils/splash_page.dart';
 import 'package:democracy/app/view/dashboard.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
@@ -511,6 +511,22 @@ class _Listeners extends StatelessWidget {
               }
             }
             if (state.status == WebsocketStatus.failure) {
+              String error = 'Server error';
+              context.read<ForYouCubit>().websocketFailure(error: error);
+              context.read<PostsCubit>().websocketFailure(error: error);
+              context.read<RepliesCubit>().websocketFailure(error: error);
+              context.read<SurveysCubit>().websocketFailure(error: error);
+              context.read<BallotsCubit>().websocketFailure(error: error);
+              context.read<ChatsCubit>().websocketFailure(error: error);
+              context.read<NotificationsCubit>().websocketFailure(error: error);
+              final snackBar = getSnackBar(
+                context: context,
+                message: error,
+                status: SnackBarStatus.failure,
+              );
+              showSnackBar(snackBar: snackBar);
+            }
+            if (state.status == WebsocketStatus.disconnected) {
               String error = 'Server connection lost';
               context.read<ForYouCubit>().websocketFailure(error: error);
               context.read<PostsCubit>().websocketFailure(error: error);

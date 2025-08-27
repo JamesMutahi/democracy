@@ -1,6 +1,6 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/utils/view/bottom_loader.dart';
-import 'package:democracy/app/utils/view/failure_retry_button.dart';
+import 'package:democracy/app/utils/bottom_loader.dart';
+import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_cubit.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;

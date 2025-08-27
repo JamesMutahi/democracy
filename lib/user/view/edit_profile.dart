@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/utils/view/media_tools.dart';
-import 'package:democracy/app/utils/view/snack_bar_content.dart';
+import 'package:democracy/app/utils/media_tools.dart';
+import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';

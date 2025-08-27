@@ -1,5 +1,5 @@
-import 'package:democracy/app/utils/view/bottom_loader.dart';
-import 'package:democracy/app/utils/view/failure_retry_button.dart';
+import 'package:democracy/app/utils/bottom_loader.dart';
+import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';

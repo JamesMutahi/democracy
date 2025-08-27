@@ -1,8 +1,9 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/utils/view/bottom_text_form_field.dart';
-import 'package:democracy/app/utils/view/snack_bar_content.dart';
+import 'package:democracy/app/utils/bottom_text_form_field.dart';
+import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
+import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/user/bloc/users/users_cubit.dart';
@@ -14,11 +15,18 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class DirectMessage extends StatefulWidget {
-  const DirectMessage({super.key, this.post, this.ballot, this.survey});
+  const DirectMessage({
+    super.key,
+    required this.post,
+    required this.ballot,
+    required this.survey,
+    required this.petition,
+  });
 
   final Post? post;
   final Ballot? ballot;
   final Survey? survey;
+  final Petition? petition;
 
   @override
   State<DirectMessage> createState() => _DirectMessageState();
@@ -234,6 +242,7 @@ class _DirectMessageState extends State<DirectMessage> {
                         post: widget.post,
                         ballot: widget.ballot,
                         survey: widget.survey,
+                        petition: widget.petition,
                       ),
                     );
                   },

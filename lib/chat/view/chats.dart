@@ -1,7 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/utils/view/bottom_loader.dart';
-import 'package:democracy/app/utils/view/failure_retry_button.dart';
-import 'package:democracy/app/utils/view/snack_bar_content.dart';
+import 'package:democracy/app/utils/bottom_loader.dart';
+import 'package:democracy/app/utils/failure_retry_button.dart';
+import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
@@ -256,6 +256,8 @@ class _ChatTileState extends State<ChatTile> {
               ? _LastMessageText(text: '${lastMessagePrefix}Shared a ballot')
               : widget.chat.lastMessage!.survey != null
               ? _LastMessageText(text: '${lastMessagePrefix}Shared a survey')
+              : widget.chat.lastMessage!.petition != null
+              ? _LastMessageText(text: '${lastMessagePrefix}Shared a petition')
               : Text(''),
         ],
       ),

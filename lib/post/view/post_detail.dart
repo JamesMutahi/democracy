@@ -1,12 +1,13 @@
 import 'dart:async';
 
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/utils/view/bottom_text_form_field.dart';
-import 'package:democracy/app/utils/view/custom_text.dart';
-import 'package:democracy/app/utils/view/tagging.dart';
+import 'package:democracy/app/utils/bottom_text_form_field.dart';
+import 'package:democracy/app/utils/custom_text.dart';
+import 'package:democracy/app/utils/tagging.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_cubit.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
+import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/bloc/replies/replies_cubit.dart';
 import 'package:democracy/post/models/post.dart';
@@ -386,6 +387,13 @@ class _PostContainer extends StatelessWidget {
                         isDependency: true,
                       ),
                     ),
+                  if (post.petition != null)
+                    DependencyContainer(
+                      child: PetitionTile(
+                        petition: post.petition!,
+                        isDependency: true,
+                      ),
+                    ),
                   SizedBox(height: 5),
                   Align(
                     alignment: Alignment.bottomRight,
@@ -553,6 +561,7 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
                           repostOf: null,
                           ballot: null,
                           survey: null,
+                          petition: null,
                           taggedUserIds:
                               _controller.tags
                                   .map((tag) => int.parse(tag.id))

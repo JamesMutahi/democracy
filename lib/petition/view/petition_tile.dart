@@ -1,8 +1,10 @@
-import 'package:democracy/app/utils/view/more_pop_up.dart';
+import 'package:democracy/app/utils/custom_bottom_sheet.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_detail.dart';
+import 'package:democracy/post/view/post_create.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 class PetitionTile extends StatelessWidget {
   const PetitionTile({
@@ -25,12 +27,14 @@ class PetitionTile extends StatelessWidget {
         );
       },
       child: Container(
-        margin: EdgeInsets.only(top: 10),
         height: 130,
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          borderRadius: const BorderRadius.all(Radius.circular(12)),
-        ),
+        decoration:
+            isDependency
+                ? BoxDecoration()
+                : BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: const BorderRadius.all(Radius.circular(12)),
+                ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,57 +57,42 @@ class PetitionTile extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             Flexible(
-              flex: 7,
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 5),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            petition.title,
-                            maxLines: 3,
-                            style: Theme.of(context).textTheme.titleMedium
-                                ?.copyWith(overflow: TextOverflow.ellipsis),
-                          ),
+              flex: 9,
+              child: Stack(
+                children: [
+                  Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(right: isDependency ? 0 : 40),
+                        padding: EdgeInsets.only(
+                          left: 10,
+                          top: 10,
+                          bottom: 10,
+                          right: isDependency ? 10 : 0,
                         ),
-                        _PetitionPopUp(),
-                      ],
+                        child: Text(
+                          petition.title,
+                          maxLines: 3,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(overflow: TextOverflow.ellipsis),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      if (petition.supporters > 0)
+                        PetitionSupportersRow(petition: petition),
+                    ],
+                  ),
+                  if (!isDependency)
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: PetitionPopUpMenu(petition: petition),
                     ),
-                    SizedBox(height: 10),
-                    if (petition.supporters > 0)
-                      PetitionSupportersRow(petition: petition),
-                  ],
-                ),
+                ],
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _PetitionPopUp extends StatelessWidget {
-  const _PetitionPopUp();
-
-  @override
-  Widget build(BuildContext context) {
-    return MorePopUp(
-      texts: ['Post', 'Share'],
-      onSelected: (value) {
-        switch (value) {
-          case 'Post':
-            // TODO
-            break;
-          case 'Share':
-            // TODO
-            break;
-        }
-      },
     );
   }
 }
@@ -150,6 +139,53 @@ class PetitionSupportersRow extends StatelessWidget {
           '${numberFormat.format(petition.supporters)} ${petition.supporters == 1 ? 'supporter' : 'supporters'}',
         ),
       ],
+    );
+  }
+}
+
+class PetitionPopUpMenu extends StatelessWidget {
+  const PetitionPopUpMenu({super.key, required this.petition});
+
+  final Petition petition;
+
+  @override
+  Widget build(BuildContext context) {
+    List texts = ['Post', 'Share'];
+    return PopupMenuButton<String>(
+      padding: EdgeInsets.zero,
+      menuPadding: EdgeInsets.zero,
+      onSelected: (selected) {
+        switch (selected) {
+          case 'Post':
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PostCreate(petition: petition),
+              ),
+            );
+          case 'Share':
+            showModalBottomSheet<void>(
+              context: context,
+              shape: const BeveledRectangleBorder(),
+              builder: (BuildContext context) {
+                return ShareBottomSheet(petition: petition);
+              },
+            );
+        }
+      },
+      itemBuilder:
+          (BuildContext context) => [
+            ...texts.map((text) {
+              return PopupMenuItem<String>(
+                value: text,
+                child: Text(text, textAlign: TextAlign.center),
+              );
+            }),
+          ],
+      icon: Icon(
+        Symbols.more_vert_rounded,
+        color: Theme.of(context).colorScheme.outline,
+      ),
     );
   }
 }

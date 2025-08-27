@@ -1,6 +1,6 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/utils/view/bottom_loader.dart';
-import 'package:democracy/app/utils/view/failure_retry_button.dart';
+import 'package:democracy/app/utils/bottom_loader.dart';
+import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_cubit.dart';
 import 'package:democracy/petition/bloc/petitions/petitions_cubit.dart';
 import 'package:democracy/petition/models/petition.dart';
@@ -144,10 +144,17 @@ class _PetitionsState extends State<Petitions> {
                 child: ListView.builder(
                   itemBuilder: (BuildContext context, int index) {
                     Petition petition = _petitions[index];
-                    return PetitionTile(
-                      key: ValueKey(petition.id),
-                      petition: petition,
-                      isDependency: false,
+                    return Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(top: 10),
+                          child: PetitionTile(
+                            key: ValueKey(petition.id),
+                            petition: petition,
+                            isDependency: false,
+                          ),
+                        ),
+                      ],
                     );
                   },
                   itemCount: _petitions.length,

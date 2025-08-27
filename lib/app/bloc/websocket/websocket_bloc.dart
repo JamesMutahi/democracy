@@ -276,7 +276,16 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
             ),
           );
         },
-        onDone: () {},
+        onDone: () {
+          add(
+            _ChangeState(
+              state: state.copyWith(status: WebsocketStatus.disconnected),
+            ),
+          );
+          Future.delayed(Duration(seconds: 10)).then((value) {
+            add(_Connect());
+          });
+        },
         onError: (error) {
           add(
             _ChangeState(
@@ -350,6 +359,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
           'repost_of_id': event.repostOf?.id,
           'ballot_id': event.ballot?.id,
           'survey_id': event.survey?.id,
+          'petition_id': event.petition?.id,
           'status':
               event.status == PostStatus.published ? 'published' : 'draft',
           'tagged_user_ids': event.taggedUserIds,
@@ -720,6 +730,31 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
           'post_id': event.post?.id,
           'ballot_id': event.ballot?.id,
           'survey_id': event.survey?.id,
+          'petition_id': event.petition?.id,
+        },
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onSendDirectMessage(
+      Emitter<WebsocketState> emit,
+      _SendDirectMessage event,
+      ) async {
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    List<int> userPks = event.users.map((user) => user.id).toList();
+    Map<String, dynamic> message = {
+      'stream': chatsStream,
+      'payload': {
+        'action': 'direct_message',
+        'request_id': messageRequestId,
+        'user_pks': userPks,
+        'data': {
+          'text': event.text,
+          'post_id': event.post?.id,
+          'ballot_id': event.ballot?.id,
+          'survey_id': event.survey?.id,
+          'petition_id': event.petition?.id,
         },
       },
     };
@@ -973,29 +1008,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'action': 'unsubscribe',
         'request_id': usersRequestId,
         'pks': userIds,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onSendDirectMessage(
-    Emitter<WebsocketState> emit,
-    _SendDirectMessage event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    List<int> userPks = event.users.map((user) => user.id).toList();
-    Map<String, dynamic> message = {
-      'stream': chatsStream,
-      'payload': {
-        'action': 'direct_message',
-        'request_id': messageRequestId,
-        'user_pks': userPks,
-        'data': {
-          'text': event.text,
-          'post_id': event.post?.id,
-          'ballot_id': event.ballot?.id,
-          'survey_id': event.survey?.id,
-        },
       },
     };
     _channel.sink.add(jsonEncode(message));

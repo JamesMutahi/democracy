@@ -1,4 +1,5 @@
 import 'package:democracy/ballot/models/ballot.dart';
+import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/user/models/user.dart';
@@ -17,6 +18,7 @@ sealed class Message with _$Message {
     required final Post? post,
     required final Ballot? ballot,
     required final Survey? survey,
+    required final Petition? petition,
     @JsonKey(name: 'is_read') required final bool isRead,
     @JsonKey(name: 'is_edited') required final bool isEdited,
     @JsonKey(name: 'is_deleted') required final bool isDeleted,

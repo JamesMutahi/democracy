@@ -32,6 +32,7 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     required Post? replyTo,
     required Ballot? ballot,
     required Survey? survey,
+    required Petition? petition,
     required List<int> taggedUserIds,
   }) = _CreatePost;
 
@@ -119,7 +120,17 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     Post? post,
     Ballot? ballot,
     Survey? survey,
+    Petition? petition,
   }) = _CreateMessage;
+
+  const factory WebsocketEvent.sendDirectMessage({
+    required List<User> users,
+    required String text,
+    Post? post,
+    Ballot? ballot,
+    Survey? survey,
+    Petition? petition,
+  }) = _SendDirectMessage;
 
   const factory WebsocketEvent.editMessage({
     required int messageId,
@@ -204,14 +215,6 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.blockUser({required int id}) = _BlockUser;
 
   const factory WebsocketEvent.followUser({required User user}) = _FollowUser;
-
-  const factory WebsocketEvent.sendDirectMessage({
-    required List<User> users,
-    required String text,
-    Post? post,
-    Ballot? ballot,
-    Survey? survey,
-  }) = _SendDirectMessage;
 
   const factory WebsocketEvent.getNotifications() = _GetNotifications;
 

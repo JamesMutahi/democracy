@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/utils/view/media_tools.dart';
-import 'package:democracy/app/utils/view/tagging.dart';
+import 'package:democracy/app/utils/media_tools.dart';
+import 'package:democracy/app/utils/tagging.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
+import 'package:democracy/petition/models/petition.dart';
+import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
@@ -28,12 +30,14 @@ class PostCreate extends StatefulWidget {
     this.post,
     this.ballot,
     this.survey,
+    this.petition,
     this.isReply = false,
   });
 
   final Post? post;
   final Ballot? ballot;
   final Survey? survey;
+  final Petition? petition;
   final bool isReply;
 
   @override
@@ -55,6 +59,7 @@ class _PostCreateState extends State<PostCreate> {
         repostOf: widget.isReply ? null : widget.post,
         ballot: widget.ballot,
         survey: widget.survey,
+        petition: widget.petition,
         taggedUserIds:
             _controller.tags.map((tag) => int.parse(tag.id)).toList(),
       ),
@@ -222,6 +227,13 @@ class _PostCreateState extends State<PostCreate> {
                     DependencyContainer(
                       child: SurveyTile(
                         survey: widget.survey!,
+                        isDependency: true,
+                      ),
+                    ),
+                  if (widget.petition != null)
+                    DependencyContainer(
+                      child: PetitionTile(
+                        petition: widget.petition!,
                         isDependency: true,
                       ),
                     ),

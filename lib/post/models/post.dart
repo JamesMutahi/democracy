@@ -1,4 +1,5 @@
 import 'package:democracy/ballot/models/ballot.dart';
+import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -39,6 +40,7 @@ sealed class Post with _$Post {
     @JsonKey(name: 'repost_of') required Post? repostOf,
     required Ballot? ballot,
     required Survey? survey,
+    required Petition? petition,
     @JsonKey(name: 'tagged_users') required List<User> taggedUsers,
   }) = _Post;
 
