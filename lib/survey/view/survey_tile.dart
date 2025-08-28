@@ -61,81 +61,97 @@ class SurveyTile extends StatelessWidget {
               : () {
                 openSurveyProcessPage();
               },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color:
-                  isDependency
-                      ? Colors.transparent
-                      : Theme.of(context).disabledColor.withAlpha(30),
-            ),
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  survey.name,
-                  style: Theme.of(context).textTheme.titleMedium,
+      child: Stack(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color:
+                      isDependency
+                          ? Colors.transparent
+                          : Theme.of(context).disabledColor.withAlpha(30),
                 ),
-                if (!isDependency)
-                  MorePopUp(
-                    onSelected: (selected) {
-                      switch (selected) {
-                        case 'Post':
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PostCreate(survey: survey),
-                            ),
-                          );
-                        case 'Share':
-                          showModalBottomSheet<void>(
-                            context: context,
-                            shape: const BeveledRectangleBorder(),
-                            builder: (BuildContext context) {
-                              return ShareBottomSheet(survey: survey);
-                            },
-                          );
-                      }
-                    },
-                    texts: ['Post', 'Share'],
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(right: isDependency ? 0 : 20),
+                  child: Text(
+                    survey.name,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
+                ),
+                SizedBox(height: 5),
+                TimeLeft(
+                  key: ValueKey(survey),
+                  startTime: survey.startTime,
+                  endTime: survey.endTime,
+                ),
+                SizedBox(height: 5),
+                Text(survey.description),
+                SizedBox(height: 10),
+                isDependency
+                    ? Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: surveyButtons,
+                    )
+                    : alreadyResponded
+                    ? Row(
+                      mainAxisAlignment:
+                          surveyIsClosed
+                              ? MainAxisAlignment.end
+                              : MainAxisAlignment.spaceBetween,
+                      children: surveyButtons,
+                    )
+                    : SizedBox.shrink(),
               ],
             ),
-            SizedBox(height: 5),
-            TimeLeft(
-              key: ValueKey(survey),
-              startTime: survey.startTime,
-              endTime: survey.endTime,
+          ),
+          if (!isDependency)
+            Align(
+              alignment: Alignment.topRight,
+              child: SurveyPopUpMenu(survey: survey),
             ),
-            SizedBox(height: 5),
-            Text(survey.description),
-            SizedBox(height: 10),
-            isDependency
-                ? Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: surveyButtons,
-                )
-                : alreadyResponded
-                ? Row(
-                  mainAxisAlignment:
-                      surveyIsClosed
-                          ? MainAxisAlignment.end
-                          : MainAxisAlignment.spaceBetween,
-                  children: surveyButtons,
-                )
-                : SizedBox.shrink(),
-          ],
-        ),
+        ],
       ),
+    );
+  }
+}
+
+class SurveyPopUpMenu extends StatelessWidget {
+  const SurveyPopUpMenu({super.key, required this.survey});
+
+  final Survey survey;
+
+  @override
+  Widget build(BuildContext context) {
+    return MorePopUp(
+      onSelected: (selected) {
+        switch (selected) {
+          case 'Post':
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PostCreate(survey: survey),
+              ),
+            );
+          case 'Share':
+            showModalBottomSheet<void>(
+              context: context,
+              shape: const BeveledRectangleBorder(),
+              builder: (BuildContext context) {
+                return ShareBottomSheet(survey: survey);
+              },
+            );
+        }
+      },
+      texts: ['Post', 'Share'],
     );
   }
 }

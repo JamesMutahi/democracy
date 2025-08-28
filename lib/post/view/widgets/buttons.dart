@@ -14,8 +14,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-class PostMorePopUp extends StatelessWidget {
-  const PostMorePopUp({super.key, required this.post});
+class PostPopUp extends StatelessWidget {
+  const PostPopUp({super.key, required this.post});
 
   final Post post;
 

@@ -351,7 +351,7 @@ class _PostContainer extends StatelessWidget {
                           ),
                         ),
                       ),
-                      PostMorePopUp(post: post),
+                      PostPopUp(post: post),
                     ],
                   ),
                   SizedBox(height: 5),

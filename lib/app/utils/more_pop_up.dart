@@ -13,7 +13,7 @@ class MorePopUp extends StatelessWidget {
       padding: EdgeInsets.zero,
       menuPadding: EdgeInsets.zero,
       onSelected: onSelected,
-      splashRadius: 100,
+      borderRadius: BorderRadius.circular(50),
       itemBuilder:
           (BuildContext context) => [
             ...texts.map((text) {
@@ -23,9 +23,13 @@ class MorePopUp extends StatelessWidget {
               );
             }),
           ],
-      child: Icon(
-        Symbols.more_vert_rounded,
-        color: Theme.of(context).disabledColor,
+      child: Padding(
+        padding: EdgeInsets.all(10),
+        child: Icon(
+          Symbols.more_vert_rounded,
+          color: Theme.of(context).colorScheme.outline,
+          size: 20,
+        ),
       ),
     );
   }

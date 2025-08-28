@@ -1,10 +1,10 @@
 import 'package:democracy/app/utils/custom_bottom_sheet.dart';
+import 'package:democracy/app/utils/more_pop_up.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_detail.dart';
 import 'package:democracy/post/view/post_create.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 class PetitionTile extends StatelessWidget {
   const PetitionTile({
@@ -150,10 +150,7 @@ class PetitionPopUpMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List texts = ['Post', 'Share'];
-    return PopupMenuButton<String>(
-      padding: EdgeInsets.zero,
-      menuPadding: EdgeInsets.zero,
+    return MorePopUp(
       onSelected: (selected) {
         switch (selected) {
           case 'Post':
@@ -173,19 +170,7 @@ class PetitionPopUpMenu extends StatelessWidget {
             );
         }
       },
-      itemBuilder:
-          (BuildContext context) => [
-            ...texts.map((text) {
-              return PopupMenuItem<String>(
-                value: text,
-                child: Text(text, textAlign: TextAlign.center),
-              );
-            }),
-          ],
-      icon: Icon(
-        Symbols.more_vert_rounded,
-        color: Theme.of(context).colorScheme.outline,
-      ),
+      texts: ['Post', 'Share'],
     );
   }
 }

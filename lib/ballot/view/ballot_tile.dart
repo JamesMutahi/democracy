@@ -33,62 +33,67 @@ class BallotTile extends StatelessWidget {
           MaterialPageRoute(builder: (context) => BallotDetail(ballot: ballot)),
         );
       },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color:
-                  isDependency
-                      ? Colors.transparent
-                      : Theme.of(context).disabledColor.withAlpha(30),
+      child: Stack(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color:
+                      isDependency
+                          ? Colors.transparent
+                          : Theme.of(context).disabledColor.withAlpha(30),
+                ),
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(right: isDependency ? 0 : 20),
+                  child: Text(
+                    ballot.title,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+                SizedBox(height: 5),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TimeLeft(
+                      key: ValueKey('ballot ${ballot.id}'),
+                      startTime: ballot.startTime,
+                      endTime: ballot.endTime,
+                    ),
+                    if (!isDependency && ballotHasStarted)
+                      Text(
+                        '${ballot.totalVotes} ${ballot.totalVotes == 1 ? 'vote' : 'votes'}',
+                        style: TextStyle(
+                          color: Theme.of(context).disabledColor,
+                        ),
+                      ),
+                  ],
+                ),
+                SizedBox(height: 10),
+                ...ballot.options.map((option) {
+                  return BallotPercentIndicator(
+                    key: UniqueKey(),
+                    ballot: ballot,
+                    option: option,
+                    animateToInitialPercent: animateToInitialPercent,
+                  );
+                }),
+              ],
             ),
           ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  ballot.title,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                isDependency ? SizedBox.shrink() : BallotPopUp(ballot: ballot),
-              ],
+          if (!isDependency)
+            Align(
+              alignment: Alignment.topRight,
+              child: BallotPopUp(ballot: ballot),
             ),
-            SizedBox(height: 5),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TimeLeft(
-                  key: ValueKey('ballot ${ballot.id}'),
-                  startTime: ballot.startTime,
-                  endTime: ballot.endTime,
-                ),
-                isDependency
-                    ? SizedBox.shrink()
-                    : ballotHasStarted
-                    ? Text(
-                      '${ballot.totalVotes} ${ballot.totalVotes == 1 ? 'vote' : 'votes'}',
-                      style: TextStyle(color: Theme.of(context).disabledColor),
-                    )
-                    : SizedBox.shrink(),
-              ],
-            ),
-            SizedBox(height: 10),
-            ...ballot.options.map((option) {
-              return BallotPercentIndicator(
-                key: UniqueKey(),
-                ballot: ballot,
-                option: option,
-                animateToInitialPercent: animateToInitialPercent,
-              );
-            }),
-          ],
-        ),
+        ],
       ),
     );
   }

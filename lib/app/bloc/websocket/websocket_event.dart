@@ -149,13 +149,6 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     Ballot? lastBallot,
   }) = _GetBallots;
 
-  const factory WebsocketEvent.resubscribeBallots({
-    required List<Ballot> ballots,
-  }) = _ResubscribeBallots;
-
-  const factory WebsocketEvent.subscribeBallot({required Ballot ballot}) =
-      _SubscribeBallot;
-
   const factory WebsocketEvent.vote({required Option option}) = _Vote;
 
   const factory WebsocketEvent.submitReason({
@@ -167,10 +160,6 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     String? searchTerm,
     Survey? lastSurvey,
   }) = _GetSurveys;
-
-  const factory WebsocketEvent.resubscribeSurveys({
-    required List<Survey> surveys,
-  }) = _ResubscribeSurveys;
 
   const factory WebsocketEvent.submitResponse({
     required Survey survey,

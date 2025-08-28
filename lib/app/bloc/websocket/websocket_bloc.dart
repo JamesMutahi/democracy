@@ -193,12 +193,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_GetBallots>((event, emit) {
       _onGetBallots(emit, event);
     });
-    on<_ResubscribeBallots>((event, emit) {
-      _onResubscribeBallots(emit, event);
-    });
-    on<_SubscribeBallot>((event, emit) {
-      _onSubscribeBallot(emit, event);
-    });
     on<_Vote>((event, emit) {
       _onVote(emit, event);
     });
@@ -207,9 +201,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     });
     on<_GetSurveys>((event, emit) {
       _onGetSurveys(emit, event);
-    });
-    on<_ResubscribeSurveys>((event, emit) {
-      _onResubscribeSurveys(emit, event);
     });
     on<_SubmitResponse>((event, emit) {
       _onSubmitResponse(emit, event);
@@ -738,9 +729,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   }
 
   Future _onSendDirectMessage(
-      Emitter<WebsocketState> emit,
-      _SendDirectMessage event,
-      ) async {
+    Emitter<WebsocketState> emit,
+    _SendDirectMessage event,
+  ) async {
     emit(state.copyWith(status: WebsocketStatus.loading));
     List<int> userPks = event.users.map((user) => user.id).toList();
     Map<String, dynamic> message = {
@@ -1027,39 +1018,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     _channel.sink.add(jsonEncode(message));
   }
 
-  Future _onResubscribeBallots(
-    Emitter<WebsocketState> emit,
-    _ResubscribeBallots event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    List<int> ballotIds = event.ballots.map((ballot) => ballot.id).toList();
-    Map<String, dynamic> message = {
-      'stream': ballotsStream,
-      'payload': {
-        "action": 'resubscribe',
-        'request_id': ballotRequestId,
-        'pks': ballotIds,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onSubscribeBallot(
-    Emitter<WebsocketState> emit,
-    _SubscribeBallot event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': ballotsStream,
-      'payload': {
-        'action': 'subscribe',
-        'request_id': ballotRequestId,
-        'pk': event.ballot.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
   Future _onVote(Emitter<WebsocketState> emit, _Vote event) async {
     emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
@@ -1099,23 +1057,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'request_id': surveyRequestId,
         'search_term': event.searchTerm,
         'last_survey': event.lastSurvey?.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onResubscribeSurveys(
-    Emitter<WebsocketState> emit,
-    _ResubscribeSurveys event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    List<int> surveyIds = event.surveys.map((survey) => survey.id).toList();
-    Map<String, dynamic> message = {
-      'stream': surveysStream,
-      'payload': {
-        "action": 'resubscribe',
-        'request_id': surveyRequestId,
-        'pks': surveyIds,
       },
     };
     _channel.sink.add(jsonEncode(message));

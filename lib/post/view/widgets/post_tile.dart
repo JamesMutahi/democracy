@@ -161,119 +161,118 @@ class _PostContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var numberFormat = NumberFormat.compact(locale: "en_UK");
-    return Container(
-      padding: EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 5),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color:
-                (isDependency || showBottomThread)
-                    ? Colors.transparent
-                    : Theme.of(context).disabledColor.withAlpha(30),
+    return Stack(
+      children: [
+        Container(
+          padding: EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 5),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color:
+                    (isDependency || showBottomThread)
+                        ? Colors.transparent
+                        : Theme.of(context).disabledColor.withAlpha(30),
+              ),
+            ),
           ),
-        ),
-      ),
-      child:
-          post.isDeleted
-              ? PostDeletedWidget()
-              : Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CircleAvatar(
-                    radius: 23,
-                    backgroundColor: Colors.transparent,
-                    child: ProfileImage(user: post.author),
-                  ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child:
+              post.isDeleted
+                  ? PostDeletedWidget()
+                  : Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CircleAvatar(
+                        radius: 23,
+                        backgroundColor: Colors.transparent,
+                        child: ProfileImage(user: post.author),
+                      ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            ProfileName(user: post.author),
-                            isDependency
-                                ? SizedBox.shrink()
-                                : Row(
-                                  children: [
-                                    TimeDifferenceInfo(
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ProfileName(user: post.author),
+                                if (!isDependency)
+                                  Container(
+                                    margin: EdgeInsets.only(right: 20),
+                                    child: TimeDifferenceInfo(
                                       publishedAt: post.publishedAt,
                                     ),
-                                    isDependency
-                                        ? SizedBox.shrink()
-                                        : PostMorePopUp(post: post),
-                                  ],
+                                  ),
+                              ],
+                            ),
+                            PostBody(post: post),
+                            if (post.repostOf != null && !isDependency)
+                              DependencyContainer(
+                                child: PostTile(
+                                  post: post.repostOf!,
+                                  isDependency: true,
                                 ),
+                              ),
+                            if (post.ballot != null)
+                              DependencyContainer(
+                                child: BallotTile(
+                                  ballot: post.ballot!,
+                                  isDependency: true,
+                                ),
+                              ),
+                            if (post.survey != null)
+                              DependencyContainer(
+                                child: SurveyTile(
+                                  survey: post.survey!,
+                                  isDependency: true,
+                                ),
+                              ),
+                            if (post.petition != null)
+                              DependencyContainer(
+                                child: PetitionTile(
+                                  petition: post.petition!,
+                                  isDependency: true,
+                                ),
+                              ),
+                            SizedBox(height: 5),
+                            if (!isDependency)
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  ReplyButton(
+                                    post: post,
+                                    numberFormat: numberFormat,
+                                  ),
+                                  RepostButton(
+                                    post: post,
+                                    numberFormat: numberFormat,
+                                  ),
+                                  LikeButton(
+                                    post: post,
+                                    numberFormat: numberFormat,
+                                  ),
+                                  BookmarkButton(
+                                    post: post,
+                                    numberFormat: numberFormat,
+                                  ),
+                                  ViewsButton(
+                                    post: post,
+                                    numberFormat: numberFormat,
+                                  ),
+                                ],
+                              ),
                           ],
                         ),
-                        PostBody(post: post),
-                        (post.repostOf == null)
-                            ? SizedBox.shrink()
-                            : isDependency
-                            ? SizedBox.shrink()
-                            : DependencyContainer(
-                              child: PostTile(
-                                post: post.repostOf!,
-                                isDependency: true,
-                              ),
-                            ),
-                        if (post.ballot != null)
-                          DependencyContainer(
-                            child: BallotTile(
-                              ballot: post.ballot!,
-                              isDependency: true,
-                            ),
-                          ),
-                        if (post.survey != null)
-                          DependencyContainer(
-                            child: SurveyTile(
-                              survey: post.survey!,
-                              isDependency: true,
-                            ),
-                          ),
-                        if (post.petition != null)
-                          DependencyContainer(
-                            child: PetitionTile(
-                              petition: post.petition!,
-                              isDependency: true,
-                            ),
-                          ),
-                        SizedBox(height: 5),
-                        if (!isDependency)
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              ReplyButton(
-                                post: post,
-                                numberFormat: numberFormat,
-                              ),
-                              RepostButton(
-                                post: post,
-                                numberFormat: numberFormat,
-                              ),
-                              LikeButton(
-                                post: post,
-                                numberFormat: numberFormat,
-                              ),
-                              BookmarkButton(
-                                post: post,
-                                numberFormat: numberFormat,
-                              ),
-                              ViewsButton(
-                                post: post,
-                                numberFormat: numberFormat,
-                              ),
-                            ],
-                          ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+        ),
+        if (!isDependency)
+          Align(alignment: Alignment.topRight, child: PostPopUp(post: post)),
+      ],
     );
   }
 }

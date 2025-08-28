@@ -5,7 +5,6 @@ import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_cubit.dart';
 import 'package:democracy/ballot/bloc/ballots/ballots_cubit.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
-import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
@@ -36,15 +35,6 @@ class _BallotsState extends State<Ballots> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state.status == WebsocketStatus.connected) {
-              context.read<WebsocketBloc>().add(
-                WebsocketEvent.resubscribeBallots(ballots: _ballots),
-              );
-            }
-          },
-        ),
         BlocListener<BallotsCubit, BallotsState>(
           listener: (context, state) {
             if (state.status == BallotsStatus.success) {
@@ -74,25 +64,6 @@ class _BallotsState extends State<Ballots> {
               }
               if (_refreshController.footerStatus == LoadStatus.loading) {
                 _refreshController.loadFailed();
-              }
-            }
-          },
-        ),
-        BlocListener<NotificationDetailCubit, NotificationDetailState>(
-          listener: (context, state) {
-            if (state is NotificationCreated) {
-              if (!_ballots.any(
-                (ballot) => ballot.id == state.notification.ballot?.id,
-              )) {
-                setState(() {
-                  _ballots.add(state.notification.ballot!);
-                  _ballots.sort((a, b) => a.startTime.compareTo(b.endTime));
-                });
-                context.read<WebsocketBloc>().add(
-                  WebsocketEvent.subscribeBallot(
-                    ballot: state.notification.ballot!,
-                  ),
-                );
               }
             }
           },

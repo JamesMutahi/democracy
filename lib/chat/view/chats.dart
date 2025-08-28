@@ -80,7 +80,7 @@ class _ChatsState extends State<Chats> {
         BlocListener<NotificationDetailCubit, NotificationDetailState>(
           listener: (context, state) {
             if (state is NotificationCreated) {
-              if (!_chats.any(
+              if (state.notification.chat != null && !_chats.any(
                 (chat) => chat.id == state.notification.chat?.id,
               )) {
                 setState(() {
