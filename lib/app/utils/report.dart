@@ -58,7 +58,7 @@ class _ReportModalState extends State<ReportModal> {
               status: SnackBarStatus.info,
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            Navigator.of(context).pop();
+            Navigator.pop(context);
           case PostDetailFailure(:final error):
             final snackBar = getSnackBar(
               context: context,

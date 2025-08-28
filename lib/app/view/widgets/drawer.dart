@@ -1,5 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/view/widgets/bookmarks.dart';
+import 'package:democracy/app/view/widgets/constitution.dart';
 import 'package:democracy/app/view/widgets/settings.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
@@ -73,6 +75,16 @@ class AppDrawer extends StatelessWidget {
               ListTile(
                 onTap: () {
                   Navigator.pop(context);
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => Constitution()),
+                  );
+                },
+                title: Text('Constitution'),
+                leading: Icon(Symbols.settings_rounded),
+              ),
+              ListTile(
+                onTap: () {
+                  Navigator.pop(context);
                   Navigator.of(
                     context,
                   ).push(MaterialPageRoute(builder: (context) => Settings()));
@@ -112,28 +124,19 @@ class LogoutDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Center(child: Text('Log out')),
-      content: Text(
-        'Are you sure you want to log out?',
-        textAlign: TextAlign.center,
-      ),
-      actions: <Widget>[
-        OutlinedButton(
-          onPressed: () {
-            Navigator.pop(context);
-            context.read<WebsocketBloc>().add(WebsocketEvent.disconnect());
-            context.read<LoginCubit>().logout();
-          },
-          child: const Text('Yes'),
-        ),
-        OutlinedButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('No'),
-        ),
-      ],
-      actionsAlignment: MainAxisAlignment.center,
-      buttonPadding: const EdgeInsets.all(20.0),
+    return CustomDialog(
+      title: 'Log out',
+      content: 'Are you sure you want to log out?',
+      button1Text: 'Yes',
+      onButton1Pressed: () {
+        Navigator.pop(context);
+        context.read<WebsocketBloc>().add(WebsocketEvent.disconnect());
+        context.read<LoginCubit>().logout();
+      },
+      button2Text: 'No',
+      onButton2Pressed: () {
+        Navigator.pop(context);
+      },
     );
   }
 }

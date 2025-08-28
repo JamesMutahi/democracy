@@ -1,4 +1,5 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_cubit.dart';
 import 'package:democracy/ballot/models/ballot.dart';
@@ -334,21 +335,18 @@ class SubmissionDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Center(child: Text('Submit')),
-      content: Text(
-        'Are you sure you want to submit this?',
-        textAlign: TextAlign.center,
-      ),
-      actions: <Widget>[
-        OutlinedButton(onPressed: onYesPressed, child: const Text('Yes')),
-        OutlinedButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('No'),
-        ),
-      ],
-      actionsAlignment: MainAxisAlignment.center,
-      buttonPadding: const EdgeInsets.all(20.0),
+    return CustomDialog(
+      title: 'Submit',
+      content: 'Are you sure you want to submit this?',
+      button1Text: 'Yes',
+      onButton1Pressed: () {
+        Navigator.pop(context);
+        onYesPressed();
+      },
+      button2Text: 'No',
+      onButton2Pressed: () {
+        Navigator.pop(context);
+      },
     );
   }
 }

@@ -91,7 +91,7 @@ class ShareBottomSheet extends StatelessWidget {
           text: 'Send via Direct Message',
           iconData: Symbols.email_rounded,
           onTap: () {
-            Navigator.of(context).pop();
+            Navigator.pop(context);
             showModalBottomSheet(
               context: context,
               showDragHandle: true,

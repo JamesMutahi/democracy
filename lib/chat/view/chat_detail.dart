@@ -1,5 +1,6 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_text_form_field.dart';
+import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/models/chat.dart';
@@ -413,50 +414,33 @@ class _MessageActions extends StatelessWidget {
                 showDialog(
                   context: context,
                   builder:
-                      (context) => DeleteDialog(messages: messages.toList()),
+                      (context) => CustomDialog(
+                        title: 'Delete message',
+                        content:
+                            'Are you sure you want to delete this? \n'
+                            'The message will be permanently deleted',
+                        button1Text: 'Yes',
+                        onButton1Pressed: () {
+                          Navigator.pop(context);
+                          context.read<WebsocketBloc>().add(
+                            WebsocketEvent.deleteMessage(
+                              messages: messages.toList(),
+                            ),
+                          );
+                          context
+                              .read<MessageActionsCubit>()
+                              .closeActionButtons();
+                        },
+                        button2Text: 'No',
+                        onButton2Pressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
                 );
               },
               icon: Icon(Symbols.delete_rounded),
             ),
       ],
-    );
-  }
-}
-
-class DeleteDialog extends StatelessWidget {
-  const DeleteDialog({super.key, required this.messages});
-
-  final List<Message> messages;
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      icon: const Icon(Icons.warning_amber_rounded, size: 40),
-      iconColor: Colors.amber,
-      title: Center(child: Text('Delete message')),
-      content: Text(
-        'Are you sure you want to delete this? \n'
-        'The message will be permanently deleted',
-        textAlign: TextAlign.center,
-      ),
-      actions: <Widget>[
-        OutlinedButton(
-          onPressed: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.deleteMessage(messages: messages),
-            );
-            context.read<MessageActionsCubit>().closeActionButtons();
-            Navigator.pop(context);
-          },
-          child: const Text('Yes'),
-        ),
-        OutlinedButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('No'),
-        ),
-      ],
-      actionsAlignment: MainAxisAlignment.center,
-      buttonPadding: const EdgeInsets.all(20.0),
     );
   }
 }

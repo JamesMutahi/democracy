@@ -79,15 +79,6 @@ class _PetitionsState extends State<Petitions> {
         ),
         BlocListener<PetitionDetailCubit, PetitionDetailState>(
           listener: (context, state) {
-            if (state is PetitionCreated) {
-              if (!_petitions.any(
-                (petition) => petition.id == state.petition.id,
-              )) {
-                setState(() {
-                  _petitions.add(state.petition);
-                });
-              }
-            }
             if (state is PetitionUpdated) {
               if (_petitions.any(
                 (petition) => petition.id == state.petition.id,

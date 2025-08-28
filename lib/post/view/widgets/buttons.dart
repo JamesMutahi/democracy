@@ -45,10 +45,15 @@ class PostMorePopUp extends StatelessWidget {
                       (context) => CustomDialog(
                         title: 'Delete',
                         content: 'Are you sure you want to delete this post?',
-                        onYesPressed: () {
+                        button1Text: 'Yes',
+                        onButton1Pressed: () {
                           context.read<WebsocketBloc>().add(
                             WebsocketEvent.deletePost(post: post),
                           );
+                        },
+                        button2Text: 'No',
+                        onButton2Pressed: () {
+                          Navigator.pop(context);
                         },
                       ),
                 );
@@ -141,10 +146,15 @@ class RepostDeleteButton extends StatelessWidget {
               (context) => CustomDialog(
                 title: 'Delete',
                 content: 'Are you sure you want to delete this repost?',
-                onYesPressed: () {
+                button1Text: 'Yes',
+                onButton1Pressed: () {
                   context.read<WebsocketBloc>().add(
                     WebsocketEvent.deletePost(post: post),
                   );
+                },
+                button2Text: 'No',
+                onButton2Pressed: () {
+                  Navigator.pop(context);
                 },
               ),
         );

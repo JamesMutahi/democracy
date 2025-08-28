@@ -1,5 +1,6 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
+import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/utils/no_results.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart' show TimeLeft;
@@ -53,7 +54,7 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
         BlocListener<AnswerCubit, AnswerState>(
           listener: (context, state) {
             if (state.status == AnswerStatus.submitted) {
-              Navigator.of(context).pop();
+              Navigator.pop(context);
               final snackBar = getSnackBar(
                 context: context,
                 message: 'Submitted',
@@ -81,35 +82,18 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return AlertDialog(
-                title: Center(
-                  child: Text('Leave survey?', textAlign: TextAlign.center),
-                ),
-                content: Text(
-                  'Progress is not saved',
-                  textAlign: TextAlign.center,
-                ),
-                actions: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      OutlinedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
-                        },
-                        child: Text('Yes'),
-                      ),
-                      SizedBox(width: 10),
-                      OutlinedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Text('No'),
-                      ),
-                    ],
-                  ),
-                ],
+              return CustomDialog(
+                title: 'Leave survey?',
+                content: 'Progress is not saved',
+                button1Text: 'Yes',
+                onButton1Pressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                button2Text: 'No',
+                onButton2Pressed: () {
+                  Navigator.pop(context);
+                },
               );
             },
           );

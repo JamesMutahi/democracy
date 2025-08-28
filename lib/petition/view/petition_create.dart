@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/utils/media_tools.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_cubit.dart';
@@ -40,16 +41,16 @@ class _CreatePetitionState extends State<CreatePetition> {
             context: context,
             builder:
                 (context) => PostPetitionDialog(
-              onYesPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) => PostCreate(petition: state.petition),
-                  ),
-                );
-              },
-            ),
+                  onYesPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => PostCreate(petition: state.petition),
+                      ),
+                    );
+                  },
+                ),
           );
         }
       },
@@ -246,27 +247,18 @@ class PetitionCreateDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Center(child: Text('Publish')),
-      content: Text(
-        'Are you sure you want to Publish this?',
-        textAlign: TextAlign.center,
-      ),
-      actions: <Widget>[
-        OutlinedButton(
-          onPressed: () {
-            onYesPressed();
-            Navigator.pop(context);
-          },
-          child: const Text('Yes'),
-        ),
-        OutlinedButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('No'),
-        ),
-      ],
-      actionsAlignment: MainAxisAlignment.center,
-      buttonPadding: const EdgeInsets.all(20.0),
+    return CustomDialog(
+      title: 'Publish',
+      content: 'Are you sure you want to Publish this?',
+      button1Text: 'Yes',
+      onButton1Pressed: () {
+        Navigator.pop(context);
+        onYesPressed();
+      },
+      button2Text: 'No',
+      onButton2Pressed: () {
+        Navigator.pop(context);
+      },
     );
   }
 }
@@ -276,30 +268,20 @@ class ExitDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Center(child: Text('Leave page')),
-      content: Text(
-        'Do you want to leave this page? \n'
-        'Progress will not be saved.',
-        textAlign: TextAlign.center,
-      ),
-      actions: <Widget>[
-        OutlinedButton(
-          onPressed: () {
-            Navigator.pop(context);
-            Navigator.pop(context);
-          },
-          child: const Text('Yes'),
-        ),
-        OutlinedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('No'),
-        ),
-      ],
-      actionsAlignment: MainAxisAlignment.center,
-      buttonPadding: const EdgeInsets.all(20.0),
+    return CustomDialog(
+      title: 'Leave page',
+      content:
+          'Do you want to leave this page? \n'
+          'Progress will not be saved.',
+      button1Text: 'Yes',
+      onButton1Pressed: () {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      },
+      button2Text: 'No',
+      onButton2Pressed: () {
+        Navigator.pop(context);
+      },
     );
   }
 }
@@ -311,28 +293,20 @@ class PostPetitionDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Center(child: Text('Post your petition')),
-      content: Text(
-        'Do you want to post your petition? \n'
-        'This will give your petition more exposure',
-        textAlign: TextAlign.center,
-      ),
-      actions: <Widget>[
-        OutlinedButton(
-          onPressed: () {
-            Navigator.pop(context);
-            onYesPressed();
-          },
-          child: const Text('Yes'),
-        ),
-        OutlinedButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('No'),
-        ),
-      ],
-      actionsAlignment: MainAxisAlignment.center,
-      buttonPadding: const EdgeInsets.all(20.0),
+    return CustomDialog(
+      title: 'Post your petition',
+      content:
+          'Do you want to post your petition? \n'
+          'This will give your petition more exposure',
+      button1Text: 'Yes',
+      onButton1Pressed: () {
+        Navigator.pop(context);
+        onYesPressed();
+      },
+      button2Text: 'No',
+      onButton2Pressed: () {
+        Navigator.pop(context);
+      },
     );
   }
 }

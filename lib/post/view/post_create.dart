@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/utils/media_tools.dart';
 import 'package:democracy/app/utils/tagging.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
@@ -463,27 +464,18 @@ class PostCreateDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Center(child: Text('Post')),
-      content: Text(
-        'Are you sure you want to post this?',
-        textAlign: TextAlign.center,
-      ),
-      actions: <Widget>[
-        OutlinedButton(
-          onPressed: () {
-            onYesPressed();
-            Navigator.pop(context);
-          },
-          child: const Text('Yes'),
-        ),
-        OutlinedButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('No'),
-        ),
-      ],
-      actionsAlignment: MainAxisAlignment.center,
-      buttonPadding: const EdgeInsets.all(20.0),
+    return CustomDialog(
+      title: 'Post',
+      content: 'Are you sure you want to post this?',
+      button1Text: 'Yes',
+      onButton1Pressed: () {
+        Navigator.pop(context);
+        onYesPressed();
+      },
+      button2Text: 'No',
+      onButton2Pressed: () {
+        Navigator.pop(context);
+      },
     );
   }
 }
@@ -495,31 +487,21 @@ class SaveDraftDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Center(child: Text('Save as draft')),
-      content: Text(
-        'Do you want to save this post as a draft? \n'
-        'You can post it at a later time.',
-        textAlign: TextAlign.center,
-      ),
-      actions: <Widget>[
-        OutlinedButton(
-          onPressed: () {
-            Navigator.pop(context);
-            Navigator.pop(context);
-          },
-          child: const Text('Delete'),
-        ),
-        OutlinedButton(
-          onPressed: () {
-            onYesPressed();
-            Navigator.pop(context);
-          },
-          child: const Text('Save'),
-        ),
-      ],
-      actionsAlignment: MainAxisAlignment.center,
-      buttonPadding: const EdgeInsets.all(20.0),
+    return CustomDialog(
+      title: 'Save as draft',
+      content:
+          'Do you want to save this post as a draft? \n'
+          'You can post it at a later time.',
+      button1Text: 'Delete',
+      onButton1Pressed: () {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      },
+      button2Text: 'Save',
+      onButton2Pressed: () {
+        Navigator.pop(context);
+        onYesPressed();
+      },
     );
   }
 }

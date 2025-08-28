@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/utils/media_tools.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
@@ -312,27 +313,18 @@ class _SaveDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Center(child: Text('Update')),
-      content: Text(
-        'Are you sure you want to update this?',
-        textAlign: TextAlign.center,
-      ),
-      actions: <Widget>[
-        OutlinedButton(
-          onPressed: () {
-            onYesPressed();
-            Navigator.pop(context);
-          },
-          child: const Text('Yes'),
-        ),
-        OutlinedButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('No'),
-        ),
-      ],
-      actionsAlignment: MainAxisAlignment.center,
-      buttonPadding: const EdgeInsets.all(20.0),
+    return CustomDialog(
+      title: 'Update',
+      content: 'Are you sure you want to update this?',
+      button1Text: 'Yes',
+      onButton1Pressed: () {
+        Navigator.pop(context);
+        onYesPressed();
+      },
+      button2Text: 'No',
+      onButton2Pressed: () {
+        Navigator.pop(context);
+      },
     );
   }
 }
