@@ -38,6 +38,8 @@ class NotificationTile extends StatelessWidget {
             : notification.chat != null
             ? notification.chat!.lastMessage!.text
             : '',
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
       ),
       trailing:
           notification.isRead

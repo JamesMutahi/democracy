@@ -232,6 +232,15 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_GetPetitionSupporters>((event, emit) {
       _onGetPetitionSupporters(emit, event);
     });
+    on<_GetUserPetitions>((event, emit) {
+      _onGetUserPetitions(emit, event);
+    });
+    on<_ResubscribeUserPetitions>((event, emit) {
+      _onResubscribeUserPetitions(emit, event);
+    });
+    on<_UnsubscribeUserPetitions>((event, emit) {
+      _onUnsubscribeUserPetitions(emit, event);
+    });
     on<_Disconnect>((event, emit) async {
       await _channel.sink.close();
       emit(WebsocketState());
@@ -536,7 +545,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     emit(state.copyWith(status: WebsocketStatus.loading));
     Map<String, dynamic> message = {
       'stream': postsStream,
-      'payload': {'action': 'draft_posts', 'request_id': postRequestId},
+      'payload': {'action': 'drafts', 'request_id': postRequestId},
     };
     _channel.sink.add(jsonEncode(message));
   }
@@ -1238,6 +1247,59 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         "action": 'petition_supporters',
         'request_id': usersRequestId,
         'pk': event.petition.id,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onGetUserPetitions(
+    Emitter<WebsocketState> emit,
+    _GetUserPetitions event,
+  ) async {
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    Map<String, dynamic> message = {
+      'stream': petitionsStream,
+      'payload': {
+        'action': 'user_petitions',
+        'request_id': event.user.id,
+        'user': event.user.id,
+        'last_petition': event.lastPetition?.id,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onResubscribeUserPetitions(
+    Emitter<WebsocketState> emit,
+    _ResubscribeUserPetitions event,
+  ) async {
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    List<int> petitionIds =
+        event.petitions.map((petition) => petition.id).toList();
+    Map<String, dynamic> message = {
+      'stream': petitionsStream,
+      'payload': {
+        "action": 'resubscribe_user_petitions',
+        'request_id': event.user.id,
+        'pks': petitionIds,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onUnsubscribeUserPetitions(
+    Emitter<WebsocketState> emit,
+    _UnsubscribeUserPetitions event,
+  ) async {
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    List<int> petitionIds =
+        event.petitions.map((petition) => petition.id).toList();
+    Map<String, dynamic> message = {
+      'stream': petitionsStream,
+      'payload': {
+        "action": 'resubscribe_user_petitions',
+        'request_id': event.user.id,
+        'pks': petitionIds,
       },
     };
     _channel.sink.add(jsonEncode(message));

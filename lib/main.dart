@@ -18,6 +18,7 @@ import 'package:democracy/notification/bloc/preferences/preferences_cubit.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_cubit.dart';
 import 'package:democracy/petition/bloc/petitions/petitions_cubit.dart';
 import 'package:democracy/petition/bloc/supporters/supporters_cubit.dart';
+import 'package:democracy/petition/bloc/user_petitions/user_petitions_cubit.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
 import 'package:democracy/post/bloc/draft_posts/draft_posts_cubit.dart';
 import 'package:democracy/post/bloc/following_posts/following_posts_cubit.dart';
@@ -132,6 +133,7 @@ void main() async {
           BlocProvider(create: (context) => PetitionsCubit()),
           BlocProvider(create: (context) => PetitionDetailCubit()),
           BlocProvider(create: (context) => SupportersCubit()),
+          BlocProvider(create: (context) => UserPetitionsCubit()),
         ],
         child: const MyApp(),
       ),

@@ -229,7 +229,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     user: user,
                                   ),
                                   Likes(key: ValueKey(user.id), user: user),
-                                  PetitionsTab(
+                                  UserPetitions(
                                     key: ValueKey(user.id),
                                     user: user,
                                   ),

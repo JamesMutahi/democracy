@@ -80,7 +80,7 @@ class AppDrawer extends StatelessWidget {
                   );
                 },
                 title: Text('Constitution'),
-                leading: Icon(Symbols.settings_rounded),
+                leading: Icon(Symbols.book_rounded),
               ),
               ListTile(
                 onTap: () {

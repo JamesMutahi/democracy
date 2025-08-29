@@ -250,5 +250,20 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     User? lastUser,
   }) = _GetPetitionSupporters;
 
+  const factory WebsocketEvent.getUserPetitions({
+    required User user,
+    Petition? lastPetition,
+  }) = _GetUserPetitions;
+
+  const factory WebsocketEvent.resubscribeUserPetitions({
+    required User user,
+    required List<Petition> petitions,
+  }) = _ResubscribeUserPetitions;
+
+  const factory WebsocketEvent.unsubscribeUserPetitions({
+    required User user,
+    required List<Petition> petitions,
+  }) = _UnsubscribeUserPetitions;
+
   const factory WebsocketEvent.disconnect() = _Disconnect;
 }

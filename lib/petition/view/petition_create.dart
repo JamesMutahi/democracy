@@ -249,7 +249,7 @@ class PetitionCreateDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomDialog(
       title: 'Publish',
-      content: 'Are you sure you want to Publish this?',
+      content: 'Are you sure you want to publish this?',
       button1Text: 'Yes',
       onButton1Pressed: () {
         Navigator.pop(context);
