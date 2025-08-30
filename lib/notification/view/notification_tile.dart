@@ -2,6 +2,7 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/ballot/view/ballot_detail.dart';
 import 'package:democracy/chat/view/chat_detail.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
+import 'package:democracy/petition/view/petition_detail.dart';
 import 'package:democracy/post/view/post_detail.dart';
 import 'package:democracy/survey/view/survey_detail.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,8 @@ class NotificationTile extends StatelessWidget {
             ? notification.ballot!.title
             : notification.survey != null
             ? notification.survey!.name
+            : notification.petition != null
+            ? notification.petition!.title
             : notification.chat != null
             ? notification.chat!.lastMessage!.text
             : '',
@@ -78,6 +81,14 @@ class NotificationTile extends StatelessWidget {
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => SurveyDetail(survey: notification.survey!),
+            ),
+          );
+        }
+        if (notification.petition != null) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder:
+                  (context) => PetitionDetail(petition: notification.petition!),
             ),
           );
         }

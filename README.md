@@ -1,6 +1,6 @@
 # democracy
 
-A true democracy means that the might lies solely with the people and that the people alone are entitled to it and thus, parties, rulers, the powerful, the hierarchical and other rulers are not allowed to decide on any matters independently or even to make propaganda for their ideas.
+A true democracy means that the power lies solely with the people and that the people alone are entitled to it and thus, parties, rulers, the powerful, the hierarchical and other rulers are not allowed to decide on any matters independently or even to make propaganda for their ideas.
 
 ## Getting Started
 
