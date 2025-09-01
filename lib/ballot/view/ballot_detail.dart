@@ -23,10 +23,6 @@ class _BallotDetailState extends State<BallotDetail> {
 
   @override
   Widget build(BuildContext context) {
-    bool votingHasStarted =
-        _ballot.startTime.difference(DateTime.now()) < Duration(seconds: 0);
-    bool votingHasEnded =
-        _ballot.endTime.difference(DateTime.now()) < Duration(seconds: 0);
     bool userHasVoted = _ballot.votedOption != null;
     return BlocListener<BallotDetailCubit, BallotDetailState>(
       listener: (context, state) {
@@ -67,13 +63,10 @@ class _BallotDetailState extends State<BallotDetail> {
                       startTime: _ballot.startTime,
                       endTime: _ballot.endTime,
                     ),
-                    if (votingHasStarted)
-                      Text(
-                        '${_ballot.totalVotes} ${_ballot.totalVotes == 1 ? 'vote' : 'votes'}',
-                        style: TextStyle(
-                          color: Theme.of(context).disabledColor,
-                        ),
-                      ),
+                    Text(
+                      '${_ballot.totalVotes} ${_ballot.totalVotes == 1 ? 'vote' : 'votes'}',
+                      style: TextStyle(color: Theme.of(context).disabledColor),
+                    ),
                   ],
                 ),
                 SizedBox(height: 10),
@@ -94,7 +87,8 @@ class _BallotDetailState extends State<BallotDetail> {
                         return AnimatedSwitcher(
                           duration: const Duration(milliseconds: 300),
                           child:
-                              (votingHasEnded || userHasVoted && !changingVote)
+                              (!_ballot.isActive ||
+                                      userHasVoted && !changingVote)
                                   ? BallotPercentIndicator(
                                     key: ValueKey(option.id),
                                     ballot: _ballot,
@@ -104,7 +98,7 @@ class _BallotDetailState extends State<BallotDetail> {
                                   : OptionTile(
                                     option: option,
                                     onTap: () {
-                                      if (votingHasStarted) {
+                                      if (_ballot.isActive) {
                                         context.read<WebsocketBloc>().add(
                                           WebsocketEvent.vote(option: option),
                                         );
@@ -114,7 +108,7 @@ class _BallotDetailState extends State<BallotDetail> {
                                       } else {
                                         final snackBar = getSnackBar(
                                           context: context,
-                                          message: 'Not started',
+                                          message: 'Closed',
                                           status: SnackBarStatus.info,
                                         );
                                         ScaffoldMessenger.of(
@@ -132,7 +126,7 @@ class _BallotDetailState extends State<BallotDetail> {
                   ),
                 ),
                 SizedBox(height: 10),
-                userHasVoted && !votingHasEnded
+                userHasVoted && _ballot.isActive
                     ? changingVote
                         ? SizedBox.shrink()
                         : Align(
@@ -149,11 +143,7 @@ class _BallotDetailState extends State<BallotDetail> {
                     : SizedBox.shrink(),
                 SizedBox(height: 20),
                 !changingVote
-                    ? ReasonWidget(
-                      ballot: _ballot,
-                      votingHasEnded: votingHasEnded,
-                      votingHasStarted: votingHasStarted,
-                    )
+                    ? ReasonWidget(ballot: _ballot)
                     : SizedBox.shrink(),
               ],
             ),
@@ -195,16 +185,9 @@ class OptionTile extends StatelessWidget {
 }
 
 class ReasonWidget extends StatefulWidget {
-  const ReasonWidget({
-    super.key,
-    required this.ballot,
-    required this.votingHasEnded,
-    required this.votingHasStarted,
-  });
+  const ReasonWidget({super.key, required this.ballot});
 
   final Ballot ballot;
-  final bool votingHasEnded;
-  final bool votingHasStarted;
 
   @override
   State<ReasonWidget> createState() => _ReasonWidgetState();
@@ -252,15 +235,10 @@ class _ReasonWidgetState extends State<ReasonWidget> {
                   reason = value;
                 });
               },
-              readOnly:
-                  widget.votingHasEnded
-                      ? true
-                      : widget.votingHasStarted
-                      ? false
-                      : true,
+              readOnly: !widget.ballot.isActive,
               minLines: 1,
               maxLines: 10,
-              maxLength: widget.votingHasEnded ? null : 300,
+              maxLength: widget.ballot.isActive ? 300 : null,
               keyboardType: TextInputType.multiline,
               onTapOutside: (event) {
                 FocusManager.instance.primaryFocus?.unfocus();
@@ -268,7 +246,7 @@ class _ReasonWidgetState extends State<ReasonWidget> {
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Theme.of(context).scaffoldBackgroundColor,
-                hintText: widget.votingHasEnded ? '' : 'Enter reason',
+                hintText: widget.ballot.isActive ? 'Enter reason' : '',
                 hintStyle: TextStyle(color: Theme.of(context).hintColor),
                 prefixIconConstraints: const BoxConstraints(
                   minWidth: 0,
@@ -292,7 +270,7 @@ class _ReasonWidgetState extends State<ReasonWidget> {
           ),
           SizedBox(height: 10),
           Visibility(
-            visible: !widget.votingHasEnded,
+            visible: widget.ballot.isActive,
             child: Align(
               alignment: Alignment.topRight,
               child: OutlinedButton(

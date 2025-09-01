@@ -1,5 +1,6 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/custom_text.dart';
+import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_cubit.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_tile.dart'
@@ -100,20 +101,7 @@ class _PetitionDetailState extends State<PetitionDetail> {
                                   petition: _petition,
                                 ),
                               ),
-                              OutlinedButton(
-                                onPressed: () {
-                                  context.read<WebsocketBloc>().add(
-                                    WebsocketEvent.supportPetition(
-                                      petition: _petition,
-                                    ),
-                                  );
-                                },
-                                child: Text(
-                                  _petition.isSupported
-                                      ? 'Remove support'
-                                      : 'Support',
-                                ),
-                              ),
+                              SupportButton(petition: _petition),
                             ],
                           ),
                           Text(
@@ -132,6 +120,40 @@ class _PetitionDetailState extends State<PetitionDetail> {
                   ],
                 ),
       ),
+    );
+  }
+}
+
+class SupportButton extends StatelessWidget {
+  const SupportButton({super.key, required this.petition});
+
+  final Petition petition;
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        backgroundColor:
+            petition.isActive
+                ? Theme.of(context).colorScheme.tertiaryContainer
+                : Theme.of(context).disabledColor,
+      ),
+      onPressed:
+          petition.isActive
+              ? () {
+                context.read<WebsocketBloc>().add(
+                  WebsocketEvent.supportPetition(petition: petition),
+                );
+              }
+              : () {
+                final snackBar = getSnackBar(
+                  context: context,
+                  message: 'This petition is closed',
+                  status: SnackBarStatus.success,
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              },
+      child: Text(petition.isSupported ? 'Remove support' : 'Support'),
     );
   }
 }

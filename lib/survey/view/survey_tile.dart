@@ -3,8 +3,7 @@ import 'package:democracy/app/utils/more_pop_up.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart' show TimeLeft;
 import 'package:democracy/post/view/post_create.dart';
 import 'package:democracy/survey/models/survey.dart';
-import 'package:democracy/survey/view/survey_process/page.dart';
-import 'package:democracy/survey/view/survey_process/response_page.dart';
+import 'package:democracy/survey/view/survey_detail.dart';
 import 'package:flutter/material.dart';
 
 class SurveyTile extends StatelessWidget {
@@ -19,48 +18,13 @@ class SurveyTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool surveyIsClosed =
-        survey.endTime.difference(DateTime.now()) < Duration(seconds: 0);
-    bool alreadyResponded = survey.response != null;
-    void openSurveyProcessPage() {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SurveyProcessPage(survey: survey),
-        ),
-      );
-    }
-
-    List<Widget> surveyButtons = [
-      Visibility(
-        visible: !surveyIsClosed,
-        child: OutlinedButton(
-          onPressed: () {
-            openSurveyProcessPage();
-          },
-          child: Text('Submit response'),
-        ),
-      ),
-      OutlinedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ResponsePage(survey: survey),
-            ),
-          );
-        },
-        child: Text('View response'),
-      ),
-    ];
-
     return InkWell(
-      onTap:
-          alreadyResponded
-              ? () {}
-              : () {
-                openSurveyProcessPage();
-              },
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SurveyDetail(survey: survey)),
+        );
+      },
       child: Stack(
         children: [
           Container(
@@ -82,34 +46,28 @@ class SurveyTile extends StatelessWidget {
                 Container(
                   margin: EdgeInsets.only(right: isDependency ? 0 : 20),
                   child: Text(
-                    survey.name,
+                    survey.title,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
                 SizedBox(height: 5),
-                TimeLeft(
-                  key: ValueKey(survey),
-                  startTime: survey.startTime,
-                  endTime: survey.endTime,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TimeLeft(
+                      key: ValueKey(survey),
+                      startTime: survey.startTime,
+                      endTime: survey.endTime,
+                    ),
+                    if (!isDependency)
+                      Text(
+                        '${survey.totalResponses} ${survey.totalResponses == 1 ? 'response' : 'responses'}',
+                        style: TextStyle(
+                          color: Theme.of(context).disabledColor,
+                        ),
+                      ),
+                  ],
                 ),
-                SizedBox(height: 5),
-                Text(survey.description),
-                SizedBox(height: 10),
-                isDependency
-                    ? Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: surveyButtons,
-                    )
-                    : alreadyResponded
-                    ? Row(
-                      mainAxisAlignment:
-                          surveyIsClosed
-                              ? MainAxisAlignment.end
-                              : MainAxisAlignment.spaceBetween,
-                      children: surveyButtons,
-                    )
-                    : SizedBox.shrink(),
               ],
             ),
           ),

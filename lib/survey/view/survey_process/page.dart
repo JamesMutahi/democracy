@@ -4,6 +4,7 @@ import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/utils/no_results.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart' show TimeLeft;
+import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
 import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
 import 'package:democracy/survey/bloc/survey_process/page/page_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
@@ -23,27 +24,37 @@ class SurveyProcessPage extends StatefulWidget {
 }
 
 class _SurveyProcessPageState extends State<SurveyProcessPage> {
+  late Survey _survey = widget.survey;
+
   @override
   void initState() {
     context.read<SurveyBottomNavigationBloc>().add(
-      SurveyBottomNavigationEvent.started(survey: widget.survey),
+      SurveyBottomNavigationEvent.started(survey: _survey),
     );
-    context.read<AnswerCubit>().started(survey: widget.survey);
+    context.read<AnswerCubit>().started(survey: _survey);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    bool surveyHasStarted =
-        widget.survey.startTime.difference(DateTime.now()) <
-        Duration(seconds: 0);
     return MultiBlocListener(
       listeners: [
+        BlocListener<SurveyDetailCubit, SurveyDetailState>(
+          listener: (context, state) {
+            if (state is SurveyUpdated) {
+              if (_survey.id == state.survey.id) {
+                setState(() {
+                  _survey = state.survey;
+                });
+              }
+            }
+          },
+        ),
         BlocListener<SurveyBottomNavigationBloc, SurveyBottomNavigationState>(
           listener: (context, state) {
             if (state.status == SurveyBottomNavigationStatus.loaded) {
               context.read<PageBloc>().add(
-                PageEvent.pageLoaded(survey: widget.survey, page: state.page),
+                PageEvent.pageLoaded(survey: _survey, page: state.page),
               );
             }
             if (state.status == SurveyBottomNavigationStatus.completed) {
@@ -99,7 +110,7 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
           );
         },
         child: Scaffold(
-          appBar: AppBar(title: Text(widget.survey.name)),
+          appBar: AppBar(title: Text(_survey.title)),
           body: BlocBuilder<PageBloc, PageState>(
             builder: (context, state) {
               switch (state) {
@@ -124,8 +135,7 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
                         itemCount: questions.length,
                       )
                       : NoResults(
-                        text:
-                            "Oops...Someone didn't add the questions for this page",
+                        text: "Oops...questions for this page are missing",
                       );
                 case PageComplete():
                   return Center(
@@ -138,15 +148,15 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
                         TimeLeft(
                           key: UniqueKey(),
                           alignCenter: true,
-                          startTime: widget.survey.startTime,
-                          endTime: widget.survey.endTime,
+                          startTime: _survey.startTime,
+                          endTime: _survey.endTime,
                         ),
                         SizedBox(height: 10),
                         BlocBuilder<AnswerCubit, AnswerState>(
                           builder: (context, answerState) {
                             return ElevatedButton(
                               onPressed: () {
-                                if (surveyHasStarted) {
+                                if (_survey.isActive) {
                                   context.read<WebsocketBloc>().add(
                                     WebsocketEvent.submitResponse(
                                       survey: answerState.survey!,
@@ -159,7 +169,7 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
                                 } else {
                                   final snackBar = getSnackBar(
                                     context: context,
-                                    message: 'Not started',
+                                    message: 'Closed',
                                     status: SnackBarStatus.info,
                                   );
                                   ScaffoldMessenger.of(
@@ -172,7 +182,7 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:
-                                    surveyHasStarted
+                                    _survey.isActive
                                         ? Theme.of(
                                           context,
                                         ).colorScheme.tertiaryContainer
@@ -193,7 +203,7 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
               }
             },
           ),
-          bottomNavigationBar: BottomNavBar(survey: widget.survey),
+          bottomNavigationBar: BottomNavBar(survey: _survey),
         ),
       ),
     );

@@ -20,6 +20,7 @@ _Petition _$PetitionFromJson(Map<String, dynamic> json) => _Petition(
           .toList(),
   isSupported: json['is_supported'] as bool,
   createdAt: DateTime.parse(json['created_at'] as String),
+  isActive: json['is_active'] as bool,
 );
 
 Map<String, dynamic> _$PetitionToJson(_Petition instance) => <String, dynamic>{
@@ -33,4 +34,5 @@ Map<String, dynamic> _$PetitionToJson(_Petition instance) => <String, dynamic>{
   'recent_supporters': instance.recentSupporters,
   'is_supported': instance.isSupported,
   'created_at': instance.createdAt.toIso8601String(),
+  'is_active': instance.isActive,
 };

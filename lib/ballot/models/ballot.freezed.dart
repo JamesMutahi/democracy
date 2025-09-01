@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Ballot {
 
- int get id; String get title; String get description;@JsonKey(name: 'start_time') DateTime get startTime;@JsonKey(name: 'end_time') DateTime get endTime;@JsonKey(name: 'total_votes') int get totalVotes;@JsonKey(name: 'voted_option') int? get votedOption; List<Option> get options; Reason? get reason;
+ int get id; String get title; String get description;@JsonKey(name: 'start_time') DateTime get startTime;@JsonKey(name: 'end_time') DateTime get endTime;@JsonKey(name: 'total_votes') int get totalVotes;@JsonKey(name: 'voted_option') int? get votedOption;@JsonKey(name: 'is_active') bool get isActive; List<Option> get options; Reason? get reason;
 /// Create a copy of Ballot
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $BallotCopyWith<Ballot> get copyWith => _$BallotCopyWithImpl<Ballot>(this as Bal
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Ballot&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.totalVotes, totalVotes) || other.totalVotes == totalVotes)&&(identical(other.votedOption, votedOption) || other.votedOption == votedOption)&&const DeepCollectionEquality().equals(other.options, options)&&(identical(other.reason, reason) || other.reason == reason));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Ballot&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.totalVotes, totalVotes) || other.totalVotes == totalVotes)&&(identical(other.votedOption, votedOption) || other.votedOption == votedOption)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&const DeepCollectionEquality().equals(other.options, options)&&(identical(other.reason, reason) || other.reason == reason));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,startTime,endTime,totalVotes,votedOption,const DeepCollectionEquality().hash(options),reason);
+int get hashCode => Object.hash(runtimeType,id,title,description,startTime,endTime,totalVotes,votedOption,isActive,const DeepCollectionEquality().hash(options),reason);
 
 @override
 String toString() {
-  return 'Ballot(id: $id, title: $title, description: $description, startTime: $startTime, endTime: $endTime, totalVotes: $totalVotes, votedOption: $votedOption, options: $options, reason: $reason)';
+  return 'Ballot(id: $id, title: $title, description: $description, startTime: $startTime, endTime: $endTime, totalVotes: $totalVotes, votedOption: $votedOption, isActive: $isActive, options: $options, reason: $reason)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $BallotCopyWith<$Res>  {
   factory $BallotCopyWith(Ballot value, $Res Function(Ballot) _then) = _$BallotCopyWithImpl;
 @useResult
 $Res call({
- int id, String title, String description,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'end_time') DateTime endTime,@JsonKey(name: 'total_votes') int totalVotes,@JsonKey(name: 'voted_option') int? votedOption, List<Option> options, Reason? reason
+ int id, String title, String description,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'end_time') DateTime endTime,@JsonKey(name: 'total_votes') int totalVotes,@JsonKey(name: 'voted_option') int? votedOption,@JsonKey(name: 'is_active') bool isActive, List<Option> options, Reason? reason
 });
 
 
@@ -65,7 +65,7 @@ class _$BallotCopyWithImpl<$Res>
 
 /// Create a copy of Ballot
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? description = null,Object? startTime = null,Object? endTime = null,Object? totalVotes = null,Object? votedOption = freezed,Object? options = null,Object? reason = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? description = null,Object? startTime = null,Object? endTime = null,Object? totalVotes = null,Object? votedOption = freezed,Object? isActive = null,Object? options = null,Object? reason = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -74,7 +74,8 @@ as String,startTime: null == startTime ? _self.startTime : startTime // ignore: 
 as DateTime,endTime: null == endTime ? _self.endTime : endTime // ignore: cast_nullable_to_non_nullable
 as DateTime,totalVotes: null == totalVotes ? _self.totalVotes : totalVotes // ignore: cast_nullable_to_non_nullable
 as int,votedOption: freezed == votedOption ? _self.votedOption : votedOption // ignore: cast_nullable_to_non_nullable
-as int?,options: null == options ? _self.options : options // ignore: cast_nullable_to_non_nullable
+as int?,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
+as bool,options: null == options ? _self.options : options // ignore: cast_nullable_to_non_nullable
 as List<Option>,reason: freezed == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
 as Reason?,
   ));
@@ -170,10 +171,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String title,  String description, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime, @JsonKey(name: 'total_votes')  int totalVotes, @JsonKey(name: 'voted_option')  int? votedOption,  List<Option> options,  Reason? reason)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String title,  String description, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime, @JsonKey(name: 'total_votes')  int totalVotes, @JsonKey(name: 'voted_option')  int? votedOption, @JsonKey(name: 'is_active')  bool isActive,  List<Option> options,  Reason? reason)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Ballot() when $default != null:
-return $default(_that.id,_that.title,_that.description,_that.startTime,_that.endTime,_that.totalVotes,_that.votedOption,_that.options,_that.reason);case _:
+return $default(_that.id,_that.title,_that.description,_that.startTime,_that.endTime,_that.totalVotes,_that.votedOption,_that.isActive,_that.options,_that.reason);case _:
   return orElse();
 
 }
@@ -191,10 +192,10 @@ return $default(_that.id,_that.title,_that.description,_that.startTime,_that.end
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String title,  String description, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime, @JsonKey(name: 'total_votes')  int totalVotes, @JsonKey(name: 'voted_option')  int? votedOption,  List<Option> options,  Reason? reason)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String title,  String description, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime, @JsonKey(name: 'total_votes')  int totalVotes, @JsonKey(name: 'voted_option')  int? votedOption, @JsonKey(name: 'is_active')  bool isActive,  List<Option> options,  Reason? reason)  $default,) {final _that = this;
 switch (_that) {
 case _Ballot():
-return $default(_that.id,_that.title,_that.description,_that.startTime,_that.endTime,_that.totalVotes,_that.votedOption,_that.options,_that.reason);}
+return $default(_that.id,_that.title,_that.description,_that.startTime,_that.endTime,_that.totalVotes,_that.votedOption,_that.isActive,_that.options,_that.reason);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -208,10 +209,10 @@ return $default(_that.id,_that.title,_that.description,_that.startTime,_that.end
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String title,  String description, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime, @JsonKey(name: 'total_votes')  int totalVotes, @JsonKey(name: 'voted_option')  int? votedOption,  List<Option> options,  Reason? reason)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String title,  String description, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime, @JsonKey(name: 'total_votes')  int totalVotes, @JsonKey(name: 'voted_option')  int? votedOption, @JsonKey(name: 'is_active')  bool isActive,  List<Option> options,  Reason? reason)?  $default,) {final _that = this;
 switch (_that) {
 case _Ballot() when $default != null:
-return $default(_that.id,_that.title,_that.description,_that.startTime,_that.endTime,_that.totalVotes,_that.votedOption,_that.options,_that.reason);case _:
+return $default(_that.id,_that.title,_that.description,_that.startTime,_that.endTime,_that.totalVotes,_that.votedOption,_that.isActive,_that.options,_that.reason);case _:
   return null;
 
 }
@@ -223,7 +224,7 @@ return $default(_that.id,_that.title,_that.description,_that.startTime,_that.end
 @JsonSerializable()
 
 class _Ballot implements Ballot {
-  const _Ballot({required this.id, required this.title, required this.description, @JsonKey(name: 'start_time') required this.startTime, @JsonKey(name: 'end_time') required this.endTime, @JsonKey(name: 'total_votes') required this.totalVotes, @JsonKey(name: 'voted_option') required this.votedOption, required final  List<Option> options, required this.reason}): _options = options;
+  const _Ballot({required this.id, required this.title, required this.description, @JsonKey(name: 'start_time') required this.startTime, @JsonKey(name: 'end_time') required this.endTime, @JsonKey(name: 'total_votes') required this.totalVotes, @JsonKey(name: 'voted_option') required this.votedOption, @JsonKey(name: 'is_active') required this.isActive, required final  List<Option> options, required this.reason}): _options = options;
   factory _Ballot.fromJson(Map<String, dynamic> json) => _$BallotFromJson(json);
 
 @override final  int id;
@@ -233,6 +234,7 @@ class _Ballot implements Ballot {
 @override@JsonKey(name: 'end_time') final  DateTime endTime;
 @override@JsonKey(name: 'total_votes') final  int totalVotes;
 @override@JsonKey(name: 'voted_option') final  int? votedOption;
+@override@JsonKey(name: 'is_active') final  bool isActive;
  final  List<Option> _options;
 @override List<Option> get options {
   if (_options is EqualUnmodifiableListView) return _options;
@@ -255,16 +257,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Ballot&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.totalVotes, totalVotes) || other.totalVotes == totalVotes)&&(identical(other.votedOption, votedOption) || other.votedOption == votedOption)&&const DeepCollectionEquality().equals(other._options, _options)&&(identical(other.reason, reason) || other.reason == reason));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Ballot&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.totalVotes, totalVotes) || other.totalVotes == totalVotes)&&(identical(other.votedOption, votedOption) || other.votedOption == votedOption)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&const DeepCollectionEquality().equals(other._options, _options)&&(identical(other.reason, reason) || other.reason == reason));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,startTime,endTime,totalVotes,votedOption,const DeepCollectionEquality().hash(_options),reason);
+int get hashCode => Object.hash(runtimeType,id,title,description,startTime,endTime,totalVotes,votedOption,isActive,const DeepCollectionEquality().hash(_options),reason);
 
 @override
 String toString() {
-  return 'Ballot(id: $id, title: $title, description: $description, startTime: $startTime, endTime: $endTime, totalVotes: $totalVotes, votedOption: $votedOption, options: $options, reason: $reason)';
+  return 'Ballot(id: $id, title: $title, description: $description, startTime: $startTime, endTime: $endTime, totalVotes: $totalVotes, votedOption: $votedOption, isActive: $isActive, options: $options, reason: $reason)';
 }
 
 
@@ -275,7 +277,7 @@ abstract mixin class _$BallotCopyWith<$Res> implements $BallotCopyWith<$Res> {
   factory _$BallotCopyWith(_Ballot value, $Res Function(_Ballot) _then) = __$BallotCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String title, String description,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'end_time') DateTime endTime,@JsonKey(name: 'total_votes') int totalVotes,@JsonKey(name: 'voted_option') int? votedOption, List<Option> options, Reason? reason
+ int id, String title, String description,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'end_time') DateTime endTime,@JsonKey(name: 'total_votes') int totalVotes,@JsonKey(name: 'voted_option') int? votedOption,@JsonKey(name: 'is_active') bool isActive, List<Option> options, Reason? reason
 });
 
 
@@ -292,7 +294,7 @@ class __$BallotCopyWithImpl<$Res>
 
 /// Create a copy of Ballot
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? startTime = null,Object? endTime = null,Object? totalVotes = null,Object? votedOption = freezed,Object? options = null,Object? reason = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? startTime = null,Object? endTime = null,Object? totalVotes = null,Object? votedOption = freezed,Object? isActive = null,Object? options = null,Object? reason = freezed,}) {
   return _then(_Ballot(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -301,7 +303,8 @@ as String,startTime: null == startTime ? _self.startTime : startTime // ignore: 
 as DateTime,endTime: null == endTime ? _self.endTime : endTime // ignore: cast_nullable_to_non_nullable
 as DateTime,totalVotes: null == totalVotes ? _self.totalVotes : totalVotes // ignore: cast_nullable_to_non_nullable
 as int,votedOption: freezed == votedOption ? _self.votedOption : votedOption // ignore: cast_nullable_to_non_nullable
-as int?,options: null == options ? _self._options : options // ignore: cast_nullable_to_non_nullable
+as int?,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
+as bool,options: null == options ? _self._options : options // ignore: cast_nullable_to_non_nullable
 as List<Option>,reason: freezed == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
 as Reason?,
   ));

@@ -24,8 +24,6 @@ class BallotTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool ballotHasStarted =
-        ballot.startTime.difference(DateTime.now()) < Duration(seconds: 0);
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -67,7 +65,7 @@ class BallotTile extends StatelessWidget {
                       startTime: ballot.startTime,
                       endTime: ballot.endTime,
                     ),
-                    if (!isDependency && ballotHasStarted)
+                    if (!isDependency)
                       Text(
                         '${ballot.totalVotes} ${ballot.totalVotes == 1 ? 'vote' : 'votes'}',
                         style: TextStyle(

@@ -22,7 +22,7 @@ class ResponsePage extends StatelessWidget {
     }
     questions.sort((a, b) => a.number.compareTo(b.number));
     return Scaffold(
-      appBar: AppBar(title: Text(survey.name, overflow: TextOverflow.ellipsis)),
+      appBar: AppBar(title: Text(survey.title, overflow: TextOverflow.ellipsis)),
       body: ListView.builder(
         padding: EdgeInsets.all(15),
         shrinkWrap: true,

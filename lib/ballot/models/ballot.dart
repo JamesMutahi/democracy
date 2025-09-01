@@ -15,6 +15,7 @@ sealed class Ballot with _$Ballot {
     @JsonKey(name: 'end_time') required DateTime endTime,
     @JsonKey(name: 'total_votes') required int totalVotes,
     @JsonKey(name: 'voted_option') required int? votedOption,
+    @JsonKey(name: 'is_active') required bool isActive,
     required List<Option> options,
     required Reason? reason,
   }) = _Ballot;

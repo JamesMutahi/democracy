@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Petition {
 
- int get id; User get author; String get title; String get description; String get image; String? get video; int get supporters;@JsonKey(name: 'recent_supporters') List<User> get recentSupporters;@JsonKey(name: 'is_supported') bool get isSupported;@JsonKey(name: 'created_at') DateTime get createdAt;
+ int get id; User get author; String get title; String get description; String get image; String? get video; int get supporters;@JsonKey(name: 'recent_supporters') List<User> get recentSupporters;@JsonKey(name: 'is_supported') bool get isSupported;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'is_active') bool get isActive;
 /// Create a copy of Petition
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $PetitionCopyWith<Petition> get copyWith => _$PetitionCopyWithImpl<Petition>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Petition&&(identical(other.id, id) || other.id == id)&&(identical(other.author, author) || other.author == author)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.image, image) || other.image == image)&&(identical(other.video, video) || other.video == video)&&(identical(other.supporters, supporters) || other.supporters == supporters)&&const DeepCollectionEquality().equals(other.recentSupporters, recentSupporters)&&(identical(other.isSupported, isSupported) || other.isSupported == isSupported)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Petition&&(identical(other.id, id) || other.id == id)&&(identical(other.author, author) || other.author == author)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.image, image) || other.image == image)&&(identical(other.video, video) || other.video == video)&&(identical(other.supporters, supporters) || other.supporters == supporters)&&const DeepCollectionEquality().equals(other.recentSupporters, recentSupporters)&&(identical(other.isSupported, isSupported) || other.isSupported == isSupported)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.isActive, isActive) || other.isActive == isActive));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,author,title,description,image,video,supporters,const DeepCollectionEquality().hash(recentSupporters),isSupported,createdAt);
+int get hashCode => Object.hash(runtimeType,id,author,title,description,image,video,supporters,const DeepCollectionEquality().hash(recentSupporters),isSupported,createdAt,isActive);
 
 @override
 String toString() {
-  return 'Petition(id: $id, author: $author, title: $title, description: $description, image: $image, video: $video, supporters: $supporters, recentSupporters: $recentSupporters, isSupported: $isSupported, createdAt: $createdAt)';
+  return 'Petition(id: $id, author: $author, title: $title, description: $description, image: $image, video: $video, supporters: $supporters, recentSupporters: $recentSupporters, isSupported: $isSupported, createdAt: $createdAt, isActive: $isActive)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $PetitionCopyWith<$Res>  {
   factory $PetitionCopyWith(Petition value, $Res Function(Petition) _then) = _$PetitionCopyWithImpl;
 @useResult
 $Res call({
- int id, User author, String title, String description, String image, String? video, int supporters,@JsonKey(name: 'recent_supporters') List<User> recentSupporters,@JsonKey(name: 'is_supported') bool isSupported,@JsonKey(name: 'created_at') DateTime createdAt
+ int id, User author, String title, String description, String image, String? video, int supporters,@JsonKey(name: 'recent_supporters') List<User> recentSupporters,@JsonKey(name: 'is_supported') bool isSupported,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'is_active') bool isActive
 });
 
 
@@ -65,7 +65,7 @@ class _$PetitionCopyWithImpl<$Res>
 
 /// Create a copy of Petition
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? author = null,Object? title = null,Object? description = null,Object? image = null,Object? video = freezed,Object? supporters = null,Object? recentSupporters = null,Object? isSupported = null,Object? createdAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? author = null,Object? title = null,Object? description = null,Object? image = null,Object? video = freezed,Object? supporters = null,Object? recentSupporters = null,Object? isSupported = null,Object? createdAt = null,Object? isActive = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,author: null == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
@@ -77,7 +77,8 @@ as String?,supporters: null == supporters ? _self.supporters : supporters // ign
 as int,recentSupporters: null == recentSupporters ? _self.recentSupporters : recentSupporters // ignore: cast_nullable_to_non_nullable
 as List<User>,isSupported: null == isSupported ? _self.isSupported : isSupported // ignore: cast_nullable_to_non_nullable
 as bool,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as DateTime,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 /// Create a copy of Petition
@@ -168,10 +169,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  User author,  String title,  String description,  String image,  String? video,  int supporters, @JsonKey(name: 'recent_supporters')  List<User> recentSupporters, @JsonKey(name: 'is_supported')  bool isSupported, @JsonKey(name: 'created_at')  DateTime createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  User author,  String title,  String description,  String image,  String? video,  int supporters, @JsonKey(name: 'recent_supporters')  List<User> recentSupporters, @JsonKey(name: 'is_supported')  bool isSupported, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'is_active')  bool isActive)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Petition() when $default != null:
-return $default(_that.id,_that.author,_that.title,_that.description,_that.image,_that.video,_that.supporters,_that.recentSupporters,_that.isSupported,_that.createdAt);case _:
+return $default(_that.id,_that.author,_that.title,_that.description,_that.image,_that.video,_that.supporters,_that.recentSupporters,_that.isSupported,_that.createdAt,_that.isActive);case _:
   return orElse();
 
 }
@@ -189,10 +190,10 @@ return $default(_that.id,_that.author,_that.title,_that.description,_that.image,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  User author,  String title,  String description,  String image,  String? video,  int supporters, @JsonKey(name: 'recent_supporters')  List<User> recentSupporters, @JsonKey(name: 'is_supported')  bool isSupported, @JsonKey(name: 'created_at')  DateTime createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  User author,  String title,  String description,  String image,  String? video,  int supporters, @JsonKey(name: 'recent_supporters')  List<User> recentSupporters, @JsonKey(name: 'is_supported')  bool isSupported, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'is_active')  bool isActive)  $default,) {final _that = this;
 switch (_that) {
 case _Petition():
-return $default(_that.id,_that.author,_that.title,_that.description,_that.image,_that.video,_that.supporters,_that.recentSupporters,_that.isSupported,_that.createdAt);}
+return $default(_that.id,_that.author,_that.title,_that.description,_that.image,_that.video,_that.supporters,_that.recentSupporters,_that.isSupported,_that.createdAt,_that.isActive);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -206,10 +207,10 @@ return $default(_that.id,_that.author,_that.title,_that.description,_that.image,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  User author,  String title,  String description,  String image,  String? video,  int supporters, @JsonKey(name: 'recent_supporters')  List<User> recentSupporters, @JsonKey(name: 'is_supported')  bool isSupported, @JsonKey(name: 'created_at')  DateTime createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  User author,  String title,  String description,  String image,  String? video,  int supporters, @JsonKey(name: 'recent_supporters')  List<User> recentSupporters, @JsonKey(name: 'is_supported')  bool isSupported, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'is_active')  bool isActive)?  $default,) {final _that = this;
 switch (_that) {
 case _Petition() when $default != null:
-return $default(_that.id,_that.author,_that.title,_that.description,_that.image,_that.video,_that.supporters,_that.recentSupporters,_that.isSupported,_that.createdAt);case _:
+return $default(_that.id,_that.author,_that.title,_that.description,_that.image,_that.video,_that.supporters,_that.recentSupporters,_that.isSupported,_that.createdAt,_that.isActive);case _:
   return null;
 
 }
@@ -221,7 +222,7 @@ return $default(_that.id,_that.author,_that.title,_that.description,_that.image,
 @JsonSerializable()
 
 class _Petition implements Petition {
-  const _Petition({required this.id, required this.author, required this.title, required this.description, required this.image, required this.video, required this.supporters, @JsonKey(name: 'recent_supporters') required final  List<User> recentSupporters, @JsonKey(name: 'is_supported') required this.isSupported, @JsonKey(name: 'created_at') required this.createdAt}): _recentSupporters = recentSupporters;
+  const _Petition({required this.id, required this.author, required this.title, required this.description, required this.image, required this.video, required this.supporters, @JsonKey(name: 'recent_supporters') required final  List<User> recentSupporters, @JsonKey(name: 'is_supported') required this.isSupported, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'is_active') required this.isActive}): _recentSupporters = recentSupporters;
   factory _Petition.fromJson(Map<String, dynamic> json) => _$PetitionFromJson(json);
 
 @override final  int id;
@@ -240,6 +241,7 @@ class _Petition implements Petition {
 
 @override@JsonKey(name: 'is_supported') final  bool isSupported;
 @override@JsonKey(name: 'created_at') final  DateTime createdAt;
+@override@JsonKey(name: 'is_active') final  bool isActive;
 
 /// Create a copy of Petition
 /// with the given fields replaced by the non-null parameter values.
@@ -254,16 +256,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Petition&&(identical(other.id, id) || other.id == id)&&(identical(other.author, author) || other.author == author)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.image, image) || other.image == image)&&(identical(other.video, video) || other.video == video)&&(identical(other.supporters, supporters) || other.supporters == supporters)&&const DeepCollectionEquality().equals(other._recentSupporters, _recentSupporters)&&(identical(other.isSupported, isSupported) || other.isSupported == isSupported)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Petition&&(identical(other.id, id) || other.id == id)&&(identical(other.author, author) || other.author == author)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.image, image) || other.image == image)&&(identical(other.video, video) || other.video == video)&&(identical(other.supporters, supporters) || other.supporters == supporters)&&const DeepCollectionEquality().equals(other._recentSupporters, _recentSupporters)&&(identical(other.isSupported, isSupported) || other.isSupported == isSupported)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.isActive, isActive) || other.isActive == isActive));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,author,title,description,image,video,supporters,const DeepCollectionEquality().hash(_recentSupporters),isSupported,createdAt);
+int get hashCode => Object.hash(runtimeType,id,author,title,description,image,video,supporters,const DeepCollectionEquality().hash(_recentSupporters),isSupported,createdAt,isActive);
 
 @override
 String toString() {
-  return 'Petition(id: $id, author: $author, title: $title, description: $description, image: $image, video: $video, supporters: $supporters, recentSupporters: $recentSupporters, isSupported: $isSupported, createdAt: $createdAt)';
+  return 'Petition(id: $id, author: $author, title: $title, description: $description, image: $image, video: $video, supporters: $supporters, recentSupporters: $recentSupporters, isSupported: $isSupported, createdAt: $createdAt, isActive: $isActive)';
 }
 
 
@@ -274,7 +276,7 @@ abstract mixin class _$PetitionCopyWith<$Res> implements $PetitionCopyWith<$Res>
   factory _$PetitionCopyWith(_Petition value, $Res Function(_Petition) _then) = __$PetitionCopyWithImpl;
 @override @useResult
 $Res call({
- int id, User author, String title, String description, String image, String? video, int supporters,@JsonKey(name: 'recent_supporters') List<User> recentSupporters,@JsonKey(name: 'is_supported') bool isSupported,@JsonKey(name: 'created_at') DateTime createdAt
+ int id, User author, String title, String description, String image, String? video, int supporters,@JsonKey(name: 'recent_supporters') List<User> recentSupporters,@JsonKey(name: 'is_supported') bool isSupported,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'is_active') bool isActive
 });
 
 
@@ -291,7 +293,7 @@ class __$PetitionCopyWithImpl<$Res>
 
 /// Create a copy of Petition
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? author = null,Object? title = null,Object? description = null,Object? image = null,Object? video = freezed,Object? supporters = null,Object? recentSupporters = null,Object? isSupported = null,Object? createdAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? author = null,Object? title = null,Object? description = null,Object? image = null,Object? video = freezed,Object? supporters = null,Object? recentSupporters = null,Object? isSupported = null,Object? createdAt = null,Object? isActive = null,}) {
   return _then(_Petition(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,author: null == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
@@ -303,7 +305,8 @@ as String?,supporters: null == supporters ? _self.supporters : supporters // ign
 as int,recentSupporters: null == recentSupporters ? _self._recentSupporters : recentSupporters // ignore: cast_nullable_to_non_nullable
 as List<User>,isSupported: null == isSupported ? _self.isSupported : isSupported // ignore: cast_nullable_to_non_nullable
 as bool,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as DateTime,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
