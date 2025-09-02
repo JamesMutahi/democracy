@@ -1034,7 +1034,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         'action': 'vote',
         'request_id': ballotRequestId,
-        'option': event.option.id,
+        'pk': event.option.id,
       },
     };
     _channel.sink.add(jsonEncode(message));

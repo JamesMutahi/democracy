@@ -70,16 +70,20 @@ class _SurveyDetailState extends State<SurveyDetail> {
                         : MainAxisAlignment.end,
                 children: [
                   OutlinedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) =>
-                                  SurveyProcessPage(survey: widget.survey),
-                        ),
-                      );
-                    },
+                    onPressed:
+                        _survey.isActive
+                            ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => SurveyProcessPage(
+                                        survey: widget.survey,
+                                      ),
+                                ),
+                              );
+                            }
+                            : null,
                     child: Text('Submit response'),
                   ),
                   if (alreadyResponded)

@@ -28,9 +28,7 @@ class _CreateMessageState extends State<CreateMessage> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(
-      WebsocketEvent.getUsers(lastUser: _users.last),
-    );
+    context.read<WebsocketBloc>().add(WebsocketEvent.getUsers());
     super.initState();
   }
 

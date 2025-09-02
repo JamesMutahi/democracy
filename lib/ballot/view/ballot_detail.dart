@@ -38,7 +38,7 @@ class _BallotDetailState extends State<BallotDetail> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(_ballot.title, overflow: TextOverflow.ellipsis),
+          title: Text('Ballot'),
           actions: [
             Container(
               margin: EdgeInsets.only(right: 15),
@@ -53,6 +53,11 @@ class _BallotDetailState extends State<BallotDetail> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text(
+                  _ballot.title,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                SizedBox(height: 5),
                 Text(_ballot.description),
                 SizedBox(height: 10),
                 Row(

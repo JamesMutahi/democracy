@@ -165,25 +165,32 @@ class _CreatePetitionState extends State<CreatePetition> {
                   ],
                 ),
               ),
-              PetitionTextFormField(
-                label: 'Title',
-                onChanged: (value) {
-                  setState(() {
-                    title = value;
-                  });
-                },
-                maxLines: 2,
-                maxLength: 50,
-              ),
-              PetitionTextFormField(
-                label: 'Description',
-                onChanged: (value) {
-                  setState(() {
-                    description = value;
-                  });
-                },
-                maxLines: 7,
-                maxLength: 500,
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  children: [
+                    PetitionTextFormField(
+                      label: 'Title',
+                      onChanged: (value) {
+                        setState(() {
+                          title = value;
+                        });
+                      },
+                      maxLines: 2,
+                      maxLength: 50,
+                    ),
+                    PetitionTextFormField(
+                      label: 'Description',
+                      onChanged: (value) {
+                        setState(() {
+                          description = value;
+                        });
+                      },
+                      maxLines: 7,
+                      maxLength: 500,
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -269,9 +276,9 @@ class ExitDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomDialog(
-      title: 'Leave page',
+      title: 'Leave',
       content:
-          'Do you want to leave this page? \n'
+          'Are you sure you want to leave this page? \n'
           'Progress will not be saved.',
       button1Text: 'Yes',
       onButton1Pressed: () {

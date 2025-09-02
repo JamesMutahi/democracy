@@ -1,6 +1,5 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/custom_text.dart';
-import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_cubit.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_tile.dart'
@@ -132,12 +131,6 @@ class SupportButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
-      style: OutlinedButton.styleFrom(
-        backgroundColor:
-            petition.isActive
-                ? Theme.of(context).colorScheme.tertiaryContainer
-                : Theme.of(context).disabledColor,
-      ),
       onPressed:
           petition.isActive
               ? () {
@@ -145,14 +138,7 @@ class SupportButton extends StatelessWidget {
                   WebsocketEvent.supportPetition(petition: petition),
                 );
               }
-              : () {
-                final snackBar = getSnackBar(
-                  context: context,
-                  message: 'This petition is closed',
-                  status: SnackBarStatus.success,
-                );
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              },
+              : null,
       child: Text(petition.isSupported ? 'Remove support' : 'Support'),
     );
   }
