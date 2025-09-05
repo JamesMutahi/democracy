@@ -403,12 +403,12 @@ return complete(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<Question> questions)?  loaded,TResult Function()?  complete,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Page page)?  loaded,TResult Function()?  complete,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case PageInitial() when initial != null:
 return initial();case PageLoading() when loading != null:
 return loading();case PageLoaded() when loaded != null:
-return loaded(_that.questions);case PageComplete() when complete != null:
+return loaded(_that.page);case PageComplete() when complete != null:
 return complete();case _:
   return orElse();
 
@@ -427,12 +427,12 @@ return complete();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<Question> questions)  loaded,required TResult Function()  complete,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Page page)  loaded,required TResult Function()  complete,}) {final _that = this;
 switch (_that) {
 case PageInitial():
 return initial();case PageLoading():
 return loading();case PageLoaded():
-return loaded(_that.questions);case PageComplete():
+return loaded(_that.page);case PageComplete():
 return complete();case _:
   throw StateError('Unexpected subclass');
 
@@ -450,12 +450,12 @@ return complete();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<Question> questions)?  loaded,TResult? Function()?  complete,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Page page)?  loaded,TResult? Function()?  complete,}) {final _that = this;
 switch (_that) {
 case PageInitial() when initial != null:
 return initial();case PageLoading() when loading != null:
 return loading();case PageLoaded() when loaded != null:
-return loaded(_that.questions);case PageComplete() when complete != null:
+return loaded(_that.page);case PageComplete() when complete != null:
 return complete();case _:
   return null;
 
@@ -532,16 +532,10 @@ String toString() {
 
 
 class PageLoaded implements PageState {
-  const PageLoaded({required final  List<Question> questions}): _questions = questions;
+  const PageLoaded({required this.page});
   
 
- final  List<Question> _questions;
- List<Question> get questions {
-  if (_questions is EqualUnmodifiableListView) return _questions;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_questions);
-}
-
+ final  Page page;
 
 /// Create a copy of PageState
 /// with the given fields replaced by the non-null parameter values.
@@ -553,16 +547,16 @@ $PageLoadedCopyWith<PageLoaded> get copyWith => _$PageLoadedCopyWithImpl<PageLoa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PageLoaded&&const DeepCollectionEquality().equals(other._questions, _questions));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PageLoaded&&(identical(other.page, page) || other.page == page));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_questions));
+int get hashCode => Object.hash(runtimeType,page);
 
 @override
 String toString() {
-  return 'PageState.loaded(questions: $questions)';
+  return 'PageState.loaded(page: $page)';
 }
 
 
@@ -573,11 +567,11 @@ abstract mixin class $PageLoadedCopyWith<$Res> implements $PageStateCopyWith<$Re
   factory $PageLoadedCopyWith(PageLoaded value, $Res Function(PageLoaded) _then) = _$PageLoadedCopyWithImpl;
 @useResult
 $Res call({
- List<Question> questions
+ Page page
 });
 
 
-
+$PageCopyWith<$Res> get page;
 
 }
 /// @nodoc
@@ -590,14 +584,23 @@ class _$PageLoadedCopyWithImpl<$Res>
 
 /// Create a copy of PageState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? questions = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? page = null,}) {
   return _then(PageLoaded(
-questions: null == questions ? _self._questions : questions // ignore: cast_nullable_to_non_nullable
-as List<Question>,
+page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
+as Page,
   ));
 }
 
-
+/// Create a copy of PageState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PageCopyWith<$Res> get page {
+  
+  return $PageCopyWith<$Res>(_self.page, (value) {
+    return _then(_self.copyWith(page: value));
+  });
+}
 }
 
 /// @nodoc

@@ -10,7 +10,6 @@ enum QuestionType { number, text, singleChoice, multipleChoice }
 sealed class Question with _$Question {
   const factory Question({
     required final int id,
-    required int survey,
     required int page,
     required int number,
     @QuestionTypeConverter() required QuestionType type,

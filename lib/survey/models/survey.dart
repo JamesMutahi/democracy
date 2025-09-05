@@ -1,4 +1,4 @@
-import 'package:democracy/survey/models/question.dart';
+import 'package:democracy/survey/models/page.dart';
 import 'package:democracy/survey/models/response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -14,7 +14,7 @@ sealed class Survey with _$Survey {
     @JsonKey(name: 'start_time') required DateTime startTime,
     @JsonKey(name: 'end_time') required DateTime endTime,
     @JsonKey(name: 'is_active') required bool isActive,
-    required List<Question> questions,
+    required List<Page> pages,
     required Response? response,
     @JsonKey(name: 'total_responses') required int totalResponses,
   }) = _Survey;

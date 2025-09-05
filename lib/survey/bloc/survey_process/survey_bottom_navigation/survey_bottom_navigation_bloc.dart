@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:democracy/survey/models/question.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -30,18 +29,14 @@ class SurveyBottomNavigationBloc
     Emitter<SurveyBottomNavigationState> emit,
   ) async {
     emit(state.copyWith(status: SurveyBottomNavigationStatus.loading));
-    List<Question> questions = event.survey.questions.toList();
-    questions.sort((a, b) => a.page.compareTo(b.page));
-    bool isFirst = checkIsFirstPage(questions: questions, page: 0);
-    bool isLast = checkIsLastPage(questions: questions, page: 0);
-    int lastPage = questions.last.page;
+    int page = 0;
     emit(
       SurveyBottomNavigationState(
         status: SurveyBottomNavigationStatus.loaded,
-        isFirst: isFirst,
-        isLast: isLast,
-        page: 0,
-        lastPage: lastPage,
+        isFirst: true,
+        isLast: event.survey.pages.last.number == page,
+        page: page,
+        lastPage: event.survey.pages.last.number,
       ),
     );
   }
@@ -55,18 +50,13 @@ class SurveyBottomNavigationBloc
       emit(state.copyWith(status: SurveyBottomNavigationStatus.completed));
     } else {
       int nextPage = state.page + 1;
-      List<Question> questions = event.survey.questions.toList();
-      questions.sort((a, b) => a.page.compareTo(b.page));
-      bool isFirst = checkIsFirstPage(questions: questions, page: nextPage);
-      bool isLast = checkIsLastPage(questions: questions, page: nextPage);
-      int lastPage = questions.last.page;
       emit(
         SurveyBottomNavigationState(
           status: SurveyBottomNavigationStatus.loaded,
-          isFirst: isFirst,
-          isLast: isLast,
+          isFirst: event.survey.pages.first.number == nextPage,
+          isLast: event.survey.pages.last.number == nextPage,
           page: nextPage,
-          lastPage: lastPage,
+          lastPage: event.survey.pages.last.number,
         ),
       );
     }
@@ -78,18 +68,13 @@ class SurveyBottomNavigationBloc
   ) async {
     emit(state.copyWith(status: SurveyBottomNavigationStatus.loading));
     int prevPage = state.page - 1;
-    List<Question> questions = event.survey.questions.toList();
-    questions.sort((a, b) => a.page.compareTo(b.page));
-    bool isFirst = checkIsFirstPage(questions: questions, page: prevPage);
-    bool isLast = checkIsLastPage(questions: questions, page: prevPage);
-    int lastPage = questions.last.page;
     emit(
       SurveyBottomNavigationState(
         status: SurveyBottomNavigationStatus.loaded,
-        isFirst: isFirst,
-        isLast: isLast,
+        isFirst: event.survey.pages.first.number == prevPage,
+        isLast: event.survey.pages.last.number == prevPage,
         page: prevPage,
-        lastPage: lastPage,
+        lastPage: event.survey.pages.last.number,
       ),
     );
   }
@@ -97,18 +82,5 @@ class SurveyBottomNavigationBloc
   Future _onReturnToSurvey(Emitter<SurveyBottomNavigationState> emit) async {
     emit(state.copyWith(status: SurveyBottomNavigationStatus.loading));
     emit(state.copyWith(status: SurveyBottomNavigationStatus.loaded));
-  }
-
-  bool checkIsFirstPage({
-    required List<Question> questions,
-    required int page,
-  }) {
-    bool isFirstPage = questions.first.page == page;
-    return isFirstPage;
-  }
-
-  bool checkIsLastPage({required List<Question> questions, required int page}) {
-    bool isLastPage = questions.last.page == page;
-    return isLastPage;
   }
 }

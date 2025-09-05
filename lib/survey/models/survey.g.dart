@@ -13,9 +13,9 @@ _Survey _$SurveyFromJson(Map<String, dynamic> json) => _Survey(
   startTime: DateTime.parse(json['start_time'] as String),
   endTime: DateTime.parse(json['end_time'] as String),
   isActive: json['is_active'] as bool,
-  questions:
-      (json['questions'] as List<dynamic>)
-          .map((e) => Question.fromJson(e as Map<String, dynamic>))
+  pages:
+      (json['pages'] as List<dynamic>)
+          .map((e) => Page.fromJson(e as Map<String, dynamic>))
           .toList(),
   response:
       json['response'] == null
@@ -31,7 +31,7 @@ Map<String, dynamic> _$SurveyToJson(_Survey instance) => <String, dynamic>{
   'start_time': instance.startTime.toIso8601String(),
   'end_time': instance.endTime.toIso8601String(),
   'is_active': instance.isActive,
-  'questions': instance.questions,
+  'pages': instance.pages,
   'response': instance.response,
   'total_responses': instance.totalResponses,
 };

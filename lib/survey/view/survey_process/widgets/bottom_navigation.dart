@@ -68,8 +68,9 @@ class NavigationRow extends StatelessWidget {
             onPressed: () {
               context.read<AnswerCubit>().validate(
                 questions:
-                    survey.questions
-                        .where((e) => e.page == state.page)
+                    survey.pages
+                        .firstWhere((page) => page.number == state.page)
+                        .questions
                         .toList(),
               );
             },

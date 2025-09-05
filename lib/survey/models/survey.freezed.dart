@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Survey {
 
- int get id; String get title; String get description;@JsonKey(name: 'start_time') DateTime get startTime;@JsonKey(name: 'end_time') DateTime get endTime;@JsonKey(name: 'is_active') bool get isActive; List<Question> get questions; Response? get response;@JsonKey(name: 'total_responses') int get totalResponses;
+ int get id; String get title; String get description;@JsonKey(name: 'start_time') DateTime get startTime;@JsonKey(name: 'end_time') DateTime get endTime;@JsonKey(name: 'is_active') bool get isActive; List<Page> get pages; Response? get response;@JsonKey(name: 'total_responses') int get totalResponses;
 /// Create a copy of Survey
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $SurveyCopyWith<Survey> get copyWith => _$SurveyCopyWithImpl<Survey>(this as Sur
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Survey&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&const DeepCollectionEquality().equals(other.questions, questions)&&(identical(other.response, response) || other.response == response)&&(identical(other.totalResponses, totalResponses) || other.totalResponses == totalResponses));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Survey&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&const DeepCollectionEquality().equals(other.pages, pages)&&(identical(other.response, response) || other.response == response)&&(identical(other.totalResponses, totalResponses) || other.totalResponses == totalResponses));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,startTime,endTime,isActive,const DeepCollectionEquality().hash(questions),response,totalResponses);
+int get hashCode => Object.hash(runtimeType,id,title,description,startTime,endTime,isActive,const DeepCollectionEquality().hash(pages),response,totalResponses);
 
 @override
 String toString() {
-  return 'Survey(id: $id, title: $title, description: $description, startTime: $startTime, endTime: $endTime, isActive: $isActive, questions: $questions, response: $response, totalResponses: $totalResponses)';
+  return 'Survey(id: $id, title: $title, description: $description, startTime: $startTime, endTime: $endTime, isActive: $isActive, pages: $pages, response: $response, totalResponses: $totalResponses)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $SurveyCopyWith<$Res>  {
   factory $SurveyCopyWith(Survey value, $Res Function(Survey) _then) = _$SurveyCopyWithImpl;
 @useResult
 $Res call({
- int id, String title, String description,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'end_time') DateTime endTime,@JsonKey(name: 'is_active') bool isActive, List<Question> questions, Response? response,@JsonKey(name: 'total_responses') int totalResponses
+ int id, String title, String description,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'end_time') DateTime endTime,@JsonKey(name: 'is_active') bool isActive, List<Page> pages, Response? response,@JsonKey(name: 'total_responses') int totalResponses
 });
 
 
@@ -65,7 +65,7 @@ class _$SurveyCopyWithImpl<$Res>
 
 /// Create a copy of Survey
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? description = null,Object? startTime = null,Object? endTime = null,Object? isActive = null,Object? questions = null,Object? response = freezed,Object? totalResponses = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? description = null,Object? startTime = null,Object? endTime = null,Object? isActive = null,Object? pages = null,Object? response = freezed,Object? totalResponses = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -73,8 +73,8 @@ as String,description: null == description ? _self.description : description // 
 as String,startTime: null == startTime ? _self.startTime : startTime // ignore: cast_nullable_to_non_nullable
 as DateTime,endTime: null == endTime ? _self.endTime : endTime // ignore: cast_nullable_to_non_nullable
 as DateTime,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
-as bool,questions: null == questions ? _self.questions : questions // ignore: cast_nullable_to_non_nullable
-as List<Question>,response: freezed == response ? _self.response : response // ignore: cast_nullable_to_non_nullable
+as bool,pages: null == pages ? _self.pages : pages // ignore: cast_nullable_to_non_nullable
+as List<Page>,response: freezed == response ? _self.response : response // ignore: cast_nullable_to_non_nullable
 as Response?,totalResponses: null == totalResponses ? _self.totalResponses : totalResponses // ignore: cast_nullable_to_non_nullable
 as int,
   ));
@@ -170,10 +170,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String title,  String description, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime, @JsonKey(name: 'is_active')  bool isActive,  List<Question> questions,  Response? response, @JsonKey(name: 'total_responses')  int totalResponses)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String title,  String description, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime, @JsonKey(name: 'is_active')  bool isActive,  List<Page> pages,  Response? response, @JsonKey(name: 'total_responses')  int totalResponses)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Survey() when $default != null:
-return $default(_that.id,_that.title,_that.description,_that.startTime,_that.endTime,_that.isActive,_that.questions,_that.response,_that.totalResponses);case _:
+return $default(_that.id,_that.title,_that.description,_that.startTime,_that.endTime,_that.isActive,_that.pages,_that.response,_that.totalResponses);case _:
   return orElse();
 
 }
@@ -191,10 +191,10 @@ return $default(_that.id,_that.title,_that.description,_that.startTime,_that.end
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String title,  String description, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime, @JsonKey(name: 'is_active')  bool isActive,  List<Question> questions,  Response? response, @JsonKey(name: 'total_responses')  int totalResponses)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String title,  String description, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime, @JsonKey(name: 'is_active')  bool isActive,  List<Page> pages,  Response? response, @JsonKey(name: 'total_responses')  int totalResponses)  $default,) {final _that = this;
 switch (_that) {
 case _Survey():
-return $default(_that.id,_that.title,_that.description,_that.startTime,_that.endTime,_that.isActive,_that.questions,_that.response,_that.totalResponses);}
+return $default(_that.id,_that.title,_that.description,_that.startTime,_that.endTime,_that.isActive,_that.pages,_that.response,_that.totalResponses);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -208,10 +208,10 @@ return $default(_that.id,_that.title,_that.description,_that.startTime,_that.end
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String title,  String description, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime, @JsonKey(name: 'is_active')  bool isActive,  List<Question> questions,  Response? response, @JsonKey(name: 'total_responses')  int totalResponses)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String title,  String description, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime, @JsonKey(name: 'is_active')  bool isActive,  List<Page> pages,  Response? response, @JsonKey(name: 'total_responses')  int totalResponses)?  $default,) {final _that = this;
 switch (_that) {
 case _Survey() when $default != null:
-return $default(_that.id,_that.title,_that.description,_that.startTime,_that.endTime,_that.isActive,_that.questions,_that.response,_that.totalResponses);case _:
+return $default(_that.id,_that.title,_that.description,_that.startTime,_that.endTime,_that.isActive,_that.pages,_that.response,_that.totalResponses);case _:
   return null;
 
 }
@@ -223,7 +223,7 @@ return $default(_that.id,_that.title,_that.description,_that.startTime,_that.end
 @JsonSerializable()
 
 class _Survey implements Survey {
-  const _Survey({required this.id, required this.title, required this.description, @JsonKey(name: 'start_time') required this.startTime, @JsonKey(name: 'end_time') required this.endTime, @JsonKey(name: 'is_active') required this.isActive, required final  List<Question> questions, required this.response, @JsonKey(name: 'total_responses') required this.totalResponses}): _questions = questions;
+  const _Survey({required this.id, required this.title, required this.description, @JsonKey(name: 'start_time') required this.startTime, @JsonKey(name: 'end_time') required this.endTime, @JsonKey(name: 'is_active') required this.isActive, required final  List<Page> pages, required this.response, @JsonKey(name: 'total_responses') required this.totalResponses}): _pages = pages;
   factory _Survey.fromJson(Map<String, dynamic> json) => _$SurveyFromJson(json);
 
 @override final  int id;
@@ -232,11 +232,11 @@ class _Survey implements Survey {
 @override@JsonKey(name: 'start_time') final  DateTime startTime;
 @override@JsonKey(name: 'end_time') final  DateTime endTime;
 @override@JsonKey(name: 'is_active') final  bool isActive;
- final  List<Question> _questions;
-@override List<Question> get questions {
-  if (_questions is EqualUnmodifiableListView) return _questions;
+ final  List<Page> _pages;
+@override List<Page> get pages {
+  if (_pages is EqualUnmodifiableListView) return _pages;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_questions);
+  return EqualUnmodifiableListView(_pages);
 }
 
 @override final  Response? response;
@@ -255,16 +255,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Survey&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&const DeepCollectionEquality().equals(other._questions, _questions)&&(identical(other.response, response) || other.response == response)&&(identical(other.totalResponses, totalResponses) || other.totalResponses == totalResponses));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Survey&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&const DeepCollectionEquality().equals(other._pages, _pages)&&(identical(other.response, response) || other.response == response)&&(identical(other.totalResponses, totalResponses) || other.totalResponses == totalResponses));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,startTime,endTime,isActive,const DeepCollectionEquality().hash(_questions),response,totalResponses);
+int get hashCode => Object.hash(runtimeType,id,title,description,startTime,endTime,isActive,const DeepCollectionEquality().hash(_pages),response,totalResponses);
 
 @override
 String toString() {
-  return 'Survey(id: $id, title: $title, description: $description, startTime: $startTime, endTime: $endTime, isActive: $isActive, questions: $questions, response: $response, totalResponses: $totalResponses)';
+  return 'Survey(id: $id, title: $title, description: $description, startTime: $startTime, endTime: $endTime, isActive: $isActive, pages: $pages, response: $response, totalResponses: $totalResponses)';
 }
 
 
@@ -275,7 +275,7 @@ abstract mixin class _$SurveyCopyWith<$Res> implements $SurveyCopyWith<$Res> {
   factory _$SurveyCopyWith(_Survey value, $Res Function(_Survey) _then) = __$SurveyCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String title, String description,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'end_time') DateTime endTime,@JsonKey(name: 'is_active') bool isActive, List<Question> questions, Response? response,@JsonKey(name: 'total_responses') int totalResponses
+ int id, String title, String description,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'end_time') DateTime endTime,@JsonKey(name: 'is_active') bool isActive, List<Page> pages, Response? response,@JsonKey(name: 'total_responses') int totalResponses
 });
 
 
@@ -292,7 +292,7 @@ class __$SurveyCopyWithImpl<$Res>
 
 /// Create a copy of Survey
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? startTime = null,Object? endTime = null,Object? isActive = null,Object? questions = null,Object? response = freezed,Object? totalResponses = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? startTime = null,Object? endTime = null,Object? isActive = null,Object? pages = null,Object? response = freezed,Object? totalResponses = null,}) {
   return _then(_Survey(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -300,8 +300,8 @@ as String,description: null == description ? _self.description : description // 
 as String,startTime: null == startTime ? _self.startTime : startTime // ignore: cast_nullable_to_non_nullable
 as DateTime,endTime: null == endTime ? _self.endTime : endTime // ignore: cast_nullable_to_non_nullable
 as DateTime,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
-as bool,questions: null == questions ? _self._questions : questions // ignore: cast_nullable_to_non_nullable
-as List<Question>,response: freezed == response ? _self.response : response // ignore: cast_nullable_to_non_nullable
+as bool,pages: null == pages ? _self._pages : pages // ignore: cast_nullable_to_non_nullable
+as List<Page>,response: freezed == response ? _self.response : response // ignore: cast_nullable_to_non_nullable
 as Response?,totalResponses: null == totalResponses ? _self.totalResponses : totalResponses // ignore: cast_nullable_to_non_nullable
 as int,
   ));

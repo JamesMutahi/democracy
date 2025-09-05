@@ -8,7 +8,6 @@ part of 'question.dart';
 
 _Question _$QuestionFromJson(Map<String, dynamic> json) => _Question(
   id: (json['id'] as num).toInt(),
-  survey: (json['survey'] as num).toInt(),
   page: (json['page'] as num).toInt(),
   number: (json['number'] as num).toInt(),
   type: const QuestionTypeConverter().fromJson(json['type'] as String),
@@ -24,7 +23,6 @@ _Question _$QuestionFromJson(Map<String, dynamic> json) => _Question(
 
 Map<String, dynamic> _$QuestionToJson(_Question instance) => <String, dynamic>{
   'id': instance.id,
-  'survey': instance.survey,
   'page': instance.page,
   'number': instance.number,
   'type': const QuestionTypeConverter().toJson(instance.type),

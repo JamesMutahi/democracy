@@ -115,7 +115,7 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
             builder: (context, state) {
               switch (state) {
                 case PageLoaded():
-                  List<Question> questions = state.questions;
+                  List<Question> questions = state.page.questions;
                   return (questions.isNotEmpty)
                       ? ListView.builder(
                         scrollDirection: Axis.vertical,
@@ -128,7 +128,7 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
                         itemBuilder: (BuildContext context, int index) {
                           return QuestionTile(
                             key: ValueKey(questions[index].id),
-                            questions: state.questions,
+                            questions: state.page.questions,
                             question: questions[index],
                           );
                         },
