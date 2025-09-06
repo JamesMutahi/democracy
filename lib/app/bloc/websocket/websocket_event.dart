@@ -265,5 +265,7 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     required List<Petition> petitions,
   }) = _UnsubscribeUserPetitions;
 
+  const factory WebsocketEvent.getConstitution() = _GetConstitution;
+
   const factory WebsocketEvent.disconnect() = _Disconnect;
 }

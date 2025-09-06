@@ -1,7 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/view/widgets/bookmarks.dart';
-import 'package:democracy/app/view/widgets/constitution.dart';
+import 'package:democracy/constitution/view/constitution.dart';
 import 'package:democracy/app/view/widgets/settings.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';

@@ -36,6 +36,7 @@ const String surveysStream = 'surveys';
 const String usersStream = 'users';
 const String notificationsStream = 'notifications';
 const String petitionsStream = 'petitions';
+const String constitutionStream = 'constitution';
 
 // Request ids
 const String postRequestId = 'posts';
@@ -47,6 +48,7 @@ const String responseRequestId = 'responses';
 const String usersRequestId = 'users';
 const String notificationRequestId = 'notifications';
 const String petitionRequestId = 'petitions';
+const String constitutionRequestId = 'constitution';
 
 class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   WebsocketBloc({required this.authRepository})
@@ -240,6 +242,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     });
     on<_UnsubscribeUserPetitions>((event, emit) {
       _onUnsubscribeUserPetitions(emit, event);
+    });
+    on<_GetConstitution>((event, emit) {
+      _onGetConstitution(emit);
     });
     on<_Disconnect>((event, emit) async {
       await _channel.sink.close();
@@ -1301,6 +1306,15 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'request_id': event.user.id,
         'pks': petitionIds,
       },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onGetConstitution(Emitter<WebsocketState> emit) async {
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    Map<String, dynamic> message = {
+      'stream': constitutionStream,
+      'payload': {'action': 'list', 'request_id': constitutionRequestId},
     };
     _channel.sink.add(jsonEncode(message));
   }

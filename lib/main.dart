@@ -12,6 +12,7 @@ import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_cubit.dart';
 import 'package:democracy/chat/bloc/messages/messages_cubit.dart';
+import 'package:democracy/constitution/bloc/constitution/constitution_cubit.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_cubit.dart';
 import 'package:democracy/notification/bloc/preferences/preferences_cubit.dart';
@@ -134,6 +135,7 @@ void main() async {
           BlocProvider(create: (context) => PetitionDetailCubit()),
           BlocProvider(create: (context) => SupportersCubit()),
           BlocProvider(create: (context) => UserPetitionsCubit()),
+          BlocProvider(create: (context) => ConstitutionCubit()),
         ],
         child: const MyApp(),
       ),
