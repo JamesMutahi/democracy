@@ -255,7 +255,7 @@ class RepostButton extends StatelessWidget {
                                 ballot: null,
                                 survey: null,
                                 petition: null,
-                                taggedUserIds: [],
+                                tags: [],
                               ),
                             );
                           },

@@ -8,6 +8,7 @@ import 'package:democracy/app/utils/tagging.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
+import 'package:democracy/constitution/bloc/sections/sections_cubit.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
@@ -51,7 +52,11 @@ class _PostCreateState extends State<PostCreate> {
   List<File> files = [];
   int fileLimit = 4;
 
-  void createPost({PostStatus status = PostStatus.published}) {
+  void _createPost({PostStatus status = PostStatus.published}) {
+    List<Map> tags = [];
+    for (var tag in _controller.tags) {
+      tags.add({'id': tag.id, 'text': tag.text});
+    }
     context.read<WebsocketBloc>().add(
       WebsocketEvent.createPost(
         body: _controller.formattedText,
@@ -61,8 +66,7 @@ class _PostCreateState extends State<PostCreate> {
         ballot: widget.ballot,
         survey: widget.survey,
         petition: widget.petition,
-        taggedUserIds:
-            _controller.tags.map((tag) => int.parse(tag.id)).toList(),
+        tags: tags,
       ),
     );
   }
@@ -89,9 +93,7 @@ class _PostCreateState extends State<PostCreate> {
                 context: context,
                 builder:
                     (context) => SaveDraftDialog(
-                      onYesPressed: () {
-                        createPost(status: PostStatus.draft);
-                      },
+                      onYesPressed: () => _createPost(status: PostStatus.draft),
                     ),
               );
         },
@@ -109,9 +111,8 @@ class _PostCreateState extends State<PostCreate> {
                           context: context,
                           builder:
                               (context) => SaveDraftDialog(
-                                onYesPressed: () {
-                                  createPost(status: PostStatus.draft);
-                                },
+                                onYesPressed:
+                                    () => _createPost(status: PostStatus.draft),
                               ),
                         );
                   },
@@ -126,9 +127,7 @@ class _PostCreateState extends State<PostCreate> {
                               context: context,
                               builder:
                                   (context) => PostCreateDialog(
-                                    onYesPressed: () {
-                                      createPost();
-                                    },
+                                    onYesPressed: _createPost,
                                   ),
                             );
                           },
@@ -179,9 +178,9 @@ class _PostCreateState extends State<PostCreate> {
                               }
                             },
                             autofocus: true,
-                            onTapOutside: (event) {
-                              FocusScope.of(context).unfocus();
-                            },
+                            // onTapOutside: (event) {
+                            //   FocusScope.of(context).unfocus();
+                            // },
                             minLines: 1,
                             maxLines: 7,
                             keyboardType: TextInputType.multiline,
@@ -323,31 +322,49 @@ class _BottomNavBarState extends State<_BottomNavBar>
     super.dispose();
   }
 
+  void changeOverlayHeight(int length) {
+    if (length == 0) {
+      overlayHeight = 1;
+    }
+    if (length == 1) {
+      overlayHeight = 75;
+    }
+    if (length == 2) {
+      overlayHeight = 150;
+    }
+    if (length == 3) {
+      overlayHeight = 225;
+    }
+    if (length > 3) {
+      overlayHeight = 300;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocListener<UsersCubit, UsersState>(
-      listener: (context, state) {
-        if (state.status == UsersStatus.success) {
-          setState(() {
-            _view = SearchResultView.users;
-            if (state.users.isEmpty) {
-              overlayHeight = 1;
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<UsersCubit, UsersState>(
+          listener: (context, state) {
+            if (state.status == UsersStatus.success) {
+              setState(() {
+                _view = SearchResultView.users;
+                changeOverlayHeight(state.users.length);
+              });
             }
-            if (state.users.length == 1) {
-              overlayHeight = 75;
+          },
+        ),
+        BlocListener<SectionsCubit, SectionsState>(
+          listener: (context, state) {
+            if (state is SectionsLoaded) {
+              setState(() {
+                _view = SearchResultView.hashtag;
+                changeOverlayHeight(state.sections.length);
+              });
             }
-            if (state.users.length == 2) {
-              overlayHeight = 150;
-            }
-            if (state.users.length == 3) {
-              overlayHeight = 225;
-            }
-            if (state.users.length > 3) {
-              overlayHeight = 300;
-            }
-          });
-        }
-      },
+          },
+        ),
+      ],
       child: FlutterTagger(
         triggerStrategy: TriggerStrategy.eager,
         controller: widget.controller,
@@ -358,12 +375,21 @@ class _BottomNavBarState extends State<_BottomNavBar>
               _view = SearchResultView.users;
             });
             context.read<WebsocketBloc>().add(
-              WebsocketEvent.getUsers(searchTerm: query.toLowerCase().trim()),
+              WebsocketEvent.getUsers(searchTerm: query),
+            );
+          }
+          if (triggerChar == "#") {
+            setState(() {
+              _view = SearchResultView.hashtag;
+            });
+            context.read<WebsocketBloc>().add(
+              WebsocketEvent.getConstitutionTags(searchTerm: query),
             );
           }
         },
         triggerCharacterAndStyles: const {
           "@": TextStyle(color: Colors.blueAccent),
+          "#": TextStyle(color: Colors.blueAccent),
         },
         tagTextFormatter: (id, tag, triggerCharacter) {
           return "$triggerCharacter$id#$tag#";
@@ -372,6 +398,11 @@ class _BottomNavBarState extends State<_BottomNavBar>
         overlay:
             _view == SearchResultView.users
                 ? UserListView(
+                  tagController: widget.controller,
+                  animation: _animation,
+                )
+                : _view == SearchResultView.hashtag
+                ? SectionListView(
                   tagController: widget.controller,
                   animation: _animation,
                 )

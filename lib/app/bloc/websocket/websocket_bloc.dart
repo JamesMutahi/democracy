@@ -6,6 +6,7 @@ import 'package:bloc/bloc.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/models/option.dart';
+import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/chat/models/message.dart';
@@ -246,6 +247,12 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_GetConstitution>((event, emit) {
       _onGetConstitution(emit);
     });
+    on<_GetConstitutionTags>((event, emit) {
+      _onGetConstitutionTags(emit, event);
+    });
+    on<_BookmarkSection>((event, emit) {
+      _onBookmarkSection(emit, event);
+    });
     on<_Disconnect>((event, emit) async {
       await _channel.sink.close();
       emit(WebsocketState());
@@ -367,7 +374,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
           'petition_id': event.petition?.id,
           'status':
               event.status == PostStatus.published ? 'published' : 'draft',
-          'tagged_user_ids': event.taggedUserIds,
+          'tags': event.tags,
         },
       },
     };
@@ -1315,6 +1322,38 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     Map<String, dynamic> message = {
       'stream': constitutionStream,
       'payload': {'action': 'list', 'request_id': constitutionRequestId},
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onGetConstitutionTags(
+    Emitter<WebsocketState> emit,
+    _GetConstitutionTags event,
+  ) async {
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    Map<String, dynamic> message = {
+      'stream': constitutionStream,
+      'payload': {
+        "action": 'tags',
+        "request_id": constitutionRequestId,
+        'search_term': event.searchTerm,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onBookmarkSection(
+    Emitter<WebsocketState> emit,
+    _BookmarkSection event,
+  ) async {
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    Map<String, dynamic> message = {
+      'stream': constitutionStream,
+      'payload': {
+        'action': 'bookmark',
+        'request_id': constitutionRequestId,
+        'pk': event.section.id,
+      },
     };
     _channel.sink.add(jsonEncode(message));
   }

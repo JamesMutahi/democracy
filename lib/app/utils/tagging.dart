@@ -1,3 +1,5 @@
+import 'package:democracy/constitution/bloc/sections/sections_cubit.dart';
+import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/user/bloc/users/users_cubit.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
@@ -41,10 +43,17 @@ class UserListView extends StatelessWidget {
               itemCount: users.length,
               itemBuilder: (_, index) {
                 final user = users[index];
-                return UserTile(
+                return ListTile(
                   key: ValueKey(user.id),
-                  user: user,
-                  tagController: tagController,
+                  leading: ProfileImage(user: user),
+                  title: Text(user.name),
+                  subtitle: Text("@${user.username}"),
+                  onTap: () {
+                    tagController.addTag(
+                      id: '${user.id}',
+                      name: user.username,
+                    );
+                  },
                 );
               },
             );
@@ -55,21 +64,60 @@ class UserListView extends StatelessWidget {
   }
 }
 
-class UserTile extends StatelessWidget {
-  const UserTile({super.key, required this.user, required this.tagController});
+class SectionListView extends StatelessWidget {
+  const SectionListView({
+    super.key,
+    required this.tagController,
+    required this.animation,
+  });
 
-  final User user;
   final FlutterTaggerController tagController;
+  final Animation<Offset> animation;
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: ProfileImage(user: user),
-      title: Text(user.name),
-      subtitle: Text("@${user.username}"),
-      onTap: () async {
-        tagController.addTag(id: user.id.toString(), name: user.username);
-      },
+    return SlideTransition(
+      position: animation,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 2),
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          color: Theme.of(context).canvasColor,
+        ),
+        child: BlocBuilder<SectionsCubit, SectionsState>(
+          builder: (context, state) {
+            List<Section> sections = [];
+            switch (state) {
+              case SectionsLoaded():
+                sections = state.sections.toList();
+              default:
+                sections = [];
+            }
+            return ListView.builder(
+              padding: EdgeInsets.zero,
+              itemCount: sections.length,
+              itemBuilder: (_, index) {
+                Section section = sections[index];
+                return ListTile(
+                  key: ValueKey(section.id),
+                  title: Text(
+                    section.text,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  subtitle: Text("#${section.tag}"),
+                  onTap: () {
+                    tagController.addTag(
+                      id: '${section.id}',
+                      name: section.tag!,
+                    );
+                  },
+                );
+              },
+            );
+          },
+        ),
+      ),
     );
   }
 }

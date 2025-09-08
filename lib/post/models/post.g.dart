@@ -55,6 +55,10 @@ _Post _$PostFromJson(Map<String, dynamic> json) => _Post(
       (json['tagged_users'] as List<dynamic>)
           .map((e) => User.fromJson(e as Map<String, dynamic>))
           .toList(),
+  taggedSections:
+      (json['tagged_sections'] as List<dynamic>)
+          .map((e) => Section.fromJson(e as Map<String, dynamic>))
+          .toList(),
 );
 
 Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
@@ -88,4 +92,5 @@ Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
   'survey': instance.survey,
   'petition': instance.petition,
   'tagged_users': instance.taggedUsers,
+  'tagged_sections': instance.taggedSections,
 };

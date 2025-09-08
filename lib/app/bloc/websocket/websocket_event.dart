@@ -33,7 +33,7 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     required Ballot? ballot,
     required Survey? survey,
     required Petition? petition,
-    required List<int> taggedUserIds,
+    required List<Map> tags,
   }) = _CreatePost;
 
   const factory WebsocketEvent.getPost({required Post post}) = _GetPost;
@@ -266,6 +266,12 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   }) = _UnsubscribeUserPetitions;
 
   const factory WebsocketEvent.getConstitution() = _GetConstitution;
+
+  const factory WebsocketEvent.getConstitutionTags({String? searchTerm}) =
+      _GetConstitutionTags;
+
+  const factory WebsocketEvent.bookmarkSection({required Section section}) =
+      _BookmarkSection;
 
   const factory WebsocketEvent.disconnect() = _Disconnect;
 }

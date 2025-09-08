@@ -16,6 +16,7 @@ import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_cubit.dart';
 import 'package:democracy/chat/bloc/messages/messages_cubit.dart';
 import 'package:democracy/constitution/bloc/constitution/constitution_cubit.dart';
+import 'package:democracy/constitution/bloc/sections/sections_cubit.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_cubit.dart';
 import 'package:democracy/notification/bloc/preferences/preferences_cubit.dart';
@@ -518,6 +519,10 @@ class _Listeners extends StatelessWidget {
                   switch (message['payload']['action']) {
                     case 'list':
                       context.read<ConstitutionCubit>().loaded(
+                        payload: message['payload'],
+                      );
+                    case 'tags':
+                      context.read<SectionsCubit>().loaded(
                         payload: message['payload'],
                       );
                   }

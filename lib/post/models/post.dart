@@ -1,4 +1,5 @@
 import 'package:democracy/ballot/models/ballot.dart';
+import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/user/models/user.dart';
@@ -42,6 +43,7 @@ sealed class Post with _$Post {
     required Survey? survey,
     required Petition? petition,
     @JsonKey(name: 'tagged_users') required List<User> taggedUsers,
+    @JsonKey(name: 'tagged_sections') required List<Section> taggedSections,
   }) = _Post;
 
   factory Post.fromJson(Map<String, Object?> json) => _$PostFromJson(json);
@@ -63,6 +65,11 @@ class PostStatusConverter implements JsonConverter<PostStatus, String> {
 
   @override
   String toJson(PostStatus object) {
-    throw UnimplementedError();
+    switch (object) {
+      case PostStatus.published:
+        return 'published';
+      case PostStatus.draft:
+        return 'draft';
+    }
   }
 }

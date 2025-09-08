@@ -7,6 +7,7 @@ import 'package:democracy/app/utils/tagging.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_cubit.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
+import 'package:democracy/constitution/bloc/sections/sections_cubit.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
 import 'package:democracy/post/bloc/replies/replies_cubit.dart';
@@ -477,44 +478,74 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
     super.dispose();
   }
 
+  void changeOverlayHeight(int length) {
+    if (length == 0) {
+      overlayHeight = 1;
+    }
+    if (length == 1) {
+      overlayHeight = 75;
+    }
+    if (length == 2) {
+      overlayHeight = 150;
+    }
+    if (length == 3) {
+      overlayHeight = 225;
+    }
+    if (length > 3) {
+      overlayHeight = 300;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocListener<UsersCubit, UsersState>(
-      listener: (context, state) {
-        if (state.status == UsersStatus.success) {
-          setState(() {
-            _view = SearchResultView.users;
-            if (state.users.isEmpty) {
-              overlayHeight = 1;
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<UsersCubit, UsersState>(
+          listener: (context, state) {
+            if (state.status == UsersStatus.success) {
+              setState(() {
+                _view = SearchResultView.users;
+                changeOverlayHeight(state.users.length);
+              });
             }
-            if (state.users.length == 1) {
-              overlayHeight = 75;
+          },
+        ),
+        BlocListener<SectionsCubit, SectionsState>(
+          listener: (context, state) {
+            if (state is SectionsLoaded) {
+              setState(() {
+                _view = SearchResultView.hashtag;
+                changeOverlayHeight(state.sections.length);
+              });
             }
-            if (state.users.length == 2) {
-              overlayHeight = 150;
-            }
-            if (state.users.length == 3) {
-              overlayHeight = 225;
-            }
-            if (state.users.length > 3) {
-              overlayHeight = 300;
-            }
-          });
-        }
-      },
+          },
+        ),
+      ],
       child: FlutterTagger(
         triggerStrategy: TriggerStrategy.eager,
         controller: _controller,
         animationController: _animationController,
         onSearch: (query, triggerChar) {
           if (triggerChar == "@") {
+            setState(() {
+              _view = SearchResultView.users;
+            });
             context.read<WebsocketBloc>().add(
-              WebsocketEvent.getUsers(searchTerm: query.toLowerCase().trim()),
+              WebsocketEvent.getUsers(searchTerm: query),
+            );
+          }
+          if (triggerChar == "#") {
+            setState(() {
+              _view = SearchResultView.hashtag;
+            });
+            context.read<WebsocketBloc>().add(
+              WebsocketEvent.getConstitutionTags(searchTerm: query),
             );
           }
         },
         triggerCharacterAndStyles: const {
           "@": TextStyle(color: Colors.blueAccent),
+          "#": TextStyle(color: Colors.blueAccent),
         },
         tagTextFormatter: (id, tag, triggerCharacter) {
           return "$triggerCharacter$id#$tag#";
@@ -523,7 +554,11 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
         overlay:
             _view == SearchResultView.users
                 ? UserListView(
-                  key: ValueKey('Detail'),
+                  tagController: _controller,
+                  animation: _animation,
+                )
+                : _view == SearchResultView.hashtag
+                ? SectionListView(
                   tagController: _controller,
                   animation: _animation,
                 )
@@ -549,33 +584,33 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
             },
             hintText: 'Reply',
             prefixIcon: null,
-            onSend:
-                _disableSendButton
-                    ? null
-                    : () {
-                      context.read<WebsocketBloc>().add(
-                        WebsocketEvent.createPost(
-                          body: _controller.formattedText,
-                          status: PostStatus.published,
-                          replyTo: widget.post,
-                          repostOf: null,
-                          ballot: null,
-                          survey: null,
-                          petition: null,
-                          taggedUserIds:
-                              _controller.tags
-                                  .map((tag) => int.parse(tag.id))
-                                  .toList(),
-                        ),
-                      );
-                      _controller.clear();
-                      setState(() {
-                        _disableSendButton = true;
-                      });
-                    },
+            onSend: _disableSendButton ? null : _createPost,
           );
         },
       ),
     );
+  }
+
+  void _createPost() {
+    List<Map> tags = [];
+    for (var tag in _controller.tags) {
+      tags.add({'id': tag.id, 'text': tag.text});
+    }
+    context.read<WebsocketBloc>().add(
+      WebsocketEvent.createPost(
+        body: _controller.formattedText,
+        status: PostStatus.published,
+        replyTo: widget.post,
+        repostOf: null,
+        ballot: null,
+        survey: null,
+        petition: null,
+        tags: tags,
+      ),
+    );
+    _controller.clear();
+    setState(() {
+      _disableSendButton = true;
+    });
   }
 }
