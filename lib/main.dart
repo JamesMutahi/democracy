@@ -1,6 +1,7 @@
 import 'package:democracy/app.dart';
 import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
+import 'package:democracy/app/bloc/forms_search_and_filter/forms_search_and_filter_cubit.dart';
 import 'package:democracy/app/bloc/theme/theme_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
@@ -102,7 +103,6 @@ void main() async {
           ),
           BlocProvider(create: (context) => BottomNavBarCubit()),
           BlocProvider(create: (context) => PageBloc()),
-          BlocProvider(create: (context) => PageBloc()),
           BlocProvider(create: (context) => SurveyBottomNavigationBloc()),
           BlocProvider(create: (context) => BallotsCubit()),
           BlocProvider(create: (context) => BallotDetailCubit()),
@@ -140,6 +140,7 @@ void main() async {
           BlocProvider(create: (context) => ConstitutionCubit()),
           BlocProvider(create: (context) => SectionsCubit()),
           BlocProvider(create: (context) => SectionDetailCubit()),
+          BlocProvider(create: (context) => FormsSearchAndFilterCubit()),
         ],
         child: const MyApp(),
       ),

@@ -1,3 +1,4 @@
+import 'package:democracy/app/bloc/forms_search_and_filter/forms_search_and_filter_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/petition/view/petition_create.dart';
@@ -24,7 +25,6 @@ class _FormsPageState extends State<FormsPage>
 
   late TabController _tabController;
   final TextEditingController _searchController = TextEditingController();
-  int _currentTabIndex = 0;
 
   @override
   void initState() {
@@ -36,10 +36,12 @@ class _FormsPageState extends State<FormsPage>
   Future<void> _handleTabSelection() async {
     if (_tabController.indexIsChanging) {
       if (_tabController.animation!.isCompleted) {
-        setState(() {
-          _currentTabIndex = _tabController.index;
-          _searchController.clear();
-        });
+        context.read<FormsSearchAndFilterCubit>().tabChanged(
+          status:
+              _tabController.index == 0
+                  ? FormsSearchAndFilterStatus.onSurveys
+                  : FormsSearchAndFilterStatus.onPetitions,
+        );
       }
     }
   }
@@ -67,22 +69,7 @@ class _FormsPageState extends State<FormsPage>
               flexibleSpace: CustomAppBar(
                 user: widget.user,
                 notifications: widget.notifications,
-                extras: [
-                  AppBarSearchBar(
-                    controller: _searchController,
-                    hintText:
-                        'Search ${_currentTabIndex == 0 ? 'surveys' : 'petitions'}',
-                    onChanged: (value) {
-                      _currentTabIndex == 0
-                          ? context.read<WebsocketBloc>().add(
-                            WebsocketEvent.getSurveys(searchTerm: value),
-                          )
-                          : context.read<WebsocketBloc>().add(
-                            WebsocketEvent.getPetitions(searchTerm: value),
-                          );
-                    },
-                  ),
-                ],
+                extras: [FormsSearchBar(controller: _searchController)],
               ),
               bottom: TabBar(
                 controller: _tabController,
@@ -99,6 +86,46 @@ class _FormsPageState extends State<FormsPage>
           children: [Surveys(), PetitionsTab()],
         ),
       ),
+    );
+  }
+}
+
+class FormsSearchBar extends StatelessWidget {
+  const FormsSearchBar({super.key, required this.controller});
+
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<FormsSearchAndFilterCubit, FormsSearchAndFilterState>(
+      listener: (context, state) {
+        if (state.status == FormsSearchAndFilterStatus.onSurveys) {
+          controller.text = state.surveysSearchTerm;
+        }
+        if (state.status == FormsSearchAndFilterStatus.onPetitions) {
+          controller.text = state.petitionsSearchTerm;
+        }
+      },
+      builder: (context, state) {
+        return AppBarSearchBar(
+          controller: controller,
+          hintText: 'Search',
+          onChanged: (value) {
+            context.read<FormsSearchAndFilterCubit>().search(searchTerm: value);
+            state.status == FormsSearchAndFilterStatus.onSurveys
+                ? context.read<WebsocketBloc>().add(
+                  WebsocketEvent.getSurveys(
+                    searchTerm: state.surveysSearchTerm,
+                  ),
+                )
+                : context.read<WebsocketBloc>().add(
+                  WebsocketEvent.getPetitions(
+                    searchTerm: state.petitionsSearchTerm,
+                  ),
+                );
+          },
+        );
+      },
     );
   }
 }
