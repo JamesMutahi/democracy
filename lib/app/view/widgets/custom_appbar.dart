@@ -13,12 +13,14 @@ class CustomAppBar extends StatelessWidget {
     super.key,
     required this.user,
     required this.notifications,
-    required this.extras,
+    required this.middle,
+    this.bottom,
   });
 
   final User user;
   final int notifications;
-  final List<Widget> extras;
+  final List<Widget> middle;
+  final PreferredSizeWidget? bottom;
 
   @override
   Widget build(BuildContext context) {
@@ -33,19 +35,26 @@ class CustomAppBar extends StatelessWidget {
         ),
       ),
     ];
-    widgets.addAll(extras);
+    widgets.addAll(middle);
     widgets.add(NotificationButton(notifications: notifications));
-    return Builder(
-      builder: (context) {
-        return SizedBox(
-          height: 55,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: widgets,
-          ),
-        );
-      },
+    return SliverAppBar(
+      floating: true,
+      snap: true,
+      automaticallyImplyLeading: false,
+      forceElevated: true,
+      flexibleSpace: Builder(
+        builder: (context) {
+          return SizedBox(
+            height: 55,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: widgets,
+            ),
+          );
+        },
+      ),
+      bottom: bottom,
     );
   }
 }

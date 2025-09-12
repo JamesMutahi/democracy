@@ -61,16 +61,10 @@ class _FormsPageState extends State<FormsPage>
       child: NestedScrollView(
         headerSliverBuilder: (context, bool innerBoxIsScrolled) {
           return [
-            SliverAppBar(
-              floating: true,
-              snap: true,
-              automaticallyImplyLeading: false,
-              forceElevated: true,
-              flexibleSpace: CustomAppBar(
-                user: widget.user,
-                notifications: widget.notifications,
-                extras: [FormsSearchBar(controller: _searchController)],
-              ),
+            CustomAppBar(
+              user: widget.user,
+              notifications: widget.notifications,
+              middle: [FormsSearchBar(controller: _searchController)],
               bottom: TabBar(
                 controller: _tabController,
                 dividerColor: Theme.of(context).colorScheme.outlineVariant,

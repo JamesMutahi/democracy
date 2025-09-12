@@ -52,20 +52,15 @@ class _HomePageState extends State<HomePage>
         child: NestedScrollView(
           headerSliverBuilder: (context, bool innerBoxIsScrolled) {
             return [
-              SliverAppBar(
-                floating: true,
-                snap: true,
-                automaticallyImplyLeading: false,
-                flexibleSpace: CustomAppBar(
-                  user: widget.user,
-                  notifications: widget.notifications,
-                  extras: [
-                    Text(
-                      'People of Kenya',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  ],
-                ),
+              CustomAppBar(
+                user: widget.user,
+                notifications: widget.notifications,
+                middle: [
+                  Text(
+                    'People of Kenya',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ],
                 bottom: TabBar(
                   dividerColor: Theme.of(context).colorScheme.outlineVariant,
                   labelStyle: Theme.of(context).textTheme.titleMedium,

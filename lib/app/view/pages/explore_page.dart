@@ -42,25 +42,19 @@ class _ExplorePageState extends State<ExplorePage> {
     return NestedScrollView(
       headerSliverBuilder: (context, bool innerBoxIsScrolled) {
         return [
-          SliverAppBar(
-            floating: true,
-            snap: true,
-            automaticallyImplyLeading: false,
-            forceElevated: true,
-            flexibleSpace: CustomAppBar(
-              user: widget.user,
-              notifications: widget.notifications,
-              extras: [
-                AppBarSearchBar(
-                  hintText: 'Search',
-                  onChanged: (value) {
-                    context.read<WebsocketBloc>().add(
-                      WebsocketEvent.getPosts(searchTerm: value),
-                    );
-                  },
-                ),
-              ],
-            ),
+          CustomAppBar(
+            user: widget.user,
+            notifications: widget.notifications,
+            middle: [
+              AppBarSearchBar(
+                hintText: 'Search',
+                onChanged: (value) {
+                  context.read<WebsocketBloc>().add(
+                    WebsocketEvent.getPosts(searchTerm: value),
+                  );
+                },
+              ),
+            ],
           ),
         ];
       },

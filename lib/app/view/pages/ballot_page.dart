@@ -30,25 +30,19 @@ class _BallotPageState extends State<BallotPage>
     return NestedScrollView(
       headerSliverBuilder: (context, bool innerBoxIsScrolled) {
         return [
-          SliverAppBar(
-            floating: true,
-            snap: true,
-            automaticallyImplyLeading: false,
-            forceElevated: true,
-            flexibleSpace: CustomAppBar(
-              user: widget.user,
-              notifications: widget.notifications,
-              extras: [
-                AppBarSearchBar(
-                  hintText: 'Search ballots',
-                  onChanged: (value) {
-                    context.read<WebsocketBloc>().add(
-                      WebsocketEvent.getBallots(searchTerm: value),
-                    );
-                  },
-                ),
-              ],
-            ),
+          CustomAppBar(
+            user: widget.user,
+            notifications: widget.notifications,
+            middle: [
+              AppBarSearchBar(
+                hintText: 'Search ballots',
+                onChanged: (value) {
+                  context.read<WebsocketBloc>().add(
+                    WebsocketEvent.getBallots(searchTerm: value),
+                  );
+                },
+              ),
+            ],
           ),
         ];
       },
