@@ -50,6 +50,9 @@ abstract class WebsocketEvent with _$WebsocketEvent {
 
   const factory WebsocketEvent.deletePost({required Post post}) = _DeletePost;
 
+  const factory WebsocketEvent.deleteRepost({required Post post}) =
+      _DeleteRepost;
+
   const factory WebsocketEvent.reportPost({
     required String issue,
     required Post post,

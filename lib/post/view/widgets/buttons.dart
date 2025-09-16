@@ -131,39 +131,6 @@ class PostTileButton extends StatelessWidget {
   }
 }
 
-class RepostDeleteButton extends StatelessWidget {
-  const RepostDeleteButton({super.key, required this.post});
-
-  final Post post;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: () {
-        showDialog(
-          context: context,
-          builder:
-              (context) => CustomDialog(
-                title: 'Delete',
-                content: 'Are you sure you want to delete this repost?',
-                button1Text: 'Yes',
-                onButton1Pressed: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.deletePost(post: post),
-                  );
-                },
-                button2Text: 'No',
-                onButton2Pressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-        );
-      },
-      icon: PostButtonIcon(iconData: Symbols.delete_outline_rounded),
-    );
-  }
-}
-
 class LikeButton extends StatelessWidget {
   const LikeButton({super.key, required this.post, required this.numberFormat});
 
@@ -238,28 +205,40 @@ class RepostButton extends StatelessWidget {
                             );
                           },
                         ),
-                        CustomBottomSheetContainer(
-                          text: 'Repost',
-                          iconData: Icons.loop_rounded,
-                          onTap: () {
-                            Navigator.pop(context);
-                            context.read<WebsocketBloc>().add(
-                              WebsocketEvent.createPost(
-                                body: '',
-                                status: PostStatus.published,
-                                repostOf:
-                                    post.body.isEmpty && post.repostOf != null
-                                        ? post.repostOf
-                                        : post,
-                                replyTo: null,
-                                ballot: null,
-                                survey: null,
-                                petition: null,
-                                tags: [],
-                              ),
-                            );
-                          },
-                        ),
+                        post.isReposted
+                            ? CustomBottomSheetContainer(
+                              text: 'Undo repost',
+                              iconData: Icons.loop_rounded,
+                              onTap: () {
+                                Navigator.pop(context);
+                                context.read<WebsocketBloc>().add(
+                                  WebsocketEvent.deleteRepost(post: post),
+                                );
+                              },
+                            )
+                            : CustomBottomSheetContainer(
+                              text: 'Repost',
+                              iconData: Icons.loop_rounded,
+                              onTap: () {
+                                Navigator.pop(context);
+                                context.read<WebsocketBloc>().add(
+                                  WebsocketEvent.createPost(
+                                    body: '',
+                                    status: PostStatus.published,
+                                    repostOf:
+                                        post.body.isEmpty &&
+                                                post.repostOf != null
+                                            ? post.repostOf
+                                            : post,
+                                    replyTo: null,
+                                    ballot: null,
+                                    survey: null,
+                                    petition: null,
+                                    tags: [],
+                                  ),
+                                );
+                              },
+                            ),
                       ],
                     );
                   },
@@ -282,6 +261,8 @@ class RepostButton extends StatelessWidget {
         color:
             post.author.hasBlocked
                 ? Theme.of(context).disabledColor
+                : post.isReposted || post.isQuoted
+                ? Colors.green
                 : Theme.of(context).colorScheme.outline,
       ),
     );
@@ -399,7 +380,7 @@ class BookmarkButton extends StatelessWidget {
         iconData: Symbols.bookmark_rounded,
         color:
             post.isBookmarked
-                ? Theme.of(context).colorScheme.primary
+                ? Colors.blue
                 : Theme.of(context).colorScheme.outline,
         fill: post.isBookmarked ? 1 : 0,
       ),

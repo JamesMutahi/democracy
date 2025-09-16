@@ -91,6 +91,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_DeletePost>((event, emit) {
       _onDeletePost(emit, event);
     });
+    on<_DeleteRepost>((event, emit) {
+      _onDeleteRepost(emit, event);
+    });
     on<_ReportPost>((event, emit) {
       _onReportPost(emit, event);
     });
@@ -442,6 +445,22 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'stream': postsStream,
       'payload': {
         'action': 'delete',
+        'request_id': postRequestId,
+        'pk': event.post.id,
+      },
+    };
+    _channel.sink.add(jsonEncode(message));
+  }
+
+  Future _onDeleteRepost(
+    Emitter<WebsocketState> emit,
+    _DeleteRepost event,
+  ) async {
+    emit(state.copyWith(status: WebsocketStatus.loading));
+    Map<String, dynamic> message = {
+      'stream': postsStream,
+      'payload': {
+        'action': 'delete_repost',
         'request_id': postRequestId,
         'pk': event.post.id,
       },

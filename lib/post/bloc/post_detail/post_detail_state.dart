@@ -20,7 +20,8 @@ class PostDetailState with _$PostDetailState {
     required int views,
     required int replies,
     required int reposts,
-    required bool isEdited,
+    required bool isReposted,
+    required bool isQuoted,
     required bool isDeleted,
     required bool isActive,
   }) = PostUpdated;

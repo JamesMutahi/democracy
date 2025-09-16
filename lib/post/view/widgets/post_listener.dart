@@ -60,7 +60,8 @@ class PostListener extends StatelessWidget {
                     views: state.views,
                     replies: state.replies,
                     reposts: state.reposts,
-                    isEdited: state.isEdited,
+                    isReposted: state.isReposted,
+                    isQuoted: state.isQuoted,
                     isDeleted: state.isDeleted,
                     isActive: state.isActive,
                   );
@@ -83,7 +84,8 @@ class PostListener extends StatelessWidget {
                       views: state.views,
                       replies: state.replies,
                       reposts: state.reposts,
-                      isEdited: state.isEdited,
+                      isReposted: state.isReposted,
+                      isQuoted: state.isQuoted,
                       isDeleted: state.isDeleted,
                       isActive: state.isActive,
                     );

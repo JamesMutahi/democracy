@@ -79,7 +79,8 @@ class _PostDetailState extends State<PostDetail> {
                       views: state.views,
                       replies: state.replies,
                       reposts: state.reposts,
-                      isEdited: state.isEdited,
+                      isReposted: state.isReposted,
+                      isQuoted: state.isQuoted,
                       isDeleted: state.isDeleted,
                       isActive: state.isActive,
                     );
@@ -96,7 +97,8 @@ class _PostDetailState extends State<PostDetail> {
                     views: state.views,
                     replies: state.replies,
                     reposts: state.reposts,
-                    isEdited: state.isEdited,
+                    isReposted: state.isReposted,
+                    isQuoted: state.isQuoted,
                     isDeleted: state.isDeleted,
                     isActive: state.isActive,
                   );
@@ -244,34 +246,24 @@ class _PostDetailState extends State<PostDetail> {
                                   top: 10,
                                 ),
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          Symbols.loop_rounded,
-                                          color:
-                                              Theme.of(
-                                                context,
-                                              ).colorScheme.outline,
-                                        ),
-                                        SizedBox(width: 5),
-                                        Text(
-                                          user.id == widget.repost.author.id
-                                              ? 'You reposted'
-                                              : '${widget.repost.author.name} reposted',
-                                          style: TextStyle(
-                                            color:
-                                                Theme.of(
-                                                  context,
-                                                ).colorScheme.outline,
-                                          ),
-                                        ),
-                                      ],
+                                    Icon(
+                                      Symbols.loop_rounded,
+                                      color:
+                                          Theme.of(context).colorScheme.outline,
                                     ),
-                                    if (user.id == widget.repost.author.id)
-                                      RepostDeleteButton(post: widget.repost),
+                                    SizedBox(width: 5),
+                                    Text(
+                                      user.id == widget.repost.author.id
+                                          ? 'You reposted'
+                                          : '${widget.repost.author.name} reposted',
+                                      style: TextStyle(
+                                        color:
+                                            Theme.of(
+                                              context,
+                                            ).colorScheme.outline,
+                                      ),
+                                    ),
                                   ],
                                 ),
                               );

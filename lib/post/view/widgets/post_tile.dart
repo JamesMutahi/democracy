@@ -79,29 +79,20 @@ class PostTile extends StatelessWidget {
                             top: 10,
                           ),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                children: [
-                                  Icon(
-                                    Symbols.loop_rounded,
-                                    color:
-                                        Theme.of(context).colorScheme.outline,
-                                  ),
-                                  SizedBox(width: 5),
-                                  Text(
-                                    user.id == post.author.id
-                                        ? 'You reposted'
-                                        : '${post.author.name} reposted',
-                                    style: TextStyle(
-                                      color:
-                                          Theme.of(context).colorScheme.outline,
-                                    ),
-                                  ),
-                                ],
+                              Icon(
+                                Symbols.loop_rounded,
+                                color: Theme.of(context).colorScheme.outline,
                               ),
-                              if (user.id == post.author.id)
-                                RepostDeleteButton(post: post),
+                              SizedBox(width: 5),
+                              Text(
+                                user.id == post.author.id
+                                    ? 'You reposted'
+                                    : '${post.author.name} reposted',
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.outline,
+                                ),
+                              ),
                             ],
                           ),
                         ),
