@@ -53,6 +53,10 @@ class _ExplorePageState extends State<ExplorePage> {
                     WebsocketEvent.getPosts(searchTerm: value),
                   );
                 },
+                showFilterIcon: true,
+                onFilterTap: () {
+                  //   TODO:
+                },
               ),
             ],
           ),

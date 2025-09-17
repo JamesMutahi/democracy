@@ -55,11 +55,12 @@ class PostStatusConverter implements JsonConverter<PostStatus, String> {
 
   @override
   PostStatus fromJson(String data) {
-    PostStatus type = PostStatus.draft;
+    late PostStatus type;
     switch (data) {
       case 'published':
         type = PostStatus.published;
-        break;
+      case 'draft':
+        type = PostStatus.draft;
     }
     return type;
   }

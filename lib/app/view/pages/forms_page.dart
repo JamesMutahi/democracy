@@ -35,14 +35,12 @@ class _FormsPageState extends State<FormsPage>
 
   Future<void> _handleTabSelection() async {
     if (_tabController.indexIsChanging) {
-      if (_tabController.animation!.isCompleted) {
-        context.read<FormsSearchAndFilterCubit>().tabChanged(
-          status:
-              _tabController.index == 0
-                  ? FormsSearchAndFilterStatus.onSurveys
-                  : FormsSearchAndFilterStatus.onPetitions,
-        );
-      }
+      context.read<FormsSearchAndFilterCubit>().tabChanged(
+        status:
+            _tabController.index == 0
+                ? FormsSearchAndFilterStatus.onSurveys
+                : FormsSearchAndFilterStatus.onPetitions,
+      );
     }
   }
 
@@ -103,7 +101,10 @@ class FormsSearchBar extends StatelessWidget {
       builder: (context, state) {
         return AppBarSearchBar(
           controller: controller,
-          hintText: 'Search',
+          hintText:
+              state.status == FormsSearchAndFilterStatus.onSurveys
+                  ? 'Search surveys'
+                  : 'Search petitions',
           onChanged: (value) {
             context.read<FormsSearchAndFilterCubit>().search(searchTerm: value);
             state.status == FormsSearchAndFilterStatus.onSurveys
@@ -117,6 +118,10 @@ class FormsSearchBar extends StatelessWidget {
                     searchTerm: state.petitionsSearchTerm,
                   ),
                 );
+          },
+          showFilterIcon: true,
+          onFilterTap: () {
+            //   TODO:
           },
         );
       },

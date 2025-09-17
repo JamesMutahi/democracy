@@ -157,6 +157,10 @@ class _DashboardState extends State<Dashboard> {
                       user: user,
                       notifications: unreadNotifications.length,
                     ),
+                    LivePage(
+                      user: user,
+                      notifications: unreadNotifications.length,
+                    ),
                     BallotPage(
                       user: user,
                       notifications: unreadNotifications.length,

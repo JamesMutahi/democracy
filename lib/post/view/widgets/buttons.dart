@@ -47,6 +47,7 @@ class PostPopUp extends StatelessWidget {
                         content: 'Are you sure you want to delete this post?',
                         button1Text: 'Yes',
                         onButton1Pressed: () {
+                          Navigator.pop(context);
                           context.read<WebsocketBloc>().add(
                             WebsocketEvent.deletePost(post: post),
                           );
