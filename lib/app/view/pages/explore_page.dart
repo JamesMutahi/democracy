@@ -1,6 +1,6 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
-import 'package:democracy/post/bloc/posts/posts_cubit.dart';
+import 'package:democracy/post/bloc/posts/posts_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
 import 'package:democracy/user/models/user.dart';
@@ -33,7 +33,7 @@ class _ExplorePageState extends State<ExplorePage> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getPosts());
+    context.read<PostsBloc>().add(PostsEvent.get());
     super.initState();
   }
 
@@ -49,8 +49,8 @@ class _ExplorePageState extends State<ExplorePage> {
               AppBarSearchBar(
                 hintText: 'Search',
                 onChanged: (value) {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getPosts(searchTerm: value),
+                  context.read<PostsBloc>().add(
+                    PostsEvent.get(searchTerm: value),
                   );
                 },
                 showFilterIcon: true,
@@ -64,7 +64,7 @@ class _ExplorePageState extends State<ExplorePage> {
       },
       body: MultiBlocListener(
         listeners: [
-          BlocListener<PostsCubit, PostsState>(
+          BlocListener<PostsBloc, PostsState>(
             listener: (context, state) {
               if (state.status == PostsStatus.success) {
                 setState(() {
@@ -101,8 +101,8 @@ class _ExplorePageState extends State<ExplorePage> {
           BlocListener<WebsocketBloc, WebsocketState>(
             listener: (context, state) {
               if (state.status == WebsocketStatus.connected) {
-                context.read<WebsocketBloc>().add(
-                  WebsocketEvent.resubscribePosts(posts: _posts),
+                context.read<PostsBloc>().add(
+                  PostsEvent.resubscribe(posts: _posts),
                 );
               }
             },
@@ -122,15 +122,15 @@ class _ExplorePageState extends State<ExplorePage> {
           enablePullUp: hasNextPage,
           checkVisibility: true,
           onRefresh: () {
-            context.read<WebsocketBloc>().add(WebsocketEvent.getPosts());
+            context.read<PostsBloc>().add(PostsEvent.get());
           },
           onLoading: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.getPosts(lastPost: _posts.last),
+            context.read<PostsBloc>().add(
+              PostsEvent.get(lastPost: _posts.last),
             );
           },
           onFailure: () {
-            context.read<WebsocketBloc>().add(WebsocketEvent.getPosts());
+            context.read<PostsBloc>().add(PostsEvent.get());
           },
         ),
       ),

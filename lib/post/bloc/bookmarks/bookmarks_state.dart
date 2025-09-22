@@ -1,4 +1,4 @@
-part of 'bookmarks_cubit.dart';
+part of 'bookmarks_bloc.dart';
 
 enum BookmarksStatus { initial, loading, success, failure }
 

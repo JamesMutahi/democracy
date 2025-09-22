@@ -1,5 +1,5 @@
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_cubit.dart';
-import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
+import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
@@ -22,7 +22,7 @@ class PostListener extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<PostDetailCubit, PostDetailState>(
+        BlocListener<PostDetailBloc, PostDetailState>(
           listener: (context, state) {
             switch (state) {
               case PostLoaded(:final post):

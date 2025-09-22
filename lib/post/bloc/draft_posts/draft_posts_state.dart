@@ -1,4 +1,4 @@
-part of 'draft_posts_cubit.dart';
+part of 'draft_posts_bloc.dart';
 
 enum DraftPostsStatus { initial, loading, success, failure }
 

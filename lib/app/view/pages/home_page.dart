@@ -2,9 +2,10 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/expandable_fab.dart';
-import 'package:democracy/post/bloc/following_posts/following_posts_cubit.dart';
-import 'package:democracy/post/bloc/for_you/for_you_cubit.dart';
-import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
+import 'package:democracy/post/bloc/following_posts/following_posts_bloc.dart';
+import 'package:democracy/post/bloc/for_you/for_you_bloc.dart';
+import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
+import 'package:democracy/post/bloc/posts/posts_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
 import 'package:democracy/user/models/user.dart';
@@ -30,7 +31,7 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocListener<PostDetailCubit, PostDetailState>(
+    return BlocListener<PostDetailBloc, PostDetailState>(
       listener: (context, state) {
         if (state is PostCreated) {
           String message =
@@ -113,7 +114,7 @@ class _ForYouTabState extends State<ForYouTab>
   @override
   void initState() {
     super.initState();
-    context.read<WebsocketBloc>().add(WebsocketEvent.getForYouPosts());
+    context.read<ForYouBloc>().add(ForYouEvent.get());
   }
 
   @override
@@ -121,7 +122,7 @@ class _ForYouTabState extends State<ForYouTab>
     super.build(context);
     return MultiBlocListener(
       listeners: [
-        BlocListener<ForYouCubit, ForYouState>(
+        BlocListener<ForYouBloc, ForYouState>(
           listener: (context, state) {
             if (state.status == ForYouStatus.success) {
               setState(() {
@@ -157,8 +158,8 @@ class _ForYouTabState extends State<ForYouTab>
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
             if (state.status == WebsocketStatus.connected) {
-              context.read<WebsocketBloc>().add(
-                WebsocketEvent.resubscribePosts(posts: _posts),
+              context.read<PostsBloc>().add(
+                PostsEvent.resubscribe(posts: _posts),
               );
             }
           },
@@ -184,7 +185,7 @@ class _ForYouTabState extends State<ForYouTab>
           //   TODO:
         },
         onFailure: () {
-          context.read<WebsocketBloc>().add(WebsocketEvent.getForYouPosts());
+          context.read<ForYouBloc>().add(ForYouEvent.get());
         },
       ),
     );
@@ -209,7 +210,7 @@ class _FollowingTabState extends State<FollowingTab> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getFollowingPosts());
+    context.read<FollowingPostsBloc>().add(FollowingPostsEvent.get());
     super.initState();
   }
 
@@ -217,7 +218,7 @@ class _FollowingTabState extends State<FollowingTab> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<FollowingPostsCubit, FollowingPostsState>(
+        BlocListener<FollowingPostsBloc, FollowingPostsState>(
           listener: (context, state) {
             if (state.status == FollowingPostsStatus.success) {
               setState(() {
@@ -253,8 +254,8 @@ class _FollowingTabState extends State<FollowingTab> {
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
             if (state.status == WebsocketStatus.connected) {
-              context.read<WebsocketBloc>().add(
-                WebsocketEvent.resubscribePosts(posts: _posts),
+              context.read<PostsBloc>().add(
+                PostsEvent.resubscribe(posts: _posts),
               );
             }
           },
@@ -274,15 +275,15 @@ class _FollowingTabState extends State<FollowingTab> {
         enablePullUp: hasNextPage,
         checkVisibility: true,
         onRefresh: () {
-          context.read<WebsocketBloc>().add(WebsocketEvent.getFollowingPosts());
+          context.read<FollowingPostsBloc>().add(FollowingPostsEvent.get());
         },
         onLoading: () {
-          context.read<WebsocketBloc>().add(
-            WebsocketEvent.getFollowingPosts(lastPost: _posts.last),
+          context.read<FollowingPostsBloc>().add(
+            FollowingPostsEvent.get(lastPost: _posts.last),
           );
         },
         onFailure: () {
-          context.read<WebsocketBloc>().add(WebsocketEvent.getFollowingPosts());
+          context.read<FollowingPostsBloc>().add(FollowingPostsEvent.get());
         },
       ),
     );

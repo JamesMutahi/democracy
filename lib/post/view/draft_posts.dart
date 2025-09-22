@@ -1,6 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
-import 'package:democracy/post/bloc/draft_posts/draft_posts_cubit.dart';
+import 'package:democracy/post/bloc/draft_posts/draft_posts_bloc.dart';
+import 'package:democracy/post/bloc/user_posts/user_posts_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/post_update.dart';
 import 'package:democracy/post/view/widgets/posts_pop_scope.dart';
@@ -27,7 +28,7 @@ class _DraftsPostsState extends State<DraftPosts> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getDraftPosts());
+    context.read<DraftPostsBloc>().add(DraftPostsEvent.get());
     super.initState();
   }
 
@@ -46,7 +47,7 @@ class _DraftsPostsState extends State<DraftPosts> {
             appBar: AppBar(title: Text('Drafts')),
             body: MultiBlocListener(
               listeners: [
-                BlocListener<DraftPostsCubit, DraftPostsState>(
+                BlocListener<DraftPostsBloc, DraftPostsState>(
                   listener: (context, state) {
                     if (state.status == DraftPostsStatus.success) {
                       setState(() {
@@ -85,11 +86,8 @@ class _DraftsPostsState extends State<DraftPosts> {
                 BlocListener<WebsocketBloc, WebsocketState>(
                   listener: (context, state) {
                     if (state.status == WebsocketStatus.connected) {
-                      context.read<WebsocketBloc>().add(
-                        WebsocketEvent.resubscribeUserPosts(
-                          user: user,
-                          posts: _posts,
-                        ),
+                      context.read<UserPostsBloc>().add(
+                        UserPostsEvent.resubscribe(user: user, posts: _posts),
                       );
                     }
                   },
@@ -101,13 +99,11 @@ class _DraftsPostsState extends State<DraftPosts> {
                 header: ClassicHeader(),
                 controller: _refreshController,
                 onRefresh: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getDraftPosts(),
-                  );
+                  context.read<DraftPostsBloc>().add(DraftPostsEvent.get());
                 },
                 onLoading: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getDraftPosts(lastPost: _posts.last),
+                  context.read<DraftPostsBloc>().add(
+                    DraftPostsEvent.get(lastPost: _posts.last),
                   );
                 },
                 footer: ClassicFooter(),

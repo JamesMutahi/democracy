@@ -1,8 +1,8 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
-import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
-import 'package:democracy/post/bloc/replies/replies_cubit.dart';
+import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
+import 'package:democracy/post/bloc/replies/replies_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
@@ -30,9 +30,7 @@ class _RepliesState extends State<Replies> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(
-      WebsocketEvent.getReplies(post: widget.post),
-    );
+    context.read<RepliesBloc>().add(RepliesEvent.get(post: widget.post));
     super.initState();
   }
 
@@ -43,16 +41,13 @@ class _RepliesState extends State<Replies> {
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
             if (state.status == WebsocketStatus.connected) {
-              context.read<WebsocketBloc>().add(
-                WebsocketEvent.resubscribeReplies(
-                  post: widget.post,
-                  replies: _posts,
-                ),
+              context.read<RepliesBloc>().add(
+                RepliesEvent.resubscribe(post: widget.post, replies: _posts),
               );
             }
           },
         ),
-        BlocListener<RepliesCubit, RepliesState>(
+        BlocListener<RepliesBloc, RepliesState>(
           listener: (context, state) {
             if (state.status == RepliesStatus.success) {
               if (widget.post.id == state.postId) {
@@ -90,7 +85,7 @@ class _RepliesState extends State<Replies> {
             }
           },
         ),
-        BlocListener<PostDetailCubit, PostDetailState>(
+        BlocListener<PostDetailBloc, PostDetailState>(
           listener: (context, state) {
             switch (state) {
               case PostCreated(post: final post):
@@ -122,8 +117,8 @@ class _RepliesState extends State<Replies> {
                 : failure
                 ? FailureRetryButton(
                   onPressed: () {
-                    context.read<WebsocketBloc>().add(
-                      WebsocketEvent.getReplies(post: widget.post),
+                    context.read<RepliesBloc>().add(
+                      RepliesEvent.get(post: widget.post),
                     );
                   },
                 )

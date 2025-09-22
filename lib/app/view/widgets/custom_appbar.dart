@@ -90,7 +90,10 @@ class AppBarSearchBar extends StatelessWidget {
             if (showFilterIcon)
               GestureDetector(
                 onTap: onFilterTap,
-                child: Icon(Symbols.tune_rounded),
+                child: SizedBox(
+                  height: double.infinity,
+                  child: Icon(Symbols.filter_list_rounded),
+                ),
               ),
           ],
           hintText: hintText,

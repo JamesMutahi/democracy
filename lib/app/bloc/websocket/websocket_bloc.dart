@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/models/option.dart';
@@ -20,7 +21,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 part 'websocket_event.dart';
@@ -52,78 +52,12 @@ const String petitionRequestId = 'petitions';
 const String constitutionRequestId = 'constitution';
 
 class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
-  WebsocketBloc({required this.authRepository})
+  WebsocketBloc({required this.authRepository, required this.webSocketService})
     : super(const WebsocketState()) {
     on<_Connect>((event, emit) async {
       _onConnect(emit);
     });
     on<_ChangeState>((event, emit) => emit(event.state));
-    on<_GetForYouPosts>((event, emit) {
-      _onGetForYouPosts(emit);
-    });
-    on<_ResubscribePosts>((event, emit) {
-      _onResubscribePosts(emit, event);
-    });
-    on<_ResubscribeReplies>((event, emit) {
-      _onResubscribeReplies(emit, event);
-    });
-    on<_ResubscribeUserPosts>((event, emit) {
-      _onResubscribeUserPosts(emit, event);
-    });
-    on<_GetPosts>((event, emit) {
-      _onGetPosts(emit, event);
-    });
-    on<_CreatePost>((event, emit) {
-      _onCreatePost(emit, event);
-    });
-    on<_GetPost>((event, emit) {
-      _onGetPost(emit, event);
-    });
-    on<_UpdatePost>((event, emit) {
-      _onUpdatePost(emit, event);
-    });
-    on<_LikePost>((event, emit) {
-      _onLikePost(emit, event);
-    });
-    on<_BookmarkPost>((event, emit) {
-      _onBookmarkPost(emit, event);
-    });
-    on<_DeletePost>((event, emit) {
-      _onDeletePost(emit, event);
-    });
-    on<_DeleteRepost>((event, emit) {
-      _onDeleteRepost(emit, event);
-    });
-    on<_ReportPost>((event, emit) {
-      _onReportPost(emit, event);
-    });
-    on<_GetFollowingPosts>((event, emit) {
-      _onGetFollowingPosts(emit, event);
-    });
-    on<_GetReplies>((event, emit) {
-      _onGetReplies(emit, event);
-    });
-    on<_UnsubscribeReplies>((event, emit) {
-      _onUnsubscribeReplies(emit, event);
-    });
-    on<_GetUserPosts>((event, emit) {
-      _onGetUserPosts(emit, event);
-    });
-    on<_GetBookmarks>((event, emit) {
-      _onGetBookmarks(emit, event);
-    });
-    on<_GetLikedPosts>((event, emit) {
-      _onGetLikedPosts(emit, event);
-    });
-    on<_GetDraftPosts>((event, emit) {
-      _onGetDraftPosts(emit);
-    });
-    on<_GetUserReplies>((event, emit) {
-      _onGetUserReplies(emit, event);
-    });
-    on<_UnsubscribeUserPosts>((event, emit) {
-      _onUnsubscribeUserPosts(emit, event);
-    });
     on<_GetChats>((event, emit) {
       _onGetChats(emit, event);
     });
@@ -257,7 +191,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       _onBookmarkSection(emit, event);
     });
     on<_Disconnect>((event, emit) async {
-      await _channel.sink.close();
+      await webSocketService.disconnect();
       emit(WebsocketState());
     });
   }
@@ -267,11 +201,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     try {
       String? token = await authRepository.getToken();
       String url = dotenv.env['WEBSOCKET_URL']!;
-      _channel = IOWebSocketChannel.connect(
-        Uri.parse(url),
-        headers: {'Authorization': 'Token $token', 'Origin': url},
-      );
-      await _channel.ready;
+      await webSocketService.connect(url, token!);
       add(
         _ChangeState(
           state: state.copyWith(
@@ -280,379 +210,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
           ),
         ),
       );
-      _channel.stream.listen(
-        (message) {
-          add(
-            _ChangeState(
-              state: state.copyWith(
-                status: WebsocketStatus.success,
-                message: jsonDecode(message),
-              ),
-            ),
-          );
-        },
-        onDone: () {
-          add(
-            _ChangeState(
-              state: state.copyWith(status: WebsocketStatus.disconnected),
-            ),
-          );
-          Future.delayed(Duration(seconds: 10)).then((value) {
-            add(_Connect());
-          });
-        },
-        onError: (error) {
-          add(
-            _ChangeState(
-              state: state.copyWith(status: WebsocketStatus.failure),
-            ),
-          );
-          debugPrint('ws error $error');
-          Future.delayed(Duration(seconds: 10)).then((value) {
-            add(_Connect());
-          });
-        },
-      );
     } catch (e) {
-      add(_ChangeState(state: state.copyWith(status: WebsocketStatus.failure)));
+      emit(state.copyWith(status: WebsocketStatus.failure));
     }
-  }
-
-  Future _onGetForYouPosts(Emitter<WebsocketState> emit) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': postsStream,
-      'payload': {"action": 'for_you', 'request_id': postRequestId},
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onResubscribePosts(
-    Emitter<WebsocketState> emit,
-    _ResubscribePosts event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    List<int> postIds = event.posts.map((post) => post.id).toList();
-    List<Post> reposts =
-        event.posts.where((post) => post.repostOf != null).toList();
-    postIds.addAll(reposts.map((post) => post.id).toList());
-    Map<String, dynamic> message = {
-      'stream': postsStream,
-      'payload': {
-        "action": 'resubscribe',
-        'request_id': postRequestId,
-        'pks': postIds,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onGetPosts(Emitter<WebsocketState> emit, _GetPosts event) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': postsStream,
-      'payload': {
-        "action": 'list',
-        "request_id": postRequestId,
-        'search_term': event.searchTerm,
-        'last_post': event.lastPost?.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onCreatePost(Emitter<WebsocketState> emit, _CreatePost event) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': postsStream,
-      'payload': {
-        'action': 'create',
-        'request_id': postRequestId,
-        'data': {
-          'body': event.body,
-          'reply_to_id': event.replyTo?.id,
-          'repost_of_id': event.repostOf?.id,
-          'ballot_id': event.ballot?.id,
-          'survey_id': event.survey?.id,
-          'petition_id': event.petition?.id,
-          'status':
-              event.status == PostStatus.published ? 'published' : 'draft',
-          'tags': event.tags,
-        },
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onGetPost(Emitter<WebsocketState> emit, _GetPost event) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': postsStream,
-      'payload': {
-        'action': 'retrieve',
-        'request_id': postRequestId,
-        'pk': event.post.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onUpdatePost(Emitter<WebsocketState> emit, _UpdatePost event) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': postsStream,
-      'payload': {
-        'action': 'patch',
-        'request_id': postRequestId,
-        'data': {'pk': event.id, 'body': event.body},
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onLikePost(Emitter<WebsocketState> emit, _LikePost event) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': postsStream,
-      'payload': {
-        'action': 'like',
-        'request_id': postRequestId,
-        'pk': event.post.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onBookmarkPost(
-    Emitter<WebsocketState> emit,
-    _BookmarkPost event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': postsStream,
-      'payload': {
-        'action': 'bookmark',
-        'request_id': postRequestId,
-        'pk': event.post.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onDeletePost(Emitter<WebsocketState> emit, _DeletePost event) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': postsStream,
-      'payload': {
-        'action': 'delete',
-        'request_id': postRequestId,
-        'pk': event.post.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onDeleteRepost(
-    Emitter<WebsocketState> emit,
-    _DeleteRepost event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': postsStream,
-      'payload': {
-        'action': 'delete_repost',
-        'request_id': postRequestId,
-        'pk': event.post.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onReportPost(Emitter<WebsocketState> emit, _ReportPost event) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': postsStream,
-      'payload': {
-        'action': 'report',
-        'data': {'issue': event.issue, 'post': event.post.id},
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onGetFollowingPosts(
-    Emitter<WebsocketState> emit,
-    _GetFollowingPosts event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': postsStream,
-      'payload': {
-        'action': 'following',
-        'request_id': postRequestId,
-        'last_post': event.lastPost?.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onGetReplies(Emitter<WebsocketState> emit, _GetReplies event) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': postsStream,
-      'payload': {
-        'action': 'replies',
-        'request_id': event.post.id,
-        'pk': event.post.id,
-        'last_post': event.lastPost?.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onUnsubscribeReplies(
-    Emitter<WebsocketState> emit,
-    _UnsubscribeReplies event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': postsStream,
-      'payload': {
-        'action': 'unsubscribe_replies',
-        'request_id': event.post.id,
-        'pk': event.post.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onGetUserPosts(
-    Emitter<WebsocketState> emit,
-    _GetUserPosts event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': postsStream,
-      'payload': {
-        'action': 'user_posts',
-        'request_id': event.user.id,
-        'user': event.user.id,
-        'last_post': event.lastPost?.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onGetBookmarks(
-    Emitter<WebsocketState> emit,
-    _GetBookmarks event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': postsStream,
-      'payload': {'action': 'bookmarks', 'last_post': event.lastPost?.id},
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onGetLikedPosts(
-    Emitter<WebsocketState> emit,
-    _GetLikedPosts event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': postsStream,
-      'payload': {
-        'action': 'liked_posts',
-        'request_id': event.user.id,
-        'user': event.user.id,
-        'last_post': event.lastPost?.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onGetDraftPosts(Emitter<WebsocketState> emit) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': postsStream,
-      'payload': {'action': 'drafts', 'request_id': postRequestId},
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onGetUserReplies(
-    Emitter<WebsocketState> emit,
-    _GetUserReplies event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': postsStream,
-      'payload': {
-        'action': 'user_replies',
-        'request_id': event.user.id,
-        'user': event.user.id,
-        'last_post': event.lastPost?.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onUnsubscribeUserPosts(
-    Emitter<WebsocketState> emit,
-    _UnsubscribeUserPosts event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    List<int> postIds = event.posts.map((post) => post.id).toList();
-    Map<String, dynamic> message = {
-      'stream': postsStream,
-      'payload': {
-        'action': 'unsubscribe_user_posts',
-        'request_id': event.user.id,
-        'pks': postIds,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onResubscribeReplies(
-    Emitter<WebsocketState> emit,
-    _ResubscribeReplies event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    List<int> postIds = event.replies.map((post) => post.id).toList();
-    List<Post> reposts =
-        event.replies.where((post) => post.repostOf != null).toList();
-    postIds.addAll(reposts.map((post) => post.id).toList());
-    Map<String, dynamic> message = {
-      'stream': postsStream,
-      'payload': {
-        "action": 'resubscribe_replies',
-        'request_id': event.post.id,
-        'pks': postIds,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onResubscribeUserPosts(
-    Emitter<WebsocketState> emit,
-    _ResubscribeUserPosts event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    List<int> postIds = event.posts.map((post) => post.id).toList();
-    List<Post> reposts =
-        event.posts.where((post) => post.repostOf != null).toList();
-    postIds.addAll(reposts.map((post) => post.id).toList());
-    Map<String, dynamic> message = {
-      'stream': postsStream,
-      'payload': {
-        "action": 'resubscribe_user_posts',
-        'request_id': event.user.id,
-        'pks': postIds,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
   }
 
   Future _onGetChats(Emitter<WebsocketState> emit, _GetChats event) async {
@@ -1385,4 +945,5 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
 
   late WebSocketChannel _channel;
   final AuthRepository authRepository;
+  final WebSocketService webSocketService;
 }

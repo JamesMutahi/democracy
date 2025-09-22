@@ -1,4 +1,4 @@
-part of 'for_you_cubit.dart';
+part of 'for_you_bloc.dart';
 
 enum ForYouStatus { initial, loading, success, failure }
 

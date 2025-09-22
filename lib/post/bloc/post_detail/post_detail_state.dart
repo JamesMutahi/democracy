@@ -1,4 +1,4 @@
-part of 'post_detail_cubit.dart';
+part of 'post_detail_bloc.dart';
 
 @freezed
 class PostDetailState with _$PostDetailState {

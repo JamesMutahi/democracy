@@ -1,6 +1,7 @@
 import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -19,12 +20,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
           BottomNavBarPageChanged(:final page) => page,
         };
         List iconDataList = [
-          Icons.home_rounded,
-          Icons.search_rounded,
-          Icons.mic_rounded,
-          Icons.how_to_vote,
-          Icons.edit_document,
-          Icons.email_rounded,
+          Symbols.home_rounded,
+          Symbols.search_rounded,
+          Symbols.mic_rounded,
+          Symbols.how_to_vote_rounded,
+          Symbols.edit_document_rounded,
+          Symbols.email_rounded,
         ];
         return BottomAppBar(
           padding: const EdgeInsets.all(0.0),
@@ -85,8 +86,9 @@ class NavBarItem extends StatelessWidget {
                       isActive
                           ? Theme.of(context).colorScheme.primary
                           : Theme.of(context).colorScheme.outline,
-                  fill: (isActive) ? 1 : null,
-                  size: isActive ? 29 : 27,
+                  fill: isActive ? 1 : 0,
+                  size: 25,
+                  weight: 600,
                 ),
                 child: Icon(iconData),
               ),

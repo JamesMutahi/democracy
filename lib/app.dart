@@ -24,16 +24,6 @@ import 'package:democracy/petition/bloc/petition_detail/petition_detail_cubit.da
 import 'package:democracy/petition/bloc/petitions/petitions_cubit.dart';
 import 'package:democracy/petition/bloc/supporters/supporters_cubit.dart';
 import 'package:democracy/petition/bloc/user_petitions/user_petitions_cubit.dart';
-import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
-import 'package:democracy/post/bloc/draft_posts/draft_posts_cubit.dart';
-import 'package:democracy/post/bloc/following_posts/following_posts_cubit.dart';
-import 'package:democracy/post/bloc/for_you/for_you_cubit.dart';
-import 'package:democracy/post/bloc/likes/likes_cubit.dart';
-import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
-import 'package:democracy/post/bloc/posts/posts_cubit.dart';
-import 'package:democracy/post/bloc/replies/replies_cubit.dart';
-import 'package:democracy/post/bloc/user_posts/user_posts_cubit.dart';
-import 'package:democracy/post/bloc/user_replies/user_replies_cubit.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
 import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
 import 'package:democracy/survey/bloc/surveys/surveys_cubit.dart';
@@ -211,74 +201,8 @@ class _Listeners extends StatelessWidget {
               showSnackBar(snackBar: snackBar);
             }
             if (state.status == WebsocketStatus.success) {
-              final message = state.message;
+              final message = {};
               switch (message['stream']) {
-                case postsStream:
-                  switch (message['payload']['action']) {
-                    case 'for_you':
-                      context.read<ForYouCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                    case 'list':
-                      context.read<PostsCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                    case 'create':
-                      context.read<PostDetailCubit>().created(
-                        payload: message['payload'],
-                      );
-                    case 'retrieve':
-                      context.read<PostDetailCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                    case 'update':
-                      context.read<PostDetailCubit>().updated(
-                        payload: message['payload'],
-                      );
-                    case 'delete':
-                      context.read<PostDetailCubit>().deleted(
-                        payload: message['payload'],
-                      );
-                    case 'bookmark':
-                      final snackBar = getSnackBar(
-                        context: context,
-                        message: message['payload']['data']['message'],
-                        status: SnackBarStatus.info,
-                      );
-                      showSnackBar(snackBar: snackBar);
-                    case 'report':
-                      context.read<PostDetailCubit>().reported(
-                        payload: message['payload'],
-                      );
-                    case 'following':
-                      context.read<FollowingPostsCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                    case 'replies':
-                      context.read<RepliesCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                    case 'user_posts':
-                      context.read<UserPostsCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                    case 'bookmarks':
-                      context.read<BookmarksCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                    case 'liked_posts':
-                      context.read<LikesCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                    case 'user_replies':
-                      context.read<UserRepliesCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                    case 'draft_posts':
-                      context.read<DraftPostsCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                  }
                 case chatsStream:
                   switch (message['payload']['action']) {
                     case 'list':
@@ -530,9 +454,6 @@ class _Listeners extends StatelessWidget {
             }
             if (state.status == WebsocketStatus.failure) {
               String error = 'Server error';
-              context.read<ForYouCubit>().websocketFailure(error: error);
-              context.read<PostsCubit>().websocketFailure(error: error);
-              context.read<RepliesCubit>().websocketFailure(error: error);
               context.read<SurveysCubit>().websocketFailure(error: error);
               context.read<BallotsCubit>().websocketFailure(error: error);
               context.read<ChatsCubit>().websocketFailure(error: error);
@@ -546,9 +467,6 @@ class _Listeners extends StatelessWidget {
             }
             if (state.status == WebsocketStatus.disconnected) {
               String error = 'Server connection lost';
-              context.read<ForYouCubit>().websocketFailure(error: error);
-              context.read<PostsCubit>().websocketFailure(error: error);
-              context.read<RepliesCubit>().websocketFailure(error: error);
               context.read<SurveysCubit>().websocketFailure(error: error);
               context.read<BallotsCubit>().websocketFailure(error: error);
               context.read<ChatsCubit>().websocketFailure(error: error);

@@ -11,7 +11,7 @@ import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/constitution/bloc/sections/sections_cubit.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
-import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
+import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/survey/models/survey.dart';
@@ -57,8 +57,8 @@ class _PostCreateState extends State<PostCreate> {
     for (var tag in _controller.tags) {
       tags.add({'id': tag.id, 'text': tag.text});
     }
-    context.read<WebsocketBloc>().add(
-      WebsocketEvent.createPost(
+    context.read<PostDetailBloc>().add(
+      PostDetailEvent.create(
         body: _controller.formattedText,
         status: status,
         replyTo: widget.isReply ? widget.post : null,
@@ -73,7 +73,7 @@ class _PostCreateState extends State<PostCreate> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<PostDetailCubit, PostDetailState>(
+    return BlocListener<PostDetailBloc, PostDetailState>(
       listener: (context, state) {
         if (state is PostCreated) {
           Navigator.pop(context);

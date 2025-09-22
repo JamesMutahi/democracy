@@ -1,4 +1,4 @@
-part of 'likes_cubit.dart';
+part of 'likes_bloc.dart';
 
 enum LikesStatus { initial, loading, success, failure }
 

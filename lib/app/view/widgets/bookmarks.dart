@@ -1,5 +1,6 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
+import 'package:democracy/post/bloc/bookmarks/bookmarks_bloc.dart';
+import 'package:democracy/post/bloc/user_posts/user_posts_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
 import 'package:democracy/post/view/widgets/posts_pop_scope.dart';
@@ -27,6 +28,12 @@ class _BookmarksState extends State<Bookmarks> {
   );
 
   @override
+  void initState() {
+    context.read<BookmarksBloc>().add(BookmarksEvent.get());
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return PostsPopScope(
       user: widget.user,
@@ -35,7 +42,7 @@ class _BookmarksState extends State<Bookmarks> {
         appBar: AppBar(title: Text('Bookmarks')),
         body: MultiBlocListener(
           listeners: [
-            BlocListener<BookmarksCubit, BookmarksState>(
+            BlocListener<BookmarksBloc, BookmarksState>(
               listener: (context, state) {
                 if (state.status == BookmarksStatus.loading) {
                   setState(() {
@@ -86,8 +93,8 @@ class _BookmarksState extends State<Bookmarks> {
             BlocListener<WebsocketBloc, WebsocketState>(
               listener: (context, state) {
                 if (state.status == WebsocketStatus.connected) {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.resubscribeUserPosts(
+                  context.read<UserPostsBloc>().add(
+                    UserPostsEvent.resubscribe(
                       user: widget.user,
                       posts: _posts,
                     ),
@@ -110,22 +117,15 @@ class _BookmarksState extends State<Bookmarks> {
             enablePullDown: true,
             enablePullUp: hasNextPage,
             onRefresh: () {
-              context.read<WebsocketBloc>().add(
-                WebsocketEvent.getBookmarks(user: widget.user),
-              );
+              context.read<BookmarksBloc>().add(BookmarksEvent.get());
             },
             onLoading: () {
-              context.read<WebsocketBloc>().add(
-                WebsocketEvent.getBookmarks(
-                  user: widget.user,
-                  lastPost: _posts.last,
-                ),
+              context.read<BookmarksBloc>().add(
+                BookmarksEvent.get(lastPost: _posts.last),
               );
             },
             onFailure: () {
-              context.read<WebsocketBloc>().add(
-                WebsocketEvent.getBookmarks(user: widget.user),
-              );
+              context.read<BookmarksBloc>().add(BookmarksEvent.get());
             },
           ),
         ),

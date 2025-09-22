@@ -5,6 +5,7 @@ import 'package:democracy/app/utils/more_pop_up.dart';
 import 'package:democracy/app/utils/report.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/post_create.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
@@ -48,8 +49,8 @@ class PostPopUp extends StatelessWidget {
                         button1Text: 'Yes',
                         onButton1Pressed: () {
                           Navigator.pop(context);
-                          context.read<WebsocketBloc>().add(
-                            WebsocketEvent.deletePost(post: post),
+                          context.read<PostDetailBloc>().add(
+                            PostDetailEvent.delete(post: post),
                           );
                         },
                         button2Text: 'No',
@@ -142,7 +143,7 @@ class LikeButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return PostTileButton(
       onTap: () {
-        context.read<WebsocketBloc>().add(WebsocketEvent.likePost(post: post));
+        context.read<PostDetailBloc>().add(PostDetailEvent.like(post: post));
       },
       trailing:
           (post.likes > 0)
@@ -212,8 +213,8 @@ class RepostButton extends StatelessWidget {
                               iconData: Icons.loop_rounded,
                               onTap: () {
                                 Navigator.pop(context);
-                                context.read<WebsocketBloc>().add(
-                                  WebsocketEvent.deleteRepost(post: post),
+                                context.read<PostDetailBloc>().add(
+                                  PostDetailEvent.deleteRepost(post: post),
                                 );
                               },
                             )
@@ -222,8 +223,8 @@ class RepostButton extends StatelessWidget {
                               iconData: Icons.loop_rounded,
                               onTap: () {
                                 Navigator.pop(context);
-                                context.read<WebsocketBloc>().add(
-                                  WebsocketEvent.createPost(
+                                context.read<PostDetailBloc>().add(
+                                  PostDetailEvent.create(
                                     body: '',
                                     status: PostStatus.published,
                                     repostOf:
@@ -366,8 +367,8 @@ class BookmarkButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return PostTileButton(
       onTap: () {
-        context.read<WebsocketBloc>().add(
-          WebsocketEvent.bookmarkPost(post: post),
+        context.read<PostDetailBloc>().add(
+          PostDetailEvent.bookmark(post: post),
         );
       },
       trailing:

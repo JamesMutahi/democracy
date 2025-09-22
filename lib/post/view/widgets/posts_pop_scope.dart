@@ -1,4 +1,4 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/post/bloc/user_posts/user_posts_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +21,8 @@ class PostsPopScope extends StatelessWidget {
     return PopScope(
       canPop: true,
       onPopInvokedWithResult: (_, __) {
-        context.read<WebsocketBloc>().add(
-          WebsocketEvent.unsubscribeUserPosts(user: user, posts: posts),
+        context.read<UserPostsBloc>().add(
+          UserPostsEvent.unsubscribe(user: user, posts: posts),
         );
       },
       child: child,

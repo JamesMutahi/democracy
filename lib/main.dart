@@ -4,6 +4,7 @@ import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
 import 'package:democracy/app/bloc/forms_search_and_filter/forms_search_and_filter_cubit.dart';
 import 'package:democracy/app/bloc/theme/theme_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_cubit.dart';
@@ -23,16 +24,16 @@ import 'package:democracy/petition/bloc/petition_detail/petition_detail_cubit.da
 import 'package:democracy/petition/bloc/petitions/petitions_cubit.dart';
 import 'package:democracy/petition/bloc/supporters/supporters_cubit.dart';
 import 'package:democracy/petition/bloc/user_petitions/user_petitions_cubit.dart';
-import 'package:democracy/post/bloc/bookmarks/bookmarks_cubit.dart';
-import 'package:democracy/post/bloc/draft_posts/draft_posts_cubit.dart';
-import 'package:democracy/post/bloc/following_posts/following_posts_cubit.dart';
-import 'package:democracy/post/bloc/for_you/for_you_cubit.dart';
-import 'package:democracy/post/bloc/likes/likes_cubit.dart';
-import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
-import 'package:democracy/post/bloc/posts/posts_cubit.dart';
-import 'package:democracy/post/bloc/replies/replies_cubit.dart';
-import 'package:democracy/post/bloc/user_posts/user_posts_cubit.dart';
-import 'package:democracy/post/bloc/user_replies/user_replies_cubit.dart';
+import 'package:democracy/post/bloc/bookmarks/bookmarks_bloc.dart';
+import 'package:democracy/post/bloc/draft_posts/draft_posts_bloc.dart';
+import 'package:democracy/post/bloc/following_posts/following_posts_bloc.dart';
+import 'package:democracy/post/bloc/for_you/for_you_bloc.dart';
+import 'package:democracy/post/bloc/likes/likes_bloc.dart';
+import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
+import 'package:democracy/post/bloc/posts/posts_bloc.dart';
+import 'package:democracy/post/bloc/replies/replies_bloc.dart';
+import 'package:democracy/post/bloc/user_posts/user_posts_bloc.dart';
+import 'package:democracy/post/bloc/user_replies/user_replies_bloc.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
 import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
 import 'package:democracy/survey/bloc/survey_process/page/page_bloc.dart';
@@ -66,6 +67,7 @@ void main() async {
   );
 
   final dio = Dio(options);
+  final webSocketService = WebSocketService();
   runApp(
     MultiRepositoryProvider(
       providers: [
@@ -99,6 +101,7 @@ void main() async {
             create:
                 (context) => WebsocketBloc(
                   authRepository: context.read<AuthRepository>(),
+                  webSocketService: webSocketService,
                 ),
           ),
           BlocProvider(create: (context) => BottomNavBarCubit()),
@@ -106,16 +109,45 @@ void main() async {
           BlocProvider(create: (context) => SurveyBottomNavigationBloc()),
           BlocProvider(create: (context) => BallotsCubit()),
           BlocProvider(create: (context) => BallotDetailCubit()),
-          BlocProvider(create: (context) => ForYouCubit()),
-          BlocProvider(create: (context) => PostsCubit()),
-          BlocProvider(create: (context) => PostDetailCubit()),
-          BlocProvider(create: (context) => FollowingPostsCubit()),
-          BlocProvider(create: (context) => RepliesCubit()),
-          BlocProvider(create: (context) => UserPostsCubit()),
-          BlocProvider(create: (context) => BookmarksCubit()),
-          BlocProvider(create: (context) => LikesCubit()),
-          BlocProvider(create: (context) => DraftPostsCubit()),
-          BlocProvider(create: (context) => UserRepliesCubit()),
+          BlocProvider(
+            create: (context) => ForYouBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create: (context) => PostsBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create:
+                (context) => PostDetailBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create:
+                (context) =>
+                    FollowingPostsBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create:
+                (context) => RepliesBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create:
+                (context) => UserPostsBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create:
+                (context) => BookmarksBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create: (context) => LikesBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create:
+                (context) => DraftPostsBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create:
+                (context) =>
+                    UserRepliesBloc(webSocketService: webSocketService),
+          ),
           BlocProvider(create: (context) => ChatsCubit()),
           BlocProvider(create: (context) => ChatDetailCubit()),
           BlocProvider(create: (context) => MessagesCubit()),

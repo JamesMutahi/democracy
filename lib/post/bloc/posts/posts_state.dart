@@ -1,4 +1,4 @@
-part of 'posts_cubit.dart';
+part of 'posts_bloc.dart';
 
 enum PostsStatus { initial, loading, success, failure }
 

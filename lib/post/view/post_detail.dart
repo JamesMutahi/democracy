@@ -9,8 +9,8 @@ import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_cubit.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/constitution/bloc/sections/sections_cubit.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
-import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
-import 'package:democracy/post/bloc/replies/replies_cubit.dart';
+import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
+import 'package:democracy/post/bloc/replies/replies_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
@@ -57,7 +57,7 @@ class _PostDetailState extends State<PostDetail> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<PostDetailCubit, PostDetailState>(
+        BlocListener<PostDetailBloc, PostDetailState>(
           listener: (context, state) {
             switch (state) {
               case PostLoaded(:final post):
@@ -176,7 +176,7 @@ class _PostDetailState extends State<PostDetail> {
             }
           },
         ),
-        BlocListener<RepliesCubit, RepliesState>(
+        BlocListener<RepliesBloc, RepliesState>(
           listener: (context, state) {
             if (state.status == RepliesStatus.success) {
               if (widget.post.id == state.postId) {
@@ -213,8 +213,8 @@ class _PostDetailState extends State<PostDetail> {
                 : PopScope(
                   canPop: true,
                   onPopInvokedWithResult: (_, __) {
-                    context.read<WebsocketBloc>().add(
-                      WebsocketEvent.unsubscribeReplies(post: widget.post),
+                    context.read<RepliesBloc>().add(
+                      RepliesEvent.unsubscribe(post: widget.post),
                     );
                   },
                   child: SmartRefresher(
@@ -223,11 +223,11 @@ class _PostDetailState extends State<PostDetail> {
                     header: ClassicHeader(),
                     controller: _controller,
                     onRefresh: () {
-                      context.read<WebsocketBloc>().add(
-                        WebsocketEvent.getPost(post: widget.post),
+                      context.read<PostDetailBloc>().add(
+                        PostDetailEvent.get(post: widget.post),
                       );
-                      context.read<WebsocketBloc>().add(
-                        WebsocketEvent.getReplies(post: widget.post),
+                      context.read<RepliesBloc>().add(
+                        RepliesEvent.get(post: widget.post),
                       );
                     },
                     child: ListView(
@@ -588,8 +588,8 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
     for (var tag in _controller.tags) {
       tags.add({'id': tag.id, 'text': tag.text});
     }
-    context.read<WebsocketBloc>().add(
-      WebsocketEvent.createPost(
+    context.read<PostDetailBloc>().add(
+      PostDetailEvent.create(
         body: _controller.formattedText,
         status: PostStatus.published,
         replyTo: widget.post,

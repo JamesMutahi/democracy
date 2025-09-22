@@ -1,6 +1,5 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
-import 'package:democracy/post/bloc/post_detail/post_detail_cubit.dart';
+import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,7 +47,7 @@ class _ReportModalState extends State<ReportModal> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<PostDetailCubit, PostDetailState>(
+    return BlocListener<PostDetailBloc, PostDetailState>(
       listener: (context, state) {
         switch (state) {
           case PostReported():
@@ -230,8 +229,8 @@ class _ReportModalState extends State<ReportModal> {
                 _disabled
                     ? null
                     : () {
-                      context.read<WebsocketBloc>().add(
-                        WebsocketEvent.reportPost(
+                      context.read<PostDetailBloc>().add(
+                        PostDetailEvent.report(
                           issue: issues[_issue]!,
                           post: widget.post,
                         ),

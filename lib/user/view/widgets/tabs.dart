@@ -5,9 +5,9 @@ import 'package:democracy/petition/bloc/petition_detail/petition_detail_cubit.da
 import 'package:democracy/petition/bloc/user_petitions/user_petitions_cubit.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
-import 'package:democracy/post/bloc/likes/likes_cubit.dart';
-import 'package:democracy/post/bloc/user_posts/user_posts_cubit.dart';
-import 'package:democracy/post/bloc/user_replies/user_replies_cubit.dart';
+import 'package:democracy/post/bloc/likes/likes_bloc.dart';
+import 'package:democracy/post/bloc/user_posts/user_posts_bloc.dart';
+import 'package:democracy/post/bloc/user_replies/user_replies_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
 import 'package:democracy/post/view/widgets/posts_pop_scope.dart';
@@ -36,9 +36,7 @@ class _UserPostsState extends State<UserPosts> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(
-      WebsocketEvent.getUserPosts(user: widget.user),
-    );
+    context.read<UserPostsBloc>().add(UserPostsEvent.get(user: widget.user));
     super.initState();
   }
 
@@ -46,7 +44,7 @@ class _UserPostsState extends State<UserPosts> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<UserPostsCubit, UserPostsState>(
+        BlocListener<UserPostsBloc, UserPostsState>(
           listener: (context, state) {
             if (state.status == UserPostsStatus.success) {
               if (widget.user.id == state.userId) {
@@ -84,11 +82,8 @@ class _UserPostsState extends State<UserPosts> {
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
             if (state.status == WebsocketStatus.connected) {
-              context.read<WebsocketBloc>().add(
-                WebsocketEvent.resubscribeUserPosts(
-                  user: widget.user,
-                  posts: _posts,
-                ),
+              context.read<UserPostsBloc>().add(
+                UserPostsEvent.resubscribe(user: widget.user, posts: _posts),
               );
             }
           },
@@ -110,21 +105,18 @@ class _UserPostsState extends State<UserPosts> {
             });
           },
           onRefresh: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.getUserPosts(user: widget.user),
+            context.read<UserPostsBloc>().add(
+              UserPostsEvent.get(user: widget.user),
             );
           },
           onLoading: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.getUserPosts(
-                user: widget.user,
-                lastPost: _posts.last,
-              ),
+            context.read<UserPostsBloc>().add(
+              UserPostsEvent.get(user: widget.user, lastPost: _posts.last),
             );
           },
           onFailure: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.getUserPosts(user: widget.user),
+            context.read<UserPostsBloc>().add(
+              UserPostsEvent.get(user: widget.user),
             );
           },
         ),
@@ -153,8 +145,8 @@ class _UserRepliesState extends State<UserReplies> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(
-      WebsocketEvent.getUserReplies(user: widget.user),
+    context.read<UserRepliesBloc>().add(
+      UserRepliesEvent.get(user: widget.user),
     );
     super.initState();
   }
@@ -163,7 +155,7 @@ class _UserRepliesState extends State<UserReplies> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<UserRepliesCubit, UserRepliesState>(
+        BlocListener<UserRepliesBloc, UserRepliesState>(
           listener: (context, state) {
             if (state.status == UserRepliesStatus.success) {
               if (widget.user.id == state.userId) {
@@ -201,11 +193,8 @@ class _UserRepliesState extends State<UserReplies> {
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
             if (state.status == WebsocketStatus.connected) {
-              context.read<WebsocketBloc>().add(
-                WebsocketEvent.resubscribeUserPosts(
-                  user: widget.user,
-                  posts: _posts,
-                ),
+              context.read<UserPostsBloc>().add(
+                UserPostsEvent.resubscribe(user: widget.user, posts: _posts),
               );
             }
           },
@@ -227,21 +216,18 @@ class _UserRepliesState extends State<UserReplies> {
             });
           },
           onRefresh: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.getUserReplies(user: widget.user),
+            context.read<UserRepliesBloc>().add(
+              UserRepliesEvent.get(user: widget.user),
             );
           },
           onLoading: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.getUserReplies(
-                user: widget.user,
-                lastPost: _posts.last,
-              ),
+            context.read<UserRepliesBloc>().add(
+              UserRepliesEvent.get(user: widget.user, lastPost: _posts.last),
             );
           },
           onFailure: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.getUserReplies(user: widget.user),
+            context.read<UserRepliesBloc>().add(
+              UserRepliesEvent.get(user: widget.user),
             );
           },
         ),
@@ -270,9 +256,7 @@ class _LikesState extends State<Likes> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(
-      WebsocketEvent.getLikedPosts(user: widget.user),
-    );
+    context.read<LikesBloc>().add(LikesEvent.get(user: widget.user));
     super.initState();
   }
 
@@ -280,7 +264,7 @@ class _LikesState extends State<Likes> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<LikesCubit, LikesState>(
+        BlocListener<LikesBloc, LikesState>(
           listener: (context, state) {
             if (state.status == LikesStatus.success) {
               if (widget.user.id == state.userId) {
@@ -301,7 +285,7 @@ class _LikesState extends State<Likes> {
             }
           },
         ),
-        BlocListener<LikesCubit, LikesState>(
+        BlocListener<LikesBloc, LikesState>(
           listener: (context, state) {
             if (state.status == LikesStatus.success) {
               if (widget.user.id == state.userId) {
@@ -339,11 +323,8 @@ class _LikesState extends State<Likes> {
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
             if (state.status == WebsocketStatus.connected) {
-              context.read<WebsocketBloc>().add(
-                WebsocketEvent.resubscribeUserPosts(
-                  user: widget.user,
-                  posts: _posts,
-                ),
+              context.read<UserPostsBloc>().add(
+                UserPostsEvent.resubscribe(user: widget.user, posts: _posts),
               );
             }
           },
@@ -365,22 +346,15 @@ class _LikesState extends State<Likes> {
             });
           },
           onRefresh: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.getLikedPosts(user: widget.user),
-            );
+            context.read<LikesBloc>().add(LikesEvent.get(user: widget.user));
           },
           onLoading: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.getLikedPosts(
-                user: widget.user,
-                lastPost: _posts.last,
-              ),
+            context.read<LikesBloc>().add(
+              LikesEvent.get(user: widget.user, lastPost: _posts.last),
             );
           },
           onFailure: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.getLikedPosts(user: widget.user),
-            );
+            context.read<LikesBloc>().add(LikesEvent.get(user: widget.user));
           },
         ),
       ),

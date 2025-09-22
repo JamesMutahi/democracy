@@ -1,4 +1,4 @@
-part of 'user_replies_cubit.dart';
+part of 'user_replies_bloc.dart';
 
 enum UserRepliesStatus { initial, loading, success, failure }
 
