@@ -1,4 +1,4 @@
-import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_cubit.dart';
+import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
@@ -135,7 +135,7 @@ class PostListener extends StatelessWidget {
             }
           },
         ),
-        BlocListener<BallotDetailCubit, BallotDetailState>(
+        BlocListener<BallotDetailBloc, BallotDetailState>(
           listener: (context, state) {
             if (state is BallotUpdated) {
               // Update posts

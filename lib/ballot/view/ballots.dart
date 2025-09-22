@@ -1,8 +1,7 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
-import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_cubit.dart';
-import 'package:democracy/ballot/bloc/ballots/ballots_cubit.dart';
+import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
+import 'package:democracy/ballot/bloc/ballots/ballots_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +26,7 @@ class _BallotsState extends State<Ballots> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getBallots());
+    context.read<BallotsBloc>().add(BallotsEvent.get());
     super.initState();
   }
 
@@ -35,7 +34,7 @@ class _BallotsState extends State<Ballots> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<BallotsCubit, BallotsState>(
+        BlocListener<BallotsBloc, BallotsState>(
           listener: (context, state) {
             if (state.status == BallotsStatus.success) {
               setState(() {
@@ -68,7 +67,7 @@ class _BallotsState extends State<Ballots> {
             }
           },
         ),
-        BlocListener<BallotDetailCubit, BallotDetailState>(
+        BlocListener<BallotDetailBloc, BallotDetailState>(
           listener: (context, state) {
             if (state is BallotCreated) {
               if (!_ballots.any((ballot) => ballot.id == state.ballot.id)) {
@@ -104,9 +103,7 @@ class _BallotsState extends State<Ballots> {
               : failure
               ? FailureRetryButton(
                 onPressed: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getBallots(),
-                  );
+                  context.read<BallotsBloc>().add(BallotsEvent.get());
                 },
               )
               : SmartRefresher(
@@ -115,13 +112,11 @@ class _BallotsState extends State<Ballots> {
                 header: ClassicHeader(),
                 controller: _refreshController,
                 onRefresh: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getBallots(),
-                  );
+                  context.read<BallotsBloc>().add(BallotsEvent.get());
                 },
                 onLoading: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getBallots(lastBallot: _ballots.last),
+                  context.read<BallotsBloc>().add(
+                    BallotsEvent.get(lastBallot: _ballots.last),
                   );
                 },
                 footer: ClassicFooter(),

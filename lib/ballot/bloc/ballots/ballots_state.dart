@@ -1,4 +1,4 @@
-part of 'ballots_cubit.dart';
+part of 'ballots_bloc.dart';
 
 enum BallotsStatus { initial, loading, success, failure }
 

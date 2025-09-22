@@ -58,18 +58,6 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.markChatAsRead({required Chat chat}) =
       _MarkChatAsRead;
 
-  const factory WebsocketEvent.getBallots({
-    String? searchTerm,
-    Ballot? lastBallot,
-  }) = _GetBallots;
-
-  const factory WebsocketEvent.vote({required Option option}) = _Vote;
-
-  const factory WebsocketEvent.submitReason({
-    required Ballot ballot,
-    required String text,
-  }) = _SubmitReason;
-
   const factory WebsocketEvent.getSurveys({
     String? searchTerm,
     Survey? lastSurvey,

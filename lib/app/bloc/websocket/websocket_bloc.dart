@@ -6,7 +6,6 @@ import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
-import 'package:democracy/ballot/models/option.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/user/models/user.dart';
@@ -30,8 +29,6 @@ part 'websocket_state.dart';
 part 'websocket_bloc.freezed.dart';
 
 // Streams
-const String postsStream = 'posts';
-const String ballotsStream = 'ballots';
 const String chatsStream = 'chats';
 const String surveysStream = 'surveys';
 const String usersStream = 'users';
@@ -40,8 +37,6 @@ const String petitionsStream = 'petitions';
 const String constitutionStream = 'constitution';
 
 // Request ids
-const String postRequestId = 'posts';
-const String ballotRequestId = 'ballots';
 const String chatRequestId = 'chats';
 const String messageRequestId = 'messages';
 const String surveyRequestId = 'surveys';
@@ -129,15 +124,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     });
     on<_SendDirectMessage>((event, emit) {
       _onSendDirectMessage(emit, event);
-    });
-    on<_GetBallots>((event, emit) {
-      _onGetBallots(emit, event);
-    });
-    on<_Vote>((event, emit) {
-      _onVote(emit, event);
-    });
-    on<_SubmitReason>((event, emit) {
-      _onSubmitReason(emit, event);
     });
     on<_GetSurveys>((event, emit) {
       _onGetSurveys(emit, event);
@@ -599,50 +585,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'action': 'unsubscribe',
         'request_id': usersRequestId,
         'pks': userIds,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onGetBallots(Emitter<WebsocketState> emit, _GetBallots event) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': ballotsStream,
-      'payload': {
-        'action': 'list',
-        'request_id': ballotRequestId,
-        'search_term': event.searchTerm,
-        'last_ballot': event.lastBallot?.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onVote(Emitter<WebsocketState> emit, _Vote event) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': ballotsStream,
-      'payload': {
-        'action': 'vote',
-        'request_id': ballotRequestId,
-        'pk': event.option.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onSubmitReason(
-    Emitter<WebsocketState> emit,
-    _SubmitReason event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': ballotsStream,
-      'payload': {
-        'action': 'add_reason',
-        'request_id': ballotRequestId,
-        'pk': event.ballot.id,
-        'text': event.text,
       },
     };
     _channel.sink.add(jsonEncode(message));

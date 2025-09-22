@@ -7,8 +7,8 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
-import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_cubit.dart';
-import 'package:democracy/ballot/bloc/ballots/ballots_cubit.dart';
+import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
+import 'package:democracy/ballot/bloc/ballots/ballots_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
@@ -107,8 +107,15 @@ void main() async {
           BlocProvider(create: (context) => BottomNavBarCubit()),
           BlocProvider(create: (context) => PageBloc()),
           BlocProvider(create: (context) => SurveyBottomNavigationBloc()),
-          BlocProvider(create: (context) => BallotsCubit()),
-          BlocProvider(create: (context) => BallotDetailCubit()),
+          BlocProvider(
+            create:
+                (context) => BallotsBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create:
+                (context) =>
+                    BallotDetailBloc(webSocketService: webSocketService),
+          ),
           BlocProvider(
             create: (context) => ForYouBloc(webSocketService: webSocketService),
           ),

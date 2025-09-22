@@ -9,8 +9,6 @@ import 'package:democracy/app/view/dashboard.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/auth/view/login.dart';
-import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_cubit.dart';
-import 'package:democracy/ballot/bloc/ballots/ballots_cubit.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
 import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_cubit.dart';
@@ -259,25 +257,6 @@ class _Listeners extends StatelessWidget {
                         payload: message['payload'],
                       );
                   }
-                case ballotsStream:
-                  switch (message['payload']['action']) {
-                    case 'list':
-                      context.read<BallotsCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                    case 'create':
-                      context.read<BallotDetailCubit>().created(
-                        payload: message['payload'],
-                      );
-                    case 'update':
-                      context.read<BallotDetailCubit>().updated(
-                        payload: message['payload'],
-                      );
-                    case 'delete':
-                      context.read<BallotDetailCubit>().deleted(
-                        payload: message['payload'],
-                      );
-                  }
                 case surveysStream:
                   switch (message['payload']['action']) {
                     case 'list':
@@ -455,7 +434,6 @@ class _Listeners extends StatelessWidget {
             if (state.status == WebsocketStatus.failure) {
               String error = 'Server error';
               context.read<SurveysCubit>().websocketFailure(error: error);
-              context.read<BallotsCubit>().websocketFailure(error: error);
               context.read<ChatsCubit>().websocketFailure(error: error);
               context.read<NotificationsCubit>().websocketFailure(error: error);
               final snackBar = getSnackBar(
@@ -468,7 +446,6 @@ class _Listeners extends StatelessWidget {
             if (state.status == WebsocketStatus.disconnected) {
               String error = 'Server connection lost';
               context.read<SurveysCubit>().websocketFailure(error: error);
-              context.read<BallotsCubit>().websocketFailure(error: error);
               context.read<ChatsCubit>().websocketFailure(error: error);
               context.read<NotificationsCubit>().websocketFailure(error: error);
               final snackBar = getSnackBar(

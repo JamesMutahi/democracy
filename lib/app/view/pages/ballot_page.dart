@@ -1,5 +1,5 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
+import 'package:democracy/ballot/bloc/ballots/ballots_bloc.dart';
 import 'package:democracy/ballot/view/ballots.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
@@ -37,8 +37,8 @@ class _BallotPageState extends State<BallotPage>
               AppBarSearchBar(
                 hintText: 'Search ballots',
                 onChanged: (value) {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getBallots(searchTerm: value),
+                  context.read<BallotsBloc>().add(
+                    BallotsEvent.get(searchTerm: value),
                   );
                 },
                 showFilterIcon: true,

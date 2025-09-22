@@ -5,7 +5,7 @@ import 'package:democracy/app/utils/bottom_text_form_field.dart';
 import 'package:democracy/app/utils/custom_text.dart';
 import 'package:democracy/app/utils/tagging.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
-import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_cubit.dart';
+import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/constitution/bloc/sections/sections_cubit.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
@@ -134,7 +134,7 @@ class _PostDetailState extends State<PostDetail> {
             }
           },
         ),
-        BlocListener<BallotDetailCubit, BallotDetailState>(
+        BlocListener<BallotDetailBloc, BallotDetailState>(
           listener: (context, state) {
             if (state is BallotUpdated) {
               // post

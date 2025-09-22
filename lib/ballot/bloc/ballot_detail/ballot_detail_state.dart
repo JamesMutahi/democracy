@@ -1,4 +1,4 @@
-part of 'ballot_detail_cubit.dart';
+part of 'ballot_detail_bloc.dart';
 
 @freezed
 class BallotDetailState with _$BallotDetailState {

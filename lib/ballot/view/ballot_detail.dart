@@ -1,7 +1,6 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
-import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_cubit.dart';
+import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/models/option.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
@@ -24,7 +23,7 @@ class _BallotDetailState extends State<BallotDetail> {
   @override
   Widget build(BuildContext context) {
     bool userHasVoted = _ballot.votedOption != null;
-    return BlocListener<BallotDetailCubit, BallotDetailState>(
+    return BlocListener<BallotDetailBloc, BallotDetailState>(
       listener: (context, state) {
         if (state is BallotUpdated) {
           if (_ballot.id == state.ballot.id) {
@@ -104,8 +103,10 @@ class _BallotDetailState extends State<BallotDetail> {
                                     option: option,
                                     onTap: () {
                                       if (_ballot.isActive) {
-                                        context.read<WebsocketBloc>().add(
-                                          WebsocketEvent.vote(option: option),
+                                        context.read<BallotDetailBloc>().add(
+                                          BallotDetailEvent.vote(
+                                            option: option,
+                                          ),
                                         );
                                         setState(() {
                                           changingVote = false;
@@ -204,7 +205,7 @@ class _ReasonWidgetState extends State<ReasonWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<BallotDetailCubit, BallotDetailState>(
+    return BlocListener<BallotDetailBloc, BallotDetailState>(
       listener: (context, state) {
         if (state is BallotUpdated) {
           if (state.ballot.reason?.text != _ballot.reason?.text) {
@@ -291,8 +292,8 @@ class _ReasonWidgetState extends State<ReasonWidget> {
                                 (context) => SubmissionDialog(
                                   onYesPressed: () {
                                     Navigator.pop(context);
-                                    context.read<WebsocketBloc>().add(
-                                      WebsocketEvent.submitReason(
+                                    context.read<BallotDetailBloc>().add(
+                                      BallotDetailEvent.submitReason(
                                         ballot: _ballot,
                                         text: reason,
                                       ),
