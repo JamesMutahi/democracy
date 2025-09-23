@@ -1,4 +1,4 @@
-part of 'chats_cubit.dart';
+part of 'chats_bloc.dart';
 
 enum ChatsStatus { initial, loading, success, failure }
 

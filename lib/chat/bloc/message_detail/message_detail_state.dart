@@ -1,4 +1,4 @@
-part of 'message_detail_cubit.dart';
+part of 'message_detail_bloc.dart';
 
 @freezed
 class MessageDetailState with _$MessageDetailState {

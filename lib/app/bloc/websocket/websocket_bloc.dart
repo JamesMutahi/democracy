@@ -5,14 +5,10 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
-import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/chat/models/message.dart';
-import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/notification/models/notification.dart';
-import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/choice_answer.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/models/text_answer.dart';
@@ -53,36 +49,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       _onConnect(emit);
     });
     on<_ChangeState>((event, emit) => emit(event.state));
-    on<_GetChats>((event, emit) {
-      _onGetChats(emit, event);
-    });
-    on<_ResubscribeChats>((event, emit) {
-      _onResubscribeChats(emit, event);
-    });
-    on<_GetChat>((event, emit) {
-      _onGetChat(emit, event);
-    });
-    on<_CreateChat>((event, emit) {
-      _onCreateChat(emit, event);
-    });
-    on<_SubscribeChat>((event, emit) {
-      _onSubscribeChat(emit, event);
-    });
-    on<_GetMessages>((event, emit) {
-      _onGetMessages(emit, event);
-    });
-    on<_CreateMessage>((event, emit) {
-      _onCreateMessage(emit, event);
-    });
-    on<_EditMessage>((event, emit) {
-      _onEditMessage(emit, event);
-    });
-    on<_DeleteMessage>((event, emit) {
-      _onDeleteMessage(emit, event);
-    });
-    on<_MarkChatAsRead>((event, emit) {
-      _onMarkChatAsRead(emit, event);
-    });
     on<_GetUsers>((event, emit) {
       _onGetUsers(emit, event);
     });
@@ -121,9 +87,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     });
     on<_UnsubscribeUsers>((event, emit) {
       _onUnsubscribeUsers(emit, event);
-    });
-    on<_SendDirectMessage>((event, emit) {
-      _onSendDirectMessage(emit, event);
     });
     on<_GetSurveys>((event, emit) {
       _onGetSurveys(emit, event);
@@ -199,194 +162,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     } catch (e) {
       emit(state.copyWith(status: WebsocketStatus.failure));
     }
-  }
-
-  Future _onGetChats(Emitter<WebsocketState> emit, _GetChats event) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': chatsStream,
-      'payload': {
-        'action': 'list',
-        'request_id': chatRequestId,
-        'search_term': event.searchTerm,
-        'last_chat': event.lastChat?.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onResubscribeChats(
-    Emitter<WebsocketState> emit,
-    _ResubscribeChats event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    List<int> chatIds = event.chats.map((chat) => chat.id).toList();
-    Map<String, dynamic> message = {
-      'stream': chatsStream,
-      'payload': {
-        "action": 'resubscribe',
-        'request_id': chatRequestId,
-        'pks': chatIds,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onGetChat(Emitter<WebsocketState> emit, _GetChat event) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': chatsStream,
-      'payload': {
-        'action': 'retrieve',
-        'request_id': chatRequestId,
-        'pk': event.chat.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onCreateChat(Emitter<WebsocketState> emit, _CreateChat event) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': chatsStream,
-      'payload': {
-        'action': 'create',
-        'request_id': event.user.id,
-        'data': {'user': event.user.id},
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onSubscribeChat(
-    Emitter<WebsocketState> emit,
-    _SubscribeChat event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': chatsStream,
-      'payload': {
-        'action': 'join_chat',
-        'request_id': chatRequestId,
-        'pk': event.chat.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onGetMessages(
-    Emitter<WebsocketState> emit,
-    _GetMessages event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': chatsStream,
-      'payload': {
-        'action': 'messages',
-        'request_id': messageRequestId,
-        'chat': event.chat.id,
-        'last_message': event.lastMessage?.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onCreateMessage(
-    Emitter<WebsocketState> emit,
-    _CreateMessage event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': chatsStream,
-      'payload': {
-        'action': 'create_message',
-        'request_id': messageRequestId,
-        'data': {
-          'chat': event.chat.id,
-          'text': event.text,
-          'post_id': event.post?.id,
-          'ballot_id': event.ballot?.id,
-          'survey_id': event.survey?.id,
-          'petition_id': event.petition?.id,
-        },
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onSendDirectMessage(
-    Emitter<WebsocketState> emit,
-    _SendDirectMessage event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    List<int> userPks = event.users.map((user) => user.id).toList();
-    Map<String, dynamic> message = {
-      'stream': chatsStream,
-      'payload': {
-        'action': 'direct_message',
-        'request_id': messageRequestId,
-        'user_pks': userPks,
-        'data': {
-          'text': event.text,
-          'post_id': event.post?.id,
-          'ballot_id': event.ballot?.id,
-          'survey_id': event.survey?.id,
-          'petition_id': event.petition?.id,
-        },
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onEditMessage(
-    Emitter<WebsocketState> emit,
-    _EditMessage event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': chatsStream,
-      'payload': {
-        'action': 'edit_message',
-        'request_id': messageRequestId,
-        'pk': event.messageId,
-        'data': {'text': event.text},
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onDeleteMessage(
-    Emitter<WebsocketState> emit,
-    _DeleteMessage event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    for (Message msg in event.messages) {
-      Map<String, dynamic> message = {
-        'stream': chatsStream,
-        'payload': {
-          'action': 'delete_message',
-          'request_id': messageRequestId,
-          'pk': msg.id,
-        },
-      };
-      _channel.sink.add(jsonEncode(message));
-    }
-  }
-
-  Future _onMarkChatAsRead(
-    Emitter<WebsocketState> emit,
-    _MarkChatAsRead event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': chatsStream,
-      'payload': {
-        'action': 'mark_as_read',
-        'request_id': messageRequestId,
-        'pk': event.chat.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
   }
 
   Future _onGetUsers(Emitter<WebsocketState> emit, _GetUsers event) async {

@@ -1,5 +1,5 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
+import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
 import 'package:democracy/chat/view/chats.dart';
 import 'package:democracy/chat/view/create_message.dart';
 import 'package:democracy/user/models/user.dart';
@@ -38,8 +38,8 @@ class _MessagePageState extends State<MessagePage>
               AppBarSearchBar(
                 hintText: 'Search messages',
                 onChanged: (value) {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getChats(searchTerm: value),
+                  context.read<ChatsBloc>().add(
+                    ChatsEvent.get(searchTerm: value),
                   );
                 },
               ),

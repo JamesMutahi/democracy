@@ -1,10 +1,9 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
-import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
-import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
+import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
+import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/view/chat_detail.dart' show ChatDetail;
@@ -36,7 +35,7 @@ class _ChatsState extends State<Chats> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getChats());
+    context.read<ChatsBloc>().add(ChatsEvent.get());
     super.initState();
   }
 
@@ -44,7 +43,7 @@ class _ChatsState extends State<Chats> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<ChatsCubit, ChatsState>(
+        BlocListener<ChatsBloc, ChatsState>(
           listener: (context, state) {
             if (state.status == ChatsStatus.success) {
               setState(() {
@@ -80,20 +79,21 @@ class _ChatsState extends State<Chats> {
         BlocListener<NotificationDetailCubit, NotificationDetailState>(
           listener: (context, state) {
             if (state is NotificationCreated) {
-              if (state.notification.chat != null && !_chats.any(
-                (chat) => chat.id == state.notification.chat?.id,
-              )) {
+              if (state.notification.chat != null &&
+                  !_chats.any(
+                    (chat) => chat.id == state.notification.chat?.id,
+                  )) {
                 setState(() {
                   _chats.insert(0, state.notification.chat!);
                 });
-                context.read<WebsocketBloc>().add(
-                  WebsocketEvent.subscribeChat(chat: state.notification.chat!),
+                context.read<ChatDetailBloc>().add(
+                  ChatDetailEvent.subscribe(chat: state.notification.chat!),
                 );
               }
             }
           },
         ),
-        BlocListener<ChatDetailCubit, ChatDetailState>(
+        BlocListener<ChatDetailBloc, ChatDetailState>(
           listener: (context, state) {
             if (state is ChatCreated) {
               if (!_chats.any((chat) => chat.id == state.chat.id)) {
@@ -158,7 +158,7 @@ class _ChatsState extends State<Chats> {
               : failure
               ? FailureRetryButton(
                 onPressed: () {
-                  context.read<WebsocketBloc>().add(WebsocketEvent.getChats());
+                  context.read<ChatsBloc>().add(ChatsEvent.get());
                 },
               )
               : BlocBuilder<AuthBloc, AuthState>(
@@ -173,13 +173,11 @@ class _ChatsState extends State<Chats> {
                     header: ClassicHeader(),
                     controller: _refreshController,
                     onRefresh: () {
-                      context.read<WebsocketBloc>().add(
-                        WebsocketEvent.getChats(),
-                      );
+                      context.read<ChatsBloc>().add(ChatsEvent.get());
                     },
                     onLoading: () {
-                      context.read<WebsocketBloc>().add(
-                        WebsocketEvent.getChats(lastChat: _chats.last),
+                      context.read<ChatsBloc>().add(
+                        ChatsEvent.get(lastChat: _chats.last),
                       );
                     },
                     footer: ClassicFooter(),
@@ -282,8 +280,8 @@ class _ChatTileState extends State<ChatTile> {
         if (widget.chat.lastMessage != null) {
           if (!widget.chat.lastMessage!.isRead &&
               widget.chat.lastMessage!.user.id != widget.currentUser.id) {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.markChatAsRead(chat: widget.chat),
+            context.read<ChatDetailBloc>().add(
+              ChatDetailEvent.markAsRead(chat: widget.chat),
             );
           }
         }

@@ -9,11 +9,11 @@ import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/ballot/bloc/ballots/ballots_bloc.dart';
-import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
-import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
+import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
+import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
-import 'package:democracy/chat/bloc/message_detail/message_detail_cubit.dart';
-import 'package:democracy/chat/bloc/messages/messages_cubit.dart';
+import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
+import 'package:democracy/chat/bloc/messages/messages_bloc.dart';
 import 'package:democracy/constitution/bloc/constitution/constitution_cubit.dart';
 import 'package:democracy/constitution/bloc/section_detail/section_detail_cubit.dart';
 import 'package:democracy/constitution/bloc/sections/sections_cubit.dart';
@@ -155,10 +155,22 @@ void main() async {
                 (context) =>
                     UserRepliesBloc(webSocketService: webSocketService),
           ),
-          BlocProvider(create: (context) => ChatsCubit()),
-          BlocProvider(create: (context) => ChatDetailCubit()),
-          BlocProvider(create: (context) => MessagesCubit()),
-          BlocProvider(create: (context) => MessageDetailCubit()),
+          BlocProvider(
+            create: (context) => ChatsBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create:
+                (context) => ChatDetailBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create:
+                (context) => MessagesBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create:
+                (context) =>
+                    MessageDetailBloc(webSocketService: webSocketService),
+          ),
           BlocProvider(create: (context) => MessageActionsCubit()),
           BlocProvider(create: (context) => SurveysCubit()),
           BlocProvider(create: (context) => SurveyDetailCubit()),

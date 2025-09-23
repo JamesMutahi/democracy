@@ -2,7 +2,7 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_text_form_field.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/ballot/models/ballot.dart';
-import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
+import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
@@ -60,7 +60,7 @@ class _DirectMessageState extends State<DirectMessage> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<ChatDetailCubit, ChatDetailState>(
+        BlocListener<ChatDetailBloc, ChatDetailState>(
           listener: (context, state) {
             if (state is DirectMessageSent) {
               Navigator.pop(context);
@@ -235,8 +235,8 @@ class _DirectMessageState extends State<DirectMessage> {
               selectedUsers.isEmpty
                   ? null
                   : () {
-                    context.read<WebsocketBloc>().add(
-                      WebsocketEvent.sendDirectMessage(
+                    context.read<ChatDetailBloc>().add(
+                      ChatDetailEvent.sendDirectMessage(
                         users: selectedUsers,
                         text: controller.text,
                         post: widget.post,

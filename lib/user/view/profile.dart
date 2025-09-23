@@ -1,7 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
-import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
+import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/view/chat_detail.dart';
 import 'package:democracy/post/view/draft_posts.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
@@ -115,7 +115,7 @@ class _ProfilePageState extends State<ProfilePage> {
             currentUser = state.user;
           }
           bool isCurrentUser = currentUser.id == user.id;
-          return BlocListener<ChatDetailCubit, ChatDetailState>(
+          return BlocListener<ChatDetailBloc, ChatDetailState>(
             listener: (context, state) {
               if (state is ChatCreated) {
                 if (state.userId == user.id) {

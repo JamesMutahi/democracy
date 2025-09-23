@@ -1,4 +1,4 @@
-part of 'chat_detail_cubit.dart';
+part of 'chat_detail_bloc.dart';
 
 @freezed
 class ChatDetailState with _$ChatDetailState {

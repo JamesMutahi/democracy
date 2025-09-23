@@ -10,54 +10,6 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.unsubscribeUsers({required List<User> users}) =
       _UnsubscribeUsers;
 
-  const factory WebsocketEvent.getChats({String? searchTerm, Chat? lastChat}) =
-      _GetChats;
-
-  const factory WebsocketEvent.resubscribeChats({required List<Chat> chats}) =
-      _ResubscribeChats;
-
-  const factory WebsocketEvent.getChat({required Chat chat}) = _GetChat;
-
-  const factory WebsocketEvent.createChat({required User user}) = _CreateChat;
-
-  const factory WebsocketEvent.subscribeChat({required Chat chat}) =
-      _SubscribeChat;
-
-  const factory WebsocketEvent.getMessages({
-    required Chat chat,
-    Message? lastMessage,
-  }) = _GetMessages;
-
-  const factory WebsocketEvent.createMessage({
-    required Chat chat,
-    required String text,
-    Post? post,
-    Ballot? ballot,
-    Survey? survey,
-    Petition? petition,
-  }) = _CreateMessage;
-
-  const factory WebsocketEvent.sendDirectMessage({
-    required List<User> users,
-    required String text,
-    Post? post,
-    Ballot? ballot,
-    Survey? survey,
-    Petition? petition,
-  }) = _SendDirectMessage;
-
-  const factory WebsocketEvent.editMessage({
-    required int messageId,
-    required String text,
-  }) = _EditMessage;
-
-  const factory WebsocketEvent.deleteMessage({
-    required List<Message> messages,
-  }) = _DeleteMessage;
-
-  const factory WebsocketEvent.markChatAsRead({required Chat chat}) =
-      _MarkChatAsRead;
-
   const factory WebsocketEvent.getSurveys({
     String? searchTerm,
     Survey? lastSurvey,

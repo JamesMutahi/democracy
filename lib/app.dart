@@ -9,10 +9,6 @@ import 'package:democracy/app/view/dashboard.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/auth/view/login.dart';
-import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
-import 'package:democracy/chat/bloc/chats/chats_cubit.dart';
-import 'package:democracy/chat/bloc/message_detail/message_detail_cubit.dart';
-import 'package:democracy/chat/bloc/messages/messages_cubit.dart';
 import 'package:democracy/constitution/bloc/constitution/constitution_cubit.dart';
 import 'package:democracy/constitution/bloc/sections/sections_cubit.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
@@ -201,62 +197,6 @@ class _Listeners extends StatelessWidget {
             if (state.status == WebsocketStatus.success) {
               final message = {};
               switch (message['stream']) {
-                case chatsStream:
-                  switch (message['payload']['action']) {
-                    case 'list':
-                      context.read<ChatsCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                    case 'messages':
-                      context.read<MessagesCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                    case 'create':
-                      if (message['payload']['request_id'] !=
-                          messageRequestId) {
-                        context.read<ChatDetailCubit>().created(
-                          payload: message['payload'],
-                        );
-                      }
-                      if (message['payload']['request_id'] ==
-                          messageRequestId) {
-                        context.read<MessageDetailCubit>().created(
-                          payload: message['payload'],
-                        );
-                      }
-                    case 'retrieve':
-                      context.read<ChatDetailCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                    case 'update':
-                      if (message['payload']['request_id'] == chatRequestId) {
-                        context.read<ChatDetailCubit>().updated(
-                          payload: message['payload'],
-                        );
-                      }
-                      if (message['payload']['request_id'] ==
-                          messageRequestId) {
-                        context.read<MessageDetailCubit>().updated(
-                          payload: message['payload'],
-                        );
-                      }
-                    case 'delete':
-                      if (message['payload']['request_id'] ==
-                          messageRequestId) {
-                        context.read<MessageDetailCubit>().deleted(
-                          payload: message['payload'],
-                        );
-                      }
-                      if (message['payload']['request_id'] == chatRequestId) {
-                        context.read<ChatDetailCubit>().deleted(
-                          payload: message['payload'],
-                        );
-                      }
-                    case 'direct_message':
-                      context.read<ChatDetailCubit>().directMessageSent(
-                        payload: message['payload'],
-                      );
-                  }
                 case surveysStream:
                   switch (message['payload']['action']) {
                     case 'list':
@@ -432,25 +372,17 @@ class _Listeners extends StatelessWidget {
               }
             }
             if (state.status == WebsocketStatus.failure) {
-              String error = 'Server error';
-              context.read<SurveysCubit>().websocketFailure(error: error);
-              context.read<ChatsCubit>().websocketFailure(error: error);
-              context.read<NotificationsCubit>().websocketFailure(error: error);
               final snackBar = getSnackBar(
                 context: context,
-                message: error,
+                message: 'Server error',
                 status: SnackBarStatus.failure,
               );
               showSnackBar(snackBar: snackBar);
             }
             if (state.status == WebsocketStatus.disconnected) {
-              String error = 'Server connection lost';
-              context.read<SurveysCubit>().websocketFailure(error: error);
-              context.read<ChatsCubit>().websocketFailure(error: error);
-              context.read<NotificationsCubit>().websocketFailure(error: error);
               final snackBar = getSnackBar(
                 context: context,
-                message: error,
+                message: 'Server connection lost',
                 status: SnackBarStatus.failure,
               );
               showSnackBar(snackBar: snackBar);

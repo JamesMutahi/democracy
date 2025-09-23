@@ -1,12 +1,11 @@
 import 'package:collection/collection.dart';
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/custom_text.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
-import 'package:democracy/chat/bloc/message_detail/message_detail_cubit.dart';
-import 'package:democracy/chat/bloc/messages/messages_cubit.dart';
+import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
+import 'package:democracy/chat/bloc/messages/messages_bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
@@ -40,9 +39,7 @@ class _MessagesState extends State<Messages> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(
-      WebsocketEvent.getMessages(chat: widget.chat),
-    );
+    context.read<MessagesBloc>().add(MessagesEvent.get(chat: widget.chat));
     super.initState();
   }
 
@@ -158,7 +155,7 @@ class _MessagesState extends State<Messages> {
 
     return MultiBlocListener(
       listeners: [
-        BlocListener<MessagesCubit, MessagesState>(
+        BlocListener<MessagesBloc, MessagesState>(
           listener: (context, state) {
             if (state.status == MessagesStatus.success) {
               setState(() {
@@ -191,7 +188,7 @@ class _MessagesState extends State<Messages> {
             }
           },
         ),
-        BlocListener<MessageDetailCubit, MessageDetailState>(
+        BlocListener<MessageDetailBloc, MessageDetailState>(
           listener: (context, state) {
             if (state is MessageCreated) {
               setState(() {
@@ -226,8 +223,8 @@ class _MessagesState extends State<Messages> {
               : failure
               ? FailureRetryButton(
                 onPressed: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getMessages(chat: widget.chat),
+                  context.read<MessagesBloc>().add(
+                    MessagesEvent.get(chat: widget.chat),
                   );
                 },
               )
@@ -237,8 +234,8 @@ class _MessagesState extends State<Messages> {
                 enablePullUp: hasNextPage,
                 controller: _refreshController,
                 onLoading: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getMessages(
+                  context.read<MessagesBloc>().add(
+                    MessagesEvent.get(
                       chat: widget.chat,
                       lastMessage: _messages.last,
                     ),

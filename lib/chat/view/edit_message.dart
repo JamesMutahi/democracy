@@ -1,6 +1,6 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_text_form_field.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
+import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/view/messages.dart';
@@ -79,8 +79,8 @@ class _EditMessageState extends State<EditMessage> {
             _disableSendButton
                 ? null
                 : () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.editMessage(
+                  context.read<MessageDetailBloc>().add(
+                    MessageDetailEvent.edit(
                       messageId: widget.message.id,
                       text: _controller.text,
                     ),

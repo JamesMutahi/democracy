@@ -1,5 +1,6 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
+import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -66,8 +67,8 @@ class MessageButton extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               }
               : () {
-                context.read<WebsocketBloc>().add(
-                  WebsocketEvent.createChat(user: user),
+                context.read<ChatDetailBloc>().add(
+                  ChatDetailEvent.create(user: user),
                 );
               },
     );

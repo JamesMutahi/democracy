@@ -3,6 +3,7 @@ import 'package:democracy/app/utils/bottom_text_form_field.dart';
 import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
+import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/view/edit_message.dart';
@@ -278,8 +279,8 @@ class _ChatScaffoldState extends State<ChatScaffold> {
                         _disableSendButton
                             ? null
                             : () {
-                              context.read<WebsocketBloc>().add(
-                                WebsocketEvent.createMessage(
+                              context.read<MessageDetailBloc>().add(
+                                MessageDetailEvent.create(
                                   chat: widget.chat,
                                   text: _controller.text,
                                 ),
@@ -422,8 +423,8 @@ class _MessageActions extends StatelessWidget {
                         button1Text: 'Yes',
                         onButton1Pressed: () {
                           Navigator.pop(context);
-                          context.read<WebsocketBloc>().add(
-                            WebsocketEvent.deleteMessage(
+                          context.read<MessageDetailBloc>().add(
+                            MessageDetailEvent.delete(
                               messages: messages.toList(),
                             ),
                           );

@@ -1,5 +1,5 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/chat/bloc/chat_detail/chat_detail_cubit.dart';
+import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/view/chat_detail.dart';
 import 'package:democracy/user/bloc/users/users_cubit.dart';
 import 'package:democracy/user/models/user.dart';
@@ -36,7 +36,7 @@ class _CreateMessageState extends State<CreateMessage> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<ChatDetailCubit, ChatDetailState>(
+        BlocListener<ChatDetailBloc, ChatDetailState>(
           listener: (context, state) {
             if (state is ChatCreated) {
               Navigator.pop(context);
@@ -144,8 +144,8 @@ class _CreateMessageState extends State<CreateMessage> {
                 refreshController: _refreshController,
                 enablePullUp: hasNextPage,
                 onUserTap: (user) {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.createChat(user: user),
+                  context.read<ChatDetailBloc>().add(
+                    ChatDetailEvent.create(user: user),
                   );
                 },
                 onLoading: () {

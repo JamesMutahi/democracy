@@ -1,4 +1,4 @@
-part of 'messages_cubit.dart';
+part of 'messages_bloc.dart';
 
 enum MessagesStatus { initial, loading, success, failure }
 
