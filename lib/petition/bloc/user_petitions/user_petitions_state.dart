@@ -1,4 +1,4 @@
-part of 'user_petitions_cubit.dart';
+part of 'user_petitions_bloc.dart';
 
 enum UserPetitionsStatus { initial, loading, success, failure }
 

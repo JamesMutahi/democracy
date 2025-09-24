@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'petition_detail_cubit.dart';
+part of 'petition_detail_bloc.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -545,6 +545,545 @@ as String,
 }
 
 
+}
+
+/// @nodoc
+mixin _$PetitionDetailEvent {
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PetitionDetailEvent);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'PetitionDetailEvent()';
+}
+
+
+}
+
+/// @nodoc
+class $PetitionDetailEventCopyWith<$Res>  {
+$PetitionDetailEventCopyWith(PetitionDetailEvent _, $Res Function(PetitionDetailEvent) __);
+}
+
+
+/// Adds pattern-matching-related methods to [PetitionDetailEvent].
+extension PetitionDetailEventPatterns on PetitionDetailEvent {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Create value)?  create,TResult Function( _Support value)?  support,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _Created() when created != null:
+return created(_that);case _Updated() when updated != null:
+return updated(_that);case _Deleted() when deleted != null:
+return deleted(_that);case _Create() when create != null:
+return create(_that);case _Support() when support != null:
+return support(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Create value)  create,required TResult Function( _Support value)  support,}){
+final _that = this;
+switch (_that) {
+case _Created():
+return created(_that);case _Updated():
+return updated(_that);case _Deleted():
+return deleted(_that);case _Create():
+return create(_that);case _Support():
+return support(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Create value)?  create,TResult? Function( _Support value)?  support,}){
+final _that = this;
+switch (_that) {
+case _Created() when created != null:
+return created(_that);case _Updated() when updated != null:
+return updated(_that);case _Deleted() when deleted != null:
+return deleted(_that);case _Create() when create != null:
+return create(_that);case _Support() when support != null:
+return support(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( String title,  String imagePath,  String description)?  create,TResult Function( Petition petition)?  support,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _Created() when created != null:
+return created(_that.payload);case _Updated() when updated != null:
+return updated(_that.payload);case _Deleted() when deleted != null:
+return deleted(_that.payload);case _Create() when create != null:
+return create(_that.title,_that.imagePath,_that.description);case _Support() when support != null:
+return support(_that.petition);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( String title,  String imagePath,  String description)  create,required TResult Function( Petition petition)  support,}) {final _that = this;
+switch (_that) {
+case _Created():
+return created(_that.payload);case _Updated():
+return updated(_that.payload);case _Deleted():
+return deleted(_that.payload);case _Create():
+return create(_that.title,_that.imagePath,_that.description);case _Support():
+return support(_that.petition);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( String title,  String imagePath,  String description)?  create,TResult? Function( Petition petition)?  support,}) {final _that = this;
+switch (_that) {
+case _Created() when created != null:
+return created(_that.payload);case _Updated() when updated != null:
+return updated(_that.payload);case _Deleted() when deleted != null:
+return deleted(_that.payload);case _Create() when create != null:
+return create(_that.title,_that.imagePath,_that.description);case _Support() when support != null:
+return support(_that.petition);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _Created implements PetitionDetailEvent {
+  const _Created({required final  Map<String, dynamic> payload}): _payload = payload;
+  
+
+ final  Map<String, dynamic> _payload;
+ Map<String, dynamic> get payload {
+  if (_payload is EqualUnmodifiableMapView) return _payload;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_payload);
+}
+
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CreatedCopyWith<_Created> get copyWith => __$CreatedCopyWithImpl<_Created>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Created&&const DeepCollectionEquality().equals(other._payload, _payload));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
+
+@override
+String toString() {
+  return 'PetitionDetailEvent.created(payload: $payload)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CreatedCopyWith<$Res> implements $PetitionDetailEventCopyWith<$Res> {
+  factory _$CreatedCopyWith(_Created value, $Res Function(_Created) _then) = __$CreatedCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, dynamic> payload
+});
+
+
+
+
+}
+/// @nodoc
+class __$CreatedCopyWithImpl<$Res>
+    implements _$CreatedCopyWith<$Res> {
+  __$CreatedCopyWithImpl(this._self, this._then);
+
+  final _Created _self;
+  final $Res Function(_Created) _then;
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
+  return _then(_Created(
+payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _Updated implements PetitionDetailEvent {
+  const _Updated({required final  Map<String, dynamic> payload}): _payload = payload;
+  
+
+ final  Map<String, dynamic> _payload;
+ Map<String, dynamic> get payload {
+  if (_payload is EqualUnmodifiableMapView) return _payload;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_payload);
+}
+
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$UpdatedCopyWith<_Updated> get copyWith => __$UpdatedCopyWithImpl<_Updated>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Updated&&const DeepCollectionEquality().equals(other._payload, _payload));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
+
+@override
+String toString() {
+  return 'PetitionDetailEvent.updated(payload: $payload)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$UpdatedCopyWith<$Res> implements $PetitionDetailEventCopyWith<$Res> {
+  factory _$UpdatedCopyWith(_Updated value, $Res Function(_Updated) _then) = __$UpdatedCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, dynamic> payload
+});
+
+
+
+
+}
+/// @nodoc
+class __$UpdatedCopyWithImpl<$Res>
+    implements _$UpdatedCopyWith<$Res> {
+  __$UpdatedCopyWithImpl(this._self, this._then);
+
+  final _Updated _self;
+  final $Res Function(_Updated) _then;
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
+  return _then(_Updated(
+payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _Deleted implements PetitionDetailEvent {
+  const _Deleted({required final  Map<String, dynamic> payload}): _payload = payload;
+  
+
+ final  Map<String, dynamic> _payload;
+ Map<String, dynamic> get payload {
+  if (_payload is EqualUnmodifiableMapView) return _payload;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_payload);
+}
+
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DeletedCopyWith<_Deleted> get copyWith => __$DeletedCopyWithImpl<_Deleted>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Deleted&&const DeepCollectionEquality().equals(other._payload, _payload));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
+
+@override
+String toString() {
+  return 'PetitionDetailEvent.deleted(payload: $payload)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DeletedCopyWith<$Res> implements $PetitionDetailEventCopyWith<$Res> {
+  factory _$DeletedCopyWith(_Deleted value, $Res Function(_Deleted) _then) = __$DeletedCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, dynamic> payload
+});
+
+
+
+
+}
+/// @nodoc
+class __$DeletedCopyWithImpl<$Res>
+    implements _$DeletedCopyWith<$Res> {
+  __$DeletedCopyWithImpl(this._self, this._then);
+
+  final _Deleted _self;
+  final $Res Function(_Deleted) _then;
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
+  return _then(_Deleted(
+payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _Create implements PetitionDetailEvent {
+  const _Create({required this.title, required this.imagePath, required this.description});
+  
+
+ final  String title;
+ final  String imagePath;
+ final  String description;
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CreateCopyWith<_Create> get copyWith => __$CreateCopyWithImpl<_Create>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Create&&(identical(other.title, title) || other.title == title)&&(identical(other.imagePath, imagePath) || other.imagePath == imagePath)&&(identical(other.description, description) || other.description == description));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,title,imagePath,description);
+
+@override
+String toString() {
+  return 'PetitionDetailEvent.create(title: $title, imagePath: $imagePath, description: $description)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CreateCopyWith<$Res> implements $PetitionDetailEventCopyWith<$Res> {
+  factory _$CreateCopyWith(_Create value, $Res Function(_Create) _then) = __$CreateCopyWithImpl;
+@useResult
+$Res call({
+ String title, String imagePath, String description
+});
+
+
+
+
+}
+/// @nodoc
+class __$CreateCopyWithImpl<$Res>
+    implements _$CreateCopyWith<$Res> {
+  __$CreateCopyWithImpl(this._self, this._then);
+
+  final _Create _self;
+  final $Res Function(_Create) _then;
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? title = null,Object? imagePath = null,Object? description = null,}) {
+  return _then(_Create(
+title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,imagePath: null == imagePath ? _self.imagePath : imagePath // ignore: cast_nullable_to_non_nullable
+as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _Support implements PetitionDetailEvent {
+  const _Support({required this.petition});
+  
+
+ final  Petition petition;
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SupportCopyWith<_Support> get copyWith => __$SupportCopyWithImpl<_Support>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Support&&(identical(other.petition, petition) || other.petition == petition));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,petition);
+
+@override
+String toString() {
+  return 'PetitionDetailEvent.support(petition: $petition)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SupportCopyWith<$Res> implements $PetitionDetailEventCopyWith<$Res> {
+  factory _$SupportCopyWith(_Support value, $Res Function(_Support) _then) = __$SupportCopyWithImpl;
+@useResult
+$Res call({
+ Petition petition
+});
+
+
+$PetitionCopyWith<$Res> get petition;
+
+}
+/// @nodoc
+class __$SupportCopyWithImpl<$Res>
+    implements _$SupportCopyWith<$Res> {
+  __$SupportCopyWithImpl(this._self, this._then);
+
+  final _Support _self;
+  final $Res Function(_Support) _then;
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? petition = null,}) {
+  return _then(_Support(
+petition: null == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
+as Petition,
+  ));
+}
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PetitionCopyWith<$Res> get petition {
+  
+  return $PetitionCopyWith<$Res>(_self.petition, (value) {
+    return _then(_self.copyWith(petition: value));
+  });
+}
 }
 
 // dart format on

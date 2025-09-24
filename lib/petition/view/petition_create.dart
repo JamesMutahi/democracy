@@ -1,10 +1,9 @@
 import 'dart:io';
 
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/utils/media_tools.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
-import 'package:democracy/petition/bloc/petition_detail/petition_detail_cubit.dart';
+import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
 import 'package:democracy/post/view/post_create.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,7 +25,7 @@ class _CreatePetitionState extends State<CreatePetition> {
   @override
   Widget build(BuildContext context) {
     final imageHeight = MediaQuery.of(context).size.height / 4;
-    return BlocListener<PetitionDetailCubit, PetitionDetailState>(
+    return BlocListener<PetitionDetailBloc, PetitionDetailState>(
       listener: (context, state) {
         if (state is PetitionCreated) {
           Navigator.pop(context);
@@ -84,8 +83,8 @@ class _CreatePetitionState extends State<CreatePetition> {
                               builder:
                                   (context) => PetitionCreateDialog(
                                     onYesPressed: () {
-                                      context.read<WebsocketBloc>().add(
-                                        WebsocketEvent.createPetition(
+                                      context.read<PetitionDetailBloc>().add(
+                                        PetitionDetailEvent.create(
                                           title: title,
                                           imagePath: image!.path,
                                           description: description,

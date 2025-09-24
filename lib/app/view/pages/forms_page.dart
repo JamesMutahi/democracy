@@ -1,6 +1,6 @@
 import 'package:democracy/app/bloc/forms_search_and_filter/forms_search_and_filter_cubit.dart';
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
+import 'package:democracy/petition/bloc/petitions/petitions_bloc.dart';
 import 'package:democracy/petition/view/petition_create.dart';
 import 'package:democracy/petition/view/petitions.dart';
 import 'package:democracy/survey/bloc/surveys/surveys_bloc.dart';
@@ -112,10 +112,8 @@ class FormsSearchBar extends StatelessWidget {
                 ? context.read<SurveysBloc>().add(
                   SurveysEvent.get(searchTerm: state.surveysSearchTerm),
                 )
-                : context.read<WebsocketBloc>().add(
-                  WebsocketEvent.getPetitions(
-                    searchTerm: state.petitionsSearchTerm,
-                  ),
+                : context.read<PetitionsBloc>().add(
+                  PetitionsEvent.get(searchTerm: state.petitionsSearchTerm),
                 );
           },
           showFilterIcon: true,

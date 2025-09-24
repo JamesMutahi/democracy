@@ -1,4 +1,4 @@
-part of 'petition_detail_cubit.dart';
+part of 'petition_detail_bloc.dart';
 
 @freezed
 class PetitionDetailState with _$PetitionDetailState {

@@ -1,6 +1,5 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/custom_text.dart';
-import 'package:democracy/petition/bloc/petition_detail/petition_detail_cubit.dart';
+import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_tile.dart'
     show PetitionSupportersRow, PetitionPopUpMenu;
@@ -25,7 +24,7 @@ class _PetitionDetailState extends State<PetitionDetail> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<PetitionDetailCubit, PetitionDetailState>(
+    return BlocListener<PetitionDetailBloc, PetitionDetailState>(
       listener: (context, state) {
         if (state is PetitionUpdated) {
           if (_petition.id == state.petition.id) {
@@ -134,8 +133,8 @@ class SupportButton extends StatelessWidget {
       onPressed:
           petition.isActive
               ? () {
-                context.read<WebsocketBloc>().add(
-                  WebsocketEvent.supportPetition(petition: petition),
+                context.read<PetitionDetailBloc>().add(
+                  PetitionDetailEvent.support(petition: petition),
                 );
               }
               : null,

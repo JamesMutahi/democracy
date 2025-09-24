@@ -1,8 +1,8 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
-import 'package:democracy/petition/bloc/petition_detail/petition_detail_cubit.dart';
-import 'package:democracy/petition/bloc/petitions/petitions_cubit.dart';
+import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
+import 'package:democracy/petition/bloc/petitions/petitions_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +27,7 @@ class _PetitionsState extends State<Petitions> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getPetitions());
+    context.read<PetitionsBloc>().add(PetitionsEvent.get());
     super.initState();
   }
 
@@ -38,13 +38,13 @@ class _PetitionsState extends State<Petitions> {
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
             if (state.status == WebsocketStatus.connected) {
-              context.read<WebsocketBloc>().add(
-                WebsocketEvent.resubscribePetitions(petitions: _petitions),
+              context.read<PetitionsBloc>().add(
+                PetitionsEvent.resubscribe(petitions: _petitions),
               );
             }
           },
         ),
-        BlocListener<PetitionsCubit, PetitionsState>(
+        BlocListener<PetitionsBloc, PetitionsState>(
           listener: (context, state) {
             if (state.status == PetitionsStatus.success) {
               setState(() {
@@ -77,7 +77,7 @@ class _PetitionsState extends State<Petitions> {
             }
           },
         ),
-        BlocListener<PetitionDetailCubit, PetitionDetailState>(
+        BlocListener<PetitionDetailBloc, PetitionDetailState>(
           listener: (context, state) {
             if (state is PetitionUpdated) {
               if (_petitions.any(
@@ -111,9 +111,7 @@ class _PetitionsState extends State<Petitions> {
               : failure
               ? FailureRetryButton(
                 onPressed: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getPetitions(),
-                  );
+                  context.read<PetitionsBloc>().add(PetitionsEvent.get());
                 },
               )
               : SmartRefresher(
@@ -122,13 +120,11 @@ class _PetitionsState extends State<Petitions> {
                 header: ClassicHeader(),
                 controller: _refreshController,
                 onRefresh: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getPetitions(),
-                  );
+                  context.read<PetitionsBloc>().add(PetitionsEvent.get());
                 },
                 onLoading: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getPetitions(lastPetition: _petitions.last),
+                  context.read<PetitionsBloc>().add(
+                    PetitionsEvent.get(lastPetition: _petitions.last),
                   );
                 },
                 footer: ClassicFooter(),

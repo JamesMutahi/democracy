@@ -14,9 +14,6 @@ import 'package:democracy/constitution/bloc/sections/sections_cubit.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_cubit.dart';
 import 'package:democracy/notification/bloc/preferences/preferences_cubit.dart';
-import 'package:democracy/petition/bloc/petition_detail/petition_detail_cubit.dart';
-import 'package:democracy/petition/bloc/petitions/petitions_cubit.dart';
-import 'package:democracy/petition/bloc/user_petitions/user_petitions_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -208,29 +205,6 @@ class _Listeners extends StatelessWidget {
                     case 'preferences':
                     case 'update_preferences':
                       context.read<PreferencesCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                  }
-                case petitionsStream:
-                  switch (message['payload']['action']) {
-                    case 'list':
-                      context.read<PetitionsCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                    case 'create':
-                      context.read<PetitionDetailCubit>().created(
-                        payload: message['payload'],
-                      );
-                    case 'update':
-                      context.read<PetitionDetailCubit>().updated(
-                        payload: message['payload'],
-                      );
-                    case 'delete':
-                      context.read<PetitionDetailCubit>().deleted(
-                        payload: message['payload'],
-                      );
-                    case 'user_petitions':
-                      context.read<UserPetitionsCubit>().loaded(
                         payload: message['payload'],
                       );
                   }

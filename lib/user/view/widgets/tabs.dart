@@ -1,8 +1,9 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
-import 'package:democracy/petition/bloc/petition_detail/petition_detail_cubit.dart';
-import 'package:democracy/petition/bloc/user_petitions/user_petitions_cubit.dart';
+import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
+import 'package:democracy/petition/bloc/petitions/petitions_bloc.dart';
+import 'package:democracy/petition/bloc/user_petitions/user_petitions_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:democracy/post/bloc/likes/likes_bloc.dart';
@@ -382,8 +383,8 @@ class _UserPetitionsState extends State<UserPetitions> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(
-      WebsocketEvent.getUserPetitions(user: widget.user),
+    context.read<UserPetitionsBloc>().add(
+      UserPetitionsEvent.get(user: widget.user),
     );
     super.initState();
   }
@@ -395,8 +396,8 @@ class _UserPetitionsState extends State<UserPetitions> {
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
             if (state.status == WebsocketStatus.connected) {
-              context.read<WebsocketBloc>().add(
-                WebsocketEvent.resubscribeUserPetitions(
+              context.read<UserPetitionsBloc>().add(
+                UserPetitionsEvent.resubscribe(
                   user: widget.user,
                   petitions: _petitions,
                 ),
@@ -404,7 +405,7 @@ class _UserPetitionsState extends State<UserPetitions> {
             }
           },
         ),
-        BlocListener<UserPetitionsCubit, UserPetitionsState>(
+        BlocListener<UserPetitionsBloc, UserPetitionsState>(
           listener: (context, state) {
             if (state.status == UserPetitionsStatus.success) {
               setState(() {
@@ -437,7 +438,7 @@ class _UserPetitionsState extends State<UserPetitions> {
             }
           },
         ),
-        BlocListener<PetitionDetailCubit, PetitionDetailState>(
+        BlocListener<PetitionDetailBloc, PetitionDetailState>(
           listener: (context, state) {
             if (state is PetitionUpdated) {
               if (_petitions.any(
@@ -471,16 +472,14 @@ class _UserPetitionsState extends State<UserPetitions> {
               : failure
               ? FailureRetryButton(
                 onPressed: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getPetitions(),
-                  );
+                  context.read<PetitionsBloc>().add(PetitionsEvent.get());
                 },
               )
               : PopScope(
                 canPop: true,
                 onPopInvokedWithResult: (_, __) {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.unsubscribeUserPetitions(
+                  context.read<UserPetitionsBloc>().add(
+                    UserPetitionsEvent.unsubscribe(
                       user: widget.user,
                       petitions: _petitions,
                     ),
@@ -492,15 +491,11 @@ class _UserPetitionsState extends State<UserPetitions> {
                   header: ClassicHeader(),
                   controller: _refreshController,
                   onRefresh: () {
-                    context.read<WebsocketBloc>().add(
-                      WebsocketEvent.getPetitions(),
-                    );
+                    context.read<PetitionsBloc>().add(PetitionsEvent.get());
                   },
                   onLoading: () {
-                    context.read<WebsocketBloc>().add(
-                      WebsocketEvent.getPetitions(
-                        lastPetition: _petitions.last,
-                      ),
+                    context.read<PetitionsBloc>().add(
+                      PetitionsEvent.get(lastPetition: _petitions.last),
                     );
                   },
                   footer: ClassicFooter(),

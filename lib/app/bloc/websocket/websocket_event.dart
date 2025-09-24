@@ -29,39 +29,6 @@ abstract class WebsocketEvent with _$WebsocketEvent {
     required User user,
   }) = _ChangeUserNotificationStatus;
 
-  const factory WebsocketEvent.getPetitions({
-    String? searchTerm,
-    Petition? lastPetition,
-  }) = _GetPetitions;
-
-  const factory WebsocketEvent.createPetition({
-    required String title,
-    required String imagePath,
-    required String description,
-  }) = _CreatePetition;
-
-  const factory WebsocketEvent.resubscribePetitions({
-    required List<Petition> petitions,
-  }) = _ResubscribePetitions;
-
-  const factory WebsocketEvent.supportPetition({required Petition petition}) =
-      _SupportPetition;
-
-  const factory WebsocketEvent.getUserPetitions({
-    required User user,
-    Petition? lastPetition,
-  }) = _GetUserPetitions;
-
-  const factory WebsocketEvent.resubscribeUserPetitions({
-    required User user,
-    required List<Petition> petitions,
-  }) = _ResubscribeUserPetitions;
-
-  const factory WebsocketEvent.unsubscribeUserPetitions({
-    required User user,
-    required List<Petition> petitions,
-  }) = _UnsubscribeUserPetitions;
-
   const factory WebsocketEvent.getConstitution() = _GetConstitution;
 
   const factory WebsocketEvent.getConstitutionTags({String? searchTerm}) =
