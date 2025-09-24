@@ -8,7 +8,8 @@ import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/view/edit_message.dart';
 import 'package:democracy/chat/view/messages.dart';
-import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
+import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
+import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:flutter/material.dart';
@@ -71,8 +72,8 @@ class _ChatScaffoldState extends State<ChatScaffold> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(
-      WebsocketEvent.getUser(user: widget.otherUser),
+    context.read<UserDetailBloc>().add(
+      UserDetailEvent.get(user: widget.otherUser),
     );
     super.initState();
   }
@@ -104,7 +105,7 @@ class _ChatScaffoldState extends State<ChatScaffold> {
             }
           },
         ),
-        BlocListener<UserDetailCubit, UserDetailState>(
+        BlocListener<UserDetailBloc, UserDetailState>(
           listener: (context, state) {
             if (state is UserLoaded) {
               if (otherUser.id == state.user.id) {
@@ -139,8 +140,8 @@ class _ChatScaffoldState extends State<ChatScaffold> {
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
             if (state.status == WebsocketStatus.connected) {
-              context.read<WebsocketBloc>().add(
-                WebsocketEvent.resubscribeUsers(users: [otherUser]),
+              context.read<UsersBloc>().add(
+                UsersEvent.resubscribe(users: [otherUser]),
               );
             }
           },
@@ -152,8 +153,8 @@ class _ChatScaffoldState extends State<ChatScaffold> {
           if (showMessageActions) {
             context.read<MessageActionsCubit>().closeActionButtons();
           }
-          context.read<WebsocketBloc>().add(
-            WebsocketEvent.unsubscribeUsers(users: [otherUser]),
+          context.read<UsersBloc>().add(
+            UsersEvent.unsubscribe(users: [otherUser]),
           );
         },
         child: Scaffold(
@@ -250,8 +251,8 @@ class _ChatScaffoldState extends State<ChatScaffold> {
                               ),
                         ),
                         onPressed: () {
-                          context.read<WebsocketBloc>().add(
-                            WebsocketEvent.blockUser(id: otherUser.id),
+                          context.read<UserDetailBloc>().add(
+                            UserDetailEvent.block(user: otherUser),
                           );
                         },
                         child: Text('Unblock'),
@@ -335,12 +336,12 @@ class ChatPopUpMenu extends StatelessWidget {
       onSelected: (selected) {
         switch (selected) {
           case 'Block':
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.blockUser(id: otherUser.id),
+            context.read<UserDetailBloc>().add(
+              UserDetailEvent.block(user: otherUser),
             );
           case 'Unblock':
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.blockUser(id: otherUser.id),
+            context.read<UserDetailBloc>().add(
+              UserDetailEvent.block(user: otherUser),
             );
         }
       },

@@ -1,4 +1,4 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,9 +18,7 @@ class BlockDialog extends StatelessWidget {
           'notifications from them.',
       button1Text: 'Yes',
       onButton1Pressed: () {
-        context.read<WebsocketBloc>().add(
-          WebsocketEvent.blockUser(id: user.id),
-        );
+        context.read<UserDetailBloc>().add(UserDetailEvent.block(user: user));
       },
       button2Text: 'No',
       onButton2Pressed: () {
@@ -45,7 +43,7 @@ class MuteDialog extends StatelessWidget {
           'They will not know they have been muted.',
       button1Text: 'Yes',
       onButton1Pressed: () {
-        context.read<WebsocketBloc>().add(WebsocketEvent.muteUser(id: user.id));
+        context.read<UserDetailBloc>().add(UserDetailEvent.mute(user: user));
       },
       button2Text: 'No',
       onButton2Pressed: () {

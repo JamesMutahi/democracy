@@ -61,24 +61,12 @@ extension WebsocketEventPatterns on WebsocketEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Connect value)?  connect,TResult Function( _ChangeState value)?  changeState,TResult Function( _UnsubscribeUsers value)?  unsubscribeUsers,TResult Function( _GetUsers value)?  getUsers,TResult Function( _ResubscribeUsers value)?  resubscribeUsers,TResult Function( _GetFollowers value)?  getFollowers,TResult Function( _GetFollowing value)?  getFollowing,TResult Function( _GetMuted value)?  getMuted,TResult Function( _GetBlocked value)?  getBlocked,TResult Function( _GetUser value)?  getUser,TResult Function( _UpdateUser value)?  updateUser,TResult Function( _MuteUser value)?  muteUser,TResult Function( _BlockUser value)?  blockUser,TResult Function( _FollowUser value)?  followUser,TResult Function( _GetNotifications value)?  getNotifications,TResult Function( _MarkNotificationAsRead value)?  markNotificationAsRead,TResult Function( _GetPreferences value)?  getPreferences,TResult Function( _UpdatePreferences value)?  updatePreferences,TResult Function( _ChangeUserNotificationStatus value)?  changeUserNotificationStatus,TResult Function( _GetPetitions value)?  getPetitions,TResult Function( _CreatePetition value)?  createPetition,TResult Function( _ResubscribePetitions value)?  resubscribePetitions,TResult Function( _SupportPetition value)?  supportPetition,TResult Function( _GetPetitionSupporters value)?  getPetitionSupporters,TResult Function( _GetUserPetitions value)?  getUserPetitions,TResult Function( _ResubscribeUserPetitions value)?  resubscribeUserPetitions,TResult Function( _UnsubscribeUserPetitions value)?  unsubscribeUserPetitions,TResult Function( _GetConstitution value)?  getConstitution,TResult Function( _GetConstitutionTags value)?  getConstitutionTags,TResult Function( _BookmarkSection value)?  bookmarkSection,TResult Function( _Disconnect value)?  disconnect,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Connect value)?  connect,TResult Function( _ChangeState value)?  changeState,TResult Function( _GetNotifications value)?  getNotifications,TResult Function( _MarkNotificationAsRead value)?  markNotificationAsRead,TResult Function( _GetPreferences value)?  getPreferences,TResult Function( _UpdatePreferences value)?  updatePreferences,TResult Function( _ChangeUserNotificationStatus value)?  changeUserNotificationStatus,TResult Function( _GetPetitions value)?  getPetitions,TResult Function( _CreatePetition value)?  createPetition,TResult Function( _ResubscribePetitions value)?  resubscribePetitions,TResult Function( _SupportPetition value)?  supportPetition,TResult Function( _GetUserPetitions value)?  getUserPetitions,TResult Function( _ResubscribeUserPetitions value)?  resubscribeUserPetitions,TResult Function( _UnsubscribeUserPetitions value)?  unsubscribeUserPetitions,TResult Function( _GetConstitution value)?  getConstitution,TResult Function( _GetConstitutionTags value)?  getConstitutionTags,TResult Function( _BookmarkSection value)?  bookmarkSection,TResult Function( _Disconnect value)?  disconnect,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Connect() when connect != null:
 return connect(_that);case _ChangeState() when changeState != null:
-return changeState(_that);case _UnsubscribeUsers() when unsubscribeUsers != null:
-return unsubscribeUsers(_that);case _GetUsers() when getUsers != null:
-return getUsers(_that);case _ResubscribeUsers() when resubscribeUsers != null:
-return resubscribeUsers(_that);case _GetFollowers() when getFollowers != null:
-return getFollowers(_that);case _GetFollowing() when getFollowing != null:
-return getFollowing(_that);case _GetMuted() when getMuted != null:
-return getMuted(_that);case _GetBlocked() when getBlocked != null:
-return getBlocked(_that);case _GetUser() when getUser != null:
-return getUser(_that);case _UpdateUser() when updateUser != null:
-return updateUser(_that);case _MuteUser() when muteUser != null:
-return muteUser(_that);case _BlockUser() when blockUser != null:
-return blockUser(_that);case _FollowUser() when followUser != null:
-return followUser(_that);case _GetNotifications() when getNotifications != null:
+return changeState(_that);case _GetNotifications() when getNotifications != null:
 return getNotifications(_that);case _MarkNotificationAsRead() when markNotificationAsRead != null:
 return markNotificationAsRead(_that);case _GetPreferences() when getPreferences != null:
 return getPreferences(_that);case _UpdatePreferences() when updatePreferences != null:
@@ -87,8 +75,7 @@ return changeUserNotificationStatus(_that);case _GetPetitions() when getPetition
 return getPetitions(_that);case _CreatePetition() when createPetition != null:
 return createPetition(_that);case _ResubscribePetitions() when resubscribePetitions != null:
 return resubscribePetitions(_that);case _SupportPetition() when supportPetition != null:
-return supportPetition(_that);case _GetPetitionSupporters() when getPetitionSupporters != null:
-return getPetitionSupporters(_that);case _GetUserPetitions() when getUserPetitions != null:
+return supportPetition(_that);case _GetUserPetitions() when getUserPetitions != null:
 return getUserPetitions(_that);case _ResubscribeUserPetitions() when resubscribeUserPetitions != null:
 return resubscribeUserPetitions(_that);case _UnsubscribeUserPetitions() when unsubscribeUserPetitions != null:
 return unsubscribeUserPetitions(_that);case _GetConstitution() when getConstitution != null:
@@ -113,24 +100,12 @@ return disconnect(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Connect value)  connect,required TResult Function( _ChangeState value)  changeState,required TResult Function( _UnsubscribeUsers value)  unsubscribeUsers,required TResult Function( _GetUsers value)  getUsers,required TResult Function( _ResubscribeUsers value)  resubscribeUsers,required TResult Function( _GetFollowers value)  getFollowers,required TResult Function( _GetFollowing value)  getFollowing,required TResult Function( _GetMuted value)  getMuted,required TResult Function( _GetBlocked value)  getBlocked,required TResult Function( _GetUser value)  getUser,required TResult Function( _UpdateUser value)  updateUser,required TResult Function( _MuteUser value)  muteUser,required TResult Function( _BlockUser value)  blockUser,required TResult Function( _FollowUser value)  followUser,required TResult Function( _GetNotifications value)  getNotifications,required TResult Function( _MarkNotificationAsRead value)  markNotificationAsRead,required TResult Function( _GetPreferences value)  getPreferences,required TResult Function( _UpdatePreferences value)  updatePreferences,required TResult Function( _ChangeUserNotificationStatus value)  changeUserNotificationStatus,required TResult Function( _GetPetitions value)  getPetitions,required TResult Function( _CreatePetition value)  createPetition,required TResult Function( _ResubscribePetitions value)  resubscribePetitions,required TResult Function( _SupportPetition value)  supportPetition,required TResult Function( _GetPetitionSupporters value)  getPetitionSupporters,required TResult Function( _GetUserPetitions value)  getUserPetitions,required TResult Function( _ResubscribeUserPetitions value)  resubscribeUserPetitions,required TResult Function( _UnsubscribeUserPetitions value)  unsubscribeUserPetitions,required TResult Function( _GetConstitution value)  getConstitution,required TResult Function( _GetConstitutionTags value)  getConstitutionTags,required TResult Function( _BookmarkSection value)  bookmarkSection,required TResult Function( _Disconnect value)  disconnect,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Connect value)  connect,required TResult Function( _ChangeState value)  changeState,required TResult Function( _GetNotifications value)  getNotifications,required TResult Function( _MarkNotificationAsRead value)  markNotificationAsRead,required TResult Function( _GetPreferences value)  getPreferences,required TResult Function( _UpdatePreferences value)  updatePreferences,required TResult Function( _ChangeUserNotificationStatus value)  changeUserNotificationStatus,required TResult Function( _GetPetitions value)  getPetitions,required TResult Function( _CreatePetition value)  createPetition,required TResult Function( _ResubscribePetitions value)  resubscribePetitions,required TResult Function( _SupportPetition value)  supportPetition,required TResult Function( _GetUserPetitions value)  getUserPetitions,required TResult Function( _ResubscribeUserPetitions value)  resubscribeUserPetitions,required TResult Function( _UnsubscribeUserPetitions value)  unsubscribeUserPetitions,required TResult Function( _GetConstitution value)  getConstitution,required TResult Function( _GetConstitutionTags value)  getConstitutionTags,required TResult Function( _BookmarkSection value)  bookmarkSection,required TResult Function( _Disconnect value)  disconnect,}){
 final _that = this;
 switch (_that) {
 case _Connect():
 return connect(_that);case _ChangeState():
-return changeState(_that);case _UnsubscribeUsers():
-return unsubscribeUsers(_that);case _GetUsers():
-return getUsers(_that);case _ResubscribeUsers():
-return resubscribeUsers(_that);case _GetFollowers():
-return getFollowers(_that);case _GetFollowing():
-return getFollowing(_that);case _GetMuted():
-return getMuted(_that);case _GetBlocked():
-return getBlocked(_that);case _GetUser():
-return getUser(_that);case _UpdateUser():
-return updateUser(_that);case _MuteUser():
-return muteUser(_that);case _BlockUser():
-return blockUser(_that);case _FollowUser():
-return followUser(_that);case _GetNotifications():
+return changeState(_that);case _GetNotifications():
 return getNotifications(_that);case _MarkNotificationAsRead():
 return markNotificationAsRead(_that);case _GetPreferences():
 return getPreferences(_that);case _UpdatePreferences():
@@ -139,8 +114,7 @@ return changeUserNotificationStatus(_that);case _GetPetitions():
 return getPetitions(_that);case _CreatePetition():
 return createPetition(_that);case _ResubscribePetitions():
 return resubscribePetitions(_that);case _SupportPetition():
-return supportPetition(_that);case _GetPetitionSupporters():
-return getPetitionSupporters(_that);case _GetUserPetitions():
+return supportPetition(_that);case _GetUserPetitions():
 return getUserPetitions(_that);case _ResubscribeUserPetitions():
 return resubscribeUserPetitions(_that);case _UnsubscribeUserPetitions():
 return unsubscribeUserPetitions(_that);case _GetConstitution():
@@ -164,24 +138,12 @@ return disconnect(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Connect value)?  connect,TResult? Function( _ChangeState value)?  changeState,TResult? Function( _UnsubscribeUsers value)?  unsubscribeUsers,TResult? Function( _GetUsers value)?  getUsers,TResult? Function( _ResubscribeUsers value)?  resubscribeUsers,TResult? Function( _GetFollowers value)?  getFollowers,TResult? Function( _GetFollowing value)?  getFollowing,TResult? Function( _GetMuted value)?  getMuted,TResult? Function( _GetBlocked value)?  getBlocked,TResult? Function( _GetUser value)?  getUser,TResult? Function( _UpdateUser value)?  updateUser,TResult? Function( _MuteUser value)?  muteUser,TResult? Function( _BlockUser value)?  blockUser,TResult? Function( _FollowUser value)?  followUser,TResult? Function( _GetNotifications value)?  getNotifications,TResult? Function( _MarkNotificationAsRead value)?  markNotificationAsRead,TResult? Function( _GetPreferences value)?  getPreferences,TResult? Function( _UpdatePreferences value)?  updatePreferences,TResult? Function( _ChangeUserNotificationStatus value)?  changeUserNotificationStatus,TResult? Function( _GetPetitions value)?  getPetitions,TResult? Function( _CreatePetition value)?  createPetition,TResult? Function( _ResubscribePetitions value)?  resubscribePetitions,TResult? Function( _SupportPetition value)?  supportPetition,TResult? Function( _GetPetitionSupporters value)?  getPetitionSupporters,TResult? Function( _GetUserPetitions value)?  getUserPetitions,TResult? Function( _ResubscribeUserPetitions value)?  resubscribeUserPetitions,TResult? Function( _UnsubscribeUserPetitions value)?  unsubscribeUserPetitions,TResult? Function( _GetConstitution value)?  getConstitution,TResult? Function( _GetConstitutionTags value)?  getConstitutionTags,TResult? Function( _BookmarkSection value)?  bookmarkSection,TResult? Function( _Disconnect value)?  disconnect,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Connect value)?  connect,TResult? Function( _ChangeState value)?  changeState,TResult? Function( _GetNotifications value)?  getNotifications,TResult? Function( _MarkNotificationAsRead value)?  markNotificationAsRead,TResult? Function( _GetPreferences value)?  getPreferences,TResult? Function( _UpdatePreferences value)?  updatePreferences,TResult? Function( _ChangeUserNotificationStatus value)?  changeUserNotificationStatus,TResult? Function( _GetPetitions value)?  getPetitions,TResult? Function( _CreatePetition value)?  createPetition,TResult? Function( _ResubscribePetitions value)?  resubscribePetitions,TResult? Function( _SupportPetition value)?  supportPetition,TResult? Function( _GetUserPetitions value)?  getUserPetitions,TResult? Function( _ResubscribeUserPetitions value)?  resubscribeUserPetitions,TResult? Function( _UnsubscribeUserPetitions value)?  unsubscribeUserPetitions,TResult? Function( _GetConstitution value)?  getConstitution,TResult? Function( _GetConstitutionTags value)?  getConstitutionTags,TResult? Function( _BookmarkSection value)?  bookmarkSection,TResult? Function( _Disconnect value)?  disconnect,}){
 final _that = this;
 switch (_that) {
 case _Connect() when connect != null:
 return connect(_that);case _ChangeState() when changeState != null:
-return changeState(_that);case _UnsubscribeUsers() when unsubscribeUsers != null:
-return unsubscribeUsers(_that);case _GetUsers() when getUsers != null:
-return getUsers(_that);case _ResubscribeUsers() when resubscribeUsers != null:
-return resubscribeUsers(_that);case _GetFollowers() when getFollowers != null:
-return getFollowers(_that);case _GetFollowing() when getFollowing != null:
-return getFollowing(_that);case _GetMuted() when getMuted != null:
-return getMuted(_that);case _GetBlocked() when getBlocked != null:
-return getBlocked(_that);case _GetUser() when getUser != null:
-return getUser(_that);case _UpdateUser() when updateUser != null:
-return updateUser(_that);case _MuteUser() when muteUser != null:
-return muteUser(_that);case _BlockUser() when blockUser != null:
-return blockUser(_that);case _FollowUser() when followUser != null:
-return followUser(_that);case _GetNotifications() when getNotifications != null:
+return changeState(_that);case _GetNotifications() when getNotifications != null:
 return getNotifications(_that);case _MarkNotificationAsRead() when markNotificationAsRead != null:
 return markNotificationAsRead(_that);case _GetPreferences() when getPreferences != null:
 return getPreferences(_that);case _UpdatePreferences() when updatePreferences != null:
@@ -190,8 +152,7 @@ return changeUserNotificationStatus(_that);case _GetPetitions() when getPetition
 return getPetitions(_that);case _CreatePetition() when createPetition != null:
 return createPetition(_that);case _ResubscribePetitions() when resubscribePetitions != null:
 return resubscribePetitions(_that);case _SupportPetition() when supportPetition != null:
-return supportPetition(_that);case _GetPetitionSupporters() when getPetitionSupporters != null:
-return getPetitionSupporters(_that);case _GetUserPetitions() when getUserPetitions != null:
+return supportPetition(_that);case _GetUserPetitions() when getUserPetitions != null:
 return getUserPetitions(_that);case _ResubscribeUserPetitions() when resubscribeUserPetitions != null:
 return resubscribeUserPetitions(_that);case _UnsubscribeUserPetitions() when unsubscribeUserPetitions != null:
 return unsubscribeUserPetitions(_that);case _GetConstitution() when getConstitution != null:
@@ -215,23 +176,11 @@ return disconnect(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  connect,TResult Function( WebsocketState state)?  changeState,TResult Function( List<User> users)?  unsubscribeUsers,TResult Function( String? searchTerm,  User? lastUser)?  getUsers,TResult Function( List<User> users)?  resubscribeUsers,TResult Function( User user,  User? lastUser)?  getFollowers,TResult Function( User user,  User? lastUser)?  getFollowing,TResult Function( User? lastUser)?  getMuted,TResult Function( User? lastUser)?  getBlocked,TResult Function( User user)?  getUser,TResult Function( User user,  String name,  String status,  String? imagePath,  String? coverPhotoPath)?  updateUser,TResult Function( int id)?  muteUser,TResult Function( int id)?  blockUser,TResult Function( User user)?  followUser,TResult Function()?  getNotifications,TResult Function( Notification notification)?  markNotificationAsRead,TResult Function()?  getPreferences,TResult Function( bool allowNotifications,  bool allowTagNotifications,  bool allowLikeNotifications,  bool allowReplyNotifications,  bool allowRepostNotifications,  bool allowMessageNotifications,  bool allowFollowNotifications)?  updatePreferences,TResult Function( User user)?  changeUserNotificationStatus,TResult Function( String? searchTerm,  Petition? lastPetition)?  getPetitions,TResult Function( String title,  String imagePath,  String description)?  createPetition,TResult Function( List<Petition> petitions)?  resubscribePetitions,TResult Function( Petition petition)?  supportPetition,TResult Function( Petition petition,  User? lastUser)?  getPetitionSupporters,TResult Function( User user,  Petition? lastPetition)?  getUserPetitions,TResult Function( User user,  List<Petition> petitions)?  resubscribeUserPetitions,TResult Function( User user,  List<Petition> petitions)?  unsubscribeUserPetitions,TResult Function()?  getConstitution,TResult Function( String? searchTerm)?  getConstitutionTags,TResult Function( Section section)?  bookmarkSection,TResult Function()?  disconnect,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  connect,TResult Function( WebsocketState state)?  changeState,TResult Function()?  getNotifications,TResult Function( Notification notification)?  markNotificationAsRead,TResult Function()?  getPreferences,TResult Function( bool allowNotifications,  bool allowTagNotifications,  bool allowLikeNotifications,  bool allowReplyNotifications,  bool allowRepostNotifications,  bool allowMessageNotifications,  bool allowFollowNotifications)?  updatePreferences,TResult Function( User user)?  changeUserNotificationStatus,TResult Function( String? searchTerm,  Petition? lastPetition)?  getPetitions,TResult Function( String title,  String imagePath,  String description)?  createPetition,TResult Function( List<Petition> petitions)?  resubscribePetitions,TResult Function( Petition petition)?  supportPetition,TResult Function( User user,  Petition? lastPetition)?  getUserPetitions,TResult Function( User user,  List<Petition> petitions)?  resubscribeUserPetitions,TResult Function( User user,  List<Petition> petitions)?  unsubscribeUserPetitions,TResult Function()?  getConstitution,TResult Function( String? searchTerm)?  getConstitutionTags,TResult Function( Section section)?  bookmarkSection,TResult Function()?  disconnect,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Connect() when connect != null:
 return connect();case _ChangeState() when changeState != null:
-return changeState(_that.state);case _UnsubscribeUsers() when unsubscribeUsers != null:
-return unsubscribeUsers(_that.users);case _GetUsers() when getUsers != null:
-return getUsers(_that.searchTerm,_that.lastUser);case _ResubscribeUsers() when resubscribeUsers != null:
-return resubscribeUsers(_that.users);case _GetFollowers() when getFollowers != null:
-return getFollowers(_that.user,_that.lastUser);case _GetFollowing() when getFollowing != null:
-return getFollowing(_that.user,_that.lastUser);case _GetMuted() when getMuted != null:
-return getMuted(_that.lastUser);case _GetBlocked() when getBlocked != null:
-return getBlocked(_that.lastUser);case _GetUser() when getUser != null:
-return getUser(_that.user);case _UpdateUser() when updateUser != null:
-return updateUser(_that.user,_that.name,_that.status,_that.imagePath,_that.coverPhotoPath);case _MuteUser() when muteUser != null:
-return muteUser(_that.id);case _BlockUser() when blockUser != null:
-return blockUser(_that.id);case _FollowUser() when followUser != null:
-return followUser(_that.user);case _GetNotifications() when getNotifications != null:
+return changeState(_that.state);case _GetNotifications() when getNotifications != null:
 return getNotifications();case _MarkNotificationAsRead() when markNotificationAsRead != null:
 return markNotificationAsRead(_that.notification);case _GetPreferences() when getPreferences != null:
 return getPreferences();case _UpdatePreferences() when updatePreferences != null:
@@ -240,8 +189,7 @@ return changeUserNotificationStatus(_that.user);case _GetPetitions() when getPet
 return getPetitions(_that.searchTerm,_that.lastPetition);case _CreatePetition() when createPetition != null:
 return createPetition(_that.title,_that.imagePath,_that.description);case _ResubscribePetitions() when resubscribePetitions != null:
 return resubscribePetitions(_that.petitions);case _SupportPetition() when supportPetition != null:
-return supportPetition(_that.petition);case _GetPetitionSupporters() when getPetitionSupporters != null:
-return getPetitionSupporters(_that.petition,_that.lastUser);case _GetUserPetitions() when getUserPetitions != null:
+return supportPetition(_that.petition);case _GetUserPetitions() when getUserPetitions != null:
 return getUserPetitions(_that.user,_that.lastPetition);case _ResubscribeUserPetitions() when resubscribeUserPetitions != null:
 return resubscribeUserPetitions(_that.user,_that.petitions);case _UnsubscribeUserPetitions() when unsubscribeUserPetitions != null:
 return unsubscribeUserPetitions(_that.user,_that.petitions);case _GetConstitution() when getConstitution != null:
@@ -266,23 +214,11 @@ return disconnect();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  connect,required TResult Function( WebsocketState state)  changeState,required TResult Function( List<User> users)  unsubscribeUsers,required TResult Function( String? searchTerm,  User? lastUser)  getUsers,required TResult Function( List<User> users)  resubscribeUsers,required TResult Function( User user,  User? lastUser)  getFollowers,required TResult Function( User user,  User? lastUser)  getFollowing,required TResult Function( User? lastUser)  getMuted,required TResult Function( User? lastUser)  getBlocked,required TResult Function( User user)  getUser,required TResult Function( User user,  String name,  String status,  String? imagePath,  String? coverPhotoPath)  updateUser,required TResult Function( int id)  muteUser,required TResult Function( int id)  blockUser,required TResult Function( User user)  followUser,required TResult Function()  getNotifications,required TResult Function( Notification notification)  markNotificationAsRead,required TResult Function()  getPreferences,required TResult Function( bool allowNotifications,  bool allowTagNotifications,  bool allowLikeNotifications,  bool allowReplyNotifications,  bool allowRepostNotifications,  bool allowMessageNotifications,  bool allowFollowNotifications)  updatePreferences,required TResult Function( User user)  changeUserNotificationStatus,required TResult Function( String? searchTerm,  Petition? lastPetition)  getPetitions,required TResult Function( String title,  String imagePath,  String description)  createPetition,required TResult Function( List<Petition> petitions)  resubscribePetitions,required TResult Function( Petition petition)  supportPetition,required TResult Function( Petition petition,  User? lastUser)  getPetitionSupporters,required TResult Function( User user,  Petition? lastPetition)  getUserPetitions,required TResult Function( User user,  List<Petition> petitions)  resubscribeUserPetitions,required TResult Function( User user,  List<Petition> petitions)  unsubscribeUserPetitions,required TResult Function()  getConstitution,required TResult Function( String? searchTerm)  getConstitutionTags,required TResult Function( Section section)  bookmarkSection,required TResult Function()  disconnect,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  connect,required TResult Function( WebsocketState state)  changeState,required TResult Function()  getNotifications,required TResult Function( Notification notification)  markNotificationAsRead,required TResult Function()  getPreferences,required TResult Function( bool allowNotifications,  bool allowTagNotifications,  bool allowLikeNotifications,  bool allowReplyNotifications,  bool allowRepostNotifications,  bool allowMessageNotifications,  bool allowFollowNotifications)  updatePreferences,required TResult Function( User user)  changeUserNotificationStatus,required TResult Function( String? searchTerm,  Petition? lastPetition)  getPetitions,required TResult Function( String title,  String imagePath,  String description)  createPetition,required TResult Function( List<Petition> petitions)  resubscribePetitions,required TResult Function( Petition petition)  supportPetition,required TResult Function( User user,  Petition? lastPetition)  getUserPetitions,required TResult Function( User user,  List<Petition> petitions)  resubscribeUserPetitions,required TResult Function( User user,  List<Petition> petitions)  unsubscribeUserPetitions,required TResult Function()  getConstitution,required TResult Function( String? searchTerm)  getConstitutionTags,required TResult Function( Section section)  bookmarkSection,required TResult Function()  disconnect,}) {final _that = this;
 switch (_that) {
 case _Connect():
 return connect();case _ChangeState():
-return changeState(_that.state);case _UnsubscribeUsers():
-return unsubscribeUsers(_that.users);case _GetUsers():
-return getUsers(_that.searchTerm,_that.lastUser);case _ResubscribeUsers():
-return resubscribeUsers(_that.users);case _GetFollowers():
-return getFollowers(_that.user,_that.lastUser);case _GetFollowing():
-return getFollowing(_that.user,_that.lastUser);case _GetMuted():
-return getMuted(_that.lastUser);case _GetBlocked():
-return getBlocked(_that.lastUser);case _GetUser():
-return getUser(_that.user);case _UpdateUser():
-return updateUser(_that.user,_that.name,_that.status,_that.imagePath,_that.coverPhotoPath);case _MuteUser():
-return muteUser(_that.id);case _BlockUser():
-return blockUser(_that.id);case _FollowUser():
-return followUser(_that.user);case _GetNotifications():
+return changeState(_that.state);case _GetNotifications():
 return getNotifications();case _MarkNotificationAsRead():
 return markNotificationAsRead(_that.notification);case _GetPreferences():
 return getPreferences();case _UpdatePreferences():
@@ -291,8 +227,7 @@ return changeUserNotificationStatus(_that.user);case _GetPetitions():
 return getPetitions(_that.searchTerm,_that.lastPetition);case _CreatePetition():
 return createPetition(_that.title,_that.imagePath,_that.description);case _ResubscribePetitions():
 return resubscribePetitions(_that.petitions);case _SupportPetition():
-return supportPetition(_that.petition);case _GetPetitionSupporters():
-return getPetitionSupporters(_that.petition,_that.lastUser);case _GetUserPetitions():
+return supportPetition(_that.petition);case _GetUserPetitions():
 return getUserPetitions(_that.user,_that.lastPetition);case _ResubscribeUserPetitions():
 return resubscribeUserPetitions(_that.user,_that.petitions);case _UnsubscribeUserPetitions():
 return unsubscribeUserPetitions(_that.user,_that.petitions);case _GetConstitution():
@@ -316,23 +251,11 @@ return disconnect();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  connect,TResult? Function( WebsocketState state)?  changeState,TResult? Function( List<User> users)?  unsubscribeUsers,TResult? Function( String? searchTerm,  User? lastUser)?  getUsers,TResult? Function( List<User> users)?  resubscribeUsers,TResult? Function( User user,  User? lastUser)?  getFollowers,TResult? Function( User user,  User? lastUser)?  getFollowing,TResult? Function( User? lastUser)?  getMuted,TResult? Function( User? lastUser)?  getBlocked,TResult? Function( User user)?  getUser,TResult? Function( User user,  String name,  String status,  String? imagePath,  String? coverPhotoPath)?  updateUser,TResult? Function( int id)?  muteUser,TResult? Function( int id)?  blockUser,TResult? Function( User user)?  followUser,TResult? Function()?  getNotifications,TResult? Function( Notification notification)?  markNotificationAsRead,TResult? Function()?  getPreferences,TResult? Function( bool allowNotifications,  bool allowTagNotifications,  bool allowLikeNotifications,  bool allowReplyNotifications,  bool allowRepostNotifications,  bool allowMessageNotifications,  bool allowFollowNotifications)?  updatePreferences,TResult? Function( User user)?  changeUserNotificationStatus,TResult? Function( String? searchTerm,  Petition? lastPetition)?  getPetitions,TResult? Function( String title,  String imagePath,  String description)?  createPetition,TResult? Function( List<Petition> petitions)?  resubscribePetitions,TResult? Function( Petition petition)?  supportPetition,TResult? Function( Petition petition,  User? lastUser)?  getPetitionSupporters,TResult? Function( User user,  Petition? lastPetition)?  getUserPetitions,TResult? Function( User user,  List<Petition> petitions)?  resubscribeUserPetitions,TResult? Function( User user,  List<Petition> petitions)?  unsubscribeUserPetitions,TResult? Function()?  getConstitution,TResult? Function( String? searchTerm)?  getConstitutionTags,TResult? Function( Section section)?  bookmarkSection,TResult? Function()?  disconnect,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  connect,TResult? Function( WebsocketState state)?  changeState,TResult? Function()?  getNotifications,TResult? Function( Notification notification)?  markNotificationAsRead,TResult? Function()?  getPreferences,TResult? Function( bool allowNotifications,  bool allowTagNotifications,  bool allowLikeNotifications,  bool allowReplyNotifications,  bool allowRepostNotifications,  bool allowMessageNotifications,  bool allowFollowNotifications)?  updatePreferences,TResult? Function( User user)?  changeUserNotificationStatus,TResult? Function( String? searchTerm,  Petition? lastPetition)?  getPetitions,TResult? Function( String title,  String imagePath,  String description)?  createPetition,TResult? Function( List<Petition> petitions)?  resubscribePetitions,TResult? Function( Petition petition)?  supportPetition,TResult? Function( User user,  Petition? lastPetition)?  getUserPetitions,TResult? Function( User user,  List<Petition> petitions)?  resubscribeUserPetitions,TResult? Function( User user,  List<Petition> petitions)?  unsubscribeUserPetitions,TResult? Function()?  getConstitution,TResult? Function( String? searchTerm)?  getConstitutionTags,TResult? Function( Section section)?  bookmarkSection,TResult? Function()?  disconnect,}) {final _that = this;
 switch (_that) {
 case _Connect() when connect != null:
 return connect();case _ChangeState() when changeState != null:
-return changeState(_that.state);case _UnsubscribeUsers() when unsubscribeUsers != null:
-return unsubscribeUsers(_that.users);case _GetUsers() when getUsers != null:
-return getUsers(_that.searchTerm,_that.lastUser);case _ResubscribeUsers() when resubscribeUsers != null:
-return resubscribeUsers(_that.users);case _GetFollowers() when getFollowers != null:
-return getFollowers(_that.user,_that.lastUser);case _GetFollowing() when getFollowing != null:
-return getFollowing(_that.user,_that.lastUser);case _GetMuted() when getMuted != null:
-return getMuted(_that.lastUser);case _GetBlocked() when getBlocked != null:
-return getBlocked(_that.lastUser);case _GetUser() when getUser != null:
-return getUser(_that.user);case _UpdateUser() when updateUser != null:
-return updateUser(_that.user,_that.name,_that.status,_that.imagePath,_that.coverPhotoPath);case _MuteUser() when muteUser != null:
-return muteUser(_that.id);case _BlockUser() when blockUser != null:
-return blockUser(_that.id);case _FollowUser() when followUser != null:
-return followUser(_that.user);case _GetNotifications() when getNotifications != null:
+return changeState(_that.state);case _GetNotifications() when getNotifications != null:
 return getNotifications();case _MarkNotificationAsRead() when markNotificationAsRead != null:
 return markNotificationAsRead(_that.notification);case _GetPreferences() when getPreferences != null:
 return getPreferences();case _UpdatePreferences() when updatePreferences != null:
@@ -341,8 +264,7 @@ return changeUserNotificationStatus(_that.user);case _GetPetitions() when getPet
 return getPetitions(_that.searchTerm,_that.lastPetition);case _CreatePetition() when createPetition != null:
 return createPetition(_that.title,_that.imagePath,_that.description);case _ResubscribePetitions() when resubscribePetitions != null:
 return resubscribePetitions(_that.petitions);case _SupportPetition() when supportPetition != null:
-return supportPetition(_that.petition);case _GetPetitionSupporters() when getPetitionSupporters != null:
-return getPetitionSupporters(_that.petition,_that.lastUser);case _GetUserPetitions() when getUserPetitions != null:
+return supportPetition(_that.petition);case _GetUserPetitions() when getUserPetitions != null:
 return getUserPetitions(_that.user,_that.lastPetition);case _ResubscribeUserPetitions() when resubscribeUserPetitions != null:
 return resubscribeUserPetitions(_that.user,_that.petitions);case _UnsubscribeUserPetitions() when unsubscribeUserPetitions != null:
 return unsubscribeUserPetitions(_that.user,_that.petitions);case _GetConstitution() when getConstitution != null:
@@ -465,1001 +387,6 @@ as WebsocketState,
 }
 
 
-}
-
-/// @nodoc
-
-
-class _UnsubscribeUsers with DiagnosticableTreeMixin implements WebsocketEvent {
-  const _UnsubscribeUsers({required final  List<User> users}): _users = users;
-  
-
- final  List<User> _users;
- List<User> get users {
-  if (_users is EqualUnmodifiableListView) return _users;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_users);
-}
-
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$UnsubscribeUsersCopyWith<_UnsubscribeUsers> get copyWith => __$UnsubscribeUsersCopyWithImpl<_UnsubscribeUsers>(this, _$identity);
-
-
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'WebsocketEvent.unsubscribeUsers'))
-    ..add(DiagnosticsProperty('users', users));
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UnsubscribeUsers&&const DeepCollectionEquality().equals(other._users, _users));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_users));
-
-@override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'WebsocketEvent.unsubscribeUsers(users: $users)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$UnsubscribeUsersCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
-  factory _$UnsubscribeUsersCopyWith(_UnsubscribeUsers value, $Res Function(_UnsubscribeUsers) _then) = __$UnsubscribeUsersCopyWithImpl;
-@useResult
-$Res call({
- List<User> users
-});
-
-
-
-
-}
-/// @nodoc
-class __$UnsubscribeUsersCopyWithImpl<$Res>
-    implements _$UnsubscribeUsersCopyWith<$Res> {
-  __$UnsubscribeUsersCopyWithImpl(this._self, this._then);
-
-  final _UnsubscribeUsers _self;
-  final $Res Function(_UnsubscribeUsers) _then;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? users = null,}) {
-  return _then(_UnsubscribeUsers(
-users: null == users ? _self._users : users // ignore: cast_nullable_to_non_nullable
-as List<User>,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class _GetUsers with DiagnosticableTreeMixin implements WebsocketEvent {
-  const _GetUsers({this.searchTerm, this.lastUser});
-  
-
- final  String? searchTerm;
- final  User? lastUser;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$GetUsersCopyWith<_GetUsers> get copyWith => __$GetUsersCopyWithImpl<_GetUsers>(this, _$identity);
-
-
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'WebsocketEvent.getUsers'))
-    ..add(DiagnosticsProperty('searchTerm', searchTerm))..add(DiagnosticsProperty('lastUser', lastUser));
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetUsers&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&(identical(other.lastUser, lastUser) || other.lastUser == lastUser));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,searchTerm,lastUser);
-
-@override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'WebsocketEvent.getUsers(searchTerm: $searchTerm, lastUser: $lastUser)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$GetUsersCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
-  factory _$GetUsersCopyWith(_GetUsers value, $Res Function(_GetUsers) _then) = __$GetUsersCopyWithImpl;
-@useResult
-$Res call({
- String? searchTerm, User? lastUser
-});
-
-
-$UserCopyWith<$Res>? get lastUser;
-
-}
-/// @nodoc
-class __$GetUsersCopyWithImpl<$Res>
-    implements _$GetUsersCopyWith<$Res> {
-  __$GetUsersCopyWithImpl(this._self, this._then);
-
-  final _GetUsers _self;
-  final $Res Function(_GetUsers) _then;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? searchTerm = freezed,Object? lastUser = freezed,}) {
-  return _then(_GetUsers(
-searchTerm: freezed == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
-as String?,lastUser: freezed == lastUser ? _self.lastUser : lastUser // ignore: cast_nullable_to_non_nullable
-as User?,
-  ));
-}
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UserCopyWith<$Res>? get lastUser {
-    if (_self.lastUser == null) {
-    return null;
-  }
-
-  return $UserCopyWith<$Res>(_self.lastUser!, (value) {
-    return _then(_self.copyWith(lastUser: value));
-  });
-}
-}
-
-/// @nodoc
-
-
-class _ResubscribeUsers with DiagnosticableTreeMixin implements WebsocketEvent {
-  const _ResubscribeUsers({required final  List<User> users}): _users = users;
-  
-
- final  List<User> _users;
- List<User> get users {
-  if (_users is EqualUnmodifiableListView) return _users;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_users);
-}
-
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$ResubscribeUsersCopyWith<_ResubscribeUsers> get copyWith => __$ResubscribeUsersCopyWithImpl<_ResubscribeUsers>(this, _$identity);
-
-
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'WebsocketEvent.resubscribeUsers'))
-    ..add(DiagnosticsProperty('users', users));
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResubscribeUsers&&const DeepCollectionEquality().equals(other._users, _users));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_users));
-
-@override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'WebsocketEvent.resubscribeUsers(users: $users)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$ResubscribeUsersCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
-  factory _$ResubscribeUsersCopyWith(_ResubscribeUsers value, $Res Function(_ResubscribeUsers) _then) = __$ResubscribeUsersCopyWithImpl;
-@useResult
-$Res call({
- List<User> users
-});
-
-
-
-
-}
-/// @nodoc
-class __$ResubscribeUsersCopyWithImpl<$Res>
-    implements _$ResubscribeUsersCopyWith<$Res> {
-  __$ResubscribeUsersCopyWithImpl(this._self, this._then);
-
-  final _ResubscribeUsers _self;
-  final $Res Function(_ResubscribeUsers) _then;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? users = null,}) {
-  return _then(_ResubscribeUsers(
-users: null == users ? _self._users : users // ignore: cast_nullable_to_non_nullable
-as List<User>,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class _GetFollowers with DiagnosticableTreeMixin implements WebsocketEvent {
-  const _GetFollowers({required this.user, this.lastUser});
-  
-
- final  User user;
- final  User? lastUser;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$GetFollowersCopyWith<_GetFollowers> get copyWith => __$GetFollowersCopyWithImpl<_GetFollowers>(this, _$identity);
-
-
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'WebsocketEvent.getFollowers'))
-    ..add(DiagnosticsProperty('user', user))..add(DiagnosticsProperty('lastUser', lastUser));
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetFollowers&&(identical(other.user, user) || other.user == user)&&(identical(other.lastUser, lastUser) || other.lastUser == lastUser));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,user,lastUser);
-
-@override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'WebsocketEvent.getFollowers(user: $user, lastUser: $lastUser)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$GetFollowersCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
-  factory _$GetFollowersCopyWith(_GetFollowers value, $Res Function(_GetFollowers) _then) = __$GetFollowersCopyWithImpl;
-@useResult
-$Res call({
- User user, User? lastUser
-});
-
-
-$UserCopyWith<$Res> get user;$UserCopyWith<$Res>? get lastUser;
-
-}
-/// @nodoc
-class __$GetFollowersCopyWithImpl<$Res>
-    implements _$GetFollowersCopyWith<$Res> {
-  __$GetFollowersCopyWithImpl(this._self, this._then);
-
-  final _GetFollowers _self;
-  final $Res Function(_GetFollowers) _then;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? user = null,Object? lastUser = freezed,}) {
-  return _then(_GetFollowers(
-user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as User,lastUser: freezed == lastUser ? _self.lastUser : lastUser // ignore: cast_nullable_to_non_nullable
-as User?,
-  ));
-}
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UserCopyWith<$Res> get user {
-  
-  return $UserCopyWith<$Res>(_self.user, (value) {
-    return _then(_self.copyWith(user: value));
-  });
-}/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UserCopyWith<$Res>? get lastUser {
-    if (_self.lastUser == null) {
-    return null;
-  }
-
-  return $UserCopyWith<$Res>(_self.lastUser!, (value) {
-    return _then(_self.copyWith(lastUser: value));
-  });
-}
-}
-
-/// @nodoc
-
-
-class _GetFollowing with DiagnosticableTreeMixin implements WebsocketEvent {
-  const _GetFollowing({required this.user, this.lastUser});
-  
-
- final  User user;
- final  User? lastUser;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$GetFollowingCopyWith<_GetFollowing> get copyWith => __$GetFollowingCopyWithImpl<_GetFollowing>(this, _$identity);
-
-
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'WebsocketEvent.getFollowing'))
-    ..add(DiagnosticsProperty('user', user))..add(DiagnosticsProperty('lastUser', lastUser));
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetFollowing&&(identical(other.user, user) || other.user == user)&&(identical(other.lastUser, lastUser) || other.lastUser == lastUser));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,user,lastUser);
-
-@override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'WebsocketEvent.getFollowing(user: $user, lastUser: $lastUser)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$GetFollowingCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
-  factory _$GetFollowingCopyWith(_GetFollowing value, $Res Function(_GetFollowing) _then) = __$GetFollowingCopyWithImpl;
-@useResult
-$Res call({
- User user, User? lastUser
-});
-
-
-$UserCopyWith<$Res> get user;$UserCopyWith<$Res>? get lastUser;
-
-}
-/// @nodoc
-class __$GetFollowingCopyWithImpl<$Res>
-    implements _$GetFollowingCopyWith<$Res> {
-  __$GetFollowingCopyWithImpl(this._self, this._then);
-
-  final _GetFollowing _self;
-  final $Res Function(_GetFollowing) _then;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? user = null,Object? lastUser = freezed,}) {
-  return _then(_GetFollowing(
-user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as User,lastUser: freezed == lastUser ? _self.lastUser : lastUser // ignore: cast_nullable_to_non_nullable
-as User?,
-  ));
-}
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UserCopyWith<$Res> get user {
-  
-  return $UserCopyWith<$Res>(_self.user, (value) {
-    return _then(_self.copyWith(user: value));
-  });
-}/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UserCopyWith<$Res>? get lastUser {
-    if (_self.lastUser == null) {
-    return null;
-  }
-
-  return $UserCopyWith<$Res>(_self.lastUser!, (value) {
-    return _then(_self.copyWith(lastUser: value));
-  });
-}
-}
-
-/// @nodoc
-
-
-class _GetMuted with DiagnosticableTreeMixin implements WebsocketEvent {
-  const _GetMuted({this.lastUser});
-  
-
- final  User? lastUser;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$GetMutedCopyWith<_GetMuted> get copyWith => __$GetMutedCopyWithImpl<_GetMuted>(this, _$identity);
-
-
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'WebsocketEvent.getMuted'))
-    ..add(DiagnosticsProperty('lastUser', lastUser));
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetMuted&&(identical(other.lastUser, lastUser) || other.lastUser == lastUser));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,lastUser);
-
-@override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'WebsocketEvent.getMuted(lastUser: $lastUser)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$GetMutedCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
-  factory _$GetMutedCopyWith(_GetMuted value, $Res Function(_GetMuted) _then) = __$GetMutedCopyWithImpl;
-@useResult
-$Res call({
- User? lastUser
-});
-
-
-$UserCopyWith<$Res>? get lastUser;
-
-}
-/// @nodoc
-class __$GetMutedCopyWithImpl<$Res>
-    implements _$GetMutedCopyWith<$Res> {
-  __$GetMutedCopyWithImpl(this._self, this._then);
-
-  final _GetMuted _self;
-  final $Res Function(_GetMuted) _then;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? lastUser = freezed,}) {
-  return _then(_GetMuted(
-lastUser: freezed == lastUser ? _self.lastUser : lastUser // ignore: cast_nullable_to_non_nullable
-as User?,
-  ));
-}
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UserCopyWith<$Res>? get lastUser {
-    if (_self.lastUser == null) {
-    return null;
-  }
-
-  return $UserCopyWith<$Res>(_self.lastUser!, (value) {
-    return _then(_self.copyWith(lastUser: value));
-  });
-}
-}
-
-/// @nodoc
-
-
-class _GetBlocked with DiagnosticableTreeMixin implements WebsocketEvent {
-  const _GetBlocked({this.lastUser});
-  
-
- final  User? lastUser;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$GetBlockedCopyWith<_GetBlocked> get copyWith => __$GetBlockedCopyWithImpl<_GetBlocked>(this, _$identity);
-
-
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'WebsocketEvent.getBlocked'))
-    ..add(DiagnosticsProperty('lastUser', lastUser));
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetBlocked&&(identical(other.lastUser, lastUser) || other.lastUser == lastUser));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,lastUser);
-
-@override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'WebsocketEvent.getBlocked(lastUser: $lastUser)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$GetBlockedCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
-  factory _$GetBlockedCopyWith(_GetBlocked value, $Res Function(_GetBlocked) _then) = __$GetBlockedCopyWithImpl;
-@useResult
-$Res call({
- User? lastUser
-});
-
-
-$UserCopyWith<$Res>? get lastUser;
-
-}
-/// @nodoc
-class __$GetBlockedCopyWithImpl<$Res>
-    implements _$GetBlockedCopyWith<$Res> {
-  __$GetBlockedCopyWithImpl(this._self, this._then);
-
-  final _GetBlocked _self;
-  final $Res Function(_GetBlocked) _then;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? lastUser = freezed,}) {
-  return _then(_GetBlocked(
-lastUser: freezed == lastUser ? _self.lastUser : lastUser // ignore: cast_nullable_to_non_nullable
-as User?,
-  ));
-}
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UserCopyWith<$Res>? get lastUser {
-    if (_self.lastUser == null) {
-    return null;
-  }
-
-  return $UserCopyWith<$Res>(_self.lastUser!, (value) {
-    return _then(_self.copyWith(lastUser: value));
-  });
-}
-}
-
-/// @nodoc
-
-
-class _GetUser with DiagnosticableTreeMixin implements WebsocketEvent {
-  const _GetUser({required this.user});
-  
-
- final  User user;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$GetUserCopyWith<_GetUser> get copyWith => __$GetUserCopyWithImpl<_GetUser>(this, _$identity);
-
-
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'WebsocketEvent.getUser'))
-    ..add(DiagnosticsProperty('user', user));
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetUser&&(identical(other.user, user) || other.user == user));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,user);
-
-@override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'WebsocketEvent.getUser(user: $user)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$GetUserCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
-  factory _$GetUserCopyWith(_GetUser value, $Res Function(_GetUser) _then) = __$GetUserCopyWithImpl;
-@useResult
-$Res call({
- User user
-});
-
-
-$UserCopyWith<$Res> get user;
-
-}
-/// @nodoc
-class __$GetUserCopyWithImpl<$Res>
-    implements _$GetUserCopyWith<$Res> {
-  __$GetUserCopyWithImpl(this._self, this._then);
-
-  final _GetUser _self;
-  final $Res Function(_GetUser) _then;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
-  return _then(_GetUser(
-user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as User,
-  ));
-}
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UserCopyWith<$Res> get user {
-  
-  return $UserCopyWith<$Res>(_self.user, (value) {
-    return _then(_self.copyWith(user: value));
-  });
-}
-}
-
-/// @nodoc
-
-
-class _UpdateUser with DiagnosticableTreeMixin implements WebsocketEvent {
-  const _UpdateUser({required this.user, required this.name, required this.status, required this.imagePath, required this.coverPhotoPath});
-  
-
- final  User user;
- final  String name;
- final  String status;
- final  String? imagePath;
- final  String? coverPhotoPath;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$UpdateUserCopyWith<_UpdateUser> get copyWith => __$UpdateUserCopyWithImpl<_UpdateUser>(this, _$identity);
-
-
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'WebsocketEvent.updateUser'))
-    ..add(DiagnosticsProperty('user', user))..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('status', status))..add(DiagnosticsProperty('imagePath', imagePath))..add(DiagnosticsProperty('coverPhotoPath', coverPhotoPath));
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateUser&&(identical(other.user, user) || other.user == user)&&(identical(other.name, name) || other.name == name)&&(identical(other.status, status) || other.status == status)&&(identical(other.imagePath, imagePath) || other.imagePath == imagePath)&&(identical(other.coverPhotoPath, coverPhotoPath) || other.coverPhotoPath == coverPhotoPath));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,user,name,status,imagePath,coverPhotoPath);
-
-@override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'WebsocketEvent.updateUser(user: $user, name: $name, status: $status, imagePath: $imagePath, coverPhotoPath: $coverPhotoPath)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$UpdateUserCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
-  factory _$UpdateUserCopyWith(_UpdateUser value, $Res Function(_UpdateUser) _then) = __$UpdateUserCopyWithImpl;
-@useResult
-$Res call({
- User user, String name, String status, String? imagePath, String? coverPhotoPath
-});
-
-
-$UserCopyWith<$Res> get user;
-
-}
-/// @nodoc
-class __$UpdateUserCopyWithImpl<$Res>
-    implements _$UpdateUserCopyWith<$Res> {
-  __$UpdateUserCopyWithImpl(this._self, this._then);
-
-  final _UpdateUser _self;
-  final $Res Function(_UpdateUser) _then;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? user = null,Object? name = null,Object? status = null,Object? imagePath = freezed,Object? coverPhotoPath = freezed,}) {
-  return _then(_UpdateUser(
-user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as User,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as String,imagePath: freezed == imagePath ? _self.imagePath : imagePath // ignore: cast_nullable_to_non_nullable
-as String?,coverPhotoPath: freezed == coverPhotoPath ? _self.coverPhotoPath : coverPhotoPath // ignore: cast_nullable_to_non_nullable
-as String?,
-  ));
-}
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UserCopyWith<$Res> get user {
-  
-  return $UserCopyWith<$Res>(_self.user, (value) {
-    return _then(_self.copyWith(user: value));
-  });
-}
-}
-
-/// @nodoc
-
-
-class _MuteUser with DiagnosticableTreeMixin implements WebsocketEvent {
-  const _MuteUser({required this.id});
-  
-
- final  int id;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$MuteUserCopyWith<_MuteUser> get copyWith => __$MuteUserCopyWithImpl<_MuteUser>(this, _$identity);
-
-
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'WebsocketEvent.muteUser'))
-    ..add(DiagnosticsProperty('id', id));
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MuteUser&&(identical(other.id, id) || other.id == id));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,id);
-
-@override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'WebsocketEvent.muteUser(id: $id)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$MuteUserCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
-  factory _$MuteUserCopyWith(_MuteUser value, $Res Function(_MuteUser) _then) = __$MuteUserCopyWithImpl;
-@useResult
-$Res call({
- int id
-});
-
-
-
-
-}
-/// @nodoc
-class __$MuteUserCopyWithImpl<$Res>
-    implements _$MuteUserCopyWith<$Res> {
-  __$MuteUserCopyWithImpl(this._self, this._then);
-
-  final _MuteUser _self;
-  final $Res Function(_MuteUser) _then;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? id = null,}) {
-  return _then(_MuteUser(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class _BlockUser with DiagnosticableTreeMixin implements WebsocketEvent {
-  const _BlockUser({required this.id});
-  
-
- final  int id;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$BlockUserCopyWith<_BlockUser> get copyWith => __$BlockUserCopyWithImpl<_BlockUser>(this, _$identity);
-
-
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'WebsocketEvent.blockUser'))
-    ..add(DiagnosticsProperty('id', id));
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BlockUser&&(identical(other.id, id) || other.id == id));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,id);
-
-@override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'WebsocketEvent.blockUser(id: $id)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$BlockUserCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
-  factory _$BlockUserCopyWith(_BlockUser value, $Res Function(_BlockUser) _then) = __$BlockUserCopyWithImpl;
-@useResult
-$Res call({
- int id
-});
-
-
-
-
-}
-/// @nodoc
-class __$BlockUserCopyWithImpl<$Res>
-    implements _$BlockUserCopyWith<$Res> {
-  __$BlockUserCopyWithImpl(this._self, this._then);
-
-  final _BlockUser _self;
-  final $Res Function(_BlockUser) _then;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? id = null,}) {
-  return _then(_BlockUser(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class _FollowUser with DiagnosticableTreeMixin implements WebsocketEvent {
-  const _FollowUser({required this.user});
-  
-
- final  User user;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$FollowUserCopyWith<_FollowUser> get copyWith => __$FollowUserCopyWithImpl<_FollowUser>(this, _$identity);
-
-
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'WebsocketEvent.followUser'))
-    ..add(DiagnosticsProperty('user', user));
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FollowUser&&(identical(other.user, user) || other.user == user));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,user);
-
-@override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'WebsocketEvent.followUser(user: $user)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$FollowUserCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
-  factory _$FollowUserCopyWith(_FollowUser value, $Res Function(_FollowUser) _then) = __$FollowUserCopyWithImpl;
-@useResult
-$Res call({
- User user
-});
-
-
-$UserCopyWith<$Res> get user;
-
-}
-/// @nodoc
-class __$FollowUserCopyWithImpl<$Res>
-    implements _$FollowUserCopyWith<$Res> {
-  __$FollowUserCopyWithImpl(this._self, this._then);
-
-  final _FollowUser _self;
-  final $Res Function(_FollowUser) _then;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
-  return _then(_FollowUser(
-user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as User,
-  ));
-}
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UserCopyWith<$Res> get user {
-  
-  return $UserCopyWith<$Res>(_self.user, (value) {
-    return _then(_self.copyWith(user: value));
-  });
-}
 }
 
 /// @nodoc
@@ -2101,101 +1028,6 @@ $PetitionCopyWith<$Res> get petition {
   
   return $PetitionCopyWith<$Res>(_self.petition, (value) {
     return _then(_self.copyWith(petition: value));
-  });
-}
-}
-
-/// @nodoc
-
-
-class _GetPetitionSupporters with DiagnosticableTreeMixin implements WebsocketEvent {
-  const _GetPetitionSupporters({required this.petition, this.lastUser});
-  
-
- final  Petition petition;
- final  User? lastUser;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$GetPetitionSupportersCopyWith<_GetPetitionSupporters> get copyWith => __$GetPetitionSupportersCopyWithImpl<_GetPetitionSupporters>(this, _$identity);
-
-
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'WebsocketEvent.getPetitionSupporters'))
-    ..add(DiagnosticsProperty('petition', petition))..add(DiagnosticsProperty('lastUser', lastUser));
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetPetitionSupporters&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.lastUser, lastUser) || other.lastUser == lastUser));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,petition,lastUser);
-
-@override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'WebsocketEvent.getPetitionSupporters(petition: $petition, lastUser: $lastUser)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$GetPetitionSupportersCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
-  factory _$GetPetitionSupportersCopyWith(_GetPetitionSupporters value, $Res Function(_GetPetitionSupporters) _then) = __$GetPetitionSupportersCopyWithImpl;
-@useResult
-$Res call({
- Petition petition, User? lastUser
-});
-
-
-$PetitionCopyWith<$Res> get petition;$UserCopyWith<$Res>? get lastUser;
-
-}
-/// @nodoc
-class __$GetPetitionSupportersCopyWithImpl<$Res>
-    implements _$GetPetitionSupportersCopyWith<$Res> {
-  __$GetPetitionSupportersCopyWithImpl(this._self, this._then);
-
-  final _GetPetitionSupporters _self;
-  final $Res Function(_GetPetitionSupporters) _then;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? petition = null,Object? lastUser = freezed,}) {
-  return _then(_GetPetitionSupporters(
-petition: null == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
-as Petition,lastUser: freezed == lastUser ? _self.lastUser : lastUser // ignore: cast_nullable_to_non_nullable
-as User?,
-  ));
-}
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$PetitionCopyWith<$Res> get petition {
-  
-  return $PetitionCopyWith<$Res>(_self.petition, (value) {
-    return _then(_self.copyWith(petition: value));
-  });
-}/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UserCopyWith<$Res>? get lastUser {
-    if (_self.lastUser == null) {
-    return null;
-  }
-
-  return $UserCopyWith<$Res>(_self.lastUser!, (value) {
-    return _then(_self.copyWith(lastUser: value));
   });
 }
 }

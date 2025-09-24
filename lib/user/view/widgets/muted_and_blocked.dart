@@ -1,6 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/user/bloc/blocked/blocked_cubit.dart';
-import 'package:democracy/user/bloc/muted/muted_cubit.dart';
+import 'package:democracy/user/bloc/blocked/blocked_bloc.dart';
+import 'package:democracy/user/bloc/muted/muted_bloc.dart';
+import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/profile.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
@@ -63,7 +64,7 @@ class _MutedTabState extends State<_MutedTab> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getMuted());
+    context.read<MutedBloc>().add(MutedEvent.get());
     super.initState();
   }
 
@@ -74,13 +75,13 @@ class _MutedTabState extends State<_MutedTab> {
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
             if (state.status == WebsocketStatus.connected) {
-              context.read<WebsocketBloc>().add(
-                WebsocketEvent.resubscribeUsers(users: _users),
+              context.read<UsersBloc>().add(
+                UsersEvent.resubscribe(users: _users),
               );
             }
           },
         ),
-        BlocListener<MutedCubit, MutedState>(
+        BlocListener<MutedBloc, MutedState>(
           listener: (context, state) {
             if (state.status == MutedStatus.success) {
               setState(() {
@@ -116,9 +117,7 @@ class _MutedTabState extends State<_MutedTab> {
       child: PopScope(
         canPop: true,
         onPopInvokedWithResult: (_, __) {
-          context.read<WebsocketBloc>().add(
-            WebsocketEvent.unsubscribeUsers(users: _users),
-          );
+          context.read<UsersBloc>().add(UsersEvent.unsubscribe(users: _users));
         },
         child: UsersListView(
           users: _users,
@@ -141,15 +140,15 @@ class _MutedTabState extends State<_MutedTab> {
             );
           },
           onRefresh: () {
-            context.read<WebsocketBloc>().add(WebsocketEvent.getMuted());
+            context.read<MutedBloc>().add(MutedEvent.get());
           },
           onLoading: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.getMuted(lastUser: _users.last),
+            context.read<MutedBloc>().add(
+              MutedEvent.get(lastUser: _users.last),
             );
           },
           onFailure: () {
-            context.read<WebsocketBloc>().add(WebsocketEvent.getMuted());
+            context.read<MutedBloc>().add(MutedEvent.get());
           },
         ),
       ),
@@ -177,7 +176,7 @@ class _BlockedTabState extends State<_BlockedTab> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getBlocked());
+    context.read<BlockedBloc>().add(BlockedEvent.get());
     super.initState();
   }
 
@@ -188,13 +187,13 @@ class _BlockedTabState extends State<_BlockedTab> {
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
             if (state.status == WebsocketStatus.connected) {
-              context.read<WebsocketBloc>().add(
-                WebsocketEvent.resubscribeUsers(users: _users),
+              context.read<UsersBloc>().add(
+                UsersEvent.resubscribe(users: _users),
               );
             }
           },
         ),
-        BlocListener<BlockedCubit, BlockedState>(
+        BlocListener<BlockedBloc, BlockedState>(
           listener: (context, state) {
             if (state.status == BlockedStatus.success) {
               setState(() {
@@ -231,9 +230,7 @@ class _BlockedTabState extends State<_BlockedTab> {
       child: PopScope(
         canPop: true,
         onPopInvokedWithResult: (_, __) {
-          context.read<WebsocketBloc>().add(
-            WebsocketEvent.unsubscribeUsers(users: _users),
-          );
+          context.read<UsersBloc>().add(UsersEvent.unsubscribe(users: _users));
         },
         child: UsersListView(
           users: _users,
@@ -256,15 +253,15 @@ class _BlockedTabState extends State<_BlockedTab> {
             );
           },
           onRefresh: () {
-            context.read<WebsocketBloc>().add(WebsocketEvent.getBlocked());
+            context.read<BlockedBloc>().add(BlockedEvent.get());
           },
           onLoading: () {
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.getBlocked(lastUser: _users.last),
+            context.read<BlockedBloc>().add(
+              BlockedEvent.get(lastUser: _users.last),
             );
           },
           onFailure: () {
-            context.read<WebsocketBloc>().add(WebsocketEvent.getBlocked());
+            context.read<BlockedBloc>().add(BlockedEvent.get());
           },
         ),
       ),

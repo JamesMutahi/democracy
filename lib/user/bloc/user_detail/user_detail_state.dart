@@ -1,4 +1,4 @@
-part of 'user_detail_cubit.dart';
+part of 'user_detail_bloc.dart';
 
 @freezed
 class UserDetailState with _$UserDetailState {

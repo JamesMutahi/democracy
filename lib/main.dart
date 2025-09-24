@@ -22,7 +22,7 @@ import 'package:democracy/notification/bloc/notifications/notifications_cubit.da
 import 'package:democracy/notification/bloc/preferences/preferences_cubit.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_cubit.dart';
 import 'package:democracy/petition/bloc/petitions/petitions_cubit.dart';
-import 'package:democracy/petition/bloc/supporters/supporters_cubit.dart';
+import 'package:democracy/petition/bloc/supporters/supporters_bloc.dart';
 import 'package:democracy/petition/bloc/user_petitions/user_petitions_cubit.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_bloc.dart';
 import 'package:democracy/post/bloc/draft_posts/draft_posts_bloc.dart';
@@ -39,12 +39,12 @@ import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/page/page_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
 import 'package:democracy/survey/bloc/surveys/surveys_bloc.dart';
-import 'package:democracy/user/bloc/blocked/blocked_cubit.dart';
-import 'package:democracy/user/bloc/followers/followers_cubit.dart';
-import 'package:democracy/user/bloc/following/following_cubit.dart';
-import 'package:democracy/user/bloc/muted/muted_cubit.dart';
-import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
-import 'package:democracy/user/bloc/users/users_cubit.dart';
+import 'package:democracy/user/bloc/blocked/blocked_bloc.dart';
+import 'package:democracy/user/bloc/followers/followers_bloc.dart';
+import 'package:democracy/user/bloc/following/following_bloc.dart';
+import 'package:democracy/user/bloc/muted/muted_bloc.dart';
+import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
+import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -186,16 +186,35 @@ void main() async {
           ),
           BlocProvider(create: (context) => NotificationsCubit(), lazy: false),
           BlocProvider(create: (context) => NotificationDetailCubit()),
-          BlocProvider(create: (context) => UsersCubit()),
-          BlocProvider(create: (context) => UserDetailCubit()),
-          BlocProvider(create: (context) => MutedCubit()),
-          BlocProvider(create: (context) => BlockedCubit()),
-          BlocProvider(create: (context) => FollowingCubit()),
-          BlocProvider(create: (context) => FollowersCubit()),
+          BlocProvider(
+            create: (context) => UsersBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create:
+                (context) => UserDetailBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create: (context) => MutedBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create:
+                (context) => BlockedBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create:
+                (context) => FollowingBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create:
+                (context) => FollowersBloc(webSocketService: webSocketService),
+          ),
           BlocProvider(create: (context) => PreferencesCubit()),
           BlocProvider(create: (context) => PetitionsCubit()),
           BlocProvider(create: (context) => PetitionDetailCubit()),
-          BlocProvider(create: (context) => SupportersCubit()),
+          BlocProvider(
+            create:
+                (context) => SupportersBloc(webSocketService: webSocketService),
+          ),
           BlocProvider(create: (context) => UserPetitionsCubit()),
           BlocProvider(create: (context) => ConstitutionCubit()),
           BlocProvider(create: (context) => SectionsCubit()),

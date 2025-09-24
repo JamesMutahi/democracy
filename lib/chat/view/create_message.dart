@@ -1,7 +1,6 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/view/chat_detail.dart';
-import 'package:democracy/user/bloc/users/users_cubit.dart';
+import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +27,7 @@ class _CreateMessageState extends State<CreateMessage> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getUsers());
+    context.read<UsersBloc>().add(UsersEvent.get());
     super.initState();
   }
 
@@ -52,7 +51,7 @@ class _CreateMessageState extends State<CreateMessage> {
             }
           },
         ),
-        BlocListener<UsersCubit, UsersState>(
+        BlocListener<UsersBloc, UsersState>(
           listener: (context, state) {
             if (state.status == UsersStatus.success) {
               setState(() {
@@ -112,11 +111,8 @@ class _CreateMessageState extends State<CreateMessage> {
               ),
               child: TextFormField(
                 onChanged: (value) {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getUsers(
-                      searchTerm: value,
-                      lastUser: _users.last,
-                    ),
+                  context.read<UsersBloc>().add(
+                    UsersEvent.get(searchTerm: value, lastUser: _users.last),
                   );
                 },
                 onTapOutside: (event) {
@@ -149,16 +145,16 @@ class _CreateMessageState extends State<CreateMessage> {
                   );
                 },
                 onLoading: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getUsers(
+                  context.read<UsersBloc>().add(
+                    UsersEvent.get(
                       searchTerm: controller.text,
                       lastUser: _users.last,
                     ),
                   );
                 },
                 onFailure: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getUsers(lastUser: _users.last),
+                  context.read<UsersBloc>().add(
+                    UsersEvent.get(lastUser: _users.last),
                   );
                 },
               ),

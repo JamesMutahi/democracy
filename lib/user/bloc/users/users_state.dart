@@ -1,4 +1,4 @@
-part of 'users_cubit.dart';
+part of 'users_bloc.dart';
 
 enum UsersStatus { initial, loading, success, failure }
 

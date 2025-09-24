@@ -1,4 +1,4 @@
-part of 'following_cubit.dart';
+part of 'following_bloc.dart';
 
 enum FollowingStatus { initial, loading, success, failure }
 

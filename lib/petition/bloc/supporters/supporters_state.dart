@@ -1,4 +1,4 @@
-part of 'supporters_cubit.dart';
+part of 'supporters_bloc.dart';
 
 enum SupportersStatus { initial, loading, success, failure }
 

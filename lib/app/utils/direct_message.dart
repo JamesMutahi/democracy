@@ -1,4 +1,3 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_text_form_field.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/ballot/models/ballot.dart';
@@ -6,7 +5,7 @@ import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
-import 'package:democracy/user/bloc/users/users_cubit.dart';
+import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +51,7 @@ class _DirectMessageState extends State<DirectMessage> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getUsers());
+    context.read<UsersBloc>().add(UsersEvent.get());
     super.initState();
   }
 
@@ -73,7 +72,7 @@ class _DirectMessageState extends State<DirectMessage> {
             }
           },
         ),
-        BlocListener<UsersCubit, UsersState>(
+        BlocListener<UsersBloc, UsersState>(
           listener: (context, state) {
             if (state.status == UsersStatus.success) {
               setState(() {
@@ -158,8 +157,8 @@ class _DirectMessageState extends State<DirectMessage> {
                               : 200,
                       child: TextFormField(
                         onChanged: (value) {
-                          context.read<WebsocketBloc>().add(
-                            WebsocketEvent.getUsers(searchTerm: value),
+                          context.read<UsersBloc>().add(
+                            UsersEvent.get(searchTerm: value),
                           );
                         },
                         decoration: InputDecoration(
@@ -206,16 +205,16 @@ class _DirectMessageState extends State<DirectMessage> {
                   });
                 },
                 onLoading: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getUsers(
+                  context.read<UsersBloc>().add(
+                    UsersEvent.get(
                       searchTerm: controller.text,
                       lastUser: _users.last,
                     ),
                   );
                 },
                 onFailure: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getUsers(lastUser: _users.last),
+                  context.read<UsersBloc>().add(
+                    UsersEvent.get(lastUser: _users.last),
                   );
                 },
               ),

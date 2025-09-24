@@ -16,7 +16,7 @@ import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
-import 'package:democracy/user/bloc/users/users_cubit.dart';
+import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:flutter/material.dart';
@@ -344,7 +344,7 @@ class _BottomNavBarState extends State<_BottomNavBar>
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<UsersCubit, UsersState>(
+        BlocListener<UsersBloc, UsersState>(
           listener: (context, state) {
             if (state.status == UsersStatus.success) {
               setState(() {
@@ -374,9 +374,7 @@ class _BottomNavBarState extends State<_BottomNavBar>
             setState(() {
               _view = SearchResultView.users;
             });
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.getUsers(searchTerm: query),
-            );
+            context.read<UsersBloc>().add(UsersEvent.get(searchTerm: query));
           }
           if (triggerChar == "#") {
             setState(() {

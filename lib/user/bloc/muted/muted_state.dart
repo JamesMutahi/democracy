@@ -1,4 +1,4 @@
-part of 'muted_cubit.dart';
+part of 'muted_bloc.dart';
 
 enum MutedStatus { initial, loading, success, failure }
 

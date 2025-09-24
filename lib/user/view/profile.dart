@@ -4,7 +4,8 @@ import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/view/chat_detail.dart';
 import 'package:democracy/post/view/draft_posts.dart';
-import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
+import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
+import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/edit_profile.dart';
 import 'package:democracy/user/view/widgets/following.dart';
@@ -36,9 +37,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     // Retrieve and subscribe to user
-    context.read<WebsocketBloc>().add(
-      WebsocketEvent.getUser(user: widget.user),
-    );
+    context.read<UserDetailBloc>().add(UserDetailEvent.get(user: widget.user));
     super.initState();
     _scrollController.addListener(_handleScrolling);
   }
@@ -66,7 +65,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<UserDetailCubit, UserDetailState>(
+        BlocListener<UserDetailBloc, UserDetailState>(
           listener: (context, state) {
             if (state is UserLoaded) {
               if (widget.user.id == state.user.id) {
@@ -101,8 +100,8 @@ class _ProfilePageState extends State<ProfilePage> {
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
             if (state.status == WebsocketStatus.connected) {
-              context.read<WebsocketBloc>().add(
-                WebsocketEvent.resubscribeUsers(users: [widget.user]),
+              context.read<UsersBloc>().add(
+                UsersEvent.resubscribe(users: [widget.user]),
               );
             }
           },
@@ -134,8 +133,8 @@ class _ProfilePageState extends State<ProfilePage> {
             child: PopScope(
               canPop: true,
               onPopInvokedWithResult: (_, __) {
-                context.read<WebsocketBloc>().add(
-                  WebsocketEvent.unsubscribeUsers(users: [user]),
+                context.read<UsersBloc>().add(
+                  UsersEvent.unsubscribe(users: [user]),
                 );
               },
               child: Scaffold(
@@ -495,8 +494,8 @@ class _ProfilePopUpMenu extends StatelessWidget {
               builder: (context) => MuteDialog(user: user),
             );
           case 'Unmute':
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.muteUser(id: user.id),
+            context.read<UserDetailBloc>().add(
+              UserDetailEvent.mute(user: user),
             );
           case 'Block':
             showDialog(
@@ -504,8 +503,8 @@ class _ProfilePopUpMenu extends StatelessWidget {
               builder: (context) => BlockDialog(user: user),
             );
           case 'Unblock':
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.blockUser(id: user.id),
+            context.read<UserDetailBloc>().add(
+              UserDetailEvent.block(user: user),
             );
         }
       },

@@ -1,6 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/user/bloc/followers/followers_cubit.dart';
-import 'package:democracy/user/bloc/following/following_cubit.dart';
+import 'package:democracy/user/bloc/followers/followers_bloc.dart';
+import 'package:democracy/user/bloc/following/following_bloc.dart';
+import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/profile.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
@@ -64,9 +65,7 @@ class _FollowersTabState extends State<_FollowersTab> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(
-      WebsocketEvent.getFollowers(user: widget.user),
-    );
+    context.read<FollowersBloc>().add(FollowersEvent.get(user: widget.user));
     super.initState();
   }
 
@@ -77,13 +76,13 @@ class _FollowersTabState extends State<_FollowersTab> {
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
             if (state.status == WebsocketStatus.connected) {
-              context.read<WebsocketBloc>().add(
-                WebsocketEvent.resubscribeUsers(users: _users),
+              context.read<UsersBloc>().add(
+                UsersEvent.resubscribe(users: _users),
               );
             }
           },
         ),
-        BlocListener<FollowersCubit, FollowersState>(
+        BlocListener<FollowersBloc, FollowersState>(
           listener: (context, state) {
             if (state.status == FollowersStatus.success) {
               setState(() {
@@ -137,21 +136,18 @@ class _FollowersTabState extends State<_FollowersTab> {
           );
         },
         onRefresh: () {
-          context.read<WebsocketBloc>().add(
-            WebsocketEvent.getFollowers(user: widget.user),
+          context.read<FollowersBloc>().add(
+            FollowersEvent.get(user: widget.user),
           );
         },
         onLoading: () {
-          context.read<WebsocketBloc>().add(
-            WebsocketEvent.getFollowers(
-              user: widget.user,
-              lastUser: _users.last,
-            ),
+          context.read<FollowersBloc>().add(
+            FollowersEvent.get(user: widget.user, lastUser: _users.last),
           );
         },
         onFailure: () {
-          context.read<WebsocketBloc>().add(
-            WebsocketEvent.getFollowers(user: widget.user),
+          context.read<FollowersBloc>().add(
+            FollowersEvent.get(user: widget.user),
           );
         },
       ),
@@ -181,9 +177,7 @@ class _FollowingTabState extends State<_FollowingTab> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(
-      WebsocketEvent.getFollowing(user: widget.user),
-    );
+    context.read<FollowingBloc>().add(FollowingEvent.get(user: widget.user));
     super.initState();
   }
 
@@ -194,13 +188,13 @@ class _FollowingTabState extends State<_FollowingTab> {
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
             if (state.status == WebsocketStatus.connected) {
-              context.read<WebsocketBloc>().add(
-                WebsocketEvent.resubscribeUsers(users: _users),
+              context.read<UsersBloc>().add(
+                UsersEvent.resubscribe(users: _users),
               );
             }
           },
         ),
-        BlocListener<FollowingCubit, FollowingState>(
+        BlocListener<FollowingBloc, FollowingState>(
           listener: (context, state) {
             if (state.status == FollowingStatus.success) {
               setState(() {
@@ -255,21 +249,18 @@ class _FollowingTabState extends State<_FollowingTab> {
           );
         },
         onRefresh: () {
-          context.read<WebsocketBloc>().add(
-            WebsocketEvent.getFollowing(user: widget.user),
+          context.read<FollowingBloc>().add(
+            FollowingEvent.get(user: widget.user),
           );
         },
         onLoading: () {
-          context.read<WebsocketBloc>().add(
-            WebsocketEvent.getFollowing(
-              user: widget.user,
-              lastUser: _users.last,
-            ),
+          context.read<FollowingBloc>().add(
+            FollowingEvent.get(user: widget.user, lastUser: _users.last),
           );
         },
         onFailure: () {
-          context.read<WebsocketBloc>().add(
-            WebsocketEvent.getFollowing(user: widget.user),
+          context.read<FollowingBloc>().add(
+            FollowingEvent.get(user: widget.user),
           );
         },
       ),

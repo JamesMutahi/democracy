@@ -1,6 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
+import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,9 +17,7 @@ class BlockedButton extends StatelessWidget {
     return OutlinedButton(
       style: OutlinedButton.styleFrom(side: BorderSide(color: Colors.red)),
       onPressed: () {
-        context.read<WebsocketBloc>().add(
-          WebsocketEvent.blockUser(id: user.id),
-        );
+        context.read<UserDetailBloc>().add(UserDetailEvent.block(user: user));
       },
       child: Text('Blocked', style: TextStyle(color: Colors.red)),
     );
@@ -35,7 +34,7 @@ class MutedButton extends StatelessWidget {
     return ProfileButton(
       icon: Icon(Symbols.volume_off_rounded, color: Colors.red),
       onTap: () {
-        context.read<WebsocketBloc>().add(WebsocketEvent.muteUser(id: user.id));
+        context.read<UserDetailBloc>().add(UserDetailEvent.mute(user: user));
       },
     );
   }
@@ -105,9 +104,7 @@ class FollowButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return OutlinedButton(
       onPressed: () {
-        context.read<WebsocketBloc>().add(
-          WebsocketEvent.followUser(user: user),
-        );
+        context.read<UserDetailBloc>().add(UserDetailEvent.follow(user: user));
       },
       child: Text(user.isFollowed ? 'Unfollow' : 'Follow'),
     );

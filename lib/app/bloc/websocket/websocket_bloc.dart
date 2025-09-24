@@ -39,45 +39,9 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_Connect>((event, emit) async {
       _onConnect(emit);
     });
-    on<_ChangeState>((event, emit) => emit(event.state));
-    on<_GetUsers>((event, emit) {
-      _onGetUsers(emit, event);
-    });
-    on<_ResubscribeUsers>((event, emit) {
-      _onResubscribeUsers(emit, event);
-    });
-    on<_GetFollowers>((event, emit) {
-      _onGetFollowers(emit, event);
-    });
-    on<_GetFollowing>((event, emit) {
-      _onGetFollowing(emit, event);
-    });
-    on<_GetMuted>((event, emit) {
-      _onGetMuted(emit, event);
-    });
-    on<_GetBlocked>((event, emit) {
-      _onGetBlocked(emit, event);
-    });
-    on<_GetUser>((event, emit) {
-      _onGetUser(emit, event);
-    });
-    on<_UpdateUser>((event, emit) {
-      _onUpdateUser(emit, event);
-    });
-    on<_MuteUser>((event, emit) {
-      _onMuteUser(emit, event);
-    });
-    on<_BlockUser>((event, emit) {
-      _onBlockUser(emit, event);
-    });
-    on<_FollowUser>((event, emit) {
-      _onFollowUser(emit, event);
-    });
+    on<_ChangeState>((event, emit) => emit(event.state));;
     on<_ChangeUserNotificationStatus>((event, emit) {
       _onChangeUserNotificationStatus(emit, event);
-    });
-    on<_UnsubscribeUsers>((event, emit) {
-      _onUnsubscribeUsers(emit, event);
     });
     on<_GetNotifications>((event, emit) {
       _onGetNotifications(emit);
@@ -102,9 +66,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     });
     on<_SupportPetition>((event, emit) {
       _onSupportPetition(emit, event);
-    });
-    on<_GetPetitionSupporters>((event, emit) {
-      _onGetPetitionSupporters(emit, event);
     });
     on<_GetUserPetitions>((event, emit) {
       _onGetUserPetitions(emit, event);
@@ -149,174 +110,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     }
   }
 
-  Future _onGetUsers(Emitter<WebsocketState> emit, _GetUsers event) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': usersStream,
-      'payload': {
-        'action': 'list',
-        'request_id': usersRequestId,
-        'search_term': event.searchTerm,
-        'last_user': event.lastUser?.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onResubscribeUsers(
-    Emitter<WebsocketState> emit,
-    _ResubscribeUsers event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    List<int> userIds = event.users.map((user) => user.id).toList();
-    Map<String, dynamic> message = {
-      'stream': usersStream,
-      'payload': {
-        "action": 'resubscribe',
-        'request_id': usersRequestId,
-        'pks': userIds,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onGetFollowers(
-    Emitter<WebsocketState> emit,
-    _GetFollowers event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': usersStream,
-      'payload': {
-        'action': 'followers',
-        'request_id': usersRequestId,
-        'pk': event.user.id,
-        'last_user': event.lastUser?.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onGetFollowing(
-    Emitter<WebsocketState> emit,
-    _GetFollowing event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': usersStream,
-      'payload': {
-        'action': 'following',
-        'request_id': usersRequestId,
-        'pk': event.user.id,
-        'last_user': event.lastUser?.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onGetMuted(Emitter<WebsocketState> emit, _GetMuted event) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': usersStream,
-      'payload': {
-        'action': 'muted',
-        'request_id': usersRequestId,
-        'last_user': event.lastUser?.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onGetBlocked(Emitter<WebsocketState> emit, _GetBlocked event) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': usersStream,
-      'payload': {
-        'action': 'blocked',
-        'request_id': usersRequestId,
-        'last_user': event.lastUser?.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onGetUser(Emitter<WebsocketState> emit, _GetUser event) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': usersStream,
-      'payload': {
-        'action': 'retrieve',
-        'request_id': usersRequestId,
-        'pk': event.user.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onUpdateUser(Emitter<WebsocketState> emit, _UpdateUser event) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': usersStream,
-      'payload': {
-        'action': 'patch',
-        'request_id': usersRequestId,
-        'pk': event.user.id,
-        'data': {
-          'name': event.name,
-          'status': event.status,
-          if (event.imagePath != null)
-            'image_base64': base64Encode(
-              File(event.imagePath!).readAsBytesSync(),
-            ),
-          if (event.coverPhotoPath != null)
-            'cover_photo_base64': base64Encode(
-              File(event.coverPhotoPath!).readAsBytesSync(),
-            ),
-        },
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onMuteUser(Emitter<WebsocketState> emit, _MuteUser event) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': usersStream,
-      'payload': {
-        'action': 'mute',
-        'request_id': usersRequestId,
-        'pk': event.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onBlockUser(Emitter<WebsocketState> emit, _BlockUser event) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': usersStream,
-      'payload': {
-        'action': 'block',
-        'request_id': usersRequestId,
-        'pk': event.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onFollowUser(Emitter<WebsocketState> emit, _FollowUser event) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': usersStream,
-      'payload': {
-        'action': 'follow',
-        'request_id': usersRequestId,
-        'pk': event.user.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
   Future _onChangeUserNotificationStatus(
     Emitter<WebsocketState> emit,
     _ChangeUserNotificationStatus event,
@@ -328,23 +121,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'action': 'notify',
         'request_id': usersRequestId,
         'pk': event.user.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onUnsubscribeUsers(
-    Emitter<WebsocketState> emit,
-    _UnsubscribeUsers event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    List<int> userIds = event.users.map((user) => user.id).toList();
-    Map<String, dynamic> message = {
-      'stream': usersStream,
-      'payload': {
-        'action': 'unsubscribe',
-        'request_id': usersRequestId,
-        'pks': userIds,
       },
     };
     _channel.sink.add(jsonEncode(message));
@@ -473,22 +249,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       'payload': {
         "action": 'support',
         'request_id': petitionRequestId,
-        'pk': event.petition.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onGetPetitionSupporters(
-    Emitter<WebsocketState> emit,
-    _GetPetitionSupporters event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': usersStream,
-      'payload': {
-        "action": 'petition_supporters',
-        'request_id': usersRequestId,
         'pk': event.petition.id,
       },
     };

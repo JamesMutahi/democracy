@@ -1,6 +1,6 @@
 import 'package:democracy/constitution/bloc/sections/sections_cubit.dart';
 import 'package:democracy/constitution/models/section.dart';
-import 'package:democracy/user/bloc/users/users_cubit.dart';
+import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +29,7 @@ class UserListView extends StatelessWidget {
           shape: BoxShape.rectangle,
           color: Theme.of(context).canvasColor,
         ),
-        child: BlocBuilder<UsersCubit, UsersState>(
+        child: BlocBuilder<UsersBloc, UsersState>(
           builder: (context, state) {
             List<User> users = [];
             switch (state.status) {

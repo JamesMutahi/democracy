@@ -1,4 +1,4 @@
-part of 'blocked_cubit.dart';
+part of 'blocked_bloc.dart';
 
 enum BlockedStatus { initial, loading, success, failure }
 

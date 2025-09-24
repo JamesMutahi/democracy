@@ -17,8 +17,8 @@ import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/post/view/widgets/replies.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
-import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
-import 'package:democracy/user/bloc/users/users_cubit.dart';
+import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
+import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/profile.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
@@ -115,7 +115,7 @@ class _PostDetailState extends State<PostDetail> {
             }
           },
         ),
-        BlocListener<UserDetailCubit, UserDetailState>(
+        BlocListener<UserDetailBloc, UserDetailState>(
           listener: (context, state) {
             if (state is UserUpdated) {
               // post
@@ -492,7 +492,7 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<UsersCubit, UsersState>(
+        BlocListener<UsersBloc, UsersState>(
           listener: (context, state) {
             if (state.status == UsersStatus.success) {
               setState(() {
@@ -522,9 +522,7 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
             setState(() {
               _view = SearchResultView.users;
             });
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.getUsers(searchTerm: query),
-            );
+            context.read<UsersBloc>().add(UsersEvent.get(searchTerm: query));
           }
           if (triggerChar == "#") {
             setState(() {

@@ -16,14 +16,7 @@ import 'package:democracy/notification/bloc/notifications/notifications_cubit.da
 import 'package:democracy/notification/bloc/preferences/preferences_cubit.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_cubit.dart';
 import 'package:democracy/petition/bloc/petitions/petitions_cubit.dart';
-import 'package:democracy/petition/bloc/supporters/supporters_cubit.dart';
 import 'package:democracy/petition/bloc/user_petitions/user_petitions_cubit.dart';
-import 'package:democracy/user/bloc/blocked/blocked_cubit.dart';
-import 'package:democracy/user/bloc/followers/followers_cubit.dart';
-import 'package:democracy/user/bloc/following/following_cubit.dart';
-import 'package:democracy/user/bloc/muted/muted_cubit.dart';
-import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
-import 'package:democracy/user/bloc/users/users_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -194,93 +187,6 @@ class _Listeners extends StatelessWidget {
             if (state.status == WebsocketStatus.success) {
               final message = {};
               switch (message['stream']) {
-                case usersStream:
-                  switch (message['payload']['action']) {
-                    case 'list':
-                      context.read<UsersCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                    case 'retrieve':
-                      context.read<UserDetailCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                    case 'update':
-                      context.read<UserDetailCubit>().updated(
-                        payload: message['payload'],
-                      );
-                    case 'mute':
-                      context.read<UserDetailCubit>().updated(
-                        payload: message['payload'],
-                      );
-                      if (message['payload']['response_status'] == 200) {
-                        late String msg;
-                        if (message['payload']['data']['is_muted']) {
-                          msg = 'Muted';
-                        } else {
-                          msg = 'Mute removed';
-                        }
-                        final snackBar = getSnackBar(
-                          context: context,
-                          message: msg,
-                          status: SnackBarStatus.info,
-                          actionLabel: 'Undo',
-                          onActionPressed: () {
-                            context.read<WebsocketBloc>().add(
-                              WebsocketEvent.muteUser(
-                                id: message['payload']['data']['id'],
-                              ),
-                            );
-                          },
-                        );
-                        showSnackBar(snackBar: snackBar);
-                      }
-                    case 'block':
-                      context.read<UserDetailCubit>().updated(
-                        payload: message['payload'],
-                      );
-                      if (message['payload']['response_status'] == 200) {
-                        late String msg;
-                        if (message['payload']['data']['is_blocked']) {
-                          msg = 'Blocked';
-                        } else {
-                          msg = 'Block removed';
-                        }
-                        final snackBar = getSnackBar(
-                          context: context,
-                          message: msg,
-                          status: SnackBarStatus.info,
-                          actionLabel: 'Undo',
-                          onActionPressed: () {
-                            context.read<WebsocketBloc>().add(
-                              WebsocketEvent.blockUser(
-                                id: message['payload']['data']['id'],
-                              ),
-                            );
-                          },
-                        );
-                        showSnackBar(snackBar: snackBar);
-                      }
-                    case 'following':
-                      context.read<FollowingCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                    case 'followers':
-                      context.read<FollowersCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                    case 'muted':
-                      context.read<MutedCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                    case 'blocked':
-                      context.read<BlockedCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                    case 'petition_supporters':
-                      context.read<SupportersCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                  }
                 case notificationsStream:
                   switch (message['payload']['action']) {
                     case 'list':

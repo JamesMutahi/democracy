@@ -1,6 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/petition/bloc/supporters/supporters_cubit.dart';
+import 'package:democracy/petition/bloc/supporters/supporters_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
+import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/profile.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
@@ -28,8 +29,8 @@ class _SupportersState extends State<Supporters> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(
-      WebsocketEvent.getPetitionSupporters(petition: widget.petition),
+    context.read<SupportersBloc>().add(
+      SupportersEvent.get(petition: widget.petition),
     );
     super.initState();
   }
@@ -39,9 +40,7 @@ class _SupportersState extends State<Supporters> {
     return PopScope(
       canPop: true,
       onPopInvokedWithResult: (_, __) {
-        context.read<WebsocketBloc>().add(
-          WebsocketEvent.unsubscribeUsers(users: _users),
-        );
+        context.read<UsersBloc>().add(UsersEvent.unsubscribe(users: _users));
       },
       child: Scaffold(
         appBar: AppBar(title: Text('Supporters')),
@@ -50,13 +49,13 @@ class _SupportersState extends State<Supporters> {
             BlocListener<WebsocketBloc, WebsocketState>(
               listener: (context, state) {
                 if (state.status == WebsocketStatus.connected) {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.resubscribeUsers(users: _users),
+                  context.read<UsersBloc>().add(
+                    UsersEvent.resubscribe(users: _users),
                   );
                 }
               },
             ),
-            BlocListener<SupportersCubit, SupportersState>(
+            BlocListener<SupportersBloc, SupportersState>(
               listener: (context, state) {
                 if (state.status == SupportersStatus.success) {
                   setState(() {
@@ -94,8 +93,8 @@ class _SupportersState extends State<Supporters> {
           child: PopScope(
             canPop: true,
             onPopInvokedWithResult: (_, __) {
-              context.read<WebsocketBloc>().add(
-                WebsocketEvent.unsubscribeUsers(users: _users),
+              context.read<UsersBloc>().add(
+                UsersEvent.unsubscribe(users: _users),
               );
             },
             child: UsersListView(
@@ -120,25 +119,21 @@ class _SupportersState extends State<Supporters> {
                 );
               },
               onRefresh: () {
-                context.read<WebsocketBloc>().add(
-                  WebsocketEvent.getPetitionSupporters(
-                    petition: widget.petition,
-                  ),
+                context.read<SupportersBloc>().add(
+                  SupportersEvent.get(petition: widget.petition),
                 );
               },
               onLoading: () {
-                context.read<WebsocketBloc>().add(
-                  WebsocketEvent.getPetitionSupporters(
+                context.read<SupportersBloc>().add(
+                  SupportersEvent.get(
                     petition: widget.petition,
                     lastUser: _users.last,
                   ),
                 );
               },
               onFailure: () {
-                context.read<WebsocketBloc>().add(
-                  WebsocketEvent.getPetitionSupporters(
-                    petition: widget.petition,
-                  ),
+                context.read<SupportersBloc>().add(
+                  SupportersEvent.get(petition: widget.petition),
                 );
               },
             ),

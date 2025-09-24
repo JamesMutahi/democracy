@@ -1,4 +1,3 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/custom_bottom_sheet.dart';
 import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/utils/more_pop_up.dart';
@@ -9,6 +8,7 @@ import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/post_create.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
+import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -65,8 +65,8 @@ class PostPopUp extends StatelessWidget {
                   builder: (context) => MuteDialog(user: post.author),
                 );
               case 'Unmute':
-                context.read<WebsocketBloc>().add(
-                  WebsocketEvent.muteUser(id: post.author.id),
+                context.read<UserDetailBloc>().add(
+                  UserDetailEvent.mute(user: post.author),
                 );
               case 'Block':
                 showDialog(
@@ -74,8 +74,8 @@ class PostPopUp extends StatelessWidget {
                   builder: (context) => BlockDialog(user: post.author),
                 );
               case 'Unblock':
-                context.read<WebsocketBloc>().add(
-                  WebsocketEvent.blockUser(id: post.author.id),
+                context.read<UserDetailBloc>().add(
+                  UserDetailEvent.block(user: post.author),
                 );
               case 'Report':
                 showModalBottomSheet(

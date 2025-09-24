@@ -1,10 +1,9 @@
 import 'dart:io';
 
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/utils/media_tools.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
-import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
+import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -32,7 +31,7 @@ class _EditProfileState extends State<EditProfile> {
     double coverPhotoHeight = MediaQuery.of(context).size.height / 5;
     double profilePicHeight = MediaQuery.of(context).size.height / 7;
     Color shaderColor = Colors.black.withValues(alpha: 0.3);
-    return BlocListener<UserDetailCubit, UserDetailState>(
+    return BlocListener<UserDetailBloc, UserDetailState>(
       listener: (context, state) {
         if (state is UserUpdated) {
           if (waiting && widget.user.id == state.user.id) {
@@ -68,8 +67,8 @@ class _EditProfileState extends State<EditProfile> {
                                     setState(() {
                                       waiting = true;
                                     });
-                                    context.read<WebsocketBloc>().add(
-                                      WebsocketEvent.updateUser(
+                                    context.read<UserDetailBloc>().add(
+                                      UserDetailEvent.update(
                                         user: widget.user,
                                         name: name,
                                         status: status,
