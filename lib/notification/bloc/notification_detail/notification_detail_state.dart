@@ -1,4 +1,4 @@
-part of 'notification_detail_cubit.dart';
+part of 'notification_detail_bloc.dart';
 
 @freezed
 class NotificationDetailState with _$NotificationDetailState {

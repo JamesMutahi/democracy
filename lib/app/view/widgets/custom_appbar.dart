@@ -1,5 +1,5 @@
-import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
-import 'package:democracy/notification/bloc/notifications/notifications_cubit.dart';
+import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
+import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/notification/view/notifications.dart';
 import 'package:democracy/user/models/user.dart';
@@ -171,7 +171,7 @@ class _NotificationCountState extends State<NotificationCount> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<NotificationsCubit, NotificationsState>(
+        BlocListener<NotificationsBloc, NotificationsState>(
           listener: (context, state) {
             if (state is NotificationsLoaded) {
               setState(() {
@@ -183,7 +183,7 @@ class _NotificationCountState extends State<NotificationCount> {
             }
           },
         ),
-        BlocListener<NotificationDetailCubit, NotificationDetailState>(
+        BlocListener<NotificationDetailBloc, NotificationDetailState>(
           listener: (context, state) {
             if (state is NotificationCreated) {
               setState(() {

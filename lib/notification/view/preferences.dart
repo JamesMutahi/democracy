@@ -1,7 +1,6 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
-import 'package:democracy/notification/bloc/preferences/preferences_cubit.dart';
+import 'package:democracy/notification/bloc/preferences/preferences_bloc.dart';
 import 'package:democracy/notification/models/preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +19,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getPreferences());
+    context.read<PreferencesBloc>().add(PreferencesEvent.get());
     super.initState();
   }
 
@@ -33,8 +32,8 @@ class _PreferencesPageState extends State<PreferencesPage> {
     bool? allowMessageNotifications,
     bool? allowFollowNotifications,
   }) {
-    context.read<WebsocketBloc>().add(
-      WebsocketEvent.updatePreferences(
+    context.read<PreferencesBloc>().add(
+      PreferencesEvent.update(
         allowNotifications:
             allowNotifications ?? preferences.allowNotifications,
         allowTagNotifications:
@@ -57,7 +56,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Preferences')),
-      body: BlocListener<PreferencesCubit, PreferencesState>(
+      body: BlocListener<PreferencesBloc, PreferencesState>(
         listener: (context, state) {
           if (state is PreferencesLoaded) {
             setState(() {
@@ -73,9 +72,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
                 : failure
                 ? FailureRetryButton(
                   onPressed: () {
-                    context.read<WebsocketBloc>().add(
-                      WebsocketEvent.getPreferences(),
-                    );
+                    context.read<PreferencesBloc>().add(PreferencesEvent.get());
                   },
                 )
                 : Container(

@@ -7,7 +7,7 @@ import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/view/chat_detail.dart' show ChatDetail;
-import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
+import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
@@ -76,7 +76,7 @@ class _ChatsState extends State<Chats> {
             }
           },
         ),
-        BlocListener<NotificationDetailCubit, NotificationDetailState>(
+        BlocListener<NotificationDetailBloc, NotificationDetailState>(
           listener: (context, state) {
             if (state is NotificationCreated) {
               if (state.notification.chat != null &&

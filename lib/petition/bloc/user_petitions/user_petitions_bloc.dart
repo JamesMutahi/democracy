@@ -96,7 +96,7 @@ class UserPetitionsBloc extends Bloc<UserPetitionsEvent, UserPetitionsState> {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
-        "action": 'resubscribe_user_petitions',
+        "action": 'unsubscribe_user_petitions',
         'request_id': event.user.id,
         'pks': petitionIds,
       },

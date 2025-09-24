@@ -1,12 +1,11 @@
 import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/app/view/pages/index.dart';
 import 'package:democracy/app/view/widgets/bottom_nav_bar.dart';
 import 'package:democracy/app/view/widgets/drawer.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
-import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
-import 'package:democracy/notification/bloc/notifications/notifications_cubit.dart';
+import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
+import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +28,7 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getNotifications());
+    context.read<NotificationsBloc>().add(NotificationsEvent.get());
     super.initState();
   }
 
@@ -96,7 +95,7 @@ class _DashboardState extends State<Dashboard> {
                       }
                     },
                   ),
-                  BlocListener<NotificationsCubit, NotificationsState>(
+                  BlocListener<NotificationsBloc, NotificationsState>(
                     listener: (context, state) {
                       if (state is NotificationsLoaded) {
                         setState(() {
@@ -108,10 +107,7 @@ class _DashboardState extends State<Dashboard> {
                       }
                     },
                   ),
-                  BlocListener<
-                    NotificationDetailCubit,
-                    NotificationDetailState
-                  >(
+                  BlocListener<NotificationDetailBloc, NotificationDetailState>(
                     listener: (context, state) {
                       if (state is NotificationCreated) {
                         setState(() {

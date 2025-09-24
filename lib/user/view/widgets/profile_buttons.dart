@@ -1,6 +1,6 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
+import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
@@ -87,8 +87,8 @@ class NotificationButton extends StatelessWidget {
               ? Icon(Symbols.notifications_active_rounded)
               : Icon(Symbols.notifications_off_rounded),
       onTap: () {
-        context.read<WebsocketBloc>().add(
-          WebsocketEvent.changeUserNotificationStatus(user: user),
+        context.read<NotificationDetailBloc>().add(
+          NotificationDetailEvent.changeStatus(user: user),
         );
       },
     );

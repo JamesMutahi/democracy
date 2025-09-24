@@ -1,4 +1,4 @@
-part of 'preferences_cubit.dart';
+part of 'preferences_bloc.dart';
 
 @freezed
 class PreferencesState with _$PreferencesState {

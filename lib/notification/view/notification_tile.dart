@@ -1,6 +1,6 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/ballot/view/ballot_detail.dart';
 import 'package:democracy/chat/view/chat_detail.dart';
+import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/petition/view/petition_detail.dart';
 import 'package:democracy/post/view/post_detail.dart';
@@ -49,8 +49,8 @@ class NotificationTile extends StatelessWidget {
               ? SizedBox()
               : Icon(Icons.circle_rounded, size: 7, color: Colors.green),
       onTap: () {
-        context.read<WebsocketBloc>().add(
-          WebsocketEvent.markNotificationAsRead(notification: notification),
+        context.read<NotificationDetailBloc>().add(
+          NotificationDetailEvent.markAsRead(notification: notification),
         );
         if (notification.post != null) {
           bool showAsRepost =

@@ -5,8 +5,6 @@ import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/constitution/models/section.dart';
-import 'package:democracy/user/models/user.dart';
-import 'package:democracy/notification/models/notification.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -20,15 +18,9 @@ part 'websocket_state.dart';
 part 'websocket_bloc.freezed.dart';
 
 // Streams
-const String usersStream = 'users';
-const String notificationsStream = 'notifications';
-const String petitionsStream = 'petitions';
 const String constitutionStream = 'constitution';
 
 // Request ids
-const String usersRequestId = 'users';
-const String notificationRequestId = 'notifications';
-const String petitionRequestId = 'petitions';
 const String constitutionRequestId = 'constitution';
 
 class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
@@ -38,21 +30,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       _onConnect(emit);
     });
     on<_ChangeState>((event, emit) => emit(event.state));
-    on<_ChangeUserNotificationStatus>((event, emit) {
-      _onChangeUserNotificationStatus(emit, event);
-    });
-    on<_GetNotifications>((event, emit) {
-      _onGetNotifications(emit);
-    });
-    on<_MarkNotificationAsRead>((event, emit) {
-      _onMarkNotificationAsRead(emit, event);
-    });
-    on<_GetPreferences>((event, emit) {
-      _onGetPreferences(emit);
-    });
-    on<_UpdatePreferences>((event, emit) {
-      _onUpdatePreferences(emit, event);
-    });
     on<_GetConstitution>((event, emit) {
       _onGetConstitution(emit);
     });
@@ -87,79 +64,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     }
   }
 
-  Future _onChangeUserNotificationStatus(
-    Emitter<WebsocketState> emit,
-    _ChangeUserNotificationStatus event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': usersStream,
-      'payload': {
-        'action': 'notify',
-        'request_id': usersRequestId,
-        'pk': event.user.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onGetNotifications(Emitter<WebsocketState> emit) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': notificationsStream,
-      'payload': {'action': 'list', 'request_id': notificationRequestId},
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onMarkNotificationAsRead(
-    Emitter<WebsocketState> emit,
-    _MarkNotificationAsRead event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': notificationsStream,
-      'payload': {
-        'action': 'mark_as_read',
-        'request_id': notificationRequestId,
-        'pk': event.notification.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onGetPreferences(Emitter<WebsocketState> emit) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': notificationsStream,
-      'payload': {'action': 'preferences', 'request_id': notificationRequestId},
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onUpdatePreferences(
-    Emitter<WebsocketState> emit,
-    _UpdatePreferences event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': notificationsStream,
-      'payload': {
-        'action': 'update_preferences',
-        'request_id': notificationRequestId,
-        'data': {
-          'allow_notifications': event.allowNotifications,
-          'allow_follow_notifications': event.allowFollowNotifications,
-          'allow_tag_notifications': event.allowTagNotifications,
-          'allow_like_notifications': event.allowLikeNotifications,
-          'allow_reply_notifications': event.allowReplyNotifications,
-          'allow_repost_notifications': event.allowRepostNotifications,
-          'allow_message_notifications': event.allowMessageNotifications,
-        },
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
 
   Future _onGetConstitution(Emitter<WebsocketState> emit) async {
     emit(state.copyWith(status: WebsocketStatus.loading));

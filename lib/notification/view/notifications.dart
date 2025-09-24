@@ -1,8 +1,7 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
-import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
-import 'package:democracy/notification/bloc/notifications/notifications_cubit.dart';
+import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
+import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/notification/view/notification_tile.dart';
 import 'package:democracy/notification/view/preferences.dart';
@@ -27,7 +26,7 @@ class _NotificationsState extends State<Notifications> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getNotifications());
+    context.read<NotificationsBloc>().add(NotificationsEvent.get());
     super.initState();
   }
 
@@ -51,7 +50,7 @@ class _NotificationsState extends State<Notifications> {
       ),
       body: MultiBlocListener(
         listeners: [
-          BlocListener<NotificationsCubit, NotificationsState>(
+          BlocListener<NotificationsBloc, NotificationsState>(
             listener: (context, state) {
               if (state is NotificationsLoaded) {
                 setState(() {
@@ -78,7 +77,7 @@ class _NotificationsState extends State<Notifications> {
               }
             },
           ),
-          BlocListener<NotificationDetailCubit, NotificationDetailState>(
+          BlocListener<NotificationDetailBloc, NotificationDetailState>(
             listener: (context, state) {
               if (state is NotificationCreated) {
                 if (!_notifications.any(
@@ -122,8 +121,8 @@ class _NotificationsState extends State<Notifications> {
                 : failure
                 ? FailureRetryButton(
                   onPressed: () {
-                    context.read<WebsocketBloc>().add(
-                      WebsocketEvent.getNotifications(),
+                    context.read<NotificationsBloc>().add(
+                      NotificationsEvent.get(),
                     );
                   },
                 )
@@ -133,8 +132,8 @@ class _NotificationsState extends State<Notifications> {
                   header: ClassicHeader(),
                   controller: _refreshController,
                   onRefresh: () {
-                    context.read<WebsocketBloc>().add(
-                      WebsocketEvent.getNotifications(),
+                    context.read<NotificationsBloc>().add(
+                      NotificationsEvent.get(),
                     );
                   },
                   footer: ClassicFooter(),

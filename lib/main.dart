@@ -17,9 +17,9 @@ import 'package:democracy/chat/bloc/messages/messages_bloc.dart';
 import 'package:democracy/constitution/bloc/constitution/constitution_cubit.dart';
 import 'package:democracy/constitution/bloc/section_detail/section_detail_cubit.dart';
 import 'package:democracy/constitution/bloc/sections/sections_cubit.dart';
-import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
-import 'package:democracy/notification/bloc/notifications/notifications_cubit.dart';
-import 'package:democracy/notification/bloc/preferences/preferences_cubit.dart';
+import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
+import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
+import 'package:democracy/notification/bloc/preferences/preferences_bloc.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
 import 'package:democracy/petition/bloc/petitions/petitions_bloc.dart';
 import 'package:democracy/petition/bloc/supporters/supporters_bloc.dart';
@@ -184,8 +184,17 @@ void main() async {
           BlocProvider(
             create: (context) => AnswerBloc(webSocketService: webSocketService),
           ),
-          BlocProvider(create: (context) => NotificationsCubit(), lazy: false),
-          BlocProvider(create: (context) => NotificationDetailCubit()),
+          BlocProvider(
+            create:
+                (context) =>
+                    NotificationsBloc(webSocketService: webSocketService),
+            lazy: false,
+          ),
+          BlocProvider(
+            create:
+                (context) =>
+                    NotificationDetailBloc(webSocketService: webSocketService),
+          ),
           BlocProvider(
             create: (context) => UsersBloc(webSocketService: webSocketService),
           ),
@@ -208,7 +217,11 @@ void main() async {
             create:
                 (context) => FollowersBloc(webSocketService: webSocketService),
           ),
-          BlocProvider(create: (context) => PreferencesCubit()),
+          BlocProvider(
+            create:
+                (context) =>
+                    PreferencesBloc(webSocketService: webSocketService),
+          ),
           BlocProvider(
             create:
                 (context) => PetitionsBloc(webSocketService: webSocketService),

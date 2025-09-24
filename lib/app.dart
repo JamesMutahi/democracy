@@ -11,9 +11,6 @@ import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/auth/view/login.dart';
 import 'package:democracy/constitution/bloc/constitution/constitution_cubit.dart';
 import 'package:democracy/constitution/bloc/sections/sections_cubit.dart';
-import 'package:democracy/notification/bloc/notification_detail/notification_detail_cubit.dart';
-import 'package:democracy/notification/bloc/notifications/notifications_cubit.dart';
-import 'package:democracy/notification/bloc/preferences/preferences_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -184,30 +181,6 @@ class _Listeners extends StatelessWidget {
             if (state.status == WebsocketStatus.success) {
               final message = {};
               switch (message['stream']) {
-                case notificationsStream:
-                  switch (message['payload']['action']) {
-                    case 'list':
-                      context.read<NotificationsCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                    case 'create':
-                      context.read<NotificationDetailCubit>().created(
-                        payload: message['payload'],
-                      );
-                    case 'update':
-                      context.read<NotificationDetailCubit>().updated(
-                        payload: message['payload'],
-                      );
-                    case 'delete':
-                      context.read<NotificationDetailCubit>().deleted(
-                        payload: message['payload'],
-                      );
-                    case 'preferences':
-                    case 'update_preferences':
-                      context.read<PreferencesCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                  }
                 case constitutionStream:
                   switch (message['payload']['action']) {
                     case 'list':
