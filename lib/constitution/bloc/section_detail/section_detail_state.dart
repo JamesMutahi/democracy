@@ -1,4 +1,4 @@
-part of 'section_detail_cubit.dart';
+part of 'section_detail_bloc.dart';
 
 @freezed
 class SectionDetailState with _$SectionDetailState {
@@ -11,6 +11,9 @@ class SectionDetailState with _$SectionDetailState {
 
   const factory SectionDetailState.updated({required Section section}) =
       SectionUpdated;
+
+  const factory SectionDetailState.deleted({required int sectionId}) =
+      SectionDeleted;
 
   const factory SectionDetailState.failure({required String error}) =
       SectionDetailFailure;

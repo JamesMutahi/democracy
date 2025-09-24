@@ -1,4 +1,4 @@
-part of 'sections_cubit.dart';
+part of 'sections_bloc.dart';
 
 @freezed
 class SectionsState with _$SectionsState {

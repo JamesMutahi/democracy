@@ -1,7 +1,6 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
-import 'package:democracy/constitution/bloc/constitution/constitution_cubit.dart';
+import 'package:democracy/constitution/bloc/constitution/constitution_bloc.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +16,7 @@ class Constitution extends StatefulWidget {
 class _ConstitutionState extends State<Constitution> {
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getConstitution());
+    context.read<ConstitutionBloc>().add(ConstitutionEvent.get());
     super.initState();
   }
 
@@ -25,7 +24,7 @@ class _ConstitutionState extends State<Constitution> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Constitution')),
-      body: BlocBuilder<ConstitutionCubit, ConstitutionState>(
+      body: BlocBuilder<ConstitutionBloc, ConstitutionState>(
         builder: (context, state) {
           switch (state) {
             case ConstitutionLoaded(:final sections):
@@ -46,9 +45,7 @@ class _ConstitutionState extends State<Constitution> {
             case ConstitutionFailure():
               return FailureRetryButton(
                 onPressed: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getConstitution(),
-                  );
+                  context.read<ConstitutionBloc>().add(ConstitutionEvent.get());
                 },
               );
             default:

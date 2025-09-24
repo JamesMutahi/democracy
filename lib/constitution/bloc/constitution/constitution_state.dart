@@ -1,4 +1,4 @@
-part of 'constitution_cubit.dart';
+part of 'constitution_bloc.dart';
 
 @freezed
 abstract class ConstitutionState with _$ConstitutionState {

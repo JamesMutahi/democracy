@@ -1,4 +1,4 @@
-import 'package:democracy/constitution/bloc/sections/sections_cubit.dart';
+import 'package:democracy/constitution/bloc/sections/sections_bloc.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
@@ -84,7 +84,7 @@ class SectionListView extends StatelessWidget {
           shape: BoxShape.rectangle,
           color: Theme.of(context).canvasColor,
         ),
-        child: BlocBuilder<SectionsCubit, SectionsState>(
+        child: BlocBuilder<SectionsBloc, SectionsState>(
           builder: (context, state) {
             List<Section> sections = [];
             switch (state) {

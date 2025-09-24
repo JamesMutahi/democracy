@@ -9,8 +9,6 @@ import 'package:democracy/app/view/dashboard.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/auth/view/login.dart';
-import 'package:democracy/constitution/bloc/constitution/constitution_cubit.dart';
-import 'package:democracy/constitution/bloc/sections/sections_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -177,22 +175,6 @@ class _Listeners extends StatelessWidget {
                 status: SnackBarStatus.success,
               );
               showSnackBar(snackBar: snackBar);
-            }
-            if (state.status == WebsocketStatus.success) {
-              final message = {};
-              switch (message['stream']) {
-                case constitutionStream:
-                  switch (message['payload']['action']) {
-                    case 'list':
-                      context.read<ConstitutionCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                    case 'tags':
-                      context.read<SectionsCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                  }
-              }
             }
             if (state.status == WebsocketStatus.failure) {
               final snackBar = getSnackBar(

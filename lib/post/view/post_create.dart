@@ -1,14 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/utils/media_tools.dart';
 import 'package:democracy/app/utils/tagging.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
-import 'package:democracy/constitution/bloc/sections/sections_cubit.dart';
+import 'package:democracy/constitution/bloc/sections/sections_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
@@ -354,7 +353,7 @@ class _BottomNavBarState extends State<_BottomNavBar>
             }
           },
         ),
-        BlocListener<SectionsCubit, SectionsState>(
+        BlocListener<SectionsBloc, SectionsState>(
           listener: (context, state) {
             if (state is SectionsLoaded) {
               setState(() {
@@ -380,8 +379,8 @@ class _BottomNavBarState extends State<_BottomNavBar>
             setState(() {
               _view = SearchResultView.hashtag;
             });
-            context.read<WebsocketBloc>().add(
-              WebsocketEvent.getConstitutionTags(searchTerm: query),
+            context.read<SectionsBloc>().add(
+              SectionsEvent.get(searchTerm: query),
             );
           }
         },

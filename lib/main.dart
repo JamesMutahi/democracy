@@ -14,9 +14,9 @@ import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
 import 'package:democracy/chat/bloc/messages/messages_bloc.dart';
-import 'package:democracy/constitution/bloc/constitution/constitution_cubit.dart';
-import 'package:democracy/constitution/bloc/section_detail/section_detail_cubit.dart';
-import 'package:democracy/constitution/bloc/sections/sections_cubit.dart';
+import 'package:democracy/constitution/bloc/constitution/constitution_bloc.dart';
+import 'package:democracy/constitution/bloc/section_detail/section_detail_bloc.dart';
+import 'package:democracy/constitution/bloc/sections/sections_bloc.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/notification/bloc/preferences/preferences_bloc.dart';
@@ -240,9 +240,20 @@ void main() async {
                 (context) =>
                     UserPetitionsBloc(webSocketService: webSocketService),
           ),
-          BlocProvider(create: (context) => ConstitutionCubit()),
-          BlocProvider(create: (context) => SectionsCubit()),
-          BlocProvider(create: (context) => SectionDetailCubit()),
+          BlocProvider(
+            create:
+                (context) =>
+                    ConstitutionBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create:
+                (context) => SectionsBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create:
+                (context) =>
+                    SectionDetailBloc(webSocketService: webSocketService),
+          ),
           BlocProvider(create: (context) => FormsSearchAndFilterCubit()),
         ],
         child: const MyApp(),
