@@ -1,9 +1,8 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
-import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
-import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
-import 'package:democracy/survey/bloc/surveys/surveys_cubit.dart';
+import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
+import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
+import 'package:democracy/survey/bloc/surveys/surveys_bloc.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +27,7 @@ class _SurveysState extends State<Surveys> {
 
   @override
   void initState() {
-    context.read<WebsocketBloc>().add(WebsocketEvent.getSurveys());
+    context.read<SurveysBloc>().add(SurveysEvent.get());
     super.initState();
   }
 
@@ -36,7 +35,7 @@ class _SurveysState extends State<Surveys> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<SurveysCubit, SurveysState>(
+        BlocListener<SurveysBloc, SurveysState>(
           listener: (context, state) {
             if (state.status == SurveysStatus.success) {
               setState(() {
@@ -69,7 +68,7 @@ class _SurveysState extends State<Surveys> {
             }
           },
         ),
-        BlocListener<AnswerCubit, AnswerState>(
+        BlocListener<AnswerBloc, AnswerState>(
           listener: (context, state) {
             if (state.status == AnswerStatus.submitted) {
               if (_surveys.any((survey) => survey.id == state.survey!.id)) {
@@ -83,7 +82,7 @@ class _SurveysState extends State<Surveys> {
             }
           },
         ),
-        BlocListener<SurveyDetailCubit, SurveyDetailState>(
+        BlocListener<SurveyDetailBloc, SurveyDetailState>(
           listener: (context, state) {
             if (state is SurveyCreated) {
               if (!_surveys.any((survey) => survey.id == state.survey.id)) {
@@ -118,9 +117,7 @@ class _SurveysState extends State<Surveys> {
               : failure
               ? FailureRetryButton(
                 onPressed: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getSurveys(),
-                  );
+                  context.read<SurveysBloc>().add(SurveysEvent.get());
                 },
               )
               : SmartRefresher(
@@ -129,13 +126,11 @@ class _SurveysState extends State<Surveys> {
                 header: ClassicHeader(),
                 controller: _refreshController,
                 onRefresh: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getSurveys(),
-                  );
+                  context.read<SurveysBloc>().add(SurveysEvent.get());
                 },
                 onLoading: () {
-                  context.read<WebsocketBloc>().add(
-                    WebsocketEvent.getSurveys(lastSurvey: _surveys.last),
+                  context.read<SurveysBloc>().add(
+                    SurveysEvent.get(lastSurvey: _surveys.last),
                   );
                 },
                 footer: ClassicFooter(),

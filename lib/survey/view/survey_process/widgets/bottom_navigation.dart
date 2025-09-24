@@ -1,4 +1,4 @@
-import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
+import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +56,7 @@ class NavigationRow extends StatelessWidget {
           'Page ${state.page + 1} of ${state.lastPage + 1}',
           style: TextStyle(color: Theme.of(context).disabledColor),
         ),
-        BlocListener<AnswerCubit, AnswerState>(
+        BlocListener<AnswerBloc, AnswerState>(
           listener: (context, answerState) {
             if (answerState.status == AnswerStatus.validated) {
               context.read<SurveyBottomNavigationBloc>().add(
@@ -66,12 +66,14 @@ class NavigationRow extends StatelessWidget {
           },
           child: NavigationButton(
             onPressed: () {
-              context.read<AnswerCubit>().validate(
-                questions:
-                    survey.pages
-                        .firstWhere((page) => page.number == state.page)
-                        .questions
-                        .toList(),
+              context.read<AnswerBloc>().add(
+                AnswerEvent.validate(
+                  questions:
+                      survey.pages
+                          .firstWhere((page) => page.number == state.page)
+                          .questions
+                          .toList(),
+                ),
               );
             },
             text: 'NEXT',

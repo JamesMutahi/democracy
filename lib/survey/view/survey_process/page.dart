@@ -1,11 +1,10 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/utils/no_results.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart' show TimeLeft;
-import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
-import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
+import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
+import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/page/page_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
 import 'package:democracy/survey/models/question.dart';
@@ -31,7 +30,7 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
     context.read<SurveyBottomNavigationBloc>().add(
       SurveyBottomNavigationEvent.started(survey: _survey),
     );
-    context.read<AnswerCubit>().started(survey: _survey);
+    context.read<AnswerBloc>().add(AnswerEvent.started(survey: _survey));
     super.initState();
   }
 
@@ -39,7 +38,7 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<SurveyDetailCubit, SurveyDetailState>(
+        BlocListener<SurveyDetailBloc, SurveyDetailState>(
           listener: (context, state) {
             if (state is SurveyUpdated) {
               if (_survey.id == state.survey.id) {
@@ -62,7 +61,7 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
             }
           },
         ),
-        BlocListener<AnswerCubit, AnswerState>(
+        BlocListener<AnswerBloc, AnswerState>(
           listener: (context, state) {
             if (state.status == AnswerStatus.submitted) {
               Navigator.pop(context);
@@ -152,13 +151,13 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
                           endTime: _survey.endTime,
                         ),
                         SizedBox(height: 10),
-                        BlocBuilder<AnswerCubit, AnswerState>(
+                        BlocBuilder<AnswerBloc, AnswerState>(
                           builder: (context, answerState) {
                             return ElevatedButton(
                               onPressed: () {
                                 if (_survey.isActive) {
-                                  context.read<WebsocketBloc>().add(
-                                    WebsocketEvent.submitResponse(
+                                  context.read<AnswerBloc>().add(
+                                    AnswerEvent.submit(
                                       survey: answerState.survey!,
                                       startTime: answerState.startTime!,
                                       endTime: answerState.endTime!,
@@ -222,7 +221,7 @@ class QuestionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AnswerCubit, AnswerState>(
+    return BlocBuilder<AnswerBloc, AnswerState>(
       builder: (context, state) {
         bool textAnswerExists = state.textAnswers!.any(
           (e) => e.question.id == question.id,

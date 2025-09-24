@@ -34,11 +34,11 @@ import 'package:democracy/post/bloc/posts/posts_bloc.dart';
 import 'package:democracy/post/bloc/replies/replies_bloc.dart';
 import 'package:democracy/post/bloc/user_posts/user_posts_bloc.dart';
 import 'package:democracy/post/bloc/user_replies/user_replies_bloc.dart';
-import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
-import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
+import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
+import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/page/page_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
-import 'package:democracy/survey/bloc/surveys/surveys_cubit.dart';
+import 'package:democracy/survey/bloc/surveys/surveys_bloc.dart';
 import 'package:democracy/user/bloc/blocked/blocked_cubit.dart';
 import 'package:democracy/user/bloc/followers/followers_cubit.dart';
 import 'package:democracy/user/bloc/following/following_cubit.dart';
@@ -172,9 +172,18 @@ void main() async {
                     MessageDetailBloc(webSocketService: webSocketService),
           ),
           BlocProvider(create: (context) => MessageActionsCubit()),
-          BlocProvider(create: (context) => SurveysCubit()),
-          BlocProvider(create: (context) => SurveyDetailCubit()),
-          BlocProvider(create: (context) => AnswerCubit()),
+          BlocProvider(
+            create:
+                (context) => SurveysBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create:
+                (context) =>
+                    SurveyDetailBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create: (context) => AnswerBloc(webSocketService: webSocketService),
+          ),
           BlocProvider(create: (context) => NotificationsCubit(), lazy: false),
           BlocProvider(create: (context) => NotificationDetailCubit()),
           BlocProvider(create: (context) => UsersCubit()),

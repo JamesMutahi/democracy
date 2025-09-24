@@ -15,7 +15,7 @@ import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/post/view/widgets/replies.dart';
-import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
+import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
 import 'package:democracy/user/bloc/users/users_cubit.dart';
@@ -155,7 +155,7 @@ class _PostDetailState extends State<PostDetail> {
             }
           },
         ),
-        BlocListener<SurveyDetailCubit, SurveyDetailState>(
+        BlocListener<SurveyDetailBloc, SurveyDetailState>(
           listener: (context, state) {
             if (state is SurveyUpdated) {
               // post

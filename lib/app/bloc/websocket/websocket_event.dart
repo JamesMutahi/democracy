@@ -10,19 +10,6 @@ abstract class WebsocketEvent with _$WebsocketEvent {
   const factory WebsocketEvent.unsubscribeUsers({required List<User> users}) =
       _UnsubscribeUsers;
 
-  const factory WebsocketEvent.getSurveys({
-    String? searchTerm,
-    Survey? lastSurvey,
-  }) = _GetSurveys;
-
-  const factory WebsocketEvent.submitResponse({
-    required Survey survey,
-    required DateTime startTime,
-    required DateTime endTime,
-    required List<TextAnswer> textAnswers,
-    required List<ChoiceAnswer> choiceAnswers,
-  }) = _SubmitResponse;
-
   const factory WebsocketEvent.getUsers({String? searchTerm, User? lastUser}) =
       _GetUsers;
 

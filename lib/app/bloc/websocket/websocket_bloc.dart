@@ -9,9 +9,6 @@ import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/notification/models/notification.dart';
-import 'package:democracy/survey/models/choice_answer.dart';
-import 'package:democracy/survey/models/survey.dart';
-import 'package:democracy/survey/models/text_answer.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -25,18 +22,12 @@ part 'websocket_state.dart';
 part 'websocket_bloc.freezed.dart';
 
 // Streams
-const String chatsStream = 'chats';
-const String surveysStream = 'surveys';
 const String usersStream = 'users';
 const String notificationsStream = 'notifications';
 const String petitionsStream = 'petitions';
 const String constitutionStream = 'constitution';
 
 // Request ids
-const String chatRequestId = 'chats';
-const String messageRequestId = 'messages';
-const String surveyRequestId = 'surveys';
-const String responseRequestId = 'responses';
 const String usersRequestId = 'users';
 const String notificationRequestId = 'notifications';
 const String petitionRequestId = 'petitions';
@@ -87,12 +78,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     });
     on<_UnsubscribeUsers>((event, emit) {
       _onUnsubscribeUsers(emit, event);
-    });
-    on<_GetSurveys>((event, emit) {
-      _onGetSurveys(emit, event);
-    });
-    on<_SubmitResponse>((event, emit) {
-      _onSubmitResponse(emit, event);
     });
     on<_GetNotifications>((event, emit) {
       _onGetNotifications(emit);
@@ -360,56 +345,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
         'action': 'unsubscribe',
         'request_id': usersRequestId,
         'pks': userIds,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onGetSurveys(Emitter<WebsocketState> emit, _GetSurveys event) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    Map<String, dynamic> message = {
-      'stream': surveysStream,
-      'payload': {
-        'action': 'list',
-        'request_id': surveyRequestId,
-        'search_term': event.searchTerm,
-        'last_survey': event.lastSurvey?.id,
-      },
-    };
-    _channel.sink.add(jsonEncode(message));
-  }
-
-  Future _onSubmitResponse(
-    Emitter<WebsocketState> emit,
-    _SubmitResponse event,
-  ) async {
-    emit(state.copyWith(status: WebsocketStatus.loading));
-    List<Map<String, dynamic>> textAnswers = [];
-    List<Map<String, dynamic>> choiceAnswers = [];
-    for (TextAnswer textAnswer in event.textAnswers) {
-      textAnswers.add({
-        'question_id': textAnswer.question.id,
-        'text': textAnswer.text,
-      });
-    }
-    for (ChoiceAnswer choiceAnswer in event.choiceAnswers) {
-      choiceAnswers.add({
-        'question_id': choiceAnswer.question.id,
-        'choice_id': choiceAnswer.choice.id,
-      });
-    }
-    Map<String, dynamic> message = {
-      'stream': surveysStream,
-      'payload': {
-        'action': 'create_response',
-        'request_id': responseRequestId,
-        'data': {
-          'survey': event.survey.id,
-          'start_time': event.startTime.toString(),
-          'end_time': event.endTime.toString(),
-          'text_answers': textAnswers,
-          'choice_answers': choiceAnswers,
-        },
       },
     };
     _channel.sink.add(jsonEncode(message));

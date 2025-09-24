@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'survey_detail_cubit.dart';
+part of 'survey_detail_bloc.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -541,6 +541,419 @@ class _$SurveyDetailFailureCopyWithImpl<$Res>
   return _then(SurveyDetailFailure(
 error: null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+mixin _$SurveyDetailEvent {
+
+ Map<String, dynamic> get payload;
+/// Create a copy of SurveyDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SurveyDetailEventCopyWith<SurveyDetailEvent> get copyWith => _$SurveyDetailEventCopyWithImpl<SurveyDetailEvent>(this as SurveyDetailEvent, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SurveyDetailEvent&&const DeepCollectionEquality().equals(other.payload, payload));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(payload));
+
+@override
+String toString() {
+  return 'SurveyDetailEvent(payload: $payload)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SurveyDetailEventCopyWith<$Res>  {
+  factory $SurveyDetailEventCopyWith(SurveyDetailEvent value, $Res Function(SurveyDetailEvent) _then) = _$SurveyDetailEventCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, dynamic> payload
+});
+
+
+
+
+}
+/// @nodoc
+class _$SurveyDetailEventCopyWithImpl<$Res>
+    implements $SurveyDetailEventCopyWith<$Res> {
+  _$SurveyDetailEventCopyWithImpl(this._self, this._then);
+
+  final SurveyDetailEvent _self;
+  final $Res Function(SurveyDetailEvent) _then;
+
+/// Create a copy of SurveyDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? payload = null,}) {
+  return _then(_self.copyWith(
+payload: null == payload ? _self.payload : payload // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [SurveyDetailEvent].
+extension SurveyDetailEventPatterns on SurveyDetailEvent {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _Created() when created != null:
+return created(_that);case _Updated() when updated != null:
+return updated(_that);case _Deleted() when deleted != null:
+return deleted(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,}){
+final _that = this;
+switch (_that) {
+case _Created():
+return created(_that);case _Updated():
+return updated(_that);case _Deleted():
+return deleted(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,}){
+final _that = this;
+switch (_that) {
+case _Created() when created != null:
+return created(_that);case _Updated() when updated != null:
+return updated(_that);case _Deleted() when deleted != null:
+return deleted(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _Created() when created != null:
+return created(_that.payload);case _Updated() when updated != null:
+return updated(_that.payload);case _Deleted() when deleted != null:
+return deleted(_that.payload);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,}) {final _that = this;
+switch (_that) {
+case _Created():
+return created(_that.payload);case _Updated():
+return updated(_that.payload);case _Deleted():
+return deleted(_that.payload);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,}) {final _that = this;
+switch (_that) {
+case _Created() when created != null:
+return created(_that.payload);case _Updated() when updated != null:
+return updated(_that.payload);case _Deleted() when deleted != null:
+return deleted(_that.payload);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _Created implements SurveyDetailEvent {
+  const _Created({required final  Map<String, dynamic> payload}): _payload = payload;
+  
+
+ final  Map<String, dynamic> _payload;
+@override Map<String, dynamic> get payload {
+  if (_payload is EqualUnmodifiableMapView) return _payload;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_payload);
+}
+
+
+/// Create a copy of SurveyDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CreatedCopyWith<_Created> get copyWith => __$CreatedCopyWithImpl<_Created>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Created&&const DeepCollectionEquality().equals(other._payload, _payload));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
+
+@override
+String toString() {
+  return 'SurveyDetailEvent.created(payload: $payload)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CreatedCopyWith<$Res> implements $SurveyDetailEventCopyWith<$Res> {
+  factory _$CreatedCopyWith(_Created value, $Res Function(_Created) _then) = __$CreatedCopyWithImpl;
+@override @useResult
+$Res call({
+ Map<String, dynamic> payload
+});
+
+
+
+
+}
+/// @nodoc
+class __$CreatedCopyWithImpl<$Res>
+    implements _$CreatedCopyWith<$Res> {
+  __$CreatedCopyWithImpl(this._self, this._then);
+
+  final _Created _self;
+  final $Res Function(_Created) _then;
+
+/// Create a copy of SurveyDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
+  return _then(_Created(
+payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _Updated implements SurveyDetailEvent {
+  const _Updated({required final  Map<String, dynamic> payload}): _payload = payload;
+  
+
+ final  Map<String, dynamic> _payload;
+@override Map<String, dynamic> get payload {
+  if (_payload is EqualUnmodifiableMapView) return _payload;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_payload);
+}
+
+
+/// Create a copy of SurveyDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$UpdatedCopyWith<_Updated> get copyWith => __$UpdatedCopyWithImpl<_Updated>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Updated&&const DeepCollectionEquality().equals(other._payload, _payload));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
+
+@override
+String toString() {
+  return 'SurveyDetailEvent.updated(payload: $payload)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$UpdatedCopyWith<$Res> implements $SurveyDetailEventCopyWith<$Res> {
+  factory _$UpdatedCopyWith(_Updated value, $Res Function(_Updated) _then) = __$UpdatedCopyWithImpl;
+@override @useResult
+$Res call({
+ Map<String, dynamic> payload
+});
+
+
+
+
+}
+/// @nodoc
+class __$UpdatedCopyWithImpl<$Res>
+    implements _$UpdatedCopyWith<$Res> {
+  __$UpdatedCopyWithImpl(this._self, this._then);
+
+  final _Updated _self;
+  final $Res Function(_Updated) _then;
+
+/// Create a copy of SurveyDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
+  return _then(_Updated(
+payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _Deleted implements SurveyDetailEvent {
+  const _Deleted({required final  Map<String, dynamic> payload}): _payload = payload;
+  
+
+ final  Map<String, dynamic> _payload;
+@override Map<String, dynamic> get payload {
+  if (_payload is EqualUnmodifiableMapView) return _payload;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_payload);
+}
+
+
+/// Create a copy of SurveyDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DeletedCopyWith<_Deleted> get copyWith => __$DeletedCopyWithImpl<_Deleted>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Deleted&&const DeepCollectionEquality().equals(other._payload, _payload));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
+
+@override
+String toString() {
+  return 'SurveyDetailEvent.deleted(payload: $payload)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DeletedCopyWith<$Res> implements $SurveyDetailEventCopyWith<$Res> {
+  factory _$DeletedCopyWith(_Deleted value, $Res Function(_Deleted) _then) = __$DeletedCopyWithImpl;
+@override @useResult
+$Res call({
+ Map<String, dynamic> payload
+});
+
+
+
+
+}
+/// @nodoc
+class __$DeletedCopyWithImpl<$Res>
+    implements _$DeletedCopyWith<$Res> {
+  __$DeletedCopyWithImpl(this._self, this._then);
+
+  final _Deleted _self;
+  final $Res Function(_Deleted) _then;
+
+/// Create a copy of SurveyDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
+  return _then(_Deleted(
+payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
   ));
 }
 

@@ -1,5 +1,5 @@
 import 'package:democracy/ballot/view/ballot_tile.dart' show TimeLeft;
-import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
+import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/survey_process/page.dart';
 import 'package:democracy/survey/view/survey_process/response_page.dart';
@@ -22,7 +22,7 @@ class _SurveyDetailState extends State<SurveyDetail> {
   Widget build(BuildContext context) {
     bool alreadyResponded = widget.survey.response != null;
 
-    return BlocListener<SurveyDetailCubit, SurveyDetailState>(
+    return BlocListener<SurveyDetailBloc, SurveyDetailState>(
       listener: (context, state) {
         if (state is SurveyUpdated) {
           if (_survey.id == state.survey.id) {

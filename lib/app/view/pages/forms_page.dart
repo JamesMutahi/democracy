@@ -3,6 +3,7 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/petition/view/petition_create.dart';
 import 'package:democracy/petition/view/petitions.dart';
+import 'package:democracy/survey/bloc/surveys/surveys_bloc.dart';
 import 'package:democracy/survey/view/surveys.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
@@ -108,10 +109,8 @@ class FormsSearchBar extends StatelessWidget {
           onChanged: (value) {
             context.read<FormsSearchAndFilterCubit>().search(searchTerm: value);
             state.status == FormsSearchAndFilterStatus.onSurveys
-                ? context.read<WebsocketBloc>().add(
-                  WebsocketEvent.getSurveys(
-                    searchTerm: state.surveysSearchTerm,
-                  ),
+                ? context.read<SurveysBloc>().add(
+                  SurveysEvent.get(searchTerm: state.surveysSearchTerm),
                 )
                 : context.read<WebsocketBloc>().add(
                   WebsocketEvent.getPetitions(

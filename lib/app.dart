@@ -18,9 +18,6 @@ import 'package:democracy/petition/bloc/petition_detail/petition_detail_cubit.da
 import 'package:democracy/petition/bloc/petitions/petitions_cubit.dart';
 import 'package:democracy/petition/bloc/supporters/supporters_cubit.dart';
 import 'package:democracy/petition/bloc/user_petitions/user_petitions_cubit.dart';
-import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
-import 'package:democracy/survey/bloc/survey_process/answer/answer_cubit.dart';
-import 'package:democracy/survey/bloc/surveys/surveys_cubit.dart';
 import 'package:democracy/user/bloc/blocked/blocked_cubit.dart';
 import 'package:democracy/user/bloc/followers/followers_cubit.dart';
 import 'package:democracy/user/bloc/following/following_cubit.dart';
@@ -197,33 +194,6 @@ class _Listeners extends StatelessWidget {
             if (state.status == WebsocketStatus.success) {
               final message = {};
               switch (message['stream']) {
-                case surveysStream:
-                  switch (message['payload']['action']) {
-                    case 'list':
-                      context.read<SurveysCubit>().loaded(
-                        payload: message['payload'],
-                      );
-                    case 'create':
-                      if (message['payload']['request_id'] == surveyRequestId) {
-                        context.read<SurveyDetailCubit>().created(
-                          payload: message['payload'],
-                        );
-                      }
-                      if (message['payload']['request_id'] ==
-                          responseRequestId) {
-                        context.read<AnswerCubit>().submitted(
-                          payload: message['payload'],
-                        );
-                      }
-                    case 'update':
-                      context.read<SurveyDetailCubit>().updated(
-                        payload: message['payload'],
-                      );
-                    case 'delete':
-                      context.read<SurveyDetailCubit>().deleted(
-                        payload: message['payload'],
-                      );
-                  }
                 case usersStream:
                   switch (message['payload']['action']) {
                     case 'list':

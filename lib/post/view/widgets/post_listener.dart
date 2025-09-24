@@ -1,7 +1,7 @@
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:democracy/survey/bloc/survey_detail/survey_detail_cubit.dart';
+import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -168,7 +168,7 @@ class PostListener extends StatelessWidget {
             }
           },
         ),
-        BlocListener<SurveyDetailCubit, SurveyDetailState>(
+        BlocListener<SurveyDetailBloc, SurveyDetailState>(
           listener: (context, state) {
             if (state is SurveyUpdated) {
               // Update posts

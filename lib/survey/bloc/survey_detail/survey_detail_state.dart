@@ -1,4 +1,4 @@
-part of 'survey_detail_cubit.dart';
+part of 'survey_detail_bloc.dart';
 
 @freezed
 class SurveyDetailState with _$SurveyDetailState {

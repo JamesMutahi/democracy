@@ -61,15 +61,13 @@ extension WebsocketEventPatterns on WebsocketEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Connect value)?  connect,TResult Function( _ChangeState value)?  changeState,TResult Function( _UnsubscribeUsers value)?  unsubscribeUsers,TResult Function( _GetSurveys value)?  getSurveys,TResult Function( _SubmitResponse value)?  submitResponse,TResult Function( _GetUsers value)?  getUsers,TResult Function( _ResubscribeUsers value)?  resubscribeUsers,TResult Function( _GetFollowers value)?  getFollowers,TResult Function( _GetFollowing value)?  getFollowing,TResult Function( _GetMuted value)?  getMuted,TResult Function( _GetBlocked value)?  getBlocked,TResult Function( _GetUser value)?  getUser,TResult Function( _UpdateUser value)?  updateUser,TResult Function( _MuteUser value)?  muteUser,TResult Function( _BlockUser value)?  blockUser,TResult Function( _FollowUser value)?  followUser,TResult Function( _GetNotifications value)?  getNotifications,TResult Function( _MarkNotificationAsRead value)?  markNotificationAsRead,TResult Function( _GetPreferences value)?  getPreferences,TResult Function( _UpdatePreferences value)?  updatePreferences,TResult Function( _ChangeUserNotificationStatus value)?  changeUserNotificationStatus,TResult Function( _GetPetitions value)?  getPetitions,TResult Function( _CreatePetition value)?  createPetition,TResult Function( _ResubscribePetitions value)?  resubscribePetitions,TResult Function( _SupportPetition value)?  supportPetition,TResult Function( _GetPetitionSupporters value)?  getPetitionSupporters,TResult Function( _GetUserPetitions value)?  getUserPetitions,TResult Function( _ResubscribeUserPetitions value)?  resubscribeUserPetitions,TResult Function( _UnsubscribeUserPetitions value)?  unsubscribeUserPetitions,TResult Function( _GetConstitution value)?  getConstitution,TResult Function( _GetConstitutionTags value)?  getConstitutionTags,TResult Function( _BookmarkSection value)?  bookmarkSection,TResult Function( _Disconnect value)?  disconnect,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Connect value)?  connect,TResult Function( _ChangeState value)?  changeState,TResult Function( _UnsubscribeUsers value)?  unsubscribeUsers,TResult Function( _GetUsers value)?  getUsers,TResult Function( _ResubscribeUsers value)?  resubscribeUsers,TResult Function( _GetFollowers value)?  getFollowers,TResult Function( _GetFollowing value)?  getFollowing,TResult Function( _GetMuted value)?  getMuted,TResult Function( _GetBlocked value)?  getBlocked,TResult Function( _GetUser value)?  getUser,TResult Function( _UpdateUser value)?  updateUser,TResult Function( _MuteUser value)?  muteUser,TResult Function( _BlockUser value)?  blockUser,TResult Function( _FollowUser value)?  followUser,TResult Function( _GetNotifications value)?  getNotifications,TResult Function( _MarkNotificationAsRead value)?  markNotificationAsRead,TResult Function( _GetPreferences value)?  getPreferences,TResult Function( _UpdatePreferences value)?  updatePreferences,TResult Function( _ChangeUserNotificationStatus value)?  changeUserNotificationStatus,TResult Function( _GetPetitions value)?  getPetitions,TResult Function( _CreatePetition value)?  createPetition,TResult Function( _ResubscribePetitions value)?  resubscribePetitions,TResult Function( _SupportPetition value)?  supportPetition,TResult Function( _GetPetitionSupporters value)?  getPetitionSupporters,TResult Function( _GetUserPetitions value)?  getUserPetitions,TResult Function( _ResubscribeUserPetitions value)?  resubscribeUserPetitions,TResult Function( _UnsubscribeUserPetitions value)?  unsubscribeUserPetitions,TResult Function( _GetConstitution value)?  getConstitution,TResult Function( _GetConstitutionTags value)?  getConstitutionTags,TResult Function( _BookmarkSection value)?  bookmarkSection,TResult Function( _Disconnect value)?  disconnect,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Connect() when connect != null:
 return connect(_that);case _ChangeState() when changeState != null:
 return changeState(_that);case _UnsubscribeUsers() when unsubscribeUsers != null:
-return unsubscribeUsers(_that);case _GetSurveys() when getSurveys != null:
-return getSurveys(_that);case _SubmitResponse() when submitResponse != null:
-return submitResponse(_that);case _GetUsers() when getUsers != null:
+return unsubscribeUsers(_that);case _GetUsers() when getUsers != null:
 return getUsers(_that);case _ResubscribeUsers() when resubscribeUsers != null:
 return resubscribeUsers(_that);case _GetFollowers() when getFollowers != null:
 return getFollowers(_that);case _GetFollowing() when getFollowing != null:
@@ -115,15 +113,13 @@ return disconnect(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Connect value)  connect,required TResult Function( _ChangeState value)  changeState,required TResult Function( _UnsubscribeUsers value)  unsubscribeUsers,required TResult Function( _GetSurveys value)  getSurveys,required TResult Function( _SubmitResponse value)  submitResponse,required TResult Function( _GetUsers value)  getUsers,required TResult Function( _ResubscribeUsers value)  resubscribeUsers,required TResult Function( _GetFollowers value)  getFollowers,required TResult Function( _GetFollowing value)  getFollowing,required TResult Function( _GetMuted value)  getMuted,required TResult Function( _GetBlocked value)  getBlocked,required TResult Function( _GetUser value)  getUser,required TResult Function( _UpdateUser value)  updateUser,required TResult Function( _MuteUser value)  muteUser,required TResult Function( _BlockUser value)  blockUser,required TResult Function( _FollowUser value)  followUser,required TResult Function( _GetNotifications value)  getNotifications,required TResult Function( _MarkNotificationAsRead value)  markNotificationAsRead,required TResult Function( _GetPreferences value)  getPreferences,required TResult Function( _UpdatePreferences value)  updatePreferences,required TResult Function( _ChangeUserNotificationStatus value)  changeUserNotificationStatus,required TResult Function( _GetPetitions value)  getPetitions,required TResult Function( _CreatePetition value)  createPetition,required TResult Function( _ResubscribePetitions value)  resubscribePetitions,required TResult Function( _SupportPetition value)  supportPetition,required TResult Function( _GetPetitionSupporters value)  getPetitionSupporters,required TResult Function( _GetUserPetitions value)  getUserPetitions,required TResult Function( _ResubscribeUserPetitions value)  resubscribeUserPetitions,required TResult Function( _UnsubscribeUserPetitions value)  unsubscribeUserPetitions,required TResult Function( _GetConstitution value)  getConstitution,required TResult Function( _GetConstitutionTags value)  getConstitutionTags,required TResult Function( _BookmarkSection value)  bookmarkSection,required TResult Function( _Disconnect value)  disconnect,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Connect value)  connect,required TResult Function( _ChangeState value)  changeState,required TResult Function( _UnsubscribeUsers value)  unsubscribeUsers,required TResult Function( _GetUsers value)  getUsers,required TResult Function( _ResubscribeUsers value)  resubscribeUsers,required TResult Function( _GetFollowers value)  getFollowers,required TResult Function( _GetFollowing value)  getFollowing,required TResult Function( _GetMuted value)  getMuted,required TResult Function( _GetBlocked value)  getBlocked,required TResult Function( _GetUser value)  getUser,required TResult Function( _UpdateUser value)  updateUser,required TResult Function( _MuteUser value)  muteUser,required TResult Function( _BlockUser value)  blockUser,required TResult Function( _FollowUser value)  followUser,required TResult Function( _GetNotifications value)  getNotifications,required TResult Function( _MarkNotificationAsRead value)  markNotificationAsRead,required TResult Function( _GetPreferences value)  getPreferences,required TResult Function( _UpdatePreferences value)  updatePreferences,required TResult Function( _ChangeUserNotificationStatus value)  changeUserNotificationStatus,required TResult Function( _GetPetitions value)  getPetitions,required TResult Function( _CreatePetition value)  createPetition,required TResult Function( _ResubscribePetitions value)  resubscribePetitions,required TResult Function( _SupportPetition value)  supportPetition,required TResult Function( _GetPetitionSupporters value)  getPetitionSupporters,required TResult Function( _GetUserPetitions value)  getUserPetitions,required TResult Function( _ResubscribeUserPetitions value)  resubscribeUserPetitions,required TResult Function( _UnsubscribeUserPetitions value)  unsubscribeUserPetitions,required TResult Function( _GetConstitution value)  getConstitution,required TResult Function( _GetConstitutionTags value)  getConstitutionTags,required TResult Function( _BookmarkSection value)  bookmarkSection,required TResult Function( _Disconnect value)  disconnect,}){
 final _that = this;
 switch (_that) {
 case _Connect():
 return connect(_that);case _ChangeState():
 return changeState(_that);case _UnsubscribeUsers():
-return unsubscribeUsers(_that);case _GetSurveys():
-return getSurveys(_that);case _SubmitResponse():
-return submitResponse(_that);case _GetUsers():
+return unsubscribeUsers(_that);case _GetUsers():
 return getUsers(_that);case _ResubscribeUsers():
 return resubscribeUsers(_that);case _GetFollowers():
 return getFollowers(_that);case _GetFollowing():
@@ -168,15 +164,13 @@ return disconnect(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Connect value)?  connect,TResult? Function( _ChangeState value)?  changeState,TResult? Function( _UnsubscribeUsers value)?  unsubscribeUsers,TResult? Function( _GetSurveys value)?  getSurveys,TResult? Function( _SubmitResponse value)?  submitResponse,TResult? Function( _GetUsers value)?  getUsers,TResult? Function( _ResubscribeUsers value)?  resubscribeUsers,TResult? Function( _GetFollowers value)?  getFollowers,TResult? Function( _GetFollowing value)?  getFollowing,TResult? Function( _GetMuted value)?  getMuted,TResult? Function( _GetBlocked value)?  getBlocked,TResult? Function( _GetUser value)?  getUser,TResult? Function( _UpdateUser value)?  updateUser,TResult? Function( _MuteUser value)?  muteUser,TResult? Function( _BlockUser value)?  blockUser,TResult? Function( _FollowUser value)?  followUser,TResult? Function( _GetNotifications value)?  getNotifications,TResult? Function( _MarkNotificationAsRead value)?  markNotificationAsRead,TResult? Function( _GetPreferences value)?  getPreferences,TResult? Function( _UpdatePreferences value)?  updatePreferences,TResult? Function( _ChangeUserNotificationStatus value)?  changeUserNotificationStatus,TResult? Function( _GetPetitions value)?  getPetitions,TResult? Function( _CreatePetition value)?  createPetition,TResult? Function( _ResubscribePetitions value)?  resubscribePetitions,TResult? Function( _SupportPetition value)?  supportPetition,TResult? Function( _GetPetitionSupporters value)?  getPetitionSupporters,TResult? Function( _GetUserPetitions value)?  getUserPetitions,TResult? Function( _ResubscribeUserPetitions value)?  resubscribeUserPetitions,TResult? Function( _UnsubscribeUserPetitions value)?  unsubscribeUserPetitions,TResult? Function( _GetConstitution value)?  getConstitution,TResult? Function( _GetConstitutionTags value)?  getConstitutionTags,TResult? Function( _BookmarkSection value)?  bookmarkSection,TResult? Function( _Disconnect value)?  disconnect,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Connect value)?  connect,TResult? Function( _ChangeState value)?  changeState,TResult? Function( _UnsubscribeUsers value)?  unsubscribeUsers,TResult? Function( _GetUsers value)?  getUsers,TResult? Function( _ResubscribeUsers value)?  resubscribeUsers,TResult? Function( _GetFollowers value)?  getFollowers,TResult? Function( _GetFollowing value)?  getFollowing,TResult? Function( _GetMuted value)?  getMuted,TResult? Function( _GetBlocked value)?  getBlocked,TResult? Function( _GetUser value)?  getUser,TResult? Function( _UpdateUser value)?  updateUser,TResult? Function( _MuteUser value)?  muteUser,TResult? Function( _BlockUser value)?  blockUser,TResult? Function( _FollowUser value)?  followUser,TResult? Function( _GetNotifications value)?  getNotifications,TResult? Function( _MarkNotificationAsRead value)?  markNotificationAsRead,TResult? Function( _GetPreferences value)?  getPreferences,TResult? Function( _UpdatePreferences value)?  updatePreferences,TResult? Function( _ChangeUserNotificationStatus value)?  changeUserNotificationStatus,TResult? Function( _GetPetitions value)?  getPetitions,TResult? Function( _CreatePetition value)?  createPetition,TResult? Function( _ResubscribePetitions value)?  resubscribePetitions,TResult? Function( _SupportPetition value)?  supportPetition,TResult? Function( _GetPetitionSupporters value)?  getPetitionSupporters,TResult? Function( _GetUserPetitions value)?  getUserPetitions,TResult? Function( _ResubscribeUserPetitions value)?  resubscribeUserPetitions,TResult? Function( _UnsubscribeUserPetitions value)?  unsubscribeUserPetitions,TResult? Function( _GetConstitution value)?  getConstitution,TResult? Function( _GetConstitutionTags value)?  getConstitutionTags,TResult? Function( _BookmarkSection value)?  bookmarkSection,TResult? Function( _Disconnect value)?  disconnect,}){
 final _that = this;
 switch (_that) {
 case _Connect() when connect != null:
 return connect(_that);case _ChangeState() when changeState != null:
 return changeState(_that);case _UnsubscribeUsers() when unsubscribeUsers != null:
-return unsubscribeUsers(_that);case _GetSurveys() when getSurveys != null:
-return getSurveys(_that);case _SubmitResponse() when submitResponse != null:
-return submitResponse(_that);case _GetUsers() when getUsers != null:
+return unsubscribeUsers(_that);case _GetUsers() when getUsers != null:
 return getUsers(_that);case _ResubscribeUsers() when resubscribeUsers != null:
 return resubscribeUsers(_that);case _GetFollowers() when getFollowers != null:
 return getFollowers(_that);case _GetFollowing() when getFollowing != null:
@@ -221,14 +215,12 @@ return disconnect(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  connect,TResult Function( WebsocketState state)?  changeState,TResult Function( List<User> users)?  unsubscribeUsers,TResult Function( String? searchTerm,  Survey? lastSurvey)?  getSurveys,TResult Function( Survey survey,  DateTime startTime,  DateTime endTime,  List<TextAnswer> textAnswers,  List<ChoiceAnswer> choiceAnswers)?  submitResponse,TResult Function( String? searchTerm,  User? lastUser)?  getUsers,TResult Function( List<User> users)?  resubscribeUsers,TResult Function( User user,  User? lastUser)?  getFollowers,TResult Function( User user,  User? lastUser)?  getFollowing,TResult Function( User? lastUser)?  getMuted,TResult Function( User? lastUser)?  getBlocked,TResult Function( User user)?  getUser,TResult Function( User user,  String name,  String status,  String? imagePath,  String? coverPhotoPath)?  updateUser,TResult Function( int id)?  muteUser,TResult Function( int id)?  blockUser,TResult Function( User user)?  followUser,TResult Function()?  getNotifications,TResult Function( Notification notification)?  markNotificationAsRead,TResult Function()?  getPreferences,TResult Function( bool allowNotifications,  bool allowTagNotifications,  bool allowLikeNotifications,  bool allowReplyNotifications,  bool allowRepostNotifications,  bool allowMessageNotifications,  bool allowFollowNotifications)?  updatePreferences,TResult Function( User user)?  changeUserNotificationStatus,TResult Function( String? searchTerm,  Petition? lastPetition)?  getPetitions,TResult Function( String title,  String imagePath,  String description)?  createPetition,TResult Function( List<Petition> petitions)?  resubscribePetitions,TResult Function( Petition petition)?  supportPetition,TResult Function( Petition petition,  User? lastUser)?  getPetitionSupporters,TResult Function( User user,  Petition? lastPetition)?  getUserPetitions,TResult Function( User user,  List<Petition> petitions)?  resubscribeUserPetitions,TResult Function( User user,  List<Petition> petitions)?  unsubscribeUserPetitions,TResult Function()?  getConstitution,TResult Function( String? searchTerm)?  getConstitutionTags,TResult Function( Section section)?  bookmarkSection,TResult Function()?  disconnect,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  connect,TResult Function( WebsocketState state)?  changeState,TResult Function( List<User> users)?  unsubscribeUsers,TResult Function( String? searchTerm,  User? lastUser)?  getUsers,TResult Function( List<User> users)?  resubscribeUsers,TResult Function( User user,  User? lastUser)?  getFollowers,TResult Function( User user,  User? lastUser)?  getFollowing,TResult Function( User? lastUser)?  getMuted,TResult Function( User? lastUser)?  getBlocked,TResult Function( User user)?  getUser,TResult Function( User user,  String name,  String status,  String? imagePath,  String? coverPhotoPath)?  updateUser,TResult Function( int id)?  muteUser,TResult Function( int id)?  blockUser,TResult Function( User user)?  followUser,TResult Function()?  getNotifications,TResult Function( Notification notification)?  markNotificationAsRead,TResult Function()?  getPreferences,TResult Function( bool allowNotifications,  bool allowTagNotifications,  bool allowLikeNotifications,  bool allowReplyNotifications,  bool allowRepostNotifications,  bool allowMessageNotifications,  bool allowFollowNotifications)?  updatePreferences,TResult Function( User user)?  changeUserNotificationStatus,TResult Function( String? searchTerm,  Petition? lastPetition)?  getPetitions,TResult Function( String title,  String imagePath,  String description)?  createPetition,TResult Function( List<Petition> petitions)?  resubscribePetitions,TResult Function( Petition petition)?  supportPetition,TResult Function( Petition petition,  User? lastUser)?  getPetitionSupporters,TResult Function( User user,  Petition? lastPetition)?  getUserPetitions,TResult Function( User user,  List<Petition> petitions)?  resubscribeUserPetitions,TResult Function( User user,  List<Petition> petitions)?  unsubscribeUserPetitions,TResult Function()?  getConstitution,TResult Function( String? searchTerm)?  getConstitutionTags,TResult Function( Section section)?  bookmarkSection,TResult Function()?  disconnect,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Connect() when connect != null:
 return connect();case _ChangeState() when changeState != null:
 return changeState(_that.state);case _UnsubscribeUsers() when unsubscribeUsers != null:
-return unsubscribeUsers(_that.users);case _GetSurveys() when getSurveys != null:
-return getSurveys(_that.searchTerm,_that.lastSurvey);case _SubmitResponse() when submitResponse != null:
-return submitResponse(_that.survey,_that.startTime,_that.endTime,_that.textAnswers,_that.choiceAnswers);case _GetUsers() when getUsers != null:
+return unsubscribeUsers(_that.users);case _GetUsers() when getUsers != null:
 return getUsers(_that.searchTerm,_that.lastUser);case _ResubscribeUsers() when resubscribeUsers != null:
 return resubscribeUsers(_that.users);case _GetFollowers() when getFollowers != null:
 return getFollowers(_that.user,_that.lastUser);case _GetFollowing() when getFollowing != null:
@@ -274,14 +266,12 @@ return disconnect();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  connect,required TResult Function( WebsocketState state)  changeState,required TResult Function( List<User> users)  unsubscribeUsers,required TResult Function( String? searchTerm,  Survey? lastSurvey)  getSurveys,required TResult Function( Survey survey,  DateTime startTime,  DateTime endTime,  List<TextAnswer> textAnswers,  List<ChoiceAnswer> choiceAnswers)  submitResponse,required TResult Function( String? searchTerm,  User? lastUser)  getUsers,required TResult Function( List<User> users)  resubscribeUsers,required TResult Function( User user,  User? lastUser)  getFollowers,required TResult Function( User user,  User? lastUser)  getFollowing,required TResult Function( User? lastUser)  getMuted,required TResult Function( User? lastUser)  getBlocked,required TResult Function( User user)  getUser,required TResult Function( User user,  String name,  String status,  String? imagePath,  String? coverPhotoPath)  updateUser,required TResult Function( int id)  muteUser,required TResult Function( int id)  blockUser,required TResult Function( User user)  followUser,required TResult Function()  getNotifications,required TResult Function( Notification notification)  markNotificationAsRead,required TResult Function()  getPreferences,required TResult Function( bool allowNotifications,  bool allowTagNotifications,  bool allowLikeNotifications,  bool allowReplyNotifications,  bool allowRepostNotifications,  bool allowMessageNotifications,  bool allowFollowNotifications)  updatePreferences,required TResult Function( User user)  changeUserNotificationStatus,required TResult Function( String? searchTerm,  Petition? lastPetition)  getPetitions,required TResult Function( String title,  String imagePath,  String description)  createPetition,required TResult Function( List<Petition> petitions)  resubscribePetitions,required TResult Function( Petition petition)  supportPetition,required TResult Function( Petition petition,  User? lastUser)  getPetitionSupporters,required TResult Function( User user,  Petition? lastPetition)  getUserPetitions,required TResult Function( User user,  List<Petition> petitions)  resubscribeUserPetitions,required TResult Function( User user,  List<Petition> petitions)  unsubscribeUserPetitions,required TResult Function()  getConstitution,required TResult Function( String? searchTerm)  getConstitutionTags,required TResult Function( Section section)  bookmarkSection,required TResult Function()  disconnect,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  connect,required TResult Function( WebsocketState state)  changeState,required TResult Function( List<User> users)  unsubscribeUsers,required TResult Function( String? searchTerm,  User? lastUser)  getUsers,required TResult Function( List<User> users)  resubscribeUsers,required TResult Function( User user,  User? lastUser)  getFollowers,required TResult Function( User user,  User? lastUser)  getFollowing,required TResult Function( User? lastUser)  getMuted,required TResult Function( User? lastUser)  getBlocked,required TResult Function( User user)  getUser,required TResult Function( User user,  String name,  String status,  String? imagePath,  String? coverPhotoPath)  updateUser,required TResult Function( int id)  muteUser,required TResult Function( int id)  blockUser,required TResult Function( User user)  followUser,required TResult Function()  getNotifications,required TResult Function( Notification notification)  markNotificationAsRead,required TResult Function()  getPreferences,required TResult Function( bool allowNotifications,  bool allowTagNotifications,  bool allowLikeNotifications,  bool allowReplyNotifications,  bool allowRepostNotifications,  bool allowMessageNotifications,  bool allowFollowNotifications)  updatePreferences,required TResult Function( User user)  changeUserNotificationStatus,required TResult Function( String? searchTerm,  Petition? lastPetition)  getPetitions,required TResult Function( String title,  String imagePath,  String description)  createPetition,required TResult Function( List<Petition> petitions)  resubscribePetitions,required TResult Function( Petition petition)  supportPetition,required TResult Function( Petition petition,  User? lastUser)  getPetitionSupporters,required TResult Function( User user,  Petition? lastPetition)  getUserPetitions,required TResult Function( User user,  List<Petition> petitions)  resubscribeUserPetitions,required TResult Function( User user,  List<Petition> petitions)  unsubscribeUserPetitions,required TResult Function()  getConstitution,required TResult Function( String? searchTerm)  getConstitutionTags,required TResult Function( Section section)  bookmarkSection,required TResult Function()  disconnect,}) {final _that = this;
 switch (_that) {
 case _Connect():
 return connect();case _ChangeState():
 return changeState(_that.state);case _UnsubscribeUsers():
-return unsubscribeUsers(_that.users);case _GetSurveys():
-return getSurveys(_that.searchTerm,_that.lastSurvey);case _SubmitResponse():
-return submitResponse(_that.survey,_that.startTime,_that.endTime,_that.textAnswers,_that.choiceAnswers);case _GetUsers():
+return unsubscribeUsers(_that.users);case _GetUsers():
 return getUsers(_that.searchTerm,_that.lastUser);case _ResubscribeUsers():
 return resubscribeUsers(_that.users);case _GetFollowers():
 return getFollowers(_that.user,_that.lastUser);case _GetFollowing():
@@ -326,14 +316,12 @@ return disconnect();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  connect,TResult? Function( WebsocketState state)?  changeState,TResult? Function( List<User> users)?  unsubscribeUsers,TResult? Function( String? searchTerm,  Survey? lastSurvey)?  getSurveys,TResult? Function( Survey survey,  DateTime startTime,  DateTime endTime,  List<TextAnswer> textAnswers,  List<ChoiceAnswer> choiceAnswers)?  submitResponse,TResult? Function( String? searchTerm,  User? lastUser)?  getUsers,TResult? Function( List<User> users)?  resubscribeUsers,TResult? Function( User user,  User? lastUser)?  getFollowers,TResult? Function( User user,  User? lastUser)?  getFollowing,TResult? Function( User? lastUser)?  getMuted,TResult? Function( User? lastUser)?  getBlocked,TResult? Function( User user)?  getUser,TResult? Function( User user,  String name,  String status,  String? imagePath,  String? coverPhotoPath)?  updateUser,TResult? Function( int id)?  muteUser,TResult? Function( int id)?  blockUser,TResult? Function( User user)?  followUser,TResult? Function()?  getNotifications,TResult? Function( Notification notification)?  markNotificationAsRead,TResult? Function()?  getPreferences,TResult? Function( bool allowNotifications,  bool allowTagNotifications,  bool allowLikeNotifications,  bool allowReplyNotifications,  bool allowRepostNotifications,  bool allowMessageNotifications,  bool allowFollowNotifications)?  updatePreferences,TResult? Function( User user)?  changeUserNotificationStatus,TResult? Function( String? searchTerm,  Petition? lastPetition)?  getPetitions,TResult? Function( String title,  String imagePath,  String description)?  createPetition,TResult? Function( List<Petition> petitions)?  resubscribePetitions,TResult? Function( Petition petition)?  supportPetition,TResult? Function( Petition petition,  User? lastUser)?  getPetitionSupporters,TResult? Function( User user,  Petition? lastPetition)?  getUserPetitions,TResult? Function( User user,  List<Petition> petitions)?  resubscribeUserPetitions,TResult? Function( User user,  List<Petition> petitions)?  unsubscribeUserPetitions,TResult? Function()?  getConstitution,TResult? Function( String? searchTerm)?  getConstitutionTags,TResult? Function( Section section)?  bookmarkSection,TResult? Function()?  disconnect,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  connect,TResult? Function( WebsocketState state)?  changeState,TResult? Function( List<User> users)?  unsubscribeUsers,TResult? Function( String? searchTerm,  User? lastUser)?  getUsers,TResult? Function( List<User> users)?  resubscribeUsers,TResult? Function( User user,  User? lastUser)?  getFollowers,TResult? Function( User user,  User? lastUser)?  getFollowing,TResult? Function( User? lastUser)?  getMuted,TResult? Function( User? lastUser)?  getBlocked,TResult? Function( User user)?  getUser,TResult? Function( User user,  String name,  String status,  String? imagePath,  String? coverPhotoPath)?  updateUser,TResult? Function( int id)?  muteUser,TResult? Function( int id)?  blockUser,TResult? Function( User user)?  followUser,TResult? Function()?  getNotifications,TResult? Function( Notification notification)?  markNotificationAsRead,TResult? Function()?  getPreferences,TResult? Function( bool allowNotifications,  bool allowTagNotifications,  bool allowLikeNotifications,  bool allowReplyNotifications,  bool allowRepostNotifications,  bool allowMessageNotifications,  bool allowFollowNotifications)?  updatePreferences,TResult? Function( User user)?  changeUserNotificationStatus,TResult? Function( String? searchTerm,  Petition? lastPetition)?  getPetitions,TResult? Function( String title,  String imagePath,  String description)?  createPetition,TResult? Function( List<Petition> petitions)?  resubscribePetitions,TResult? Function( Petition petition)?  supportPetition,TResult? Function( Petition petition,  User? lastUser)?  getPetitionSupporters,TResult? Function( User user,  Petition? lastPetition)?  getUserPetitions,TResult? Function( User user,  List<Petition> petitions)?  resubscribeUserPetitions,TResult? Function( User user,  List<Petition> petitions)?  unsubscribeUserPetitions,TResult? Function()?  getConstitution,TResult? Function( String? searchTerm)?  getConstitutionTags,TResult? Function( Section section)?  bookmarkSection,TResult? Function()?  disconnect,}) {final _that = this;
 switch (_that) {
 case _Connect() when connect != null:
 return connect();case _ChangeState() when changeState != null:
 return changeState(_that.state);case _UnsubscribeUsers() when unsubscribeUsers != null:
-return unsubscribeUsers(_that.users);case _GetSurveys() when getSurveys != null:
-return getSurveys(_that.searchTerm,_that.lastSurvey);case _SubmitResponse() when submitResponse != null:
-return submitResponse(_that.survey,_that.startTime,_that.endTime,_that.textAnswers,_that.choiceAnswers);case _GetUsers() when getUsers != null:
+return unsubscribeUsers(_that.users);case _GetUsers() when getUsers != null:
 return getUsers(_that.searchTerm,_that.lastUser);case _ResubscribeUsers() when resubscribeUsers != null:
 return resubscribeUsers(_that.users);case _GetFollowers() when getFollowers != null:
 return getFollowers(_that.user,_that.lastUser);case _GetFollowing() when getFollowing != null:
@@ -555,193 +543,6 @@ as List<User>,
 }
 
 
-}
-
-/// @nodoc
-
-
-class _GetSurveys with DiagnosticableTreeMixin implements WebsocketEvent {
-  const _GetSurveys({this.searchTerm, this.lastSurvey});
-  
-
- final  String? searchTerm;
- final  Survey? lastSurvey;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$GetSurveysCopyWith<_GetSurveys> get copyWith => __$GetSurveysCopyWithImpl<_GetSurveys>(this, _$identity);
-
-
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'WebsocketEvent.getSurveys'))
-    ..add(DiagnosticsProperty('searchTerm', searchTerm))..add(DiagnosticsProperty('lastSurvey', lastSurvey));
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetSurveys&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&(identical(other.lastSurvey, lastSurvey) || other.lastSurvey == lastSurvey));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,searchTerm,lastSurvey);
-
-@override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'WebsocketEvent.getSurveys(searchTerm: $searchTerm, lastSurvey: $lastSurvey)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$GetSurveysCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
-  factory _$GetSurveysCopyWith(_GetSurveys value, $Res Function(_GetSurveys) _then) = __$GetSurveysCopyWithImpl;
-@useResult
-$Res call({
- String? searchTerm, Survey? lastSurvey
-});
-
-
-$SurveyCopyWith<$Res>? get lastSurvey;
-
-}
-/// @nodoc
-class __$GetSurveysCopyWithImpl<$Res>
-    implements _$GetSurveysCopyWith<$Res> {
-  __$GetSurveysCopyWithImpl(this._self, this._then);
-
-  final _GetSurveys _self;
-  final $Res Function(_GetSurveys) _then;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? searchTerm = freezed,Object? lastSurvey = freezed,}) {
-  return _then(_GetSurveys(
-searchTerm: freezed == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
-as String?,lastSurvey: freezed == lastSurvey ? _self.lastSurvey : lastSurvey // ignore: cast_nullable_to_non_nullable
-as Survey?,
-  ));
-}
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$SurveyCopyWith<$Res>? get lastSurvey {
-    if (_self.lastSurvey == null) {
-    return null;
-  }
-
-  return $SurveyCopyWith<$Res>(_self.lastSurvey!, (value) {
-    return _then(_self.copyWith(lastSurvey: value));
-  });
-}
-}
-
-/// @nodoc
-
-
-class _SubmitResponse with DiagnosticableTreeMixin implements WebsocketEvent {
-  const _SubmitResponse({required this.survey, required this.startTime, required this.endTime, required final  List<TextAnswer> textAnswers, required final  List<ChoiceAnswer> choiceAnswers}): _textAnswers = textAnswers,_choiceAnswers = choiceAnswers;
-  
-
- final  Survey survey;
- final  DateTime startTime;
- final  DateTime endTime;
- final  List<TextAnswer> _textAnswers;
- List<TextAnswer> get textAnswers {
-  if (_textAnswers is EqualUnmodifiableListView) return _textAnswers;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_textAnswers);
-}
-
- final  List<ChoiceAnswer> _choiceAnswers;
- List<ChoiceAnswer> get choiceAnswers {
-  if (_choiceAnswers is EqualUnmodifiableListView) return _choiceAnswers;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_choiceAnswers);
-}
-
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$SubmitResponseCopyWith<_SubmitResponse> get copyWith => __$SubmitResponseCopyWithImpl<_SubmitResponse>(this, _$identity);
-
-
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'WebsocketEvent.submitResponse'))
-    ..add(DiagnosticsProperty('survey', survey))..add(DiagnosticsProperty('startTime', startTime))..add(DiagnosticsProperty('endTime', endTime))..add(DiagnosticsProperty('textAnswers', textAnswers))..add(DiagnosticsProperty('choiceAnswers', choiceAnswers));
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubmitResponse&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&const DeepCollectionEquality().equals(other._textAnswers, _textAnswers)&&const DeepCollectionEquality().equals(other._choiceAnswers, _choiceAnswers));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,survey,startTime,endTime,const DeepCollectionEquality().hash(_textAnswers),const DeepCollectionEquality().hash(_choiceAnswers));
-
-@override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'WebsocketEvent.submitResponse(survey: $survey, startTime: $startTime, endTime: $endTime, textAnswers: $textAnswers, choiceAnswers: $choiceAnswers)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$SubmitResponseCopyWith<$Res> implements $WebsocketEventCopyWith<$Res> {
-  factory _$SubmitResponseCopyWith(_SubmitResponse value, $Res Function(_SubmitResponse) _then) = __$SubmitResponseCopyWithImpl;
-@useResult
-$Res call({
- Survey survey, DateTime startTime, DateTime endTime, List<TextAnswer> textAnswers, List<ChoiceAnswer> choiceAnswers
-});
-
-
-$SurveyCopyWith<$Res> get survey;
-
-}
-/// @nodoc
-class __$SubmitResponseCopyWithImpl<$Res>
-    implements _$SubmitResponseCopyWith<$Res> {
-  __$SubmitResponseCopyWithImpl(this._self, this._then);
-
-  final _SubmitResponse _self;
-  final $Res Function(_SubmitResponse) _then;
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? survey = null,Object? startTime = null,Object? endTime = null,Object? textAnswers = null,Object? choiceAnswers = null,}) {
-  return _then(_SubmitResponse(
-survey: null == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
-as Survey,startTime: null == startTime ? _self.startTime : startTime // ignore: cast_nullable_to_non_nullable
-as DateTime,endTime: null == endTime ? _self.endTime : endTime // ignore: cast_nullable_to_non_nullable
-as DateTime,textAnswers: null == textAnswers ? _self._textAnswers : textAnswers // ignore: cast_nullable_to_non_nullable
-as List<TextAnswer>,choiceAnswers: null == choiceAnswers ? _self._choiceAnswers : choiceAnswers // ignore: cast_nullable_to_non_nullable
-as List<ChoiceAnswer>,
-  ));
-}
-
-/// Create a copy of WebsocketEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$SurveyCopyWith<$Res> get survey {
-  
-  return $SurveyCopyWith<$Res>(_self.survey, (value) {
-    return _then(_self.copyWith(survey: value));
-  });
-}
 }
 
 /// @nodoc

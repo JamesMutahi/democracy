@@ -1,4 +1,4 @@
-part of 'surveys_cubit.dart';
+part of 'surveys_bloc.dart';
 
 enum SurveysStatus { initial, loading, success, failure }
 
