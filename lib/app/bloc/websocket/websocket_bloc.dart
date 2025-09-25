@@ -9,14 +9,40 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'websocket_event.dart';
-
 part 'websocket_state.dart';
-
 part 'websocket_bloc.freezed.dart';
 
 class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   WebsocketBloc({required this.authRepository, required this.webSocketService})
     : super(const WebsocketState()) {
+    webSocketService.messages.listen((message) {
+      String key = 'websocket';
+      if (message.containsKey(key)) {
+        switch (message[key]) {
+          case WebsocketStatus.connected:
+            add(
+              _ChangeState(
+                state: state.copyWith(
+                  status: WebsocketStatus.connected,
+                  initialConnectionAchieved: true,
+                ),
+              ),
+            );
+          case WebsocketStatus.disconnected:
+            add(
+              _ChangeState(
+                state: state.copyWith(status: WebsocketStatus.disconnected),
+              ),
+            );
+          case WebsocketStatus.failure:
+            add(
+              _ChangeState(
+                state: state.copyWith(status: WebsocketStatus.failure),
+              ),
+            );
+        }
+      }
+    });
     on<_Connect>((event, emit) async {
       _onConnect(emit);
     });
@@ -32,15 +58,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     try {
       String? token = await authRepository.getToken();
       String url = dotenv.env['WEBSOCKET_URL']!;
-      await webSocketService.connect(url, token!);
-      add(
-        _ChangeState(
-          state: state.copyWith(
-            status: WebsocketStatus.connected,
-            initialConnectionAchieved: true,
-          ),
-        ),
-      );
+      await webSocketService.connect(url: url, token: token!);
     } catch (e) {
       emit(state.copyWith(status: WebsocketStatus.failure));
     }

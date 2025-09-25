@@ -1,13 +1,6 @@
 part of 'websocket_bloc.dart';
 
-enum WebsocketStatus {
-  initial,
-  loading,
-  connected,
-  success,
-  failure,
-  disconnected,
-}
+enum WebsocketStatus { initial, loading, connected, disconnected, failure }
 
 final class WebsocketState extends Equatable {
   const WebsocketState({
