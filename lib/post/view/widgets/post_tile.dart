@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:democracy/app/utils/custom_text.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
+import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/post_detail.dart';
@@ -224,6 +225,13 @@ class _PostContainer extends StatelessWidget {
                               DependencyContainer(
                                 child: PetitionTile(
                                   petition: post.petition!,
+                                  isDependency: true,
+                                ),
+                              ),
+                            if (post.meeting != null)
+                              DependencyContainer(
+                                child: MeetingTile(
+                                  meeting: post.meeting!,
                                   isDependency: true,
                                 ),
                               ),

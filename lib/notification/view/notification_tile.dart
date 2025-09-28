@@ -38,6 +38,8 @@ class NotificationTile extends StatelessWidget {
             ? notification.survey!.title
             : notification.petition != null
             ? notification.petition!.title
+            : notification.meeting != null
+            ? notification.meeting!.title
             : notification.chat != null
             ? notification.chat!.lastMessage!.text
             : '',

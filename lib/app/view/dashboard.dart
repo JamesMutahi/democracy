@@ -153,7 +153,7 @@ class _DashboardState extends State<Dashboard> {
                       user: user,
                       notifications: unreadNotifications.length,
                     ),
-                    LivePage(
+                    MeetingsPage(
                       user: user,
                       notifications: unreadNotifications.length,
                     ),

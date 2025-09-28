@@ -594,6 +594,7 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
         ballot: null,
         survey: null,
         petition: null,
+        meeting: null,
         tags: tags,
       ),
     );

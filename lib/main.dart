@@ -17,6 +17,8 @@ import 'package:democracy/chat/bloc/messages/messages_bloc.dart';
 import 'package:democracy/constitution/bloc/constitution/constitution_bloc.dart';
 import 'package:democracy/constitution/bloc/section_detail/section_detail_bloc.dart';
 import 'package:democracy/constitution/bloc/sections/sections_bloc.dart';
+import 'package:democracy/meet/bloc/meeting_detail/meeting_detail_bloc.dart';
+import 'package:democracy/meet/bloc/meetings/meetings_bloc.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/notification/bloc/preferences/preferences_bloc.dart';
@@ -255,6 +257,15 @@ void main() async {
                     SectionDetailBloc(webSocketService: webSocketService),
           ),
           BlocProvider(create: (context) => FormsSearchAndFilterCubit()),
+          BlocProvider(
+            create:
+                (context) => MeetingsBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create:
+                (context) =>
+                    MeetingDetailBloc(webSocketService: webSocketService),
+          ),
         ],
         child: const MyApp(),
       ),

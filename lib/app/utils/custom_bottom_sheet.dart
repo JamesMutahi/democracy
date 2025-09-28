@@ -1,5 +1,6 @@
 import 'package:democracy/app/utils/direct_message.dart';
 import 'package:democracy/ballot/models/ballot.dart';
+import 'package:democracy/meet/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
@@ -70,12 +71,14 @@ class ShareBottomSheet extends StatelessWidget {
     this.ballot,
     this.survey,
     this.petition,
+    this.meeting,
   });
 
   final Post? post;
   final Ballot? ballot;
   final Survey? survey;
   final Petition? petition;
+  final Meeting? meeting;
 
   @override
   Widget build(BuildContext context) {
@@ -105,6 +108,7 @@ class ShareBottomSheet extends StatelessWidget {
                     ballot: ballot,
                     survey: survey,
                     petition: petition,
+                    meeting: meeting,
                   ),
             );
           },

@@ -9,7 +9,7 @@ part 'sections_event.dart';
 
 const String stream = 'constitution';
 const String requestId = 'constitution';
-const String action = 'sections';
+const String action = 'tags';
 
 class SectionsBloc extends Bloc<SectionsEvent, SectionsState> {
   SectionsBloc({required this.webSocketService})

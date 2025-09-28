@@ -12,17 +12,11 @@ part of 'websocket_bloc.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$WebsocketEvent implements DiagnosticableTreeMixin {
+mixin _$WebsocketEvent {
 
 
 
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'WebsocketEvent'))
-    ;
-}
 
 @override
 bool operator ==(Object other) {
@@ -34,7 +28,7 @@ bool operator ==(Object other) {
 int get hashCode => runtimeType.hashCode;
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'WebsocketEvent()';
 }
 
@@ -192,7 +186,7 @@ return disconnect();case _:
 /// @nodoc
 
 
-class _Connect with DiagnosticableTreeMixin implements WebsocketEvent {
+class _Connect implements WebsocketEvent {
   const _Connect();
   
 
@@ -200,12 +194,6 @@ class _Connect with DiagnosticableTreeMixin implements WebsocketEvent {
 
 
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'WebsocketEvent.connect'))
-    ;
-}
 
 @override
 bool operator ==(Object other) {
@@ -217,7 +205,7 @@ bool operator ==(Object other) {
 int get hashCode => runtimeType.hashCode;
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'WebsocketEvent.connect()';
 }
 
@@ -230,7 +218,7 @@ String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
 /// @nodoc
 
 
-class _ChangeState with DiagnosticableTreeMixin implements WebsocketEvent {
+class _ChangeState implements WebsocketEvent {
   const _ChangeState({required this.state});
   
 
@@ -243,12 +231,6 @@ class _ChangeState with DiagnosticableTreeMixin implements WebsocketEvent {
 _$ChangeStateCopyWith<_ChangeState> get copyWith => __$ChangeStateCopyWithImpl<_ChangeState>(this, _$identity);
 
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'WebsocketEvent.changeState'))
-    ..add(DiagnosticsProperty('state', state));
-}
 
 @override
 bool operator ==(Object other) {
@@ -260,7 +242,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,state);
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'WebsocketEvent.changeState(state: $state)';
 }
 
@@ -302,7 +284,7 @@ as WebsocketState,
 /// @nodoc
 
 
-class _Disconnect with DiagnosticableTreeMixin implements WebsocketEvent {
+class _Disconnect implements WebsocketEvent {
   const _Disconnect();
   
 
@@ -310,12 +292,6 @@ class _Disconnect with DiagnosticableTreeMixin implements WebsocketEvent {
 
 
 
-@override
-void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
-    ..add(DiagnosticsProperty('type', 'WebsocketEvent.disconnect'))
-    ;
-}
 
 @override
 bool operator ==(Object other) {
@@ -327,7 +303,7 @@ bool operator ==(Object other) {
 int get hashCode => runtimeType.hashCode;
 
 @override
-String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+String toString() {
   return 'WebsocketEvent.disconnect()';
 }
 

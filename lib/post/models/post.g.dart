@@ -52,6 +52,10 @@ _Post _$PostFromJson(Map<String, dynamic> json) => _Post(
       json['petition'] == null
           ? null
           : Petition.fromJson(json['petition'] as Map<String, dynamic>),
+  meeting:
+      json['meeting'] == null
+          ? null
+          : Meeting.fromJson(json['meeting'] as Map<String, dynamic>),
   taggedUsers:
       (json['tagged_users'] as List<dynamic>)
           .map((e) => User.fromJson(e as Map<String, dynamic>))
@@ -93,6 +97,7 @@ Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
   'ballot': instance.ballot,
   'survey': instance.survey,
   'petition': instance.petition,
+  'meeting': instance.meeting,
   'tagged_users': instance.taggedUsers,
   'tagged_sections': instance.taggedSections,
 };

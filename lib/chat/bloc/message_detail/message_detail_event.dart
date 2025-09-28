@@ -21,6 +21,7 @@ sealed class MessageDetailEvent with _$MessageDetailEvent {
     Ballot? ballot,
     Survey? survey,
     Petition? petition,
+    Meeting? meeting,
   }) = _Create;
 
   const factory MessageDetailEvent.edit({

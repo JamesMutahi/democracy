@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/ballot/models/ballot.dart';
+import 'package:democracy/meet/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
@@ -150,6 +151,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           'ballot_id': event.ballot?.id,
           'survey_id': event.survey?.id,
           'petition_id': event.petition?.id,
+          'meeting_id': event.meeting?.id,
           'status':
               event.status == PostStatus.published ? 'published' : 'draft',
           'tags': event.tags,

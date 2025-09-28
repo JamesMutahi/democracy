@@ -35,6 +35,7 @@ sealed class ChatDetailEvent with _$ChatDetailEvent {
     Ballot? ballot,
     Survey? survey,
     Petition? petition,
+    Meeting? meeting,
   }) = _SendDirectMessage;
 
   const factory ChatDetailEvent.markAsRead({required Chat chat}) = _MarkAsRead;

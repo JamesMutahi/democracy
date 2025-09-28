@@ -8,6 +8,7 @@ import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
 import 'package:democracy/chat/bloc/messages/messages_bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
+import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
@@ -132,6 +133,21 @@ class _MessagesState extends State<Messages> {
                 alignedRight: alignedRight,
                 child: PetitionTile(
                   petition: message.petition!,
+                  isDependency: true,
+                ),
+              ),
+            );
+          }
+          if (message.meeting != null) {
+            if (message.text.isNotEmpty) {
+              widgets.add(SizedBox(height: messageMargin));
+            }
+            widgets.add(
+              AlignmentContainer(
+                message: message,
+                alignedRight: alignedRight,
+                child: MeetingTile(
+                  meeting: message.meeting!,
                   isDependency: true,
                 ),
               ),

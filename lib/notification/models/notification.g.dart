@@ -27,6 +27,10 @@ _Notification _$NotificationFromJson(Map<String, dynamic> json) =>
           json['petition'] == null
               ? null
               : Petition.fromJson(json['petition'] as Map<String, dynamic>),
+      meeting:
+          json['meeting'] == null
+              ? null
+              : Meeting.fromJson(json['meeting'] as Map<String, dynamic>),
       chat:
           json['chat'] == null
               ? null
@@ -43,6 +47,7 @@ Map<String, dynamic> _$NotificationToJson(_Notification instance) =>
       'ballot': instance.ballot,
       'survey': instance.survey,
       'petition': instance.petition,
+      'meeting': instance.meeting,
       'chat': instance.chat,
       'created_at': instance.createdAt.toIso8601String(),
     };

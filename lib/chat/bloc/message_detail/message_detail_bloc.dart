@@ -3,6 +3,7 @@ import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
+import 'package:democracy/meet/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
@@ -92,6 +93,7 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
           'ballot_id': event.ballot?.id,
           'survey_id': event.survey?.id,
           'petition_id': event.petition?.id,
+          'meeting_id': event.meeting?.id,
         },
       },
     };

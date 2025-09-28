@@ -667,13 +667,13 @@ return delete(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition)?  create,TResult Function( int messageId,  String text)?  edit,TResult Function( List<Message> messages)?  delete,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting)?  create,TResult Function( int messageId,  String text)?  edit,TResult Function( List<Message> messages)?  delete,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Create() when create != null:
-return create(_that.chat,_that.text,_that.post,_that.ballot,_that.survey,_that.petition);case _Edit() when edit != null:
+return create(_that.chat,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting);case _Edit() when edit != null:
 return edit(_that.messageId,_that.text);case _Delete() when delete != null:
 return delete(_that.messages);case _:
   return orElse();
@@ -693,13 +693,13 @@ return delete(_that.messages);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition)  create,required TResult Function( int messageId,  String text)  edit,required TResult Function( List<Message> messages)  delete,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting)  create,required TResult Function( int messageId,  String text)  edit,required TResult Function( List<Message> messages)  delete,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Updated():
 return updated(_that.payload);case _Deleted():
 return deleted(_that.payload);case _Create():
-return create(_that.chat,_that.text,_that.post,_that.ballot,_that.survey,_that.petition);case _Edit():
+return create(_that.chat,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting);case _Edit():
 return edit(_that.messageId,_that.text);case _Delete():
 return delete(_that.messages);}
 }
@@ -715,13 +715,13 @@ return delete(_that.messages);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition)?  create,TResult? Function( int messageId,  String text)?  edit,TResult? Function( List<Message> messages)?  delete,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting)?  create,TResult? Function( int messageId,  String text)?  edit,TResult? Function( List<Message> messages)?  delete,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Create() when create != null:
-return create(_that.chat,_that.text,_that.post,_that.ballot,_that.survey,_that.petition);case _Edit() when edit != null:
+return create(_that.chat,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting);case _Edit() when edit != null:
 return edit(_that.messageId,_that.text);case _Delete() when delete != null:
 return delete(_that.messages);case _:
   return null;
@@ -951,7 +951,7 @@ as Map<String, dynamic>,
 
 
 class _Create implements MessageDetailEvent {
-  const _Create({required this.chat, required this.text, this.post, this.ballot, this.survey, this.petition});
+  const _Create({required this.chat, required this.text, this.post, this.ballot, this.survey, this.petition, this.meeting});
   
 
  final  Chat chat;
@@ -960,6 +960,7 @@ class _Create implements MessageDetailEvent {
  final  Ballot? ballot;
  final  Survey? survey;
  final  Petition? petition;
+ final  Meeting? meeting;
 
 /// Create a copy of MessageDetailEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -971,16 +972,16 @@ _$CreateCopyWith<_Create> get copyWith => __$CreateCopyWithImpl<_Create>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Create&&(identical(other.chat, chat) || other.chat == chat)&&(identical(other.text, text) || other.text == text)&&(identical(other.post, post) || other.post == post)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Create&&(identical(other.chat, chat) || other.chat == chat)&&(identical(other.text, text) || other.text == text)&&(identical(other.post, post) || other.post == post)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.meeting, meeting) || other.meeting == meeting));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,chat,text,post,ballot,survey,petition);
+int get hashCode => Object.hash(runtimeType,chat,text,post,ballot,survey,petition,meeting);
 
 @override
 String toString() {
-  return 'MessageDetailEvent.create(chat: $chat, text: $text, post: $post, ballot: $ballot, survey: $survey, petition: $petition)';
+  return 'MessageDetailEvent.create(chat: $chat, text: $text, post: $post, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting)';
 }
 
 
@@ -991,11 +992,11 @@ abstract mixin class _$CreateCopyWith<$Res> implements $MessageDetailEventCopyWi
   factory _$CreateCopyWith(_Create value, $Res Function(_Create) _then) = __$CreateCopyWithImpl;
 @useResult
 $Res call({
- Chat chat, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition
+ Chat chat, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting
 });
 
 
-$ChatCopyWith<$Res> get chat;$PostCopyWith<$Res>? get post;$BallotCopyWith<$Res>? get ballot;$SurveyCopyWith<$Res>? get survey;$PetitionCopyWith<$Res>? get petition;
+$ChatCopyWith<$Res> get chat;$PostCopyWith<$Res>? get post;$BallotCopyWith<$Res>? get ballot;$SurveyCopyWith<$Res>? get survey;$PetitionCopyWith<$Res>? get petition;$MeetingCopyWith<$Res>? get meeting;
 
 }
 /// @nodoc
@@ -1008,7 +1009,7 @@ class __$CreateCopyWithImpl<$Res>
 
 /// Create a copy of MessageDetailEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? chat = null,Object? text = null,Object? post = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? chat = null,Object? text = null,Object? post = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? meeting = freezed,}) {
   return _then(_Create(
 chat: null == chat ? _self.chat : chat // ignore: cast_nullable_to_non_nullable
 as Chat,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
@@ -1016,7 +1017,8 @@ as String,post: freezed == post ? _self.post : post // ignore: cast_nullable_to_
 as Post?,ballot: freezed == ballot ? _self.ballot : ballot // ignore: cast_nullable_to_non_nullable
 as Ballot?,survey: freezed == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
 as Survey?,petition: freezed == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
-as Petition?,
+as Petition?,meeting: freezed == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
+as Meeting?,
   ));
 }
 
@@ -1076,6 +1078,18 @@ $PetitionCopyWith<$Res>? get petition {
 
   return $PetitionCopyWith<$Res>(_self.petition!, (value) {
     return _then(_self.copyWith(petition: value));
+  });
+}/// Create a copy of MessageDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MeetingCopyWith<$Res>? get meeting {
+    if (_self.meeting == null) {
+    return null;
+  }
+
+  return $MeetingCopyWith<$Res>(_self.meeting!, (value) {
+    return _then(_self.copyWith(meeting: value));
   });
 }
 }

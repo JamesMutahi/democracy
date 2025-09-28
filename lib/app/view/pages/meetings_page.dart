@@ -1,19 +1,19 @@
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
-import 'package:democracy/live/view/rooms.dart';
+import 'package:democracy/meet/view/meetings.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 
-class LivePage extends StatefulWidget {
-  const LivePage({super.key, required this.user, required this.notifications});
+class MeetingsPage extends StatefulWidget {
+  const MeetingsPage({super.key, required this.user, required this.notifications});
 
   final User user;
   final int notifications;
 
   @override
-  State<LivePage> createState() => _LivePageState();
+  State<MeetingsPage> createState() => _MeetingsPageState();
 }
 
-class _LivePageState extends State<LivePage> {
+class _MeetingsPageState extends State<MeetingsPage> {
   @override
   Widget build(BuildContext context) {
     return NestedScrollView(
@@ -24,7 +24,7 @@ class _LivePageState extends State<LivePage> {
             notifications: widget.notifications,
             middle: [
               AppBarSearchBar(
-                hintText: 'Search rooms',
+                hintText: 'Search meetings',
                 onChanged: (value) {
                   //TODO:
                 },
@@ -37,7 +37,7 @@ class _LivePageState extends State<LivePage> {
           ),
         ];
       },
-      body: Rooms(),
+      body: Meetings(),
     );
   }
 }

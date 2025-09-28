@@ -8,6 +8,8 @@ import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/constitution/bloc/sections/sections_bloc.dart';
+import 'package:democracy/meet/models/meeting.dart';
+import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
@@ -32,6 +34,7 @@ class PostCreate extends StatefulWidget {
     this.ballot,
     this.survey,
     this.petition,
+    this.meeting,
     this.isReply = false,
   });
 
@@ -39,6 +42,7 @@ class PostCreate extends StatefulWidget {
   final Ballot? ballot;
   final Survey? survey;
   final Petition? petition;
+  final Meeting? meeting;
   final bool isReply;
 
   @override
@@ -65,6 +69,7 @@ class _PostCreateState extends State<PostCreate> {
         ballot: widget.ballot,
         survey: widget.survey,
         petition: widget.petition,
+        meeting: widget.meeting,
         tags: tags,
       ),
     );
@@ -233,6 +238,13 @@ class _PostCreateState extends State<PostCreate> {
                     DependencyContainer(
                       child: PetitionTile(
                         petition: widget.petition!,
+                        isDependency: true,
+                      ),
+                    ),
+                  if (widget.meeting != null)
+                    DependencyContainer(
+                      child: MeetingTile(
+                        meeting: widget.meeting!,
                         isDependency: true,
                       ),
                     ),

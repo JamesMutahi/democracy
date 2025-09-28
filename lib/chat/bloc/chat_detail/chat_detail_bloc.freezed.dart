@@ -840,7 +840,7 @@ return markAsRead(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Map<String, dynamic> payload)?  directMessageSent,TResult Function( User user)?  create,TResult Function( Chat chat)?  get,TResult Function( Chat chat)?  subscribe,TResult Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition)?  sendDirectMessage,TResult Function( Chat chat)?  markAsRead,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Map<String, dynamic> payload)?  directMessageSent,TResult Function( User user)?  create,TResult Function( Chat chat)?  get,TResult Function( Chat chat)?  subscribe,TResult Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting)?  sendDirectMessage,TResult Function( Chat chat)?  markAsRead,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
@@ -851,7 +851,7 @@ return directMessageSent(_that.payload);case _Create() when create != null:
 return create(_that.user);case _Get() when get != null:
 return get(_that.chat);case _Subscribe() when subscribe != null:
 return subscribe(_that.chat);case _SendDirectMessage() when sendDirectMessage != null:
-return sendDirectMessage(_that.users,_that.text,_that.post,_that.ballot,_that.survey,_that.petition);case _MarkAsRead() when markAsRead != null:
+return sendDirectMessage(_that.users,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting);case _MarkAsRead() when markAsRead != null:
 return markAsRead(_that.chat);case _:
   return orElse();
 
@@ -870,7 +870,7 @@ return markAsRead(_that.chat);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Map<String, dynamic> payload)  directMessageSent,required TResult Function( User user)  create,required TResult Function( Chat chat)  get,required TResult Function( Chat chat)  subscribe,required TResult Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition)  sendDirectMessage,required TResult Function( Chat chat)  markAsRead,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Map<String, dynamic> payload)  directMessageSent,required TResult Function( User user)  create,required TResult Function( Chat chat)  get,required TResult Function( Chat chat)  subscribe,required TResult Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting)  sendDirectMessage,required TResult Function( Chat chat)  markAsRead,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Loaded():
@@ -881,7 +881,7 @@ return directMessageSent(_that.payload);case _Create():
 return create(_that.user);case _Get():
 return get(_that.chat);case _Subscribe():
 return subscribe(_that.chat);case _SendDirectMessage():
-return sendDirectMessage(_that.users,_that.text,_that.post,_that.ballot,_that.survey,_that.petition);case _MarkAsRead():
+return sendDirectMessage(_that.users,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting);case _MarkAsRead():
 return markAsRead(_that.chat);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -896,7 +896,7 @@ return markAsRead(_that.chat);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Map<String, dynamic> payload)?  directMessageSent,TResult? Function( User user)?  create,TResult? Function( Chat chat)?  get,TResult? Function( Chat chat)?  subscribe,TResult? Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition)?  sendDirectMessage,TResult? Function( Chat chat)?  markAsRead,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Map<String, dynamic> payload)?  directMessageSent,TResult? Function( User user)?  create,TResult? Function( Chat chat)?  get,TResult? Function( Chat chat)?  subscribe,TResult? Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting)?  sendDirectMessage,TResult? Function( Chat chat)?  markAsRead,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
@@ -907,7 +907,7 @@ return directMessageSent(_that.payload);case _Create() when create != null:
 return create(_that.user);case _Get() when get != null:
 return get(_that.chat);case _Subscribe() when subscribe != null:
 return subscribe(_that.chat);case _SendDirectMessage() when sendDirectMessage != null:
-return sendDirectMessage(_that.users,_that.text,_that.post,_that.ballot,_that.survey,_that.petition);case _MarkAsRead() when markAsRead != null:
+return sendDirectMessage(_that.users,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting);case _MarkAsRead() when markAsRead != null:
 return markAsRead(_that.chat);case _:
   return null;
 
@@ -1505,7 +1505,7 @@ $ChatCopyWith<$Res> get chat {
 
 
 class _SendDirectMessage implements ChatDetailEvent {
-  const _SendDirectMessage({required final  List<User> users, required this.text, this.post, this.ballot, this.survey, this.petition}): _users = users;
+  const _SendDirectMessage({required final  List<User> users, required this.text, this.post, this.ballot, this.survey, this.petition, this.meeting}): _users = users;
   
 
  final  List<User> _users;
@@ -1520,6 +1520,7 @@ class _SendDirectMessage implements ChatDetailEvent {
  final  Ballot? ballot;
  final  Survey? survey;
  final  Petition? petition;
+ final  Meeting? meeting;
 
 /// Create a copy of ChatDetailEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -1531,16 +1532,16 @@ _$SendDirectMessageCopyWith<_SendDirectMessage> get copyWith => __$SendDirectMes
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SendDirectMessage&&const DeepCollectionEquality().equals(other._users, _users)&&(identical(other.text, text) || other.text == text)&&(identical(other.post, post) || other.post == post)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SendDirectMessage&&const DeepCollectionEquality().equals(other._users, _users)&&(identical(other.text, text) || other.text == text)&&(identical(other.post, post) || other.post == post)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.meeting, meeting) || other.meeting == meeting));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_users),text,post,ballot,survey,petition);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_users),text,post,ballot,survey,petition,meeting);
 
 @override
 String toString() {
-  return 'ChatDetailEvent.sendDirectMessage(users: $users, text: $text, post: $post, ballot: $ballot, survey: $survey, petition: $petition)';
+  return 'ChatDetailEvent.sendDirectMessage(users: $users, text: $text, post: $post, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting)';
 }
 
 
@@ -1551,11 +1552,11 @@ abstract mixin class _$SendDirectMessageCopyWith<$Res> implements $ChatDetailEve
   factory _$SendDirectMessageCopyWith(_SendDirectMessage value, $Res Function(_SendDirectMessage) _then) = __$SendDirectMessageCopyWithImpl;
 @useResult
 $Res call({
- List<User> users, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition
+ List<User> users, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting
 });
 
 
-$PostCopyWith<$Res>? get post;$BallotCopyWith<$Res>? get ballot;$SurveyCopyWith<$Res>? get survey;$PetitionCopyWith<$Res>? get petition;
+$PostCopyWith<$Res>? get post;$BallotCopyWith<$Res>? get ballot;$SurveyCopyWith<$Res>? get survey;$PetitionCopyWith<$Res>? get petition;$MeetingCopyWith<$Res>? get meeting;
 
 }
 /// @nodoc
@@ -1568,7 +1569,7 @@ class __$SendDirectMessageCopyWithImpl<$Res>
 
 /// Create a copy of ChatDetailEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? users = null,Object? text = null,Object? post = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? users = null,Object? text = null,Object? post = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? meeting = freezed,}) {
   return _then(_SendDirectMessage(
 users: null == users ? _self._users : users // ignore: cast_nullable_to_non_nullable
 as List<User>,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
@@ -1576,7 +1577,8 @@ as String,post: freezed == post ? _self.post : post // ignore: cast_nullable_to_
 as Post?,ballot: freezed == ballot ? _self.ballot : ballot // ignore: cast_nullable_to_non_nullable
 as Ballot?,survey: freezed == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
 as Survey?,petition: freezed == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
-as Petition?,
+as Petition?,meeting: freezed == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
+as Meeting?,
   ));
 }
 
@@ -1627,6 +1629,18 @@ $PetitionCopyWith<$Res>? get petition {
 
   return $PetitionCopyWith<$Res>(_self.petition!, (value) {
     return _then(_self.copyWith(petition: value));
+  });
+}/// Create a copy of ChatDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MeetingCopyWith<$Res>? get meeting {
+    if (_self.meeting == null) {
+    return null;
+  }
+
+  return $MeetingCopyWith<$Res>(_self.meeting!, (value) {
+    return _then(_self.copyWith(meeting: value));
   });
 }
 }

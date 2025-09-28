@@ -1,5 +1,6 @@
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/models/chat.dart';
+import 'package:democracy/meet/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
@@ -18,6 +19,7 @@ sealed class Notification with _$Notification {
     required final Ballot? ballot,
     required final Survey? survey,
     required final Petition? petition,
+    required final Meeting? meeting,
     required final Chat? chat,
     @JsonKey(name: 'created_at') required final DateTime createdAt,
   }) = _Notification;

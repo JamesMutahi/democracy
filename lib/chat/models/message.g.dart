@@ -27,6 +27,10 @@ _Message _$MessageFromJson(Map<String, dynamic> json) => _Message(
       json['petition'] == null
           ? null
           : Petition.fromJson(json['petition'] as Map<String, dynamic>),
+  meeting:
+      json['meeting'] == null
+          ? null
+          : Meeting.fromJson(json['meeting'] as Map<String, dynamic>),
   isRead: json['is_read'] as bool,
   isEdited: json['is_edited'] as bool,
   isDeleted: json['is_deleted'] as bool,
@@ -43,6 +47,7 @@ Map<String, dynamic> _$MessageToJson(_Message instance) => <String, dynamic>{
   'ballot': instance.ballot,
   'survey': instance.survey,
   'petition': instance.petition,
+  'meeting': instance.meeting,
   'is_read': instance.isRead,
   'is_edited': instance.isEdited,
   'is_deleted': instance.isDeleted,

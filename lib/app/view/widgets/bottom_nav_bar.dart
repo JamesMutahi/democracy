@@ -82,10 +82,7 @@ class NavBarItem extends StatelessWidget {
             children: [
               IconTheme(
                 data: Theme.of(context).iconTheme.copyWith(
-                  color:
-                      isActive
-                          ? Theme.of(context).colorScheme.primary
-                          : Theme.of(context).colorScheme.outline,
+                  color: Theme.of(context).colorScheme.primary,
                   fill: isActive ? 1 : 0,
                   size: 25,
                   weight: 600,

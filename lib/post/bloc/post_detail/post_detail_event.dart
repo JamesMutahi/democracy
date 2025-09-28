@@ -30,6 +30,7 @@ sealed class PostDetailEvent with _$PostDetailEvent {
     required Ballot? ballot,
     required Survey? survey,
     required Petition? petition,
+    required Meeting? meeting,
     required List<Map> tags,
   }) = _Create;
 
