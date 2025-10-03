@@ -563,8 +563,8 @@ class _UserDetails extends StatelessWidget {
               ),
             ],
           ),
-          (user.status.isNotEmpty)
-              ? Column(children: [SizedBox(height: 5), Text(user.status)])
+          (user.bio.isNotEmpty)
+              ? Column(children: [SizedBox(height: 5), Text(user.bio)])
               : SizedBox.shrink(),
           SizedBox(height: 5),
           GestureDetector(

@@ -12,7 +12,7 @@ sealed class User with _$User {
     required String email,
     required String image,
     @JsonKey(name: 'cover_photo') required String coverPhoto,
-    required String status,
+    required String bio,
     required List<int> muted,
     required List<int> blocked,
     required int following,

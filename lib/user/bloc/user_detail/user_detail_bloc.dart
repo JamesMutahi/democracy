@@ -91,7 +91,7 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
         'pk': event.user.id,
         'data': {
           'name': event.name,
-          'status': event.status,
+          'bio': event.bio,
           if (event.imagePath != null)
             'image_base64': base64Encode(
               File(event.imagePath!).readAsBytesSync(),

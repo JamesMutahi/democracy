@@ -15,7 +15,7 @@ sealed class UserDetailEvent with _$UserDetailEvent {
   const factory UserDetailEvent.update({
     required User user,
     required String name,
-    required String status,
+    required String bio,
     required String? imagePath,
     required String? coverPhotoPath,
   }) = _Update;

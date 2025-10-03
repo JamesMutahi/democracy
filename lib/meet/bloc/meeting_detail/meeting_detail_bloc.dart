@@ -34,6 +34,12 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
     on<_Deleted>((event, emit) {
       _onDeleted(event, emit);
     });
+    on<_Join>((event, emit) {
+      _onJoin(event, emit);
+    });
+    on<_Leave>((event, emit) {
+      _onLeave(event, emit);
+    });
   }
 
   Future _onCreated(_Created event, Emitter<MeetingDetailState> emit) async {
@@ -63,6 +69,30 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
     } else {
       emit(MeetingDetailFailure(error: event.payload['errors'][0]));
     }
+  }
+
+  Future _onJoin(_Join event, Emitter<MeetingDetailState> emit) async {
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        "action": 'join',
+        'request_id': requestId,
+        'pk': event.meeting.id,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  Future _onLeave(_Leave event, Emitter<MeetingDetailState> emit) async {
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        "action": 'leave',
+        'request_id': requestId,
+        'pk': event.meeting.id,
+      },
+    };
+    webSocketService.send(message);
   }
 
   final WebSocketService webSocketService;

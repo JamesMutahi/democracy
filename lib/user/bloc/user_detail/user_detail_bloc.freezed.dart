@@ -598,13 +598,13 @@ return block(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  retrieved,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( User user)?  get,TResult Function( User user,  String name,  String status,  String? imagePath,  String? coverPhotoPath)?  update,TResult Function( User user)?  follow,TResult Function( User user)?  mute,TResult Function( User user)?  block,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  retrieved,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( User user)?  get,TResult Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath)?  update,TResult Function( User user)?  follow,TResult Function( User user)?  mute,TResult Function( User user)?  block,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Retrieved() when retrieved != null:
 return retrieved(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Get() when get != null:
 return get(_that.user);case _Update() when update != null:
-return update(_that.user,_that.name,_that.status,_that.imagePath,_that.coverPhotoPath);case _Follow() when follow != null:
+return update(_that.user,_that.name,_that.bio,_that.imagePath,_that.coverPhotoPath);case _Follow() when follow != null:
 return follow(_that.user);case _Mute() when mute != null:
 return mute(_that.user);case _Block() when block != null:
 return block(_that.user);case _:
@@ -625,13 +625,13 @@ return block(_that.user);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  retrieved,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( User user)  get,required TResult Function( User user,  String name,  String status,  String? imagePath,  String? coverPhotoPath)  update,required TResult Function( User user)  follow,required TResult Function( User user)  mute,required TResult Function( User user)  block,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  retrieved,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( User user)  get,required TResult Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath)  update,required TResult Function( User user)  follow,required TResult Function( User user)  mute,required TResult Function( User user)  block,}) {final _that = this;
 switch (_that) {
 case _Retrieved():
 return retrieved(_that.payload);case _Updated():
 return updated(_that.payload);case _Get():
 return get(_that.user);case _Update():
-return update(_that.user,_that.name,_that.status,_that.imagePath,_that.coverPhotoPath);case _Follow():
+return update(_that.user,_that.name,_that.bio,_that.imagePath,_that.coverPhotoPath);case _Follow():
 return follow(_that.user);case _Mute():
 return mute(_that.user);case _Block():
 return block(_that.user);}
@@ -648,13 +648,13 @@ return block(_that.user);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  retrieved,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( User user)?  get,TResult? Function( User user,  String name,  String status,  String? imagePath,  String? coverPhotoPath)?  update,TResult? Function( User user)?  follow,TResult? Function( User user)?  mute,TResult? Function( User user)?  block,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  retrieved,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( User user)?  get,TResult? Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath)?  update,TResult? Function( User user)?  follow,TResult? Function( User user)?  mute,TResult? Function( User user)?  block,}) {final _that = this;
 switch (_that) {
 case _Retrieved() when retrieved != null:
 return retrieved(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Get() when get != null:
 return get(_that.user);case _Update() when update != null:
-return update(_that.user,_that.name,_that.status,_that.imagePath,_that.coverPhotoPath);case _Follow() when follow != null:
+return update(_that.user,_that.name,_that.bio,_that.imagePath,_that.coverPhotoPath);case _Follow() when follow != null:
 return follow(_that.user);case _Mute() when mute != null:
 return mute(_that.user);case _Block() when block != null:
 return block(_that.user);case _:
@@ -888,12 +888,12 @@ $UserCopyWith<$Res> get user {
 
 
 class _Update implements UserDetailEvent {
-  const _Update({required this.user, required this.name, required this.status, required this.imagePath, required this.coverPhotoPath});
+  const _Update({required this.user, required this.name, required this.bio, required this.imagePath, required this.coverPhotoPath});
   
 
  final  User user;
  final  String name;
- final  String status;
+ final  String bio;
  final  String? imagePath;
  final  String? coverPhotoPath;
 
@@ -907,16 +907,16 @@ _$UpdateCopyWith<_Update> get copyWith => __$UpdateCopyWithImpl<_Update>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Update&&(identical(other.user, user) || other.user == user)&&(identical(other.name, name) || other.name == name)&&(identical(other.status, status) || other.status == status)&&(identical(other.imagePath, imagePath) || other.imagePath == imagePath)&&(identical(other.coverPhotoPath, coverPhotoPath) || other.coverPhotoPath == coverPhotoPath));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Update&&(identical(other.user, user) || other.user == user)&&(identical(other.name, name) || other.name == name)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.imagePath, imagePath) || other.imagePath == imagePath)&&(identical(other.coverPhotoPath, coverPhotoPath) || other.coverPhotoPath == coverPhotoPath));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,user,name,status,imagePath,coverPhotoPath);
+int get hashCode => Object.hash(runtimeType,user,name,bio,imagePath,coverPhotoPath);
 
 @override
 String toString() {
-  return 'UserDetailEvent.update(user: $user, name: $name, status: $status, imagePath: $imagePath, coverPhotoPath: $coverPhotoPath)';
+  return 'UserDetailEvent.update(user: $user, name: $name, bio: $bio, imagePath: $imagePath, coverPhotoPath: $coverPhotoPath)';
 }
 
 
@@ -927,7 +927,7 @@ abstract mixin class _$UpdateCopyWith<$Res> implements $UserDetailEventCopyWith<
   factory _$UpdateCopyWith(_Update value, $Res Function(_Update) _then) = __$UpdateCopyWithImpl;
 @useResult
 $Res call({
- User user, String name, String status, String? imagePath, String? coverPhotoPath
+ User user, String name, String bio, String? imagePath, String? coverPhotoPath
 });
 
 
@@ -944,11 +944,11 @@ class __$UpdateCopyWithImpl<$Res>
 
 /// Create a copy of UserDetailEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? user = null,Object? name = null,Object? status = null,Object? imagePath = freezed,Object? coverPhotoPath = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? user = null,Object? name = null,Object? bio = null,Object? imagePath = freezed,Object? coverPhotoPath = freezed,}) {
   return _then(_Update(
 user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as User,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String,bio: null == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
 as String,imagePath: freezed == imagePath ? _self.imagePath : imagePath // ignore: cast_nullable_to_non_nullable
 as String?,coverPhotoPath: freezed == coverPhotoPath ? _self.coverPhotoPath : coverPhotoPath // ignore: cast_nullable_to_non_nullable
 as String?,

@@ -13,7 +13,7 @@ _User _$UserFromJson(Map<String, dynamic> json) => _User(
   email: json['email'] as String,
   image: json['image'] as String,
   coverPhoto: json['cover_photo'] as String,
-  status: json['status'] as String,
+  bio: json['bio'] as String,
   muted:
       (json['muted'] as List<dynamic>).map((e) => (e as num).toInt()).toList(),
   blocked:
@@ -38,7 +38,7 @@ Map<String, dynamic> _$UserToJson(_User instance) => <String, dynamic>{
   'email': instance.email,
   'image': instance.image,
   'cover_photo': instance.coverPhoto,
-  'status': instance.status,
+  'bio': instance.bio,
   'muted': instance.muted,
   'blocked': instance.blocked,
   'following': instance.following,

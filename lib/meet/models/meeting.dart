@@ -11,6 +11,9 @@ sealed class Meeting with _$Meeting {
     required User host,
     required String title,
     required String description,
+    @JsonKey(name: 'recent_listeners') required List<User> recentListeners,
+    required int listeners,
+    @JsonKey(name: 'is_active') required bool isActive,
     @JsonKey(name: 'start_time') required DateTime startTime,
     @JsonKey(name: 'end_time') required DateTime endTime,
   }) = _Meeting;

@@ -1,9 +1,14 @@
 import 'package:democracy/app/utils/custom_bottom_sheet.dart';
 import 'package:democracy/app/utils/more_pop_up.dart';
+import 'package:democracy/meet/bloc/meeting_detail/meeting_detail_bloc.dart';
 import 'package:democracy/meet/models/meeting.dart';
 import 'package:democracy/meet/view/meeting_detail.dart';
 import 'package:democracy/post/view/post_create.dart';
+import 'package:democracy/user/view/widgets/profile_image.dart';
+import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class MeetingTile extends StatelessWidget {
   const MeetingTile({
@@ -19,11 +24,12 @@ class MeetingTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MeetingDetail(meeting: meeting),
-          ),
+        showModalBottomSheet<void>(
+          context: context,
+          shape: const BeveledRectangleBorder(),
+          builder: (BuildContext context) {
+            return MeetingBottomSheet(meeting: meeting);
+          },
         );
       },
       child: Stack(
@@ -40,7 +46,24 @@ class MeetingTile extends StatelessWidget {
                 ),
               ),
             ),
-            child: Text(meeting.title),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.mic_rounded),
+                    SizedBox(width: 5),
+                    Text('LIVE'),
+                  ],
+                ),
+                SizedBox(height: 5),
+                Text(meeting.title),
+                SizedBox(height: 5),
+                if (!isDependency) ListenersRow(meeting: meeting),
+                if (!isDependency) HostInfo(meeting: meeting),
+              ],
+            ),
           ),
           if (!isDependency)
             Align(
@@ -81,6 +104,114 @@ class MeetingPopUp extends StatelessWidget {
         }
       },
       texts: ['Post', 'Share'],
+    );
+  }
+}
+
+class HostInfo extends StatelessWidget {
+  const HostInfo({super.key, required this.meeting});
+
+  final Meeting meeting;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(8),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 5),
+          Row(
+            children: [
+              ProfileImage(user: meeting.host),
+              ProfileName(user: meeting.host),
+            ],
+          ),
+          SizedBox(height: 5),
+          Text(meeting.host.bio, maxLines: 2, overflow: TextOverflow.ellipsis),
+        ],
+      ),
+    );
+  }
+}
+
+class ListenersRow extends StatelessWidget {
+  const ListenersRow({super.key, required this.meeting});
+
+  final Meeting meeting;
+
+  @override
+  Widget build(BuildContext context) {
+    var numberFormat = NumberFormat.compact(locale: "en_UK");
+    return Row(
+      children: [
+        Stack(
+          children: [
+            ...meeting.recentListeners.map((user) {
+              return Container(
+                margin: EdgeInsets.only(
+                  left: meeting.recentListeners.indexOf(user) * 15,
+                ),
+                child: CircleAvatar(
+                  radius: 15,
+                  backgroundColor: Theme.of(context).cardColor,
+                  child: CircleAvatar(
+                    radius: 13,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(user.image),
+                          fit: BoxFit.cover,
+                        ),
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ],
+        ),
+        if (meeting.listeners > 0) SizedBox(width: 10),
+        Text('${numberFormat.format(meeting.listeners)} listening'),
+      ],
+    );
+  }
+}
+
+class MeetingBottomSheet extends StatelessWidget {
+  const MeetingBottomSheet({super.key, required this.meeting});
+
+  final Meeting meeting;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomBottomSheet(
+      title: 'Meeting',
+      children: [
+        Text(meeting.title, style: Theme.of(context).textTheme.titleMedium),
+        SizedBox(height: 5),
+        Text(meeting.description),
+        SizedBox(height: 5),
+        ListenersRow(meeting: meeting),
+        HostInfo(meeting: meeting),
+        SizedBox(height: 5),
+        OutlinedButton(
+          onPressed: () {
+            context.read<MeetingDetailBloc>().add(
+              MeetingDetailEvent.join(meeting: meeting),
+            );
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MeetingDetail(meeting: meeting),
+              ),
+            );
+          },
+          child: Text('Join'),
+        ),
+      ],
     );
   }
 }

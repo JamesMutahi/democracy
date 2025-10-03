@@ -21,7 +21,7 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
   late String name = widget.user.name;
-  late String status = widget.user.status;
+  late String bio = widget.user.bio;
   File? image;
   File? coverPhoto;
   bool waiting = false;
@@ -56,7 +56,7 @@ class _EditProfileState extends State<EditProfile> {
                     (image == null &&
                             coverPhoto == null &&
                             name == widget.user.name &&
-                            status == widget.user.status)
+                        bio == widget.user.bio)
                         ? null
                         : () {
                           showDialog(
@@ -71,7 +71,7 @@ class _EditProfileState extends State<EditProfile> {
                                       UserDetailEvent.update(
                                         user: widget.user,
                                         name: name,
-                                        status: status,
+                                        bio: bio,
                                         imagePath: image?.path,
                                         coverPhotoPath: coverPhoto?.path,
                                       ),
@@ -157,11 +157,11 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                       SizedBox(height: 15),
                       ProfileTextFormField(
-                        initialValue: widget.user.status,
-                        label: 'Status',
+                        initialValue: widget.user.bio,
+                        label: 'Bio',
                         onChanged: (value) {
                           setState(() {
-                            status = value;
+                            bio = value;
                           });
                         },
                         maxLines: 4,

@@ -54,9 +54,10 @@ class CustomBottomSheet extends StatelessWidget {
     ];
     widgets.addAll(children);
     return Container(
-      margin: EdgeInsets.only(top: 10, bottom: 20),
+      margin: EdgeInsets.only(top: 10, bottom: 20, left: 15, right: 15),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: widgets,
       ),
@@ -133,7 +134,7 @@ class CustomBottomSheetContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+      margin: EdgeInsets.symmetric(vertical: 5),
       decoration: BoxDecoration(
         border: Border.all(
           color: Theme.of(context).disabledColor.withAlpha(30),
