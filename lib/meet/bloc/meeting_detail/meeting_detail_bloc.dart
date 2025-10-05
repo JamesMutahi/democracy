@@ -22,6 +22,10 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
             add(_Updated(payload: message['payload']));
           case 'delete':
             add(_Deleted(payload: message['payload']));
+          case 'join':
+            add(_Joined(payload: message['payload']));
+          case 'leave':
+            add(_Left(payload: message['payload']));
         }
       }
     });
@@ -37,8 +41,14 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
     on<_Join>((event, emit) {
       _onJoin(event, emit);
     });
+    on<_Joined>((event, emit) {
+      _onJoined(event, emit);
+    });
     on<_Leave>((event, emit) {
       _onLeave(event, emit);
+    });
+    on<_Left>((event, emit) {
+      _onLeft(event, emit);
     });
   }
 
@@ -83,6 +93,15 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
     webSocketService.send(message);
   }
 
+  Future _onJoined(_Joined event, Emitter<MeetingDetailState> emit) async {
+    emit(MeetingDetailLoading());
+    if (event.payload['response_status'] == 200) {
+      emit(MeetingJoined(meetingId: event.payload['data']['pk']));
+    } else {
+      emit(MeetingDetailFailure(error: event.payload['errors'][0]));
+    }
+  }
+
   Future _onLeave(_Leave event, Emitter<MeetingDetailState> emit) async {
     Map<String, dynamic> message = {
       'stream': stream,
@@ -93,6 +112,15 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
       },
     };
     webSocketService.send(message);
+  }
+
+  Future _onLeft(_Left event, Emitter<MeetingDetailState> emit) async {
+    emit(MeetingDetailLoading());
+    if (event.payload['response_status'] == 200) {
+      emit(MeetingLeft(meetingId: event.payload['data']['pk']));
+    } else {
+      emit(MeetingDetailFailure(error: event.payload['errors'][0]));
+    }
   }
 
   final WebSocketService webSocketService;

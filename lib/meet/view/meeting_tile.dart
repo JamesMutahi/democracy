@@ -187,31 +187,38 @@ class MeetingBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomBottomSheet(
-      title: 'Meeting',
-      children: [
-        Text(meeting.title, style: Theme.of(context).textTheme.titleMedium),
-        SizedBox(height: 5),
-        Text(meeting.description),
-        SizedBox(height: 5),
-        ListenersRow(meeting: meeting),
-        HostInfo(meeting: meeting),
-        SizedBox(height: 5),
-        OutlinedButton(
-          onPressed: () {
-            context.read<MeetingDetailBloc>().add(
-              MeetingDetailEvent.join(meeting: meeting),
-            );
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MeetingDetail(meeting: meeting),
-              ),
-            );
-          },
-          child: Text('Join'),
-        ),
-      ],
+    return BlocListener<MeetingDetailBloc, MeetingDetailState>(
+      listener: (context, state) {
+        if (state is MeetingJoined) {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MeetingDetail(meeting: meeting),
+            ),
+          );
+        }
+      },
+      child: CustomBottomSheet(
+        title: 'Meeting',
+        children: [
+          Text(meeting.title, style: Theme.of(context).textTheme.titleMedium),
+          SizedBox(height: 5),
+          Text(meeting.description),
+          SizedBox(height: 5),
+          ListenersRow(meeting: meeting),
+          HostInfo(meeting: meeting),
+          SizedBox(height: 5),
+          OutlinedButton(
+            onPressed: () {
+              context.read<MeetingDetailBloc>().add(
+                MeetingDetailEvent.join(meeting: meeting),
+              );
+            },
+            child: Text('Join'),
+          ),
+        ],
+      ),
     );
   }
 }

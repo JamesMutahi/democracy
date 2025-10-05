@@ -55,15 +55,17 @@ extension MeetingDetailEventPatterns on MeetingDetailEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Join value)?  join,TResult Function( _Leave value)?  leave,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Join value)?  join,TResult Function( _Joined value)?  joined,TResult Function( _Leave value)?  leave,TResult Function( _Left value)?  left,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that);case _Updated() when updated != null:
 return updated(_that);case _Deleted() when deleted != null:
 return deleted(_that);case _Join() when join != null:
-return join(_that);case _Leave() when leave != null:
-return leave(_that);case _:
+return join(_that);case _Joined() when joined != null:
+return joined(_that);case _Leave() when leave != null:
+return leave(_that);case _Left() when left != null:
+return left(_that);case _:
   return orElse();
 
 }
@@ -81,15 +83,17 @@ return leave(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Join value)  join,required TResult Function( _Leave value)  leave,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Join value)  join,required TResult Function( _Joined value)  joined,required TResult Function( _Leave value)  leave,required TResult Function( _Left value)  left,}){
 final _that = this;
 switch (_that) {
 case _Created():
 return created(_that);case _Updated():
 return updated(_that);case _Deleted():
 return deleted(_that);case _Join():
-return join(_that);case _Leave():
-return leave(_that);}
+return join(_that);case _Joined():
+return joined(_that);case _Leave():
+return leave(_that);case _Left():
+return left(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -103,15 +107,17 @@ return leave(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Join value)?  join,TResult? Function( _Leave value)?  leave,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Join value)?  join,TResult? Function( _Joined value)?  joined,TResult? Function( _Leave value)?  leave,TResult? Function( _Left value)?  left,}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that);case _Updated() when updated != null:
 return updated(_that);case _Deleted() when deleted != null:
 return deleted(_that);case _Join() when join != null:
-return join(_that);case _Leave() when leave != null:
-return leave(_that);case _:
+return join(_that);case _Joined() when joined != null:
+return joined(_that);case _Leave() when leave != null:
+return leave(_that);case _Left() when left != null:
+return left(_that);case _:
   return null;
 
 }
@@ -128,14 +134,16 @@ return leave(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Meeting meeting)?  join,TResult Function( Meeting meeting)?  leave,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Meeting meeting)?  join,TResult Function( Map<String, dynamic> payload)?  joined,TResult Function( Meeting meeting)?  leave,TResult Function( Map<String, dynamic> payload)?  left,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Join() when join != null:
-return join(_that.meeting);case _Leave() when leave != null:
-return leave(_that.meeting);case _:
+return join(_that.meeting);case _Joined() when joined != null:
+return joined(_that.payload);case _Leave() when leave != null:
+return leave(_that.meeting);case _Left() when left != null:
+return left(_that.payload);case _:
   return orElse();
 
 }
@@ -153,14 +161,16 @@ return leave(_that.meeting);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Meeting meeting)  join,required TResult Function( Meeting meeting)  leave,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Meeting meeting)  join,required TResult Function( Map<String, dynamic> payload)  joined,required TResult Function( Meeting meeting)  leave,required TResult Function( Map<String, dynamic> payload)  left,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Updated():
 return updated(_that.payload);case _Deleted():
 return deleted(_that.payload);case _Join():
-return join(_that.meeting);case _Leave():
-return leave(_that.meeting);}
+return join(_that.meeting);case _Joined():
+return joined(_that.payload);case _Leave():
+return leave(_that.meeting);case _Left():
+return left(_that.payload);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -174,14 +184,16 @@ return leave(_that.meeting);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Meeting meeting)?  join,TResult? Function( Meeting meeting)?  leave,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Meeting meeting)?  join,TResult? Function( Map<String, dynamic> payload)?  joined,TResult? Function( Meeting meeting)?  leave,TResult? Function( Map<String, dynamic> payload)?  left,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Join() when join != null:
-return join(_that.meeting);case _Leave() when leave != null:
-return leave(_that.meeting);case _:
+return join(_that.meeting);case _Joined() when joined != null:
+return joined(_that.payload);case _Leave() when leave != null:
+return leave(_that.meeting);case _Left() when left != null:
+return left(_that.payload);case _:
   return null;
 
 }
@@ -483,6 +495,78 @@ $MeetingCopyWith<$Res> get meeting {
 /// @nodoc
 
 
+class _Joined implements MeetingDetailEvent {
+  const _Joined({required final  Map<String, dynamic> payload}): _payload = payload;
+  
+
+ final  Map<String, dynamic> _payload;
+ Map<String, dynamic> get payload {
+  if (_payload is EqualUnmodifiableMapView) return _payload;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_payload);
+}
+
+
+/// Create a copy of MeetingDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$JoinedCopyWith<_Joined> get copyWith => __$JoinedCopyWithImpl<_Joined>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Joined&&const DeepCollectionEquality().equals(other._payload, _payload));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
+
+@override
+String toString() {
+  return 'MeetingDetailEvent.joined(payload: $payload)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$JoinedCopyWith<$Res> implements $MeetingDetailEventCopyWith<$Res> {
+  factory _$JoinedCopyWith(_Joined value, $Res Function(_Joined) _then) = __$JoinedCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, dynamic> payload
+});
+
+
+
+
+}
+/// @nodoc
+class __$JoinedCopyWithImpl<$Res>
+    implements _$JoinedCopyWith<$Res> {
+  __$JoinedCopyWithImpl(this._self, this._then);
+
+  final _Joined _self;
+  final $Res Function(_Joined) _then;
+
+/// Create a copy of MeetingDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
+  return _then(_Joined(
+payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
 class _Leave implements MeetingDetailEvent {
   const _Leave({required this.meeting});
   
@@ -556,6 +640,78 @@ $MeetingCopyWith<$Res> get meeting {
 }
 
 /// @nodoc
+
+
+class _Left implements MeetingDetailEvent {
+  const _Left({required final  Map<String, dynamic> payload}): _payload = payload;
+  
+
+ final  Map<String, dynamic> _payload;
+ Map<String, dynamic> get payload {
+  if (_payload is EqualUnmodifiableMapView) return _payload;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_payload);
+}
+
+
+/// Create a copy of MeetingDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$LeftCopyWith<_Left> get copyWith => __$LeftCopyWithImpl<_Left>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Left&&const DeepCollectionEquality().equals(other._payload, _payload));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
+
+@override
+String toString() {
+  return 'MeetingDetailEvent.left(payload: $payload)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$LeftCopyWith<$Res> implements $MeetingDetailEventCopyWith<$Res> {
+  factory _$LeftCopyWith(_Left value, $Res Function(_Left) _then) = __$LeftCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, dynamic> payload
+});
+
+
+
+
+}
+/// @nodoc
+class __$LeftCopyWithImpl<$Res>
+    implements _$LeftCopyWith<$Res> {
+  __$LeftCopyWithImpl(this._self, this._then);
+
+  final _Left _self;
+  final $Res Function(_Left) _then;
+
+/// Create a copy of MeetingDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
+  return _then(_Left(
+payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
+  ));
+}
+
+
+}
+
+/// @nodoc
 mixin _$MeetingDetailState {
 
 
@@ -599,7 +755,7 @@ extension MeetingDetailStatePatterns on MeetingDetailState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( MeetingDetailInitial value)?  initial,TResult Function( MeetingDetailLoading value)?  loading,TResult Function( MeetingCreated value)?  created,TResult Function( MeetingUpdated value)?  updated,TResult Function( MeetingDeleted value)?  deleted,TResult Function( MeetingDetailFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( MeetingDetailInitial value)?  initial,TResult Function( MeetingDetailLoading value)?  loading,TResult Function( MeetingCreated value)?  created,TResult Function( MeetingUpdated value)?  updated,TResult Function( MeetingDeleted value)?  deleted,TResult Function( MeetingJoined value)?  joined,TResult Function( MeetingLeft value)?  left,TResult Function( MeetingDetailFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case MeetingDetailInitial() when initial != null:
@@ -607,7 +763,9 @@ return initial(_that);case MeetingDetailLoading() when loading != null:
 return loading(_that);case MeetingCreated() when created != null:
 return created(_that);case MeetingUpdated() when updated != null:
 return updated(_that);case MeetingDeleted() when deleted != null:
-return deleted(_that);case MeetingDetailFailure() when failure != null:
+return deleted(_that);case MeetingJoined() when joined != null:
+return joined(_that);case MeetingLeft() when left != null:
+return left(_that);case MeetingDetailFailure() when failure != null:
 return failure(_that);case _:
   return orElse();
 
@@ -626,7 +784,7 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( MeetingDetailInitial value)  initial,required TResult Function( MeetingDetailLoading value)  loading,required TResult Function( MeetingCreated value)  created,required TResult Function( MeetingUpdated value)  updated,required TResult Function( MeetingDeleted value)  deleted,required TResult Function( MeetingDetailFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( MeetingDetailInitial value)  initial,required TResult Function( MeetingDetailLoading value)  loading,required TResult Function( MeetingCreated value)  created,required TResult Function( MeetingUpdated value)  updated,required TResult Function( MeetingDeleted value)  deleted,required TResult Function( MeetingJoined value)  joined,required TResult Function( MeetingLeft value)  left,required TResult Function( MeetingDetailFailure value)  failure,}){
 final _that = this;
 switch (_that) {
 case MeetingDetailInitial():
@@ -634,7 +792,9 @@ return initial(_that);case MeetingDetailLoading():
 return loading(_that);case MeetingCreated():
 return created(_that);case MeetingUpdated():
 return updated(_that);case MeetingDeleted():
-return deleted(_that);case MeetingDetailFailure():
+return deleted(_that);case MeetingJoined():
+return joined(_that);case MeetingLeft():
+return left(_that);case MeetingDetailFailure():
 return failure(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -652,7 +812,7 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( MeetingDetailInitial value)?  initial,TResult? Function( MeetingDetailLoading value)?  loading,TResult? Function( MeetingCreated value)?  created,TResult? Function( MeetingUpdated value)?  updated,TResult? Function( MeetingDeleted value)?  deleted,TResult? Function( MeetingDetailFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( MeetingDetailInitial value)?  initial,TResult? Function( MeetingDetailLoading value)?  loading,TResult? Function( MeetingCreated value)?  created,TResult? Function( MeetingUpdated value)?  updated,TResult? Function( MeetingDeleted value)?  deleted,TResult? Function( MeetingJoined value)?  joined,TResult? Function( MeetingLeft value)?  left,TResult? Function( MeetingDetailFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case MeetingDetailInitial() when initial != null:
@@ -660,7 +820,9 @@ return initial(_that);case MeetingDetailLoading() when loading != null:
 return loading(_that);case MeetingCreated() when created != null:
 return created(_that);case MeetingUpdated() when updated != null:
 return updated(_that);case MeetingDeleted() when deleted != null:
-return deleted(_that);case MeetingDetailFailure() when failure != null:
+return deleted(_that);case MeetingJoined() when joined != null:
+return joined(_that);case MeetingLeft() when left != null:
+return left(_that);case MeetingDetailFailure() when failure != null:
 return failure(_that);case _:
   return null;
 
@@ -678,14 +840,16 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Meeting meeting)?  created,TResult Function( Meeting meeting)?  updated,TResult Function( int meetingId)?  deleted,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Meeting meeting)?  created,TResult Function( Meeting meeting)?  updated,TResult Function( int meetingId)?  deleted,TResult Function( int meetingId)?  joined,TResult Function( int meetingId)?  left,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case MeetingDetailInitial() when initial != null:
 return initial();case MeetingDetailLoading() when loading != null:
 return loading();case MeetingCreated() when created != null:
 return created(_that.meeting);case MeetingUpdated() when updated != null:
 return updated(_that.meeting);case MeetingDeleted() when deleted != null:
-return deleted(_that.meetingId);case MeetingDetailFailure() when failure != null:
+return deleted(_that.meetingId);case MeetingJoined() when joined != null:
+return joined(_that.meetingId);case MeetingLeft() when left != null:
+return left(_that.meetingId);case MeetingDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return orElse();
 
@@ -704,14 +868,16 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Meeting meeting)  created,required TResult Function( Meeting meeting)  updated,required TResult Function( int meetingId)  deleted,required TResult Function( String error)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Meeting meeting)  created,required TResult Function( Meeting meeting)  updated,required TResult Function( int meetingId)  deleted,required TResult Function( int meetingId)  joined,required TResult Function( int meetingId)  left,required TResult Function( String error)  failure,}) {final _that = this;
 switch (_that) {
 case MeetingDetailInitial():
 return initial();case MeetingDetailLoading():
 return loading();case MeetingCreated():
 return created(_that.meeting);case MeetingUpdated():
 return updated(_that.meeting);case MeetingDeleted():
-return deleted(_that.meetingId);case MeetingDetailFailure():
+return deleted(_that.meetingId);case MeetingJoined():
+return joined(_that.meetingId);case MeetingLeft():
+return left(_that.meetingId);case MeetingDetailFailure():
 return failure(_that.error);case _:
   throw StateError('Unexpected subclass');
 
@@ -729,14 +895,16 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Meeting meeting)?  created,TResult? Function( Meeting meeting)?  updated,TResult? Function( int meetingId)?  deleted,TResult? Function( String error)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Meeting meeting)?  created,TResult? Function( Meeting meeting)?  updated,TResult? Function( int meetingId)?  deleted,TResult? Function( int meetingId)?  joined,TResult? Function( int meetingId)?  left,TResult? Function( String error)?  failure,}) {final _that = this;
 switch (_that) {
 case MeetingDetailInitial() when initial != null:
 return initial();case MeetingDetailLoading() when loading != null:
 return loading();case MeetingCreated() when created != null:
 return created(_that.meeting);case MeetingUpdated() when updated != null:
 return updated(_that.meeting);case MeetingDeleted() when deleted != null:
-return deleted(_that.meetingId);case MeetingDetailFailure() when failure != null:
+return deleted(_that.meetingId);case MeetingJoined() when joined != null:
+return joined(_that.meetingId);case MeetingLeft() when left != null:
+return left(_that.meetingId);case MeetingDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return null;
 
@@ -1017,6 +1185,138 @@ class _$MeetingDeletedCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? meetingId = null,}) {
   return _then(MeetingDeleted(
+meetingId: null == meetingId ? _self.meetingId : meetingId // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class MeetingJoined implements MeetingDetailState {
+  const MeetingJoined({required this.meetingId});
+  
+
+ final  int meetingId;
+
+/// Create a copy of MeetingDetailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MeetingJoinedCopyWith<MeetingJoined> get copyWith => _$MeetingJoinedCopyWithImpl<MeetingJoined>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MeetingJoined&&(identical(other.meetingId, meetingId) || other.meetingId == meetingId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,meetingId);
+
+@override
+String toString() {
+  return 'MeetingDetailState.joined(meetingId: $meetingId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $MeetingJoinedCopyWith<$Res> implements $MeetingDetailStateCopyWith<$Res> {
+  factory $MeetingJoinedCopyWith(MeetingJoined value, $Res Function(MeetingJoined) _then) = _$MeetingJoinedCopyWithImpl;
+@useResult
+$Res call({
+ int meetingId
+});
+
+
+
+
+}
+/// @nodoc
+class _$MeetingJoinedCopyWithImpl<$Res>
+    implements $MeetingJoinedCopyWith<$Res> {
+  _$MeetingJoinedCopyWithImpl(this._self, this._then);
+
+  final MeetingJoined _self;
+  final $Res Function(MeetingJoined) _then;
+
+/// Create a copy of MeetingDetailState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? meetingId = null,}) {
+  return _then(MeetingJoined(
+meetingId: null == meetingId ? _self.meetingId : meetingId // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class MeetingLeft implements MeetingDetailState {
+  const MeetingLeft({required this.meetingId});
+  
+
+ final  int meetingId;
+
+/// Create a copy of MeetingDetailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MeetingLeftCopyWith<MeetingLeft> get copyWith => _$MeetingLeftCopyWithImpl<MeetingLeft>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MeetingLeft&&(identical(other.meetingId, meetingId) || other.meetingId == meetingId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,meetingId);
+
+@override
+String toString() {
+  return 'MeetingDetailState.left(meetingId: $meetingId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $MeetingLeftCopyWith<$Res> implements $MeetingDetailStateCopyWith<$Res> {
+  factory $MeetingLeftCopyWith(MeetingLeft value, $Res Function(MeetingLeft) _then) = _$MeetingLeftCopyWithImpl;
+@useResult
+$Res call({
+ int meetingId
+});
+
+
+
+
+}
+/// @nodoc
+class _$MeetingLeftCopyWithImpl<$Res>
+    implements $MeetingLeftCopyWith<$Res> {
+  _$MeetingLeftCopyWithImpl(this._self, this._then);
+
+  final MeetingLeft _self;
+  final $Res Function(MeetingLeft) _then;
+
+/// Create a copy of MeetingDetailState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? meetingId = null,}) {
+  return _then(MeetingLeft(
 meetingId: null == meetingId ? _self.meetingId : meetingId // ignore: cast_nullable_to_non_nullable
 as int,
   ));

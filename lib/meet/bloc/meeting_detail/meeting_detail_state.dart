@@ -15,6 +15,12 @@ class MeetingDetailState with _$MeetingDetailState {
   const factory MeetingDetailState.deleted({required int meetingId}) =
       MeetingDeleted;
 
+  const factory MeetingDetailState.joined({required int meetingId}) =
+      MeetingJoined;
+
+  const factory MeetingDetailState.left({required int meetingId}) =
+      MeetingLeft;
+
   const factory MeetingDetailState.failure({required String error}) =
       MeetingDetailFailure;
 }
