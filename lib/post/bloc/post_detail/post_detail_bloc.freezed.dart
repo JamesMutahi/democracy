@@ -822,7 +822,7 @@ return report(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Map<String, dynamic> payload)?  reported,TResult Function( String body,  PostStatus status,  Post? repostOf,  Post? replyTo,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  List<Map> tags)?  create,TResult Function( Post post)?  get,TResult Function( int id,  String body)?  update,TResult Function( Post post)?  like,TResult Function( Post post)?  bookmark,TResult Function( Post post)?  delete,TResult Function( Post post)?  deleteRepost,TResult Function( String issue,  Post post)?  report,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Map<String, dynamic> payload)?  reported,TResult Function( String body,  PostStatus status,  Post? repostOf,  Post? replyTo,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  List<Map> tags)?  create,TResult Function( Post post)?  get,TResult Function( int id,  String body,  PostStatus status,  List<Map> tags)?  update,TResult Function( Post post)?  like,TResult Function( Post post)?  bookmark,TResult Function( Post post)?  delete,TResult Function( Post post)?  deleteRepost,TResult Function( String issue,  Post post)?  report,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
@@ -832,7 +832,7 @@ return deleted(_that.payload);case _Reported() when reported != null:
 return reported(_that.payload);case _Create() when create != null:
 return create(_that.body,_that.status,_that.repostOf,_that.replyTo,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.tags);case _Get() when get != null:
 return get(_that.post);case _Update() when update != null:
-return update(_that.id,_that.body);case _Like() when like != null:
+return update(_that.id,_that.body,_that.status,_that.tags);case _Like() when like != null:
 return like(_that.post);case _Bookmark() when bookmark != null:
 return bookmark(_that.post);case _Delete() when delete != null:
 return delete(_that.post);case _DeleteRepost() when deleteRepost != null:
@@ -855,7 +855,7 @@ return report(_that.issue,_that.post);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Map<String, dynamic> payload)  reported,required TResult Function( String body,  PostStatus status,  Post? repostOf,  Post? replyTo,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  List<Map> tags)  create,required TResult Function( Post post)  get,required TResult Function( int id,  String body)  update,required TResult Function( Post post)  like,required TResult Function( Post post)  bookmark,required TResult Function( Post post)  delete,required TResult Function( Post post)  deleteRepost,required TResult Function( String issue,  Post post)  report,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Map<String, dynamic> payload)  reported,required TResult Function( String body,  PostStatus status,  Post? repostOf,  Post? replyTo,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  List<Map> tags)  create,required TResult Function( Post post)  get,required TResult Function( int id,  String body,  PostStatus status,  List<Map> tags)  update,required TResult Function( Post post)  like,required TResult Function( Post post)  bookmark,required TResult Function( Post post)  delete,required TResult Function( Post post)  deleteRepost,required TResult Function( String issue,  Post post)  report,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Loaded():
@@ -865,7 +865,7 @@ return deleted(_that.payload);case _Reported():
 return reported(_that.payload);case _Create():
 return create(_that.body,_that.status,_that.repostOf,_that.replyTo,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.tags);case _Get():
 return get(_that.post);case _Update():
-return update(_that.id,_that.body);case _Like():
+return update(_that.id,_that.body,_that.status,_that.tags);case _Like():
 return like(_that.post);case _Bookmark():
 return bookmark(_that.post);case _Delete():
 return delete(_that.post);case _DeleteRepost():
@@ -884,7 +884,7 @@ return report(_that.issue,_that.post);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Map<String, dynamic> payload)?  reported,TResult? Function( String body,  PostStatus status,  Post? repostOf,  Post? replyTo,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  List<Map> tags)?  create,TResult? Function( Post post)?  get,TResult? Function( int id,  String body)?  update,TResult? Function( Post post)?  like,TResult? Function( Post post)?  bookmark,TResult? Function( Post post)?  delete,TResult? Function( Post post)?  deleteRepost,TResult? Function( String issue,  Post post)?  report,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Map<String, dynamic> payload)?  reported,TResult? Function( String body,  PostStatus status,  Post? repostOf,  Post? replyTo,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  List<Map> tags)?  create,TResult? Function( Post post)?  get,TResult? Function( int id,  String body,  PostStatus status,  List<Map> tags)?  update,TResult? Function( Post post)?  like,TResult? Function( Post post)?  bookmark,TResult? Function( Post post)?  delete,TResult? Function( Post post)?  deleteRepost,TResult? Function( String issue,  Post post)?  report,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
@@ -894,7 +894,7 @@ return deleted(_that.payload);case _Reported() when reported != null:
 return reported(_that.payload);case _Create() when create != null:
 return create(_that.body,_that.status,_that.repostOf,_that.replyTo,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.tags);case _Get() when get != null:
 return get(_that.post);case _Update() when update != null:
-return update(_that.id,_that.body);case _Like() when like != null:
+return update(_that.id,_that.body,_that.status,_that.tags);case _Like() when like != null:
 return like(_that.post);case _Bookmark() when bookmark != null:
 return bookmark(_that.post);case _Delete() when delete != null:
 return delete(_that.post);case _DeleteRepost() when deleteRepost != null:
@@ -1506,11 +1506,19 @@ $PostCopyWith<$Res> get post {
 
 
 class _Update implements PostDetailEvent {
-  const _Update({required this.id, required this.body});
+  const _Update({required this.id, required this.body, required this.status, required final  List<Map> tags}): _tags = tags;
   
 
  final  int id;
  final  String body;
+ final  PostStatus status;
+ final  List<Map> _tags;
+ List<Map> get tags {
+  if (_tags is EqualUnmodifiableListView) return _tags;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_tags);
+}
+
 
 /// Create a copy of PostDetailEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -1522,16 +1530,16 @@ _$UpdateCopyWith<_Update> get copyWith => __$UpdateCopyWithImpl<_Update>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Update&&(identical(other.id, id) || other.id == id)&&(identical(other.body, body) || other.body == body));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Update&&(identical(other.id, id) || other.id == id)&&(identical(other.body, body) || other.body == body)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other._tags, _tags));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,body);
+int get hashCode => Object.hash(runtimeType,id,body,status,const DeepCollectionEquality().hash(_tags));
 
 @override
 String toString() {
-  return 'PostDetailEvent.update(id: $id, body: $body)';
+  return 'PostDetailEvent.update(id: $id, body: $body, status: $status, tags: $tags)';
 }
 
 
@@ -1542,7 +1550,7 @@ abstract mixin class _$UpdateCopyWith<$Res> implements $PostDetailEventCopyWith<
   factory _$UpdateCopyWith(_Update value, $Res Function(_Update) _then) = __$UpdateCopyWithImpl;
 @useResult
 $Res call({
- int id, String body
+ int id, String body, PostStatus status, List<Map> tags
 });
 
 
@@ -1559,11 +1567,13 @@ class __$UpdateCopyWithImpl<$Res>
 
 /// Create a copy of PostDetailEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? id = null,Object? body = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? id = null,Object? body = null,Object? status = null,Object? tags = null,}) {
   return _then(_Update(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,body: null == body ? _self.body : body // ignore: cast_nullable_to_non_nullable
-as String,
+as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as PostStatus,tags: null == tags ? _self._tags : tags // ignore: cast_nullable_to_non_nullable
+as List<Map>,
   ));
 }
 

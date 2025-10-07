@@ -27,11 +27,11 @@ class CustomAppBar extends StatelessWidget {
     List<Widget> widgets = [
       Container(
         margin: EdgeInsets.only(left: 15),
-        child: ProfileImage(
-          user: user,
+        child: GestureDetector(
           onTap: () {
             Scaffold.of(context).openDrawer();
           },
+          child: ProfileImage(user: user),
         ),
       ),
     ];

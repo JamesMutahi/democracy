@@ -39,6 +39,8 @@ sealed class PostDetailEvent with _$PostDetailEvent {
   const factory PostDetailEvent.update({
     required int id,
     required String body,
+    required PostStatus status,
+    required List<Map> tags,
   }) = _Update;
 
   const factory PostDetailEvent.like({required Post post}) = _Like;

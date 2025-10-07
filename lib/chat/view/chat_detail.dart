@@ -164,7 +164,7 @@ class _ChatScaffoldState extends State<ChatScaffold> {
                     ? SizedBox.shrink()
                     : Row(
                       children: [
-                        ProfileImage(user: otherUser),
+                        ProfileImage(user: otherUser, navigateToProfile: true),
                         SizedBox(width: 10),
                         Flexible(
                           child: Text(

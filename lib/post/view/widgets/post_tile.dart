@@ -177,7 +177,10 @@ class _PostContainer extends StatelessWidget {
                       CircleAvatar(
                         radius: 23,
                         backgroundColor: Colors.transparent,
-                        child: ProfileImage(user: post.author),
+                        child: ProfileImage(
+                          user: post.author,
+                          navigateToProfile: true,
+                        ),
                       ),
                       SizedBox(width: 10),
                       Expanded(

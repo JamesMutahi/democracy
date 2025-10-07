@@ -179,7 +179,13 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       'payload': {
         'action': 'patch',
         'request_id': requestId,
-        'data': {'pk': event.id, 'body': event.body},
+        'pk': event.id,
+        'data': {
+          'body': event.body,
+          'status':
+              event.status == PostStatus.published ? 'published' : 'draft',
+          'tags': event.tags,
+        },
       },
     };
     webSocketService.send(message);

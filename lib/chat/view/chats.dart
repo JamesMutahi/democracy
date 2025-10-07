@@ -235,7 +235,7 @@ class _ChatTileState extends State<ChatTile> {
             ? 'You: '
             : '';
     return ListTile(
-      leading: ProfileImage(user: widget.otherUser),
+      leading: ProfileImage(user: widget.otherUser, navigateToProfile: true),
       title: ProfileName(user: widget.otherUser),
       subtitle: Row(
         children: [
