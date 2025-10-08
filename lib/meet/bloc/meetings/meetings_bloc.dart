@@ -27,6 +27,9 @@ class MeetingsBloc extends Bloc<MeetingsEvent, MeetingsState> {
     on<_Received>((event, emit) {
       _onReceived(event, emit);
     });
+    on<_Resubscribe>((event, emit) {
+      _onResubscribe(event, emit);
+    });
   }
 
   Future _onGet(_Get event, Emitter<MeetingsState> emit) async {
@@ -60,6 +63,19 @@ class MeetingsBloc extends Bloc<MeetingsEvent, MeetingsState> {
     } else {
       emit(state.copyWith(status: MeetingsStatus.failure));
     }
+  }
+
+  Future _onResubscribe(_Resubscribe event, Emitter<MeetingsState> emit) async {
+    List<int> meetingIds = event.meetings.map((meeting) => meeting.id).toList();
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        "action": 'resubscribe',
+        'request_id': requestId,
+        'pks': meetingIds,
+      },
+    };
+    webSocketService.send(message);
   }
 
   final WebSocketService webSocketService;

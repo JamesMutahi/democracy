@@ -55,12 +55,13 @@ extension MeetingsEventPatterns on MeetingsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Resubscribe value)?  resubscribe,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
-return received(_that);case _:
+return received(_that);case _Resubscribe() when resubscribe != null:
+return resubscribe(_that);case _:
   return orElse();
 
 }
@@ -78,12 +79,13 @@ return received(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Resubscribe value)  resubscribe,}){
 final _that = this;
 switch (_that) {
 case _Get():
 return get(_that);case _Received():
-return received(_that);}
+return received(_that);case _Resubscribe():
+return resubscribe(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -97,12 +99,13 @@ return received(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Resubscribe value)?  resubscribe,}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
-return received(_that);case _:
+return received(_that);case _Resubscribe() when resubscribe != null:
+return resubscribe(_that);case _:
   return null;
 
 }
@@ -119,11 +122,12 @@ return received(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  Meeting? lastMeeting)?  get,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  Meeting? lastMeeting)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( List<Meeting> meetings)?  resubscribe,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.searchTerm,_that.lastMeeting);case _Received() when received != null:
-return received(_that.payload);case _:
+return received(_that.payload);case _Resubscribe() when resubscribe != null:
+return resubscribe(_that.meetings);case _:
   return orElse();
 
 }
@@ -141,11 +145,12 @@ return received(_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  Meeting? lastMeeting)  get,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  Meeting? lastMeeting)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( List<Meeting> meetings)  resubscribe,}) {final _that = this;
 switch (_that) {
 case _Get():
 return get(_that.searchTerm,_that.lastMeeting);case _Received():
-return received(_that.payload);}
+return received(_that.payload);case _Resubscribe():
+return resubscribe(_that.meetings);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -159,11 +164,12 @@ return received(_that.payload);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  Meeting? lastMeeting)?  get,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  Meeting? lastMeeting)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( List<Meeting> meetings)?  resubscribe,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.searchTerm,_that.lastMeeting);case _Received() when received != null:
-return received(_that.payload);case _:
+return received(_that.payload);case _Resubscribe() when resubscribe != null:
+return resubscribe(_that.meetings);case _:
   return null;
 
 }
@@ -317,6 +323,78 @@ class __$ReceivedCopyWithImpl<$Res>
   return _then(_Received(
 payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _Resubscribe implements MeetingsEvent {
+  const _Resubscribe({required final  List<Meeting> meetings}): _meetings = meetings;
+  
+
+ final  List<Meeting> _meetings;
+ List<Meeting> get meetings {
+  if (_meetings is EqualUnmodifiableListView) return _meetings;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_meetings);
+}
+
+
+/// Create a copy of MeetingsEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ResubscribeCopyWith<_Resubscribe> get copyWith => __$ResubscribeCopyWithImpl<_Resubscribe>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Resubscribe&&const DeepCollectionEquality().equals(other._meetings, _meetings));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_meetings));
+
+@override
+String toString() {
+  return 'MeetingsEvent.resubscribe(meetings: $meetings)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ResubscribeCopyWith<$Res> implements $MeetingsEventCopyWith<$Res> {
+  factory _$ResubscribeCopyWith(_Resubscribe value, $Res Function(_Resubscribe) _then) = __$ResubscribeCopyWithImpl;
+@useResult
+$Res call({
+ List<Meeting> meetings
+});
+
+
+
+
+}
+/// @nodoc
+class __$ResubscribeCopyWithImpl<$Res>
+    implements _$ResubscribeCopyWith<$Res> {
+  __$ResubscribeCopyWithImpl(this._self, this._then);
+
+  final _Resubscribe _self;
+  final $Res Function(_Resubscribe) _then;
+
+/// Create a copy of MeetingsEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? meetings = null,}) {
+  return _then(_Resubscribe(
+meetings: null == meetings ? _self._meetings : meetings // ignore: cast_nullable_to_non_nullable
+as List<Meeting>,
   ));
 }
 

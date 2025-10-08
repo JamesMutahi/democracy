@@ -8,7 +8,6 @@ import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 class MeetingTile extends StatelessWidget {
   const MeetingTile({
@@ -132,50 +131,6 @@ class HostInfo extends StatelessWidget {
           Text(meeting.host.bio, maxLines: 2, overflow: TextOverflow.ellipsis),
         ],
       ),
-    );
-  }
-}
-
-class ListenersRow extends StatelessWidget {
-  const ListenersRow({super.key, required this.meeting});
-
-  final Meeting meeting;
-
-  @override
-  Widget build(BuildContext context) {
-    var numberFormat = NumberFormat.compact(locale: "en_UK");
-    return Row(
-      children: [
-        Stack(
-          children: [
-            ...meeting.recentListeners.map((user) {
-              return Container(
-                margin: EdgeInsets.only(
-                  left: meeting.recentListeners.indexOf(user) * 15,
-                ),
-                child: CircleAvatar(
-                  radius: 15,
-                  backgroundColor: Theme.of(context).cardColor,
-                  child: CircleAvatar(
-                    radius: 13,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(user.image),
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            }),
-          ],
-        ),
-        if (meeting.listeners > 0) SizedBox(width: 10),
-        Text('${numberFormat.format(meeting.listeners)} listening'),
-      ],
     );
   }
 }
