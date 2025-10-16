@@ -108,54 +108,30 @@ class _RepliesState extends State<Replies> {
             _posts = posts;
           });
         },
-        child:
-            loading
-                ? Container(
-                  margin: EdgeInsets.only(top: 50),
-                  child: BottomLoader(),
-                )
-                : failure
-                ? FailureRetryButton(
-                  onPressed: () {
-                    context.read<RepliesBloc>().add(
-                      RepliesEvent.get(post: widget.post),
-                    );
-                  },
-                )
-                : ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (BuildContext context, int index) {
-                    Post post = _posts[index];
-                    bool showTopThread = false;
-                    bool showBottomThread = false;
-                    if (index == 0) {
-                      showTopThread = false;
-                      showBottomThread = true;
-                    } else {
-                      if (_posts[index - 1].author.id == post.author.id) {
-                        showTopThread = true;
-                      }
-                      if (_posts.length != index + 1) {
-                        if (_posts[index + 1].author.id == post.author.id) {
-                          showBottomThread = true;
-                        } else {
-                          showBottomThread = false;
-                        }
-                      } else {
-                        showBottomThread = false;
-                      }
-                    }
-                    return PostTile(
-                      key: ValueKey(post.id),
-                      post: post,
-                      showTopThread: showTopThread,
-                      showBottomThread: showBottomThread,
-                      checkVisibility: true,
-                    );
-                  },
-                  itemCount: _posts.length,
-                ),
+        child: loading
+            ? Container(margin: EdgeInsets.only(top: 50), child: BottomLoader())
+            : failure
+            ? FailureRetryButton(
+                onPressed: () {
+                  context.read<RepliesBloc>().add(
+                    RepliesEvent.get(post: widget.post),
+                  );
+                },
+              )
+            : ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemBuilder: (BuildContext context, int index) {
+                  Post post = _posts[index];
+                  return PostTile(
+                    key: ValueKey(post.id),
+                    post: post,
+                    checkVisibility: true,
+                    showThread: true,
+                  );
+                },
+                itemCount: _posts.length,
+              ),
       ),
     );
   }

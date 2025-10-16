@@ -61,6 +61,8 @@ class PetitionTile extends StatelessWidget {
               child: Stack(
                 children: [
                   Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
                         margin: EdgeInsets.only(right: isDependency ? 0 : 40),
@@ -106,6 +108,7 @@ class PetitionSupportersRow extends StatelessWidget {
   Widget build(BuildContext context) {
     var numberFormat = NumberFormat.compact(locale: "en_UK");
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Stack(
           children: [

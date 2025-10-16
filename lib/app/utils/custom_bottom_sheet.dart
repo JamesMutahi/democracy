@@ -19,47 +19,58 @@ class CustomBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> widgets = [
-      Center(
-        child: Container(
-          height: 5,
-          width: 50,
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.outlineVariant,
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-          ),
-        ),
-      ),
-      Container(
-        margin: EdgeInsets.only(bottom: 10),
-        padding: EdgeInsets.only(left: 15),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: Theme.of(context).disabledColor.withAlpha(30),
-            ),
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(title, style: Theme.of(context).textTheme.titleMedium),
-            IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: Icon(Symbols.close),
-            ),
-          ],
-        ),
-      ),
-    ];
-    widgets.addAll(children);
     return Container(
-      margin: EdgeInsets.only(top: 10, bottom: 20, left: 15, right: 15),
+      margin: EdgeInsets.only(top: 10, bottom: 20),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
-        children: widgets,
+        children: [
+          Column(
+            children: [
+              Center(
+                child: Container(
+                  height: 5,
+                  width: 50,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.outlineVariant,
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 10),
+                padding: EdgeInsets.only(left: 15),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Theme.of(context).disabledColor.withAlpha(30),
+                    ),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(title, style: Theme.of(context).textTheme.titleMedium),
+                    IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: Icon(Symbols.close),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 15, right: 15),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: children,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -84,12 +95,11 @@ class ShareBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomBottomSheet(
-      title:
-          post == null
-              ? ballot == null
-                  ? 'Share survey'
-                  : 'Share ballot'
-              : 'Share post',
+      title: post == null
+          ? ballot == null
+                ? 'Share survey'
+                : 'Share ballot'
+          : 'Share post',
       children: [
         CustomBottomSheetContainer(
           text: 'Send via Direct Message',
@@ -103,14 +113,13 @@ class ShareBottomSheet extends StatelessWidget {
               useSafeArea: true,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               shape: const BeveledRectangleBorder(),
-              builder:
-                  (context) => DirectMessage(
-                    post: post,
-                    ballot: ballot,
-                    survey: survey,
-                    petition: petition,
-                    meeting: meeting,
-                  ),
+              builder: (context) => DirectMessage(
+                post: post,
+                ballot: ballot,
+                survey: survey,
+                petition: petition,
+                meeting: meeting,
+              ),
             );
           },
         ),

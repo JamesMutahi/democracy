@@ -8,6 +8,7 @@ import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/post_detail.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
+import 'package:democracy/post/view/widgets/thread.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/profile.dart';
@@ -22,27 +23,24 @@ class PostTile extends StatelessWidget {
   const PostTile({
     super.key,
     required this.post,
-    this.isDependency = false,
-    this.showTopThread = false,
-    this.showBottomThread = false,
     this.checkVisibility = false,
+    this.isDependency = false,
+    this.showThread = false,
+    this.hideBorder = false,
   });
 
   final Post post;
-  final bool isDependency;
-  final bool showTopThread;
-  final bool showBottomThread;
   final bool checkVisibility;
+  final bool isDependency;
+  final bool showThread;
+  final bool hideBorder;
 
   @override
   Widget build(BuildContext context) {
     bool showAsRepost = post.body.isEmpty && post.repostOf != null;
     bool visible = true;
     if (checkVisibility && !isDependency) {
-      if (post.author.isBlocked) {
-        visible = false;
-      }
-      if (post.author.isMuted) {
+      if (post.author.isBlocked || post.author.isMuted) {
         visible = false;
       }
     }
@@ -54,84 +52,74 @@ class PostTile extends StatelessWidget {
           if (state is Authenticated) {
             user = state.user;
           }
-          return InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder:
-                      (context) => PostDetail(
-                        key: ValueKey(post.id),
-                        post: showAsRepost ? post.repostOf! : post,
-                        showAsRepost: showAsRepost,
-                        repost: post,
-                      ),
+          return Container(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: (isDependency || hideBorder)
+                      ? Colors.transparent
+                      : Theme.of(context).disabledColor.withAlpha(30),
                 ),
-              );
-            },
-            child:
-                showAsRepost
-                    ? Column(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.only(
-                            left: 15,
-                            right: 15,
-                            top: 10,
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Symbols.loop_rounded,
-                                color: Theme.of(context).colorScheme.outline,
+              ),
+            ),
+            child: Column(
+              children: [
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PostDetail(
+                          key: ValueKey(post.id),
+                          post: showAsRepost ? post.repostOf! : post,
+                          showAsRepost: showAsRepost,
+                          repost: post,
+                        ),
+                      ),
+                    );
+                  },
+                  child: showAsRepost
+                      ? Column(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(
+                                left: 15,
+                                right: 15,
+                                top: 10,
                               ),
-                              SizedBox(width: 5),
-                              Text(
-                                user.id == post.author.id
-                                    ? 'You reposted'
-                                    : '${post.author.name} reposted',
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.outline,
-                                ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Symbols.loop_rounded,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.outline,
+                                  ),
+                                  SizedBox(width: 5),
+                                  Text(
+                                    user.id == post.author.id
+                                        ? 'You reposted'
+                                        : '${post.author.name} reposted',
+                                    style: TextStyle(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.outline,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                        _PostContainer(
-                          post: post.repostOf!,
-                          isDependency: false,
-                          showBottomThread: showBottomThread,
-                        ),
-                      ],
-                    )
-                    : (showTopThread || showBottomThread)
-                    ? Stack(
-                      children: [
-                        Positioned(
-                          // 23 -> circle avatar radius, 15 -> margin
-                          left: 23 + 15,
-                          top: showBottomThread ? 0 : null,
-                          bottom: showBottomThread ? 0 : null,
-                          child: Container(
-                            margin:
-                                showTopThread ? null : EdgeInsets.only(top: 10),
-                            height: showBottomThread ? null : 10,
-                            width: 2,
-                            color: Theme.of(context).colorScheme.outlineVariant,
-                          ),
-                        ),
-                        _PostContainer(
-                          post: post,
-                          isDependency: false,
-                          showBottomThread: showBottomThread,
-                        ),
-                      ],
-                    )
-                    : _PostContainer(
-                      post: post,
-                      isDependency: isDependency,
-                      showBottomThread: false,
-                    ),
+                            ),
+                            _PostContainer(
+                              post: post.repostOf!,
+                              isDependency: false,
+                            ),
+                          ],
+                        )
+                      : _PostContainer(post: post, isDependency: isDependency),
+                ),
+                if (showThread) Thread(key: ValueKey(post.id), post: post),
+              ],
+            ),
           );
         },
       ),
@@ -140,140 +128,126 @@ class PostTile extends StatelessWidget {
 }
 
 class _PostContainer extends StatelessWidget {
-  const _PostContainer({
-    required this.post,
-    required this.isDependency,
-    required this.showBottomThread,
-  });
+  const _PostContainer({required this.post, required this.isDependency});
 
   final Post post;
   final bool isDependency;
-  final bool showBottomThread;
 
   @override
   Widget build(BuildContext context) {
     var numberFormat = NumberFormat.compact(locale: "en_UK");
     return Stack(
       children: [
-        Container(
+        Padding(
           padding: EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 5),
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color:
-                    (isDependency || showBottomThread)
-                        ? Colors.transparent
-                        : Theme.of(context).disabledColor.withAlpha(30),
-              ),
-            ),
-          ),
-          child:
-              post.isDeleted
-                  ? PostDeletedWidget()
-                  : Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CircleAvatar(
-                        radius: 23,
-                        backgroundColor: Colors.transparent,
-                        child: ProfileImage(
-                          user: post.author,
-                          navigateToProfile: true,
-                        ),
+          child: post.isDeleted
+              ? PostDeletedWidget()
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CircleAvatar(
+                      radius: 23,
+                      backgroundColor: Colors.transparent,
+                      child: ProfileImage(
+                        user: post.author,
+                        navigateToProfile: true,
                       ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ProfileName(user: post.author),
+                              if (!isDependency)
+                                Container(
+                                  margin: EdgeInsets.only(right: 20),
+                                  child: TimeDifferenceInfo(
+                                    publishedAt: post.publishedAt,
+                                  ),
+                                ),
+                            ],
+                          ),
+                          PostBody(post: post),
+                          if (post.repostOf != null && !isDependency)
+                            DependencyContainer(
+                              child: PostTile(
+                                post: post.repostOf!,
+                                isDependency: true,
+                              ),
+                            ),
+                          if (post.ballot != null)
+                            DependencyContainer(
+                              child: BallotTile(
+                                ballot: post.ballot!,
+                                isDependency: true,
+                              ),
+                            ),
+                          if (post.survey != null)
+                            DependencyContainer(
+                              child: SurveyTile(
+                                survey: post.survey!,
+                                isDependency: true,
+                              ),
+                            ),
+                          if (post.petition != null)
+                            DependencyContainer(
+                              child: PetitionTile(
+                                petition: post.petition!,
+                                isDependency: true,
+                              ),
+                            ),
+                          if (post.meeting != null)
+                            DependencyContainer(
+                              child: MeetingTile(
+                                meeting: post.meeting!,
+                                isDependency: true,
+                              ),
+                            ),
+                          SizedBox(height: 5),
+                          if (!isDependency)
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                ProfileName(user: post.author),
-                                if (!isDependency)
-                                  Container(
-                                    margin: EdgeInsets.only(right: 20),
-                                    child: TimeDifferenceInfo(
-                                      publishedAt: post.publishedAt,
-                                    ),
-                                  ),
+                                ReplyButton(
+                                  post: post,
+                                  numberFormat: numberFormat,
+                                ),
+                                RepostButton(
+                                  post: post,
+                                  numberFormat: numberFormat,
+                                ),
+                                LikeButton(
+                                  post: post,
+                                  numberFormat: numberFormat,
+                                ),
+                                BookmarkButton(
+                                  post: post,
+                                  numberFormat: numberFormat,
+                                ),
+                                ViewsButton(
+                                  post: post,
+                                  numberFormat: numberFormat,
+                                ),
                               ],
                             ),
-                            PostBody(post: post),
-                            if (post.repostOf != null && !isDependency)
-                              DependencyContainer(
-                                child: PostTile(
-                                  post: post.repostOf!,
-                                  isDependency: true,
-                                ),
-                              ),
-                            if (post.ballot != null)
-                              DependencyContainer(
-                                child: BallotTile(
-                                  ballot: post.ballot!,
-                                  isDependency: true,
-                                ),
-                              ),
-                            if (post.survey != null)
-                              DependencyContainer(
-                                child: SurveyTile(
-                                  survey: post.survey!,
-                                  isDependency: true,
-                                ),
-                              ),
-                            if (post.petition != null)
-                              DependencyContainer(
-                                child: PetitionTile(
-                                  petition: post.petition!,
-                                  isDependency: true,
-                                ),
-                              ),
-                            if (post.meeting != null)
-                              DependencyContainer(
-                                child: MeetingTile(
-                                  meeting: post.meeting!,
-                                  isDependency: true,
-                                ),
-                              ),
-                            SizedBox(height: 5),
-                            if (!isDependency)
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  ReplyButton(
-                                    post: post,
-                                    numberFormat: numberFormat,
-                                  ),
-                                  RepostButton(
-                                    post: post,
-                                    numberFormat: numberFormat,
-                                  ),
-                                  LikeButton(
-                                    post: post,
-                                    numberFormat: numberFormat,
-                                  ),
-                                  BookmarkButton(
-                                    post: post,
-                                    numberFormat: numberFormat,
-                                  ),
-                                  ViewsButton(
-                                    post: post,
-                                    numberFormat: numberFormat,
-                                  ),
-                                ],
-                              ),
-                          ],
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
+                ),
         ),
         if (!isDependency)
-          Align(alignment: Alignment.topRight, child: PostPopUp(post: post)),
+          Align(
+            alignment: Alignment.topRight,
+            child: PostPopUp(post: post),
+          ),
       ],
     );
   }
@@ -313,12 +287,11 @@ class _PostBodyState extends State<PostBody> {
       onUserTagPressed: (userId) {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder:
-                (context) => ProfilePage(
-                  user: widget.post.taggedUsers.firstWhere(
-                    (user) => user.id == int.parse(userId),
-                  ),
-                ),
+            builder: (context) => ProfilePage(
+              user: widget.post.taggedUsers.firstWhere(
+                (user) => user.id == int.parse(userId),
+              ),
+            ),
           ),
         );
       },
