@@ -47,6 +47,7 @@ sealed class Post with _$Post {
     required Meeting? meeting,
     @JsonKey(name: 'tagged_users') required List<User> taggedUsers,
     @JsonKey(name: 'tagged_sections') required List<Section> taggedSections,
+    @JsonKey(defaultValue: []) required List<Post> thread,
   }) = _Post;
 
   factory Post.fromJson(Map<String, Object?> json) => _$PostFromJson(json);

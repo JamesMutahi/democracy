@@ -14,12 +14,12 @@ _User _$UserFromJson(Map<String, dynamic> json) => _User(
   image: json['image'] as String,
   coverPhoto: json['cover_photo'] as String,
   bio: json['bio'] as String,
-  muted:
-      (json['muted'] as List<dynamic>).map((e) => (e as num).toInt()).toList(),
-  blocked:
-      (json['blocked'] as List<dynamic>)
-          .map((e) => (e as num).toInt())
-          .toList(),
+  muted: (json['muted'] as List<dynamic>)
+      .map((e) => (e as num).toInt())
+      .toList(),
+  blocked: (json['blocked'] as List<dynamic>)
+      .map((e) => (e as num).toInt())
+      .toList(),
   following: (json['following'] as num).toInt(),
   followers: (json['followers'] as num).toInt(),
   isActive: json['is_active'] as bool,

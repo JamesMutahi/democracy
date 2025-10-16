@@ -14,10 +14,9 @@ _Petition _$PetitionFromJson(Map<String, dynamic> json) => _Petition(
   image: json['image'] as String,
   video: json['video'] as String?,
   supporters: (json['supporters'] as num).toInt(),
-  recentSupporters:
-      (json['recent_supporters'] as List<dynamic>)
-          .map((e) => User.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  recentSupporters: (json['recent_supporters'] as List<dynamic>)
+      .map((e) => User.fromJson(e as Map<String, dynamic>))
+      .toList(),
   isSupported: json['is_supported'] as bool,
   createdAt: DateTime.parse(json['created_at'] as String),
   isActive: json['is_active'] as bool,

@@ -12,10 +12,9 @@ _Section _$SectionFromJson(Map<String, dynamic> json) => _Section(
   tag: json['tag'] as String?,
   text: json['text'] as String,
   isTitle: json['is_title'] as bool,
-  subsections:
-      (json['subsections'] as List<dynamic>)
-          .map((e) => Section.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  subsections: (json['subsections'] as List<dynamic>)
+      .map((e) => Section.fromJson(e as Map<String, dynamic>))
+      .toList(),
   isBookmarked: json['is_bookmarked'] as bool,
 );
 

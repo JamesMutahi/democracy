@@ -32,38 +32,35 @@ _Post _$PostFromJson(Map<String, dynamic> json) => _Post(
   isDeleted: json['is_deleted'] as bool,
   isActive: json['is_active'] as bool,
   publishedAt: DateTime.parse(json['published_at'] as String),
-  replyTo:
-      json['reply_to'] == null
-          ? null
-          : Post.fromJson(json['reply_to'] as Map<String, dynamic>),
-  repostOf:
-      json['repost_of'] == null
-          ? null
-          : Post.fromJson(json['repost_of'] as Map<String, dynamic>),
-  ballot:
-      json['ballot'] == null
-          ? null
-          : Ballot.fromJson(json['ballot'] as Map<String, dynamic>),
-  survey:
-      json['survey'] == null
-          ? null
-          : Survey.fromJson(json['survey'] as Map<String, dynamic>),
-  petition:
-      json['petition'] == null
-          ? null
-          : Petition.fromJson(json['petition'] as Map<String, dynamic>),
-  meeting:
-      json['meeting'] == null
-          ? null
-          : Meeting.fromJson(json['meeting'] as Map<String, dynamic>),
-  taggedUsers:
-      (json['tagged_users'] as List<dynamic>)
-          .map((e) => User.fromJson(e as Map<String, dynamic>))
-          .toList(),
-  taggedSections:
-      (json['tagged_sections'] as List<dynamic>)
-          .map((e) => Section.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  replyTo: json['reply_to'] == null
+      ? null
+      : Post.fromJson(json['reply_to'] as Map<String, dynamic>),
+  repostOf: json['repost_of'] == null
+      ? null
+      : Post.fromJson(json['repost_of'] as Map<String, dynamic>),
+  ballot: json['ballot'] == null
+      ? null
+      : Ballot.fromJson(json['ballot'] as Map<String, dynamic>),
+  survey: json['survey'] == null
+      ? null
+      : Survey.fromJson(json['survey'] as Map<String, dynamic>),
+  petition: json['petition'] == null
+      ? null
+      : Petition.fromJson(json['petition'] as Map<String, dynamic>),
+  meeting: json['meeting'] == null
+      ? null
+      : Meeting.fromJson(json['meeting'] as Map<String, dynamic>),
+  taggedUsers: (json['tagged_users'] as List<dynamic>)
+      .map((e) => User.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  taggedSections: (json['tagged_sections'] as List<dynamic>)
+      .map((e) => Section.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  thread:
+      (json['thread'] as List<dynamic>?)
+          ?.map((e) => Post.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      [],
 );
 
 Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
@@ -100,4 +97,5 @@ Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
   'meeting': instance.meeting,
   'tagged_users': instance.taggedUsers,
   'tagged_sections': instance.taggedSections,
+  'thread': instance.thread,
 };

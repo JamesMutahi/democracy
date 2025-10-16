@@ -11,26 +11,21 @@ _Message _$MessageFromJson(Map<String, dynamic> json) => _Message(
   chat: (json['chat'] as num).toInt(),
   user: User.fromJson(json['user'] as Map<String, dynamic>),
   text: json['text'] as String,
-  post:
-      json['post'] == null
-          ? null
-          : Post.fromJson(json['post'] as Map<String, dynamic>),
-  ballot:
-      json['ballot'] == null
-          ? null
-          : Ballot.fromJson(json['ballot'] as Map<String, dynamic>),
-  survey:
-      json['survey'] == null
-          ? null
-          : Survey.fromJson(json['survey'] as Map<String, dynamic>),
-  petition:
-      json['petition'] == null
-          ? null
-          : Petition.fromJson(json['petition'] as Map<String, dynamic>),
-  meeting:
-      json['meeting'] == null
-          ? null
-          : Meeting.fromJson(json['meeting'] as Map<String, dynamic>),
+  post: json['post'] == null
+      ? null
+      : Post.fromJson(json['post'] as Map<String, dynamic>),
+  ballot: json['ballot'] == null
+      ? null
+      : Ballot.fromJson(json['ballot'] as Map<String, dynamic>),
+  survey: json['survey'] == null
+      ? null
+      : Survey.fromJson(json['survey'] as Map<String, dynamic>),
+  petition: json['petition'] == null
+      ? null
+      : Petition.fromJson(json['petition'] as Map<String, dynamic>),
+  meeting: json['meeting'] == null
+      ? null
+      : Meeting.fromJson(json['meeting'] as Map<String, dynamic>),
   isRead: json['is_read'] as bool,
   isEdited: json['is_edited'] as bool,
   isDeleted: json['is_deleted'] as bool,

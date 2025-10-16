@@ -11,30 +11,24 @@ _Notification _$NotificationFromJson(Map<String, dynamic> json) =>
       id: (json['id'] as num).toInt(),
       text: json['text'] as String,
       isRead: json['is_read'] as bool,
-      post:
-          json['post'] == null
-              ? null
-              : Post.fromJson(json['post'] as Map<String, dynamic>),
-      ballot:
-          json['ballot'] == null
-              ? null
-              : Ballot.fromJson(json['ballot'] as Map<String, dynamic>),
-      survey:
-          json['survey'] == null
-              ? null
-              : Survey.fromJson(json['survey'] as Map<String, dynamic>),
-      petition:
-          json['petition'] == null
-              ? null
-              : Petition.fromJson(json['petition'] as Map<String, dynamic>),
-      meeting:
-          json['meeting'] == null
-              ? null
-              : Meeting.fromJson(json['meeting'] as Map<String, dynamic>),
-      chat:
-          json['chat'] == null
-              ? null
-              : Chat.fromJson(json['chat'] as Map<String, dynamic>),
+      post: json['post'] == null
+          ? null
+          : Post.fromJson(json['post'] as Map<String, dynamic>),
+      ballot: json['ballot'] == null
+          ? null
+          : Ballot.fromJson(json['ballot'] as Map<String, dynamic>),
+      survey: json['survey'] == null
+          ? null
+          : Survey.fromJson(json['survey'] as Map<String, dynamic>),
+      petition: json['petition'] == null
+          ? null
+          : Petition.fromJson(json['petition'] as Map<String, dynamic>),
+      meeting: json['meeting'] == null
+          ? null
+          : Meeting.fromJson(json['meeting'] as Map<String, dynamic>),
+      chat: json['chat'] == null
+          ? null
+          : Chat.fromJson(json['chat'] as Map<String, dynamic>),
       createdAt: DateTime.parse(json['created_at'] as String),
     );
 

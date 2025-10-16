@@ -11,10 +11,9 @@ _Meeting _$MeetingFromJson(Map<String, dynamic> json) => _Meeting(
   host: User.fromJson(json['host'] as Map<String, dynamic>),
   title: json['title'] as String,
   description: json['description'] as String,
-  recentListeners:
-      (json['recent_listeners'] as List<dynamic>)
-          .map((e) => User.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  recentListeners: (json['recent_listeners'] as List<dynamic>)
+      .map((e) => User.fromJson(e as Map<String, dynamic>))
+      .toList(),
   listeners: (json['listeners'] as num).toInt(),
   isActive: json['is_active'] as bool,
   startTime: DateTime.parse(json['start_time'] as String),

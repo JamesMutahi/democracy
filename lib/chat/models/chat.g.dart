@@ -8,14 +8,12 @@ part of 'chat.dart';
 
 _Chat _$ChatFromJson(Map<String, dynamic> json) => _Chat(
   id: (json['id'] as num).toInt(),
-  users:
-      (json['users'] as List<dynamic>)
-          .map((e) => User.fromJson(e as Map<String, dynamic>))
-          .toList(),
-  lastMessage:
-      json['last_message'] == null
-          ? null
-          : Message.fromJson(json['last_message'] as Map<String, dynamic>),
+  users: (json['users'] as List<dynamic>)
+      .map((e) => User.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  lastMessage: json['last_message'] == null
+      ? null
+      : Message.fromJson(json['last_message'] as Map<String, dynamic>),
   unreadMessages: (json['unread_messages'] as num).toInt(),
 );
 

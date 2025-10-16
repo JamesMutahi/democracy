@@ -13,14 +13,12 @@ _Survey _$SurveyFromJson(Map<String, dynamic> json) => _Survey(
   startTime: DateTime.parse(json['start_time'] as String),
   endTime: DateTime.parse(json['end_time'] as String),
   isActive: json['is_active'] as bool,
-  pages:
-      (json['pages'] as List<dynamic>)
-          .map((e) => Page.fromJson(e as Map<String, dynamic>))
-          .toList(),
-  response:
-      json['response'] == null
-          ? null
-          : Response.fromJson(json['response'] as Map<String, dynamic>),
+  pages: (json['pages'] as List<dynamic>)
+      .map((e) => Page.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  response: json['response'] == null
+      ? null
+      : Response.fromJson(json['response'] as Map<String, dynamic>),
   totalResponses: (json['total_responses'] as num).toInt(),
 );
 

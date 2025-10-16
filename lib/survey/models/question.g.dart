@@ -15,10 +15,9 @@ _Question _$QuestionFromJson(Map<String, dynamic> json) => _Question(
   hint: json['hint'] as String?,
   isRequired: json['is_required'] as bool,
   dependency: (json['dependency'] as num?)?.toInt(),
-  choices:
-      (json['choices'] as List<dynamic>)
-          .map((e) => Choice.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  choices: (json['choices'] as List<dynamic>)
+      .map((e) => Choice.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$QuestionToJson(_Question instance) => <String, dynamic>{

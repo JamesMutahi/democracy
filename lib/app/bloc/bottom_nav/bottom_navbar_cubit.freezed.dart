@@ -11,53 +11,47 @@ part of 'bottom_navbar_cubit.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
-
 /// @nodoc
 mixin _$BottomNavBarState {
 
-  int get page;
-
-  /// Create a copy of BottomNavBarState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @pragma('vm:prefer-inline')
-  $BottomNavBarStateCopyWith<BottomNavBarState> get copyWith =>
-      _$BottomNavBarStateCopyWithImpl<BottomNavBarState>(
-          this as BottomNavBarState, _$identity);
+ int get page;
+/// Create a copy of BottomNavBarState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$BottomNavBarStateCopyWith<BottomNavBarState> get copyWith => _$BottomNavBarStateCopyWithImpl<BottomNavBarState>(this as BottomNavBarState, _$identity);
 
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is BottomNavBarState &&
-            (identical(other.page, page) || other.page == page));
-  }
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BottomNavBarState&&(identical(other.page, page) || other.page == page));
+}
 
 
-  @override
-  int get hashCode => Object.hash(runtimeType, page);
+@override
+int get hashCode => Object.hash(runtimeType,page);
 
-  @override
-  String toString() {
-    return 'BottomNavBarState(page: $page)';
-  }
+@override
+String toString() {
+  return 'BottomNavBarState(page: $page)';
+}
 
 
 }
 
 /// @nodoc
-abstract mixin class $BottomNavBarStateCopyWith<$Res> {
-  factory $BottomNavBarStateCopyWith(BottomNavBarState value,
-      $Res Function(BottomNavBarState) _then) = _$BottomNavBarStateCopyWithImpl;
+abstract mixin class $BottomNavBarStateCopyWith<$Res>  {
+  factory $BottomNavBarStateCopyWith(BottomNavBarState value, $Res Function(BottomNavBarState) _then) = _$BottomNavBarStateCopyWithImpl;
+@useResult
+$Res call({
+ int page
+});
 
-  @useResult
-  $Res call({
-    int page
-  });
+
 
 
 }
-
 /// @nodoc
 class _$BottomNavBarStateCopyWithImpl<$Res>
     implements $BottomNavBarStateCopyWith<$Res> {
@@ -66,87 +60,38 @@ class _$BottomNavBarStateCopyWithImpl<$Res>
   final BottomNavBarState _self;
   final $Res Function(BottomNavBarState) _then;
 
-  /// Create a copy of BottomNavBarState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? page = null,}) {
-    return _then(_self.copyWith(
-      page: null == page
-          ? _self.page
-          : page // ignore: cast_nullable_to_non_nullable
-      as int,
-    ));
-  }
+/// Create a copy of BottomNavBarState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? page = null,}) {
+  return _then(_self.copyWith(
+page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
 
 }
 
 
 /// Adds pattern-matching-related methods to [BottomNavBarState].
 extension BottomNavBarStatePatterns on BottomNavBarState {
-  /// A variant of `map` that fallback to returning `orElse`.
-  ///
-  /// It is equivalent to doing:
-  /// ```dart
-  /// switch (sealedClass) {
-  ///   case final Subclass value:
-  ///     return ...;
-  ///   case _:
-  ///     return orElse();
-  /// }
-  /// ```
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
 
-  @optionalTypeArgs TResult maybeMap
-
-  <
-
-  TResult
-
-  extends
-
-  Object?
-
-  >
-
-  (
-
-  {
-
-  TResult
-
-  Function
-
-  (
-
-  BottomNavBarPageChanged
-
-  value
-
-  )
-
-  ?
-
-  pageChanged
-
-  ,
-
-  required
-
-  TResult
-
-  orElse
-
-  (
-
-  )
-
-  ,
-}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( BottomNavBarPageChanged value)?  pageChanged,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case BottomNavBarPageChanged() when pageChanged != null:
 return pageChanged(_that);case _:
-return orElse();
+  return orElse();
 
 }
 }
@@ -163,16 +108,12 @@ return orElse();
 /// }
 /// ```
 
-@optionalTypeArgs
-TResult map<TResult extends Object?>(
-    {required TResult Function( BottomNavBarPageChanged value) pageChanged,}) {
-  final _that = this;
-  switch (_that) {
-    case BottomNavBarPageChanged():
-      return pageChanged(_that);
-  }
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( BottomNavBarPageChanged value)  pageChanged,}){
+final _that = this;
+switch (_that) {
+case BottomNavBarPageChanged():
+return pageChanged(_that);}
 }
-
 /// A variant of `map` that fallback to returning `null`.
 ///
 /// It is equivalent to doing:
@@ -185,18 +126,15 @@ TResult map<TResult extends Object?>(
 /// }
 /// ```
 
-@optionalTypeArgs
-TResult? mapOrNull<TResult extends Object?>(
-    {TResult? Function( BottomNavBarPageChanged value)? pageChanged,}) {
-  final _that = this;
-  switch (_that) {
-    case BottomNavBarPageChanged() when pageChanged != null:
-      return pageChanged(_that);
-    case _:
-      return null;
-  }
-}
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( BottomNavBarPageChanged value)?  pageChanged,}){
+final _that = this;
+switch (_that) {
+case BottomNavBarPageChanged() when pageChanged != null:
+return pageChanged(_that);case _:
+  return null;
 
+}
+}
 /// A variant of `when` that fallback to an `orElse` callback.
 ///
 /// It is equivalent to doing:
@@ -209,26 +147,11 @@ TResult? mapOrNull<TResult extends Object?>(
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen
-<
-TResult extends Object?>(
-{
-TResult
-Function
-(
-int
-page
-)
-?
-pageChanged
-,
-required
-TResult
-orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int page)?  pageChanged,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case BottomNavBarPageChanged() when pageChanged != null:
 return pageChanged(_that.page);case _:
-return orElse();
+  return orElse();
 
 }
 }
@@ -245,7 +168,7 @@ return orElse();
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int page) pageChanged,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int page)  pageChanged,}) {final _that = this;
 switch (_that) {
 case BottomNavBarPageChanged():
 return pageChanged(_that.page);}
@@ -262,11 +185,11 @@ return pageChanged(_that.page);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int page)? pageChanged,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int page)?  pageChanged,}) {final _that = this;
 switch (_that) {
 case BottomNavBarPageChanged() when pageChanged != null:
 return pageChanged(_that.page);case _:
-return null;
+  return null;
 
 }
 }
@@ -277,10 +200,10 @@ return null;
 
 
 class BottomNavBarPageChanged implements BottomNavBarState {
-const BottomNavBarPageChanged(this.page);
+  const BottomNavBarPageChanged(this.page);
+  
 
-
-@override final int page;
+@override final  int page;
 
 /// Create a copy of BottomNavBarState
 /// with the given fields replaced by the non-null parameter values.
@@ -289,9 +212,10 @@ const BottomNavBarPageChanged(this.page);
 $BottomNavBarPageChangedCopyWith<BottomNavBarPageChanged> get copyWith => _$BottomNavBarPageChangedCopyWithImpl<BottomNavBarPageChanged>(this, _$identity);
 
 
+
 @override
 bool operator ==(Object other) {
-return identical(this, other) || (other.runtimeType == runtimeType&&other is BottomNavBarPageChanged&&(identical(other.page, page) || other.page == page));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BottomNavBarPageChanged&&(identical(other.page, page) || other.page == page));
 }
 
 
@@ -300,7 +224,7 @@ int get hashCode => Object.hash(runtimeType,page);
 
 @override
 String toString() {
-return 'BottomNavBarState.pageChanged(page: $page)';
+  return 'BottomNavBarState.pageChanged(page: $page)';
 }
 
 
@@ -308,29 +232,31 @@ return 'BottomNavBarState.pageChanged(page: $page)';
 
 /// @nodoc
 abstract mixin class $BottomNavBarPageChangedCopyWith<$Res> implements $BottomNavBarStateCopyWith<$Res> {
-factory $BottomNavBarPageChangedCopyWith(BottomNavBarPageChanged value, $Res Function(BottomNavBarPageChanged) _then) = _$BottomNavBarPageChangedCopyWithImpl;
+  factory $BottomNavBarPageChangedCopyWith(BottomNavBarPageChanged value, $Res Function(BottomNavBarPageChanged) _then) = _$BottomNavBarPageChangedCopyWithImpl;
 @override @useResult
 $Res call({
-int page
+ int page
 });
+
+
 
 
 }
 /// @nodoc
 class _$BottomNavBarPageChangedCopyWithImpl<$Res>
-implements $BottomNavBarPageChangedCopyWith<$Res> {
-_$BottomNavBarPageChangedCopyWithImpl(this._self, this._then);
+    implements $BottomNavBarPageChangedCopyWith<$Res> {
+  _$BottomNavBarPageChangedCopyWithImpl(this._self, this._then);
 
-final BottomNavBarPageChanged _self;
-final $Res Function(BottomNavBarPageChanged) _then;
+  final BottomNavBarPageChanged _self;
+  final $Res Function(BottomNavBarPageChanged) _then;
 
 /// Create a copy of BottomNavBarState
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? page = null,}) {
-return _then(BottomNavBarPageChanged(
+  return _then(BottomNavBarPageChanged(
 null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
 as int,
-));
+  ));
 }
 
 
