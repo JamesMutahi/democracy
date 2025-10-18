@@ -25,15 +25,21 @@ class PostTile extends StatelessWidget {
     required this.post,
     this.checkVisibility = false,
     this.isDependency = false,
-    this.showThread = false,
     this.hideBorder = false,
+    this.showThreadedReplies = false,
+    this.showTopThread = false,
+    this.showBottomThread = false,
+    this.showWholeThread = false,
   });
 
   final Post post;
   final bool checkVisibility;
   final bool isDependency;
-  final bool showThread;
   final bool hideBorder;
+  final bool showThreadedReplies;
+  final bool showTopThread;
+  final bool showBottomThread;
+  final bool showWholeThread;
 
   @override
   Widget build(BuildContext context) {
@@ -115,9 +121,37 @@ class PostTile extends StatelessWidget {
                             ),
                           ],
                         )
-                      : _PostContainer(post: post, isDependency: isDependency),
+                      : Stack(
+                          children: [
+                            Positioned(
+                              // 23 -> circle avatar radius, 15 -> margin
+                              left: 23 + 15,
+                              top: 0,
+                              bottom: showBottomThread ? 0 : null,
+                              child: Container(
+                                margin: showTopThread
+                                    ? null
+                                    : EdgeInsets.only(top: 20),
+                                height: showBottomThread ? null : 20,
+                                width: 2,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.outlineVariant,
+                              ),
+                            ),
+                            _PostContainer(
+                              post: post,
+                              isDependency: isDependency,
+                            ),
+                          ],
+                        ),
                 ),
-                if (showThread) Thread(key: ValueKey(post.id), post: post),
+                if (showThreadedReplies)
+                  Thread(
+                    key: ValueKey(post.id),
+                    post: post,
+                    showWholeThread: showWholeThread,
+                  ),
               ],
             ),
           );
@@ -148,7 +182,7 @@ class _PostContainer extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 23,
-                      backgroundColor: Colors.transparent,
+                      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                       child: ProfileImage(
                         user: post.author,
                         navigateToProfile: true,

@@ -19,6 +19,7 @@ class BlockDialog extends StatelessWidget {
       button1Text: 'Yes',
       onButton1Pressed: () {
         context.read<UserDetailBloc>().add(UserDetailEvent.block(user: user));
+        Navigator.pop(context);
       },
       button2Text: 'No',
       onButton2Pressed: () {
@@ -44,6 +45,7 @@ class MuteDialog extends StatelessWidget {
       button1Text: 'Yes',
       onButton1Pressed: () {
         context.read<UserDetailBloc>().add(UserDetailEvent.mute(user: user));
+        Navigator.pop(context);
       },
       button2Text: 'No',
       onButton2Pressed: () {

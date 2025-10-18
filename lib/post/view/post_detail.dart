@@ -202,88 +202,84 @@ class _PostDetailState extends State<PostDetail> {
           },
         ),
       ],
-      child: Scaffold(
-        appBar: AppBar(title: Text('Post')),
-        body:
-            isDeleted
-                ? Center(
-                  child: Text('This post has been deleted by the author'),
-                )
-                : PopScope(
-                  canPop: true,
-                  onPopInvokedWithResult: (_, __) {
+      child: PopScope(
+        canPop: true,
+        onPopInvokedWithResult: (_, __) {
+          context.read<RepliesBloc>().add(
+            RepliesEvent.unsubscribe(post: widget.post),
+          );
+        },
+        child: Scaffold(
+          appBar: AppBar(title: Text('Post')),
+          body: isDeleted
+              ? Center(child: Text('This post has been deleted by the author'))
+              : SmartRefresher(
+                  enablePullDown: true,
+                  enablePullUp: false,
+                  header: ClassicHeader(),
+                  controller: _controller,
+                  onRefresh: () {
+                    context.read<PostDetailBloc>().add(
+                      PostDetailEvent.get(post: widget.post),
+                    );
                     context.read<RepliesBloc>().add(
-                      RepliesEvent.unsubscribe(post: widget.post),
+                      RepliesEvent.get(post: widget.post),
                     );
                   },
-                  child: SmartRefresher(
-                    enablePullDown: true,
-                    enablePullUp: false,
-                    header: ClassicHeader(),
-                    controller: _controller,
-                    onRefresh: () {
-                      context.read<PostDetailBloc>().add(
-                        PostDetailEvent.get(post: widget.post),
-                      );
-                      context.read<RepliesBloc>().add(
-                        RepliesEvent.get(post: widget.post),
-                      );
-                    },
-                    child: ListView(
-                      children: [
-                        if (widget.showAsRepost)
-                          BlocBuilder<AuthBloc, AuthState>(
-                            builder: (context, state) {
-                              late User user;
-                              if (state is Authenticated) {
-                                user = state.user;
-                              }
-                              return Container(
-                                padding: EdgeInsets.only(
-                                  left: 15,
-                                  right: 15,
-                                  top: 10,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Symbols.loop_rounded,
-                                      color:
-                                          Theme.of(context).colorScheme.outline,
+                  child: ListView(
+                    children: [
+                      if (widget.showAsRepost)
+                        BlocBuilder<AuthBloc, AuthState>(
+                          builder: (context, state) {
+                            late User user;
+                            if (state is Authenticated) {
+                              user = state.user;
+                            }
+                            return Container(
+                              padding: EdgeInsets.only(
+                                left: 15,
+                                right: 15,
+                                top: 10,
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Symbols.loop_rounded,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.outline,
+                                  ),
+                                  SizedBox(width: 5),
+                                  Text(
+                                    user.id == widget.repost.author.id
+                                        ? 'You reposted'
+                                        : '${widget.repost.author.name} reposted',
+                                    style: TextStyle(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.outline,
                                     ),
-                                    SizedBox(width: 5),
-                                    Text(
-                                      user.id == widget.repost.author.id
-                                          ? 'You reposted'
-                                          : '${widget.repost.author.name} reposted',
-                                      style: TextStyle(
-                                        color:
-                                            Theme.of(
-                                              context,
-                                            ).colorScheme.outline,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                        _PostContainer(post: _post),
-                        Replies(key: ValueKey(_post.id), post: _post),
-                      ],
-                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      _PostContainer(post: _post),
+                      Replies(key: ValueKey(_post.id), post: _post),
+                    ],
                   ),
                 ),
-        bottomNavigationBar:
-            _post.author.hasBlocked
-                ? Container(
+          bottomNavigationBar: _post.author.hasBlocked
+              ? Container(
                   margin: const EdgeInsets.only(bottom: 8.0),
                   child: Text(
                     'You have been blocked',
                     textAlign: TextAlign.center,
                   ),
                 )
-                : BottomReplyTextField(post: _post),
+              : BottomReplyTextField(post: _post),
+        ),
       ),
     );
   }
@@ -315,99 +311,92 @@ class _PostContainer extends StatelessWidget {
           ),
         ),
       ),
-      child:
-          post.isDeleted
-              ? PostDeletedWidget()
-              : Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          navigateToProfilePage(post.author);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Row(
-                            children: [
-                              ProfileImage(user: post.author),
-                              SizedBox(width: 10),
-                              Text(
-                                post.author.name,
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              ),
-                            ],
-                          ),
+      child: post.isDeleted
+          ? PostDeletedWidget()
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        navigateToProfilePage(post.author);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Row(
+                          children: [
+                            ProfileImage(user: post.author),
+                            SizedBox(width: 10),
+                            Text(
+                              post.author.name,
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          ],
                         ),
                       ),
-                      PostPopUp(post: post),
-                    ],
-                  ),
-                  SizedBox(height: 5),
-                  CustomText(
-                    text: post.body,
-                    style: Theme.of(context).textTheme.bodyMedium!,
-                    showAllText: true,
-                    suffix: '',
-                    onUserTagPressed: (userId) {
-                      navigateToProfilePage(
-                        post.taggedUsers.firstWhere(
-                          (user) => user.id == int.parse(userId),
-                        ),
-                      );
-                    },
-                  ),
-                  SizedBox(height: 5),
-                  if (post.repostOf != null)
-                    DependencyContainer(
-                      child: PostTile(post: post.repostOf!, isDependency: true),
                     ),
-                  if (post.ballot != null)
-                    DependencyContainer(
-                      child: BallotTile(
-                        ballot: post.ballot!,
-                        isDependency: true,
+                    PostPopUp(post: post),
+                  ],
+                ),
+                SizedBox(height: 5),
+                CustomText(
+                  text: post.body,
+                  style: Theme.of(context).textTheme.bodyMedium!,
+                  showAllText: true,
+                  suffix: '',
+                  onUserTagPressed: (userId) {
+                    navigateToProfilePage(
+                      post.taggedUsers.firstWhere(
+                        (user) => user.id == int.parse(userId),
                       ),
-                    ),
-                  if (post.survey != null)
-                    DependencyContainer(
-                      child: SurveyTile(
-                        survey: post.survey!,
-                        isDependency: true,
-                      ),
-                    ),
-                  if (post.petition != null)
-                    DependencyContainer(
-                      child: PetitionTile(
-                        petition: post.petition!,
-                        isDependency: true,
-                      ),
-                    ),
-                  SizedBox(height: 5),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Text(
-                      '${timeFormat.format(post.publishedAt)} • '
-                      '${dateFormat.format(post.publishedAt)}',
-                      style: TextStyle(color: Theme.of(context).disabledColor),
+                    );
+                  },
+                ),
+                SizedBox(height: 5),
+                if (post.repostOf != null)
+                  DependencyContainer(
+                    child: PostTile(post: post.repostOf!, isDependency: true),
+                  ),
+                if (post.ballot != null)
+                  DependencyContainer(
+                    child: BallotTile(ballot: post.ballot!, isDependency: true),
+                  ),
+                if (post.survey != null)
+                  DependencyContainer(
+                    child: SurveyTile(survey: post.survey!, isDependency: true),
+                  ),
+                if (post.petition != null)
+                  DependencyContainer(
+                    child: PetitionTile(
+                      petition: post.petition!,
+                      isDependency: true,
                     ),
                   ),
-                  SizedBox(height: 5),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ReplyButton(post: post, numberFormat: numberFormat),
-                      RepostButton(post: post, numberFormat: numberFormat),
-                      LikeButton(post: post, numberFormat: numberFormat),
-                      BookmarkButton(post: post, numberFormat: numberFormat),
-                      ViewsButton(post: post, numberFormat: numberFormat),
-                    ],
+                SizedBox(height: 5),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Text(
+                    '${timeFormat.format(post.publishedAt)} • '
+                    '${dateFormat.format(post.publishedAt)}',
+                    style: TextStyle(color: Theme.of(context).disabledColor),
                   ),
-                ],
-              ),
+                ),
+                SizedBox(height: 5),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ReplyButton(post: post, numberFormat: numberFormat),
+                    RepostButton(post: post, numberFormat: numberFormat),
+                    LikeButton(post: post, numberFormat: numberFormat),
+                    BookmarkButton(post: post, numberFormat: numberFormat),
+                    ViewsButton(post: post, numberFormat: numberFormat),
+                  ],
+                ),
+              ],
+            ),
     );
   }
 }
@@ -442,12 +431,13 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
       duration: const Duration(milliseconds: 150),
     );
 
-    _animation = Tween<Offset>(
-      begin: const Offset(0, 0.5),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
-    );
+    _animation = Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeInOut,
+          ),
+        );
 
     var keyboardVisibilityController = KeyboardVisibilityController();
     keyboardSubscription = keyboardVisibilityController.onChange.listen((
@@ -540,18 +530,11 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
           return "$triggerCharacter$id#$tag#";
         },
         overlayHeight: overlayHeight,
-        overlay:
-            _view == SearchResultView.users
-                ? UserListView(
-                  tagController: _controller,
-                  animation: _animation,
-                )
-                : _view == SearchResultView.hashtag
-                ? SectionListView(
-                  tagController: _controller,
-                  animation: _animation,
-                )
-                : SizedBox.shrink(),
+        overlay: _view == SearchResultView.users
+            ? UserListView(tagController: _controller, animation: _animation)
+            : _view == SearchResultView.hashtag
+            ? SectionListView(tagController: _controller, animation: _animation)
+            : SizedBox.shrink(),
         builder: (context, containerKey) {
           return BottomTextFormField(
             containerKey: containerKey,

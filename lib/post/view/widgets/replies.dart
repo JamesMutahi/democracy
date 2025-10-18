@@ -127,7 +127,8 @@ class _RepliesState extends State<Replies> {
                     key: ValueKey(post.id),
                     post: post,
                     checkVisibility: true,
-                    showThread: true,
+                    showThreadedReplies: post.thread.isEmpty ? false : true,
+                    showBottomThread: post.thread.isEmpty ? false : true,
                   );
                 },
                 itemCount: _posts.length,
