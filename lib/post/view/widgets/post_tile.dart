@@ -182,7 +182,9 @@ class _PostContainer extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 23,
-                      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                      backgroundColor: isDependency
+                          ? Colors.transparent
+                          : Theme.of(context).scaffoldBackgroundColor,
                       child: ProfileImage(
                         user: post.author,
                         navigateToProfile: true,

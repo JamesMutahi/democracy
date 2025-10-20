@@ -17,6 +17,7 @@ sealed class User with _$User {
     required List<int> blocked,
     required int following,
     required int followers,
+    @JsonKey(name: 'is_representative') required bool isRepresentative,
     @JsonKey(name: 'is_active') required bool isActive,
     @JsonKey(name: 'date_joined') required DateTime dateJoined,
     @JsonKey(name: 'is_muted') required bool isMuted,
