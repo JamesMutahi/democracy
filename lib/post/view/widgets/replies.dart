@@ -36,103 +36,121 @@ class _RepliesState extends State<Replies> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state.status == WebsocketStatus.connected) {
-              context.read<RepliesBloc>().add(
-                RepliesEvent.resubscribe(post: widget.post, replies: _posts),
-              );
-            }
-          },
-        ),
-        BlocListener<RepliesBloc, RepliesState>(
-          listener: (context, state) {
-            if (state.status == RepliesStatus.success) {
-              if (widget.post.id == state.postId) {
-                setState(() {
-                  _posts = state.posts.toList();
-                  loading = false;
-                  failure = false;
-                  hasNextPage = state.hasNext;
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (_, __) {
+        if (_posts.isNotEmpty) {
+          context.read<RepliesBloc>().add(
+            RepliesEvent.unsubscribe(post: widget.post, replies: _posts),
+          );
+        }
+      },
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<WebsocketBloc, WebsocketState>(
+            listener: (context, state) {
+              if (state.status == WebsocketStatus.connected) {
+                if (_posts.isNotEmpty) {
+                  context.read<RepliesBloc>().add(
+                    RepliesEvent.resubscribe(
+                      post: widget.post,
+                      replies: _posts,
+                    ),
+                  );
+                }
+              }
+            },
+          ),
+          BlocListener<RepliesBloc, RepliesState>(
+            listener: (context, state) {
+              if (state.status == RepliesStatus.success) {
+                if (widget.post.id == state.postId) {
+                  setState(() {
+                    _posts = state.posts.toList();
+                    loading = false;
+                    failure = false;
+                    hasNextPage = state.hasNext;
+                    if (_refreshController.headerStatus ==
+                        RefreshStatus.refreshing) {
+                      _refreshController.refreshCompleted();
+                    }
+                    if (_refreshController.footerStatus == LoadStatus.loading) {
+                      _refreshController.loadComplete();
+                    }
+                  });
+                }
+              }
+              if (state.status == RepliesStatus.failure) {
+                if (widget.post.id == state.postId) {
+                  if (loading) {
+                    setState(() {
+                      loading = false;
+                      failure = true;
+                    });
+                  }
                   if (_refreshController.headerStatus ==
                       RefreshStatus.refreshing) {
-                    _refreshController.refreshCompleted();
+                    _refreshController.refreshFailed();
                   }
                   if (_refreshController.footerStatus == LoadStatus.loading) {
-                    _refreshController.loadComplete();
+                    _refreshController.loadFailed();
                   }
-                });
-              }
-            }
-            if (state.status == RepliesStatus.failure) {
-              if (widget.post.id == state.postId) {
-                if (loading) {
-                  setState(() {
-                    loading = false;
-                    failure = true;
-                  });
-                }
-                if (_refreshController.headerStatus ==
-                    RefreshStatus.refreshing) {
-                  _refreshController.refreshFailed();
-                }
-                if (_refreshController.footerStatus == LoadStatus.loading) {
-                  _refreshController.loadFailed();
                 }
               }
-            }
+            },
+          ),
+          BlocListener<PostDetailBloc, PostDetailState>(
+            listener: (context, state) {
+              switch (state) {
+                case PostCreated(post: final post):
+                  if (widget.post.id == post.replyTo?.id) {
+                    setState(() {
+                      int index = _posts.indexWhere(
+                        (element) => element.author.id != post.author.id,
+                      );
+                      _posts.insert(index, post);
+                    });
+                  }
+              }
+            },
+          ),
+        ],
+        child: PostListener(
+          posts: _posts,
+          onPostsUpdated: (posts) {
+            setState(() {
+              _posts = posts;
+            });
           },
-        ),
-        BlocListener<PostDetailBloc, PostDetailState>(
-          listener: (context, state) {
-            switch (state) {
-              case PostCreated(post: final post):
-                if (widget.post.id == post.replyTo?.id) {
-                  setState(() {
-                    int index = _posts.indexWhere(
-                      (element) => element.author.id != post.author.id,
+          child: loading
+              ? Container(
+                  margin: EdgeInsets.only(top: 50),
+                  child: BottomLoader(),
+                )
+              : failure
+              ? FailureRetryButton(
+                  onPressed: () {
+                    context.read<RepliesBloc>().add(
+                      RepliesEvent.get(post: widget.post),
                     );
-                    _posts.insert(index, post);
-                  });
-                }
-            }
-          },
+                  },
+                )
+              : ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (BuildContext context, int index) {
+                    Post post = _posts[index];
+                    return PostTile(
+                      key: ValueKey(post.id),
+                      post: post,
+                      checkVisibility: true,
+                      showThreadedReplies: post.thread.isEmpty ? false : true,
+                      showBottomThread: post.thread.isEmpty ? false : true,
+                    );
+                  },
+                  itemCount: _posts.length,
+                ),
         ),
-      ],
-      child: PostListener(
-        posts: _posts,
-        onPostsUpdated: (posts) {
-          setState(() {
-            _posts = posts;
-          });
-        },
-        child: loading
-            ? Container(margin: EdgeInsets.only(top: 50), child: BottomLoader())
-            : failure
-            ? FailureRetryButton(
-                onPressed: () {
-                  context.read<RepliesBloc>().add(
-                    RepliesEvent.get(post: widget.post),
-                  );
-                },
-              )
-            : ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemBuilder: (BuildContext context, int index) {
-                  Post post = _posts[index];
-                  return PostTile(
-                    key: ValueKey(post.id),
-                    post: post,
-                    checkVisibility: true,
-                    showThreadedReplies: post.thread.isEmpty ? false : true,
-                    showBottomThread: post.thread.isEmpty ? false : true,
-                  );
-                },
-                itemCount: _posts.length,
-              ),
       ),
     );
   }

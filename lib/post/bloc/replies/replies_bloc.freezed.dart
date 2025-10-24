@@ -125,13 +125,13 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Post post,  Post? lastPost)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Post post,  List<Post> replies)?  resubscribe,TResult Function( Post post)?  unsubscribe,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Post post,  Post? lastPost)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Post post,  List<Post> replies)?  resubscribe,TResult Function( Post post,  List<Post> replies)?  unsubscribe,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.post,_that.lastPost);case _Received() when received != null:
 return received(_that.payload);case _Resubscribe() when resubscribe != null:
 return resubscribe(_that.post,_that.replies);case _Unsubscribe() when unsubscribe != null:
-return unsubscribe(_that.post);case _:
+return unsubscribe(_that.post,_that.replies);case _:
   return orElse();
 
 }
@@ -149,13 +149,13 @@ return unsubscribe(_that.post);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Post post,  Post? lastPost)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Post post,  List<Post> replies)  resubscribe,required TResult Function( Post post)  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Post post,  Post? lastPost)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Post post,  List<Post> replies)  resubscribe,required TResult Function( Post post,  List<Post> replies)  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Get():
 return get(_that.post,_that.lastPost);case _Received():
 return received(_that.payload);case _Resubscribe():
 return resubscribe(_that.post,_that.replies);case _Unsubscribe():
-return unsubscribe(_that.post);}
+return unsubscribe(_that.post,_that.replies);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -169,13 +169,13 @@ return unsubscribe(_that.post);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Post post,  Post? lastPost)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Post post,  List<Post> replies)?  resubscribe,TResult? Function( Post post)?  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Post post,  Post? lastPost)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Post post,  List<Post> replies)?  resubscribe,TResult? Function( Post post,  List<Post> replies)?  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.post,_that.lastPost);case _Received() when received != null:
 return received(_that.payload);case _Resubscribe() when resubscribe != null:
 return resubscribe(_that.post,_that.replies);case _Unsubscribe() when unsubscribe != null:
-return unsubscribe(_that.post);case _:
+return unsubscribe(_that.post,_that.replies);case _:
   return null;
 
 }
@@ -431,10 +431,17 @@ $PostCopyWith<$Res> get post {
 
 
 class _Unsubscribe implements RepliesEvent {
-  const _Unsubscribe({required this.post});
+  const _Unsubscribe({required this.post, required final  List<Post> replies}): _replies = replies;
   
 
  final  Post post;
+ final  List<Post> _replies;
+ List<Post> get replies {
+  if (_replies is EqualUnmodifiableListView) return _replies;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_replies);
+}
+
 
 /// Create a copy of RepliesEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -446,16 +453,16 @@ _$UnsubscribeCopyWith<_Unsubscribe> get copyWith => __$UnsubscribeCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Unsubscribe&&(identical(other.post, post) || other.post == post));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Unsubscribe&&(identical(other.post, post) || other.post == post)&&const DeepCollectionEquality().equals(other._replies, _replies));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,post);
+int get hashCode => Object.hash(runtimeType,post,const DeepCollectionEquality().hash(_replies));
 
 @override
 String toString() {
-  return 'RepliesEvent.unsubscribe(post: $post)';
+  return 'RepliesEvent.unsubscribe(post: $post, replies: $replies)';
 }
 
 
@@ -466,7 +473,7 @@ abstract mixin class _$UnsubscribeCopyWith<$Res> implements $RepliesEventCopyWit
   factory _$UnsubscribeCopyWith(_Unsubscribe value, $Res Function(_Unsubscribe) _then) = __$UnsubscribeCopyWithImpl;
 @useResult
 $Res call({
- Post post
+ Post post, List<Post> replies
 });
 
 
@@ -483,10 +490,11 @@ class __$UnsubscribeCopyWithImpl<$Res>
 
 /// Create a copy of RepliesEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? post = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? post = null,Object? replies = null,}) {
   return _then(_Unsubscribe(
 post: null == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
-as Post,
+as Post,replies: null == replies ? _self._replies : replies // ignore: cast_nullable_to_non_nullable
+as List<Post>,
   ));
 }
 

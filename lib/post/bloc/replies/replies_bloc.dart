@@ -67,10 +67,13 @@ class RepliesBloc extends Bloc<RepliesEvent, RepliesState> {
   }
 
   Future _onResubscribe(_Resubscribe event, Emitter<RepliesState> emit) async {
-    List<int> postIds = event.replies.map((post) => post.id).toList();
-    List<Post> reposts =
-        event.replies.where((post) => post.repostOf != null).toList();
-    postIds.addAll(reposts.map((post) => post.id).toList());
+    List<int> postIds = [];
+    for (Post post in event.replies) {
+      postIds.add(post.id);
+      if (post.thread.isNotEmpty) {
+        postIds.addAll(getThreadIds(post.thread));
+      }
+    }
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -83,16 +86,34 @@ class RepliesBloc extends Bloc<RepliesEvent, RepliesState> {
   }
 
   Future _onUnsubscribe(_Unsubscribe event, Emitter<RepliesState> emit) async {
+    List<int> postIds = [];
+    for (Post post in event.replies) {
+      postIds.add(post.id);
+      if (post.thread.isNotEmpty) {
+        postIds.addAll(getThreadIds(post.thread));
+      }
+    }
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
         'action': 'unsubscribe_replies',
         'request_id': event.post.id,
-        'pk': event.post.id,
+        'pks': postIds,
       },
     };
     webSocketService.send(message);
   }
 
   final WebSocketService webSocketService;
+}
+
+List<int> getThreadIds(List<Post> thread) {
+  List<int> postIds = [];
+  for (Post post in thread) {
+    postIds.add(post.id);
+    if (post.thread.isNotEmpty) {
+      postIds.addAll(getThreadIds(post.thread));
+    }
+  }
+  return postIds;
 }

@@ -202,84 +202,76 @@ class _PostDetailState extends State<PostDetail> {
           },
         ),
       ],
-      child: PopScope(
-        canPop: true,
-        onPopInvokedWithResult: (_, __) {
-          context.read<RepliesBloc>().add(
-            RepliesEvent.unsubscribe(post: widget.post),
-          );
-        },
-        child: Scaffold(
-          appBar: AppBar(title: Text('Post')),
-          body: isDeleted
-              ? Center(child: Text('This post has been deleted by the author'))
-              : SmartRefresher(
-                  enablePullDown: true,
-                  enablePullUp: false,
-                  header: ClassicHeader(),
-                  controller: _controller,
-                  onRefresh: () {
-                    context.read<PostDetailBloc>().add(
-                      PostDetailEvent.get(post: widget.post),
-                    );
-                    context.read<RepliesBloc>().add(
-                      RepliesEvent.get(post: widget.post),
-                    );
-                  },
-                  child: ListView(
-                    children: [
-                      if (widget.showAsRepost)
-                        BlocBuilder<AuthBloc, AuthState>(
-                          builder: (context, state) {
-                            late User user;
-                            if (state is Authenticated) {
-                              user = state.user;
-                            }
-                            return Container(
-                              padding: EdgeInsets.only(
-                                left: 15,
-                                right: 15,
-                                top: 10,
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Symbols.loop_rounded,
+      child: Scaffold(
+        appBar: AppBar(title: Text('Post')),
+        body: isDeleted
+            ? Center(child: Text('This post has been deleted by the author'))
+            : SmartRefresher(
+                enablePullDown: true,
+                enablePullUp: false,
+                header: ClassicHeader(),
+                controller: _controller,
+                onRefresh: () {
+                  context.read<PostDetailBloc>().add(
+                    PostDetailEvent.get(post: widget.post),
+                  );
+                  context.read<RepliesBloc>().add(
+                    RepliesEvent.get(post: widget.post),
+                  );
+                },
+                child: ListView(
+                  children: [
+                    if (widget.showAsRepost)
+                      BlocBuilder<AuthBloc, AuthState>(
+                        builder: (context, state) {
+                          late User user;
+                          if (state is Authenticated) {
+                            user = state.user;
+                          }
+                          return Container(
+                            padding: EdgeInsets.only(
+                              left: 15,
+                              right: 15,
+                              top: 10,
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Symbols.loop_rounded,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.outline,
+                                ),
+                                SizedBox(width: 5),
+                                Text(
+                                  user.id == widget.repost.author.id
+                                      ? 'You reposted'
+                                      : '${widget.repost.author.name} reposted',
+                                  style: TextStyle(
                                     color: Theme.of(
                                       context,
                                     ).colorScheme.outline,
                                   ),
-                                  SizedBox(width: 5),
-                                  Text(
-                                    user.id == widget.repost.author.id
-                                        ? 'You reposted'
-                                        : '${widget.repost.author.name} reposted',
-                                    style: TextStyle(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.outline,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      _PostContainer(post: _post),
-                      Replies(key: ValueKey(_post.id), post: _post),
-                    ],
-                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    _PostContainer(post: _post),
+                    Replies(key: ValueKey(_post.id), post: _post),
+                  ],
                 ),
-          bottomNavigationBar: _post.author.hasBlocked
-              ? Container(
-                  margin: const EdgeInsets.only(bottom: 8.0),
-                  child: Text(
-                    'You have been blocked',
-                    textAlign: TextAlign.center,
-                  ),
-                )
-              : BottomReplyTextField(post: _post),
-        ),
+              ),
+        bottomNavigationBar: _post.author.hasBlocked
+            ? Container(
+                margin: const EdgeInsets.only(bottom: 8.0),
+                child: Text(
+                  'You have been blocked',
+                  textAlign: TextAlign.center,
+                ),
+              )
+            : BottomReplyTextField(post: _post),
       ),
     );
   }

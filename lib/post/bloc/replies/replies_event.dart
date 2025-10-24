@@ -9,5 +9,8 @@ sealed class RepliesEvent with _$RepliesEvent {
     required Post post,
     required List<Post> replies,
   }) = _Resubscribe;
-  const factory RepliesEvent.unsubscribe({required Post post}) = _Unsubscribe;
+  const factory RepliesEvent.unsubscribe({
+    required Post post,
+    required List<Post> replies,
+  }) = _Unsubscribe;
 }
