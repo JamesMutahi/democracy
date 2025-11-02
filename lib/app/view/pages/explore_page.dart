@@ -1,5 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
+import 'package:democracy/app/view/widgets/filters_modal.dart';
+import 'package:democracy/post/bloc/post_filter/post_filter_cubit.dart';
 import 'package:democracy/post/bloc/posts/posts_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
@@ -32,12 +34,6 @@ class _ExplorePageState extends State<ExplorePage> {
   );
 
   @override
-  void initState() {
-    context.read<PostsBloc>().add(PostsEvent.get());
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return NestedScrollView(
       headerSliverBuilder: (context, bool innerBoxIsScrolled) {
@@ -46,16 +42,37 @@ class _ExplorePageState extends State<ExplorePage> {
             user: widget.user,
             notifications: widget.notifications,
             middle: [
-              AppBarSearchBar(
-                hintText: 'Search',
-                onChanged: (value) {
+              BlocConsumer<PostFilterCubit, PostFilterState>(
+                listener: (context, state) {
                   context.read<PostsBloc>().add(
-                    PostsEvent.get(searchTerm: value),
+                    PostsEvent.get(
+                      searchTerm: state.searchTerm,
+                      startDate: state.startDate,
+                      endDate: state.endDate,
+                    ),
                   );
                 },
-                showFilterIcon: true,
-                onFilterTap: () {
-                  //   TODO:
+                builder: (context, state) {
+                  return AppBarSearchBar(
+                    hintText: 'Search posts',
+                    onChanged: (value) {
+                      context.read<PostFilterCubit>().searchTermChanged(
+                        searchTerm: value,
+                      );
+                    },
+                    onFilterTap: () {
+                      showGeneralDialog(
+                        context: context,
+                        transitionDuration: const Duration(milliseconds: 300),
+                        pageBuilder: (context, animation, secondaryAnimation) {
+                          return _FiltersModal(
+                            startDate: state.startDate,
+                            endDate: state.endDate,
+                          );
+                        },
+                      );
+                    },
+                  );
                 },
               ),
             ],
@@ -134,6 +151,55 @@ class _ExplorePageState extends State<ExplorePage> {
           },
         ),
       ),
+    );
+  }
+}
+
+class _FiltersModal extends StatefulWidget {
+  const _FiltersModal({required this.startDate, required this.endDate});
+
+  final DateTime? startDate;
+  final DateTime? endDate;
+
+  @override
+  State<_FiltersModal> createState() => _FiltersModalState();
+}
+
+class _FiltersModalState extends State<_FiltersModal> {
+  late DateTime? startDate = widget.startDate;
+  late DateTime? endDate = widget.endDate;
+
+  @override
+  Widget build(BuildContext context) {
+    return FiltersModal(
+      applyButtonIsDisabled:
+          (startDate == widget.startDate && endDate == widget.startDate),
+      clearButtonIsDisabled: startDate == null && endDate == null,
+      onApply: () {
+        context.read<PostFilterCubit>().datesChanged(
+          startDate: startDate,
+          endDate: endDate,
+        );
+      },
+      onClear: () {
+        context.read<PostFilterCubit>().clearFilters();
+        setState(() {
+          startDate = null;
+          endDate = null;
+        });
+      },
+      widgets: [
+        DateRangeFilter(
+          value: [startDate, endDate],
+          onValueChanged: (dates) {
+            setState(() {
+              startDate = dates.isNotEmpty ? dates[0] : null;
+              endDate = dates.length == 2 ? dates[1] : null;
+            });
+          },
+        ),
+        const Divider(),
+      ],
     );
   }
 }

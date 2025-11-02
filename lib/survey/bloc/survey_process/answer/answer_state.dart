@@ -55,5 +55,13 @@ final class AnswerState extends Equatable {
   }
 
   @override
-  List<Object> get props => [status];
+  List<Object> get props => [
+    status,
+    ?survey,
+    ?startTime,
+    ?endTime,
+    ?textAnswers,
+    ?choiceAnswers,
+    ?required,
+  ];
 }

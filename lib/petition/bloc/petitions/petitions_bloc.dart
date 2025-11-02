@@ -39,6 +39,8 @@ class PetitionsBloc extends Bloc<PetitionsEvent, PetitionsState> {
         'request_id': requestId,
         'search_term': event.searchTerm,
         'last_ballot': event.lastPetition?.id,
+        'start_date': event.startDate?.toIso8601String(),
+        'end_date': event.endDate?.toIso8601String(),
       },
     };
     webSocketService.send(message);

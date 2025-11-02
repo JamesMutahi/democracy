@@ -122,10 +122,10 @@ return resubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  Petition? lastPetition)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( List<Petition> petitions)?  resubscribe,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  Petition? lastPetition,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( List<Petition> petitions)?  resubscribe,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.searchTerm,_that.lastPetition);case _Received() when received != null:
+return get(_that.searchTerm,_that.lastPetition,_that.startDate,_that.endDate);case _Received() when received != null:
 return received(_that.payload);case _Resubscribe() when resubscribe != null:
 return resubscribe(_that.petitions);case _:
   return orElse();
@@ -145,10 +145,10 @@ return resubscribe(_that.petitions);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  Petition? lastPetition)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( List<Petition> petitions)  resubscribe,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  Petition? lastPetition,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( List<Petition> petitions)  resubscribe,}) {final _that = this;
 switch (_that) {
 case _Get():
-return get(_that.searchTerm,_that.lastPetition);case _Received():
+return get(_that.searchTerm,_that.lastPetition,_that.startDate,_that.endDate);case _Received():
 return received(_that.payload);case _Resubscribe():
 return resubscribe(_that.petitions);}
 }
@@ -164,10 +164,10 @@ return resubscribe(_that.petitions);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  Petition? lastPetition)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( List<Petition> petitions)?  resubscribe,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  Petition? lastPetition,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( List<Petition> petitions)?  resubscribe,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.searchTerm,_that.lastPetition);case _Received() when received != null:
+return get(_that.searchTerm,_that.lastPetition,_that.startDate,_that.endDate);case _Received() when received != null:
 return received(_that.payload);case _Resubscribe() when resubscribe != null:
 return resubscribe(_that.petitions);case _:
   return null;
@@ -181,11 +181,13 @@ return resubscribe(_that.petitions);case _:
 
 
 class _Get implements PetitionsEvent {
-  const _Get({this.searchTerm, this.lastPetition});
+  const _Get({this.searchTerm, this.lastPetition, this.startDate, this.endDate});
   
 
  final  String? searchTerm;
  final  Petition? lastPetition;
+ final  DateTime? startDate;
+ final  DateTime? endDate;
 
 /// Create a copy of PetitionsEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -197,16 +199,16 @@ _$GetCopyWith<_Get> get copyWith => __$GetCopyWithImpl<_Get>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&(identical(other.lastPetition, lastPetition) || other.lastPetition == lastPetition));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&(identical(other.lastPetition, lastPetition) || other.lastPetition == lastPetition)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,searchTerm,lastPetition);
+int get hashCode => Object.hash(runtimeType,searchTerm,lastPetition,startDate,endDate);
 
 @override
 String toString() {
-  return 'PetitionsEvent.get(searchTerm: $searchTerm, lastPetition: $lastPetition)';
+  return 'PetitionsEvent.get(searchTerm: $searchTerm, lastPetition: $lastPetition, startDate: $startDate, endDate: $endDate)';
 }
 
 
@@ -217,7 +219,7 @@ abstract mixin class _$GetCopyWith<$Res> implements $PetitionsEventCopyWith<$Res
   factory _$GetCopyWith(_Get value, $Res Function(_Get) _then) = __$GetCopyWithImpl;
 @useResult
 $Res call({
- String? searchTerm, Petition? lastPetition
+ String? searchTerm, Petition? lastPetition, DateTime? startDate, DateTime? endDate
 });
 
 
@@ -234,11 +236,13 @@ class __$GetCopyWithImpl<$Res>
 
 /// Create a copy of PetitionsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? searchTerm = freezed,Object? lastPetition = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? searchTerm = freezed,Object? lastPetition = freezed,Object? startDate = freezed,Object? endDate = freezed,}) {
   return _then(_Get(
 searchTerm: freezed == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
 as String?,lastPetition: freezed == lastPetition ? _self.lastPetition : lastPetition // ignore: cast_nullable_to_non_nullable
-as Petition?,
+as Petition?,startDate: freezed == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,endDate: freezed == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 

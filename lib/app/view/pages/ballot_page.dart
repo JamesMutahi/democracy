@@ -1,4 +1,6 @@
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
+import 'package:democracy/app/view/widgets/filters_modal.dart';
+import 'package:democracy/ballot/bloc/ballot_filter/ballot_filter_cubit.dart';
 import 'package:democracy/ballot/bloc/ballots/ballots_bloc.dart';
 import 'package:democracy/ballot/view/ballots.dart';
 import 'package:democracy/user/models/user.dart';
@@ -34,16 +36,37 @@ class _BallotPageState extends State<BallotPage>
             user: widget.user,
             notifications: widget.notifications,
             middle: [
-              AppBarSearchBar(
-                hintText: 'Search ballots',
-                onChanged: (value) {
+              BlocConsumer<BallotFilterCubit, BallotFilterState>(
+                listener: (context, state) {
                   context.read<BallotsBloc>().add(
-                    BallotsEvent.get(searchTerm: value),
+                    BallotsEvent.get(
+                      searchTerm: state.searchTerm,
+                      startDate: state.startDate,
+                      endDate: state.endDate,
+                    ),
                   );
                 },
-                showFilterIcon: true,
-                onFilterTap: () {
-                  //   TODO:
+                builder: (context, state) {
+                  return AppBarSearchBar(
+                    hintText: 'Search ballots',
+                    onChanged: (value) {
+                      context.read<BallotFilterCubit>().searchTermChanged(
+                        searchTerm: value,
+                      );
+                    },
+                    onFilterTap: () {
+                      showGeneralDialog(
+                        context: context,
+                        transitionDuration: const Duration(milliseconds: 300),
+                        pageBuilder: (context, animation, secondaryAnimation) {
+                          return _FiltersModal(
+                            startDate: state.startDate,
+                            endDate: state.endDate,
+                          );
+                        },
+                      );
+                    },
+                  );
                 },
               ),
             ],
@@ -51,6 +74,55 @@ class _BallotPageState extends State<BallotPage>
         ];
       },
       body: Ballots(),
+    );
+  }
+}
+
+class _FiltersModal extends StatefulWidget {
+  const _FiltersModal({required this.startDate, required this.endDate});
+
+  final DateTime? startDate;
+  final DateTime? endDate;
+
+  @override
+  State<_FiltersModal> createState() => _FiltersModalState();
+}
+
+class _FiltersModalState extends State<_FiltersModal> {
+  late DateTime? startDate = widget.startDate;
+  late DateTime? endDate = widget.endDate;
+
+  @override
+  Widget build(BuildContext context) {
+    return FiltersModal(
+      applyButtonIsDisabled:
+          (startDate == widget.startDate && endDate == widget.startDate),
+      clearButtonIsDisabled: startDate == null && endDate == null,
+      onApply: () {
+        context.read<BallotFilterCubit>().datesChanged(
+          startDate: startDate,
+          endDate: endDate,
+        );
+      },
+      onClear: () {
+        context.read<BallotFilterCubit>().clearFilters();
+        setState(() {
+          startDate = null;
+          endDate = null;
+        });
+      },
+      widgets: [
+        DateRangeFilter(
+          value: [startDate, endDate],
+          onValueChanged: (dates) {
+            setState(() {
+              startDate = dates.isNotEmpty ? dates[0] : null;
+              endDate = dates.length == 2 ? dates[1] : null;
+            });
+          },
+        ),
+        const Divider(),
+      ],
     );
   }
 }

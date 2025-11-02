@@ -65,14 +65,12 @@ class AppBarSearchBar extends StatelessWidget {
     this.controller,
     required this.hintText,
     required this.onChanged,
-    this.showFilterIcon = false,
     this.onFilterTap,
   });
 
   final TextEditingController? controller;
   final String hintText;
   final void Function(String) onChanged;
-  final bool showFilterIcon;
   final VoidCallback? onFilterTap;
 
   @override
@@ -87,7 +85,7 @@ class AppBarSearchBar extends StatelessWidget {
           ),
           leading: Icon(Symbols.search_rounded),
           trailing: [
-            if (showFilterIcon)
+            if (onFilterTap != null)
               GestureDetector(
                 onTap: onFilterTap,
                 child: SizedBox(

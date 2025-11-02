@@ -5,6 +5,8 @@ sealed class PetitionsEvent with _$PetitionsEvent {
   const factory PetitionsEvent.get({
     String? searchTerm,
     Petition? lastPetition,
+    DateTime? startDate,
+    DateTime? endDate,
   }) = _Get;
   const factory PetitionsEvent.received({
     required Map<String, dynamic> payload,

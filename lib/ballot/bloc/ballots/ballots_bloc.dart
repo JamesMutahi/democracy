@@ -36,6 +36,9 @@ class BallotsBloc extends Bloc<BallotsEvent, BallotsState> {
         'request_id': requestId,
         'search_term': event.searchTerm,
         'last_ballot': event.lastBallot?.id,
+        // TODO: Convert datetime to json
+        'start_date': event.startDate?.toIso8601String(),
+        'end_date': event.endDate?.toIso8601String(),
       },
     };
     webSocketService.send(message);

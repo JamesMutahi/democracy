@@ -36,6 +36,8 @@ class SurveysBloc extends Bloc<SurveysEvent, SurveysState> {
         'request_id': requestId,
         'search_term': event.searchTerm,
         'last_survey': event.lastSurvey?.id,
+        'start_date': event.startDate?.toIso8601String(),
+        'end_date': event.endDate?.toIso8601String(),
       },
     };
     webSocketService.send(message);
