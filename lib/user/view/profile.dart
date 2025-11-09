@@ -1,5 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/dialogs.dart';
+import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/view/chat_detail.dart';
@@ -71,6 +73,8 @@ class _ProfilePageState extends State<ProfilePage> {
               if (widget.user.id == state.user.id) {
                 setState(() {
                   user = state.user;
+                  loading = false;
+                  failure = false;
                   if (state.user.isBlocked) {
                     if (hideTabs == false) {
                       hideTabs = true;
@@ -120,11 +124,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 if (state.userId == user.id) {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder:
-                          (context) => ChatDetail(
-                            key: ValueKey(state.chat.id),
-                            chat: state.chat,
-                          ),
+                      builder: (context) => ChatDetail(
+                        key: ValueKey(state.chat.id),
+                        chat: state.chat,
+                      ),
                     ),
                   );
                 }
@@ -140,102 +143,117 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Scaffold(
                 body: SafeArea(
                   bottom: false,
-                  child: DefaultTabController(
-                    length: 4,
-                    child: NestedScrollView(
-                      controller: _scrollController,
-                      headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-                        return [
-                          SliverPersistentHeader(
-                            pinned: true,
-                            floating: true,
-                            delegate: ProfileAppBarDelegate(
-                              user: user,
-                              isCurrentUser: isCurrentUser,
-                              nameIsScrolled: nameIsScrolled,
-                              expandedHeight: expandedHeight,
-                            ),
-                          ),
-                          SliverToBoxAdapter(
-                            child: _UserDetails(user, isCurrentUser),
-                          ),
-                          if (!hideTabs || !user.isBlocked)
-                            SliverPersistentHeader(
-                              delegate: _TabBarAppBarDelegate(
-                                TabBar(
-                                  labelStyle:
-                                      Theme.of(context).textTheme.titleMedium,
-                                  dividerColor:
-                                      Theme.of(
-                                        context,
-                                      ).colorScheme.outlineVariant,
-                                  tabs: [
-                                    Tab(text: 'Posts'),
-                                    Tab(text: 'Replies'),
-                                    Tab(text: 'Likes'),
-                                    Tab(text: 'Petitions'),
-                                  ],
-                                ),
-                              ),
-                              pinned: true,
-                            ),
-                        ];
-                      },
-                      body:
-                          (hideTabs && user.isBlocked)
-                              ? Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      '@${user.username} is blocked',
-                                      style:
-                                          Theme.of(
-                                            context,
-                                          ).textTheme.titleLarge,
-                                    ),
-                                    SizedBox(height: 10),
-                                    OutlinedButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          hideTabs = false;
-                                        });
-                                      },
-                                      child: Text('View posts'),
-                                    ),
-                                    SizedBox(height: 10),
-                                    Text(
-                                      'Will not unblock them',
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.labelMedium?.copyWith(
-                                        color:
-                                            Theme.of(
-                                              context,
-                                            ).colorScheme.outline,
+                  child: loading
+                      ? BottomLoader()
+                      : failure
+                      ? FailureRetryButton(
+                          onPressed: () {
+                            context.read<UserDetailBloc>().add(
+                              UserDetailEvent.get(user: widget.user),
+                            );
+                          },
+                        )
+                      : DefaultTabController(
+                          length: 4,
+                          child: NestedScrollView(
+                            controller: _scrollController,
+                            headerSliverBuilder:
+                                (context, bool innerBoxIsScrolled) {
+                                  return [
+                                    SliverPersistentHeader(
+                                      pinned: true,
+                                      floating: true,
+                                      delegate: ProfileAppBarDelegate(
+                                        user: user,
+                                        isCurrentUser: isCurrentUser,
+                                        nameIsScrolled: nameIsScrolled,
+                                        expandedHeight: expandedHeight,
                                       ),
                                     ),
-                                  ],
-                                ),
-                              )
-                              : TabBarView(
-                                physics: const NeverScrollableScrollPhysics(),
-                                children: [
-                                  UserPosts(key: ValueKey(user.id), user: user),
-                                  UserReplies(
-                                    key: ValueKey(user.id),
-                                    user: user,
+                                    SliverToBoxAdapter(
+                                      child: _UserDetails(user, isCurrentUser),
+                                    ),
+                                    if (!hideTabs || !user.isBlocked)
+                                      SliverPersistentHeader(
+                                        delegate: _TabBarAppBarDelegate(
+                                          TabBar(
+                                            labelStyle: Theme.of(
+                                              context,
+                                            ).textTheme.titleMedium,
+                                            dividerColor: Theme.of(
+                                              context,
+                                            ).colorScheme.outlineVariant,
+                                            tabs: [
+                                              Tab(text: 'Posts'),
+                                              Tab(text: 'Replies'),
+                                              Tab(text: 'Likes'),
+                                              Tab(text: 'Petitions'),
+                                            ],
+                                          ),
+                                        ),
+                                        pinned: true,
+                                      ),
+                                  ];
+                                },
+                            body: (hideTabs && user.isBlocked)
+                                ? Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          '@${user.username} is blocked',
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.titleLarge,
+                                        ),
+                                        SizedBox(height: 10),
+                                        OutlinedButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              hideTabs = false;
+                                            });
+                                          },
+                                          child: Text('View posts'),
+                                        ),
+                                        SizedBox(height: 10),
+                                        Text(
+                                          'Will not unblock them',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelMedium
+                                              ?.copyWith(
+                                                color: Theme.of(
+                                                  context,
+                                                ).colorScheme.outline,
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : TabBarView(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    children: [
+                                      UserPosts(
+                                        key: ValueKey(user.id),
+                                        user: user,
+                                      ),
+                                      UserReplies(
+                                        key: ValueKey(user.id),
+                                        user: user,
+                                      ),
+                                      Likes(key: ValueKey(user.id), user: user),
+                                      UserPetitions(
+                                        key: ValueKey(user.id),
+                                        user: user,
+                                      ),
+                                    ],
                                   ),
-                                  Likes(key: ValueKey(user.id), user: user),
-                                  UserPetitions(
-                                    key: ValueKey(user.id),
-                                    user: user,
-                                  ),
-                                ],
-                              ),
-                    ),
-                  ),
+                          ),
+                        ),
                 ),
               ),
             ),
@@ -353,39 +371,39 @@ class ProfileAppBarDelegate extends SliverPersistentHeaderDelegate {
                 children: [
                   isCurrentUser
                       ? OutlinedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => EditProfile(user: user),
-                            ),
-                          );
-                        },
-                        child: Text('Edit profile'),
-                      )
-                      : Row(
-                        children: [
-                          user.isBlocked
-                              ? BlockedButton(user: user)
-                              : Row(
-                                children: [
-                                  if (user.isMuted)
-                                    Row(
-                                      children: [
-                                        MutedButton(user: user),
-                                        SizedBox(width: 7),
-                                      ],
-                                    ),
-                                  MessageButton(user: user),
-                                  SizedBox(width: 7),
-                                  if (user.isFollowed)
-                                    NotificationButton(user: user),
-                                  SizedBox(width: 7),
-                                  FollowButton(user: user),
-                                ],
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditProfile(user: user),
                               ),
-                        ],
-                      ),
+                            );
+                          },
+                          child: Text('Edit profile'),
+                        )
+                      : Row(
+                          children: [
+                            user.isBlocked
+                                ? BlockedButton(user: user)
+                                : Row(
+                                    children: [
+                                      if (user.isMuted)
+                                        Row(
+                                          children: [
+                                            MutedButton(user: user),
+                                            SizedBox(width: 7),
+                                          ],
+                                        ),
+                                      MessageButton(user: user),
+                                      SizedBox(width: 7),
+                                      if (user.isFollowed)
+                                        NotificationButton(user: user),
+                                      SizedBox(width: 7),
+                                      FollowButton(user: user),
+                                    ],
+                                  ),
+                          ],
+                        ),
                 ],
               ),
             ),
@@ -447,12 +465,9 @@ class _ButtonContainer extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color:
-            nameIsScrolled
-                ? Colors.transparent
-                : Theme.of(
-                  context,
-                ).scaffoldBackgroundColor.withValues(alpha: 0.5),
+        color: nameIsScrolled
+            ? Colors.transparent
+            : Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.5),
       ),
       child: child,
     );
@@ -467,14 +482,13 @@ class _ProfilePopUpMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List texts =
-        isCurrentUser
-            ? ['Share', 'Drafts']
-            : [
-              'Share',
-              user.isMuted ? 'Unmute' : 'Mute',
-              user.isBlocked ? 'Unblock' : 'Block',
-            ];
+    List texts = isCurrentUser
+        ? ['Share', 'Drafts']
+        : [
+            'Share',
+            user.isMuted ? 'Unmute' : 'Mute',
+            user.isBlocked ? 'Unblock' : 'Block',
+          ];
     return PopupMenuButton<String>(
       padding: EdgeInsets.zero,
       menuPadding: EdgeInsets.zero,
@@ -508,15 +522,14 @@ class _ProfilePopUpMenu extends StatelessWidget {
             );
         }
       },
-      itemBuilder:
-          (BuildContext context) => [
-            ...texts.map((text) {
-              return PopupMenuItem<String>(
-                value: text,
-                child: Text(text, textAlign: TextAlign.center),
-              );
-            }),
-          ],
+      itemBuilder: (BuildContext context) => [
+        ...texts.map((text) {
+          return PopupMenuItem<String>(
+            value: text,
+            child: Text(text, textAlign: TextAlign.center),
+          );
+        }),
+      ],
       icon: Icon(Symbols.more_vert_rounded),
     );
   }

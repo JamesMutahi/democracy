@@ -175,6 +175,7 @@ class _ForYouTabState extends State<ForYouTab>
           });
         },
         refreshController: _refreshController,
+        //   TODO: enable pull down
         enablePullDown: false,
         enablePullUp: hasNextPage,
         checkVisibility: true,

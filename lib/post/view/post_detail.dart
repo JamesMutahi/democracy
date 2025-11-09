@@ -20,7 +20,6 @@ import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/profile.dart';
-import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -238,9 +237,7 @@ class _PostDetailState extends State<PostDetail> {
                               children: [
                                 Icon(
                                   Symbols.loop_rounded,
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.outline,
+                                  color: Theme.of(context).colorScheme.outline,
                                 ),
                                 SizedBox(width: 5),
                                 Text(
@@ -294,101 +291,129 @@ class _PostContainer extends StatelessWidget {
       );
     }
 
-    return Container(
-      padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 5),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Theme.of(context).disabledColor.withAlpha(30),
+    return Stack(
+      children: [
+        Container(
+          padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 5),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: Theme.of(context).disabledColor.withAlpha(30),
+              ),
+            ),
           ),
-        ),
-      ),
-      child: post.isDeleted
-          ? PostDeletedWidget()
-          : Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: post.isDeleted
+              ? PostDeletedWidget()
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     InkWell(
                       onTap: () {
                         navigateToProfilePage(post.author);
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
+                      child: Container(
+                        margin: const EdgeInsets.only(right: 30.0),
                         child: Row(
                           children: [
-                            ProfileImage(user: post.author),
+                            PostAuthorProfile(
+                              isDependency: false,
+                              author: post.author,
+                            ),
                             SizedBox(width: 10),
-                            Text(
-                              post.author.name,
-                              style: Theme.of(context).textTheme.bodyLarge,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  post.author.name,
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
+                                Text(
+                                  '@${post.author.username}',
+                                  style: Theme.of(context).textTheme.bodyLarge
+                                      ?.copyWith(
+                                        color: Theme.of(context).hintColor,
+                                      ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
                     ),
-                    PostPopUp(post: post),
-                  ],
-                ),
-                SizedBox(height: 5),
-                CustomText(
-                  text: post.body,
-                  style: Theme.of(context).textTheme.bodyMedium!,
-                  showAllText: true,
-                  suffix: '',
-                  onUserTagPressed: (userId) {
-                    navigateToProfilePage(
-                      post.taggedUsers.firstWhere(
-                        (user) => user.id == int.parse(userId),
-                      ),
-                    );
-                  },
-                ),
-                SizedBox(height: 5),
-                if (post.repostOf != null)
-                  DependencyContainer(
-                    child: PostTile(post: post.repostOf!, isDependency: true),
-                  ),
-                if (post.ballot != null)
-                  DependencyContainer(
-                    child: BallotTile(ballot: post.ballot!, isDependency: true),
-                  ),
-                if (post.survey != null)
-                  DependencyContainer(
-                    child: SurveyTile(survey: post.survey!, isDependency: true),
-                  ),
-                if (post.petition != null)
-                  DependencyContainer(
-                    child: PetitionTile(
-                      petition: post.petition!,
-                      isDependency: true,
+                    SizedBox(height: 5),
+                    CustomText(
+                      text: post.body,
+                      style: Theme.of(context).textTheme.bodyMedium!,
+                      showAllText: true,
+                      suffix: '',
+                      onUserTagPressed: (userId) {
+                        navigateToProfilePage(
+                          post.taggedUsers.firstWhere(
+                            (user) => user.id == int.parse(userId),
+                          ),
+                        );
+                      },
                     ),
-                  ),
-                SizedBox(height: 5),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Text(
-                    '${timeFormat.format(post.publishedAt)} • '
-                    '${dateFormat.format(post.publishedAt)}',
-                    style: TextStyle(color: Theme.of(context).disabledColor),
-                  ),
-                ),
-                SizedBox(height: 5),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ReplyButton(post: post, numberFormat: numberFormat),
-                    RepostButton(post: post, numberFormat: numberFormat),
-                    LikeButton(post: post, numberFormat: numberFormat),
-                    BookmarkButton(post: post, numberFormat: numberFormat),
-                    ViewsButton(post: post, numberFormat: numberFormat),
+                    SizedBox(height: 5),
+                    if (post.repostOf != null)
+                      DependencyContainer(
+                        child: PostTile(
+                          post: post.repostOf!,
+                          isDependency: true,
+                        ),
+                      ),
+                    if (post.ballot != null)
+                      DependencyContainer(
+                        child: BallotTile(
+                          ballot: post.ballot!,
+                          isDependency: true,
+                        ),
+                      ),
+                    if (post.survey != null)
+                      DependencyContainer(
+                        child: SurveyTile(
+                          survey: post.survey!,
+                          isDependency: true,
+                        ),
+                      ),
+                    if (post.petition != null)
+                      DependencyContainer(
+                        child: PetitionTile(
+                          petition: post.petition!,
+                          isDependency: true,
+                        ),
+                      ),
+                    SizedBox(height: 5),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: Text(
+                        '${timeFormat.format(post.publishedAt)} • '
+                        '${dateFormat.format(post.publishedAt)}',
+                        style: TextStyle(
+                          color: Theme.of(context).disabledColor,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ReplyButton(post: post, numberFormat: numberFormat),
+                        RepostButton(post: post, numberFormat: numberFormat),
+                        LikeButton(post: post, numberFormat: numberFormat),
+                        BookmarkButton(post: post, numberFormat: numberFormat),
+                        ViewsButton(post: post, numberFormat: numberFormat),
+                      ],
+                    ),
                   ],
                 ),
-              ],
-            ),
+        ),
+        Align(
+          alignment: Alignment.topRight,
+          child: PostPopUp(post: post),
+        ),
+      ],
     );
   }
 }

@@ -24,7 +24,10 @@ class BallotFilterCubit extends Cubit<BallotFilterState> {
     );
   }
 
-  void datesChanged({required DateTime? startDate, required DateTime? endDate}) {
+  void datesChanged({
+    required DateTime? startDate,
+    required DateTime? endDate,
+  }) {
     emit(
       BallotFilterState.changed(
         searchTerm: state.searchTerm,

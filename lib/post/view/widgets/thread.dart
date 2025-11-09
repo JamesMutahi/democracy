@@ -42,15 +42,14 @@ class _ThreadState extends State<Thread> {
                 ),
                 if (_posts.first.thread.isNotEmpty)
                   Container(
-                    margin: EdgeInsets.only(left: 27, bottom: 10),
-                    child: GestureDetector(
+                    margin: EdgeInsets.only(left: 22, bottom: 10),
+                    child: InkWell(
                       onTap: () {
                         setState(() {
                           showWholeThread = true;
                         });
                       },
                       child: Row(
-                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
                             Icons.more_vert,

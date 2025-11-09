@@ -9,10 +9,10 @@ import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/post_detail.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/post/view/widgets/thread.dart';
+import 'package:democracy/post/view/widgets/thread_line.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/profile.dart';
-import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -123,21 +123,9 @@ class PostTile extends StatelessWidget {
                         )
                       : Stack(
                           children: [
-                            Positioned(
-                              // 23 -> circle avatar radius, 15 -> margin
-                              left: 23 + 15,
-                              top: 0,
-                              bottom: showBottomThread ? 0 : null,
-                              child: Container(
-                                margin: showTopThread
-                                    ? null
-                                    : EdgeInsets.only(top: 20),
-                                height: showBottomThread ? null : 20,
-                                width: 2,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.outlineVariant,
-                              ),
+                            ThreadLine(
+                              showBottomThread: showBottomThread,
+                              showTopThread: showTopThread,
                             ),
                             _PostContainer(
                               post: post,
@@ -173,22 +161,16 @@ class _PostContainer extends StatelessWidget {
     return Stack(
       children: [
         Padding(
-          padding: EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 5),
+          padding: EdgeInsets.only(left: 10, right: 15, top: 10, bottom: 5),
           child: post.isDeleted
               ? PostDeletedWidget()
               : Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      radius: 23,
-                      backgroundColor: isDependency
-                          ? Colors.transparent
-                          : Theme.of(context).scaffoldBackgroundColor,
-                      child: ProfileImage(
-                        user: post.author,
-                        navigateToProfile: true,
-                      ),
+                    PostAuthorProfile(
+                      isDependency: isDependency,
+                      author: post.author,
                     ),
                     SizedBox(width: 10),
                     Expanded(

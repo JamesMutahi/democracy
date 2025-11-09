@@ -10,10 +10,33 @@ import 'package:democracy/post/view/post_create.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
+import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
+
+class PostAuthorProfile extends StatelessWidget {
+  const PostAuthorProfile({
+    super.key,
+    required this.isDependency,
+    required this.author,
+  });
+
+  final bool isDependency;
+  final User author;
+
+  @override
+  Widget build(BuildContext context) {
+    return CircleAvatar(
+      radius: 23,
+      backgroundColor: isDependency
+          ? Colors.transparent
+          : Theme.of(context).scaffoldBackgroundColor,
+      child: ProfileImage(user: author, navigateToProfile: true),
+    );
+  }
+}
 
 class PostPopUp extends StatelessWidget {
   const PostPopUp({super.key, required this.post});
@@ -42,22 +65,21 @@ class PostPopUp extends StatelessWidget {
               case 'Delete':
                 showDialog(
                   context: context,
-                  builder:
-                      (context) => CustomDialog(
-                        title: 'Delete',
-                        content: 'Are you sure you want to delete this post?',
-                        button1Text: 'Yes',
-                        onButton1Pressed: () {
-                          Navigator.pop(context);
-                          context.read<PostDetailBloc>().add(
-                            PostDetailEvent.delete(post: post),
-                          );
-                        },
-                        button2Text: 'No',
-                        onButton2Pressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
+                  builder: (context) => CustomDialog(
+                    title: 'Delete',
+                    content: 'Are you sure you want to delete this post?',
+                    button1Text: 'Yes',
+                    onButton1Pressed: () {
+                      Navigator.pop(context);
+                      context.read<PostDetailBloc>().add(
+                        PostDetailEvent.delete(post: post),
+                      );
+                    },
+                    button2Text: 'No',
+                    onButton2Pressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
                 );
               case 'Mute':
                 showDialog(
@@ -89,15 +111,14 @@ class PostPopUp extends StatelessWidget {
                 );
             }
           },
-          texts:
-              user.id == post.author.id
-                  ? ['Share', 'Delete']
-                  : [
-                    'Share',
-                    post.author.isMuted ? 'Unmute' : 'Mute',
-                    post.author.isBlocked ? 'Unblock' : 'Block',
-                    'Report',
-                  ],
+          texts: user.id == post.author.id
+              ? ['Share', 'Delete']
+              : [
+                  'Share',
+                  post.author.isMuted ? 'Unmute' : 'Mute',
+                  post.author.isBlocked ? 'Unblock' : 'Block',
+                  'Report',
+                ],
         );
       },
     );
@@ -145,17 +166,17 @@ class LikeButton extends StatelessWidget {
       onTap: () {
         context.read<PostDetailBloc>().add(PostDetailEvent.like(post: post));
       },
-      trailing:
-          (post.likes > 0)
-              ? Text(
-                numberFormat.format(post.likes),
-                style: TextStyle(color: Theme.of(context).colorScheme.outline),
-              )
-              : null,
+      trailing: (post.likes > 0)
+          ? Text(
+              numberFormat.format(post.likes),
+              style: TextStyle(color: Theme.of(context).colorScheme.outline),
+            )
+          : null,
       child: PostButtonIcon(
         iconData: Symbols.favorite_rounded,
-        color:
-            post.isLiked ? Colors.red : Theme.of(context).colorScheme.outline,
+        color: post.isLiked
+            ? Colors.red
+            : Theme.of(context).colorScheme.outline,
         fill: post.isLiked ? 1 : 0,
       ),
     );
@@ -175,40 +196,39 @@ class RepostButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PostTileButton(
-      onTap:
-          post.author.hasBlocked
-              ? () {
-                final snackBar = getSnackBar(
-                  context: context,
-                  message: 'Blocked',
-                  status: SnackBarStatus.failure,
-                );
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              }
-              : () {
-                showModalBottomSheet<void>(
-                  context: context,
-                  isScrollControlled: true,
-                  shape: const BeveledRectangleBorder(),
-                  builder: (BuildContext context) {
-                    return CustomBottomSheet(
-                      title: 'Repost',
-                      children: [
-                        PostTile(post: post, isDependency: true),
-                        CustomBottomSheetContainer(
-                          text: 'Quote',
-                          iconData: Icons.format_quote_rounded,
-                          onTap: () {
-                            Navigator.pop(context);
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => PostCreate(post: post),
-                              ),
-                            );
-                          },
-                        ),
-                        post.isReposted
-                            ? CustomBottomSheetContainer(
+      onTap: post.author.hasBlocked
+          ? () {
+              final snackBar = getSnackBar(
+                context: context,
+                message: 'Blocked',
+                status: SnackBarStatus.failure,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+          : () {
+              showModalBottomSheet<void>(
+                context: context,
+                isScrollControlled: true,
+                shape: const BeveledRectangleBorder(),
+                builder: (BuildContext context) {
+                  return CustomBottomSheet(
+                    title: 'Repost',
+                    children: [
+                      PostTile(post: post, isDependency: true),
+                      CustomBottomSheetContainer(
+                        text: 'Quote',
+                        iconData: Icons.format_quote_rounded,
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => PostCreate(post: post),
+                            ),
+                          );
+                        },
+                      ),
+                      post.isReposted
+                          ? CustomBottomSheetContainer(
                               text: 'Undo repost',
                               iconData: Icons.loop_rounded,
                               onTap: () {
@@ -218,7 +238,7 @@ class RepostButton extends StatelessWidget {
                                 );
                               },
                             )
-                            : CustomBottomSheetContainer(
+                          : CustomBottomSheetContainer(
                               text: 'Repost',
                               iconData: Icons.loop_rounded,
                               onTap: () {
@@ -229,9 +249,9 @@ class RepostButton extends StatelessWidget {
                                     status: PostStatus.published,
                                     repostOf:
                                         post.body.isEmpty &&
-                                                post.repostOf != null
-                                            ? post.repostOf
-                                            : post,
+                                            post.repostOf != null
+                                        ? post.repostOf
+                                        : post,
                                     replyTo: null,
                                     ballot: null,
                                     survey: null,
@@ -242,31 +262,28 @@ class RepostButton extends StatelessWidget {
                                 );
                               },
                             ),
-                      ],
-                    );
-                  },
-                );
-              },
-      trailing:
-          (post.reposts > 0)
-              ? Text(
-                numberFormat.format(post.reposts),
-                style: TextStyle(
-                  color:
-                      post.author.hasBlocked
-                          ? Theme.of(context).disabledColor
-                          : Theme.of(context).colorScheme.outline,
-                ),
-              )
-              : null,
+                    ],
+                  );
+                },
+              );
+            },
+      trailing: (post.reposts > 0)
+          ? Text(
+              numberFormat.format(post.reposts),
+              style: TextStyle(
+                color: post.author.hasBlocked
+                    ? Theme.of(context).disabledColor
+                    : Theme.of(context).colorScheme.outline,
+              ),
+            )
+          : null,
       child: PostButtonIcon(
         iconData: Symbols.loop_rounded,
-        color:
-            post.author.hasBlocked
-                ? Theme.of(context).disabledColor
-                : post.isReposted || post.isQuoted
-                ? Colors.green
-                : Theme.of(context).colorScheme.outline,
+        color: post.author.hasBlocked
+            ? Theme.of(context).disabledColor
+            : post.isReposted || post.isQuoted
+            ? Colors.green
+            : Theme.of(context).colorScheme.outline,
       ),
     );
   }
@@ -285,42 +302,38 @@ class ReplyButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PostTileButton(
-      onTap:
-          post.author.hasBlocked
-              ? () {
-                final snackBar = getSnackBar(
-                  context: context,
-                  message: 'Blocked',
-                  status: SnackBarStatus.failure,
-                );
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              }
-              : () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PostCreate(post: post, isReply: true),
-                  ),
-                );
-              },
-      trailing:
-          (post.replies > 0)
-              ? Text(
-                numberFormat.format(post.replies),
-                style: TextStyle(
-                  color:
-                      post.author.hasBlocked
-                          ? Theme.of(context).disabledColor
-                          : Theme.of(context).colorScheme.outline,
+      onTap: post.author.hasBlocked
+          ? () {
+              final snackBar = getSnackBar(
+                context: context,
+                message: 'Blocked',
+                status: SnackBarStatus.failure,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+          : () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PostCreate(post: post, isReply: true),
                 ),
-              )
-              : null,
+              );
+            },
+      trailing: (post.replies > 0)
+          ? Text(
+              numberFormat.format(post.replies),
+              style: TextStyle(
+                color: post.author.hasBlocked
+                    ? Theme.of(context).disabledColor
+                    : Theme.of(context).colorScheme.outline,
+              ),
+            )
+          : null,
       child: PostButtonIcon(
         iconData: Symbols.message_rounded,
-        color:
-            post.author.hasBlocked
-                ? Theme.of(context).disabledColor
-                : Theme.of(context).colorScheme.outline,
+        color: post.author.hasBlocked
+            ? Theme.of(context).disabledColor
+            : Theme.of(context).colorScheme.outline,
       ),
     );
   }
@@ -340,13 +353,12 @@ class ViewsButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return PostTileButton(
       onTap: () {},
-      trailing:
-          (post.views > 0)
-              ? Text(
-                numberFormat.format(post.views),
-                style: TextStyle(color: Theme.of(context).colorScheme.outline),
-              )
-              : null,
+      trailing: (post.views > 0)
+          ? Text(
+              numberFormat.format(post.views),
+              style: TextStyle(color: Theme.of(context).colorScheme.outline),
+            )
+          : null,
       child: PostButtonIcon(iconData: Symbols.visibility),
     );
   }
@@ -372,19 +384,17 @@ class BookmarkButton extends StatelessWidget {
           PostDetailEvent.bookmark(post: post),
         );
       },
-      trailing:
-          (post.bookmarks > 0 && showTrailing)
-              ? Text(
-                numberFormat.format(post.bookmarks),
-                style: TextStyle(color: Theme.of(context).colorScheme.outline),
-              )
-              : null,
+      trailing: (post.bookmarks > 0 && showTrailing)
+          ? Text(
+              numberFormat.format(post.bookmarks),
+              style: TextStyle(color: Theme.of(context).colorScheme.outline),
+            )
+          : null,
       child: PostButtonIcon(
         iconData: Symbols.bookmark_rounded,
-        color:
-            post.isBookmarked
-                ? Colors.blue
-                : Theme.of(context).colorScheme.outline,
+        color: post.isBookmarked
+            ? Colors.blue
+            : Theme.of(context).colorScheme.outline,
         fill: post.isBookmarked ? 1 : 0,
       ),
     );
@@ -408,6 +418,7 @@ class PostButtonIcon extends StatelessWidget {
     return Icon(
       iconData,
       size: 20,
+      weight: 500,
       color: color ?? Theme.of(context).colorScheme.outline,
       fill: fill,
     );
