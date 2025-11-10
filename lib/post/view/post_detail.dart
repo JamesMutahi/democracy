@@ -14,6 +14,8 @@ import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/post/view/widgets/replies.dart';
+import 'package:democracy/post/view/widgets/reply_to_thread.dart';
+import 'package:democracy/post/view/widgets/thread_line.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
@@ -206,7 +208,7 @@ class _PostDetailState extends State<PostDetail> {
         body: isDeleted
             ? Center(child: Text('This post has been deleted by the author'))
             : SmartRefresher(
-                enablePullDown: true,
+                enablePullDown: widget.post.replyTo == null,
                 enablePullUp: false,
                 header: ClassicHeader(),
                 controller: _controller,
@@ -255,7 +257,25 @@ class _PostDetailState extends State<PostDetail> {
                           );
                         },
                       ),
-                    _PostContainer(post: _post),
+                    _post.replyTo != null
+                        ? Column(
+                            children: [
+                              Visibility(
+                                visible: true,
+                                child: ReplyToThread(post: _post),
+                              ),
+                              Stack(
+                                children: [
+                                  ThreadLine(
+                                    showBottomThread: false,
+                                    showTopThread: true,
+                                  ),
+                                  _PostContainer(post: _post),
+                                ],
+                              ),
+                            ],
+                          )
+                        : _PostContainer(post: _post),
                     Replies(key: ValueKey(_post.id), post: _post),
                   ],
                 ),

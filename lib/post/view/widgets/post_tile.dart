@@ -61,11 +61,11 @@ class PostTile extends StatelessWidget {
           return Container(
             decoration: BoxDecoration(
               border: Border(
-                bottom: BorderSide(
-                  color: (isDependency || hideBorder)
-                      ? Colors.transparent
-                      : Theme.of(context).disabledColor.withAlpha(30),
-                ),
+                bottom: isDependency || hideBorder
+                    ? BorderSide.none
+                    : BorderSide(
+                        color: Theme.of(context).disabledColor.withAlpha(30),
+                      ),
               ),
             ),
             child: Column(
