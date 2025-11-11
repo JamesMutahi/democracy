@@ -222,60 +222,47 @@ class _PostDetailState extends State<PostDetail> {
                 },
                 child: ListView(
                   children: [
-                    if (widget.showAsRepost)
-                      BlocBuilder<AuthBloc, AuthState>(
-                        builder: (context, state) {
-                          late User user;
-                          if (state is Authenticated) {
-                            user = state.user;
-                          }
-                          return Container(
-                            padding: EdgeInsets.only(
-                              left: 15,
-                              right: 15,
-                              top: 10,
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Symbols.loop_rounded,
-                                  color: Theme.of(context).colorScheme.outline,
-                                ),
-                                SizedBox(width: 5),
-                                Text(
-                                  user.id == widget.repost.author.id
-                                      ? 'You reposted'
-                                      : '${widget.repost.author.name} reposted',
-                                  style: TextStyle(
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.outline,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    _post.replyTo != null
+                    _post.replyTo == null
                         ? Column(
+                            children: [
+                              if (widget.showAsRepost) _repostBanner(),
+                              _PostContainer(post: _post),
+                            ],
+                          )
+                        : Column(
                             children: [
                               Visibility(
                                 visible: true,
                                 child: ReplyToThread(post: _post),
                               ),
-                              Stack(
+                              Column(
                                 children: [
-                                  ThreadLine(
-                                    showBottomThread: false,
-                                    showTopThread: true,
+                                  if (widget.showAsRepost)
+                                    Stack(
+                                      children: [
+                                        ThreadLine(
+                                          showBottomThread: true,
+                                          showTopThread: true,
+                                        ),
+                                        Container(
+                                          margin: EdgeInsets.only(left: 30),
+                                          child: _repostBanner(),
+                                        ),
+                                      ],
+                                    ),
+                                  Stack(
+                                    children: [
+                                      ThreadLine(
+                                        showBottomThread: false,
+                                        showTopThread: true,
+                                      ),
+                                      _PostContainer(post: _post),
+                                    ],
                                   ),
-                                  _PostContainer(post: _post),
                                 ],
                               ),
                             ],
-                          )
-                        : _PostContainer(post: _post),
+                          ),
                     Replies(key: ValueKey(_post.id), post: _post),
                   ],
                 ),
@@ -290,6 +277,35 @@ class _PostDetailState extends State<PostDetail> {
               )
             : BottomReplyTextField(post: _post),
       ),
+    );
+  }
+
+  Widget _repostBanner() {
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        late User user;
+        if (state is Authenticated) user = state.user;
+
+        return Container(
+          padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
+          child: Row(
+            children: [
+              Icon(
+                Symbols.loop_rounded,
+                color: Theme.of(context).colorScheme.outline,
+                size: 17,
+              ),
+              const SizedBox(width: 5),
+              Text(
+                user.id == widget.repost.author.id
+                    ? 'You reposted'
+                    : '${widget.repost.author.name} reposted',
+                style: TextStyle(color: Theme.of(context).colorScheme.outline),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
