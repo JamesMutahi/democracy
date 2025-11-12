@@ -52,99 +52,90 @@ class PostTile extends StatelessWidget {
     }
     return Visibility(
       visible: visible,
-      child: BlocBuilder<AuthBloc, AuthState>(
-        builder: (context, state) {
-          late User user;
-          if (state is Authenticated) {
-            user = state.user;
-          }
-          return Container(
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: isDependency || hideBorder
-                    ? BorderSide.none
-                    : BorderSide(
-                        color: Theme.of(context).disabledColor.withAlpha(30),
-                      ),
-              ),
-            ),
-            child: Column(
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PostDetail(
-                          key: ValueKey(post.id),
-                          post: showAsRepost ? post.repostOf! : post,
-                          showAsRepost: showAsRepost,
-                          repost: post,
-                        ),
-                      ),
-                    );
-                  },
-                  child: showAsRepost
-                      ? Column(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.only(
-                                left: 15,
-                                right: 15,
-                                top: 10,
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Symbols.loop_rounded,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.outline,
-                                  ),
-                                  SizedBox(width: 5),
-                                  Text(
-                                    user.id == post.author.id
-                                        ? 'You reposted'
-                                        : '${post.author.name} reposted',
-                                    style: TextStyle(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.outline,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            _PostContainer(
-                              post: post.repostOf!,
-                              isDependency: false,
-                            ),
-                          ],
-                        )
-                      : Stack(
-                          children: [
-                            ThreadLine(
-                              showBottomThread: showBottomThread,
-                              showTopThread: showTopThread,
-                            ),
-                            _PostContainer(
-                              post: post,
-                              isDependency: isDependency,
-                            ),
-                          ],
-                        ),
-                ),
-                if (showThreadedReplies)
-                  Thread(
-                    key: ValueKey(post.id),
-                    post: post,
-                    showWholeThread: showWholeThread,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: isDependency || hideBorder
+                ? BorderSide.none
+                : BorderSide(
+                    color: Theme.of(context).disabledColor.withAlpha(30),
                   ),
-              ],
+          ),
+        ),
+        child: Column(
+          children: [
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PostDetail(
+                      key: ValueKey(post.id),
+                      post: showAsRepost ? post.repostOf! : post,
+                      showAsRepost: showAsRepost,
+                      repost: post,
+                    ),
+                  ),
+                );
+              },
+              child: showAsRepost
+                  ? Column(
+                      children: [
+                        _repostBanner(),
+                        _PostContainer(
+                          post: post.repostOf!,
+                          isDependency: false,
+                        ),
+                      ],
+                    )
+                  : Stack(
+                      children: [
+                        ThreadLine(
+                          showBottomThread: showBottomThread,
+                          showTopThread: showTopThread,
+                        ),
+                        _PostContainer(post: post, isDependency: isDependency),
+                      ],
+                    ),
             ),
-          );
-        },
+            if (showThreadedReplies)
+              Thread(
+                key: ValueKey(post.id),
+                post: post,
+                showWholeThread: showWholeThread,
+              ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _repostBanner() {
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        late User user;
+        if (state is Authenticated) user = state.user;
+
+        return Container(
+          padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
+          child: Row(
+            children: [
+              Icon(
+                Symbols.loop_rounded,
+                color: Theme.of(context).colorScheme.outline,
+                size: 17,
+              ),
+              const SizedBox(width: 5),
+              Text(
+                user.id == post.author.id
+                    ? 'You reposted'
+                    : '${post.author.name} reposted',
+                style: TextStyle(color: Theme.of(context).colorScheme.outline),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

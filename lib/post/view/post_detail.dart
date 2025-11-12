@@ -53,6 +53,11 @@ class _PostDetailState extends State<PostDetail> {
     initialRefresh: false,
   );
 
+  void _refresh() {
+    context.read<PostDetailBloc>().add(PostDetailEvent.get(post: widget.post));
+    context.read<RepliesBloc>().add(RepliesEvent.get(post: widget.post));
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
@@ -208,18 +213,11 @@ class _PostDetailState extends State<PostDetail> {
         body: isDeleted
             ? Center(child: Text('This post has been deleted by the author'))
             : SmartRefresher(
-                enablePullDown: widget.post.replyTo == null,
+                enablePullDown: true,
                 enablePullUp: false,
                 header: ClassicHeader(),
                 controller: _controller,
-                onRefresh: () {
-                  context.read<PostDetailBloc>().add(
-                    PostDetailEvent.get(post: widget.post),
-                  );
-                  context.read<RepliesBloc>().add(
-                    RepliesEvent.get(post: widget.post),
-                  );
-                },
+                onRefresh: _refresh,
                 child: ListView(
                   children: [
                     _post.replyTo == null
