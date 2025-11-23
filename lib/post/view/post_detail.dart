@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/bottom_text_form_field.dart';
 import 'package:democracy/app/utils/custom_text.dart';
+import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/app/utils/tagging.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
@@ -12,8 +15,8 @@ import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/replies/replies_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
+import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
-import 'package:democracy/post/view/widgets/replies.dart';
 import 'package:democracy/post/view/widgets/reply_to_thread.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
@@ -49,9 +52,20 @@ class PostDetail extends StatefulWidget {
 class _PostDetailState extends State<PostDetail> {
   late Post _post = widget.post;
   bool isDeleted = false;
-  final RefreshController _controller = RefreshController(
+  final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
   );
+  bool replyToVisible = false;
+  bool loading = true;
+  bool failure = false;
+  List<Post> _replies = [];
+  bool hasNextPage = false;
+
+  @override
+  void initState() {
+    context.read<RepliesBloc>().add(RepliesEvent.get(post: widget.post));
+    super.initState();
+  }
 
   void _refresh() {
     context.read<PostDetailBloc>().add(PostDetailEvent.get(post: widget.post));
@@ -60,22 +74,63 @@ class _PostDetailState extends State<PostDetail> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<PostDetailBloc, PostDetailState>(
-          listener: (context, state) {
-            switch (state) {
-              case PostLoaded(:final post):
-                if (_post.id == post.id) {
-                  setState(() {
-                    _post = post;
-                  });
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (_, __) {
+        if (_replies.isNotEmpty) {
+          context.read<RepliesBloc>().add(
+            RepliesEvent.unsubscribe(post: widget.post, replies: _replies),
+          );
+        }
+      },
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<WebsocketBloc, WebsocketState>(
+            listener: (context, state) {
+              if (state.status == WebsocketStatus.connected) {
+                if (_replies.isNotEmpty) {
+                  context.read<RepliesBloc>().add(
+                    RepliesEvent.resubscribe(
+                      post: widget.post,
+                      replies: _replies,
+                    ),
+                  );
                 }
-              case PostUpdated():
-                // update post
-                if (_post.id == state.postId) {
-                  setState(() {
-                    _post = _post.copyWith(
+              }
+            },
+          ),
+          BlocListener<PostDetailBloc, PostDetailState>(
+            listener: (context, state) {
+              switch (state) {
+                case PostLoaded(:final post):
+                  if (_post.id == post.id) {
+                    setState(() {
+                      _post = post;
+                    });
+                  }
+                case PostUpdated():
+                  // update post
+                  if (_post.id == state.postId) {
+                    setState(() {
+                      _post = _post.copyWith(
+                        body: state.body,
+                        likes: state.likes,
+                        isLiked: state.isLiked,
+                        bookmarks: state.bookmarks,
+                        isBookmarked: state.isBookmarked,
+                        views: state.views,
+                        replies: state.replies,
+                        reposts: state.reposts,
+                        isReposted: state.isReposted,
+                        isQuoted: state.isQuoted,
+                        isDeleted: state.isDeleted,
+                        isActive: state.isActive,
+                      );
+                    });
+                  }
+                  // update post's repost_of
+                  if (_post.repostOf?.id == state.postId) {
+                    Post repostOf = _post.repostOf!.copyWith(
                       body: state.body,
                       likes: state.likes,
                       isLiked: state.isLiked,
@@ -89,191 +144,298 @@ class _PostDetailState extends State<PostDetail> {
                       isDeleted: state.isDeleted,
                       isActive: state.isActive,
                     );
+                    setState(() {
+                      _post = _post.copyWith(repostOf: repostOf);
+                    });
+                  }
+                case PostDeleted(:final postId):
+                  if (_post.id == postId || widget.repost.id == postId) {
+                    setState(() {
+                      isDeleted = true;
+                    });
+                  }
+              }
+            },
+          ),
+          BlocListener<UserDetailBloc, UserDetailState>(
+            listener: (context, state) {
+              if (state is UserUpdated) {
+                // post
+                if (_post.author.id == state.user.id) {
+                  setState(() {
+                    _post = _post.copyWith(author: state.user);
                   });
                 }
-                // update post's repost_of
-                if (_post.repostOf?.id == state.postId) {
-                  Post repostOf = _post.repostOf!.copyWith(
-                    body: state.body,
-                    likes: state.likes,
-                    isLiked: state.isLiked,
-                    bookmarks: state.bookmarks,
-                    isBookmarked: state.isBookmarked,
-                    views: state.views,
-                    replies: state.replies,
-                    reposts: state.reposts,
-                    isReposted: state.isReposted,
-                    isQuoted: state.isQuoted,
-                    isDeleted: state.isDeleted,
-                    isActive: state.isActive,
-                  );
+                // repost
+                if (_post.repostOf?.author.id == state.user.id) {
+                  Post repostOf = _post.repostOf!.copyWith(author: state.user);
                   setState(() {
                     _post = _post.copyWith(repostOf: repostOf);
                   });
                 }
-              case PostDeleted(:final postId):
-                if (_post.id == postId || widget.repost.id == postId) {
+              }
+            },
+          ),
+          BlocListener<BallotDetailBloc, BallotDetailState>(
+            listener: (context, state) {
+              if (state is BallotUpdated) {
+                // post
+                if (_post.ballot?.id == state.ballot.id) {
                   setState(() {
-                    isDeleted = true;
+                    _post = _post.copyWith(ballot: state.ballot);
                   });
                 }
-            }
-          },
-        ),
-        BlocListener<UserDetailBloc, UserDetailState>(
-          listener: (context, state) {
-            if (state is UserUpdated) {
-              // post
-              if (_post.author.id == state.user.id) {
-                setState(() {
-                  _post = _post.copyWith(author: state.user);
-                });
-              }
-              // repost
-              if (_post.repostOf?.author.id == state.user.id) {
-                Post repostOf = _post.repostOf!.copyWith(author: state.user);
-                setState(() {
-                  _post = _post.copyWith(repostOf: repostOf);
-                });
-              }
-            }
-          },
-        ),
-        BlocListener<BallotDetailBloc, BallotDetailState>(
-          listener: (context, state) {
-            if (state is BallotUpdated) {
-              // post
-              if (_post.ballot?.id == state.ballot.id) {
-                setState(() {
-                  _post = _post.copyWith(ballot: state.ballot);
-                });
-              }
-              // repost
-              if (_post.repostOf?.ballot?.id == state.ballot.id) {
-                setState(() {
-                  Post repostOf = _post.repostOf!.copyWith(
-                    ballot: state.ballot,
-                  );
-                  _post = _post.copyWith(repostOf: repostOf);
-                });
-              }
-            }
-          },
-        ),
-        BlocListener<SurveyDetailBloc, SurveyDetailState>(
-          listener: (context, state) {
-            if (state is SurveyUpdated) {
-              // post
-              if (_post.survey?.id == state.survey.id) {
-                setState(() {
-                  _post = _post.copyWith(survey: state.survey);
-                });
-              }
-              // repost
-              if (_post.repostOf?.survey?.id == state.survey.id) {
-                setState(() {
-                  Post repostOf = _post.repostOf!.copyWith(
-                    survey: state.survey,
-                  );
-                  _post = _post.copyWith(repostOf: repostOf);
-                });
-              }
-            }
-          },
-        ),
-        BlocListener<RepliesBloc, RepliesState>(
-          listener: (context, state) {
-            if (state.status == RepliesStatus.success) {
-              if (widget.post.id == state.postId) {
-                setState(() {
-                  if (_controller.headerStatus == RefreshStatus.refreshing) {
-                    _controller.refreshCompleted();
-                  }
-                  if (_controller.footerStatus == LoadStatus.loading) {
-                    _controller.loadComplete();
-                  }
-                });
-              }
-            }
-            if (state.status == RepliesStatus.failure) {
-              if (widget.post.id == state.postId) {
-                if (_controller.headerStatus == RefreshStatus.refreshing) {
-                  _controller.refreshFailed();
-                }
-                if (_controller.footerStatus == LoadStatus.loading) {
-                  _controller.loadFailed();
+                // repost
+                if (_post.repostOf?.ballot?.id == state.ballot.id) {
+                  setState(() {
+                    Post repostOf = _post.repostOf!.copyWith(
+                      ballot: state.ballot,
+                    );
+                    _post = _post.copyWith(repostOf: repostOf);
+                  });
                 }
               }
-            }
-          },
-        ),
-      ],
-      child: Scaffold(
-        appBar: AppBar(title: Text('Post')),
-        body: isDeleted
-            ? Center(child: Text('This post has been deleted by the author'))
-            : SmartRefresher(
-                enablePullDown: true,
-                enablePullUp: false,
-                header: ClassicHeader(),
-                controller: _controller,
-                onRefresh: _refresh,
-                child: ListView(
-                  children: [
-                    _post.replyTo == null
-                        ? Column(
+            },
+          ),
+          BlocListener<SurveyDetailBloc, SurveyDetailState>(
+            listener: (context, state) {
+              if (state is SurveyUpdated) {
+                // post
+                if (_post.survey?.id == state.survey.id) {
+                  setState(() {
+                    _post = _post.copyWith(survey: state.survey);
+                  });
+                }
+                // repost
+                if (_post.repostOf?.survey?.id == state.survey.id) {
+                  setState(() {
+                    Post repostOf = _post.repostOf!.copyWith(
+                      survey: state.survey,
+                    );
+                    _post = _post.copyWith(repostOf: repostOf);
+                  });
+                }
+              }
+            },
+          ),
+          BlocListener<RepliesBloc, RepliesState>(
+            listener: (context, state) {
+              if (state.status == RepliesStatus.success) {
+                if (widget.post.id == state.postId) {
+                  setState(() {
+                    _replies = state.posts.toList();
+                    loading = false;
+                    failure = false;
+                    hasNextPage = state.hasNext;
+                    if (_refreshController.headerStatus ==
+                        RefreshStatus.refreshing) {
+                      _refreshController.refreshCompleted();
+                    }
+                    if (_refreshController.footerStatus == LoadStatus.loading) {
+                      _refreshController.loadComplete();
+                    }
+                  });
+                }
+              }
+              if (state.status == RepliesStatus.failure) {
+                if (widget.post.id == state.postId) {
+                  if (loading) {
+                    setState(() {
+                      loading = false;
+                      failure = true;
+                    });
+                  }
+                  if (_refreshController.headerStatus ==
+                      RefreshStatus.refreshing) {
+                    _refreshController.refreshFailed();
+                  }
+                  if (_refreshController.footerStatus == LoadStatus.loading) {
+                    _refreshController.loadFailed();
+                  }
+                }
+              }
+            },
+          ),
+          BlocListener<PostDetailBloc, PostDetailState>(
+            listener: (context, state) {
+              switch (state) {
+                case PostCreated(post: final post):
+                  if (widget.post.id == post.replyTo?.id) {
+                    setState(() {
+                      int index = _replies.indexWhere(
+                        (element) => element.author.id != post.author.id,
+                      );
+                      _replies.insert(index, post);
+                    });
+                  }
+              }
+            },
+          ),
+        ],
+        child: Scaffold(
+          appBar: AppBar(title: Text('Post')),
+          body: isDeleted
+              ? Center(child: Text('This post has been deleted by the author'))
+              : SmartRefresher(
+                  enablePullDown: hasNextPage,
+                  enablePullUp: true,
+                  header: ClassicHeader(
+                    // CustomScrollView is in reverse
+                    idleIcon: Icon(
+                      Icons.arrow_upward_rounded,
+                      color: Colors.grey,
+                    ),
+                    idleText: 'Pull up to load more',
+                    releaseText: 'Release to load more',
+                    completeText: 'Loaded',
+                  ),
+                  footer: ClassicFooter(
+                    // CustomScrollView is in reverse
+                    idleIcon: Icon(
+                      Icons.arrow_downward_rounded,
+                      color: Colors.grey,
+                    ),
+                    idleText: replyToVisible
+                        ? 'Pull down to refresh'
+                        : 'Show post being replied to',
+                  ),
+                  controller: _refreshController,
+                  onLoading: () {
+                    // CustomScrollView is in reverse
+                    if (_post.replyTo == null) {
+                      _refresh();
+                    } else {
+                      if (replyToVisible == true) {
+                        _refresh();
+                      } else {
+                        setState(() {
+                          replyToVisible = true;
+                          _refreshController.loadComplete();
+                        });
+                      }
+                    }
+                  },
+                  onRefresh: () {
+                    context.read<RepliesBloc>().add(
+                      RepliesEvent.get(
+                        post: widget.post,
+                        lastPost: _replies.last,
+                      ),
+                    );
+                  },
+                  child: CustomScrollView(
+                    reverse: true,
+                    slivers: <Widget>[
+                      SliverFillRemaining(
+                        child: SingleChildScrollView(
+                          child: Column(
                             children: [
-                              if (widget.showAsRepost) _repostBanner(),
-                              _PostContainer(post: _post),
-                            ],
-                          )
-                        : Column(
-                            children: [
-                              Visibility(
-                                visible: true,
-                                child: ReplyToThread(post: _post),
-                              ),
-                              Column(
-                                children: [
-                                  if (widget.showAsRepost)
-                                    Stack(
+                              _post.replyTo == null
+                                  ? Column(
                                       children: [
-                                        ThreadLine(
-                                          showBottomThread: true,
-                                          showTopThread: true,
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.only(left: 30),
-                                          child: _repostBanner(),
+                                        if (widget.showAsRepost)
+                                          _repostBanner(),
+                                        _PostContainer(post: _post),
+                                      ],
+                                    )
+                                  : Column(
+                                      children: [
+                                        Column(
+                                          children: [
+                                            if (widget.showAsRepost)
+                                              Stack(
+                                                children: [
+                                                  ThreadLine(
+                                                    showBottomThread: true,
+                                                    showTopThread: true,
+                                                  ),
+                                                  Container(
+                                                    margin: EdgeInsets.only(
+                                                      left: 30,
+                                                    ),
+                                                    child: _repostBanner(),
+                                                  ),
+                                                ],
+                                              ),
+                                            Stack(
+                                              children: [
+                                                ThreadLine(
+                                                  showBottomThread: false,
+                                                  showTopThread: true,
+                                                ),
+                                                _PostContainer(post: _post),
+                                              ],
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
-                                  Stack(
-                                    children: [
-                                      ThreadLine(
-                                        showBottomThread: false,
-                                        showTopThread: true,
+                              PostListener(
+                                posts: _replies,
+                                onPostsUpdated: (posts) {
+                                  setState(() {
+                                    _replies = posts;
+                                  });
+                                },
+                                child: loading
+                                    ? Container(
+                                        margin: EdgeInsets.only(top: 50),
+                                        child: BottomLoader(),
+                                      )
+                                    : failure
+                                    ? FailureRetryButton(
+                                        onPressed: () {
+                                          context.read<RepliesBloc>().add(
+                                            RepliesEvent.get(post: widget.post),
+                                          );
+                                        },
+                                      )
+                                    : ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                              Post post = _replies[index];
+                                              return PostTile(
+                                                key: ValueKey(post.id),
+                                                post: post,
+                                                checkVisibility: true,
+                                                showThreadedReplies:
+                                                    post.thread.isEmpty
+                                                    ? false
+                                                    : true,
+                                                showBottomThread:
+                                                    post.thread.isEmpty
+                                                    ? false
+                                                    : true,
+                                              );
+                                            },
+                                        itemCount: _replies.length,
                                       ),
-                                      _PostContainer(post: _post),
-                                    ],
-                                  ),
-                                ],
                               ),
                             ],
                           ),
-                    Replies(key: ValueKey(_post.id), post: _post),
-                  ],
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: Visibility(
+                          visible: replyToVisible,
+                          child: ReplyToThread(post: _post),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-        bottomNavigationBar: _post.author.hasBlocked
-            ? Container(
-                margin: const EdgeInsets.only(bottom: 8.0),
-                child: Text(
-                  'You have been blocked',
-                  textAlign: TextAlign.center,
-                ),
-              )
-            : BottomReplyTextField(post: _post),
+          bottomNavigationBar: _post.author.hasBlocked
+              ? Container(
+                  margin: const EdgeInsets.only(bottom: 8.0),
+                  child: Text(
+                    'You have been blocked',
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              : BottomReplyTextField(post: _post),
+        ),
       ),
     );
   }
