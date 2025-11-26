@@ -417,12 +417,8 @@ class _PostDetailState extends State<PostDetail> {
                           ),
                         ),
                       ),
-                      SliverToBoxAdapter(
-                        child: Visibility(
-                          visible: replyToVisible,
-                          child: ReplyToThread(post: _post),
-                        ),
-                      ),
+                      if (replyToVisible)
+                        SliverToBoxAdapter(child: ReplyToThread(post: _post)),
                     ],
                   ),
                 ),
