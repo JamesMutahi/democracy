@@ -25,6 +25,7 @@ import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/profile.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -67,9 +68,21 @@ class _PostDetailState extends State<PostDetail> {
     super.initState();
   }
 
-  void _refresh() {
-    context.read<PostDetailBloc>().add(PostDetailEvent.get(post: widget.post));
-    context.read<RepliesBloc>().add(RepliesEvent.get(post: widget.post));
+  void _onScrollDown() {
+    if (_post.replyTo != null) {
+      if (replyToVisible == false) {
+        setState(() {
+          replyToVisible = true;
+          _refreshController.loadComplete();
+        });
+      }
+    }
+  }
+
+  void _onScrollUp() {
+    context.read<RepliesBloc>().add(
+      RepliesEvent.get(post: widget.post, lastPost: _replies.last),
+    );
   }
 
   @override
@@ -278,7 +291,7 @@ class _PostDetailState extends State<PostDetail> {
               ? Center(child: Text('This post has been deleted by the author'))
               : SmartRefresher(
                   enablePullDown: hasNextPage,
-                  enablePullUp: true,
+                  enablePullUp: (_post.replyTo != null && !replyToVisible),
                   header: ClassicHeader(
                     // CustomScrollView is in reverse
                     idleIcon: Icon(
@@ -300,29 +313,8 @@ class _PostDetailState extends State<PostDetail> {
                         : 'Show post being replied to',
                   ),
                   controller: _refreshController,
-                  onLoading: () {
-                    // CustomScrollView is in reverse
-                    if (_post.replyTo == null) {
-                      _refresh();
-                    } else {
-                      if (replyToVisible == true) {
-                        _refresh();
-                      } else {
-                        setState(() {
-                          replyToVisible = true;
-                          _refreshController.loadComplete();
-                        });
-                      }
-                    }
-                  },
-                  onRefresh: () {
-                    context.read<RepliesBloc>().add(
-                      RepliesEvent.get(
-                        post: widget.post,
-                        lastPost: _replies.last,
-                      ),
-                    );
-                  },
+                  onLoading: _onScrollDown,
+                  onRefresh: _onScrollUp,
                   child: CustomScrollView(
                     reverse: true,
                     slivers: <Widget>[
