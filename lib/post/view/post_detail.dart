@@ -13,11 +13,11 @@ import 'package:democracy/constitution/bloc/sections/sections_bloc.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/replies/replies_bloc.dart';
+import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
-import 'package:democracy/post/view/widgets/reply_to_thread.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
@@ -25,7 +25,6 @@ import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/profile.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -60,12 +59,20 @@ class _PostDetailState extends State<PostDetail> {
   bool loading = true;
   bool failure = false;
   List<Post> _replies = [];
+  List<Post> _replyTos = [];
   bool hasNextPage = false;
 
   @override
   void initState() {
-    context.read<RepliesBloc>().add(RepliesEvent.get(post: widget.post));
+    _getData();
     super.initState();
+  }
+
+  void _getData() {
+    context.read<RepliesBloc>().add(RepliesEvent.get(post: widget.post));
+    if (widget.post.replyTo != null) {
+      context.read<ReplyToBloc>().add(ReplyToEvent.get(post: widget.post));
+    }
   }
 
   void _onScrollDown() {
@@ -94,6 +101,9 @@ class _PostDetailState extends State<PostDetail> {
           context.read<RepliesBloc>().add(
             RepliesEvent.unsubscribe(post: widget.post, replies: _replies),
           );
+          context.read<ReplyToBloc>().add(
+            ReplyToEvent.unsubscribe(post: widget.post, posts: _replyTos),
+          );
         }
       },
       child: MultiBlocListener(
@@ -106,6 +116,14 @@ class _PostDetailState extends State<PostDetail> {
                     RepliesEvent.resubscribe(
                       post: widget.post,
                       replies: _replies,
+                    ),
+                  );
+                }
+                if (_replyTos.isNotEmpty) {
+                  context.read<ReplyToBloc>().add(
+                    ReplyToEvent.resubscribe(
+                      post: widget.post,
+                      posts: _replyTos,
                     ),
                   );
                 }
@@ -269,6 +287,17 @@ class _PostDetailState extends State<PostDetail> {
               }
             },
           ),
+          BlocListener<ReplyToBloc, ReplyToState>(
+            listener: (context, state) {
+              if (state.status == ReplyToStatus.success) {
+                if (widget.post.id == state.postId) {
+                  setState(() {
+                    _replyTos = state.posts.toList();
+                  });
+                }
+              }
+            },
+          ),
           BlocListener<PostDetailBloc, PostDetailState>(
             listener: (context, state) {
               switch (state) {
@@ -375,13 +404,7 @@ class _PostDetailState extends State<PostDetail> {
                                         child: BottomLoader(),
                                       )
                                     : failure
-                                    ? FailureRetryButton(
-                                        onPressed: () {
-                                          context.read<RepliesBloc>().add(
-                                            RepliesEvent.get(post: widget.post),
-                                          );
-                                        },
-                                      )
+                                    ? FailureRetryButton(onPressed: _getData)
                                     : ListView.builder(
                                         shrinkWrap: true,
                                         physics: NeverScrollableScrollPhysics(),
@@ -410,7 +433,32 @@ class _PostDetailState extends State<PostDetail> {
                         ),
                       ),
                       if (replyToVisible)
-                        SliverToBoxAdapter(child: ReplyToThread(post: _post)),
+                        SliverToBoxAdapter(
+                          child: PostListener(
+                            posts: _replyTos,
+                            onPostsUpdated: (posts) {
+                              setState(() {
+                                _replyTos = posts;
+                              });
+                            },
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              reverse: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (BuildContext context, int index) {
+                                Post post = _replyTos[index];
+                                return PostTile(
+                                  key: ValueKey(post.id),
+                                  post: post,
+                                  showTopThread: post.replyTo != null,
+                                  showBottomThread: true,
+                                  hideBorder: true,
+                                );
+                              },
+                              itemCount: _replyTos.length,
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
