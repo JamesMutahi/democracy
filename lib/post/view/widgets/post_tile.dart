@@ -8,6 +8,7 @@ import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/post_detail.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
+import 'package:democracy/post/view/widgets/image_viewer.dart';
 import 'package:democracy/post/view/widgets/thread.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
@@ -184,6 +185,11 @@ class _PostContainer extends StatelessWidget {
                             ],
                           ),
                           PostBody(post: post),
+                          if (post.image1Url != null)
+                            SizedBox(
+                              height: 200,
+                              child: ImageViewer(post: post),
+                            ),
                           if (post.repostOf != null && !isDependency)
                             DependencyContainer(
                               child: PostTile(

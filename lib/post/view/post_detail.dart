@@ -16,6 +16,7 @@ import 'package:democracy/post/bloc/replies/replies_bloc.dart';
 import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
+import 'package:democracy/post/view/widgets/image_viewer.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
@@ -337,9 +338,7 @@ class _PostDetailState extends State<PostDetail> {
                       Icons.arrow_downward_rounded,
                       color: Colors.grey,
                     ),
-                    idleText: replyToVisible
-                        ? 'Pull down to refresh'
-                        : 'Show post being replied to',
+                    idleText: 'Show more',
                   ),
                   controller: _refreshController,
                   onLoading: _onScrollDown,
@@ -587,6 +586,9 @@ class _PostContainer extends StatelessWidget {
                         );
                       },
                     ),
+                    SizedBox(height: 5),
+                    if (post.image1Url != null)
+                      SizedBox(height: 200, child: ImageViewer(post: post)),
                     SizedBox(height: 5),
                     if (post.repostOf != null)
                       DependencyContainer(
