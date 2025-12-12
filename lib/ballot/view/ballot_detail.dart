@@ -27,11 +27,9 @@ class _BallotDetailState extends State<BallotDetail> {
       listener: (context, state) {
         if (state is BallotUpdated) {
           if (_ballot.id == state.ballot.id) {
-            if (_ballot.votedOption != state.ballot.votedOption) {
-              setState(() {
-                _ballot = state.ballot;
-              });
-            }
+            setState(() {
+              _ballot = state.ballot;
+            });
           }
         }
       },
@@ -92,40 +90,38 @@ class _BallotDetailState extends State<BallotDetail> {
                           duration: const Duration(milliseconds: 300),
                           child:
                               (!_ballot.isActive ||
-                                      userHasVoted && !changingVote)
-                                  ? BallotPercentIndicator(
-                                    key: ValueKey(option.id),
-                                    ballot: _ballot,
-                                    option: option,
-                                    animateToInitialPercent: true,
-                                  )
-                                  : OptionTile(
-                                    option: option,
-                                    onTap: () {
-                                      if (_ballot.isActive) {
-                                        context.read<BallotDetailBloc>().add(
-                                          BallotDetailEvent.vote(
-                                            option: option,
-                                          ),
-                                        );
-                                        setState(() {
-                                          changingVote = false;
-                                        });
-                                      } else {
-                                        final snackBar = getSnackBar(
-                                          context: context,
-                                          message: 'Closed',
-                                          status: SnackBarStatus.info,
-                                        );
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).clearSnackBars();
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(snackBar);
-                                      }
-                                    },
-                                  ),
+                                  (userHasVoted && !changingVote))
+                              ? BallotPercentIndicator(
+                                  key: ValueKey(option.id),
+                                  ballot: _ballot,
+                                  option: option,
+                                  animateToInitialPercent: true,
+                                )
+                              : OptionTile(
+                                  option: option,
+                                  onTap: () {
+                                    if (_ballot.isActive) {
+                                      context.read<BallotDetailBloc>().add(
+                                        BallotDetailEvent.vote(option: option),
+                                      );
+                                      setState(() {
+                                        changingVote = false;
+                                      });
+                                    } else {
+                                      final snackBar = getSnackBar(
+                                        context: context,
+                                        message: 'Closed',
+                                        status: SnackBarStatus.info,
+                                      );
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).clearSnackBars();
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(snackBar);
+                                    }
+                                  },
+                                ),
                         );
                       }),
                     ],
@@ -134,18 +130,18 @@ class _BallotDetailState extends State<BallotDetail> {
                 SizedBox(height: 10),
                 userHasVoted && _ballot.isActive
                     ? changingVote
-                        ? SizedBox.shrink()
-                        : Align(
-                          alignment: Alignment.topRight,
-                          child: OutlinedButton(
-                            onPressed: () {
-                              setState(() {
-                                changingVote = true;
-                              });
-                            },
-                            child: Text('Change'),
-                          ),
-                        )
+                          ? SizedBox.shrink()
+                          : Align(
+                              alignment: Alignment.topRight,
+                              child: OutlinedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    changingVote = true;
+                                  });
+                                },
+                                child: Text('Change'),
+                              ),
+                            )
                     : SizedBox.shrink(),
                 SizedBox(height: 20),
                 !changingVote
@@ -280,28 +276,25 @@ class _ReasonWidgetState extends State<ReasonWidget> {
             child: Align(
               alignment: Alignment.topRight,
               child: OutlinedButton(
-                onPressed:
-                    reason == ''
-                        ? null
-                        : reason == _ballot.reason?.text
-                        ? null
-                        : () {
-                          showDialog(
-                            context: context,
-                            builder:
-                                (context) => SubmissionDialog(
-                                  onYesPressed: () {
-                                    Navigator.pop(context);
-                                    context.read<BallotDetailBloc>().add(
-                                      BallotDetailEvent.submitReason(
-                                        ballot: _ballot,
-                                        text: reason,
-                                      ),
-                                    );
-                                  },
+                onPressed: reason == ''
+                    ? null
+                    : reason == _ballot.reason?.text
+                    ? null
+                    : () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => SubmissionDialog(
+                            onYesPressed: () {
+                              context.read<BallotDetailBloc>().add(
+                                BallotDetailEvent.submitReason(
+                                  ballot: _ballot,
+                                  text: reason,
                                 ),
-                          );
-                        },
+                              );
+                            },
+                          ),
+                        );
+                      },
                 child: Text('Submit'),
               ),
             ),

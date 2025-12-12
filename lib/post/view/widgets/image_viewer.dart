@@ -14,12 +14,13 @@ class ImageViewer extends StatefulWidget {
 }
 
 class _ImageViewerState extends State<ImageViewer> {
-  final PageController pageController = PageController();
-  late int _activePage = 0;
+  late PageController pageController;
+  int _activePage = 0;
   bool verticalGallery = false;
 
   @override
   Widget build(BuildContext context) {
+    pageController = PageController(initialPage: _activePage);
     List<String> images = [];
     if (widget.post.image1Url != null) {
       images.add(widget.post.image1Url!);
