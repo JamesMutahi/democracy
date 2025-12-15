@@ -1,12 +1,25 @@
 part of 'theme_cubit.dart';
 
-@freezed
-abstract class ThemeState with _$ThemeState {
-  const factory ThemeState.initial() = ThemeInitial;
+enum ThemeStatus { initial, loading, success, failure }
 
-  const factory ThemeState.loading() = ThemeLoading;
+final class ThemeState extends Equatable {
+  const ThemeState({this.status = ThemeStatus.initial, this.index});
 
-  const factory ThemeState.loaded({required ThemeMode themeMode}) = ThemeLoaded;
+  final ThemeStatus status;
+  final int? index;
 
-  const factory ThemeState.failure({required String error}) = ThemeFailure;
+  ThemeState copyWith({ThemeStatus? status, int? index, bool? hasNext}) {
+    return ThemeState(
+      status: status ?? this.status,
+      index: index ?? this.index,
+    );
+  }
+
+  @override
+  String toString() {
+    return '''ThemeState { status: $status, index: $index }''';
+  }
+
+  @override
+  List<Object> get props => [status, ?index];
 }

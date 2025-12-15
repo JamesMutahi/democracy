@@ -1,38 +1,39 @@
 import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-part 'theme_cubit.freezed.dart';
 part 'theme_state.dart';
 
 String themeModeKey = 'themeMode';
 
 class ThemeCubit extends Cubit<ThemeState> {
-  ThemeCubit() : super(const ThemeState.initial());
+  ThemeCubit() : super(const ThemeState());
 
   void check() async {
     try {
-      emit(const ThemeState.loading());
+      emit(state.copyWith(status: ThemeStatus.loading));
       final SharedPreferences preferences =
           await SharedPreferences.getInstance();
-      int index = preferences.getInt(themeModeKey) ?? ThemeMode.system.index;
-      ThemeMode themeMode = ThemeMode.values[index];
-      emit(ThemeState.loaded(themeMode: themeMode));
+      emit(
+        state.copyWith(
+          status: ThemeStatus.success,
+          index: preferences.getInt(themeModeKey),
+        ),
+      );
     } catch (e) {
-      emit(ThemeState.failure(error: e.toString()));
+      emit(state.copyWith(status: ThemeStatus.failure));
     }
   }
 
-  void change({required ThemeMode themeMode}) async {
+  void change({required int index}) async {
     try {
-      emit(const ThemeState.loading());
+      emit(state.copyWith(status: ThemeStatus.loading));
       final SharedPreferences preferences =
           await SharedPreferences.getInstance();
-      await preferences.setInt(themeModeKey, themeMode.index);
-      emit(ThemeState.loaded(themeMode: themeMode));
+      await preferences.setInt(themeModeKey, index);
+      emit(state.copyWith(status: ThemeStatus.success, index: index));
     } catch (e) {
-      emit(ThemeState.failure(error: e.toString()));
+      emit(state.copyWith(status: ThemeStatus.failure));
     }
   }
 }

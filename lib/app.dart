@@ -22,25 +22,19 @@ class MyApp extends StatelessWidget {
     return BlocBuilder<ThemeCubit, ThemeState>(
       builder: (context, state) {
         ThemeMode themeMode = ThemeMode.system;
-        switch (state) {
-          case ThemeLoaded(themeMode: final mode):
-            themeMode = mode;
+        if (state.index != null) {
+          themeMode = ThemeMode.values[state.index!];
         }
         return MaterialApp(
-          builder:
-              (context, child) => ResponsiveBreakpoints.builder(
-                child: child!,
-                breakpoints: [
-                  const Breakpoint(start: 0, end: 450, name: MOBILE),
-                  const Breakpoint(start: 451, end: 800, name: TABLET),
-                  const Breakpoint(start: 801, end: 1920, name: DESKTOP),
-                  const Breakpoint(
-                    start: 1921,
-                    end: double.infinity,
-                    name: '4K',
-                  ),
-                ],
-              ),
+          builder: (context, child) => ResponsiveBreakpoints.builder(
+            child: child!,
+            breakpoints: [
+              const Breakpoint(start: 0, end: 450, name: MOBILE),
+              const Breakpoint(start: 451, end: 800, name: TABLET),
+              const Breakpoint(start: 801, end: 1920, name: DESKTOP),
+              const Breakpoint(start: 1921, end: double.infinity, name: '4K'),
+            ],
+          ),
           title: 'Democracy',
           theme: AppTheme.light,
           darkTheme: AppTheme.dark,
@@ -88,20 +82,19 @@ class ThemeMod extends StatelessWidget {
         textTheme: theme.textTheme.apply(fontSizeFactor: 1.05),
       ),
       child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value:
-            isDarkMode
-                ? SystemUiOverlayStyle.dark.copyWith(
-                  statusBarColor: theme.appBarTheme.backgroundColor,
-                  statusBarIconBrightness: Brightness.light,
-                  systemNavigationBarColor: theme.appBarTheme.backgroundColor,
-                  systemNavigationBarIconBrightness: Brightness.light,
-                )
-                : SystemUiOverlayStyle.light.copyWith(
-                  statusBarColor: theme.appBarTheme.backgroundColor,
-                  statusBarIconBrightness: Brightness.dark,
-                  systemNavigationBarColor: theme.appBarTheme.backgroundColor,
-                  systemNavigationBarIconBrightness: Brightness.dark,
-                ),
+        value: isDarkMode
+            ? SystemUiOverlayStyle.dark.copyWith(
+                statusBarColor: theme.appBarTheme.backgroundColor,
+                statusBarIconBrightness: Brightness.light,
+                systemNavigationBarColor: theme.appBarTheme.backgroundColor,
+                systemNavigationBarIconBrightness: Brightness.light,
+              )
+            : SystemUiOverlayStyle.light.copyWith(
+                statusBarColor: theme.appBarTheme.backgroundColor,
+                statusBarIconBrightness: Brightness.dark,
+                systemNavigationBarColor: theme.appBarTheme.backgroundColor,
+                systemNavigationBarIconBrightness: Brightness.dark,
+              ),
         child: child,
       ),
     );
