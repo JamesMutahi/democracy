@@ -61,6 +61,9 @@ _Post _$PostFromJson(Map<String, dynamic> json) => _Post(
           ?.map((e) => Post.fromJson(e as Map<String, dynamic>))
           .toList() ??
       [],
+  communityNote: json['community_note'] == null
+      ? null
+      : CommunityNote.fromJson(json['community_note'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
@@ -98,4 +101,5 @@ Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
   'tagged_users': instance.taggedUsers,
   'tagged_sections': instance.taggedSections,
   'thread': instance.thread,
+  'community_note': instance.communityNote,
 };

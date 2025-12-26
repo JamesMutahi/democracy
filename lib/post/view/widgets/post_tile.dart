@@ -226,6 +226,9 @@ class _PostContainer extends StatelessWidget {
                               ),
                             ),
                           SizedBox(height: 5),
+                          if (post.communityNote != null)
+                            CommunityNote(post: post),
+                          SizedBox(height: 5),
                           if (!isDependency)
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -344,6 +347,47 @@ class DependencyContainer extends StatelessWidget {
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
       child: child,
+    );
+  }
+}
+
+class CommunityNote extends StatelessWidget {
+  const CommunityNote({super.key, required this.post});
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 5),
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Theme.of(context).disabledColor.withAlpha(30),
+        ),
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.people_rounded, color: Colors.blueAccent),
+              SizedBox(width: 5),
+              Text(
+                'Community note',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          Divider(),
+          CustomText(
+            text: post.communityNote!.text,
+            style: Theme.of(context).textTheme.bodyMedium!,
+          ),
+        ],
+      ),
     );
   }
 }
