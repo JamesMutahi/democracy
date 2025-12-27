@@ -30,6 +30,7 @@ import 'package:democracy/petition/bloc/petitions/petitions_bloc.dart';
 import 'package:democracy/petition/bloc/supporters/supporters_bloc.dart';
 import 'package:democracy/petition/bloc/user_petitions/user_petitions_bloc.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_bloc.dart';
+import 'package:democracy/post/bloc/community_notes/community_notes_bloc.dart';
 import 'package:democracy/post/bloc/draft_posts/draft_posts_bloc.dart';
 import 'package:democracy/post/bloc/following_posts/following_posts_bloc.dart';
 import 'package:democracy/post/bloc/for_you/for_you_bloc.dart';
@@ -263,6 +264,10 @@ void main() async {
           BlocProvider(
             create: (context) =>
                 MeetingDetailBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                CommunityNotesBloc(webSocketService: webSocketService),
           ),
         ],
         child: const MyApp(),

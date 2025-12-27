@@ -619,7 +619,7 @@ class _PostContainer extends StatelessWidget {
                         ),
                       ),
                     SizedBox(height: 5),
-                    CommunityNote(post: post),
+                    if (post.communityNote.isNotEmpty) CommunityNote(post: post),
                     SizedBox(height: 5),
                     Align(
                       alignment: Alignment.bottomRight,

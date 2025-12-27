@@ -8,6 +8,7 @@ import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/post_detail.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
+import 'package:democracy/post/view/widgets/community_notes.dart';
 import 'package:democracy/post/view/widgets/image_viewer.dart';
 import 'package:democracy/post/view/widgets/thread.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
@@ -226,7 +227,7 @@ class _PostContainer extends StatelessWidget {
                               ),
                             ),
                           SizedBox(height: 5),
-                          if (post.communityNote != null)
+                          if (post.communityNote.isNotEmpty)
                             CommunityNote(post: post),
                           SizedBox(height: 5),
                           if (!isDependency)
@@ -351,42 +352,84 @@ class DependencyContainer extends StatelessWidget {
   }
 }
 
-class CommunityNote extends StatelessWidget {
+class CommunityNote extends StatefulWidget {
   const CommunityNote({super.key, required this.post});
 
   final Post post;
 
   @override
+  State<CommunityNote> createState() => _CommunityNoteState();
+}
+
+class _CommunityNoteState extends State<CommunityNote> {
+  String suffix = '...Show more';
+  bool readMore = false;
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 5),
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Theme.of(context).disabledColor.withAlpha(30),
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CommunityNotes(post: widget.post),
+          ),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 5),
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Theme.of(context).disabledColor.withAlpha(30),
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.people_rounded, color: Colors.blueAccent),
-              SizedBox(width: 5),
-              Text(
-                'Community note',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-          Divider(),
-          CustomText(
-            text: post.communityNote!.text,
-            style: Theme.of(context).textTheme.bodyMedium!,
-          ),
-        ],
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.people_rounded, color: Colors.blueAccent),
+                SizedBox(width: 5),
+                Text(
+                  'Community note',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            Divider(),
+            CustomText(
+              text: widget.post.communityNote,
+              style: Theme.of(context).textTheme.bodyMedium!,
+              suffix: suffix,
+              showAllText: readMore,
+              onSuffixPressed: () {
+                setState(() {
+                  if (readMore) {
+                    suffix = '...Show more';
+                    readMore = false;
+                  } else {
+                    suffix = '\nShow less';
+                    readMore = true;
+                  }
+                });
+              },
+              onUserTagPressed: (userId) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ProfilePage(
+                      user: widget.post.taggedUsers.firstWhere(
+                        (user) => user.id == int.parse(userId),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

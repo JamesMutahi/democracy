@@ -2,7 +2,6 @@ import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/meet/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
-import 'package:democracy/post/models/community_note.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -42,14 +41,19 @@ sealed class Post with _$Post {
     @JsonKey(name: 'published_at') required DateTime publishedAt,
     @JsonKey(name: 'reply_to') required Post? replyTo,
     @JsonKey(name: 'repost_of') required Post? repostOf,
+    @JsonKey(name: 'community_note_of') required Post? communityNoteOf,
     required Ballot? ballot,
     required Survey? survey,
     required Petition? petition,
     required Meeting? meeting,
     @JsonKey(name: 'tagged_users') required List<User> taggedUsers,
     @JsonKey(name: 'tagged_sections') required List<Section> taggedSections,
+    @JsonKey(name: 'is_upvoted') required bool isUpvoted,
+    @JsonKey(name: 'is_downvoted') required bool isDownvoted,
+    required int upvotes,
+    required int downvotes,
     @JsonKey(defaultValue: []) required List<Post> thread,
-    @JsonKey(name: 'community_note') required CommunityNote? communityNote,
+    @JsonKey(name: 'community_note') required String communityNote,
   }) = _Post;
 
   factory Post.fromJson(Map<String, Object?> json) => _$PostFromJson(json);

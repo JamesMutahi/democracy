@@ -65,6 +65,12 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     on<_Bookmark>((event, emit) {
       _onBookmark(event, emit);
     });
+    on<_Upvote>((event, emit) {
+      _onUpvote(event, emit);
+    });
+    on<_Downvote>((event, emit) {
+      _onDownvote(event, emit);
+    });
     on<_Delete>((event, emit) {
       _onDelete(event, emit);
     });
@@ -109,6 +115,11 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           views: event.payload['data']['views'],
           replies: event.payload['data']['replies'],
           reposts: event.payload['data']['reposts'],
+          upvotes: event.payload['data']['upvotes'],
+          downvotes: event.payload['data']['downvotes'],
+          communityNote: event.payload['data']['community_note'],
+          isUpvoted: event.payload['data']['is_upvoted'],
+          isDownvoted: event.payload['data']['is_downvoted'],
           isReposted: event.payload['data']['is_reposted'],
           isQuoted: event.payload['data']['is_quoted'],
           isDeleted: event.payload['data']['is_deleted'],
@@ -152,8 +163,9 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           'survey_id': event.survey?.id,
           'petition_id': event.petition?.id,
           'meeting_id': event.meeting?.id,
-          'status':
-              event.status == PostStatus.published ? 'published' : 'draft',
+          'status': event.status == PostStatus.published
+              ? 'published'
+              : 'draft',
           'tags': event.tags,
         },
       },
@@ -182,8 +194,9 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
         'pk': event.id,
         'data': {
           'body': event.body,
-          'status':
-              event.status == PostStatus.published ? 'published' : 'draft',
+          'status': event.status == PostStatus.published
+              ? 'published'
+              : 'draft',
           'tags': event.tags,
         },
       },
@@ -208,6 +221,30 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       'stream': stream,
       'payload': {
         'action': 'bookmark',
+        'request_id': requestId,
+        'pk': event.post.id,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  Future _onUpvote(_Upvote event, Emitter<PostDetailState> emit) async {
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        'action': 'upvote',
+        'request_id': requestId,
+        'pk': event.post.id,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  Future _onDownvote(_Downvote event, Emitter<PostDetailState> emit) async {
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        'action': 'downvote',
         'request_id': requestId,
         'pk': event.post.id,
       },

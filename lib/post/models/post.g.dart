@@ -38,6 +38,9 @@ _Post _$PostFromJson(Map<String, dynamic> json) => _Post(
   repostOf: json['repost_of'] == null
       ? null
       : Post.fromJson(json['repost_of'] as Map<String, dynamic>),
+  communityNoteOf: json['community_note_of'] == null
+      ? null
+      : Post.fromJson(json['community_note_of'] as Map<String, dynamic>),
   ballot: json['ballot'] == null
       ? null
       : Ballot.fromJson(json['ballot'] as Map<String, dynamic>),
@@ -56,14 +59,16 @@ _Post _$PostFromJson(Map<String, dynamic> json) => _Post(
   taggedSections: (json['tagged_sections'] as List<dynamic>)
       .map((e) => Section.fromJson(e as Map<String, dynamic>))
       .toList(),
+  isUpvoted: json['is_upvoted'] as bool,
+  isDownvoted: json['is_downvoted'] as bool,
+  upvotes: (json['upvotes'] as num).toInt(),
+  downvotes: (json['downvotes'] as num).toInt(),
   thread:
       (json['thread'] as List<dynamic>?)
           ?.map((e) => Post.fromJson(e as Map<String, dynamic>))
           .toList() ??
       [],
-  communityNote: json['community_note'] == null
-      ? null
-      : CommunityNote.fromJson(json['community_note'] as Map<String, dynamic>),
+  communityNote: json['community_note'] as String,
 );
 
 Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
@@ -94,12 +99,17 @@ Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
   'published_at': instance.publishedAt.toIso8601String(),
   'reply_to': instance.replyTo,
   'repost_of': instance.repostOf,
+  'community_note_of': instance.communityNoteOf,
   'ballot': instance.ballot,
   'survey': instance.survey,
   'petition': instance.petition,
   'meeting': instance.meeting,
   'tagged_users': instance.taggedUsers,
   'tagged_sections': instance.taggedSections,
+  'is_upvoted': instance.isUpvoted,
+  'is_downvoted': instance.isDownvoted,
+  'upvotes': instance.upvotes,
+  'downvotes': instance.downvotes,
   'thread': instance.thread,
   'community_note': instance.communityNote,
 };

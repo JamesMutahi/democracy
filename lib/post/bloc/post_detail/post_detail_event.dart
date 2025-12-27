@@ -47,6 +47,10 @@ sealed class PostDetailEvent with _$PostDetailEvent {
 
   const factory PostDetailEvent.bookmark({required Post post}) = _Bookmark;
 
+  const factory PostDetailEvent.upvote({required Post post}) = _Upvote;
+
+  const factory PostDetailEvent.downvote({required Post post}) = _Downvote;
+
   const factory PostDetailEvent.delete({required Post post}) = _Delete;
 
   const factory PostDetailEvent.deleteRepost({required Post post}) =
