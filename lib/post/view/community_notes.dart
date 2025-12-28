@@ -2,8 +2,8 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/post/bloc/community_notes/community_notes_bloc.dart';
-import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
+import 'package:democracy/post/view/widgets/community_note_tile.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -86,7 +86,15 @@ class _CommunityNotesState extends State<CommunityNotes> {
         ),
       ],
       child: Scaffold(
-        appBar: AppBar(title: Text('Community notes')),
+        appBar: AppBar(
+          title: Row(
+            children: [
+              Icon(Icons.people_rounded, color: Colors.blueAccent),
+              SizedBox(width: 10),
+              Text('Community notes'),
+            ],
+          ),
+        ),
         body: loading
             ? BottomLoader()
             : failure
@@ -137,58 +145,6 @@ class _CommunityNotesState extends State<CommunityNotes> {
                 ),
               ),
       ),
-    );
-  }
-}
-
-class CommunityNoteTile extends StatelessWidget {
-  const CommunityNoteTile({super.key, required this.communityNote});
-
-  final Post communityNote;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            IconButton(
-              icon: Icon(
-                Icons.keyboard_arrow_up_rounded,
-                size: 50,
-                color: communityNote.isUpvoted ? Colors.greenAccent : null,
-              ),
-              onPressed: () {
-                context.read<PostDetailBloc>().add(
-                  PostDetailEvent.upvote(post: communityNote),
-                );
-              },
-            ),
-            Text(
-              '${communityNote.upvotes - communityNote.downvotes}',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.keyboard_arrow_down_rounded,
-                size: 50,
-                color: communityNote.isDownvoted ? Colors.redAccent : null,
-              ),
-              onPressed: () {
-                context.read<PostDetailBloc>().add(
-                  PostDetailEvent.downvote(post: communityNote),
-                );
-              },
-            ),
-          ],
-        ),
-        SizedBox(width: 10),
-        Flexible(child: Text(communityNote.body)),
-      ],
     );
   }
 }
