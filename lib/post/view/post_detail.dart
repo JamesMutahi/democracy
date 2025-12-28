@@ -1,6 +1,5 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
-import 'package:democracy/app/utils/custom_text.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
@@ -13,6 +12,7 @@ import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/bottom_reply_text_field.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/post/view/widgets/image_viewer.dart';
+import 'package:democracy/post/view/widgets/post_body.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
@@ -131,7 +131,7 @@ class _PostDetailState extends State<PostDetail> {
                   if (widget.post.id == post.replyTo?.id) {
                     setState(() {
                       int index = _replies.indexWhere(
-                            (element) => element.author.id != post.author.id,
+                        (element) => element.author.id != post.author.id,
                       );
                       _replies.insert(index, post);
                     });
@@ -570,19 +570,7 @@ class _PostContainer extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 5),
-                    CustomText(
-                      text: post.body,
-                      style: Theme.of(context).textTheme.bodyMedium!,
-                      showAllText: true,
-                      suffix: '',
-                      onUserTagPressed: (userId) {
-                        navigateToProfilePage(
-                          post.taggedUsers.firstWhere(
-                            (user) => user.id == int.parse(userId),
-                          ),
-                        );
-                      },
-                    ),
+                    PostBody(post: post, showWholeText: true),
                     SizedBox(height: 5),
                     if (post.image1Url != null)
                       SizedBox(height: 200, child: ImageViewer(post: post)),
@@ -616,7 +604,8 @@ class _PostContainer extends StatelessWidget {
                         ),
                       ),
                     SizedBox(height: 5),
-                    if (post.communityNote.isNotEmpty) CommunityNote(post: post),
+                    if (post.communityNote.isNotEmpty)
+                      CommunityNote(post: post),
                     SizedBox(height: 5),
                     Align(
                       alignment: Alignment.bottomRight,

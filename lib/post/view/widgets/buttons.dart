@@ -6,6 +6,7 @@ import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
+import 'package:democracy/post/view/community_notes.dart';
 import 'package:democracy/post/view/post_create.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
@@ -45,6 +46,15 @@ class PostPopUp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<String> buttons = [];
+    if (post.communityNoteOf != null) {
+      buttons.add('Community notes');
+    }
+    buttons.add('Share');
+    post.author.isMuted ? buttons.add('Unmute') : buttons.add('Mute');
+    post.author.isMuted ? buttons.add('Unblock') : buttons.add('Block');
+    if (post.author.isMuted) {}
+    if (post.author.isBlocked) {}
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         late User user;
@@ -109,16 +119,18 @@ class PostPopUp extends StatelessWidget {
                   shape: const BeveledRectangleBorder(),
                   builder: (context) => ReportModal(post: post),
                 );
+              case 'Community notes':
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CommunityNotes(post: post),
+                  ),
+                );
             }
           },
           texts: user.id == post.author.id
-              ? ['Share', 'Delete']
-              : [
-                  'Share',
-                  post.author.isMuted ? 'Unmute' : 'Mute',
-                  post.author.isBlocked ? 'Unblock' : 'Block',
-                  'Report',
-                ],
+              ? ['Community notes', 'Share', 'Delete']
+              : buttons,
         );
       },
     );

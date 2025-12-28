@@ -5,7 +5,6 @@ import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/replies/replies_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/bottom_reply_text_field.dart';
-import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/post/view/widgets/community_note_tile.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
@@ -188,10 +187,7 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
           ),
         ],
         child: Scaffold(
-          appBar: AppBar(
-            title: Text('Note'),
-            actions: [PostPopUp(post: _communityNote)],
-          ),
+          appBar: AppBar(title: Text('Note')),
           body: isDeleted
               ? Center(
                   child: Text(
@@ -228,7 +224,11 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
                         child: SingleChildScrollView(
                           child: Column(
                             children: [
-                              CommunityNoteTile(communityNote: _communityNote),
+                              CommunityNoteTile(
+                                communityNote: _communityNote,
+                                navigateToDetailPage: false,
+                                showWholeText: true,
+                              ),
                               PostListener(
                                 posts: _replies,
                                 onPostsUpdated: (posts) {

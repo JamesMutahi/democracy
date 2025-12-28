@@ -138,6 +138,8 @@ class _CommunityNotesState extends State<CommunityNotes> {
                       return CommunityNoteTile(
                         key: ValueKey(communityNote.id),
                         communityNote: communityNote,
+                        navigateToDetailPage: true,
+                        showWholeText: false,
                       );
                     },
                     itemCount: _communityNotes.length,
