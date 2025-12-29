@@ -4,9 +4,11 @@ import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:democracy/post/models/post.dart';
+import 'package:democracy/post/view/community_note_detail.dart';
 import 'package:democracy/post/view/post_detail.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/post/view/community_notes.dart';
+import 'package:democracy/post/view/widgets/community_note_tile.dart';
 import 'package:democracy/post/view/widgets/image_viewer.dart';
 import 'package:democracy/post/view/widgets/post_body.dart';
 import 'package:democracy/post/view/widgets/time_difference.dart';
@@ -71,12 +73,14 @@ class PostTile extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => PostDetail(
-                      key: ValueKey(post.id),
-                      post: showAsRepost ? post.repostOf! : post,
-                      showAsRepost: showAsRepost,
-                      repost: post,
-                    ),
+                    builder: (context) => post.communityNoteOf == null
+                        ? PostDetail(
+                            key: ValueKey(post.id),
+                            post: showAsRepost ? post.repostOf! : post,
+                            showAsRepost: showAsRepost,
+                            repost: post,
+                          )
+                        : CommunityNoteDetail(communityNote: post),
                   ),
                 );
               },
@@ -84,10 +88,16 @@ class PostTile extends StatelessWidget {
                   ? Column(
                       children: [
                         _repostBanner(),
-                        _PostContainer(
-                          post: post.repostOf!,
-                          isDependency: false,
-                        ),
+                        post.repostOf!.communityNoteOf == null
+                            ? _PostContainer(
+                                post: post.repostOf!,
+                                isDependency: false,
+                              )
+                            : CommunityNoteTile(
+                                communityNote: post.repostOf!,
+                                navigateToDetailPage: true,
+                                showWholeText: false,
+                              ),
                       ],
                     )
                   : Stack(
@@ -117,7 +127,12 @@ class PostTile extends StatelessWidget {
       builder: (context, state) {
         late User user;
         if (state is Authenticated) user = state.user;
-
+        String text = user.id == post.author.id
+            ? 'You reposted'
+            : '${post.author.name} reposted';
+        if (post.repostOf!.communityNoteOf != null) {
+          text = '$text a community note';
+        }
         return Container(
           padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
           child: Row(
@@ -129,9 +144,7 @@ class PostTile extends StatelessWidget {
               ),
               const SizedBox(width: 5),
               Text(
-                user.id == post.author.id
-                    ? 'You reposted'
-                    : '${post.author.name} reposted',
+                text,
                 style: TextStyle(color: Theme.of(context).colorScheme.outline),
               ),
             ],

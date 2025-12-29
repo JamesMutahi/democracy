@@ -49,7 +49,6 @@ class _PostDetailState extends State<PostDetail> {
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
   );
-  bool replyToVisible = false;
   bool loading = true;
   bool failure = false;
   List<Post> _replies = [];
@@ -66,17 +65,6 @@ class _PostDetailState extends State<PostDetail> {
     context.read<RepliesBloc>().add(RepliesEvent.get(post: widget.post));
     if (widget.post.replyTo != null) {
       context.read<ReplyToBloc>().add(ReplyToEvent.get(post: widget.post));
-    }
-  }
-
-  void _onScrollDown() {
-    if (_post.replyTo != null) {
-      if (replyToVisible == false) {
-        setState(() {
-          replyToVisible = true;
-          _refreshController.loadComplete();
-        });
-      }
     }
   }
 
@@ -318,7 +306,7 @@ class _PostDetailState extends State<PostDetail> {
               ? Center(child: Text('This post has been deleted by the author'))
               : SmartRefresher(
                   enablePullDown: hasNextPage,
-                  enablePullUp: (_post.replyTo != null && !replyToVisible),
+                  enablePullUp: false,
                   header: ClassicHeader(
                     // CustomScrollView is in reverse
                     idleIcon: Icon(
@@ -338,7 +326,6 @@ class _PostDetailState extends State<PostDetail> {
                     idleText: 'Show more',
                   ),
                   controller: _refreshController,
-                  onLoading: _onScrollDown,
                   onRefresh: _onScrollUp,
                   child: CustomScrollView(
                     reverse: true,
@@ -428,33 +415,32 @@ class _PostDetailState extends State<PostDetail> {
                           ),
                         ),
                       ),
-                      if (replyToVisible)
-                        SliverToBoxAdapter(
-                          child: PostListener(
-                            posts: _replyTos,
-                            onPostsUpdated: (posts) {
-                              setState(() {
-                                _replyTos = posts;
-                              });
+                      SliverToBoxAdapter(
+                        child: PostListener(
+                          posts: _replyTos,
+                          onPostsUpdated: (posts) {
+                            setState(() {
+                              _replyTos = posts;
+                            });
+                          },
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            reverse: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemBuilder: (BuildContext context, int index) {
+                              Post post = _replyTos[index];
+                              return PostTile(
+                                key: ValueKey(post.id),
+                                post: post,
+                                showTopThread: post.replyTo != null,
+                                showBottomThread: true,
+                                hideBorder: true,
+                              );
                             },
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              reverse: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemBuilder: (BuildContext context, int index) {
-                                Post post = _replyTos[index];
-                                return PostTile(
-                                  key: ValueKey(post.id),
-                                  post: post,
-                                  showTopThread: post.replyTo != null,
-                                  showBottomThread: true,
-                                  hideBorder: true,
-                                );
-                              },
-                              itemCount: _replyTos.length,
-                            ),
+                            itemCount: _replyTos.length,
                           ),
                         ),
+                      ),
                     ],
                   ),
                 ),

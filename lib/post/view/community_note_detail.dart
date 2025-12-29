@@ -270,6 +270,13 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
                           ),
                         ),
                       ),
+                      SliverToBoxAdapter(
+                        child: PostTile(
+                          showBottomThread: true,
+                          hideBorder: true,
+                          post: _communityNote.communityNoteOf!,
+                        ),
+                      ),
                     ],
                   ),
                 ),
