@@ -24,6 +24,7 @@ class CommunityNoteDetail extends StatefulWidget {
 
 class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
   late Post _communityNote = widget.communityNote;
+  late Post _communityNoteOf = widget.communityNote.communityNoteOf!;
   bool isDeleted = false;
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
@@ -42,6 +43,12 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
   void _getData() {
     context.read<RepliesBloc>().add(
       RepliesEvent.get(post: widget.communityNote),
+    );
+    context.read<RepliesBloc>().add(
+      RepliesEvent.resubscribe(
+        post: widget.communityNote,
+        replies: [widget.communityNote.communityNoteOf!],
+      ),
     );
   }
 
@@ -104,6 +111,30 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
                   if (_communityNote.id == state.postId) {
                     setState(() {
                       _communityNote = _communityNote.copyWith(
+                        body: state.body,
+                        likes: state.likes,
+                        isLiked: state.isLiked,
+                        bookmarks: state.bookmarks,
+                        isBookmarked: state.isBookmarked,
+                        views: state.views,
+                        replies: state.replies,
+                        reposts: state.reposts,
+                        isReposted: state.isReposted,
+                        isQuoted: state.isQuoted,
+                        communityNote: state.communityNote,
+                        isUpvoted: state.isUpvoted,
+                        isDownvoted: state.isDownvoted,
+                        upvotes: state.upvotes,
+                        downvotes: state.downvotes,
+                        isDeleted: state.isDeleted,
+                        isActive: state.isActive,
+                      );
+                    });
+                  }
+                  //   update community note of
+                  if (_communityNoteOf.id == state.postId) {
+                    setState(() {
+                      _communityNoteOf = _communityNoteOf.copyWith(
                         body: state.body,
                         likes: state.likes,
                         isLiked: state.isLiked,
@@ -274,7 +305,7 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
                         child: PostTile(
                           showBottomThread: true,
                           hideBorder: true,
-                          post: _communityNote.communityNoteOf!,
+                          post: _communityNoteOf,
                         ),
                       ),
                     ],
