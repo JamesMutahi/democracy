@@ -2,7 +2,7 @@ import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
-import 'package:democracy/post/view/widgets/post_tile.dart';
+import 'package:democracy/post/view/widgets/post_widget_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
@@ -43,29 +43,30 @@ class PostListView extends StatelessWidget {
         : failure
         ? FailureRetryButton(onPressed: onFailure)
         : PostListener(
-          posts: posts,
-          onPostsUpdated: onPostsUpdated,
-          child: SmartRefresher(
-            enablePullDown: enablePullDown,
-            enablePullUp: enablePullUp,
-            header: ClassicHeader(),
-            controller: refreshController,
-            onRefresh: onRefresh,
-            onLoading: onLoading,
-            footer: ClassicFooter(),
-            child: ListView.builder(
-              physics: physics,
-              itemBuilder: (BuildContext context, int index) {
-                Post post = posts[index];
-                return PostTile(
-                  key: ValueKey(post.id),
-                  post: post,
-                  checkVisibility: checkVisibility,
-                );
-              },
-              itemCount: posts.length,
+            posts: posts,
+            onPostsUpdated: onPostsUpdated,
+            child: SmartRefresher(
+              enablePullDown: enablePullDown,
+              enablePullUp: enablePullUp,
+              header: ClassicHeader(),
+              controller: refreshController,
+              onRefresh: onRefresh,
+              onLoading: onLoading,
+              footer: ClassicFooter(),
+              child: ListView.builder(
+                physics: physics,
+                itemBuilder: (BuildContext context, int index) {
+                  Post post = posts[index];
+                  return PostWidgetSelector(
+                    key: ValueKey(post.id),
+                    post: post,
+                    isDependency: false,
+                    checkVisibility: checkVisibility,
+                  );
+                },
+                itemCount: posts.length,
+              ),
             ),
-          ),
-        );
+          );
   }
 }

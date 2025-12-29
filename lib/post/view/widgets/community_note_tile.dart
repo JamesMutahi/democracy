@@ -176,10 +176,11 @@ class CommunityNoteTile extends StatelessWidget {
               ],
             ),
           ),
-          Align(
-            alignment: Alignment.topRight,
-            child: PostPopUp(post: communityNote),
-          ),
+          if (!isDependency)
+            Align(
+              alignment: Alignment.topRight,
+              child: PostPopUp(post: communityNote),
+            ),
         ],
       ),
     );

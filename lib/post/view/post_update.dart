@@ -9,6 +9,7 @@ import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_form_widgets.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
+import 'package:democracy/post/view/widgets/post_widget_selector.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -56,12 +57,11 @@ class _PostUpdateState extends State<PostUpdate> {
         _disablePostButton
             ? Navigator.pop(context)
             : showDialog(
-              context: context,
-              builder:
-                  (context) => _SaveDraftDialog(
-                    onYesPressed: () => _updatePost(status: PostStatus.draft),
-                  ),
-            );
+                context: context,
+                builder: (context) => _SaveDraftDialog(
+                  onYesPressed: () => _updatePost(status: PostStatus.draft),
+                ),
+              );
       },
       child: BlocListener<PostDetailBloc, PostDetailState>(
         listener: (context, state) {
@@ -78,30 +78,27 @@ class _PostUpdateState extends State<PostUpdate> {
                 _disablePostButton
                     ? Navigator.pop(context)
                     : showDialog(
-                      context: context,
-                      builder:
-                          (context) => _SaveDraftDialog(
-                            onYesPressed:
-                                () => _updatePost(status: PostStatus.draft),
-                          ),
-                    );
+                        context: context,
+                        builder: (context) => _SaveDraftDialog(
+                          onYesPressed: () =>
+                              _updatePost(status: PostStatus.draft),
+                        ),
+                      );
               },
               icon: Icon(Symbols.close),
             ),
             title: Text('Edit post'),
             actions: [
               OutlinedButton(
-                onPressed:
-                    _disablePostButton
-                        ? null
-                        : () {
-                          showDialog(
-                            context: context,
-                            builder:
-                                (context) =>
-                                    PostUpdateDialog(onYesPressed: _updatePost),
-                          );
-                        },
+                onPressed: _disablePostButton
+                    ? null
+                    : () {
+                        showDialog(
+                          context: context,
+                          builder: (context) =>
+                              PostUpdateDialog(onYesPressed: _updatePost),
+                        );
+                      },
                 child: Text('Post'),
               ),
             ],
@@ -136,14 +133,14 @@ class _PostUpdateState extends State<PostUpdate> {
                       ),
                       if (widget.post.repostOf != null)
                         DependencyContainer(
-                          child: PostTile(
+                          child: PostWidgetSelector(
                             post: widget.post.repostOf!,
                             isDependency: true,
                           ),
                         ),
                       if (widget.post.replyTo != null)
                         DependencyContainer(
-                          child: PostTile(
+                          child: PostWidgetSelector(
                             post: widget.post.replyTo!,
                             isDependency: true,
                           ),

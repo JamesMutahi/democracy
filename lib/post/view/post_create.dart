@@ -12,6 +12,7 @@ import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_form_widgets.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
+import 'package:democracy/post/view/widgets/post_widget_selector.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:flutter/material.dart';
@@ -86,12 +87,11 @@ class _PostCreateState extends State<PostCreate> {
               : _disablePostButton
               ? Navigator.pop(context)
               : showDialog(
-                context: context,
-                builder:
-                    (context) => _SaveDraftDialog(
-                      onYesPressed: () => _createPost(status: PostStatus.draft),
-                    ),
-              );
+                  context: context,
+                  builder: (context) => _SaveDraftDialog(
+                    onYesPressed: () => _createPost(status: PostStatus.draft),
+                  ),
+                );
         },
         child: Scaffold(
           appBar: AppBar(
@@ -100,29 +100,26 @@ class _PostCreateState extends State<PostCreate> {
                 _disablePostButton
                     ? Navigator.pop(context)
                     : showDialog(
-                      context: context,
-                      builder:
-                          (context) => _SaveDraftDialog(
-                            onYesPressed:
-                                () => _createPost(status: PostStatus.draft),
-                          ),
-                    );
+                        context: context,
+                        builder: (context) => _SaveDraftDialog(
+                          onYesPressed: () =>
+                              _createPost(status: PostStatus.draft),
+                        ),
+                      );
               },
               icon: Icon(Symbols.close),
             ),
             actions: [
               OutlinedButton(
-                onPressed:
-                    _disablePostButton
-                        ? null
-                        : () {
-                          showDialog(
-                            context: context,
-                            builder:
-                                (context) =>
-                                    PostCreateDialog(onYesPressed: _createPost),
-                          );
-                        },
+                onPressed: _disablePostButton
+                    ? null
+                    : () {
+                        showDialog(
+                          context: context,
+                          builder: (context) =>
+                              PostCreateDialog(onYesPressed: _createPost),
+                        );
+                      },
                 child: Text(widget.isReply ? 'Reply' : 'Post'),
               ),
             ],
@@ -160,7 +157,10 @@ class _PostCreateState extends State<PostCreate> {
 
                   if (widget.post != null)
                     DependencyContainer(
-                      child: PostTile(post: widget.post!, isDependency: true),
+                      child: PostWidgetSelector(
+                        post: widget.post!,
+                        isDependency: true,
+                      ),
                     ),
                   if (widget.ballot != null)
                     DependencyContainer(

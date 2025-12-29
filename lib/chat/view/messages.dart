@@ -10,7 +10,7 @@ import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
-import 'package:democracy/post/view/widgets/post_tile.dart';
+import 'package:democracy/post/view/widgets/post_widget_selector.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
@@ -95,7 +95,10 @@ class _MessagesState extends State<Messages> {
               AlignmentContainer(
                 message: message,
                 alignedRight: alignedRight,
-                child: PostTile(post: message.post!, isDependency: true),
+                child: PostWidgetSelector(
+                  post: message.post!,
+                  isDependency: true,
+                ),
               ),
             );
           }
@@ -233,33 +236,32 @@ class _MessagesState extends State<Messages> {
           },
         ),
       ],
-      child:
-          loading
-              ? BottomLoader()
-              : failure
-              ? FailureRetryButton(
-                onPressed: () {
-                  context.read<MessagesBloc>().add(
-                    MessagesEvent.get(chat: widget.chat),
-                  );
-                },
-              )
-              : SmartRefresher(
-                // Messages are listed in reverse, down is up and up is down...lol
-                enablePullDown: false,
-                enablePullUp: hasNextPage,
-                controller: _refreshController,
-                onLoading: () {
-                  context.read<MessagesBloc>().add(
-                    MessagesEvent.get(
-                      chat: widget.chat,
-                      lastMessage: _messages.last,
-                    ),
-                  );
-                },
-                footer: ClassicFooter(),
-                child: ListView(reverse: true, children: widgets),
-              ),
+      child: loading
+          ? BottomLoader()
+          : failure
+          ? FailureRetryButton(
+              onPressed: () {
+                context.read<MessagesBloc>().add(
+                  MessagesEvent.get(chat: widget.chat),
+                );
+              },
+            )
+          : SmartRefresher(
+              // Messages are listed in reverse, down is up and up is down...lol
+              enablePullDown: false,
+              enablePullUp: hasNextPage,
+              controller: _refreshController,
+              onLoading: () {
+                context.read<MessagesBloc>().add(
+                  MessagesEvent.get(
+                    chat: widget.chat,
+                    lastMessage: _messages.last,
+                  ),
+                );
+              },
+              footer: ClassicFooter(),
+              child: ListView(reverse: true, children: widgets),
+            ),
     );
   }
 }
@@ -278,8 +280,9 @@ class MessageCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment:
-          alignedRight ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      crossAxisAlignment: alignedRight
+          ? CrossAxisAlignment.end
+          : CrossAxisAlignment.start,
       children: [MessageBody(text: message.text)],
     );
   }
@@ -345,11 +348,11 @@ class MessageTime extends StatelessWidget {
           children: [
             message.isEdited
                 ? Text(
-                  'Edited ',
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: Theme.of(context).disabledColor,
-                  ),
-                )
+                    'Edited ',
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: Theme.of(context).disabledColor,
+                    ),
+                  )
                 : SizedBox.shrink(),
             Text(
               timeFormat.format(message.createdAt).toLowerCase(),
@@ -412,31 +415,30 @@ class _AlignmentContainerState extends State<AlignmentContainer> {
         }
       },
       child: GestureDetector(
-        onTap:
-            widget.message.isDeleted
-                ? null
-                : canTap
-                ? () {
-                  context.read<MessageActionsCubit>().messageHighlighted(
-                    message: widget.message,
-                  );
-                }
-                : null,
+        onTap: widget.message.isDeleted
+            ? null
+            : canTap
+            ? () {
+                context.read<MessageActionsCubit>().messageHighlighted(
+                  message: widget.message,
+                );
+              }
+            : null,
         child: Container(
           margin: EdgeInsets.only(top: messageMargin),
           color: highlightColor,
           child: GestureDetector(
-            onLongPress:
-                widget.message.isDeleted
-                    ? null
-                    : () {
-                      context.read<MessageActionsCubit>().messageHighlighted(
-                        message: widget.message,
-                      );
-                    },
+            onLongPress: widget.message.isDeleted
+                ? null
+                : () {
+                    context.read<MessageActionsCubit>().messageHighlighted(
+                      message: widget.message,
+                    );
+                  },
             child: Align(
-              alignment:
-                  widget.alignedRight ? Alignment.topRight : Alignment.topLeft,
+              alignment: widget.alignedRight
+                  ? Alignment.topRight
+                  : Alignment.topLeft,
               child: Container(
                 constraints: BoxConstraints(maxWidth: messageWidth),
                 margin: EdgeInsets.only(
@@ -451,21 +453,18 @@ class _AlignmentContainerState extends State<AlignmentContainer> {
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(15),
                     topRight: Radius.circular(15),
-                    bottomLeft:
-                        widget.alignedRight
-                            ? Radius.circular(15)
-                            : Radius.circular(0),
-                    bottomRight:
-                        widget.alignedRight
-                            ? Radius.circular(0)
-                            : Radius.circular(15),
+                    bottomLeft: widget.alignedRight
+                        ? Radius.circular(15)
+                        : Radius.circular(0),
+                    bottomRight: widget.alignedRight
+                        ? Radius.circular(0)
+                        : Radius.circular(15),
                   ),
-                  color:
-                      widget.alignedRight
-                          ? Theme.of(
-                            context,
-                          ).colorScheme.primaryContainer.withValues(alpha: 0.6)
-                          : Theme.of(context).colorScheme.tertiaryContainer,
+                  color: widget.alignedRight
+                      ? Theme.of(
+                          context,
+                        ).colorScheme.primaryContainer.withValues(alpha: 0.6)
+                      : Theme.of(context).colorScheme.tertiaryContainer,
                 ),
                 child: widget.child,
               ),

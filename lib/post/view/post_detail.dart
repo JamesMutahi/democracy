@@ -11,11 +11,11 @@ import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/bottom_reply_text_field.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
-import 'package:democracy/post/view/widgets/community_note_tile.dart';
 import 'package:democracy/post/view/widgets/image_viewer.dart';
 import 'package:democracy/post/view/widgets/post_body.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
+import 'package:democracy/post/view/widgets/post_widget_selector.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
@@ -564,14 +564,10 @@ class _PostContainer extends StatelessWidget {
                     SizedBox(height: 5),
                     if (post.repostOf != null)
                       DependencyContainer(
-                        child: post.repostOf!.communityNoteOf == null
-                            ? PostTile(post: post.repostOf!, isDependency: true)
-                            : CommunityNoteTile(
-                                communityNote: post.repostOf!,
-                                navigateToDetailPage: true,
-                                showWholeText: false,
-                                isDependency: true,
-                              ),
+                        child: PostWidgetSelector(
+                          post: post.repostOf!,
+                          isDependency: true,
+                        ),
                       ),
                     if (post.ballot != null)
                       DependencyContainer(

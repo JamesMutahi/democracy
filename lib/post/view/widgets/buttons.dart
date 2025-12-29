@@ -8,7 +8,7 @@ import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/community_notes.dart';
 import 'package:democracy/post/view/post_create.dart';
-import 'package:democracy/post/view/widgets/post_tile.dart';
+import 'package:democracy/post/view/widgets/post_widget_selector.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
@@ -47,7 +47,7 @@ class PostPopUp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<String> buttons = [];
-    if (post.communityNoteOf != null) {
+    if (post.communityNoteOf == null) {
       buttons.add('Community notes');
     }
     buttons.add('Share');
@@ -226,7 +226,7 @@ class RepostButton extends StatelessWidget {
                   return CustomBottomSheet(
                     title: 'Repost',
                     children: [
-                      PostTile(post: post, isDependency: true),
+                      PostWidgetSelector(post: post, isDependency: true),
                       CustomBottomSheetContainer(
                         text: 'Quote',
                         iconData: Icons.format_quote_rounded,

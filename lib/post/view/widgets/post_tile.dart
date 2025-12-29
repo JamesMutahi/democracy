@@ -10,6 +10,7 @@ import 'package:democracy/post/view/community_notes.dart';
 import 'package:democracy/post/view/widgets/community_note_tile.dart';
 import 'package:democracy/post/view/widgets/image_viewer.dart';
 import 'package:democracy/post/view/widgets/post_body.dart';
+import 'package:democracy/post/view/widgets/post_widget_selector.dart';
 import 'package:democracy/post/view/widgets/time_difference.dart';
 import 'package:democracy/post/view/widgets/thread.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
@@ -204,17 +205,10 @@ class _PostContainer extends StatelessWidget {
                             ),
                           if (post.repostOf != null && !isDependency)
                             DependencyContainer(
-                              child: post.repostOf!.communityNoteOf == null
-                                  ? PostTile(
-                                      post: post.repostOf!,
-                                      isDependency: true,
-                                    )
-                                  : CommunityNoteTile(
-                                      communityNote: post.repostOf!,
-                                      navigateToDetailPage: true,
-                                      showWholeText: false,
-                                      isDependency: true,
-                                    ),
+                              child: PostWidgetSelector(
+                                post: post.repostOf!,
+                                isDependency: true,
+                              ),
                             ),
                           if (post.ballot != null)
                             DependencyContainer(

@@ -91,6 +91,11 @@ class PostListener extends StatelessWidget {
                       reposts: state.reposts,
                       isReposted: state.isReposted,
                       isQuoted: state.isQuoted,
+                      communityNote: state.communityNote,
+                      isUpvoted: state.isUpvoted,
+                      isDownvoted: state.isDownvoted,
+                      upvotes: state.upvotes,
+                      downvotes: state.downvotes,
                       isDeleted: state.isDeleted,
                       isActive: state.isActive,
                     );
