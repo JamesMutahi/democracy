@@ -16,11 +16,13 @@ class CommunityNoteTile extends StatelessWidget {
     required this.communityNote,
     required this.navigateToDetailPage,
     required this.showWholeText,
+    required this.isDependency,
   });
 
   final Post communityNote;
   final bool navigateToDetailPage;
   final bool showWholeText;
+  final bool isDependency;
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +47,11 @@ class CommunityNoteTile extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               border: Border(
-                bottom: BorderSide(
-                  color: Theme.of(context).disabledColor.withAlpha(30),
-                ),
+                bottom: isDependency
+                    ? BorderSide.none
+                    : BorderSide(
+                        color: Theme.of(context).disabledColor.withAlpha(30),
+                      ),
               ),
             ),
             child: Row(
@@ -58,44 +62,45 @@ class CommunityNoteTile extends StatelessWidget {
                   children: [
                     if (!navigateToDetailPage)
                       ThreadLine(showBottomThread: false, showTopThread: true),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          icon: Icon(
-                            Icons.keyboard_arrow_up_rounded,
-                            size: 52,
-                            color: communityNote.isUpvoted
-                                ? Colors.greenAccent
-                                : null,
+                    if (!isDependency)
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              Icons.keyboard_arrow_up_rounded,
+                              size: 52,
+                              color: communityNote.isUpvoted
+                                  ? Colors.blue
+                                  : null,
+                            ),
+                            onPressed: () {
+                              context.read<PostDetailBloc>().add(
+                                PostDetailEvent.upvote(post: communityNote),
+                              );
+                            },
                           ),
-                          onPressed: () {
-                            context.read<PostDetailBloc>().add(
-                              PostDetailEvent.upvote(post: communityNote),
-                            );
-                          },
-                        ),
-                        Text(
-                          '${communityNote.upvotes - communityNote.downvotes}',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        IconButton(
-                          icon: Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            size: 52,
-                            color: communityNote.isDownvoted
-                                ? Colors.redAccent
-                                : null,
+                          Text(
+                            '${communityNote.upvotes - communityNote.downvotes}',
+                            style: Theme.of(context).textTheme.titleLarge,
                           ),
-                          onPressed: () {
-                            context.read<PostDetailBloc>().add(
-                              PostDetailEvent.downvote(post: communityNote),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              size: 52,
+                              color: communityNote.isDownvoted
+                                  ? Colors.blue
+                                  : null,
+                            ),
+                            onPressed: () {
+                              context.read<PostDetailBloc>().add(
+                                PostDetailEvent.downvote(post: communityNote),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                   ],
                 ),
                 SizedBox(width: 10),
@@ -131,7 +136,6 @@ class CommunityNoteTile extends StatelessWidget {
                             ],
                           ),
                         ),
-
                         SizedBox(height: 10),
                         PostBody(
                           post: communityNote,
@@ -141,17 +145,27 @@ class CommunityNoteTile extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            ReplyButton(
-                              post: communityNote,
-                              numberFormat: numberFormat,
+                            Text(
+                              '${numberFormat.format(communityNote.replies)} ${communityNote.replies == 1 ? 'Comment' : 'Comments'}',
+                              style: TextStyle(
+                                color: communityNote.author.hasBlocked
+                                    ? Theme.of(context).disabledColor
+                                    : Theme.of(context).colorScheme.outline,
+                              ),
                             ),
-                            RepostButton(
-                              post: communityNote,
-                              numberFormat: numberFormat,
-                            ),
-                            BookmarkButton(
-                              post: communityNote,
-                              numberFormat: numberFormat,
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                RepostButton(
+                                  post: communityNote,
+                                  numberFormat: numberFormat,
+                                ),
+                                SizedBox(width: 20),
+                                BookmarkButton(
+                                  post: communityNote,
+                                  numberFormat: numberFormat,
+                                ),
+                              ],
                             ),
                           ],
                         ),

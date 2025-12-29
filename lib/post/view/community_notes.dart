@@ -140,6 +140,7 @@ class _CommunityNotesState extends State<CommunityNotes> {
                         communityNote: communityNote,
                         navigateToDetailPage: true,
                         showWholeText: false,
+                        isDependency: false,
                       );
                     },
                     itemCount: _communityNotes.length,

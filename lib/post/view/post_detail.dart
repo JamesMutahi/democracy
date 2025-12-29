@@ -11,6 +11,7 @@ import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/bottom_reply_text_field.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
+import 'package:democracy/post/view/widgets/community_note_tile.dart';
 import 'package:democracy/post/view/widgets/image_viewer.dart';
 import 'package:democracy/post/view/widgets/post_body.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
@@ -563,10 +564,14 @@ class _PostContainer extends StatelessWidget {
                     SizedBox(height: 5),
                     if (post.repostOf != null)
                       DependencyContainer(
-                        child: PostTile(
-                          post: post.repostOf!,
-                          isDependency: true,
-                        ),
+                        child: post.repostOf!.communityNoteOf == null
+                            ? PostTile(post: post.repostOf!, isDependency: true)
+                            : CommunityNoteTile(
+                                communityNote: post.repostOf!,
+                                navigateToDetailPage: true,
+                                showWholeText: false,
+                                isDependency: true,
+                              ),
                       ),
                     if (post.ballot != null)
                       DependencyContainer(

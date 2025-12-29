@@ -4,7 +4,6 @@ import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:democracy/post/view/community_note_detail.dart';
 import 'package:democracy/post/view/post_detail.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/post/view/community_notes.dart';
@@ -73,14 +72,12 @@ class PostTile extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => post.communityNoteOf == null
-                        ? PostDetail(
-                            key: ValueKey(post.id),
-                            post: showAsRepost ? post.repostOf! : post,
-                            showAsRepost: showAsRepost,
-                            repost: post,
-                          )
-                        : CommunityNoteDetail(communityNote: post),
+                    builder: (context) => PostDetail(
+                      key: ValueKey(post.id),
+                      post: showAsRepost ? post.repostOf! : post,
+                      showAsRepost: showAsRepost,
+                      repost: post,
+                    ),
                   ),
                 );
               },
@@ -97,6 +94,7 @@ class PostTile extends StatelessWidget {
                                 communityNote: post.repostOf!,
                                 navigateToDetailPage: true,
                                 showWholeText: false,
+                                isDependency: false,
                               ),
                       ],
                     )
@@ -206,10 +204,17 @@ class _PostContainer extends StatelessWidget {
                             ),
                           if (post.repostOf != null && !isDependency)
                             DependencyContainer(
-                              child: PostTile(
-                                post: post.repostOf!,
-                                isDependency: true,
-                              ),
+                              child: post.repostOf!.communityNoteOf == null
+                                  ? PostTile(
+                                      post: post.repostOf!,
+                                      isDependency: true,
+                                    )
+                                  : CommunityNoteTile(
+                                      communityNote: post.repostOf!,
+                                      navigateToDetailPage: true,
+                                      showWholeText: false,
+                                      isDependency: true,
+                                    ),
                             ),
                           if (post.ballot != null)
                             DependencyContainer(

@@ -259,6 +259,7 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
                                 communityNote: _communityNote,
                                 navigateToDetailPage: false,
                                 showWholeText: true,
+                                isDependency: false,
                               ),
                               PostListener(
                                 posts: _replies,
