@@ -27,6 +27,7 @@ sealed class PostDetailEvent with _$PostDetailEvent {
     required PostStatus status,
     required Post? repostOf,
     required Post? replyTo,
+    required Post? communityNoteOf,
     required Ballot? ballot,
     required Survey? survey,
     required Petition? petition,

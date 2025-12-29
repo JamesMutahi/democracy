@@ -159,6 +159,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           'body': event.body,
           'reply_to_id': event.replyTo?.id,
           'repost_of_id': event.repostOf?.id,
+          'community_note_of_id': event.communityNoteOf?.id,
           'ballot_id': event.ballot?.id,
           'survey_id': event.survey?.id,
           'petition_id': event.petition?.id,

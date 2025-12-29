@@ -55,6 +55,7 @@ class PostListView extends StatelessWidget {
               footer: ClassicFooter(),
               child: ListView.builder(
                 physics: physics,
+                padding: EdgeInsets.only(bottom: 20),
                 itemBuilder: (BuildContext context, int index) {
                   Post post = posts[index];
                   return PostWidgetSelector(

@@ -104,7 +104,6 @@ class _BookmarksState extends State<Bookmarks> {
             ),
           ],
           child: PostListView(
-            physics: NeverScrollableScrollPhysics(),
             posts: _posts,
             loading: loading,
             failure: failure,

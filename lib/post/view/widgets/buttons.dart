@@ -265,6 +265,7 @@ class RepostButton extends StatelessWidget {
                                         ? post.repostOf
                                         : post,
                                     replyTo: null,
+                                    communityNoteOf: null,
                                     ballot: null,
                                     survey: null,
                                     petition: null,

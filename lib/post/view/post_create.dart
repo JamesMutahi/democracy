@@ -59,6 +59,7 @@ class _PostCreateState extends State<PostCreate> {
         status: status,
         replyTo: widget.isReply ? widget.post : null,
         repostOf: widget.isReply ? null : widget.post,
+        communityNoteOf: null,
         ballot: widget.ballot,
         survey: widget.survey,
         petition: widget.petition,
@@ -154,7 +155,6 @@ class _PostCreateState extends State<PostCreate> {
                       ),
                     ],
                   ),
-
                   if (widget.post != null)
                     DependencyContainer(
                       child: PostWidgetSelector(

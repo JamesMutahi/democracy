@@ -184,6 +184,7 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
         status: PostStatus.published,
         replyTo: widget.post,
         repostOf: null,
+        communityNoteOf: null,
         ballot: null,
         survey: null,
         petition: null,

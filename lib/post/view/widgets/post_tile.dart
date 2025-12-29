@@ -7,7 +7,6 @@ import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/post_detail.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/post/view/community_notes.dart';
-import 'package:democracy/post/view/widgets/community_note_tile.dart';
 import 'package:democracy/post/view/widgets/image_viewer.dart';
 import 'package:democracy/post/view/widgets/post_body.dart';
 import 'package:democracy/post/view/widgets/post_widget_selector.dart';
@@ -86,17 +85,10 @@ class PostTile extends StatelessWidget {
                   ? Column(
                       children: [
                         _repostBanner(),
-                        post.repostOf!.communityNoteOf == null
-                            ? _PostContainer(
-                                post: post.repostOf!,
-                                isDependency: false,
-                              )
-                            : CommunityNoteTile(
-                                communityNote: post.repostOf!,
-                                navigateToDetailPage: true,
-                                showWholeText: false,
-                                isDependency: false,
-                              ),
+                        PostWidgetSelector(
+                          post: post.repostOf!,
+                          isDependency: false,
+                        ),
                       ],
                     )
                   : Stack(

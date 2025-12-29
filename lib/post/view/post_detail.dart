@@ -430,10 +430,12 @@ class _PostDetailState extends State<PostDetail> {
                             physics: NeverScrollableScrollPhysics(),
                             itemBuilder: (BuildContext context, int index) {
                               Post post = _replyTos[index];
-                              return PostTile(
+                              return PostWidgetSelector(
                                 key: ValueKey(post.id),
                                 post: post,
-                                showTopThread: post.replyTo != null,
+                                showTopThread:
+                                    post.replyTo != null ||
+                                    post.communityNoteOf != null,
                                 showBottomThread: true,
                                 hideBorder: true,
                               );

@@ -260,6 +260,8 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
                                 navigateToDetailPage: false,
                                 showWholeText: true,
                                 isDependency: false,
+                                showTopThread: true,
+                                showBottomThread: false,
                               ),
                               PostListener(
                                 posts: _replies,

@@ -7,13 +7,19 @@ class PostWidgetSelector extends StatelessWidget {
   const PostWidgetSelector({
     super.key,
     required this.post,
-    required this.isDependency,
+    this.isDependency = false,
     this.checkVisibility = false,
+    this.hideBorder = false,
+    this.showTopThread = false,
+    this.showBottomThread = false,
   });
 
   final Post post;
   final bool isDependency;
   final bool checkVisibility;
+  final bool hideBorder;
+  final bool showTopThread;
+  final bool showBottomThread;
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +28,18 @@ class PostWidgetSelector extends StatelessWidget {
             post: post,
             isDependency: isDependency,
             checkVisibility: checkVisibility,
+            hideBorder: hideBorder,
+            showTopThread: showTopThread,
+            showBottomThread: showBottomThread,
           )
         : CommunityNoteTile(
             communityNote: post,
             navigateToDetailPage: true,
             showWholeText: false,
             isDependency: isDependency,
+            hideBorder: hideBorder,
+            showTopThread: showTopThread,
+            showBottomThread: showBottomThread,
           );
   }
 }

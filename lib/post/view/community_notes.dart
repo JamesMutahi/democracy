@@ -3,6 +3,7 @@ import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/post/bloc/community_notes/community_notes_bloc.dart';
 import 'package:democracy/post/models/post.dart';
+import 'package:democracy/post/view/community_note_create.dart';
 import 'package:democracy/post/view/widgets/community_note_tile.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:flutter/material.dart';
@@ -147,6 +148,17 @@ class _CommunityNotesState extends State<CommunityNotes> {
                   ),
                 ),
               ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CommunityNoteCreate(post: widget.post),
+              ),
+            );
+          },
+          child: Icon(Icons.create_outlined),
+        ),
       ),
     );
   }
