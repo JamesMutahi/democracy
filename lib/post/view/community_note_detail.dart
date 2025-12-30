@@ -1,6 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
+import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/replies/replies_bloc.dart';
 import 'package:democracy/post/models/post.dart';
@@ -8,15 +9,25 @@ import 'package:democracy/post/view/widgets/bottom_reply_text_field.dart';
 import 'package:democracy/post/view/widgets/community_note_tile.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
+import 'package:democracy/post/view/widgets/thread_line.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
+import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class CommunityNoteDetail extends StatefulWidget {
-  const CommunityNoteDetail({super.key, required this.communityNote});
+  const CommunityNoteDetail({
+    super.key,
+    required this.communityNote,
+    this.showAsRepost = false,
+    this.repost,
+  });
 
   final Post communityNote;
+  final bool showAsRepost;
+  final Post? repost;
 
   @override
   State<CommunityNoteDetail> createState() => _CommunityNoteDetailState();
@@ -255,6 +266,16 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
                         child: SingleChildScrollView(
                           child: Column(
                             children: [
+                              if (widget.showAsRepost)
+                                Stack(
+                                  children: [
+                                    ThreadLine(
+                                      showBottomThread: true,
+                                      showTopThread: true,
+                                    ),
+                                    _repostBanner(),
+                                  ],
+                                ),
                               CommunityNoteTile(
                                 communityNote: _communityNote,
                                 navigateToDetailPage: false,
@@ -325,6 +346,39 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
               : BottomReplyTextField(post: _communityNote),
         ),
       ),
+    );
+  }
+
+  Widget _repostBanner() {
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        late User user;
+        if (state is Authenticated) user = state.user;
+        String text = user.id == widget.repost!.author.id
+            ? 'You reposted'
+            : '${widget.repost!.author.name} reposted';
+        if (widget.repost!.repostOf!.communityNoteOf != null) {
+          text = '$text a community note';
+        }
+        return Container(
+          margin: EdgeInsets.only(left: 30),
+          padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
+          child: Row(
+            children: [
+              Icon(
+                Symbols.loop_rounded,
+                color: Theme.of(context).colorScheme.outline,
+                size: 17,
+              ),
+              const SizedBox(width: 5),
+              Text(
+                text,
+                style: TextStyle(color: Theme.of(context).colorScheme.outline),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

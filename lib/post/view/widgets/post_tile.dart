@@ -4,6 +4,7 @@ import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:democracy/post/models/post.dart';
+import 'package:democracy/post/view/community_note_detail.dart';
 import 'package:democracy/post/view/post_detail.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/post/view/community_notes.dart';
@@ -72,12 +73,29 @@ class PostTile extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => PostDetail(
-                      key: ValueKey(post.id),
-                      post: showAsRepost ? post.repostOf! : post,
-                      showAsRepost: showAsRepost,
-                      repost: post,
-                    ),
+                    builder: (context) {
+                      if (showAsRepost) {
+                        return post.repostOf!.communityNoteOf == null
+                            ? PostDetail(
+                                key: ValueKey(post.id),
+                                post: post.repostOf!,
+                                showAsRepost: true,
+                                repost: post,
+                              )
+                            : CommunityNoteDetail(
+                                communityNote: post.repostOf!,
+                                showAsRepost: true,
+                                repost: post,
+                              );
+                      } else {
+                        return PostDetail(
+                          key: ValueKey(post.id),
+                          post: post,
+                          showAsRepost: false,
+                          repost: post,
+                        );
+                      }
+                    },
                   ),
                 );
               },

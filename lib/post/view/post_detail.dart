@@ -466,7 +466,12 @@ class _PostDetailState extends State<PostDetail> {
       builder: (context, state) {
         late User user;
         if (state is Authenticated) user = state.user;
-
+        String text = user.id == widget.repost.author.id
+            ? 'You reposted'
+            : '${widget.repost.author.name} reposted';
+        if (widget.repost.repostOf!.communityNoteOf != null) {
+          text = '$text a community note';
+        }
         return Container(
           padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
           child: Row(
@@ -478,9 +483,7 @@ class _PostDetailState extends State<PostDetail> {
               ),
               const SizedBox(width: 5),
               Text(
-                user.id == widget.repost.author.id
-                    ? 'You reposted'
-                    : '${widget.repost.author.name} reposted',
+                text,
                 style: TextStyle(color: Theme.of(context).colorScheme.outline),
               ),
             ],
