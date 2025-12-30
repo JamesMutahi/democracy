@@ -40,6 +40,7 @@ import 'package:democracy/post/bloc/post_filter/post_filter_cubit.dart';
 import 'package:democracy/post/bloc/posts/posts_bloc.dart';
 import 'package:democracy/post/bloc/replies/replies_bloc.dart';
 import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
+import 'package:democracy/post/bloc/user_community_notes/user_community_notes_bloc.dart';
 import 'package:democracy/post/bloc/user_posts/user_posts_bloc.dart';
 import 'package:democracy/post/bloc/user_replies/user_replies_bloc.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
@@ -268,6 +269,10 @@ void main() async {
           BlocProvider(
             create: (context) =>
                 CommunityNotesBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                UserCommunityNotesBloc(webSocketService: webSocketService),
           ),
         ],
         child: const MyApp(),

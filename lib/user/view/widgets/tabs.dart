@@ -7,6 +7,7 @@ import 'package:democracy/petition/bloc/user_petitions/user_petitions_bloc.dart'
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:democracy/post/bloc/likes/likes_bloc.dart';
+import 'package:democracy/post/bloc/user_community_notes/user_community_notes_bloc.dart';
 import 'package:democracy/post/bloc/user_posts/user_posts_bloc.dart';
 import 'package:democracy/post/bloc/user_replies/user_replies_bloc.dart';
 import 'package:democracy/post/models/post.dart';
@@ -356,6 +357,117 @@ class _LikesState extends State<Likes> {
           },
           onFailure: () {
             context.read<LikesBloc>().add(LikesEvent.get(user: widget.user));
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class UserCommunityNotes extends StatefulWidget {
+  const UserCommunityNotes({super.key, required this.user});
+
+  final User user;
+
+  @override
+  State<UserCommunityNotes> createState() => _UserCommunityNotesState();
+}
+
+class _UserCommunityNotesState extends State<UserCommunityNotes> {
+  bool loading = true;
+  bool failure = false;
+  List<Post> _posts = [];
+  bool hasNextPage = false;
+  final RefreshController _refreshController = RefreshController(
+    initialRefresh: false,
+  );
+
+  @override
+  void initState() {
+    context.read<UserCommunityNotesBloc>().add(
+      UserCommunityNotesEvent.get(user: widget.user),
+    );
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<UserCommunityNotesBloc, UserCommunityNotesState>(
+          listener: (context, state) {
+            if (state.status == UserCommunityNotesStatus.success) {
+              if (widget.user.id == state.userId) {
+                setState(() {
+                  _posts = state.posts.toList();
+                  loading = false;
+                  failure = false;
+                  hasNextPage = state.hasNext;
+                  if (_refreshController.headerStatus ==
+                      RefreshStatus.refreshing) {
+                    _refreshController.refreshCompleted();
+                  }
+                  if (_refreshController.footerStatus == LoadStatus.loading) {
+                    _refreshController.loadComplete();
+                  }
+                });
+              }
+            }
+            if (state.status == UserCommunityNotesStatus.failure) {
+              if (loading) {
+                setState(() {
+                  loading = false;
+                  failure = true;
+                });
+              }
+              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+                _refreshController.refreshFailed();
+              }
+              if (_refreshController.footerStatus == LoadStatus.loading) {
+                _refreshController.loadFailed();
+              }
+            }
+          },
+        ),
+        BlocListener<WebsocketBloc, WebsocketState>(
+          listener: (context, state) {
+            if (state.status == WebsocketStatus.connected) {
+              context.read<UserPostsBloc>().add(
+                UserPostsEvent.resubscribe(user: widget.user, posts: _posts),
+              );
+            }
+          },
+        ),
+      ],
+      child: PostsPopScope(
+        user: widget.user,
+        posts: _posts,
+        child: PostListView(
+          posts: _posts,
+          loading: loading,
+          failure: failure,
+          refreshController: _refreshController,
+          enablePullDown: true,
+          enablePullUp: hasNextPage,
+          onPostsUpdated: (posts) {
+            setState(() {
+              _posts = posts;
+            });
+          },
+          onRefresh: () {
+            context.read<UserCommunityNotesBloc>().add(
+              UserCommunityNotesEvent.get(user: widget.user),
+            );
+          },
+          onLoading: () {
+            context.read<UserCommunityNotesBloc>().add(
+              UserCommunityNotesEvent.get(user: widget.user, lastPost: _posts.last),
+            );
+          },
+          onFailure: () {
+            context.read<UserCommunityNotesBloc>().add(
+              UserCommunityNotesEvent.get(user: widget.user),
+            );
           },
         ),
       ),

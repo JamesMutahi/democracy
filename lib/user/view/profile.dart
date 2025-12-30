@@ -18,6 +18,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 
+const List<Tab> tabs = <Tab>[
+  Tab(text: 'Posts'),
+  Tab(text: 'Replies'),
+  Tab(text: 'Likes'),
+  Tab(text: 'Community notes'),
+  Tab(text: 'Petitions'),
+];
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key, required this.user});
 
@@ -154,7 +162,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           },
                         )
                       : DefaultTabController(
-                          length: 4,
+                          length: tabs.length,
                           child: NestedScrollView(
                             controller: _scrollController,
                             headerSliverBuilder:
@@ -177,18 +185,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                       SliverPersistentHeader(
                                         delegate: _TabBarAppBarDelegate(
                                           TabBar(
+                                            isScrollable: true,
+                                            tabAlignment: TabAlignment.center,
                                             labelStyle: Theme.of(
                                               context,
                                             ).textTheme.titleMedium,
                                             dividerColor: Theme.of(
                                               context,
                                             ).colorScheme.outlineVariant,
-                                            tabs: [
-                                              Tab(text: 'Posts'),
-                                              Tab(text: 'Replies'),
-                                              Tab(text: 'Likes'),
-                                              Tab(text: 'Petitions'),
-                                            ],
+                                            tabs: tabs,
                                           ),
                                         ),
                                         pinned: true,
@@ -246,6 +251,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                         user: user,
                                       ),
                                       Likes(key: ValueKey(user.id), user: user),
+                                      UserCommunityNotes(
+                                        key: ValueKey(user.id),
+                                        user: user,
+                                      ),
                                       UserPetitions(
                                         key: ValueKey(user.id),
                                         user: user,
