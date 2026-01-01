@@ -9,10 +9,13 @@ import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
+import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_form_widgets.dart';
+import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/post/view/widgets/post_widget_selector.dart';
+import 'package:democracy/post/view/widgets/thread_line.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +50,15 @@ class _PostCreateState extends State<PostCreate> {
   bool _disablePostButton = true;
   List<File> files = [];
   int fileLimit = 4;
+  List<Post> _replyTos = [];
+
+  @override
+  void initState() {
+    if (widget.isReply) {
+      context.read<ReplyToBloc>().add(ReplyToEvent.get(post: widget.post!));
+    }
+    super.initState();
+  }
 
   void _createPost({PostStatus status = PostStatus.published}) {
     List<Map> tags = [];
@@ -71,12 +83,28 @@ class _PostCreateState extends State<PostCreate> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<PostDetailBloc, PostDetailState>(
-      listener: (context, state) {
-        if (state is PostCreated) {
-          Navigator.pop(context);
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<PostDetailBloc, PostDetailState>(
+          listener: (context, state) {
+            if (state is PostCreated) {
+              Navigator.pop(context);
+            }
+          },
+        ),
+        BlocListener<ReplyToBloc, ReplyToState>(
+          listener: (context, state) {
+            if (state.status == ReplyToStatus.success && widget.isReply) {
+              if (widget.post!.id == state.postId) {
+                setState(() {
+                  _replyTos.add(widget.post!);
+                  _replyTos.addAll(state.posts.toList());
+                });
+              }
+            }
+          },
+        ),
+      ],
       child: PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, result) {
@@ -126,73 +154,116 @@ class _PostCreateState extends State<PostCreate> {
             ],
             actionsPadding: EdgeInsets.only(right: 15),
           ),
-          body: Container(
-            margin: EdgeInsets.all(15),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      PostAuthor(),
-                      PostTextField(
-                        controller: _controller,
-                        hintText: widget.isReply ? 'Reply' : "What's new?",
-                        onChanged: (value) {
-                          if (value == '') {
-                            setState(() {
-                              _disablePostButton = true;
-                            });
-                          } else {
-                            setState(() {
-                              _disablePostButton = false;
-                            });
-                          }
-                        },
+          body: CustomScrollView(
+            reverse: true,
+            slivers: <Widget>[
+              SliverFillRemaining(
+                child: Stack(
+                  children: [
+                    ThreadLine(
+                      showBottomThread: false,
+                      showTopThread: true,
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(
+                        left: 10,
+                        right: 15,
+                        top: 10,
+                        bottom: 5,
                       ),
-                    ],
-                  ),
-                  if (widget.post != null)
-                    DependencyContainer(
-                      child: PostWidgetSelector(
-                        post: widget.post!,
-                        isDependency: true,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                PostAuthor(),
+                                PostTextField(
+                                  controller: _controller,
+                                  hintText: widget.isReply
+                                      ? 'Reply'
+                                      : "What's new?",
+                                  onChanged: (value) {
+                                    if (value == '') {
+                                      setState(() {
+                                        _disablePostButton = true;
+                                      });
+                                    } else {
+                                      setState(() {
+                                        _disablePostButton = false;
+                                      });
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
+                            if (widget.ballot != null)
+                              DependencyContainer(
+                                child: BallotTile(
+                                  ballot: widget.ballot!,
+                                  isDependency: true,
+                                ),
+                              ),
+                            if (widget.survey != null)
+                              DependencyContainer(
+                                child: SurveyTile(
+                                  survey: widget.survey!,
+                                  isDependency: true,
+                                ),
+                              ),
+                            if (widget.petition != null)
+                              DependencyContainer(
+                                child: PetitionTile(
+                                  petition: widget.petition!,
+                                  isDependency: true,
+                                ),
+                              ),
+                            if (widget.meeting != null)
+                              DependencyContainer(
+                                child: MeetingTile(
+                                  meeting: widget.meeting!,
+                                  isDependency: true,
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
                     ),
-                  if (widget.ballot != null)
-                    DependencyContainer(
-                      child: BallotTile(
-                        ballot: widget.ballot!,
-                        isDependency: true,
-                      ),
-                    ),
-                  if (widget.survey != null)
-                    DependencyContainer(
-                      child: SurveyTile(
-                        survey: widget.survey!,
-                        isDependency: true,
-                      ),
-                    ),
-                  if (widget.petition != null)
-                    DependencyContainer(
-                      child: PetitionTile(
-                        petition: widget.petition!,
-                        isDependency: true,
-                      ),
-                    ),
-                  if (widget.meeting != null)
-                    DependencyContainer(
-                      child: MeetingTile(
-                        meeting: widget.meeting!,
-                        isDependency: true,
-                      ),
-                    ),
-                ],
+                  ],
+                ),
               ),
-            ),
+              SliverToBoxAdapter(
+                child: PostListener(
+                  posts: _replyTos,
+                  onPostsUpdated: (posts) {
+                    setState(() {
+                      _replyTos = posts;
+                    });
+                  },
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    reverse: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (BuildContext context, int index) {
+                      Post post = _replyTos[index];
+                      return PostWidgetSelector(
+                        key: ValueKey(post.id),
+                        post: post,
+                        showTopThread:
+                            post.replyTo != null ||
+                            post.communityNoteOf != null,
+                        showBottomThread: true,
+                        hideBorder: true,
+                      );
+                    },
+                    itemCount: _replyTos.length,
+                  ),
+                ),
+              ),
+            ],
           ),
           bottomNavigationBar: PostBottomNavBar(
             controller: _controller,

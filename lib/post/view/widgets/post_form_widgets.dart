@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:democracy/app/utils/tagging.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/constitution/bloc/sections/sections_bloc.dart';
+import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,17 +19,14 @@ class PostAuthor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      flex: 1,
-      child: BlocBuilder<AuthBloc, AuthState>(
-        builder: (context, state) {
-          late User user;
-          if (state is Authenticated) {
-            user = state.user;
-          }
-          return ProfileImage(user: user);
-        },
-      ),
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        late User user;
+        if (state is Authenticated) {
+          user = state.user;
+        }
+        return PostAuthorProfile(author: user, isDependency: false);
+      },
     );
   }
 }
@@ -121,12 +118,13 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
       duration: const Duration(milliseconds: 150),
     );
 
-    _animation = Tween<Offset>(
-      begin: const Offset(0, 0.5),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
-    );
+    _animation = Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeInOut,
+          ),
+        );
 
     var keyboardVisibilityController = KeyboardVisibilityController();
     keyboardSubscription = keyboardVisibilityController.onChange.listen((
@@ -217,18 +215,17 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
           return "$triggerCharacter$id#$tag#";
         },
         overlayHeight: overlayHeight,
-        overlay:
-            _view == SearchResultView.users
-                ? UserListView(
-                  tagController: widget.controller,
-                  animation: _animation,
-                )
-                : _view == SearchResultView.hashtag
-                ? SectionListView(
-                  tagController: widget.controller,
-                  animation: _animation,
-                )
-                : SizedBox.shrink(),
+        overlay: _view == SearchResultView.users
+            ? UserListView(
+                tagController: widget.controller,
+                animation: _animation,
+              )
+            : _view == SearchResultView.hashtag
+            ? SectionListView(
+                tagController: widget.controller,
+                animation: _animation,
+              )
+            : SizedBox.shrink(),
         builder: (context, containerKey) {
           return Container(
             key: containerKey,
@@ -244,12 +241,11 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
                   PostExtraButton(
                     iconData: Symbols.gallery_thumbnail_rounded,
                     text: 'Gallery',
-                    onTap:
-                        widget.files.length == widget.fileLimit
-                            ? () {
-                              // TODO
-                            }
-                            : widget.onPickMedia,
+                    onTap: widget.files.length == widget.fileLimit
+                        ? () {
+                            // TODO
+                          }
+                        : widget.onPickMedia,
                   ),
                   SizedBox(width: 15),
                   PostExtraButton(
