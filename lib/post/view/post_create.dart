@@ -160,10 +160,7 @@ class _PostCreateState extends State<PostCreate> {
               SliverFillRemaining(
                 child: Stack(
                   children: [
-                    ThreadLine(
-                      showBottomThread: false,
-                      showTopThread: true,
-                    ),
+                    ThreadLine(showBottomThread: false, showTopThread: true),
                     Container(
                       padding: EdgeInsets.only(
                         left: 10,
