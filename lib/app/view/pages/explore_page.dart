@@ -53,25 +53,27 @@ class _ExplorePageState extends State<ExplorePage> {
                   );
                 },
                 builder: (context, state) {
-                  return AppBarSearchBar(
-                    hintText: 'Search posts',
-                    onChanged: (value) {
-                      context.read<PostFilterCubit>().searchTermChanged(
-                        searchTerm: value,
-                      );
-                    },
-                    onFilterTap: () {
-                      showGeneralDialog(
-                        context: context,
-                        transitionDuration: const Duration(milliseconds: 300),
-                        pageBuilder: (context, animation, secondaryAnimation) {
-                          return _FiltersModal(
-                            startDate: state.startDate,
-                            endDate: state.endDate,
-                          );
-                        },
-                      );
-                    },
+                  return Expanded(
+                    child: CustomSearchBar(
+                      hintText: 'Search posts',
+                      onChanged: (value) {
+                        context.read<PostFilterCubit>().searchTermChanged(
+                          searchTerm: value,
+                        );
+                      },
+                      onFilterTap: () {
+                        showGeneralDialog(
+                          context: context,
+                          transitionDuration: const Duration(milliseconds: 300),
+                          pageBuilder: (context, animation, secondaryAnimation) {
+                            return _FiltersModal(
+                              startDate: state.startDate,
+                              endDate: state.endDate,
+                            );
+                          },
+                        );
+                      },
+                    ),
                   );
                 },
               ),

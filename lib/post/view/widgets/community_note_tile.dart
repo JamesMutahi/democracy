@@ -66,136 +66,155 @@ class CommunityNoteTile extends StatelessWidget {
                   showBottomThread: showBottomThread,
                   showTopThread: showTopThread,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (!isDependency)
-                      Container(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        margin: EdgeInsets.only(
-                          top: showTopThread ? 20 : 0,
-                          left: 5,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              icon: Icon(
-                                Icons.keyboard_arrow_up_rounded,
-                                size: 42,
-                                color: communityNote.isUpvoted
-                                    ? Colors.blue
-                                    : null,
+                IntrinsicHeight(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (!isDependency)
+                        Container(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          margin: EdgeInsets.only(
+                            top: showTopThread ? 20 : 0,
+                            left: 5,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  Icons.keyboard_arrow_up_rounded,
+                                  size: 42,
+                                  color: communityNote.isUpvoted
+                                      ? Colors.blue
+                                      : null,
+                                ),
+                                onPressed: () {
+                                  context.read<PostDetailBloc>().add(
+                                    PostDetailEvent.upvote(post: communityNote),
+                                  );
+                                },
                               ),
-                              onPressed: () {
-                                context.read<PostDetailBloc>().add(
-                                  PostDetailEvent.upvote(post: communityNote),
-                                );
-                              },
-                            ),
-                            Text(
-                              '${communityNote.upvotes - communityNote.downvotes}',
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.keyboard_arrow_down_rounded,
-                                size: 42,
-                                color: communityNote.isDownvoted
-                                    ? Colors.blue
-                                    : null,
+                              Text(
+                                '${communityNote.upvotes - communityNote.downvotes}',
+                                style: Theme.of(context).textTheme.titleLarge,
                               ),
-                              onPressed: () {
-                                context.read<PostDetailBloc>().add(
-                                  PostDetailEvent.downvote(post: communityNote),
-                                );
-                              },
-                            ),
-                          ],
+                              IconButton(
+                                icon: Icon(
+                                  Icons.keyboard_arrow_down_rounded,
+                                  size: 42,
+                                  color: communityNote.isDownvoted
+                                      ? Colors.blue
+                                      : null,
+                                ),
+                                onPressed: () {
+                                  context.read<PostDetailBloc>().add(
+                                    PostDetailEvent.downvote(
+                                      post: communityNote,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    SizedBox(width: 10),
-                    Flexible(
-                      child: Padding(
-                        padding: EdgeInsets.only(right: 15, top: 10, bottom: 5),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
+                      SizedBox(width: 10),
+                      Flexible(
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            right: 15,
+                            top: 10,
+                            bottom: 10,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  ProfileImage(
-                                    user: communityNote.author,
-                                    navigateToProfile: true,
-                                  ),
-                                  SizedBox(width: 10),
-                                  Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      ProfileName(user: communityNote.author),
-                                      Text(
-                                        '${timeFormat.format(communityNote.publishedAt)} • '
-                                        '${dateFormat.format(communityNote.publishedAt)}',
-                                        style: TextStyle(
-                                          color: Theme.of(
-                                            context,
-                                          ).disabledColor,
+                                  Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        ProfileImage(
+                                          user: communityNote.author,
+                                          navigateToProfile: true,
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 5),
-                            PostBody(
-                              post: communityNote,
-                              showWholeText: showWholeText,
-                            ),
-                            SizedBox(height: 5),
-                            if (!isDependency)
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    '${numberFormat.format(communityNote.replies)} ${communityNote.replies == 1 ? 'Comment' : 'Comments'}',
-                                    style: TextStyle(
-                                      color: communityNote.author.hasBlocked
-                                          ? Theme.of(context).disabledColor
-                                          : Theme.of(
-                                              context,
-                                            ).colorScheme.outline,
+                                        SizedBox(width: 10),
+                                        Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            ProfileName(
+                                              user: communityNote.author,
+                                            ),
+                                            Text(
+                                              '${timeFormat.format(communityNote.publishedAt)} • '
+                                              '${dateFormat.format(communityNote.publishedAt)}',
+                                              style: TextStyle(
+                                                color: Theme.of(
+                                                  context,
+                                                ).disabledColor,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
+                                  SizedBox(height: 5),
+                                  PostBody(
+                                    post: communityNote,
+                                    showWholeText: showWholeText,
+                                  ),
+                                  SizedBox(height: 5),
+                                ],
+                              ),
+                              if (!isDependency)
+                                Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      RepostButton(
-                                        post: communityNote,
-                                        numberFormat: numberFormat,
+                                      Text(
+                                        '${numberFormat.format(communityNote.replies)} ${communityNote.replies == 1 ? 'Comment' : 'Comments'}',
+                                        style: TextStyle(
+                                          color: communityNote.author.hasBlocked
+                                              ? Theme.of(context).disabledColor
+                                              : Theme.of(
+                                                  context,
+                                                ).colorScheme.outline,
+                                        ),
                                       ),
-                                      SizedBox(width: 20),
-                                      BookmarkButton(
-                                        post: communityNote,
-                                        numberFormat: numberFormat,
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          RepostButton(
+                                            post: communityNote,
+                                            numberFormat: numberFormat,
+                                          ),
+                                          SizedBox(width: 20),
+                                          BookmarkButton(
+                                            post: communityNote,
+                                            numberFormat: numberFormat,
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
-                                ],
-                              ),
-                          ],
+                                ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),

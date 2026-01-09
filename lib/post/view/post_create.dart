@@ -160,7 +160,8 @@ class _PostCreateState extends State<PostCreate> {
               SliverFillRemaining(
                 child: Stack(
                   children: [
-                    ThreadLine(showBottomThread: false, showTopThread: true),
+                    if (widget.isReply)
+                      ThreadLine(showBottomThread: false, showTopThread: true),
                     Container(
                       padding: EdgeInsets.only(
                         left: 10,
@@ -197,6 +198,13 @@ class _PostCreateState extends State<PostCreate> {
                                 ),
                               ],
                             ),
+                            if (widget.post != null && !widget.isReply)
+                              DependencyContainer(
+                                child: PostTile(
+                                  post: widget.post!,
+                                  isDependency: true,
+                                ),
+                              ),
                             if (widget.ballot != null)
                               DependencyContainer(
                                 child: BallotTile(

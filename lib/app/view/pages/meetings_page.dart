@@ -42,25 +42,27 @@ class _MeetingsPageState extends State<MeetingsPage> {
                   );
                 },
                 builder: (context, state) {
-                  return AppBarSearchBar(
-                    hintText: 'Search meetings',
-                    onChanged: (value) {
-                      context.read<MeetingFilterCubit>().searchTermChanged(
-                        searchTerm: value,
-                      );
-                    },
-                    onFilterTap: () {
-                      showGeneralDialog(
-                        context: context,
-                        transitionDuration: const Duration(milliseconds: 300),
-                        pageBuilder: (context, animation, secondaryAnimation) {
-                          return _FiltersModal(
-                            startDate: state.startDate,
-                            endDate: state.endDate,
-                          );
-                        },
-                      );
-                    },
+                  return Expanded(
+                    child: CustomSearchBar(
+                      hintText: 'Search meetings',
+                      onChanged: (value) {
+                        context.read<MeetingFilterCubit>().searchTermChanged(
+                          searchTerm: value,
+                        );
+                      },
+                      onFilterTap: () {
+                        showGeneralDialog(
+                          context: context,
+                          transitionDuration: const Duration(milliseconds: 300),
+                          pageBuilder: (context, animation, secondaryAnimation) {
+                            return _FiltersModal(
+                              startDate: state.startDate,
+                              endDate: state.endDate,
+                            );
+                          },
+                        );
+                      },
+                    ),
                   );
                 },
               ),

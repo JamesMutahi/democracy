@@ -1,6 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
+import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/post/bloc/community_notes/community_notes_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/community_note_create.dart';
@@ -55,19 +56,21 @@ class _CommunityNotesState extends State<CommunityNotes> {
         BlocListener<CommunityNotesBloc, CommunityNotesState>(
           listener: (context, state) {
             if (state.status == CommunityNotesStatus.success) {
-              setState(() {
-                loading = false;
-                failure = false;
-                _communityNotes = state.communityNotes;
-                hasNextPage = state.hasNext;
-                if (_refreshController.headerStatus ==
-                    RefreshStatus.refreshing) {
-                  _refreshController.refreshCompleted();
-                }
-                if (_refreshController.footerStatus == LoadStatus.loading) {
-                  _refreshController.loadComplete();
-                }
-              });
+              if (widget.post.id == state.postId) {
+                setState(() {
+                  loading = false;
+                  failure = false;
+                  _communityNotes = state.communityNotes;
+                  hasNextPage = state.hasNext;
+                  if (_refreshController.headerStatus ==
+                      RefreshStatus.refreshing) {
+                    _refreshController.refreshCompleted();
+                  }
+                  if (_refreshController.footerStatus == LoadStatus.loading) {
+                    _refreshController.loadComplete();
+                  }
+                });
+              }
             }
             if (state.status == CommunityNotesStatus.failure) {
               if (loading) {
@@ -87,67 +90,98 @@ class _CommunityNotesState extends State<CommunityNotes> {
         ),
       ],
       child: Scaffold(
-        appBar: AppBar(
-          title: Row(
-            children: [
-              Icon(Icons.people_rounded, color: Colors.blueAccent),
-              SizedBox(width: 10),
-              Text('Community notes'),
-            ],
-          ),
-        ),
-        body: loading
-            ? BottomLoader()
-            : failure
-            ? FailureRetryButton(
-                onPressed: () {
-                  context.read<CommunityNotesBloc>().add(
-                    CommunityNotesEvent.get(post: widget.post),
-                  );
-                },
-              )
-            : PostListener(
-                posts: _communityNotes,
-                onPostsUpdated: (posts) {
-                  setState(() {
-                    _communityNotes = posts;
-                  });
-                },
-                child: SmartRefresher(
-                  enablePullDown: true,
-                  enablePullUp: hasNextPage,
-                  header: ClassicHeader(),
-                  controller: _refreshController,
-                  onRefresh: () {
+        body: NestedScrollView(
+          headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+            return [
+              SliverAppBar(
+                floating: true,
+                snap: true,
+                forceElevated: true,
+                title: Row(
+                  children: [
+                    Icon(Icons.people_rounded, color: Colors.blueAccent),
+                    SizedBox(width: 10),
+                    Text('Community notes'),
+                  ],
+                ),
+                bottom: PreferredSize(
+                  preferredSize: Size.fromHeight(60.0),
+                  child: Expanded(
+                    child: CustomSearchBar(
+                      hintText: 'Search',
+                      onChanged: (value) {
+                        context.read<CommunityNotesBloc>().add(
+                          CommunityNotesEvent.get(
+                            post: widget.post,
+                            searchTerm: value,
+                          ),
+                        );
+                      },
+                      onFilterTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => _FilterDialog(),
+                        ).then((value) {});
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ];
+          },
+          body: loading
+              ? BottomLoader()
+              : failure
+              ? FailureRetryButton(
+                  onPressed: () {
                     context.read<CommunityNotesBloc>().add(
                       CommunityNotesEvent.get(post: widget.post),
                     );
                   },
-                  onLoading: () {
-                    context.read<CommunityNotesBloc>().add(
-                      CommunityNotesEvent.get(
-                        post: widget.post,
-                        lastPost: _communityNotes.last,
-                      ),
-                    );
+                )
+              : PostListener(
+                  posts: _communityNotes,
+                  onPostsUpdated: (posts) {
+                    setState(() {
+                      _communityNotes = posts;
+                    });
                   },
-                  footer: ClassicFooter(),
-                  child: ListView.builder(
-                    padding: EdgeInsets.only(bottom: 20),
-                    itemBuilder: (BuildContext context, int index) {
-                      Post communityNote = _communityNotes[index];
-                      return CommunityNoteTile(
-                        key: ValueKey(communityNote.id),
-                        communityNote: communityNote,
-                        navigateToDetailPage: true,
-                        showWholeText: false,
-                        isDependency: false,
+                  child: SmartRefresher(
+                    enablePullDown: true,
+                    enablePullUp: hasNextPage,
+                    header: ClassicHeader(),
+                    controller: _refreshController,
+                    onRefresh: () {
+                      context.read<CommunityNotesBloc>().add(
+                        CommunityNotesEvent.get(post: widget.post),
                       );
                     },
-                    itemCount: _communityNotes.length,
+                    onLoading: () {
+                      context.read<CommunityNotesBloc>().add(
+                        CommunityNotesEvent.get(
+                          post: widget.post,
+                          lastPost: _communityNotes.last,
+                        ),
+                      );
+                    },
+                    footer: ClassicFooter(),
+                    child: ListView.builder(
+                      padding: EdgeInsets.only(bottom: 20),
+                      itemBuilder: (BuildContext context, int index) {
+                        Post communityNote = _communityNotes[index];
+                        return CommunityNoteTile(
+                          key: ValueKey(communityNote.id),
+                          communityNote: communityNote,
+                          navigateToDetailPage: true,
+                          showWholeText: false,
+                          isDependency: false,
+                        );
+                      },
+                      itemCount: _communityNotes.length,
+                    ),
                   ),
                 ),
-              ),
+        ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.push(
@@ -163,3 +197,55 @@ class _CommunityNotesState extends State<CommunityNotes> {
     );
   }
 }
+
+class _FilterDialog extends StatefulWidget {
+  const _FilterDialog();
+
+  @override
+  State<_FilterDialog> createState() => _FilterDialogState();
+}
+
+class _FilterDialogState extends State<_FilterDialog> {
+  String? _selected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Container(
+        color: Colors.red,
+        height: 200,
+        child: Column(
+          children: <Widget>[
+            Radio<String>(
+              value: 'value',
+              groupValue: 'value',
+              onChanged: (value) {
+                setState(() {
+                  _selected = value;
+                });
+              },
+            ),
+            // ...filters.map((iconData) {
+            //   int index = filters.indexOf(iconData);
+            //   return Radio<String>(
+            //     value: filters[index][0],
+            //     groupValue: filters[index][0],
+            //     onChanged: (value) {
+            //       setState(() {
+            //         _selected = value;
+            //       });
+            //     },
+            //   );
+            // }),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+List<Map> filters = [
+  {'score': 'Highest score'},
+  {'recent': 'Newest first'},
+  {'oldest': 'Oldest first'},
+];

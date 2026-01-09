@@ -35,13 +35,15 @@ class _MessagePageState extends State<MessagePage>
             user: widget.user,
             notifications: widget.notifications,
             middle: [
-              AppBarSearchBar(
-                hintText: 'Search messages',
-                onChanged: (value) {
-                  context.read<ChatsBloc>().add(
-                    ChatsEvent.get(searchTerm: value),
-                  );
-                },
+              Expanded(
+                child: CustomSearchBar(
+                  hintText: 'Search messages',
+                  onChanged: (value) {
+                    context.read<ChatsBloc>().add(
+                      ChatsEvent.get(searchTerm: value),
+                    );
+                  },
+                ),
               ),
             ],
           ),

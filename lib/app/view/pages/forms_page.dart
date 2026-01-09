@@ -129,27 +129,29 @@ class _SurveysSearchBar extends StatelessWidget {
       },
       builder: (context, state) {
         controller.text = state.searchTerm;
-        return AppBarSearchBar(
-          controller: controller,
-          hintText: 'Search surveys',
-          onChanged: (value) {
-            context.read<SurveyFilterCubit>().searchTermChanged(
-              searchTerm: value,
-            );
-          },
-          onFilterTap: () {
-            showGeneralDialog(
-              context: context,
-              transitionDuration: const Duration(milliseconds: 300),
-              pageBuilder: (context, animation, secondaryAnimation) {
-                return _FiltersModal(
-                  startDate: state.startDate,
-                  endDate: state.endDate,
-                  formsTabBarStatus: FormsTabBarStatus.onSurveys,
-                );
-              },
-            );
-          },
+        return Expanded(
+          child: CustomSearchBar(
+            controller: controller,
+            hintText: 'Search surveys',
+            onChanged: (value) {
+              context.read<SurveyFilterCubit>().searchTermChanged(
+                searchTerm: value,
+              );
+            },
+            onFilterTap: () {
+              showGeneralDialog(
+                context: context,
+                transitionDuration: const Duration(milliseconds: 300),
+                pageBuilder: (context, animation, secondaryAnimation) {
+                  return _FiltersModal(
+                    startDate: state.startDate,
+                    endDate: state.endDate,
+                    formsTabBarStatus: FormsTabBarStatus.onSurveys,
+                  );
+                },
+              );
+            },
+          ),
         );
       },
     );
@@ -175,27 +177,29 @@ class _PetitionsSearchBar extends StatelessWidget {
       },
       builder: (context, state) {
         controller.text = state.searchTerm;
-        return AppBarSearchBar(
-          controller: controller,
-          hintText: 'Search petitions',
-          onChanged: (value) {
-            context.read<PetitionFilterCubit>().searchTermChanged(
-              searchTerm: value,
-            );
-          },
-          onFilterTap: () {
-            showGeneralDialog(
-              context: context,
-              transitionDuration: const Duration(milliseconds: 300),
-              pageBuilder: (context, animation, secondaryAnimation) {
-                return _FiltersModal(
-                  startDate: state.startDate,
-                  endDate: state.endDate,
-                  formsTabBarStatus: FormsTabBarStatus.onPetitions,
-                );
-              },
-            );
-          },
+        return Expanded(
+          child: CustomSearchBar(
+            controller: controller,
+            hintText: 'Search petitions',
+            onChanged: (value) {
+              context.read<PetitionFilterCubit>().searchTermChanged(
+                searchTerm: value,
+              );
+            },
+            onFilterTap: () {
+              showGeneralDialog(
+                context: context,
+                transitionDuration: const Duration(milliseconds: 300),
+                pageBuilder: (context, animation, secondaryAnimation) {
+                  return _FiltersModal(
+                    startDate: state.startDate,
+                    endDate: state.endDate,
+                    formsTabBarStatus: FormsTabBarStatus.onPetitions,
+                  );
+                },
+              );
+            },
+          ),
         );
       },
     );

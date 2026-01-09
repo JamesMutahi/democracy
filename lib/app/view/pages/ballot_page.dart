@@ -47,25 +47,28 @@ class _BallotPageState extends State<BallotPage>
                   );
                 },
                 builder: (context, state) {
-                  return AppBarSearchBar(
-                    hintText: 'Search ballots',
-                    onChanged: (value) {
-                      context.read<BallotFilterCubit>().searchTermChanged(
-                        searchTerm: value,
-                      );
-                    },
-                    onFilterTap: () {
-                      showGeneralDialog(
-                        context: context,
-                        transitionDuration: const Duration(milliseconds: 300),
-                        pageBuilder: (context, animation, secondaryAnimation) {
-                          return _FiltersModal(
-                            startDate: state.startDate,
-                            endDate: state.endDate,
-                          );
-                        },
-                      );
-                    },
+                  return Expanded(
+                    child: CustomSearchBar(
+                      hintText: 'Search ballots',
+                      onChanged: (value) {
+                        context.read<BallotFilterCubit>().searchTermChanged(
+                          searchTerm: value,
+                        );
+                      },
+                      onFilterTap: () {
+                        showGeneralDialog(
+                          context: context,
+                          transitionDuration: const Duration(milliseconds: 300),
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) {
+                                return _FiltersModal(
+                                  startDate: state.startDate,
+                                  endDate: state.endDate,
+                                );
+                              },
+                        );
+                      },
+                    ),
                   );
                 },
               ),

@@ -59,8 +59,8 @@ class CustomAppBar extends StatelessWidget {
   }
 }
 
-class AppBarSearchBar extends StatelessWidget {
-  const AppBarSearchBar({
+class CustomSearchBar extends StatelessWidget {
+  const CustomSearchBar({
     super.key,
     this.controller,
     required this.hintText,
@@ -75,34 +75,34 @@ class AppBarSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 7, horizontal: 10),
-        child: SearchBar(
-          controller: controller,
-          padding: WidgetStateProperty.all(
-            EdgeInsets.symmetric(horizontal: 10),
-          ),
-          leading: Icon(Symbols.search_rounded),
-          trailing: [
-            if (onFilterTap != null)
-              GestureDetector(
-                onTap: onFilterTap,
-                child: SizedBox(
-                  height: double.infinity,
-                  child: Icon(Symbols.filter_list_rounded),
-                ),
-              ),
-          ],
-          hintText: hintText,
-          hintStyle: WidgetStateProperty.all(
-            TextStyle(color: Theme.of(context).hintColor),
-          ),
-          onTapOutside: (event) {
-            FocusManager.instance.primaryFocus?.unfocus();
-          },
-          onChanged: onChanged,
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 7, horizontal: 10),
+      child: SearchBar(
+        controller: controller,
+        padding: WidgetStateProperty.all(
+          EdgeInsets.only(left: 10),
         ),
+        leading: Icon(Symbols.search_rounded),
+        trailing: [
+          if (onFilterTap != null)
+            GestureDetector(
+              onTap: onFilterTap,
+              child: Container(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                height: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                child: Icon(Symbols.filter_list_rounded),
+              ),
+            ),
+        ],
+        hintText: hintText,
+        hintStyle: WidgetStateProperty.all(
+          TextStyle(color: Theme.of(context).hintColor),
+        ),
+        onTapOutside: (event) {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        onChanged: onChanged,
       ),
     );
   }
