@@ -9,6 +9,7 @@ import 'package:democracy/post/view/widgets/community_note_tile.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class CommunityNotes extends StatefulWidget {
@@ -28,6 +29,8 @@ class _CommunityNotesState extends State<CommunityNotes> {
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
   );
+  final TextEditingController _searchController = TextEditingController();
+  String? sortBy;
 
   @override
   void initState() {
@@ -94,8 +97,8 @@ class _CommunityNotesState extends State<CommunityNotes> {
           headerSliverBuilder: (context, bool innerBoxIsScrolled) {
             return [
               SliverAppBar(
-                floating: true,
-                snap: true,
+                floating: false,
+                snap: false,
                 forceElevated: true,
                 title: Row(
                   children: [
@@ -108,6 +111,7 @@ class _CommunityNotesState extends State<CommunityNotes> {
                   preferredSize: Size.fromHeight(60.0),
                   child: Expanded(
                     child: CustomSearchBar(
+                      controller: _searchController,
                       hintText: 'Search',
                       onChanged: (value) {
                         context.read<CommunityNotesBloc>().add(
@@ -120,8 +124,23 @@ class _CommunityNotesState extends State<CommunityNotes> {
                       onFilterTap: () {
                         showDialog(
                           context: context,
-                          builder: (context) => _FilterDialog(),
-                        ).then((value) {});
+                          builder: (context) => _SortByDialog(selected: sortBy),
+                        ).then((value) {
+                          if (value != null) {
+                            setState(() {
+                              sortBy = value;
+                            });
+                            if (context.mounted) {
+                              context.read<CommunityNotesBloc>().add(
+                                CommunityNotesEvent.get(
+                                  post: widget.post,
+                                  searchTerm: _searchController.text,
+                                  sortBy: value,
+                                ),
+                              );
+                            }
+                          }
+                        });
                       },
                     ),
                   ),
@@ -153,7 +172,11 @@ class _CommunityNotesState extends State<CommunityNotes> {
                     controller: _refreshController,
                     onRefresh: () {
                       context.read<CommunityNotesBloc>().add(
-                        CommunityNotesEvent.get(post: widget.post),
+                        CommunityNotesEvent.get(
+                          post: widget.post,
+                          searchTerm: _searchController.text,
+                          sortBy: sortBy,
+                        ),
                       );
                     },
                     onLoading: () {
@@ -198,54 +221,37 @@ class _CommunityNotesState extends State<CommunityNotes> {
   }
 }
 
-class _FilterDialog extends StatefulWidget {
-  const _FilterDialog();
+class _SortByDialog extends StatelessWidget {
+  const _SortByDialog({required this.selected});
 
-  @override
-  State<_FilterDialog> createState() => _FilterDialogState();
-}
-
-class _FilterDialogState extends State<_FilterDialog> {
-  String? _selected;
+  final String? selected;
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      child: Container(
-        color: Colors.red,
-        height: 200,
-        child: Column(
-          children: <Widget>[
-            Radio<String>(
-              value: 'value',
-              groupValue: 'value',
-              onChanged: (value) {
-                setState(() {
-                  _selected = value;
-                });
-              },
-            ),
-            // ...filters.map((iconData) {
-            //   int index = filters.indexOf(iconData);
-            //   return Radio<String>(
-            //     value: filters[index][0],
-            //     groupValue: filters[index][0],
-            //     onChanged: (value) {
-            //       setState(() {
-            //         _selected = value;
-            //       });
-            //     },
-            //   );
-            // }),
-          ],
-        ),
+      child: FormBuilderRadioGroup<String>(
+        name: 'sort by',
+        initialValue: selected ?? 'score',
+        orientation: OptionsOrientation.vertical,
+        options: [
+          FormBuilderFieldOption<String>(
+            value: 'score',
+            child: Text('Highest score (default)'),
+          ),
+          FormBuilderFieldOption<String>(
+            value: 'recent',
+            child: Text('Newest first'),
+          ),
+          FormBuilderFieldOption<String>(
+            value: 'oldest',
+            child: Text('Oldest first'),
+          ),
+        ],
+        onChanged: (value) {
+          Navigator.pop(context, value);
+        },
+        separator: const VerticalDivider(width: 10, thickness: 5),
       ),
     );
   }
 }
-
-List<Map> filters = [
-  {'score': 'Highest score'},
-  {'recent': 'Newest first'},
-  {'oldest': 'Oldest first'},
-];

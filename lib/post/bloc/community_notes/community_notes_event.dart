@@ -5,6 +5,7 @@ class CommunityNotesEvent with _$CommunityNotesEvent {
   const factory CommunityNotesEvent.get({
     required Post post,
     String? searchTerm,
+    String? sortBy,
     Post? lastPost,
   }) = _Get;
   const factory CommunityNotesEvent.received({

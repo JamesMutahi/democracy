@@ -44,6 +44,7 @@ class CommunityNotesBloc
         'request_id': event.post.id,
         'pk': event.post.id,
         'search_term': event.searchTerm,
+        'sort_by': event.sortBy,
         'last_post': event.lastPost?.id,
       },
     };

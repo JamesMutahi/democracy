@@ -128,10 +128,10 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Post post,  String? searchTerm,  Post? lastPost)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Post post,  List<Post> communityNotes)?  resubscribe,TResult Function( Post post,  List<Post> communityNotes)?  unsubscribe,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Post post,  String? searchTerm,  String? sortBy,  Post? lastPost)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Post post,  List<Post> communityNotes)?  resubscribe,TResult Function( Post post,  List<Post> communityNotes)?  unsubscribe,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.post,_that.searchTerm,_that.lastPost);case _Received() when received != null:
+return get(_that.post,_that.searchTerm,_that.sortBy,_that.lastPost);case _Received() when received != null:
 return received(_that.payload);case _Resubscribe() when resubscribe != null:
 return resubscribe(_that.post,_that.communityNotes);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that.post,_that.communityNotes);case _:
@@ -152,10 +152,10 @@ return unsubscribe(_that.post,_that.communityNotes);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Post post,  String? searchTerm,  Post? lastPost)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Post post,  List<Post> communityNotes)  resubscribe,required TResult Function( Post post,  List<Post> communityNotes)  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Post post,  String? searchTerm,  String? sortBy,  Post? lastPost)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Post post,  List<Post> communityNotes)  resubscribe,required TResult Function( Post post,  List<Post> communityNotes)  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Get():
-return get(_that.post,_that.searchTerm,_that.lastPost);case _Received():
+return get(_that.post,_that.searchTerm,_that.sortBy,_that.lastPost);case _Received():
 return received(_that.payload);case _Resubscribe():
 return resubscribe(_that.post,_that.communityNotes);case _Unsubscribe():
 return unsubscribe(_that.post,_that.communityNotes);case _:
@@ -175,10 +175,10 @@ return unsubscribe(_that.post,_that.communityNotes);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Post post,  String? searchTerm,  Post? lastPost)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Post post,  List<Post> communityNotes)?  resubscribe,TResult? Function( Post post,  List<Post> communityNotes)?  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Post post,  String? searchTerm,  String? sortBy,  Post? lastPost)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Post post,  List<Post> communityNotes)?  resubscribe,TResult? Function( Post post,  List<Post> communityNotes)?  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.post,_that.searchTerm,_that.lastPost);case _Received() when received != null:
+return get(_that.post,_that.searchTerm,_that.sortBy,_that.lastPost);case _Received() when received != null:
 return received(_that.payload);case _Resubscribe() when resubscribe != null:
 return resubscribe(_that.post,_that.communityNotes);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that.post,_that.communityNotes);case _:
@@ -193,11 +193,12 @@ return unsubscribe(_that.post,_that.communityNotes);case _:
 
 
 class _Get implements CommunityNotesEvent {
-  const _Get({required this.post, this.searchTerm, this.lastPost});
+  const _Get({required this.post, this.searchTerm, this.sortBy, this.lastPost});
   
 
  final  Post post;
  final  String? searchTerm;
+ final  String? sortBy;
  final  Post? lastPost;
 
 /// Create a copy of CommunityNotesEvent
@@ -210,16 +211,16 @@ _$GetCopyWith<_Get> get copyWith => __$GetCopyWithImpl<_Get>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.post, post) || other.post == post)&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&(identical(other.lastPost, lastPost) || other.lastPost == lastPost));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.post, post) || other.post == post)&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&(identical(other.sortBy, sortBy) || other.sortBy == sortBy)&&(identical(other.lastPost, lastPost) || other.lastPost == lastPost));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,post,searchTerm,lastPost);
+int get hashCode => Object.hash(runtimeType,post,searchTerm,sortBy,lastPost);
 
 @override
 String toString() {
-  return 'CommunityNotesEvent.get(post: $post, searchTerm: $searchTerm, lastPost: $lastPost)';
+  return 'CommunityNotesEvent.get(post: $post, searchTerm: $searchTerm, sortBy: $sortBy, lastPost: $lastPost)';
 }
 
 
@@ -230,7 +231,7 @@ abstract mixin class _$GetCopyWith<$Res> implements $CommunityNotesEventCopyWith
   factory _$GetCopyWith(_Get value, $Res Function(_Get) _then) = __$GetCopyWithImpl;
 @useResult
 $Res call({
- Post post, String? searchTerm, Post? lastPost
+ Post post, String? searchTerm, String? sortBy, Post? lastPost
 });
 
 
@@ -247,10 +248,11 @@ class __$GetCopyWithImpl<$Res>
 
 /// Create a copy of CommunityNotesEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? post = null,Object? searchTerm = freezed,Object? lastPost = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? post = null,Object? searchTerm = freezed,Object? sortBy = freezed,Object? lastPost = freezed,}) {
   return _then(_Get(
 post: null == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
 as Post,searchTerm: freezed == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
+as String?,sortBy: freezed == sortBy ? _self.sortBy : sortBy // ignore: cast_nullable_to_non_nullable
 as String?,lastPost: freezed == lastPost ? _self.lastPost : lastPost // ignore: cast_nullable_to_non_nullable
 as Post?,
   ));

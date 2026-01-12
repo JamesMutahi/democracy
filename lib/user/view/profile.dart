@@ -22,7 +22,7 @@ const List<Tab> tabs = <Tab>[
   Tab(text: 'Posts'),
   Tab(text: 'Replies'),
   Tab(text: 'Likes'),
-  Tab(text: 'Community notes'),
+  Tab(text: 'Comm. notes'),
   Tab(text: 'Petitions'),
 ];
 
