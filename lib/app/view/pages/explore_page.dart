@@ -42,7 +42,11 @@ class _ExplorePageState extends State<ExplorePage> {
             user: widget.user,
             notifications: widget.notifications,
             middle: [
-              BlocConsumer<PostFilterCubit, PostFilterState>(
+              Text('Explore', style: Theme.of(context).textTheme.titleLarge,),
+            ],
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(60.0),
+              child: BlocConsumer<PostFilterCubit, PostFilterState>(
                 listener: (context, state) {
                   context.read<PostsBloc>().add(
                     PostsEvent.get(
@@ -53,31 +57,29 @@ class _ExplorePageState extends State<ExplorePage> {
                   );
                 },
                 builder: (context, state) {
-                  return Expanded(
-                    child: CustomSearchBar(
-                      hintText: 'Search posts',
-                      onChanged: (value) {
-                        context.read<PostFilterCubit>().searchTermChanged(
-                          searchTerm: value,
-                        );
-                      },
-                      onFilterTap: () {
-                        showGeneralDialog(
-                          context: context,
-                          transitionDuration: const Duration(milliseconds: 300),
-                          pageBuilder: (context, animation, secondaryAnimation) {
-                            return _FiltersModal(
-                              startDate: state.startDate,
-                              endDate: state.endDate,
-                            );
-                          },
-                        );
-                      },
-                    ),
+                  return CustomSearchBar(
+                    hintText: 'Search',
+                    onChanged: (value) {
+                      context.read<PostFilterCubit>().searchTermChanged(
+                        searchTerm: value,
+                      );
+                    },
+                    onFilterTap: () {
+                      showGeneralDialog(
+                        context: context,
+                        transitionDuration: const Duration(milliseconds: 300),
+                        pageBuilder: (context, animation, secondaryAnimation) {
+                          return _FiltersModal(
+                            startDate: state.startDate,
+                            endDate: state.endDate,
+                          );
+                        },
+                      );
+                    },
                   );
                 },
               ),
-            ],
+            ),
           ),
         ];
       },

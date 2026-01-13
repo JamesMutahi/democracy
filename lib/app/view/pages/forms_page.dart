@@ -65,15 +65,25 @@ class _FormsPageState extends State<FormsPage>
             CustomAppBar(
               user: widget.user,
               notifications: widget.notifications,
-              middle: [FormsSearchBar(controller: _searchController)],
-              bottom: TabBar(
-                controller: _tabController,
-                dividerColor: Theme.of(context).colorScheme.outlineVariant,
-                labelStyle: Theme.of(context).textTheme.titleMedium,
-                tabs: [
-                  Tab(text: 'Surveys'),
-                  Tab(text: 'Petitions'),
-                ],
+              middle: [
+                Text('Forms', style: Theme.of(context).textTheme.titleLarge),
+              ],
+              bottom: PreferredSize(
+                preferredSize: Size.fromHeight(100.0),
+                child: Column(
+                  children: [
+                    TabBar(
+                      controller: _tabController,
+                      labelStyle: Theme.of(context).textTheme.titleMedium,
+                      dividerColor: Colors.grey[50],
+                      tabs: [
+                        Tab(text: 'Surveys'),
+                        Tab(text: 'Petitions'),
+                      ],
+                    ),
+                    FormsSearchBar(controller: _searchController),
+                  ],
+                ),
               ),
             ),
           ];
@@ -129,29 +139,27 @@ class _SurveysSearchBar extends StatelessWidget {
       },
       builder: (context, state) {
         controller.text = state.searchTerm;
-        return Expanded(
-          child: CustomSearchBar(
-            controller: controller,
-            hintText: 'Search surveys',
-            onChanged: (value) {
-              context.read<SurveyFilterCubit>().searchTermChanged(
-                searchTerm: value,
-              );
-            },
-            onFilterTap: () {
-              showGeneralDialog(
-                context: context,
-                transitionDuration: const Duration(milliseconds: 300),
-                pageBuilder: (context, animation, secondaryAnimation) {
-                  return _FiltersModal(
-                    startDate: state.startDate,
-                    endDate: state.endDate,
-                    formsTabBarStatus: FormsTabBarStatus.onSurveys,
-                  );
-                },
-              );
-            },
-          ),
+        return CustomSearchBar(
+          controller: controller,
+          hintText: 'Search surveys',
+          onChanged: (value) {
+            context.read<SurveyFilterCubit>().searchTermChanged(
+              searchTerm: value,
+            );
+          },
+          onFilterTap: () {
+            showGeneralDialog(
+              context: context,
+              transitionDuration: const Duration(milliseconds: 300),
+              pageBuilder: (context, animation, secondaryAnimation) {
+                return _FiltersModal(
+                  startDate: state.startDate,
+                  endDate: state.endDate,
+                  formsTabBarStatus: FormsTabBarStatus.onSurveys,
+                );
+              },
+            );
+          },
         );
       },
     );
@@ -177,29 +185,27 @@ class _PetitionsSearchBar extends StatelessWidget {
       },
       builder: (context, state) {
         controller.text = state.searchTerm;
-        return Expanded(
-          child: CustomSearchBar(
-            controller: controller,
-            hintText: 'Search petitions',
-            onChanged: (value) {
-              context.read<PetitionFilterCubit>().searchTermChanged(
-                searchTerm: value,
-              );
-            },
-            onFilterTap: () {
-              showGeneralDialog(
-                context: context,
-                transitionDuration: const Duration(milliseconds: 300),
-                pageBuilder: (context, animation, secondaryAnimation) {
-                  return _FiltersModal(
-                    startDate: state.startDate,
-                    endDate: state.endDate,
-                    formsTabBarStatus: FormsTabBarStatus.onPetitions,
-                  );
-                },
-              );
-            },
-          ),
+        return CustomSearchBar(
+          controller: controller,
+          hintText: 'Search petitions',
+          onChanged: (value) {
+            context.read<PetitionFilterCubit>().searchTermChanged(
+              searchTerm: value,
+            );
+          },
+          onFilterTap: () {
+            showGeneralDialog(
+              context: context,
+              transitionDuration: const Duration(milliseconds: 300),
+              pageBuilder: (context, animation, secondaryAnimation) {
+                return _FiltersModal(
+                  startDate: state.startDate,
+                  endDate: state.endDate,
+                  formsTabBarStatus: FormsTabBarStatus.onPetitions,
+                );
+              },
+            );
+          },
         );
       },
     );

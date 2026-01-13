@@ -59,7 +59,7 @@ class _HomePageState extends State<HomePage>
                 middle: [
                   Text(
                     'People of Kenya',
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ],
                 bottom: TabBar(

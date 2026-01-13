@@ -31,7 +31,11 @@ class _MeetingsPageState extends State<MeetingsPage> {
             user: widget.user,
             notifications: widget.notifications,
             middle: [
-              BlocConsumer<MeetingFilterCubit, MeetingFilterState>(
+              Text('Meetings', style: Theme.of(context).textTheme.titleLarge),
+            ],
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(60.0),
+              child: BlocConsumer<MeetingFilterCubit, MeetingFilterState>(
                 listener: (context, state) {
                   context.read<MeetingsBloc>().add(
                     MeetingsEvent.get(
@@ -42,31 +46,29 @@ class _MeetingsPageState extends State<MeetingsPage> {
                   );
                 },
                 builder: (context, state) {
-                  return Expanded(
-                    child: CustomSearchBar(
-                      hintText: 'Search meetings',
-                      onChanged: (value) {
-                        context.read<MeetingFilterCubit>().searchTermChanged(
-                          searchTerm: value,
-                        );
-                      },
-                      onFilterTap: () {
-                        showGeneralDialog(
-                          context: context,
-                          transitionDuration: const Duration(milliseconds: 300),
-                          pageBuilder: (context, animation, secondaryAnimation) {
-                            return _FiltersModal(
-                              startDate: state.startDate,
-                              endDate: state.endDate,
-                            );
-                          },
-                        );
-                      },
-                    ),
+                  return CustomSearchBar(
+                    hintText: 'Search',
+                    onChanged: (value) {
+                      context.read<MeetingFilterCubit>().searchTermChanged(
+                        searchTerm: value,
+                      );
+                    },
+                    onFilterTap: () {
+                      showGeneralDialog(
+                        context: context,
+                        transitionDuration: const Duration(milliseconds: 300),
+                        pageBuilder: (context, animation, secondaryAnimation) {
+                          return _FiltersModal(
+                            startDate: state.startDate,
+                            endDate: state.endDate,
+                          );
+                        },
+                      );
+                    },
                   );
                 },
               ),
-            ],
+            ),
           ),
         ];
       },

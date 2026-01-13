@@ -76,23 +76,17 @@ class CustomSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 50,
       margin: EdgeInsets.symmetric(vertical: 7, horizontal: 10),
       child: SearchBar(
         controller: controller,
-        padding: WidgetStateProperty.all(
-          EdgeInsets.only(left: 10),
-        ),
+        padding: WidgetStateProperty.all(EdgeInsets.only(left: 15)),
         leading: Icon(Symbols.search_rounded),
         trailing: [
           if (onFilterTap != null)
-            GestureDetector(
-              onTap: onFilterTap,
-              child: Container(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                height: double.infinity,
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                child: Icon(Symbols.filter_list_rounded),
-              ),
+            IconButton(
+              onPressed: onFilterTap,
+              icon: Icon(Symbols.filter_list_rounded),
             ),
         ],
         hintText: hintText,
@@ -132,7 +126,7 @@ class NotificationButton extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(20)),
             ),
             child: Icon(
-              Symbols.notifications_rounded,
+              Icons.notifications_rounded,
               color: Theme.of(context).colorScheme.outline,
               size: 20,
             ),
@@ -173,10 +167,9 @@ class _NotificationCountState extends State<NotificationCount> {
           listener: (context, state) {
             if (state is NotificationsLoaded) {
               setState(() {
-                unreadNotifications =
-                    state.notifications
-                        .where((n) => n.isRead == false)
-                        .toList();
+                unreadNotifications = state.notifications
+                    .where((n) => n.isRead == false)
+                    .toList();
               });
             }
           },
@@ -215,24 +208,23 @@ class _NotificationCountState extends State<NotificationCount> {
           },
         ),
       ],
-      child:
-          unreadNotifications.isEmpty
-              ? SizedBox.shrink()
-              : Positioned(
-                top: 0,
-                right: 4,
-                child: Container(
-                  padding: EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primaryFixedDim,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Text(
-                    unreadNotifications.length.toString(),
-                    style: Theme.of(context).textTheme.labelSmall,
-                  ),
+      child: unreadNotifications.isEmpty
+          ? SizedBox.shrink()
+          : Positioned(
+              top: 0,
+              right: 4,
+              child: Container(
+                padding: EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primaryFixedDim,
+                  shape: BoxShape.circle,
+                ),
+                child: Text(
+                  unreadNotifications.length.toString(),
+                  style: Theme.of(context).textTheme.labelSmall,
                 ),
               ),
+            ),
     );
   }
 }

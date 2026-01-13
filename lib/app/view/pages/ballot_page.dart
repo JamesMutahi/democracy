@@ -36,7 +36,11 @@ class _BallotPageState extends State<BallotPage>
             user: widget.user,
             notifications: widget.notifications,
             middle: [
-              BlocConsumer<BallotFilterCubit, BallotFilterState>(
+              Text('Ballots', style: Theme.of(context).textTheme.titleLarge),
+            ],
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(60.0),
+              child: BlocConsumer<BallotFilterCubit, BallotFilterState>(
                 listener: (context, state) {
                   context.read<BallotsBloc>().add(
                     BallotsEvent.get(
@@ -47,32 +51,29 @@ class _BallotPageState extends State<BallotPage>
                   );
                 },
                 builder: (context, state) {
-                  return Expanded(
-                    child: CustomSearchBar(
-                      hintText: 'Search ballots',
-                      onChanged: (value) {
-                        context.read<BallotFilterCubit>().searchTermChanged(
-                          searchTerm: value,
-                        );
-                      },
-                      onFilterTap: () {
-                        showGeneralDialog(
-                          context: context,
-                          transitionDuration: const Duration(milliseconds: 300),
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) {
-                                return _FiltersModal(
-                                  startDate: state.startDate,
-                                  endDate: state.endDate,
-                                );
-                              },
-                        );
-                      },
-                    ),
+                  return CustomSearchBar(
+                    hintText: 'Search',
+                    onChanged: (value) {
+                      context.read<BallotFilterCubit>().searchTermChanged(
+                        searchTerm: value,
+                      );
+                    },
+                    onFilterTap: () {
+                      showGeneralDialog(
+                        context: context,
+                        transitionDuration: const Duration(milliseconds: 300),
+                        pageBuilder: (context, animation, secondaryAnimation) {
+                          return _FiltersModal(
+                            startDate: state.startDate,
+                            endDate: state.endDate,
+                          );
+                        },
+                      );
+                    },
                   );
                 },
               ),
-            ],
+            ),
           ),
         ];
       },

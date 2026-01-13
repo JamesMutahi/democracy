@@ -35,17 +35,19 @@ class _MessagePageState extends State<MessagePage>
             user: widget.user,
             notifications: widget.notifications,
             middle: [
-              Expanded(
-                child: CustomSearchBar(
-                  hintText: 'Search messages',
-                  onChanged: (value) {
-                    context.read<ChatsBloc>().add(
-                      ChatsEvent.get(searchTerm: value),
-                    );
-                  },
-                ),
-              ),
+              Text('Messages', style: Theme.of(context).textTheme.titleLarge),
             ],
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(60.0),
+              child: CustomSearchBar(
+                hintText: 'Search',
+                onChanged: (value) {
+                  context.read<ChatsBloc>().add(
+                    ChatsEvent.get(searchTerm: value),
+                  );
+                },
+              ),
+            ),
           ),
         ];
       },

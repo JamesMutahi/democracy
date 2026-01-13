@@ -129,7 +129,9 @@ class PostPopUp extends StatelessWidget {
             }
           },
           texts: user.id == post.author.id
-              ? ['Community notes', 'Share', 'Delete']
+              ? post.communityNoteOf == null
+                    ? ['Community notes', 'Share', 'Delete']
+                    : ['Share', 'Delete']
               : buttons,
         );
       },

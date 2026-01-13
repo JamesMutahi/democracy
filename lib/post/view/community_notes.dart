@@ -97,8 +97,8 @@ class _CommunityNotesState extends State<CommunityNotes> {
           headerSliverBuilder: (context, bool innerBoxIsScrolled) {
             return [
               SliverAppBar(
-                floating: false,
-                snap: false,
+                floating: true,
+                snap: true,
                 forceElevated: true,
                 title: Row(
                   children: [
@@ -108,41 +108,39 @@ class _CommunityNotesState extends State<CommunityNotes> {
                   ],
                 ),
                 bottom: PreferredSize(
-                  preferredSize: Size.fromHeight(60.0),
-                  child: Expanded(
-                    child: CustomSearchBar(
-                      controller: _searchController,
-                      hintText: 'Search',
-                      onChanged: (value) {
-                        context.read<CommunityNotesBloc>().add(
-                          CommunityNotesEvent.get(
-                            post: widget.post,
-                            searchTerm: value,
-                          ),
-                        );
-                      },
-                      onFilterTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => _SortByDialog(selected: sortBy),
-                        ).then((value) {
-                          if (value != null) {
-                            setState(() {
-                              sortBy = value;
-                            });
-                            if (context.mounted) {
-                              context.read<CommunityNotesBloc>().add(
-                                CommunityNotesEvent.get(
-                                  post: widget.post,
-                                  searchTerm: _searchController.text,
-                                  sortBy: value,
-                                ),
-                              );
-                            }
+                  preferredSize: Size.fromHeight(50.0),
+                  child: CustomSearchBar(
+                    controller: _searchController,
+                    hintText: 'Search',
+                    onChanged: (value) {
+                      context.read<CommunityNotesBloc>().add(
+                        CommunityNotesEvent.get(
+                          post: widget.post,
+                          searchTerm: value,
+                        ),
+                      );
+                    },
+                    onFilterTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => _SortByDialog(selected: sortBy),
+                      ).then((value) {
+                        if (value != null) {
+                          setState(() {
+                            sortBy = value;
+                          });
+                          if (context.mounted) {
+                            context.read<CommunityNotesBloc>().add(
+                              CommunityNotesEvent.get(
+                                post: widget.post,
+                                searchTerm: _searchController.text,
+                                sortBy: value,
+                              ),
+                            );
                           }
-                        });
-                      },
-                    ),
+                        }
+                      });
+                    },
                   ),
                 ),
               ),
@@ -229,28 +227,42 @@ class _SortByDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      child: FormBuilderRadioGroup<String>(
-        name: 'sort by',
-        initialValue: selected ?? 'score',
-        orientation: OptionsOrientation.vertical,
-        options: [
-          FormBuilderFieldOption<String>(
-            value: 'score',
-            child: Text('Highest score (default)'),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 15.0, top: 15),
+            child: Text(
+              'Sorted by:',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
           ),
-          FormBuilderFieldOption<String>(
-            value: 'recent',
-            child: Text('Newest first'),
-          ),
-          FormBuilderFieldOption<String>(
-            value: 'oldest',
-            child: Text('Oldest first'),
+          FormBuilderRadioGroup<String>(
+            name: 'sort by',
+            initialValue: selected ?? 'score',
+            orientation: OptionsOrientation.vertical,
+            decoration: InputDecoration(border: InputBorder.none),
+            options: [
+              FormBuilderFieldOption<String>(
+                value: 'score',
+                child: Text('Highest score (default)'),
+              ),
+              FormBuilderFieldOption<String>(
+                value: 'recent',
+                child: Text('Newest first'),
+              ),
+              FormBuilderFieldOption<String>(
+                value: 'oldest',
+                child: Text('Oldest first'),
+              ),
+            ],
+            onChanged: (value) {
+              Navigator.pop(context, value);
+            },
+            separator: const VerticalDivider(width: 10, thickness: 5),
           ),
         ],
-        onChanged: (value) {
-          Navigator.pop(context, value);
-        },
-        separator: const VerticalDivider(width: 10, thickness: 5),
       ),
     );
   }
