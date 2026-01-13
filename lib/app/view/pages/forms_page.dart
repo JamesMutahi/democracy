@@ -65,9 +65,10 @@ class _FormsPageState extends State<FormsPage>
             CustomAppBar(
               user: widget.user,
               notifications: widget.notifications,
-              middle: [
-                Text('Forms', style: Theme.of(context).textTheme.titleLarge),
-              ],
+              middle: Text(
+                'Forms',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
               bottom: PreferredSize(
                 preferredSize: Size.fromHeight(100.0),
                 child: Column(
@@ -75,7 +76,6 @@ class _FormsPageState extends State<FormsPage>
                     TabBar(
                       controller: _tabController,
                       labelStyle: Theme.of(context).textTheme.titleMedium,
-                      dividerColor: Colors.grey[50],
                       tabs: [
                         Tab(text: 'Surveys'),
                         Tab(text: 'Petitions'),

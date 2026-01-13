@@ -34,12 +34,11 @@ class _HomePageState extends State<HomePage>
     return BlocListener<PostDetailBloc, PostDetailState>(
       listener: (context, state) {
         if (state is PostCreated) {
-          String message =
-              state.post.status == PostStatus.published
-                  ? state.post.replyTo == null
-                      ? 'Posted'
-                      : 'Reply sent'
-                  : 'Post saved as draft';
+          String message = state.post.status == PostStatus.published
+              ? state.post.replyTo == null
+                    ? 'Posted'
+                    : 'Reply sent'
+              : 'Post saved as draft';
           final snackBar = getSnackBar(
             context: context,
             message: message,
@@ -56,16 +55,18 @@ class _HomePageState extends State<HomePage>
               CustomAppBar(
                 user: widget.user,
                 notifications: widget.notifications,
-                middle: [
-                  Text(
-                    'People of Kenya',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                ],
+                middle: Image.asset(
+                  'assets/images/shield.png',
+                  width: 50,
+                  height: 50,
+                ),
                 bottom: TabBar(
                   dividerColor: Theme.of(context).colorScheme.outlineVariant,
                   labelStyle: Theme.of(context).textTheme.titleMedium,
-                  tabs: [Tab(text: 'For You'), Tab(text: 'Following')],
+                  tabs: [
+                    Tab(text: 'For You'),
+                    Tab(text: 'Following'),
+                  ],
                 ),
               ),
             ];

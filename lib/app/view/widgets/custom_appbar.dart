@@ -19,7 +19,7 @@ class CustomAppBar extends StatelessWidget {
 
   final User user;
   final int notifications;
-  final List<Widget> middle;
+  final Widget middle;
   final PreferredSizeWidget? bottom;
 
   @override
@@ -35,7 +35,7 @@ class CustomAppBar extends StatelessWidget {
         ),
       ),
     ];
-    widgets.addAll(middle);
+    widgets.add(middle);
     widgets.add(NotificationButton(notifications: notifications));
     return SliverAppBar(
       floating: true,

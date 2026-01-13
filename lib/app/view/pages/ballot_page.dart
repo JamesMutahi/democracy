@@ -35,9 +35,10 @@ class _BallotPageState extends State<BallotPage>
           CustomAppBar(
             user: widget.user,
             notifications: widget.notifications,
-            middle: [
-              Text('Ballots', style: Theme.of(context).textTheme.titleLarge),
-            ],
+            middle: Text(
+              'Ballots',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(60.0),
               child: BlocConsumer<BallotFilterCubit, BallotFilterState>(

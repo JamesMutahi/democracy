@@ -30,9 +30,10 @@ class _MeetingsPageState extends State<MeetingsPage> {
           CustomAppBar(
             user: widget.user,
             notifications: widget.notifications,
-            middle: [
-              Text('Meetings', style: Theme.of(context).textTheme.titleLarge),
-            ],
+            middle: Text(
+              'Meetings',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(60.0),
               child: BlocConsumer<MeetingFilterCubit, MeetingFilterState>(

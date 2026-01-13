@@ -41,9 +41,10 @@ class _ExplorePageState extends State<ExplorePage> {
           CustomAppBar(
             user: widget.user,
             notifications: widget.notifications,
-            middle: [
-              Text('Explore', style: Theme.of(context).textTheme.titleLarge,),
-            ],
+            middle: Text(
+              'Explore',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(60.0),
               child: BlocConsumer<PostFilterCubit, PostFilterState>(

@@ -34,9 +34,10 @@ class _MessagePageState extends State<MessagePage>
           CustomAppBar(
             user: widget.user,
             notifications: widget.notifications,
-            middle: [
-              Text('Messages', style: Theme.of(context).textTheme.titleLarge),
-            ],
+            middle: Text(
+              'Messages',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(60.0),
               child: CustomSearchBar(
