@@ -564,8 +564,7 @@ class _PostContainer extends StatelessWidget {
                     SizedBox(height: 5),
                     PostBody(post: post, showWholeText: true),
                     SizedBox(height: 5),
-                    if (post.image1Url != null)
-                      SizedBox(height: 200, child: ImageViewer(post: post)),
+                    if (post.image1Url != null) ImageViewer(post: post),
                     SizedBox(height: 5),
                     if (post.repostOf != null)
                       DependencyContainer(

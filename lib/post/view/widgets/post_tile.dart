@@ -208,10 +208,11 @@ class _PostContainer extends StatelessWidget {
                             ],
                           ),
                           PostBody(post: post),
+                          SizedBox(height: 5,),
                           if (post.image1Url != null)
-                            SizedBox(
-                              height: 200,
-                              child: ImageViewer(post: post),
+                            ImageViewer(
+                              key: ValueKey(post.id),
+                              post: post,
                             ),
                           if (post.repostOf != null && !isDependency)
                             DependencyContainer(
@@ -343,68 +344,70 @@ class _CommunityNoteState extends State<CommunityNote> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CommunityNotes(post: widget.post),
-          ),
-        );
-      },
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 5),
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: Theme.of(context).disabledColor.withAlpha(30),
-          ),
-          borderRadius: BorderRadius.all(Radius.circular(10)),
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 5),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Theme.of(context).disabledColor.withAlpha(30),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.people_rounded, color: Colors.blueAccent),
-                SizedBox(width: 5),
-                Text(
-                  'Community note',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ],
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CommunityNotes(post: widget.post),
             ),
-            Divider(),
-            CustomText(
-              text: widget.post.communityNote,
-              style: Theme.of(context).textTheme.bodyMedium!,
-              suffix: suffix,
-              showAllText: readMore,
-              onSuffixPressed: () {
-                setState(() {
-                  if (readMore) {
-                    suffix = '...Show more';
-                    readMore = false;
-                  } else {
-                    suffix = '\nShow less';
-                    readMore = true;
-                  }
-                });
-              },
-              onUserTagPressed: (userId) {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => ProfilePage(
-                      user: widget.post.taggedUsers.firstWhere(
-                        (user) => user.id == int.parse(userId),
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.people_rounded, color: Colors.blueAccent),
+                  SizedBox(width: 5),
+                  Text(
+                    'Community note',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              Divider(),
+              CustomText(
+                text: widget.post.communityNote,
+                style: Theme.of(context).textTheme.bodyMedium!,
+                suffix: suffix,
+                showAllText: readMore,
+                onSuffixPressed: () {
+                  setState(() {
+                    if (readMore) {
+                      suffix = '...Show more';
+                      readMore = false;
+                    } else {
+                      suffix = '\nShow less';
+                      readMore = true;
+                    }
+                  });
+                },
+                onUserTagPressed: (userId) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ProfilePage(
+                        user: widget.post.taggedUsers.firstWhere(
+                          (user) => user.id == int.parse(userId),
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-            ),
-          ],
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

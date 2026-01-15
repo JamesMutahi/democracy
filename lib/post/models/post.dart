@@ -22,8 +22,6 @@ sealed class Post with _$Post {
     @JsonKey(name: 'image2') required String? image2Url,
     @JsonKey(name: 'image3') required String? image3Url,
     @JsonKey(name: 'image4') required String? image4Url,
-    @JsonKey(name: 'image5') required String? image5Url,
-    @JsonKey(name: 'image6') required String? image6Url,
     @JsonKey(name: 'video1') required String? video1Url,
     @JsonKey(name: 'video2') required String? video2Url,
     @JsonKey(name: 'video3') required String? video3Url,

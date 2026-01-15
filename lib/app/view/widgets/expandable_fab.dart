@@ -6,9 +6,14 @@ import 'package:flutter/material.dart';
 
 @immutable
 class ExpandableFab extends StatefulWidget {
-  const ExpandableFab({super.key, required this.distance});
+  const ExpandableFab({
+    super.key,
+    required this.distance,
+    required this.maskToggle,
+  });
 
   final double distance;
+  final VoidCallback maskToggle;
 
   @override
   State<ExpandableFab> createState() => _ExpandableFabState();
@@ -50,6 +55,7 @@ class _ExpandableFabState extends State<ExpandableFab>
         _controller.reverse();
       }
     });
+    widget.maskToggle();
   }
 
   @override
@@ -75,6 +81,7 @@ class _ExpandableFabState extends State<ExpandableFab>
         child: Material(
           shape: const CircleBorder(),
           clipBehavior: Clip.antiAlias,
+          color: Theme.of(context).buttonTheme.colorScheme?.secondaryContainer,
           elevation: 4,
           child: InkWell(
             onTap: _toggle,
@@ -98,7 +105,8 @@ class _ExpandableFabState extends State<ExpandableFab>
             MaterialPageRoute(builder: (context) => DraftPosts()),
           );
         },
-        icon: const Icon(Icons.archive_outlined),
+        text: 'Drafts',
+        icon: const Icon(Icons.archive_rounded),
       ),
       ActionButton(
         onPressed: () {
@@ -108,7 +116,8 @@ class _ExpandableFabState extends State<ExpandableFab>
             MaterialPageRoute(builder: (context) => PostCreate()),
           );
         },
-        icon: const Icon(Icons.post_add_rounded),
+        text: 'Post',
+        icon: const Icon(Icons.add_rounded),
       ),
     ];
     final children = <Widget>[];
@@ -192,23 +201,32 @@ class _ExpandingActionButton extends StatelessWidget {
 
 @immutable
 class ActionButton extends StatelessWidget {
-  const ActionButton({super.key, required this.onPressed, required this.icon});
+  const ActionButton({
+    super.key,
+    required this.onPressed,
+    required this.text,
+    required this.icon,
+  });
 
   final VoidCallback onPressed;
+  final String text;
   final Widget icon;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Material(
-      shape: const CircleBorder(),
-      clipBehavior: Clip.antiAlias,
-      color: theme.colorScheme.secondary,
-      elevation: 4,
-      child: IconButton(
-        onPressed: onPressed,
-        icon: icon,
-        color: theme.colorScheme.onSecondary,
+    return GestureDetector(
+      onTap: onPressed,
+      child: Row(
+        children: [
+          Text(text, style: TextStyle(fontWeight: FontWeight.w500)),
+          SizedBox(width: 10),
+          Card(
+            color: theme.buttonTheme.colorScheme?.primaryContainer,
+            elevation: 3,
+            child: Padding(padding: const EdgeInsets.all(10.0), child: icon),
+          ),
+        ],
       ),
     );
   }

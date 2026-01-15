@@ -28,6 +28,8 @@ class _HomePageState extends State<HomePage>
   @override
   bool get wantKeepAlive => true;
 
+  bool maskOn = false;
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -47,46 +49,59 @@ class _HomePageState extends State<HomePage>
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
       },
-      child: DefaultTabController(
-        length: 2,
-        child: NestedScrollView(
-          headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-            return [
-              CustomAppBar(
-                user: widget.user,
-                notifications: widget.notifications,
-                middle: Image.asset(
-                  'assets/images/shield.png',
-                  width: 50,
-                  height: 50,
-                ),
-                bottom: TabBar(
-                  dividerColor: Theme.of(context).colorScheme.outlineVariant,
-                  labelStyle: Theme.of(context).textTheme.titleMedium,
-                  tabs: [
-                    Tab(text: 'For You'),
-                    Tab(text: 'Following'),
-                  ],
-                ),
-              ),
-            ];
-          },
-          body: Stack(
-            children: [
-              TabBarView(
+      child: Stack(
+        children: [
+          DefaultTabController(
+            length: 2,
+            child: NestedScrollView(
+              headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+                return [
+                  CustomAppBar(
+                    user: widget.user,
+                    notifications: widget.notifications,
+                    middle: Image.asset(
+                      'assets/images/shield.png',
+                      width: 50,
+                      height: 50,
+                    ),
+                    bottom: TabBar(
+                      dividerColor: Theme.of(
+                        context,
+                      ).colorScheme.outlineVariant,
+                      labelStyle: Theme.of(context).textTheme.titleMedium,
+                      tabs: [
+                        Tab(text: 'For You'),
+                        Tab(text: 'Following'),
+                      ],
+                    ),
+                  ),
+                ];
+              },
+              body: TabBarView(
                 physics: NeverScrollableScrollPhysics(),
                 children: [ForYouTab(), FollowingTab()],
               ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Container(
-                  margin: EdgeInsets.only(right: 10, bottom: 10),
-                  child: ExpandableFab(distance: 112),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+          if (maskOn)
+            Container(
+              color: Theme.of(context).canvasColor.withValues(alpha: 0.8),
+            ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Container(
+              margin: EdgeInsets.only(right: 10, bottom: 10),
+              child: ExpandableFab(
+                distance: 112,
+                maskToggle: () {
+                  setState(() {
+                    maskOn = !maskOn;
+                  });
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

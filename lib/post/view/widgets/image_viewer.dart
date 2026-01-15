@@ -1,5 +1,6 @@
 import 'package:democracy/post/models/post.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -14,13 +15,10 @@ class ImageViewer extends StatefulWidget {
 }
 
 class _ImageViewerState extends State<ImageViewer> {
-  late PageController pageController;
-  int _activePage = 0;
   bool verticalGallery = false;
 
   @override
   Widget build(BuildContext context) {
-    pageController = PageController(initialPage: _activePage);
     List<String> images = [];
     if (widget.post.image1Url != null) {
       images.add(widget.post.image1Url!);
@@ -34,152 +32,75 @@ class _ImageViewerState extends State<ImageViewer> {
     if (widget.post.image4Url != null) {
       images.add(widget.post.image4Url!);
     }
-    if (widget.post.image5Url != null) {
-      images.add(widget.post.image5Url!);
-    }
-    if (widget.post.image6Url != null) {
-      images.add(widget.post.image6Url!);
-    }
-    List<Widget> pages = List.generate(
-      images.length,
-      (index) => Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: NetworkImage(images[index]),
-            fit: BoxFit.contain,
-          ),
-        ),
-      ),
-    );
     List<GalleryItem> galleryItems = List.generate(
       images.length,
       (index) => GalleryItem(id: index.toString(), resource: images[index]),
     );
-    return GestureDetector(
-      key: ValueKey(widget.post),
-      onTap: () {
-        // open(context, 2);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => GalleryPhotoViewWrapper(
-              galleryItems: galleryItems,
-              backgroundDecoration: BoxDecoration(
-                color: Theme.of(context).canvasColor,
-              ),
-              initialIndex: _activePage,
-              scrollDirection: verticalGallery
-                  ? Axis.vertical
-                  : Axis.horizontal,
-            ),
-          ),
-        );
-      },
-      child: Stack(
-        children: [
-          PageView.builder(
-            controller: pageController,
-            itemCount: images.length,
-            onPageChanged: (value) {
-              setState(() {
-                _activePage = value;
-              });
-            },
-            itemBuilder: (context, index) {
-              return pages[index];
-            },
-          ),
-          Positioned(
-            bottom: 10,
-            left: 0,
-            right: 0,
-            child: Visibility(
-              visible: images.length > 1,
-              child: Container(
-                color: Colors.transparent,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(
-                    images.length,
-                    (index) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                      child: InkWell(
-                        onTap: () {
-                          pageController.animateToPage(
-                            index,
-                            duration: const Duration(milliseconds: 600),
-                            curve: Curves.ease,
-                          );
-                        },
-                        child: CircleAvatar(
-                          radius: _activePage == index ? 4 : 2,
-                          backgroundColor: Colors.white,
-                        ),
-                      ),
+
+    final List<Widget> imageWidgets = images
+        .map(
+          (item) => GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => GalleryPhotoViewWrapper(
+                    galleryItems: galleryItems,
+                    backgroundDecoration: BoxDecoration(
+                      color: Theme.of(context).canvasColor,
                     ),
+                    initialIndex: images.indexOf(item),
+                    scrollDirection: verticalGallery
+                        ? Axis.vertical
+                        : Axis.horizontal,
                   ),
                 ),
-              ),
+              );
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+              child: Image.network(item, fit: BoxFit.cover, width: 1000.0),
             ),
           ),
-          Positioned(
-            right: 0,
-            top: 0,
-            bottom: 0,
-            child: InkWell(
-              onTap: () {
-                pageController.animateToPage(
-                  _activePage + 1,
-                  duration: const Duration(milliseconds: 600),
-                  curve: Curves.ease,
-                );
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      color: (_activePage == images.indexOf(images.last))
-                          ? Theme.of(context).colorScheme.outline
-                          : Colors.white,
-                    ),
-                  ),
-                ],
+        )
+        .toList();
+    return StaggeredGrid.count(
+      crossAxisCount: 4,
+      mainAxisSpacing: 4,
+      crossAxisSpacing: 4,
+      children: imageWidgets.length == 1
+          ? [
+              StaggeredGridTile.count(
+                crossAxisCellCount: 4,
+                mainAxisCellCount: 4,
+                child: imageWidgets[0],
               ),
-            ),
-          ),
-          Positioned(
-            left: 0,
-            top: 0,
-            bottom: 0,
-            child: InkWell(
-              onTap: () {
-                pageController.animateToPage(
-                  _activePage - 1,
-                  duration: const Duration(milliseconds: 600),
-                  curve: Curves.ease,
-                );
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      color: (_activePage == images.indexOf(images.first))
-                          ? Theme.of(context).colorScheme.outline
-                          : Colors.white,
-                    ),
-                  ),
-                ],
+            ]
+          : [
+              StaggeredGridTile.count(
+                crossAxisCellCount: 2,
+                mainAxisCellCount: imageWidgets.length == 3 ? 4 : 2,
+                child: imageWidgets[0],
               ),
-            ),
-          ),
-        ],
-      ),
+              if (imageWidgets.length > 1)
+                StaggeredGridTile.count(
+                  crossAxisCellCount: 2,
+                  mainAxisCellCount: 2,
+                  child: imageWidgets[1],
+                ),
+              if (imageWidgets.length > 2)
+                StaggeredGridTile.count(
+                  crossAxisCellCount: 2,
+                  mainAxisCellCount: 2,
+                  child: imageWidgets[2],
+                ),
+              if (imageWidgets.length > 3)
+                StaggeredGridTile.count(
+                  crossAxisCellCount: 2,
+                  mainAxisCellCount: 2,
+                  child: imageWidgets[3],
+                ),
+            ],
     );
   }
 }
