@@ -39,27 +39,35 @@ class _ImageViewerState extends State<ImageViewer> {
 
     final List<Widget> imageWidgets = images
         .map(
-          (item) => GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => GalleryPhotoViewWrapper(
-                    galleryItems: galleryItems,
-                    backgroundDecoration: BoxDecoration(
-                      color: Theme.of(context).canvasColor,
+          (item) => StaggeredGridTile.count(
+            crossAxisCellCount: images.length == 1 ? 4 : 2,
+            mainAxisCellCount: images.length == 1
+                ? 4
+                : images.length == 3 && images.indexOf(item) == 0
+                ? 4
+                : 2,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => GalleryPhotoViewWrapper(
+                      galleryItems: galleryItems,
+                      backgroundDecoration: BoxDecoration(
+                        color: Theme.of(context).canvasColor,
+                      ),
+                      initialIndex: images.indexOf(item),
+                      scrollDirection: verticalGallery
+                          ? Axis.vertical
+                          : Axis.horizontal,
                     ),
-                    initialIndex: images.indexOf(item),
-                    scrollDirection: verticalGallery
-                        ? Axis.vertical
-                        : Axis.horizontal,
                   ),
-                ),
-              );
-            },
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(5.0)),
-              child: Image.network(item, fit: BoxFit.cover, width: 1000.0),
+                );
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                child: Image.network(item, fit: BoxFit.cover, width: 1000.0),
+              ),
             ),
           ),
         )
@@ -68,39 +76,7 @@ class _ImageViewerState extends State<ImageViewer> {
       crossAxisCount: 4,
       mainAxisSpacing: 4,
       crossAxisSpacing: 4,
-      children: imageWidgets.length == 1
-          ? [
-              StaggeredGridTile.count(
-                crossAxisCellCount: 4,
-                mainAxisCellCount: 4,
-                child: imageWidgets[0],
-              ),
-            ]
-          : [
-              StaggeredGridTile.count(
-                crossAxisCellCount: 2,
-                mainAxisCellCount: imageWidgets.length == 3 ? 4 : 2,
-                child: imageWidgets[0],
-              ),
-              if (imageWidgets.length > 1)
-                StaggeredGridTile.count(
-                  crossAxisCellCount: 2,
-                  mainAxisCellCount: 2,
-                  child: imageWidgets[1],
-                ),
-              if (imageWidgets.length > 2)
-                StaggeredGridTile.count(
-                  crossAxisCellCount: 2,
-                  mainAxisCellCount: 2,
-                  child: imageWidgets[2],
-                ),
-              if (imageWidgets.length > 3)
-                StaggeredGridTile.count(
-                  crossAxisCellCount: 2,
-                  mainAxisCellCount: 2,
-                  child: imageWidgets[3],
-                ),
-            ],
+      children: imageWidgets,
     );
   }
 }
