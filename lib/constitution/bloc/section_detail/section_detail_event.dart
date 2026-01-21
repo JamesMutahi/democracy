@@ -2,18 +2,16 @@ part of 'section_detail_bloc.dart';
 
 @freezed
 sealed class SectionDetailEvent with _$SectionDetailEvent {
-  const factory SectionDetailEvent.created({
-    required Map<String, dynamic> payload,
-  }) = _Created;
+  const factory SectionDetailEvent.load({required String tag}) = _Load;
 
-  const factory SectionDetailEvent.updated({
+  const factory SectionDetailEvent.loaded({
     required Map<String, dynamic> payload,
-  }) = _Updated;
-
-  const factory SectionDetailEvent.deleted({
-    required Map<String, dynamic> payload,
-  }) = _Deleted;
+  }) = _Loaded;
 
   const factory SectionDetailEvent.bookmark({required Section section}) =
       _Bookmark;
+
+  const factory SectionDetailEvent.bookmarked({
+    required Map<String, dynamic> payload,
+  }) = _Bookmarked;
 }

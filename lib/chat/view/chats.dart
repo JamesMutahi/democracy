@@ -1,3 +1,4 @@
+import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
@@ -43,6 +44,15 @@ class _ChatsState extends State<Chats> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
+        BlocListener<WebsocketBloc, WebsocketState>(
+          listener: (context, state) {
+            if (state.status == WebsocketStatus.connected) {
+              context.read<ChatsBloc>().add(
+                ChatsEvent.resubscribe(chats: _chats),
+              );
+            }
+          },
+        ),
         BlocListener<ChatsBloc, ChatsState>(
           listener: (context, state) {
             if (state.status == ChatsStatus.success) {

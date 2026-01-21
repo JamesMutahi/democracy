@@ -35,7 +35,7 @@ class _NotificationsState extends State<Notifications> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Notifications'),
-        actionsPadding: EdgeInsets.only(right: 15),
+        actionsPadding: EdgeInsets.only(right: 10),
         actions: [
           IconButton(
             onPressed: () {

@@ -97,41 +97,46 @@ class _BallotsState extends State<Ballots> {
           },
         ),
       ],
-      child:
-          loading
-              ? BottomLoader()
-              : failure
-              ? FailureRetryButton(
-                onPressed: () {
-                  context.read<BallotsBloc>().add(BallotsEvent.get());
-                },
-              )
-              : SmartRefresher(
-                enablePullDown: true,
-                enablePullUp: hasNextPage,
-                header: ClassicHeader(),
-                controller: _refreshController,
-                onRefresh: () {
-                  context.read<BallotsBloc>().add(BallotsEvent.get());
-                },
-                onLoading: () {
-                  context.read<BallotsBloc>().add(
-                    BallotsEvent.get(lastBallot: _ballots.last),
+      child: loading
+          ? BottomLoader()
+          : failure
+          ? FailureRetryButton(
+              onPressed: () {
+                context.read<BallotsBloc>().add(BallotsEvent.get());
+              },
+            )
+          : SmartRefresher(
+              enablePullDown: true,
+              enablePullUp: hasNextPage,
+              header: ClassicHeader(),
+              controller: _refreshController,
+              onRefresh: () {
+                context.read<BallotsBloc>().add(BallotsEvent.get());
+              },
+              onLoading: () {
+                context.read<BallotsBloc>().add(
+                  BallotsEvent.get(
+                    lastBallot: _ballots.last,
+                    // TODO:
+                    // searchTerm: ,
+                    // startDate: ,
+                    // endDate: ,
+                  ),
+                );
+              },
+              footer: ClassicFooter(),
+              child: ListView.builder(
+                itemBuilder: (BuildContext context, int index) {
+                  Ballot ballot = _ballots[index];
+                  return BallotTile(
+                    key: ValueKey(ballot.id),
+                    ballot: ballot,
+                    isDependency: false,
                   );
                 },
-                footer: ClassicFooter(),
-                child: ListView.builder(
-                  itemBuilder: (BuildContext context, int index) {
-                    Ballot ballot = _ballots[index];
-                    return BallotTile(
-                      key: ValueKey(ballot.id),
-                      ballot: ballot,
-                      isDependency: false,
-                    );
-                  },
-                  itemCount: _ballots.length,
-                ),
+                itemCount: _ballots.length,
               ),
+            ),
     );
   }
 }

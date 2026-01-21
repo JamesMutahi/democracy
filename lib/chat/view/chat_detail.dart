@@ -89,6 +89,15 @@ class _ChatScaffoldState extends State<ChatScaffold> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
+        BlocListener<WebsocketBloc, WebsocketState>(
+          listener: (context, state) {
+            if (state.status == WebsocketStatus.connected) {
+              context.read<UsersBloc>().add(
+                UsersEvent.resubscribe(users: [otherUser]),
+              );
+            }
+          },
+        ),
         BlocListener<MessageActionsCubit, MessageActionsState>(
           listener: (context, state) {
             if (state.status == MessageActionsStatus.actionButtonsOpened) {
@@ -134,15 +143,6 @@ class _ChatScaffoldState extends State<ChatScaffold> {
                   }
                 });
               }
-            }
-          },
-        ),
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state.status == WebsocketStatus.connected) {
-              context.read<UsersBloc>().add(
-                UsersEvent.resubscribe(users: [otherUser]),
-              );
             }
           },
         ),

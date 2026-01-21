@@ -25,7 +25,7 @@ class ExplorePage extends StatefulWidget {
 }
 
 class _ExplorePageState extends State<ExplorePage> {
-  bool loading = true;
+  bool loading = false;
   bool failure = false;
   List<Post> _posts = [];
   bool hasNextPage = false;

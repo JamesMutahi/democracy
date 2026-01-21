@@ -16,53 +16,44 @@ class SectionDetailBloc extends Bloc<SectionDetailEvent, SectionDetailState> {
     webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
         switch (message['payload']['action']) {
-          case 'create':
-            add(_Created(payload: message['payload']));
-          case 'update':
-            add(_Updated(payload: message['payload']));
-          case 'delete':
-            add(_Deleted(payload: message['payload']));
+          case 'retrieve':
+            add(_Loaded(payload: message['payload']));
+          case 'bookmark':
+            add(_Bookmarked(payload: message['payload']));
         }
       }
     });
-    on<_Created>((event, emit) {
-      _onCreated(event, emit);
+    on<_Load>((event, emit) {
+      _onLoad(event, emit);
     });
-    on<_Updated>((event, emit) {
-      _onUpdated(event, emit);
-    });
-    on<_Deleted>((event, emit) {
-      _onDeleted(event, emit);
+    on<_Loaded>((event, emit) {
+      _onLoaded(event, emit);
     });
     on<_Bookmark>((event, emit) {
       _onBookmark(event, emit);
     });
+    on<_Bookmarked>((event, emit) {
+      _onBookmarked(event, emit);
+    });
   }
 
-  Future _onCreated(_Created event, Emitter<SectionDetailState> emit) async {
+  Future _onLoad(_Load event, Emitter<SectionDetailState> emit) async {
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        'action': 'retrieve',
+        'request_id': requestId,
+        'tag': event.tag,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  Future _onLoaded(_Loaded event, Emitter<SectionDetailState> emit) async {
     emit(_Loading());
     if (event.payload['response_status'] == 200) {
       Section section = Section.fromJson(event.payload['data']);
       emit(SectionLoaded(section: section));
-    } else {
-      emit(SectionDetailFailure(error: event.payload['errors'][0]));
-    }
-  }
-
-  Future _onUpdated(_Updated event, Emitter<SectionDetailState> emit) async {
-    emit(_Loading());
-    if (event.payload['response_status'] == 200) {
-      Section section = Section.fromJson(event.payload['data']);
-      emit(SectionUpdated(section: section));
-    } else {
-      emit(SectionDetailFailure(error: event.payload['errors'][0]));
-    }
-  }
-
-  Future _onDeleted(_Deleted event, Emitter<SectionDetailState> emit) async {
-    emit(_Loading());
-    if (event.payload['response_status'] == 204) {
-      emit(SectionDeleted(sectionId: event.payload['pk']));
     } else {
       emit(SectionDetailFailure(error: event.payload['errors'][0]));
     }
@@ -78,6 +69,19 @@ class SectionDetailBloc extends Bloc<SectionDetailEvent, SectionDetailState> {
       },
     };
     webSocketService.send(message);
+  }
+
+  Future _onBookmarked(
+    _Bookmarked event,
+    Emitter<SectionDetailState> emit,
+  ) async {
+    emit(_Loading());
+    if (event.payload['response_status'] == 200) {
+      Section section = Section.fromJson(event.payload['data']);
+      emit(SectionBookmarked(section: section));
+    } else {
+      emit(SectionDetailFailure(error: event.payload['errors'][0]));
+    }
   }
 
   final WebSocketService webSocketService;

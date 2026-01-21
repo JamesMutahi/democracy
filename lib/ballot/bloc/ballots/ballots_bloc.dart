@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/app/utils/transformers.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -22,7 +23,7 @@ class BallotsBloc extends Bloc<BallotsEvent, BallotsState> {
     });
     on<_Get>((event, emit) {
       _onGet(event, emit);
-    });
+    }, transformer: debounce());
     on<_Received>((event, emit) {
       _onReceived(event, emit);
     });

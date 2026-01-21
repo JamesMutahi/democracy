@@ -33,10 +33,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
           elevation: 100.0,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment:
-                ResponsiveBreakpoints.of(context).isMobile
-                    ? MainAxisAlignment.spaceEvenly
-                    : MainAxisAlignment.center,
+            mainAxisAlignment: ResponsiveBreakpoints.of(context).isMobile
+                ? MainAxisAlignment.spaceEvenly
+                : MainAxisAlignment.center,
             children: [
               ...iconDataList.map((iconData) {
                 int index = iconDataList.indexOf(iconData);
@@ -77,19 +76,14 @@ class NavBarItem extends StatelessWidget {
         width: 60,
         child: Padding(
           padding: const EdgeInsets.all(10.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconTheme(
-                data: Theme.of(context).iconTheme.copyWith(
-                  color: Theme.of(context).colorScheme.primary,
-                  fill: isActive ? 1 : 0,
-                  size: 25,
-                  weight: 600,
-                ),
-                child: Icon(iconData),
-              ),
-            ],
+          child: IconTheme(
+            data: Theme.of(context).iconTheme.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+              fill: isActive ? 1 : 0,
+              size: 25,
+              weight: 600,
+            ),
+            child: Icon(iconData),
           ),
         ),
       ),

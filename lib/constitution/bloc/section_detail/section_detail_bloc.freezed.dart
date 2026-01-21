@@ -55,15 +55,14 @@ extension SectionDetailStatePatterns on SectionDetailState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( SectionLoaded value)?  loaded,TResult Function( SectionUpdated value)?  updated,TResult Function( SectionDeleted value)?  deleted,TResult Function( SectionDetailFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( SectionLoaded value)?  loaded,TResult Function( SectionBookmarked value)?  bookmarked,TResult Function( SectionDetailFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
 return loading(_that);case SectionLoaded() when loaded != null:
-return loaded(_that);case SectionUpdated() when updated != null:
-return updated(_that);case SectionDeleted() when deleted != null:
-return deleted(_that);case SectionDetailFailure() when failure != null:
+return loaded(_that);case SectionBookmarked() when bookmarked != null:
+return bookmarked(_that);case SectionDetailFailure() when failure != null:
 return failure(_that);case _:
   return orElse();
 
@@ -82,15 +81,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( SectionLoaded value)  loaded,required TResult Function( SectionUpdated value)  updated,required TResult Function( SectionDeleted value)  deleted,required TResult Function( SectionDetailFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( SectionLoaded value)  loaded,required TResult Function( SectionBookmarked value)  bookmarked,required TResult Function( SectionDetailFailure value)  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial():
 return initial(_that);case _Loading():
 return loading(_that);case SectionLoaded():
-return loaded(_that);case SectionUpdated():
-return updated(_that);case SectionDeleted():
-return deleted(_that);case SectionDetailFailure():
+return loaded(_that);case SectionBookmarked():
+return bookmarked(_that);case SectionDetailFailure():
 return failure(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -108,15 +106,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( SectionLoaded value)?  loaded,TResult? Function( SectionUpdated value)?  updated,TResult? Function( SectionDeleted value)?  deleted,TResult? Function( SectionDetailFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( SectionLoaded value)?  loaded,TResult? Function( SectionBookmarked value)?  bookmarked,TResult? Function( SectionDetailFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
 return loading(_that);case SectionLoaded() when loaded != null:
-return loaded(_that);case SectionUpdated() when updated != null:
-return updated(_that);case SectionDeleted() when deleted != null:
-return deleted(_that);case SectionDetailFailure() when failure != null:
+return loaded(_that);case SectionBookmarked() when bookmarked != null:
+return bookmarked(_that);case SectionDetailFailure() when failure != null:
 return failure(_that);case _:
   return null;
 
@@ -134,14 +131,13 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Section section)?  loaded,TResult Function( Section section)?  updated,TResult Function( int sectionId)?  deleted,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Section section)?  loaded,TResult Function( Section section)?  bookmarked,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case SectionLoaded() when loaded != null:
-return loaded(_that.section);case SectionUpdated() when updated != null:
-return updated(_that.section);case SectionDeleted() when deleted != null:
-return deleted(_that.sectionId);case SectionDetailFailure() when failure != null:
+return loaded(_that.section);case SectionBookmarked() when bookmarked != null:
+return bookmarked(_that.section);case SectionDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return orElse();
 
@@ -160,14 +156,13 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Section section)  loaded,required TResult Function( Section section)  updated,required TResult Function( int sectionId)  deleted,required TResult Function( String error)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Section section)  loaded,required TResult Function( Section section)  bookmarked,required TResult Function( String error)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case SectionLoaded():
-return loaded(_that.section);case SectionUpdated():
-return updated(_that.section);case SectionDeleted():
-return deleted(_that.sectionId);case SectionDetailFailure():
+return loaded(_that.section);case SectionBookmarked():
+return bookmarked(_that.section);case SectionDetailFailure():
 return failure(_that.error);case _:
   throw StateError('Unexpected subclass');
 
@@ -185,14 +180,13 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Section section)?  loaded,TResult? Function( Section section)?  updated,TResult? Function( int sectionId)?  deleted,TResult? Function( String error)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Section section)?  loaded,TResult? Function( Section section)?  bookmarked,TResult? Function( String error)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case SectionLoaded() when loaded != null:
-return loaded(_that.section);case SectionUpdated() when updated != null:
-return updated(_that.section);case SectionDeleted() when deleted != null:
-return deleted(_that.sectionId);case SectionDetailFailure() when failure != null:
+return loaded(_that.section);case SectionBookmarked() when bookmarked != null:
+return bookmarked(_that.section);case SectionDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return null;
 
@@ -343,8 +337,8 @@ $SectionCopyWith<$Res> get section {
 /// @nodoc
 
 
-class SectionUpdated implements SectionDetailState {
-  const SectionUpdated({required this.section});
+class SectionBookmarked implements SectionDetailState {
+  const SectionBookmarked({required this.section});
   
 
  final  Section section;
@@ -353,13 +347,13 @@ class SectionUpdated implements SectionDetailState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$SectionUpdatedCopyWith<SectionUpdated> get copyWith => _$SectionUpdatedCopyWithImpl<SectionUpdated>(this, _$identity);
+$SectionBookmarkedCopyWith<SectionBookmarked> get copyWith => _$SectionBookmarkedCopyWithImpl<SectionBookmarked>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SectionUpdated&&(identical(other.section, section) || other.section == section));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SectionBookmarked&&(identical(other.section, section) || other.section == section));
 }
 
 
@@ -368,15 +362,15 @@ int get hashCode => Object.hash(runtimeType,section);
 
 @override
 String toString() {
-  return 'SectionDetailState.updated(section: $section)';
+  return 'SectionDetailState.bookmarked(section: $section)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $SectionUpdatedCopyWith<$Res> implements $SectionDetailStateCopyWith<$Res> {
-  factory $SectionUpdatedCopyWith(SectionUpdated value, $Res Function(SectionUpdated) _then) = _$SectionUpdatedCopyWithImpl;
+abstract mixin class $SectionBookmarkedCopyWith<$Res> implements $SectionDetailStateCopyWith<$Res> {
+  factory $SectionBookmarkedCopyWith(SectionBookmarked value, $Res Function(SectionBookmarked) _then) = _$SectionBookmarkedCopyWithImpl;
 @useResult
 $Res call({
  Section section
@@ -387,17 +381,17 @@ $SectionCopyWith<$Res> get section;
 
 }
 /// @nodoc
-class _$SectionUpdatedCopyWithImpl<$Res>
-    implements $SectionUpdatedCopyWith<$Res> {
-  _$SectionUpdatedCopyWithImpl(this._self, this._then);
+class _$SectionBookmarkedCopyWithImpl<$Res>
+    implements $SectionBookmarkedCopyWith<$Res> {
+  _$SectionBookmarkedCopyWithImpl(this._self, this._then);
 
-  final SectionUpdated _self;
-  final $Res Function(SectionUpdated) _then;
+  final SectionBookmarked _self;
+  final $Res Function(SectionBookmarked) _then;
 
 /// Create a copy of SectionDetailState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? section = null,}) {
-  return _then(SectionUpdated(
+  return _then(SectionBookmarked(
 section: null == section ? _self.section : section // ignore: cast_nullable_to_non_nullable
 as Section,
   ));
@@ -413,72 +407,6 @@ $SectionCopyWith<$Res> get section {
     return _then(_self.copyWith(section: value));
   });
 }
-}
-
-/// @nodoc
-
-
-class SectionDeleted implements SectionDetailState {
-  const SectionDeleted({required this.sectionId});
-  
-
- final  int sectionId;
-
-/// Create a copy of SectionDetailState
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$SectionDeletedCopyWith<SectionDeleted> get copyWith => _$SectionDeletedCopyWithImpl<SectionDeleted>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SectionDeleted&&(identical(other.sectionId, sectionId) || other.sectionId == sectionId));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,sectionId);
-
-@override
-String toString() {
-  return 'SectionDetailState.deleted(sectionId: $sectionId)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $SectionDeletedCopyWith<$Res> implements $SectionDetailStateCopyWith<$Res> {
-  factory $SectionDeletedCopyWith(SectionDeleted value, $Res Function(SectionDeleted) _then) = _$SectionDeletedCopyWithImpl;
-@useResult
-$Res call({
- int sectionId
-});
-
-
-
-
-}
-/// @nodoc
-class _$SectionDeletedCopyWithImpl<$Res>
-    implements $SectionDeletedCopyWith<$Res> {
-  _$SectionDeletedCopyWithImpl(this._self, this._then);
-
-  final SectionDeleted _self;
-  final $Res Function(SectionDeleted) _then;
-
-/// Create a copy of SectionDetailState
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? sectionId = null,}) {
-  return _then(SectionDeleted(
-sectionId: null == sectionId ? _self.sectionId : sectionId // ignore: cast_nullable_to_non_nullable
-as int,
-  ));
-}
-
-
 }
 
 /// @nodoc
@@ -591,14 +519,14 @@ extension SectionDetailEventPatterns on SectionDetailEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Bookmark value)?  bookmark,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Load value)?  load,TResult Function( _Loaded value)?  loaded,TResult Function( _Bookmark value)?  bookmark,TResult Function( _Bookmarked value)?  bookmarked,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _Created() when created != null:
-return created(_that);case _Updated() when updated != null:
-return updated(_that);case _Deleted() when deleted != null:
-return deleted(_that);case _Bookmark() when bookmark != null:
-return bookmark(_that);case _:
+case _Load() when load != null:
+return load(_that);case _Loaded() when loaded != null:
+return loaded(_that);case _Bookmark() when bookmark != null:
+return bookmark(_that);case _Bookmarked() when bookmarked != null:
+return bookmarked(_that);case _:
   return orElse();
 
 }
@@ -616,14 +544,14 @@ return bookmark(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Bookmark value)  bookmark,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Load value)  load,required TResult Function( _Loaded value)  loaded,required TResult Function( _Bookmark value)  bookmark,required TResult Function( _Bookmarked value)  bookmarked,}){
 final _that = this;
 switch (_that) {
-case _Created():
-return created(_that);case _Updated():
-return updated(_that);case _Deleted():
-return deleted(_that);case _Bookmark():
-return bookmark(_that);}
+case _Load():
+return load(_that);case _Loaded():
+return loaded(_that);case _Bookmark():
+return bookmark(_that);case _Bookmarked():
+return bookmarked(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -637,14 +565,14 @@ return bookmark(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Bookmark value)?  bookmark,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Load value)?  load,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Bookmark value)?  bookmark,TResult? Function( _Bookmarked value)?  bookmarked,}){
 final _that = this;
 switch (_that) {
-case _Created() when created != null:
-return created(_that);case _Updated() when updated != null:
-return updated(_that);case _Deleted() when deleted != null:
-return deleted(_that);case _Bookmark() when bookmark != null:
-return bookmark(_that);case _:
+case _Load() when load != null:
+return load(_that);case _Loaded() when loaded != null:
+return loaded(_that);case _Bookmark() when bookmark != null:
+return bookmark(_that);case _Bookmarked() when bookmarked != null:
+return bookmarked(_that);case _:
   return null;
 
 }
@@ -661,13 +589,13 @@ return bookmark(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Section section)?  bookmark,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String tag)?  load,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Section section)?  bookmark,TResult Function( Map<String, dynamic> payload)?  bookmarked,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _Created() when created != null:
-return created(_that.payload);case _Updated() when updated != null:
-return updated(_that.payload);case _Deleted() when deleted != null:
-return deleted(_that.payload);case _Bookmark() when bookmark != null:
-return bookmark(_that.section);case _:
+case _Load() when load != null:
+return load(_that.tag);case _Loaded() when loaded != null:
+return loaded(_that.payload);case _Bookmark() when bookmark != null:
+return bookmark(_that.section);case _Bookmarked() when bookmarked != null:
+return bookmarked(_that.payload);case _:
   return orElse();
 
 }
@@ -685,13 +613,13 @@ return bookmark(_that.section);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Section section)  bookmark,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String tag)  load,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Section section)  bookmark,required TResult Function( Map<String, dynamic> payload)  bookmarked,}) {final _that = this;
 switch (_that) {
-case _Created():
-return created(_that.payload);case _Updated():
-return updated(_that.payload);case _Deleted():
-return deleted(_that.payload);case _Bookmark():
-return bookmark(_that.section);}
+case _Load():
+return load(_that.tag);case _Loaded():
+return loaded(_that.payload);case _Bookmark():
+return bookmark(_that.section);case _Bookmarked():
+return bookmarked(_that.payload);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -705,13 +633,13 @@ return bookmark(_that.section);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Section section)?  bookmark,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String tag)?  load,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Section section)?  bookmark,TResult? Function( Map<String, dynamic> payload)?  bookmarked,}) {final _that = this;
 switch (_that) {
-case _Created() when created != null:
-return created(_that.payload);case _Updated() when updated != null:
-return updated(_that.payload);case _Deleted() when deleted != null:
-return deleted(_that.payload);case _Bookmark() when bookmark != null:
-return bookmark(_that.section);case _:
+case _Load() when load != null:
+return load(_that.tag);case _Loaded() when loaded != null:
+return loaded(_that.payload);case _Bookmark() when bookmark != null:
+return bookmark(_that.section);case _Bookmarked() when bookmarked != null:
+return bookmarked(_that.payload);case _:
   return null;
 
 }
@@ -722,49 +650,43 @@ return bookmark(_that.section);case _:
 /// @nodoc
 
 
-class _Created implements SectionDetailEvent {
-  const _Created({required final  Map<String, dynamic> payload}): _payload = payload;
+class _Load implements SectionDetailEvent {
+  const _Load({required this.tag});
   
 
- final  Map<String, dynamic> _payload;
- Map<String, dynamic> get payload {
-  if (_payload is EqualUnmodifiableMapView) return _payload;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_payload);
-}
-
+ final  String tag;
 
 /// Create a copy of SectionDetailEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$CreatedCopyWith<_Created> get copyWith => __$CreatedCopyWithImpl<_Created>(this, _$identity);
+_$LoadCopyWith<_Load> get copyWith => __$LoadCopyWithImpl<_Load>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Created&&const DeepCollectionEquality().equals(other._payload, _payload));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Load&&(identical(other.tag, tag) || other.tag == tag));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
+int get hashCode => Object.hash(runtimeType,tag);
 
 @override
 String toString() {
-  return 'SectionDetailEvent.created(payload: $payload)';
+  return 'SectionDetailEvent.load(tag: $tag)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$CreatedCopyWith<$Res> implements $SectionDetailEventCopyWith<$Res> {
-  factory _$CreatedCopyWith(_Created value, $Res Function(_Created) _then) = __$CreatedCopyWithImpl;
+abstract mixin class _$LoadCopyWith<$Res> implements $SectionDetailEventCopyWith<$Res> {
+  factory _$LoadCopyWith(_Load value, $Res Function(_Load) _then) = __$LoadCopyWithImpl;
 @useResult
 $Res call({
- Map<String, dynamic> payload
+ String tag
 });
 
 
@@ -772,19 +694,19 @@ $Res call({
 
 }
 /// @nodoc
-class __$CreatedCopyWithImpl<$Res>
-    implements _$CreatedCopyWith<$Res> {
-  __$CreatedCopyWithImpl(this._self, this._then);
+class __$LoadCopyWithImpl<$Res>
+    implements _$LoadCopyWith<$Res> {
+  __$LoadCopyWithImpl(this._self, this._then);
 
-  final _Created _self;
-  final $Res Function(_Created) _then;
+  final _Load _self;
+  final $Res Function(_Load) _then;
 
 /// Create a copy of SectionDetailEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
-  return _then(_Created(
-payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>,
+@pragma('vm:prefer-inline') $Res call({Object? tag = null,}) {
+  return _then(_Load(
+tag: null == tag ? _self.tag : tag // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 
@@ -794,8 +716,8 @@ as Map<String, dynamic>,
 /// @nodoc
 
 
-class _Updated implements SectionDetailEvent {
-  const _Updated({required final  Map<String, dynamic> payload}): _payload = payload;
+class _Loaded implements SectionDetailEvent {
+  const _Loaded({required final  Map<String, dynamic> payload}): _payload = payload;
   
 
  final  Map<String, dynamic> _payload;
@@ -810,13 +732,13 @@ class _Updated implements SectionDetailEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$UpdatedCopyWith<_Updated> get copyWith => __$UpdatedCopyWithImpl<_Updated>(this, _$identity);
+_$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Updated&&const DeepCollectionEquality().equals(other._payload, _payload));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&const DeepCollectionEquality().equals(other._payload, _payload));
 }
 
 
@@ -825,15 +747,15 @@ int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(
 
 @override
 String toString() {
-  return 'SectionDetailEvent.updated(payload: $payload)';
+  return 'SectionDetailEvent.loaded(payload: $payload)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$UpdatedCopyWith<$Res> implements $SectionDetailEventCopyWith<$Res> {
-  factory _$UpdatedCopyWith(_Updated value, $Res Function(_Updated) _then) = __$UpdatedCopyWithImpl;
+abstract mixin class _$LoadedCopyWith<$Res> implements $SectionDetailEventCopyWith<$Res> {
+  factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
 @useResult
 $Res call({
  Map<String, dynamic> payload
@@ -844,89 +766,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$UpdatedCopyWithImpl<$Res>
-    implements _$UpdatedCopyWith<$Res> {
-  __$UpdatedCopyWithImpl(this._self, this._then);
+class __$LoadedCopyWithImpl<$Res>
+    implements _$LoadedCopyWith<$Res> {
+  __$LoadedCopyWithImpl(this._self, this._then);
 
-  final _Updated _self;
-  final $Res Function(_Updated) _then;
-
-/// Create a copy of SectionDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
-  return _then(_Updated(
-payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class _Deleted implements SectionDetailEvent {
-  const _Deleted({required final  Map<String, dynamic> payload}): _payload = payload;
-  
-
- final  Map<String, dynamic> _payload;
- Map<String, dynamic> get payload {
-  if (_payload is EqualUnmodifiableMapView) return _payload;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_payload);
-}
-
-
-/// Create a copy of SectionDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$DeletedCopyWith<_Deleted> get copyWith => __$DeletedCopyWithImpl<_Deleted>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Deleted&&const DeepCollectionEquality().equals(other._payload, _payload));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
-
-@override
-String toString() {
-  return 'SectionDetailEvent.deleted(payload: $payload)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$DeletedCopyWith<$Res> implements $SectionDetailEventCopyWith<$Res> {
-  factory _$DeletedCopyWith(_Deleted value, $Res Function(_Deleted) _then) = __$DeletedCopyWithImpl;
-@useResult
-$Res call({
- Map<String, dynamic> payload
-});
-
-
-
-
-}
-/// @nodoc
-class __$DeletedCopyWithImpl<$Res>
-    implements _$DeletedCopyWith<$Res> {
-  __$DeletedCopyWithImpl(this._self, this._then);
-
-  final _Deleted _self;
-  final $Res Function(_Deleted) _then;
+  final _Loaded _self;
+  final $Res Function(_Loaded) _then;
 
 /// Create a copy of SectionDetailEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
-  return _then(_Deleted(
+  return _then(_Loaded(
 payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>,
   ));
@@ -1008,6 +858,78 @@ $SectionCopyWith<$Res> get section {
     return _then(_self.copyWith(section: value));
   });
 }
+}
+
+/// @nodoc
+
+
+class _Bookmarked implements SectionDetailEvent {
+  const _Bookmarked({required final  Map<String, dynamic> payload}): _payload = payload;
+  
+
+ final  Map<String, dynamic> _payload;
+ Map<String, dynamic> get payload {
+  if (_payload is EqualUnmodifiableMapView) return _payload;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_payload);
+}
+
+
+/// Create a copy of SectionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$BookmarkedCopyWith<_Bookmarked> get copyWith => __$BookmarkedCopyWithImpl<_Bookmarked>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Bookmarked&&const DeepCollectionEquality().equals(other._payload, _payload));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
+
+@override
+String toString() {
+  return 'SectionDetailEvent.bookmarked(payload: $payload)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$BookmarkedCopyWith<$Res> implements $SectionDetailEventCopyWith<$Res> {
+  factory _$BookmarkedCopyWith(_Bookmarked value, $Res Function(_Bookmarked) _then) = __$BookmarkedCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, dynamic> payload
+});
+
+
+
+
+}
+/// @nodoc
+class __$BookmarkedCopyWithImpl<$Res>
+    implements _$BookmarkedCopyWith<$Res> {
+  __$BookmarkedCopyWithImpl(this._self, this._then);
+
+  final _Bookmarked _self;
+  final $Res Function(_Bookmarked) _then;
+
+/// Create a copy of SectionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
+  return _then(_Bookmarked(
+payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
+  ));
+}
+
+
 }
 
 // dart format on

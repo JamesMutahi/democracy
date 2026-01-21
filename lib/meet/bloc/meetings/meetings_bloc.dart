@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/app/utils/transformers.dart';
 import 'package:democracy/meet/models/meeting.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -23,7 +24,7 @@ class MeetingsBloc extends Bloc<MeetingsEvent, MeetingsState> {
     });
     on<_Get>((event, emit) {
       _onGet(event, emit);
-    });
+    }, transformer: debounce());
     on<_Received>((event, emit) {
       _onReceived(event, emit);
     });
@@ -57,8 +58,9 @@ class MeetingsBloc extends Bloc<MeetingsEvent, MeetingsState> {
       emit(
         state.copyWith(
           status: MeetingsStatus.success,
-          meetings:
-              lastBallot == null ? meetings : [...state.meetings, ...meetings],
+          meetings: lastBallot == null
+              ? meetings
+              : [...state.meetings, ...meetings],
           hasNext: event.payload['data']['has_next'],
         ),
       );

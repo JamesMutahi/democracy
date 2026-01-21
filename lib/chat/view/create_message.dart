@@ -16,7 +16,7 @@ class CreateMessage extends StatefulWidget {
 }
 
 class _CreateMessageState extends State<CreateMessage> {
-  TextEditingController controller = TextEditingController();
+  TextEditingController _controller = TextEditingController();
   bool loading = true;
   bool failure = false;
   List<User> _users = [];
@@ -41,11 +41,10 @@ class _CreateMessageState extends State<CreateMessage> {
               Navigator.pop(context);
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder:
-                      (context) => ChatDetail(
-                        key: ValueKey(state.chat.id),
-                        chat: state.chat,
-                      ),
+                  builder: (context) => ChatDetail(
+                    key: ValueKey(state.chat.id),
+                    chat: state.chat,
+                  ),
                 ),
               );
             }
@@ -110,9 +109,10 @@ class _CreateMessageState extends State<CreateMessage> {
                 ),
               ),
               child: TextFormField(
+                controller: _controller,
                 onChanged: (value) {
                   context.read<UsersBloc>().add(
-                    UsersEvent.get(searchTerm: value, lastUser: _users.last),
+                    UsersEvent.get(searchTerm: value),
                   );
                 },
                 onTapOutside: (event) {
@@ -147,7 +147,7 @@ class _CreateMessageState extends State<CreateMessage> {
                 onLoading: () {
                   context.read<UsersBloc>().add(
                     UsersEvent.get(
-                      searchTerm: controller.text,
+                      searchTerm: _controller.text,
                       lastUser: _users.last,
                     ),
                   );
