@@ -105,48 +105,50 @@ class _PetitionsState extends State<Petitions> {
           },
         ),
       ],
-      child:
-          loading
-              ? BottomLoader()
-              : failure
-              ? FailureRetryButton(
-                onPressed: () {
-                  context.read<PetitionsBloc>().add(PetitionsEvent.get());
-                },
-              )
-              : SmartRefresher(
-                enablePullDown: true,
-                enablePullUp: hasNextPage,
-                header: ClassicHeader(),
-                controller: _refreshController,
-                onRefresh: () {
-                  context.read<PetitionsBloc>().add(PetitionsEvent.get());
-                },
-                onLoading: () {
-                  context.read<PetitionsBloc>().add(
-                    PetitionsEvent.get(lastPetition: _petitions.last),
+      child: loading
+          ? BottomLoader()
+          : failure
+          ? FailureRetryButton(
+              onPressed: () {
+                context.read<PetitionsBloc>().add(PetitionsEvent.get());
+              },
+            )
+          : SmartRefresher(
+              enablePullDown: true,
+              enablePullUp: hasNextPage,
+              header: ClassicHeader(),
+              controller: _refreshController,
+              onRefresh: () {
+                context.read<PetitionsBloc>().add(PetitionsEvent.get());
+              },
+              onLoading: () {
+                context.read<PetitionsBloc>().add(
+                  PetitionsEvent.get(lastPetition: _petitions.last,
+                  // TODO:
+                  // searchTerm: ,
+                  //   startDate: ,
+                  //   endDate: ,
+                  ),
+                );
+              },
+              footer: ClassicFooter(),
+              child: ListView.builder(
+                padding: EdgeInsets.all(15),
+                itemBuilder: (BuildContext context, int index) {
+                  Petition petition = _petitions[index];
+                  return Column(
+                    children: [
+                      PetitionTile(
+                        key: ValueKey(petition.id),
+                        petition: petition,
+                        isDependency: false,
+                      ),
+                    ],
                   );
                 },
-                footer: ClassicFooter(),
-                child: ListView.builder(
-                  itemBuilder: (BuildContext context, int index) {
-                    Petition petition = _petitions[index];
-                    return Column(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(top: 10),
-                          child: PetitionTile(
-                            key: ValueKey(petition.id),
-                            petition: petition,
-                            isDependency: false,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                  itemCount: _petitions.length,
-                ),
+                itemCount: _petitions.length,
               ),
+            ),
     );
   }
 }

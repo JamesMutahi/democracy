@@ -21,9 +21,14 @@ class MeetingsPage extends StatefulWidget {
   State<MeetingsPage> createState() => _MeetingsPageState();
 }
 
-class _MeetingsPageState extends State<MeetingsPage> {
+class _MeetingsPageState extends State<MeetingsPage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return NestedScrollView(
       headerSliverBuilder: (context, bool innerBoxIsScrolled) {
         return [

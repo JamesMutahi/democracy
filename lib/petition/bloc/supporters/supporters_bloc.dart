@@ -35,6 +35,7 @@ class SupportersBloc extends Bloc<SupportersEvent, SupportersState> {
       'payload': {
         'action': action,
         'request_id': requestId,
+        'pk': event.petition.id,
         'last_user': event.lastUser?.id,
       },
     };

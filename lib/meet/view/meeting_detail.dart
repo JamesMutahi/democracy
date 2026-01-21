@@ -110,10 +110,10 @@ class ListenersRow extends StatelessWidget {
                   left: meeting.recentListeners.indexOf(user) * 15,
                 ),
                 child: CircleAvatar(
-                  radius: 15,
+                  radius: 17,
                   backgroundColor: Theme.of(context).cardColor,
                   child: CircleAvatar(
-                    radius: 13,
+                    radius: 15,
                     child: Container(
                       decoration: BoxDecoration(
                         image: DecorationImage(

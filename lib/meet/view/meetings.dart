@@ -133,6 +133,7 @@ class _MeetingsState extends State<Meetings> {
                 },
                 footer: ClassicFooter(),
                 child: ListView.builder(
+                  padding: EdgeInsets.all(15),
                   itemBuilder: (BuildContext context, int index) {
                     Meeting meeting = _meetings[index];
                     return MeetingTile(

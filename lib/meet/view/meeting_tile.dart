@@ -21,7 +21,7 @@ class MeetingTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: () {
         showModalBottomSheet<void>(
           context: context,
@@ -34,33 +34,58 @@ class MeetingTile extends StatelessWidget {
       child: Stack(
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
             decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color:
-                      isDependency
-                          ? Colors.transparent
-                          : Theme.of(context).disabledColor.withAlpha(30),
-                ),
-              ),
+              color: Theme.of(
+                context,
+              ).colorScheme.secondaryContainer.withValues(alpha: 0.7),
+              borderRadius: const BorderRadius.all(Radius.circular(12)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Icon(Icons.mic_rounded),
-                    SizedBox(width: 5),
-                    Text('LIVE'),
-                  ],
+                Container(
+                  padding: EdgeInsets.only(
+                    left: 15,
+                    right: 15,
+                    top: 15,
+                    bottom: 10,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.mic_rounded),
+                          SizedBox(width: 5),
+                          Text(
+                            'LIVE',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        meeting.title,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      if (!isDependency) SizedBox(height: 10),
+                      if (!isDependency) ListenersRow(meeting: meeting),
+                    ],
+                  ),
                 ),
-                SizedBox(height: 5),
-                Text(meeting.title),
-                SizedBox(height: 5),
-                if (!isDependency) ListenersRow(meeting: meeting),
-                if (!isDependency) HostInfo(meeting: meeting),
+                if (!isDependency)
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.secondaryContainer,
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(12),
+                        bottomRight: Radius.circular(12),
+                      ),
+                    ),
+                    child: _HostInfo(meeting: meeting),
+                  ),
               ],
             ),
           ),
@@ -107,30 +132,41 @@ class MeetingPopUp extends StatelessWidget {
   }
 }
 
-class HostInfo extends StatelessWidget {
-  const HostInfo({super.key, required this.meeting});
+class _HostInfo extends StatelessWidget {
+  const _HostInfo({required this.meeting});
 
   final Meeting meeting;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(8),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 5),
-          Row(
-            children: [
-              ProfileImage(user: meeting.host),
-              ProfileName(user: meeting.host),
-            ],
-          ),
-          SizedBox(height: 5),
-          Text(meeting.host.bio, maxLines: 2, overflow: TextOverflow.ellipsis),
-        ],
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 5),
+        Row(
+          children: [
+            ProfileImage(user: meeting.host),
+            SizedBox(width: 5),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ProfileName(user: meeting.host),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.tertiaryContainer,
+                    borderRadius: const BorderRadius.all(Radius.circular(5)),
+                  ),
+                  child: Text('Host'),
+                ),
+              ],
+            ),
+          ],
+        ),
+        SizedBox(height: 5),
+        Text(meeting.host.bio, maxLines: 2, overflow: TextOverflow.ellipsis),
+      ],
     );
   }
 }
@@ -162,7 +198,7 @@ class MeetingBottomSheet extends StatelessWidget {
           Text(meeting.description),
           SizedBox(height: 5),
           ListenersRow(meeting: meeting),
-          HostInfo(meeting: meeting),
+          _HostInfo(meeting: meeting),
           SizedBox(height: 5),
           OutlinedButton(
             onPressed: () {

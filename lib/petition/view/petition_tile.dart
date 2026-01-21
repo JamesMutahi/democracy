@@ -3,6 +3,8 @@ import 'package:democracy/app/utils/more_pop_up.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_detail.dart';
 import 'package:democracy/post/view/post_create.dart';
+import 'package:democracy/user/view/widgets/profile_image.dart';
+import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -26,74 +28,53 @@ class PetitionTile extends StatelessWidget {
           ),
         );
       },
-      child: Container(
-        height: 130,
-        decoration:
-            isDependency
-                ? BoxDecoration()
-                : BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  borderRadius: const BorderRadius.all(Radius.circular(12)),
-                ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Flexible(
-              flex: 4,
-              child: Container(
-                width: 130,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    bottomLeft: Radius.circular(12),
-                  ),
-                  image: DecorationImage(
-                    image: NetworkImage(petition.image),
-                    fit: BoxFit.cover,
-                  ),
-                ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 200,
+            decoration: BoxDecoration(
+              color: Theme.of(
+                context,
+              ).colorScheme.primaryContainer.withValues(alpha: 0.7),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12),
+                topRight: Radius.circular(12),
+              ),
+              image: DecorationImage(
+                image: NetworkImage(petition.image),
+                fit: BoxFit.cover,
               ),
             ),
-            const SizedBox(width: 10),
-            Flexible(
-              flex: 9,
-              child: Stack(
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(right: isDependency ? 0 : 40),
-                        padding: EdgeInsets.only(
-                          left: 10,
-                          top: 10,
-                          bottom: 10,
-                          right: isDependency ? 10 : 0,
-                        ),
-                        child: Text(
-                          petition.title,
-                          maxLines: 3,
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(overflow: TextOverflow.ellipsis),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      if (petition.supporters > 0)
-                        PetitionSupportersRow(petition: petition),
-                    ],
-                  ),
-                  if (!isDependency)
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: PetitionPopUpMenu(petition: petition),
-                    ),
-                ],
+          ),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.secondaryContainer,
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(12),
+                bottomRight: Radius.circular(12),
               ),
             ),
-          ],
-        ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  petition.title,
+                  maxLines: 3,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                if (!isDependency) SizedBox(height: 10),
+                if (!isDependency) PetitionAuthorInfo(petition: petition),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -118,10 +99,10 @@ class PetitionSupportersRow extends StatelessWidget {
                   left: petition.recentSupporters.indexOf(user) * 15,
                 ),
                 child: CircleAvatar(
-                  radius: 15,
+                  radius: 17,
                   backgroundColor: Theme.of(context).cardColor,
                   child: CircleAvatar(
-                    radius: 13,
+                    radius: 15,
                     child: Container(
                       decoration: BoxDecoration(
                         image: DecorationImage(
@@ -174,6 +155,36 @@ class PetitionPopUpMenu extends StatelessWidget {
         }
       },
       texts: ['Post', 'Share'],
+    );
+  }
+}
+
+class PetitionAuthorInfo extends StatelessWidget {
+  const PetitionAuthorInfo({super.key, required this.petition});
+
+  final Petition petition;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        ProfileImage(user: petition.author),
+        SizedBox(width: 5),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ProfileName(user: petition.author),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.tertiaryContainer,
+                borderRadius: const BorderRadius.all(Radius.circular(5)),
+              ),
+              child: Text('Author'),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

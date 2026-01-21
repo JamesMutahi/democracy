@@ -162,61 +162,64 @@ class _ChatsState extends State<Chats> {
           },
         ),
       ],
-      child:
-          loading
-              ? BottomLoader()
-              : failure
-              ? FailureRetryButton(
-                onPressed: () {
-                  context.read<ChatsBloc>().add(ChatsEvent.get());
-                },
-              )
-              : BlocBuilder<AuthBloc, AuthState>(
-                builder: (context, state) {
-                  late User currentUser;
-                  if (state is Authenticated) {
-                    currentUser = state.user;
-                  }
-                  return SmartRefresher(
-                    enablePullDown: true,
-                    enablePullUp: hasNextPage,
-                    header: ClassicHeader(),
-                    controller: _refreshController,
-                    onRefresh: () {
-                      context.read<ChatsBloc>().add(ChatsEvent.get());
-                    },
-                    onLoading: () {
-                      context.read<ChatsBloc>().add(
-                        ChatsEvent.get(lastChat: _chats.last),
+      child: loading
+          ? BottomLoader()
+          : failure
+          ? FailureRetryButton(
+              onPressed: () {
+                context.read<ChatsBloc>().add(ChatsEvent.get());
+              },
+            )
+          : BlocBuilder<AuthBloc, AuthState>(
+              builder: (context, state) {
+                late User currentUser;
+                if (state is Authenticated) {
+                  currentUser = state.user;
+                }
+                return SmartRefresher(
+                  enablePullDown: true,
+                  enablePullUp: hasNextPage,
+                  header: ClassicHeader(),
+                  controller: _refreshController,
+                  onRefresh: () {
+                    context.read<ChatsBloc>().add(ChatsEvent.get());
+                  },
+                  onLoading: () {
+                    context.read<ChatsBloc>().add(
+                      ChatsEvent.get(
+                        lastChat: _chats.last,
+                        // TODO:
+                        // searchTerm: ,
+                      ),
+                    );
+                  },
+                  footer: ClassicFooter(),
+                  child: ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemBuilder: (BuildContext context, int index) {
+                      Chat chat = _chats[index];
+                      User otherUser = currentUser;
+                      if (chat.users.length > 1) {
+                        otherUser = chat.users.firstWhere(
+                          (u) => u.id != currentUser.id,
+                        );
+                      }
+                      return Visibility(
+                        visible: chat.lastMessage != null,
+                        child: ChatTile(
+                          key: ValueKey(chat.id),
+                          chat: chat,
+                          currentUser: currentUser,
+                          otherUser: otherUser,
+                        ),
                       );
                     },
-                    footer: ClassicFooter(),
-                    child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemBuilder: (BuildContext context, int index) {
-                        Chat chat = _chats[index];
-                        User otherUser = currentUser;
-                        if (chat.users.length > 1) {
-                          otherUser = chat.users.firstWhere(
-                            (u) => u.id != currentUser.id,
-                          );
-                        }
-                        return Visibility(
-                          visible: chat.lastMessage != null,
-                          child: ChatTile(
-                            key: ValueKey(chat.id),
-                            chat: chat,
-                            currentUser: currentUser,
-                            otherUser: otherUser,
-                          ),
-                        );
-                      },
-                      itemCount: _chats.length,
-                    ),
-                  );
-                },
-              ),
+                    itemCount: _chats.length,
+                  ),
+                );
+              },
+            ),
     );
   }
 }
@@ -242,8 +245,8 @@ class _ChatTileState extends State<ChatTile> {
   Widget build(BuildContext context) {
     String lastMessagePrefix =
         widget.chat.lastMessage?.user.id == widget.currentUser.id
-            ? 'You: '
-            : '';
+        ? 'You: '
+        : '';
     return ListTile(
       leading: ProfileImage(user: widget.otherUser, navigateToProfile: true),
       title: ProfileName(user: widget.otherUser),
@@ -256,8 +259,8 @@ class _ChatTileState extends State<ChatTile> {
               ? Text('')
               : widget.chat.lastMessage!.text.isNotEmpty
               ? _LastMessageText(
-                text: '$lastMessagePrefix${widget.chat.lastMessage!.text}',
-              )
+                  text: '$lastMessagePrefix${widget.chat.lastMessage!.text}',
+                )
               : widget.chat.lastMessage!.post != null
               ? _LastMessageText(text: '${lastMessagePrefix}Shared a post')
               : widget.chat.lastMessage!.ballot != null
@@ -297,11 +300,8 @@ class _ChatTileState extends State<ChatTile> {
         }
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder:
-                (context) => ChatDetail(
-                  key: ValueKey(widget.chat.id),
-                  chat: widget.chat,
-                ),
+            builder: (context) =>
+                ChatDetail(key: ValueKey(widget.chat.id), chat: widget.chat),
           ),
         );
       },
