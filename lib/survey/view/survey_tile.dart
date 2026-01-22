@@ -3,7 +3,8 @@ import 'package:democracy/app/utils/more_pop_up.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart' show TimeLeft;
 import 'package:democracy/post/view/post_create.dart';
 import 'package:democracy/survey/models/survey.dart';
-import 'package:democracy/survey/view/survey_detail.dart';
+import 'package:democracy/survey/view/survey_process/page.dart';
+import 'package:democracy/survey/view/survey_process/response_page.dart';
 import 'package:flutter/material.dart';
 
 class SurveyTile extends StatelessWidget {
@@ -20,24 +21,23 @@ class SurveyTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => SurveyDetail(survey: survey)),
+        showModalBottomSheet<void>(
+          context: context,
+          shape: const BeveledRectangleBorder(),
+          builder: (BuildContext context) {
+            return SurveyBottomSheet(survey: survey);
+          },
         );
       },
       child: Stack(
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color:
-                      isDependency
-                          ? Colors.transparent
-                          : Theme.of(context).disabledColor.withAlpha(30),
-                ),
-              ),
+              color: isDependency
+                  ? Colors.transparent
+                  : Theme.of(context).colorScheme.tertiaryContainer,
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -47,7 +47,7 @@ class SurveyTile extends StatelessWidget {
                   margin: EdgeInsets.only(right: isDependency ? 0 : 20),
                   child: Text(
                     survey.title,
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
                 SizedBox(height: 5),
@@ -110,6 +110,72 @@ class SurveyPopUpMenu extends StatelessWidget {
         }
       },
       texts: ['Post', 'Share'],
+    );
+  }
+}
+
+class SurveyBottomSheet extends StatelessWidget {
+  const SurveyBottomSheet({super.key, required this.survey});
+
+  final Survey survey;
+
+  @override
+  Widget build(BuildContext context) {
+    bool alreadyResponded = survey.response != null;
+    return CustomBottomSheet(
+      title: survey.title,
+      children: [
+        Text(survey.description),
+        SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TimeLeft(
+              key: ValueKey(survey),
+              startTime: survey.startTime,
+              endTime: survey.endTime,
+            ),
+            Text(
+              '${survey.totalResponses} ${survey.totalResponses == 1 ? 'response' : 'responses'}',
+              style: TextStyle(color: Theme.of(context).disabledColor),
+            ),
+          ],
+        ),
+        SizedBox(height: 5),
+        Row(
+          mainAxisAlignment: alreadyResponded
+              ? MainAxisAlignment.spaceBetween
+              : MainAxisAlignment.end,
+          children: [
+            OutlinedButton(
+              onPressed: survey.isActive
+                  ? () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              SurveyProcessPage(survey: survey),
+                        ),
+                      );
+                    }
+                  : null,
+              child: Text('Submit response'),
+            ),
+            if (alreadyResponded)
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ResponsePage(survey: survey),
+                    ),
+                  );
+                },
+                child: Text('View response'),
+              ),
+          ],
+        ),
+      ],
     );
   }
 }

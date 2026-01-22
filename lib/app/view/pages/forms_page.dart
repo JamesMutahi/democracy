@@ -23,12 +23,10 @@ class FormsPage extends StatefulWidget {
 }
 
 class _FormsPageState extends State<FormsPage>
-    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
-  @override
-  bool get wantKeepAlive => true;
-
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _surveyController = TextEditingController();
+  final TextEditingController _petitionController = TextEditingController();
 
   @override
   void initState() {
@@ -56,7 +54,6 @@ class _FormsPageState extends State<FormsPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return DefaultTabController(
       length: 2,
       child: NestedScrollView(
@@ -81,7 +78,10 @@ class _FormsPageState extends State<FormsPage>
                         Tab(text: 'Petitions'),
                       ],
                     ),
-                    FormsSearchBar(controller: _searchController),
+                    FormsSearchBar(
+                      surveyController: _surveyController,
+                      petitionController: _petitionController,
+                    ),
                   ],
                 ),
               ),
@@ -99,9 +99,14 @@ class _FormsPageState extends State<FormsPage>
 }
 
 class FormsSearchBar extends StatelessWidget {
-  const FormsSearchBar({super.key, required this.controller});
+  const FormsSearchBar({
+    super.key,
+    required this.surveyController,
+    required this.petitionController,
+  });
 
-  final TextEditingController controller;
+  final TextEditingController surveyController;
+  final TextEditingController petitionController;
 
   @override
   Widget build(BuildContext context) {
@@ -109,10 +114,10 @@ class FormsSearchBar extends StatelessWidget {
       builder: (context, state) {
         return switch (state.status) {
           FormsTabBarStatus.onSurveys => _SurveysSearchBar(
-            controller: controller,
+            controller: surveyController,
           ),
           FormsTabBarStatus.onPetitions => _PetitionsSearchBar(
-            controller: controller,
+            controller: petitionController,
           ),
         };
       },

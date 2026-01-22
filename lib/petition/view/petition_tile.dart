@@ -35,9 +35,9 @@ class PetitionTile extends StatelessWidget {
           Container(
             height: 200,
             decoration: BoxDecoration(
-              color: Theme.of(
-                context,
-              ).colorScheme.primaryContainer.withValues(alpha: 0.7),
+              color: isDependency
+                  ? Colors.transparent
+                  : Theme.of(context).colorScheme.tertiaryContainer,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(12),
                 topRight: Radius.circular(12),
@@ -52,7 +52,9 @@ class PetitionTile extends StatelessWidget {
             width: double.infinity,
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.secondaryContainer,
+              color: isDependency
+                  ? Colors.transparent
+                  : Theme.of(context).colorScheme.tertiaryContainer,
               borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(12),
                 bottomRight: Radius.circular(12),

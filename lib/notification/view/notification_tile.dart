@@ -1,10 +1,11 @@
 import 'package:democracy/ballot/view/ballot_detail.dart';
 import 'package:democracy/chat/view/chat_detail.dart';
+import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/petition/view/petition_detail.dart';
 import 'package:democracy/post/view/post_detail.dart';
-import 'package:democracy/survey/view/survey_detail.dart';
+import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
@@ -46,10 +47,9 @@ class NotificationTile extends StatelessWidget {
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
-      trailing:
-          notification.isRead
-              ? SizedBox()
-              : Icon(Icons.circle_rounded, size: 7, color: Colors.green),
+      trailing: notification.isRead
+          ? SizedBox()
+          : Icon(Icons.circle_rounded, size: 7, color: Colors.green),
       onTap: () {
         context.read<NotificationDetailBloc>().add(
           NotificationDetailEvent.markAsRead(notification: notification),
@@ -60,16 +60,23 @@ class NotificationTile extends StatelessWidget {
               notification.post!.repostOf != null;
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder:
-                  (context) => PostDetail(
-                    post:
-                        showAsRepost
-                            ? notification.post!.repostOf!
-                            : notification.post!,
-                    showAsRepost: showAsRepost,
-                    repost: notification.post!,
-                  ),
+              builder: (context) => PostDetail(
+                post: showAsRepost
+                    ? notification.post!.repostOf!
+                    : notification.post!,
+                showAsRepost: showAsRepost,
+                repost: notification.post!,
+              ),
             ),
+          );
+        }
+        if (notification.meeting != null) {
+          showModalBottomSheet<void>(
+            context: context,
+            shape: const BeveledRectangleBorder(),
+            builder: (BuildContext context) {
+              return MeetingBottomSheet(meeting: notification.meeting!);
+            },
           );
         }
         if (notification.ballot != null) {
@@ -80,17 +87,19 @@ class NotificationTile extends StatelessWidget {
           );
         }
         if (notification.survey != null) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => SurveyDetail(survey: notification.survey!),
-            ),
+          showModalBottomSheet<void>(
+            context: context,
+            shape: const BeveledRectangleBorder(),
+            builder: (BuildContext context) {
+              return SurveyBottomSheet(survey: notification.survey!);
+            },
           );
         }
         if (notification.petition != null) {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder:
-                  (context) => PetitionDetail(petition: notification.petition!),
+              builder: (context) =>
+                  PetitionDetail(petition: notification.petition!),
             ),
           );
         }

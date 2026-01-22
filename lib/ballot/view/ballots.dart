@@ -126,12 +126,16 @@ class _BallotsState extends State<Ballots> {
               },
               footer: ClassicFooter(),
               child: ListView.builder(
+                padding: EdgeInsets.all(15),
                 itemBuilder: (BuildContext context, int index) {
                   Ballot ballot = _ballots[index];
-                  return BallotTile(
-                    key: ValueKey(ballot.id),
-                    ballot: ballot,
-                    isDependency: false,
+                  return Container(
+                    margin: EdgeInsets.only(bottom: 10),
+                    child: BallotTile(
+                      key: ValueKey(ballot.id),
+                      ballot: ballot,
+                      isDependency: false,
+                    ),
                   );
                 },
                 itemCount: _ballots.length,

@@ -16,7 +16,10 @@ class Surveys extends StatefulWidget {
   State<Surveys> createState() => _SurveysState();
 }
 
-class _SurveysState extends State<Surveys> {
+class _SurveysState extends State<Surveys> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   bool loading = true;
   bool failure = false;
   List<Survey> _surveys = [];
@@ -33,6 +36,7 @@ class _SurveysState extends State<Surveys> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return MultiBlocListener(
       listeners: [
         BlocListener<SurveysBloc, SurveysState>(
@@ -135,12 +139,16 @@ class _SurveysState extends State<Surveys> {
                 },
                 footer: ClassicFooter(),
                 child: ListView.builder(
+                  padding: EdgeInsets.all(15),
                   itemBuilder: (BuildContext context, int index) {
                     Survey survey = _surveys[index];
-                    return SurveyTile(
-                      key: ValueKey(survey.id),
-                      survey: survey,
-                      isDependency: false,
+                    return Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      child: SurveyTile(
+                        key: ValueKey(survey.id),
+                        survey: survey,
+                        isDependency: false,
+                      ),
                     );
                   },
                   itemCount: _surveys.length,

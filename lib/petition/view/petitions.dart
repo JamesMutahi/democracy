@@ -16,7 +16,11 @@ class Petitions extends StatefulWidget {
   State<Petitions> createState() => _PetitionsState();
 }
 
-class _PetitionsState extends State<Petitions> {
+class _PetitionsState extends State<Petitions>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   bool loading = true;
   bool failure = false;
   List<Petition> _petitions = [];
@@ -33,6 +37,7 @@ class _PetitionsState extends State<Petitions> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return MultiBlocListener(
       listeners: [
         BlocListener<WebsocketBloc, WebsocketState>(
@@ -123,11 +128,12 @@ class _PetitionsState extends State<Petitions> {
               },
               onLoading: () {
                 context.read<PetitionsBloc>().add(
-                  PetitionsEvent.get(lastPetition: _petitions.last,
-                  // TODO:
-                  // searchTerm: ,
-                  //   startDate: ,
-                  //   endDate: ,
+                  PetitionsEvent.get(
+                    lastPetition: _petitions.last,
+                    // TODO:
+                    // searchTerm: ,
+                    //   startDate: ,
+                    //   endDate: ,
                   ),
                 );
               },
@@ -136,14 +142,13 @@ class _PetitionsState extends State<Petitions> {
                 padding: EdgeInsets.all(15),
                 itemBuilder: (BuildContext context, int index) {
                   Petition petition = _petitions[index];
-                  return Column(
-                    children: [
-                      PetitionTile(
-                        key: ValueKey(petition.id),
-                        petition: petition,
-                        isDependency: false,
-                      ),
-                    ],
+                  return Container(
+                    margin: EdgeInsets.only(bottom: 10),
+                    child: PetitionTile(
+                      key: ValueKey(petition.id),
+                      petition: petition,
+                      isDependency: false,
+                    ),
                   );
                 },
                 itemCount: _petitions.length,

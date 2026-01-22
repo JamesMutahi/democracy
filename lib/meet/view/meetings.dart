@@ -136,10 +136,13 @@ class _MeetingsState extends State<Meetings> {
                   padding: EdgeInsets.all(15),
                   itemBuilder: (BuildContext context, int index) {
                     Meeting meeting = _meetings[index];
-                    return MeetingTile(
-                      key: ValueKey(meeting.id),
-                      meeting: meeting,
-                      isDependency: false,
+                    return Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      child: MeetingTile(
+                        key: ValueKey(meeting.id),
+                        meeting: meeting,
+                        isDependency: false,
+                      ),
                     );
                   },
                   itemCount: _meetings.length,

@@ -4,6 +4,7 @@ import 'package:democracy/meet/bloc/meeting_detail/meeting_detail_bloc.dart';
 import 'package:democracy/meet/models/meeting.dart';
 import 'package:democracy/meet/view/meeting_detail.dart';
 import 'package:democracy/post/view/post_create.dart';
+import 'package:democracy/user/view/profile.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
@@ -35,9 +36,6 @@ class MeetingTile extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: Theme.of(
-                context,
-              ).colorScheme.secondaryContainer.withValues(alpha: 0.7),
               borderRadius: const BorderRadius.all(Radius.circular(12)),
             ),
             child: Column(
@@ -50,6 +48,15 @@ class MeetingTile extends StatelessWidget {
                     right: 15,
                     top: 15,
                     bottom: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isDependency
+                        ? Colors.transparent
+                        : Theme.of(context).colorScheme.tertiaryContainer,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(12),
+                      topRight: Radius.circular(12),
+                    ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,9 +83,11 @@ class MeetingTile extends StatelessWidget {
                 ),
                 if (!isDependency)
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondaryContainer,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.tertiaryContainer.withValues(alpha: 0.6),
                       borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(12),
                         bottomRight: Radius.circular(12),
@@ -165,7 +174,8 @@ class _HostInfo extends StatelessWidget {
           ],
         ),
         SizedBox(height: 5),
-        Text(meeting.host.bio, maxLines: 2, overflow: TextOverflow.ellipsis),
+        if (meeting.host.bio.isNotEmpty)
+          Text(meeting.host.bio, maxLines: 2, overflow: TextOverflow.ellipsis),
       ],
     );
   }
@@ -191,22 +201,34 @@ class MeetingBottomSheet extends StatelessWidget {
         }
       },
       child: CustomBottomSheet(
-        title: 'Meeting',
+        title: meeting.title,
         children: [
-          Text(meeting.title, style: Theme.of(context).textTheme.titleMedium),
-          SizedBox(height: 5),
           Text(meeting.description),
           SizedBox(height: 5),
-          ListenersRow(meeting: meeting),
-          _HostInfo(meeting: meeting),
-          SizedBox(height: 5),
-          OutlinedButton(
-            onPressed: () {
-              context.read<MeetingDetailBloc>().add(
-                MeetingDetailEvent.join(meeting: meeting),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfilePage(user: meeting.host),
+                ),
               );
             },
-            child: Text('Join'),
+            child: _HostInfo(meeting: meeting),
+          ),
+          SizedBox(height: 5),
+          ListenersRow(meeting: meeting),
+          SizedBox(height: 5),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: OutlinedButton(
+              onPressed: () {
+                context.read<MeetingDetailBloc>().add(
+                  MeetingDetailEvent.join(meeting: meeting),
+                );
+              },
+              child: Text('Join'),
+            ),
           ),
         ],
       ),

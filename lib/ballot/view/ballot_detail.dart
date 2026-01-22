@@ -61,7 +61,6 @@ class _BallotDetailState extends State<BallotDetail> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     TimeLeft(
-                      key: UniqueKey(),
                       startTime: _ballot.startTime,
                       endTime: _ballot.endTime,
                     ),
@@ -80,7 +79,7 @@ class _BallotDetailState extends State<BallotDetail> {
                     bottom: 5,
                   ),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).splashColor,
+                    color: Theme.of(context).colorScheme.tertiaryContainer,
                     borderRadius: BorderRadius.all(const Radius.circular(8)),
                   ),
                   child: Column(
@@ -167,7 +166,7 @@ class OptionTile extends StatelessWidget {
     double optionHeight = 40;
     return Container(
       key: UniqueKey(),
-      margin: EdgeInsets.symmetric(vertical: 10),
+      margin: EdgeInsets.symmetric(vertical: 5),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(8),
@@ -175,9 +174,7 @@ class OptionTile extends StatelessWidget {
           height: optionHeight,
           padding: EdgeInsets.all(9),
           decoration: BoxDecoration(
-            color: Theme.of(context).canvasColor,
-            border: Border.all(color: Colors.black, width: 1),
-            borderRadius: BorderRadius.circular(5),
+            color: Theme.of(context).colorScheme.secondaryContainer,
           ),
           child: Center(child: Text(option.text)),
         ),

@@ -51,7 +51,7 @@ class CustomBottomSheet extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(title, style: Theme.of(context).textTheme.titleMedium),
+                    Text(title, style: Theme.of(context).textTheme.titleLarge),
                     IconButton(
                       onPressed: () => Navigator.pop(context),
                       icon: Icon(Symbols.close),
@@ -95,11 +95,15 @@ class ShareBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomBottomSheet(
-      title: post == null
-          ? ballot == null
-                ? 'Share survey'
-                : 'Share ballot'
-          : 'Share post',
+      title: post != null
+          ? 'Share post'
+          : ballot != null
+          ? 'Share ballot'
+          : survey != null
+          ? 'Share survey'
+          : meeting != null
+          ? 'Share meeting'
+          : 'Share',
       children: [
         CustomBottomSheetContainer(
           text: 'Send via Direct Message',

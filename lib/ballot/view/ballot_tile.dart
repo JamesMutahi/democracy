@@ -24,7 +24,7 @@ class BallotTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
@@ -34,16 +34,12 @@ class BallotTile extends StatelessWidget {
       child: Stack(
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color:
-                      isDependency
-                          ? Colors.transparent
-                          : Theme.of(context).disabledColor.withAlpha(30),
-                ),
-              ),
+              color: isDependency
+                  ? Colors.transparent
+                  : Theme.of(context).colorScheme.tertiaryContainer,
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -53,7 +49,7 @@ class BallotTile extends StatelessWidget {
                   margin: EdgeInsets.only(right: isDependency ? 0 : 20),
                   child: Text(
                     ballot.title,
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
                 SizedBox(height: 5),
@@ -144,10 +140,11 @@ class BallotPercentIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double optionHeight = 40;
-    double percent =
-        ballot.totalVotes == 0 ? 0 : option.votes / ballot.totalVotes;
+    double percent = ballot.totalVotes == 0
+        ? 0
+        : option.votes / ballot.totalVotes;
     return Container(
-      margin: EdgeInsets.only(bottom: 8),
+      margin: EdgeInsets.symmetric(vertical: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(const Radius.circular(8)),
       ),
@@ -160,17 +157,12 @@ class BallotPercentIndicator extends StatelessWidget {
         animateFromLastPercent: true,
         animateToInitialPercent: animateToInitialPercent,
         animationDuration: 500,
-        backgroundColor: Theme.of(
-          context,
-        ).colorScheme.secondaryFixedDim.withValues(alpha: 0.3),
-        progressColor:
-            ballot.totalVotes == 0
-                ? Theme.of(
-                  context,
-                ).colorScheme.primaryFixedDim.withValues(alpha: 0.0)
-                : Theme.of(context).colorScheme.primaryFixedDim.withValues(
-                  alpha: (option.votes / ballot.totalVotes) / 2,
-                ),
+        backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+        progressColor: ballot.totalVotes == 0
+            ? Colors.blue.withValues(alpha: 0.0)
+            : Colors.blue.withValues(
+                alpha: (option.votes / ballot.totalVotes) / 2,
+              ),
         center: Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -301,10 +293,9 @@ class _TimeLeftState extends State<TimeLeft> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment:
-          widget.alignCenter
-              ? MainAxisAlignment.center
-              : MainAxisAlignment.start,
+      mainAxisAlignment: widget.alignCenter
+          ? MainAxisAlignment.center
+          : MainAxisAlignment.start,
       children: [
         Row(
           children: [
