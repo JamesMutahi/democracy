@@ -10,6 +10,7 @@ _Section _$SectionFromJson(Map<String, dynamic> json) => _Section(
   id: (json['id'] as num).toInt(),
   position: (json['position'] as num).toInt(),
   tag: json['tag'] as String?,
+  numeral: json['numeral'] as String,
   text: json['text'] as String,
   isTitle: json['is_title'] as bool,
   subsections: (json['subsections'] as List<dynamic>)
@@ -22,6 +23,7 @@ Map<String, dynamic> _$SectionToJson(_Section instance) => <String, dynamic>{
   'id': instance.id,
   'position': instance.position,
   'tag': instance.tag,
+  'numeral': instance.numeral,
   'text': instance.text,
   'is_title': instance.isTitle,
   'subsections': instance.subsections,

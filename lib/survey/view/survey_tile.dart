@@ -143,27 +143,25 @@ class SurveyBottomSheet extends StatelessWidget {
         ),
         SizedBox(height: 5),
         Row(
-          mainAxisAlignment: alreadyResponded
-              ? MainAxisAlignment.spaceBetween
-              : MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            OutlinedButton(
-              onPressed: survey.isActive
-                  ? () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              SurveyProcessPage(survey: survey),
-                        ),
-                      );
-                    }
-                  : null,
-              child: Text('Submit response'),
-            ),
+            if (survey.isActive)
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SurveyProcessPage(survey: survey),
+                    ),
+                  );
+                },
+                child: Text('Submit response'),
+              ),
             if (alreadyResponded)
               OutlinedButton(
                 onPressed: () {
+                  Navigator.pop(context);
                   Navigator.push(
                     context,
                     MaterialPageRoute(

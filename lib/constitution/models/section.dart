@@ -9,6 +9,7 @@ sealed class Section with _$Section {
     required final int id,
     required final int position,
     required final String? tag,
+    required final String numeral,
     required final String text,
     @JsonKey(name: 'is_title') required final bool isTitle,
     required final List<Section> subsections,

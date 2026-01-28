@@ -12,9 +12,26 @@ class SectionTile extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        section.isTitle
-            ? Text(section.text, style: Theme.of(context).textTheme.titleMedium)
-            : Text(section.text),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (section.numeral.isNotEmpty)
+              Text(
+                '${section.numeral} ',
+                style: section.isTitle
+                    ? Theme.of(context).textTheme.titleMedium
+                    : null,
+              ),
+            Expanded(
+              child: Text(
+                '${section.text} ',
+                style: section.isTitle
+                    ? Theme.of(context).textTheme.titleMedium
+                    : null,
+              ),
+            ),
+          ],
+        ),
         ListView.builder(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
@@ -22,6 +39,7 @@ class SectionTile extends StatelessWidget {
             Section subsection = section.subsections[index];
             return Container(
               margin: EdgeInsets.only(top: 10),
+              padding: EdgeInsets.only(left: section.isTitle ? 0 : 15),
               child: SectionTile(
                 key: ValueKey(subsection.id),
                 section: subsection,
