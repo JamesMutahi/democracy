@@ -3,6 +3,7 @@ import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
+import 'package:democracy/post/bloc/views_counter/views_counter_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/community_note_detail.dart';
 import 'package:democracy/post/view/post_detail.dart';
@@ -22,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 class PostTile extends StatelessWidget {
   const PostTile({
@@ -56,76 +58,90 @@ class PostTile extends StatelessWidget {
     }
     return Visibility(
       visible: visible,
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: isDependency || hideBorder
-                ? BorderSide.none
-                : BorderSide(
-                    color: Theme.of(context).disabledColor.withAlpha(30),
-                  ),
-          ),
-        ),
-        child: Column(
-          children: [
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      if (showAsRepost) {
-                        return post.repostOf!.communityNoteOf == null
-                            ? PostDetail(
-                                key: ValueKey(post.id),
-                                post: post.repostOf!,
-                                showAsRepost: true,
-                                repost: post,
-                              )
-                            : CommunityNoteDetail(
-                                communityNote: post.repostOf!,
-                                showAsRepost: true,
-                                repost: post,
-                              );
-                      } else {
-                        return PostDetail(
-                          key: ValueKey(post.id),
-                          post: post,
-                          showAsRepost: false,
-                          repost: post,
-                        );
-                      }
-                    },
-                  ),
-                );
-              },
-              child: showAsRepost
-                  ? Column(
-                      children: [
-                        _repostBanner(),
-                        PostWidgetSelector(
-                          post: post.repostOf!,
-                          isDependency: false,
-                        ),
-                      ],
-                    )
-                  : Stack(
-                      children: [
-                        ThreadLine(
-                          showBottomThread: showBottomThread,
-                          showTopThread: showTopThread,
-                        ),
-                        _PostContainer(post: post, isDependency: isDependency),
-                      ],
+      child: VisibilityDetector(
+        key: Key('${post.id}'),
+        onVisibilityChanged: (visibilityInfo) {
+          var visibilityPercentage = visibilityInfo.visibleFraction * 100;
+          if (visibilityPercentage == 100) {
+            context.read<ViewsCounterBloc>().add(
+              ViewsCounterEvent.viewed(post: post),
+            );
+          }
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: isDependency || hideBorder
+                  ? BorderSide.none
+                  : BorderSide(
+                      color: Theme.of(context).disabledColor.withAlpha(30),
                     ),
             ),
-            if (showThreadedReplies)
-              Thread(
-                key: ValueKey(post.id),
-                post: post,
-                showWholeThread: showWholeThread,
+          ),
+          child: Column(
+            children: [
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        if (showAsRepost) {
+                          return post.repostOf!.communityNoteOf == null
+                              ? PostDetail(
+                                  key: ValueKey(post.id),
+                                  post: post.repostOf!,
+                                  showAsRepost: true,
+                                  repost: post,
+                                )
+                              : CommunityNoteDetail(
+                                  communityNote: post.repostOf!,
+                                  showAsRepost: true,
+                                  repost: post,
+                                );
+                        } else {
+                          return PostDetail(
+                            key: ValueKey(post.id),
+                            post: post,
+                            showAsRepost: false,
+                            repost: post,
+                          );
+                        }
+                      },
+                    ),
+                  );
+                },
+                child: showAsRepost
+                    ? Column(
+                        children: [
+                          _repostBanner(),
+                          PostWidgetSelector(
+                            post: post.repostOf!,
+                            isDependency: false,
+                          ),
+                        ],
+                      )
+                    : Stack(
+                        children: [
+                          ThreadLine(
+                            showBottomThread: showBottomThread,
+                            showTopThread: showTopThread,
+                          ),
+                          _PostContainer(
+                            post: post,
+                            isDependency: isDependency,
+                          ),
+                        ],
+                      ),
               ),
-          ],
+              if (showThreadedReplies)
+                Thread(
+                  key: ValueKey(post.id),
+                  post: post,
+                  showWholeThread: showWholeThread,
+                ),
+            ],
+          ),
         ),
       ),
     );
