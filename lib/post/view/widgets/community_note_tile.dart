@@ -184,6 +184,7 @@ class CommunityNoteTile extends StatelessWidget {
                                     PostBody(
                                       post: communityNote,
                                       showWholeText: showWholeText,
+                                      isDependency: isDependency,
                                     ),
                                     SizedBox(height: 5),
                                   ],

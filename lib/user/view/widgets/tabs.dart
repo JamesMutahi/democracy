@@ -2,7 +2,6 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
-import 'package:democracy/petition/bloc/petitions/petitions_bloc.dart';
 import 'package:democracy/petition/bloc/user_petitions/user_petitions_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
@@ -461,7 +460,10 @@ class _UserCommunityNotesState extends State<UserCommunityNotes> {
           },
           onLoading: () {
             context.read<UserCommunityNotesBloc>().add(
-              UserCommunityNotesEvent.get(user: widget.user, lastPost: _posts.last),
+              UserCommunityNotesEvent.get(
+                user: widget.user,
+                lastPost: _posts.last,
+              ),
             );
           },
           onFailure: () {
@@ -520,19 +522,21 @@ class _UserPetitionsState extends State<UserPetitions> {
         BlocListener<UserPetitionsBloc, UserPetitionsState>(
           listener: (context, state) {
             if (state.status == UserPetitionsStatus.success) {
-              setState(() {
-                loading = false;
-                failure = false;
-                _petitions = state.petitions;
-                hasNextPage = state.hasNext;
-                if (_refreshController.headerStatus ==
-                    RefreshStatus.refreshing) {
-                  _refreshController.refreshCompleted();
-                }
-                if (_refreshController.footerStatus == LoadStatus.loading) {
-                  _refreshController.loadComplete();
-                }
-              });
+              if (widget.user.id == state.userId) {
+                setState(() {
+                  _petitions = state.petitions.toList();
+                  loading = false;
+                  failure = false;
+                  hasNextPage = state.hasNext;
+                  if (_refreshController.headerStatus ==
+                      RefreshStatus.refreshing) {
+                    _refreshController.refreshCompleted();
+                  }
+                  if (_refreshController.footerStatus == LoadStatus.loading) {
+                    _refreshController.loadComplete();
+                  }
+                });
+              }
             }
             if (state.status == UserPetitionsStatus.failure) {
               if (loading) {
@@ -578,59 +582,66 @@ class _UserPetitionsState extends State<UserPetitions> {
           },
         ),
       ],
-      child:
-          loading
-              ? BottomLoader()
-              : failure
-              ? FailureRetryButton(
-                onPressed: () {
-                  context.read<PetitionsBloc>().add(PetitionsEvent.get());
-                },
-              )
-              : PopScope(
-                canPop: true,
-                onPopInvokedWithResult: (_, __) {
+      child: loading
+          ? BottomLoader()
+          : failure
+          ? FailureRetryButton(
+              onPressed: () {
+                context.read<UserPetitionsBloc>().add(
+                  UserPetitionsEvent.get(user: widget.user),
+                );
+              },
+            )
+          : PopScope(
+              canPop: true,
+              onPopInvokedWithResult: (_, __) {
+                context.read<UserPetitionsBloc>().add(
+                  UserPetitionsEvent.unsubscribe(
+                    user: widget.user,
+                    petitions: _petitions,
+                  ),
+                );
+              },
+              child: SmartRefresher(
+                enablePullDown: true,
+                enablePullUp: hasNextPage,
+                header: ClassicHeader(),
+                controller: _refreshController,
+                onRefresh: () {
                   context.read<UserPetitionsBloc>().add(
-                    UserPetitionsEvent.unsubscribe(
+                    UserPetitionsEvent.get(user: widget.user),
+                  );
+                },
+                onLoading: () {
+                  context.read<UserPetitionsBloc>().add(
+                    UserPetitionsEvent.get(
                       user: widget.user,
-                      petitions: _petitions,
+                      lastPetition: _petitions.last,
                     ),
                   );
                 },
-                child: SmartRefresher(
-                  enablePullDown: true,
-                  enablePullUp: hasNextPage,
-                  header: ClassicHeader(),
-                  controller: _refreshController,
-                  onRefresh: () {
-                    context.read<PetitionsBloc>().add(PetitionsEvent.get());
-                  },
-                  onLoading: () {
-                    context.read<PetitionsBloc>().add(
-                      PetitionsEvent.get(lastPetition: _petitions.last),
+                footer: ClassicFooter(),
+                child: ListView.builder(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  itemBuilder: (BuildContext context, int index) {
+                    Petition petition = _petitions[index];
+                    return Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(top: 10),
+                          child: PetitionTile(
+                            key: ValueKey(petition.id),
+                            petition: petition,
+                            isDependency: false,
+                          ),
+                        ),
+                      ],
                     );
                   },
-                  footer: ClassicFooter(),
-                  child: ListView.builder(
-                    itemBuilder: (BuildContext context, int index) {
-                      Petition petition = _petitions[index];
-                      return Column(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(top: 10),
-                            child: PetitionTile(
-                              key: ValueKey(petition.id),
-                              petition: petition,
-                              isDependency: false,
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                    itemCount: _petitions.length,
-                  ),
+                  itemCount: _petitions.length,
                 ),
               ),
+            ),
     );
   }
 }

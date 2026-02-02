@@ -223,7 +223,7 @@ class _PostContainer extends StatelessWidget {
                                 ),
                             ],
                           ),
-                          PostBody(post: post),
+                          PostBody(post: post, isDependency: isDependency),
                           SizedBox(height: 5),
                           if (post.image1Url != null)
                             Column(
