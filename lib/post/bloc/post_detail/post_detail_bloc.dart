@@ -59,6 +59,9 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     on<_Update>((event, emit) {
       _onUpdate(event, emit);
     });
+    on<_Viewed>((event, emit) {
+      _onViewed(event, emit);
+    });
     on<_Like>((event, emit) {
       _onLike(event, emit);
     });
@@ -200,6 +203,18 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
               : 'draft',
           'tags': event.tags,
         },
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  Future _onViewed(_Viewed event, Emitter<PostDetailState> emit) async {
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        "action": 'add_view',
+        "request_id": requestId,
+        'pk': event.post.id,
       },
     };
     webSocketService.send(message);

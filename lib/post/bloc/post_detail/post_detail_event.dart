@@ -44,6 +44,8 @@ sealed class PostDetailEvent with _$PostDetailEvent {
     required List<Map> tags,
   }) = _Update;
 
+  const factory PostDetailEvent.viewed({required Post post}) = _Viewed;
+
   const factory PostDetailEvent.like({required Post post}) = _Like;
 
   const factory PostDetailEvent.bookmark({required Post post}) = _Bookmark;

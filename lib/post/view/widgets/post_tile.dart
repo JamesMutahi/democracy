@@ -3,7 +3,7 @@ import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
-import 'package:democracy/post/bloc/views_counter/views_counter_bloc.dart';
+import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/community_note_detail.dart';
 import 'package:democracy/post/view/post_detail.dart';
@@ -62,9 +62,9 @@ class PostTile extends StatelessWidget {
         key: Key('${post.id}'),
         onVisibilityChanged: (visibilityInfo) {
           var visibilityPercentage = visibilityInfo.visibleFraction * 100;
-          if (visibilityPercentage == 100) {
-            context.read<ViewsCounterBloc>().add(
-              ViewsCounterEvent.viewed(post: post),
+          if (visibilityPercentage > 75 && !post.isViewed) {
+            context.read<PostDetailBloc>().add(
+              PostDetailEvent.viewed(post: post),
             );
           }
         },

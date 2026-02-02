@@ -1,5 +1,4 @@
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
-import 'package:democracy/post/bloc/views_counter/views_counter_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/community_note_detail.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
@@ -54,9 +53,9 @@ class CommunityNoteTile extends StatelessWidget {
         key: Key('${communityNote.id}'),
         onVisibilityChanged: (visibilityInfo) {
           var visibilityPercentage = visibilityInfo.visibleFraction * 100;
-          if (visibilityPercentage == 100) {
-            context.read<ViewsCounterBloc>().add(
-              ViewsCounterEvent.viewed(post: communityNote),
+          if (visibilityPercentage > 75 && !communityNote.isViewed) {
+            context.read<PostDetailBloc>().add(
+              PostDetailEvent.viewed(post: communityNote),
             );
           }
         },
