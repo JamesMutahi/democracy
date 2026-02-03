@@ -20,6 +20,9 @@ User user1 = User(
   hasBlocked: false,
   isFollowed: false,
   isNotifying: false,
+  county: null,
+  constituency: null,
+  ward: null,
 );
 
 User user2 = User(
@@ -42,4 +45,7 @@ User user2 = User(
   hasBlocked: false,
   isFollowed: false,
   isNotifying: false,
+  county: null,
+  constituency: null,
+  ward: null,
 );

@@ -175,6 +175,7 @@ class OptionTile extends StatelessWidget {
           padding: EdgeInsets.all(9),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.secondaryContainer,
+            borderRadius: BorderRadius.all(const Radius.circular(8)),
           ),
           child: Center(child: Text(option.text)),
         ),

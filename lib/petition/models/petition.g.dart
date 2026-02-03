@@ -11,6 +11,15 @@ _Petition _$PetitionFromJson(Map<String, dynamic> json) => _Petition(
   author: User.fromJson(json['author'] as Map<String, dynamic>),
   title: json['title'] as String,
   description: json['description'] as String,
+  county: json['county'] == null
+      ? null
+      : County.fromJson(json['county'] as Map<String, dynamic>),
+  constituency: json['constituency'] == null
+      ? null
+      : Constituency.fromJson(json['constituency'] as Map<String, dynamic>),
+  ward: json['ward'] == null
+      ? null
+      : Ward.fromJson(json['ward'] as Map<String, dynamic>),
   image: json['image'] as String,
   video: json['video'] as String?,
   supporters: (json['supporters'] as num).toInt(),
@@ -27,6 +36,9 @@ Map<String, dynamic> _$PetitionToJson(_Petition instance) => <String, dynamic>{
   'author': instance.author,
   'title': instance.title,
   'description': instance.description,
+  'county': instance.county,
+  'constituency': instance.constituency,
+  'ward': instance.ward,
   'image': instance.image,
   'video': instance.video,
   'supporters': instance.supporters,

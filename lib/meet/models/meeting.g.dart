@@ -11,6 +11,15 @@ _Meeting _$MeetingFromJson(Map<String, dynamic> json) => _Meeting(
   host: User.fromJson(json['host'] as Map<String, dynamic>),
   title: json['title'] as String,
   description: json['description'] as String,
+  county: json['county'] == null
+      ? null
+      : County.fromJson(json['county'] as Map<String, dynamic>),
+  constituency: json['constituency'] == null
+      ? null
+      : Constituency.fromJson(json['constituency'] as Map<String, dynamic>),
+  ward: json['ward'] == null
+      ? null
+      : Ward.fromJson(json['ward'] as Map<String, dynamic>),
   recentListeners: (json['recent_listeners'] as List<dynamic>)
       .map((e) => User.fromJson(e as Map<String, dynamic>))
       .toList(),
@@ -25,6 +34,9 @@ Map<String, dynamic> _$MeetingToJson(_Meeting instance) => <String, dynamic>{
   'host': instance.host,
   'title': instance.title,
   'description': instance.description,
+  'county': instance.county,
+  'constituency': instance.constituency,
+  'ward': instance.ward,
   'recent_listeners': instance.recentListeners,
   'listeners': instance.listeners,
   'is_active': instance.isActive,

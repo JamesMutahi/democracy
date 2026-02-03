@@ -1,3 +1,6 @@
+import 'package:democracy/geo/models/constituency.dart';
+import 'package:democracy/geo/models/county.dart';
+import 'package:democracy/geo/models/ward.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -11,6 +14,9 @@ sealed class Meeting with _$Meeting {
     required User host,
     required String title,
     required String description,
+    required County? county,
+    required Constituency? constituency,
+    required Ward? ward,
     @JsonKey(name: 'recent_listeners') required List<User> recentListeners,
     required int listeners,
     @JsonKey(name: 'is_active') required bool isActive,

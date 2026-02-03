@@ -1,3 +1,6 @@
+import 'package:democracy/geo/models/constituency.dart';
+import 'package:democracy/geo/models/county.dart';
+import 'package:democracy/geo/models/ward.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'user.freezed.dart';
@@ -13,6 +16,9 @@ sealed class User with _$User {
     required String image,
     @JsonKey(name: 'cover_photo') required String coverPhoto,
     required String bio,
+    required County? county,
+    required Constituency? constituency,
+    required Ward? ward,
     required List<int> muted,
     required List<int> blocked,
     required int following,

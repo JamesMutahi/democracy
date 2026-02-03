@@ -116,6 +116,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           bookmarks: event.payload['data']['bookmarks'],
           isBookmarked: event.payload['data']['is_bookmarked'],
           views: event.payload['data']['views'],
+          isViewed: event.payload['data']['is_viewed'],
           replies: event.payload['data']['replies'],
           reposts: event.payload['data']['reposts'],
           upvotes: event.payload['data']['upvotes'],

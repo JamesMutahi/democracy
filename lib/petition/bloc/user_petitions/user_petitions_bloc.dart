@@ -58,10 +58,10 @@ class UserPetitionsBloc extends Bloc<UserPetitionsEvent, UserPetitionsState> {
       emit(
         state.copyWith(
           status: UserPetitionsStatus.success,
-          petitions:
-              lastPetition == null
-                  ? petitions
-                  : [...state.petitions, ...petitions],
+          petitions: lastPetition == null
+              ? petitions
+              : [...state.petitions, ...petitions],
+          userId: event.payload['request_id'],
           hasNext: event.payload['data']['has_next'],
         ),
       );
@@ -74,8 +74,9 @@ class UserPetitionsBloc extends Bloc<UserPetitionsEvent, UserPetitionsState> {
     _Resubscribe event,
     Emitter<UserPetitionsState> emit,
   ) async {
-    List<int> petitionIds =
-        event.petitions.map((petition) => petition.id).toList();
+    List<int> petitionIds = event.petitions
+        .map((petition) => petition.id)
+        .toList();
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -91,8 +92,9 @@ class UserPetitionsBloc extends Bloc<UserPetitionsEvent, UserPetitionsState> {
     _Unsubscribe event,
     Emitter<UserPetitionsState> emit,
   ) async {
-    List<int> petitionIds =
-        event.petitions.map((petition) => petition.id).toList();
+    List<int> petitionIds = event.petitions
+        .map((petition) => petition.id)
+        .toList();
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

@@ -5,6 +5,7 @@ import 'package:democracy/app/utils/more_pop_up.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/models/option.dart';
 import 'package:democracy/ballot/view/ballot_detail.dart';
+import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/post/view/post_create.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -45,6 +46,15 @@ class BallotTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (ballot.county != null)
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10),
+                    child: GeoChipRow(
+                      county: ballot.county,
+                      constituency: ballot.constituency,
+                      ward: ballot.ward,
+                    ),
+                  ),
                 Container(
                   margin: EdgeInsets.only(right: isDependency ? 0 : 20),
                   child: Text(

@@ -1,5 +1,6 @@
 import 'package:democracy/app/utils/custom_bottom_sheet.dart';
 import 'package:democracy/app/utils/more_pop_up.dart';
+import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_detail.dart';
 import 'package:democracy/post/view/post_create.dart';
@@ -64,6 +65,15 @@ class PetitionTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (petition.county != null)
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10),
+                    child: GeoChipRow(
+                      county: petition.county,
+                      constituency: petition.constituency,
+                      ward: petition.ward,
+                    ),
+                  ),
                 Text(
                   petition.title,
                   maxLines: 3,

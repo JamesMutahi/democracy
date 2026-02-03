@@ -1,3 +1,6 @@
+import 'package:democracy/geo/models/constituency.dart';
+import 'package:democracy/geo/models/county.dart';
+import 'package:democracy/geo/models/ward.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -11,6 +14,9 @@ sealed class Petition with _$Petition {
     required final User author,
     required String title,
     required String description,
+    required County? county,
+    required Constituency? constituency,
+    required Ward? ward,
     required String image,
     required String? video,
     required int supporters,

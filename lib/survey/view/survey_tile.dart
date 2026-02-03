@@ -1,6 +1,7 @@
 import 'package:democracy/app/utils/custom_bottom_sheet.dart';
 import 'package:democracy/app/utils/more_pop_up.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart' show TimeLeft;
+import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/post/view/post_create.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/survey_process/page.dart';
@@ -43,6 +44,15 @@ class SurveyTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (survey.county != null)
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10),
+                    child: GeoChipRow(
+                      county: survey.county,
+                      constituency: survey.constituency,
+                      ward: survey.ward,
+                    ),
+                  ),
                 Container(
                   margin: EdgeInsets.only(right: isDependency ? 0 : 20),
                   child: Text(

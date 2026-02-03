@@ -1,5 +1,8 @@
 import 'package:democracy/ballot/models/option.dart';
 import 'package:democracy/ballot/models/reason.dart';
+import 'package:democracy/geo/models/constituency.dart';
+import 'package:democracy/geo/models/county.dart';
+import 'package:democracy/geo/models/ward.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'ballot.freezed.dart';
@@ -11,6 +14,9 @@ sealed class Ballot with _$Ballot {
     required final int id,
     required String title,
     required String description,
+    required County? county,
+    required Constituency? constituency,
+    required Ward? ward,
     @JsonKey(name: 'start_time') required DateTime startTime,
     @JsonKey(name: 'end_time') required DateTime endTime,
     @JsonKey(name: 'total_votes') required int totalVotes,

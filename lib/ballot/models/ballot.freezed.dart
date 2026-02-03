@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Ballot {
 
- int get id; String get title; String get description;@JsonKey(name: 'start_time') DateTime get startTime;@JsonKey(name: 'end_time') DateTime get endTime;@JsonKey(name: 'total_votes') int get totalVotes;@JsonKey(name: 'voted_option') int? get votedOption;@JsonKey(name: 'is_active') bool get isActive; List<Option> get options; Reason? get reason;
+ int get id; String get title; String get description; County? get county; Constituency? get constituency; Ward? get ward;@JsonKey(name: 'start_time') DateTime get startTime;@JsonKey(name: 'end_time') DateTime get endTime;@JsonKey(name: 'total_votes') int get totalVotes;@JsonKey(name: 'voted_option') int? get votedOption;@JsonKey(name: 'is_active') bool get isActive; List<Option> get options; Reason? get reason;
 /// Create a copy of Ballot
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $BallotCopyWith<Ballot> get copyWith => _$BallotCopyWithImpl<Ballot>(this as Bal
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Ballot&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.totalVotes, totalVotes) || other.totalVotes == totalVotes)&&(identical(other.votedOption, votedOption) || other.votedOption == votedOption)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&const DeepCollectionEquality().equals(other.options, options)&&(identical(other.reason, reason) || other.reason == reason));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Ballot&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.county, county) || other.county == county)&&(identical(other.constituency, constituency) || other.constituency == constituency)&&(identical(other.ward, ward) || other.ward == ward)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.totalVotes, totalVotes) || other.totalVotes == totalVotes)&&(identical(other.votedOption, votedOption) || other.votedOption == votedOption)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&const DeepCollectionEquality().equals(other.options, options)&&(identical(other.reason, reason) || other.reason == reason));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,startTime,endTime,totalVotes,votedOption,isActive,const DeepCollectionEquality().hash(options),reason);
+int get hashCode => Object.hash(runtimeType,id,title,description,county,constituency,ward,startTime,endTime,totalVotes,votedOption,isActive,const DeepCollectionEquality().hash(options),reason);
 
 @override
 String toString() {
-  return 'Ballot(id: $id, title: $title, description: $description, startTime: $startTime, endTime: $endTime, totalVotes: $totalVotes, votedOption: $votedOption, isActive: $isActive, options: $options, reason: $reason)';
+  return 'Ballot(id: $id, title: $title, description: $description, county: $county, constituency: $constituency, ward: $ward, startTime: $startTime, endTime: $endTime, totalVotes: $totalVotes, votedOption: $votedOption, isActive: $isActive, options: $options, reason: $reason)';
 }
 
 
@@ -48,11 +48,11 @@ abstract mixin class $BallotCopyWith<$Res>  {
   factory $BallotCopyWith(Ballot value, $Res Function(Ballot) _then) = _$BallotCopyWithImpl;
 @useResult
 $Res call({
- int id, String title, String description,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'end_time') DateTime endTime,@JsonKey(name: 'total_votes') int totalVotes,@JsonKey(name: 'voted_option') int? votedOption,@JsonKey(name: 'is_active') bool isActive, List<Option> options, Reason? reason
+ int id, String title, String description, County? county, Constituency? constituency, Ward? ward,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'end_time') DateTime endTime,@JsonKey(name: 'total_votes') int totalVotes,@JsonKey(name: 'voted_option') int? votedOption,@JsonKey(name: 'is_active') bool isActive, List<Option> options, Reason? reason
 });
 
 
-$ReasonCopyWith<$Res>? get reason;
+$CountyCopyWith<$Res>? get county;$ConstituencyCopyWith<$Res>? get constituency;$WardCopyWith<$Res>? get ward;$ReasonCopyWith<$Res>? get reason;
 
 }
 /// @nodoc
@@ -65,12 +65,15 @@ class _$BallotCopyWithImpl<$Res>
 
 /// Create a copy of Ballot
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? description = null,Object? startTime = null,Object? endTime = null,Object? totalVotes = null,Object? votedOption = freezed,Object? isActive = null,Object? options = null,Object? reason = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? description = null,Object? county = freezed,Object? constituency = freezed,Object? ward = freezed,Object? startTime = null,Object? endTime = null,Object? totalVotes = null,Object? votedOption = freezed,Object? isActive = null,Object? options = null,Object? reason = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String,startTime: null == startTime ? _self.startTime : startTime // ignore: cast_nullable_to_non_nullable
+as String,county: freezed == county ? _self.county : county // ignore: cast_nullable_to_non_nullable
+as County?,constituency: freezed == constituency ? _self.constituency : constituency // ignore: cast_nullable_to_non_nullable
+as Constituency?,ward: freezed == ward ? _self.ward : ward // ignore: cast_nullable_to_non_nullable
+as Ward?,startTime: null == startTime ? _self.startTime : startTime // ignore: cast_nullable_to_non_nullable
 as DateTime,endTime: null == endTime ? _self.endTime : endTime // ignore: cast_nullable_to_non_nullable
 as DateTime,totalVotes: null == totalVotes ? _self.totalVotes : totalVotes // ignore: cast_nullable_to_non_nullable
 as int,votedOption: freezed == votedOption ? _self.votedOption : votedOption // ignore: cast_nullable_to_non_nullable
@@ -81,6 +84,42 @@ as Reason?,
   ));
 }
 /// Create a copy of Ballot
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CountyCopyWith<$Res>? get county {
+    if (_self.county == null) {
+    return null;
+  }
+
+  return $CountyCopyWith<$Res>(_self.county!, (value) {
+    return _then(_self.copyWith(county: value));
+  });
+}/// Create a copy of Ballot
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ConstituencyCopyWith<$Res>? get constituency {
+    if (_self.constituency == null) {
+    return null;
+  }
+
+  return $ConstituencyCopyWith<$Res>(_self.constituency!, (value) {
+    return _then(_self.copyWith(constituency: value));
+  });
+}/// Create a copy of Ballot
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$WardCopyWith<$Res>? get ward {
+    if (_self.ward == null) {
+    return null;
+  }
+
+  return $WardCopyWith<$Res>(_self.ward!, (value) {
+    return _then(_self.copyWith(ward: value));
+  });
+}/// Create a copy of Ballot
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -171,10 +210,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String title,  String description, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime, @JsonKey(name: 'total_votes')  int totalVotes, @JsonKey(name: 'voted_option')  int? votedOption, @JsonKey(name: 'is_active')  bool isActive,  List<Option> options,  Reason? reason)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime, @JsonKey(name: 'total_votes')  int totalVotes, @JsonKey(name: 'voted_option')  int? votedOption, @JsonKey(name: 'is_active')  bool isActive,  List<Option> options,  Reason? reason)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Ballot() when $default != null:
-return $default(_that.id,_that.title,_that.description,_that.startTime,_that.endTime,_that.totalVotes,_that.votedOption,_that.isActive,_that.options,_that.reason);case _:
+return $default(_that.id,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.startTime,_that.endTime,_that.totalVotes,_that.votedOption,_that.isActive,_that.options,_that.reason);case _:
   return orElse();
 
 }
@@ -192,10 +231,10 @@ return $default(_that.id,_that.title,_that.description,_that.startTime,_that.end
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String title,  String description, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime, @JsonKey(name: 'total_votes')  int totalVotes, @JsonKey(name: 'voted_option')  int? votedOption, @JsonKey(name: 'is_active')  bool isActive,  List<Option> options,  Reason? reason)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime, @JsonKey(name: 'total_votes')  int totalVotes, @JsonKey(name: 'voted_option')  int? votedOption, @JsonKey(name: 'is_active')  bool isActive,  List<Option> options,  Reason? reason)  $default,) {final _that = this;
 switch (_that) {
 case _Ballot():
-return $default(_that.id,_that.title,_that.description,_that.startTime,_that.endTime,_that.totalVotes,_that.votedOption,_that.isActive,_that.options,_that.reason);}
+return $default(_that.id,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.startTime,_that.endTime,_that.totalVotes,_that.votedOption,_that.isActive,_that.options,_that.reason);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -209,10 +248,10 @@ return $default(_that.id,_that.title,_that.description,_that.startTime,_that.end
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String title,  String description, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime, @JsonKey(name: 'total_votes')  int totalVotes, @JsonKey(name: 'voted_option')  int? votedOption, @JsonKey(name: 'is_active')  bool isActive,  List<Option> options,  Reason? reason)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime, @JsonKey(name: 'total_votes')  int totalVotes, @JsonKey(name: 'voted_option')  int? votedOption, @JsonKey(name: 'is_active')  bool isActive,  List<Option> options,  Reason? reason)?  $default,) {final _that = this;
 switch (_that) {
 case _Ballot() when $default != null:
-return $default(_that.id,_that.title,_that.description,_that.startTime,_that.endTime,_that.totalVotes,_that.votedOption,_that.isActive,_that.options,_that.reason);case _:
+return $default(_that.id,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.startTime,_that.endTime,_that.totalVotes,_that.votedOption,_that.isActive,_that.options,_that.reason);case _:
   return null;
 
 }
@@ -224,12 +263,15 @@ return $default(_that.id,_that.title,_that.description,_that.startTime,_that.end
 @JsonSerializable()
 
 class _Ballot implements Ballot {
-  const _Ballot({required this.id, required this.title, required this.description, @JsonKey(name: 'start_time') required this.startTime, @JsonKey(name: 'end_time') required this.endTime, @JsonKey(name: 'total_votes') required this.totalVotes, @JsonKey(name: 'voted_option') required this.votedOption, @JsonKey(name: 'is_active') required this.isActive, required final  List<Option> options, required this.reason}): _options = options;
+  const _Ballot({required this.id, required this.title, required this.description, required this.county, required this.constituency, required this.ward, @JsonKey(name: 'start_time') required this.startTime, @JsonKey(name: 'end_time') required this.endTime, @JsonKey(name: 'total_votes') required this.totalVotes, @JsonKey(name: 'voted_option') required this.votedOption, @JsonKey(name: 'is_active') required this.isActive, required final  List<Option> options, required this.reason}): _options = options;
   factory _Ballot.fromJson(Map<String, dynamic> json) => _$BallotFromJson(json);
 
 @override final  int id;
 @override final  String title;
 @override final  String description;
+@override final  County? county;
+@override final  Constituency? constituency;
+@override final  Ward? ward;
 @override@JsonKey(name: 'start_time') final  DateTime startTime;
 @override@JsonKey(name: 'end_time') final  DateTime endTime;
 @override@JsonKey(name: 'total_votes') final  int totalVotes;
@@ -257,16 +299,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Ballot&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.totalVotes, totalVotes) || other.totalVotes == totalVotes)&&(identical(other.votedOption, votedOption) || other.votedOption == votedOption)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&const DeepCollectionEquality().equals(other._options, _options)&&(identical(other.reason, reason) || other.reason == reason));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Ballot&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.county, county) || other.county == county)&&(identical(other.constituency, constituency) || other.constituency == constituency)&&(identical(other.ward, ward) || other.ward == ward)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.totalVotes, totalVotes) || other.totalVotes == totalVotes)&&(identical(other.votedOption, votedOption) || other.votedOption == votedOption)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&const DeepCollectionEquality().equals(other._options, _options)&&(identical(other.reason, reason) || other.reason == reason));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,startTime,endTime,totalVotes,votedOption,isActive,const DeepCollectionEquality().hash(_options),reason);
+int get hashCode => Object.hash(runtimeType,id,title,description,county,constituency,ward,startTime,endTime,totalVotes,votedOption,isActive,const DeepCollectionEquality().hash(_options),reason);
 
 @override
 String toString() {
-  return 'Ballot(id: $id, title: $title, description: $description, startTime: $startTime, endTime: $endTime, totalVotes: $totalVotes, votedOption: $votedOption, isActive: $isActive, options: $options, reason: $reason)';
+  return 'Ballot(id: $id, title: $title, description: $description, county: $county, constituency: $constituency, ward: $ward, startTime: $startTime, endTime: $endTime, totalVotes: $totalVotes, votedOption: $votedOption, isActive: $isActive, options: $options, reason: $reason)';
 }
 
 
@@ -277,11 +319,11 @@ abstract mixin class _$BallotCopyWith<$Res> implements $BallotCopyWith<$Res> {
   factory _$BallotCopyWith(_Ballot value, $Res Function(_Ballot) _then) = __$BallotCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String title, String description,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'end_time') DateTime endTime,@JsonKey(name: 'total_votes') int totalVotes,@JsonKey(name: 'voted_option') int? votedOption,@JsonKey(name: 'is_active') bool isActive, List<Option> options, Reason? reason
+ int id, String title, String description, County? county, Constituency? constituency, Ward? ward,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'end_time') DateTime endTime,@JsonKey(name: 'total_votes') int totalVotes,@JsonKey(name: 'voted_option') int? votedOption,@JsonKey(name: 'is_active') bool isActive, List<Option> options, Reason? reason
 });
 
 
-@override $ReasonCopyWith<$Res>? get reason;
+@override $CountyCopyWith<$Res>? get county;@override $ConstituencyCopyWith<$Res>? get constituency;@override $WardCopyWith<$Res>? get ward;@override $ReasonCopyWith<$Res>? get reason;
 
 }
 /// @nodoc
@@ -294,12 +336,15 @@ class __$BallotCopyWithImpl<$Res>
 
 /// Create a copy of Ballot
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? startTime = null,Object? endTime = null,Object? totalVotes = null,Object? votedOption = freezed,Object? isActive = null,Object? options = null,Object? reason = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? county = freezed,Object? constituency = freezed,Object? ward = freezed,Object? startTime = null,Object? endTime = null,Object? totalVotes = null,Object? votedOption = freezed,Object? isActive = null,Object? options = null,Object? reason = freezed,}) {
   return _then(_Ballot(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String,startTime: null == startTime ? _self.startTime : startTime // ignore: cast_nullable_to_non_nullable
+as String,county: freezed == county ? _self.county : county // ignore: cast_nullable_to_non_nullable
+as County?,constituency: freezed == constituency ? _self.constituency : constituency // ignore: cast_nullable_to_non_nullable
+as Constituency?,ward: freezed == ward ? _self.ward : ward // ignore: cast_nullable_to_non_nullable
+as Ward?,startTime: null == startTime ? _self.startTime : startTime // ignore: cast_nullable_to_non_nullable
 as DateTime,endTime: null == endTime ? _self.endTime : endTime // ignore: cast_nullable_to_non_nullable
 as DateTime,totalVotes: null == totalVotes ? _self.totalVotes : totalVotes // ignore: cast_nullable_to_non_nullable
 as int,votedOption: freezed == votedOption ? _self.votedOption : votedOption // ignore: cast_nullable_to_non_nullable
@@ -311,6 +356,42 @@ as Reason?,
 }
 
 /// Create a copy of Ballot
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CountyCopyWith<$Res>? get county {
+    if (_self.county == null) {
+    return null;
+  }
+
+  return $CountyCopyWith<$Res>(_self.county!, (value) {
+    return _then(_self.copyWith(county: value));
+  });
+}/// Create a copy of Ballot
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ConstituencyCopyWith<$Res>? get constituency {
+    if (_self.constituency == null) {
+    return null;
+  }
+
+  return $ConstituencyCopyWith<$Res>(_self.constituency!, (value) {
+    return _then(_self.copyWith(constituency: value));
+  });
+}/// Create a copy of Ballot
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$WardCopyWith<$Res>? get ward {
+    if (_self.ward == null) {
+    return null;
+  }
+
+  return $WardCopyWith<$Res>(_self.ward!, (value) {
+    return _then(_self.copyWith(ward: value));
+  });
+}/// Create a copy of Ballot
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
