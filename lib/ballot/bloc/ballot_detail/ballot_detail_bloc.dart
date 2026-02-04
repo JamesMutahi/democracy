@@ -23,6 +23,8 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
             add(_Updated(payload: message['payload']));
           case 'delete':
             add(_Deleted(payload: message['payload']));
+          case 'vote':
+            add(_Received(payload: message['payload']));
         }
       }
     });
@@ -37,6 +39,9 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
     });
     on<_Vote>((event, emit) {
       _onVote(event, emit);
+    });
+    on<_Received>((event, emit) {
+      _onReceived(event, emit);
     });
     on<_SubmitReason>((event, emit) {
       _onSubmitReason(event, emit);
@@ -82,6 +87,15 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
       },
     };
     webSocketService.send(message);
+  }
+
+  Future _onReceived(_Received event, Emitter<BallotDetailState> emit) async {
+    emit(BallotDetailLoading());
+    if (event.payload['response_status'] == 200) {
+      //
+    } else {
+      emit(BallotDetailFailure(error: event.payload['errors'][0]));
+    }
   }
 
   Future _onSubmitReason(

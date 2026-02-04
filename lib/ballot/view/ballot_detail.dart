@@ -4,6 +4,7 @@ import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/models/option.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
+import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -32,6 +33,15 @@ class _BallotDetailState extends State<BallotDetail> {
             });
           }
         }
+        if (state is BallotDetailFailure) {
+          final snackBar = getSnackBar(
+            context: context,
+            message: state.error,
+            status: SnackBarStatus.failure,
+          );
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
       },
       child: Scaffold(
         appBar: AppBar(
@@ -50,6 +60,15 @@ class _BallotDetailState extends State<BallotDetail> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (_ballot.county != null)
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10),
+                    child: GeoChipRow(
+                      county: _ballot.county,
+                      constituency: _ballot.constituency,
+                      ward: _ballot.ward,
+                    ),
+                  ),
                 Text(
                   _ballot.title,
                   style: Theme.of(context).textTheme.titleLarge,

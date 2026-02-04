@@ -591,14 +591,15 @@ extension BallotDetailEventPatterns on BallotDetailEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Vote value)?  vote,TResult Function( _SubmitReason value)?  submitReason,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Vote value)?  vote,TResult Function( _Received value)?  Received,TResult Function( _SubmitReason value)?  submitReason,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that);case _Updated() when updated != null:
 return updated(_that);case _Deleted() when deleted != null:
 return deleted(_that);case _Vote() when vote != null:
-return vote(_that);case _SubmitReason() when submitReason != null:
+return vote(_that);case _Received() when Received != null:
+return Received(_that);case _SubmitReason() when submitReason != null:
 return submitReason(_that);case _:
   return orElse();
 
@@ -617,14 +618,15 @@ return submitReason(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Vote value)  vote,required TResult Function( _SubmitReason value)  submitReason,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Vote value)  vote,required TResult Function( _Received value)  Received,required TResult Function( _SubmitReason value)  submitReason,}){
 final _that = this;
 switch (_that) {
 case _Created():
 return created(_that);case _Updated():
 return updated(_that);case _Deleted():
 return deleted(_that);case _Vote():
-return vote(_that);case _SubmitReason():
+return vote(_that);case _Received():
+return Received(_that);case _SubmitReason():
 return submitReason(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -639,14 +641,15 @@ return submitReason(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Vote value)?  vote,TResult? Function( _SubmitReason value)?  submitReason,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Vote value)?  vote,TResult? Function( _Received value)?  Received,TResult? Function( _SubmitReason value)?  submitReason,}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that);case _Updated() when updated != null:
 return updated(_that);case _Deleted() when deleted != null:
 return deleted(_that);case _Vote() when vote != null:
-return vote(_that);case _SubmitReason() when submitReason != null:
+return vote(_that);case _Received() when Received != null:
+return Received(_that);case _SubmitReason() when submitReason != null:
 return submitReason(_that);case _:
   return null;
 
@@ -664,13 +667,14 @@ return submitReason(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Option option)?  vote,TResult Function( Ballot ballot,  String text)?  submitReason,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Option option)?  vote,TResult Function( Map<String, dynamic> payload)?  Received,TResult Function( Ballot ballot,  String text)?  submitReason,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Vote() when vote != null:
-return vote(_that.option);case _SubmitReason() when submitReason != null:
+return vote(_that.option);case _Received() when Received != null:
+return Received(_that.payload);case _SubmitReason() when submitReason != null:
 return submitReason(_that.ballot,_that.text);case _:
   return orElse();
 
@@ -689,13 +693,14 @@ return submitReason(_that.ballot,_that.text);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Option option)  vote,required TResult Function( Ballot ballot,  String text)  submitReason,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Option option)  vote,required TResult Function( Map<String, dynamic> payload)  Received,required TResult Function( Ballot ballot,  String text)  submitReason,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Updated():
 return updated(_that.payload);case _Deleted():
 return deleted(_that.payload);case _Vote():
-return vote(_that.option);case _SubmitReason():
+return vote(_that.option);case _Received():
+return Received(_that.payload);case _SubmitReason():
 return submitReason(_that.ballot,_that.text);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -710,13 +715,14 @@ return submitReason(_that.ballot,_that.text);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Option option)?  vote,TResult? Function( Ballot ballot,  String text)?  submitReason,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Option option)?  vote,TResult? Function( Map<String, dynamic> payload)?  Received,TResult? Function( Ballot ballot,  String text)?  submitReason,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Vote() when vote != null:
-return vote(_that.option);case _SubmitReason() when submitReason != null:
+return vote(_that.option);case _Received() when Received != null:
+return Received(_that.payload);case _SubmitReason() when submitReason != null:
 return submitReason(_that.ballot,_that.text);case _:
   return null;
 
@@ -1014,6 +1020,78 @@ $OptionCopyWith<$Res> get option {
     return _then(_self.copyWith(option: value));
   });
 }
+}
+
+/// @nodoc
+
+
+class _Received implements BallotDetailEvent {
+  const _Received({required final  Map<String, dynamic> payload}): _payload = payload;
+  
+
+ final  Map<String, dynamic> _payload;
+ Map<String, dynamic> get payload {
+  if (_payload is EqualUnmodifiableMapView) return _payload;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_payload);
+}
+
+
+/// Create a copy of BallotDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ReceivedCopyWith<_Received> get copyWith => __$ReceivedCopyWithImpl<_Received>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Received&&const DeepCollectionEquality().equals(other._payload, _payload));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
+
+@override
+String toString() {
+  return 'BallotDetailEvent.Received(payload: $payload)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ReceivedCopyWith<$Res> implements $BallotDetailEventCopyWith<$Res> {
+  factory _$ReceivedCopyWith(_Received value, $Res Function(_Received) _then) = __$ReceivedCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, dynamic> payload
+});
+
+
+
+
+}
+/// @nodoc
+class __$ReceivedCopyWithImpl<$Res>
+    implements _$ReceivedCopyWith<$Res> {
+  __$ReceivedCopyWithImpl(this._self, this._then);
+
+  final _Received _self;
+  final $Res Function(_Received) _then;
+
+/// Create a copy of BallotDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
+  return _then(_Received(
+payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
+  ));
+}
+
+
 }
 
 /// @nodoc

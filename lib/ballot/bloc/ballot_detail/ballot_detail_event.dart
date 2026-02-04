@@ -12,6 +12,9 @@ sealed class BallotDetailEvent with _$BallotDetailEvent {
     required Map<String, dynamic> payload,
   }) = _Deleted;
   const factory BallotDetailEvent.vote({required Option option}) = _Vote;
+  const factory BallotDetailEvent.Received({
+    required Map<String, dynamic> payload,
+  }) = _Received;
   const factory BallotDetailEvent.submitReason({
     required Ballot ballot,
     required String text,
