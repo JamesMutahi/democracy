@@ -19,6 +19,7 @@ final class AnswerState extends Equatable {
     this.textAnswers,
     this.choiceAnswers,
     this.required,
+    this.submissionError = '',
   });
 
   final AnswerStatus status;
@@ -28,6 +29,7 @@ final class AnswerState extends Equatable {
   final List<TextAnswer>? textAnswers;
   final List<ChoiceAnswer>? choiceAnswers;
   final List<Question>? required;
+  final String submissionError;
 
   AnswerState copyWith({
     AnswerStatus? status,
@@ -37,6 +39,7 @@ final class AnswerState extends Equatable {
     List<TextAnswer>? textAnswers,
     List<ChoiceAnswer>? choiceAnswers,
     List<Question>? required,
+    String? submissionError,
   }) {
     return AnswerState(
       status: status ?? this.status,
@@ -46,6 +49,7 @@ final class AnswerState extends Equatable {
       textAnswers: textAnswers ?? this.textAnswers,
       choiceAnswers: choiceAnswers ?? this.choiceAnswers,
       required: required ?? this.required,
+      submissionError: submissionError ?? this.submissionError,
     );
   }
 
@@ -63,5 +67,6 @@ final class AnswerState extends Equatable {
     ?textAnswers,
     ?choiceAnswers,
     ?required,
+    submissionError,
   ];
 }

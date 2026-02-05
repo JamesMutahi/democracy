@@ -26,6 +26,8 @@ class PetitionDetailBloc
             add(_Updated(payload: message['payload']));
           case 'delete':
             add(_Deleted(payload: message['payload']));
+          case 'support':
+            add(_Received(payload: message['payload']));
         }
       }
     });
@@ -43,6 +45,9 @@ class PetitionDetailBloc
     });
     on<_Support>((event, emit) {
       _onSupport(event, emit);
+    });
+    on<_Received>((event, emit) {
+      _onReceived(event, emit);
     });
   }
 
@@ -101,6 +106,15 @@ class PetitionDetailBloc
       },
     };
     webSocketService.send(message);
+  }
+
+  Future _onReceived(_Received event, Emitter<PetitionDetailState> emit) async {
+    emit(PetitionDetailLoading());
+    if (event.payload['response_status'] == 200) {
+      //
+    } else {
+      emit(PetitionDetailFailure(error: event.payload['errors'][0]));
+    }
   }
 
   final WebSocketService webSocketService;

@@ -135,6 +135,15 @@ class SurveyBottomSheet extends StatelessWidget {
     return CustomBottomSheet(
       title: survey.title,
       children: [
+        if (survey.county != null)
+          Container(
+            margin: EdgeInsets.only(bottom: 10),
+            child: GeoChipRow(
+              county: survey.county,
+              constituency: survey.constituency,
+              ward: survey.ward,
+            ),
+          ),
         Text(survey.description),
         SizedBox(height: 10),
         Row(

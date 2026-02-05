@@ -19,11 +19,10 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
   AnswerBloc({required this.webSocketService}) : super(const AnswerState()) {
     webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
+        print(message['payload']);
         switch (message['payload']['action']) {
-          case 'create':
-            if (message['payload']['request_id'] == requestId) {
-              add(_Submitted(payload: message['payload']));
-            }
+          case 'submit':
+            add(_Submitted(payload: message['payload']));
         }
       }
     });
@@ -163,7 +162,7 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
-        'action': 'create_response',
+        'action': 'submit',
         'request_id': 'responses',
         'data': {
           'survey': event.survey.id,
@@ -183,7 +182,12 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
       final Survey survey = Survey.fromJson(event.payload['data']);
       emit(state.copyWith(status: AnswerStatus.submitted, survey: survey));
     } else {
-      emit(state.copyWith(status: AnswerStatus.submissionFailure));
+      emit(
+        state.copyWith(
+          status: AnswerStatus.submissionFailure,
+          submissionError: event.payload['errors'][0],
+        ),
+      );
     }
   }
 

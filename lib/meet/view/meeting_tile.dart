@@ -1,5 +1,6 @@
 import 'package:democracy/app/utils/custom_bottom_sheet.dart';
 import 'package:democracy/app/utils/more_pop_up.dart';
+import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/meet/bloc/meeting_detail/meeting_detail_bloc.dart';
 import 'package:democracy/meet/models/meeting.dart';
@@ -209,10 +210,29 @@ class MeetingBottomSheet extends StatelessWidget {
             ),
           );
         }
+        if (state is MeetingDetailFailure) {
+          Navigator.pop(context);
+          final snackBar = getSnackBar(
+            context: context,
+            message: state.error,
+            status: SnackBarStatus.failure,
+          );
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
       },
       child: CustomBottomSheet(
         title: meeting.title,
         children: [
+          if (meeting.county != null)
+            Container(
+              margin: EdgeInsets.only(bottom: 10),
+              child: GeoChipRow(
+                county: meeting.county,
+                constituency: meeting.constituency,
+                ward: meeting.ward,
+              ),
+            ),
           Text(meeting.description),
           SizedBox(height: 5),
           GestureDetector(

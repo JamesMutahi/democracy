@@ -1,4 +1,6 @@
 import 'package:democracy/app/utils/custom_text.dart';
+import 'package:democracy/app/utils/snack_bar_content.dart';
+import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_tile.dart'
@@ -38,6 +40,15 @@ class _PetitionDetailState extends State<PetitionDetail> {
             });
           }
         }
+        if (state is PetitionDetailFailure) {
+          final snackBar = getSnackBar(
+            context: context,
+            message: state.error,
+            status: SnackBarStatus.failure,
+          );
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
       },
       child: Scaffold(
         appBar: AppBar(
@@ -66,6 +77,15 @@ class _PetitionDetailState extends State<PetitionDetail> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        if (_petition.county != null)
+                          Container(
+                            margin: EdgeInsets.only(bottom: 10),
+                            child: GeoChipRow(
+                              county: _petition.county,
+                              constituency: _petition.constituency,
+                              ward: _petition.ward,
+                            ),
+                          ),
                         Text(
                           _petition.title,
                           style: Theme.of(context).textTheme.titleLarge,

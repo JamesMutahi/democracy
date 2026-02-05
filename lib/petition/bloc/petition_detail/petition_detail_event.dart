@@ -18,4 +18,7 @@ sealed class PetitionDetailEvent with _$PetitionDetailEvent {
   }) = _Create;
   const factory PetitionDetailEvent.support({required Petition petition}) =
       _Support;
+  const factory PetitionDetailEvent.received({
+    required Map<String, dynamic> payload,
+  }) = _Received;
 }

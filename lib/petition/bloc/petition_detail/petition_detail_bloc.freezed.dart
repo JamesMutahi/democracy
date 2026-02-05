@@ -591,7 +591,7 @@ extension PetitionDetailEventPatterns on PetitionDetailEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Create value)?  create,TResult Function( _Support value)?  support,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Create value)?  create,TResult Function( _Support value)?  support,TResult Function( _Received value)?  received,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
@@ -599,7 +599,8 @@ return created(_that);case _Updated() when updated != null:
 return updated(_that);case _Deleted() when deleted != null:
 return deleted(_that);case _Create() when create != null:
 return create(_that);case _Support() when support != null:
-return support(_that);case _:
+return support(_that);case _Received() when received != null:
+return received(_that);case _:
   return orElse();
 
 }
@@ -617,7 +618,7 @@ return support(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Create value)  create,required TResult Function( _Support value)  support,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Create value)  create,required TResult Function( _Support value)  support,required TResult Function( _Received value)  received,}){
 final _that = this;
 switch (_that) {
 case _Created():
@@ -625,7 +626,8 @@ return created(_that);case _Updated():
 return updated(_that);case _Deleted():
 return deleted(_that);case _Create():
 return create(_that);case _Support():
-return support(_that);}
+return support(_that);case _Received():
+return received(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -639,7 +641,7 @@ return support(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Create value)?  create,TResult? Function( _Support value)?  support,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Create value)?  create,TResult? Function( _Support value)?  support,TResult? Function( _Received value)?  received,}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
@@ -647,7 +649,8 @@ return created(_that);case _Updated() when updated != null:
 return updated(_that);case _Deleted() when deleted != null:
 return deleted(_that);case _Create() when create != null:
 return create(_that);case _Support() when support != null:
-return support(_that);case _:
+return support(_that);case _Received() when received != null:
+return received(_that);case _:
   return null;
 
 }
@@ -664,14 +667,15 @@ return support(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( String title,  String imagePath,  String description)?  create,TResult Function( Petition petition)?  support,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( String title,  String imagePath,  String description)?  create,TResult Function( Petition petition)?  support,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Create() when create != null:
 return create(_that.title,_that.imagePath,_that.description);case _Support() when support != null:
-return support(_that.petition);case _:
+return support(_that.petition);case _Received() when received != null:
+return received(_that.payload);case _:
   return orElse();
 
 }
@@ -689,14 +693,15 @@ return support(_that.petition);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( String title,  String imagePath,  String description)  create,required TResult Function( Petition petition)  support,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( String title,  String imagePath,  String description)  create,required TResult Function( Petition petition)  support,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Updated():
 return updated(_that.payload);case _Deleted():
 return deleted(_that.payload);case _Create():
 return create(_that.title,_that.imagePath,_that.description);case _Support():
-return support(_that.petition);}
+return support(_that.petition);case _Received():
+return received(_that.payload);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -710,14 +715,15 @@ return support(_that.petition);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( String title,  String imagePath,  String description)?  create,TResult? Function( Petition petition)?  support,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( String title,  String imagePath,  String description)?  create,TResult? Function( Petition petition)?  support,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Create() when create != null:
 return create(_that.title,_that.imagePath,_that.description);case _Support() when support != null:
-return support(_that.petition);case _:
+return support(_that.petition);case _Received() when received != null:
+return received(_that.payload);case _:
   return null;
 
 }
@@ -1084,6 +1090,78 @@ $PetitionCopyWith<$Res> get petition {
     return _then(_self.copyWith(petition: value));
   });
 }
+}
+
+/// @nodoc
+
+
+class _Received implements PetitionDetailEvent {
+  const _Received({required final  Map<String, dynamic> payload}): _payload = payload;
+  
+
+ final  Map<String, dynamic> _payload;
+ Map<String, dynamic> get payload {
+  if (_payload is EqualUnmodifiableMapView) return _payload;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_payload);
+}
+
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ReceivedCopyWith<_Received> get copyWith => __$ReceivedCopyWithImpl<_Received>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Received&&const DeepCollectionEquality().equals(other._payload, _payload));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
+
+@override
+String toString() {
+  return 'PetitionDetailEvent.received(payload: $payload)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ReceivedCopyWith<$Res> implements $PetitionDetailEventCopyWith<$Res> {
+  factory _$ReceivedCopyWith(_Received value, $Res Function(_Received) _then) = __$ReceivedCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, dynamic> payload
+});
+
+
+
+
+}
+/// @nodoc
+class __$ReceivedCopyWithImpl<$Res>
+    implements _$ReceivedCopyWith<$Res> {
+  __$ReceivedCopyWithImpl(this._self, this._then);
+
+  final _Received _self;
+  final $Res Function(_Received) _then;
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
+  return _then(_Received(
+payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
+  ));
+}
+
+
 }
 
 // dart format on

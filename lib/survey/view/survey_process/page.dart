@@ -75,7 +75,7 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
             if (state.status == AnswerStatus.submissionFailure) {
               final snackBar = getSnackBar(
                 context: context,
-                message: 'Something went wrong.',
+                message: state.submissionError,
                 status: SnackBarStatus.failure,
               );
               ScaffoldMessenger.of(context).showSnackBar(snackBar);
