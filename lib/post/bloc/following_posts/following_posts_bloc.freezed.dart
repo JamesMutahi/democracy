@@ -119,10 +119,10 @@ return received(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  Post? lastPost)?  get,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Post? lastPost)?  get,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.searchTerm,_that.lastPost);case _Received() when received != null:
+return get(_that.lastPost);case _Received() when received != null:
 return received(_that.payload);case _:
   return orElse();
 
@@ -141,10 +141,10 @@ return received(_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  Post? lastPost)  get,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Post? lastPost)  get,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
 switch (_that) {
 case _Get():
-return get(_that.searchTerm,_that.lastPost);case _Received():
+return get(_that.lastPost);case _Received():
 return received(_that.payload);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -159,10 +159,10 @@ return received(_that.payload);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  Post? lastPost)?  get,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Post? lastPost)?  get,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.searchTerm,_that.lastPost);case _Received() when received != null:
+return get(_that.lastPost);case _Received() when received != null:
 return received(_that.payload);case _:
   return null;
 
@@ -175,10 +175,9 @@ return received(_that.payload);case _:
 
 
 class _Get implements FollowingPostsEvent {
-  const _Get({this.searchTerm, this.lastPost});
+  const _Get({this.lastPost});
   
 
- final  String? searchTerm;
  final  Post? lastPost;
 
 /// Create a copy of FollowingPostsEvent
@@ -191,16 +190,16 @@ _$GetCopyWith<_Get> get copyWith => __$GetCopyWithImpl<_Get>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&(identical(other.lastPost, lastPost) || other.lastPost == lastPost));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.lastPost, lastPost) || other.lastPost == lastPost));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,searchTerm,lastPost);
+int get hashCode => Object.hash(runtimeType,lastPost);
 
 @override
 String toString() {
-  return 'FollowingPostsEvent.get(searchTerm: $searchTerm, lastPost: $lastPost)';
+  return 'FollowingPostsEvent.get(lastPost: $lastPost)';
 }
 
 
@@ -211,7 +210,7 @@ abstract mixin class _$GetCopyWith<$Res> implements $FollowingPostsEventCopyWith
   factory _$GetCopyWith(_Get value, $Res Function(_Get) _then) = __$GetCopyWithImpl;
 @useResult
 $Res call({
- String? searchTerm, Post? lastPost
+ Post? lastPost
 });
 
 
@@ -228,10 +227,9 @@ class __$GetCopyWithImpl<$Res>
 
 /// Create a copy of FollowingPostsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? searchTerm = freezed,Object? lastPost = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? lastPost = freezed,}) {
   return _then(_Get(
-searchTerm: freezed == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
-as String?,lastPost: freezed == lastPost ? _self.lastPost : lastPost // ignore: cast_nullable_to_non_nullable
+lastPost: freezed == lastPost ? _self.lastPost : lastPost // ignore: cast_nullable_to_non_nullable
 as Post?,
   ));
 }

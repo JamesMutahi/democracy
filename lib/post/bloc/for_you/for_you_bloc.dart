@@ -46,11 +46,11 @@ class ForYouBloc extends Bloc<ForYouEvent, ForYouState> {
       final List<Post> posts = List.from(
         event.payload['data']['results'].map((e) => Post.fromJson(e)),
       );
+      int? lastPost = event.payload['data']['last_post'];
       emit(
         state.copyWith(
           status: ForYouStatus.success,
-          posts: [...state.posts, ...posts],
-          currentPage: event.payload['data']['current_page'],
+          posts: lastPost == null ? posts : [...state.posts, ...posts],
           hasNext: event.payload['data']['has_next'],
         ),
       );

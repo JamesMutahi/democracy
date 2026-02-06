@@ -191,15 +191,16 @@ class _ForYouTabState extends State<ForYouTab>
           });
         },
         refreshController: _refreshController,
-        //   TODO: enable pull down
-        enablePullDown: false,
+        enablePullDown: _posts.isNotEmpty,
         enablePullUp: hasNextPage,
         checkVisibility: true,
         onRefresh: () {
-          //   TODO:
+          context.read<ForYouBloc>().add(ForYouEvent.get());
         },
         onLoading: () {
-          //   TODO:
+          context.read<ForYouBloc>().add(
+            ForYouEvent.get(lastPost: _posts.last),
+          );
         },
         onFailure: () {
           context.read<ForYouBloc>().add(ForYouEvent.get());
@@ -288,7 +289,7 @@ class _FollowingTabState extends State<FollowingTab> {
           });
         },
         refreshController: _refreshController,
-        enablePullDown: true,
+        enablePullDown: _posts.isNotEmpty,
         enablePullUp: hasNextPage,
         checkVisibility: true,
         onRefresh: () {

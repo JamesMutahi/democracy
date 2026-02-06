@@ -36,7 +36,6 @@ class FollowingPostsBloc
       'payload': {
         "action": action,
         "request_id": requestId,
-        'search_term': event.searchTerm,
         'last_post': event.lastPost?.id,
       },
     };
