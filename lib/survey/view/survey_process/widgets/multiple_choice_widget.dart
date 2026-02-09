@@ -61,6 +61,7 @@ class _MultipleChoiceWidgetState extends State<MultipleChoiceWidget> {
           FormBuilderCheckboxGroup<Choice>(
             name: widget.question.text,
             initialValue: selectedChoices,
+            orientation: OptionsOrientation.vertical,
             decoration: InputDecoration(
               hintText: widget.question.hint,
               errorText: errorText,

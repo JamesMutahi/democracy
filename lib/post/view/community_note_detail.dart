@@ -9,13 +9,13 @@ import 'package:democracy/post/view/widgets/bottom_reply_text_field.dart';
 import 'package:democracy/post/view/widgets/community_note_tile.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
+import 'package:democracy/post/view/widgets/replies.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class CommunityNoteDetail extends StatefulWidget {
   const CommunityNoteDetail({
@@ -37,9 +37,6 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
   late Post _communityNote = widget.communityNote;
   late Post _communityNoteOf = widget.communityNote.communityNoteOf!;
   bool isDeleted = false;
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
   bool loading = true;
   bool failure = false;
   List<Post> _replies = [];
@@ -198,13 +195,7 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
                     loading = false;
                     failure = false;
                     hasNextPage = state.hasNext;
-                    if (_refreshController.headerStatus ==
-                        RefreshStatus.refreshing) {
-                      _refreshController.refreshCompleted();
-                    }
-                    if (_refreshController.footerStatus == LoadStatus.loading) {
-                      _refreshController.loadComplete();
-                    }
+                    //   TODO: Stop loader
                   });
                 }
               }
@@ -216,13 +207,7 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
                       failure = true;
                     });
                   }
-                  if (_refreshController.headerStatus ==
-                      RefreshStatus.refreshing) {
-                    _refreshController.refreshFailed();
-                  }
-                  if (_refreshController.footerStatus == LoadStatus.loading) {
-                    _refreshController.loadFailed();
-                  }
+                  //   TODO: Stop loader with failure message
                 }
               }
             },
@@ -236,104 +221,59 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
                     'This community note has been deleted by the author',
                   ),
                 )
-              : SmartRefresher(
-                  enablePullDown: hasNextPage,
-                  enablePullUp: false,
-                  header: ClassicHeader(
-                    // CustomScrollView is in reverse
-                    idleIcon: Icon(
-                      Icons.arrow_upward_rounded,
-                      color: Colors.grey,
-                    ),
-                    idleText: 'Pull up to load more',
-                    releaseText: 'Release to load more',
-                    completeText: 'Loaded',
-                  ),
-                  footer: ClassicFooter(
-                    // CustomScrollView is in reverse
-                    idleIcon: Icon(
-                      Icons.arrow_downward_rounded,
-                      color: Colors.grey,
-                    ),
-                    idleText: 'Show more',
-                  ),
-                  controller: _refreshController,
-                  onRefresh: _onScrollUp,
-                  child: CustomScrollView(
-                    reverse: true,
-                    slivers: <Widget>[
-                      SliverFillRemaining(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              if (widget.showAsRepost)
-                                Stack(
-                                  children: [
-                                    ThreadLine(
-                                      showBottomThread: true,
-                                      showTopThread: true,
-                                    ),
-                                    _repostBanner(),
-                                  ],
-                                ),
-                              CommunityNoteTile(
-                                communityNote: _communityNote,
-                                navigateToDetailPage: false,
-                                showWholeText: true,
-                                isDependency: false,
-                                showTopThread: true,
-                                showBottomThread: false,
+              : CustomScrollView(
+                  reverse: true,
+                  slivers: <Widget>[
+                    SliverFillRemaining(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            if (widget.showAsRepost)
+                              Stack(
+                                children: [
+                                  ThreadLine(
+                                    showBottomThread: true,
+                                    showTopThread: true,
+                                  ),
+                                  _repostBanner(),
+                                ],
                               ),
-                              PostListener(
-                                posts: _replies,
-                                onPostsUpdated: (posts) {
-                                  setState(() {
-                                    _replies = posts;
-                                  });
-                                },
-                                child: loading
-                                    ? Container(
-                                        margin: EdgeInsets.only(top: 50),
-                                        child: BottomLoader(),
-                                      )
-                                    : failure
-                                    ? FailureRetryButton(onPressed: _getData)
-                                    : ListView.builder(
-                                        shrinkWrap: true,
-                                        physics: NeverScrollableScrollPhysics(),
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                              Post post = _replies[index];
-                                              return PostTile(
-                                                key: ValueKey(post.id),
-                                                post: post,
-                                                checkVisibility: true,
-                                                showThreadedReplies:
-                                                    post.thread.isEmpty
-                                                    ? false
-                                                    : true,
-                                                showBottomThread:
-                                                    post.thread.isEmpty
-                                                    ? false
-                                                    : true,
-                                              );
-                                            },
-                                        itemCount: _replies.length,
-                                      ),
-                              ),
-                            ],
-                          ),
+                            CommunityNoteTile(
+                              communityNote: _communityNote,
+                              navigateToDetailPage: false,
+                              showWholeText: true,
+                              isDependency: false,
+                              showTopThread: true,
+                              showBottomThread: false,
+                            ),
+                            PostListener(
+                              posts: _replies,
+                              onPostsUpdated: (posts) {
+                                setState(() {
+                                  _replies = posts;
+                                });
+                              },
+                              child: loading
+                                  ? Container(
+                                      margin: EdgeInsets.only(top: 50),
+                                      child: BottomLoader(),
+                                    )
+                                  : failure
+                                  ? FailureRetryButton(onPressed: _getData)
+                                  : Replies(replies: _replies),
+                            ),
+                          ],
                         ),
                       ),
-                      SliverToBoxAdapter(
-                        child: PostTile(
-                          showBottomThread: true,
-                          hideBorder: true,
-                          post: _communityNoteOf,
-                        ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: PostTile(
+                        showBottomThread: true,
+                        hideBorder: true,
+                        post: _communityNoteOf,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
           bottomNavigationBar: _communityNote.author.hasBlocked
               ? Container(

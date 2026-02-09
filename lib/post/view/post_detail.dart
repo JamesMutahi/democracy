@@ -17,6 +17,7 @@ import 'package:democracy/post/view/widgets/post_body.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/post/view/widgets/post_widget_selector.dart';
+import 'package:democracy/post/view/widgets/replies.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
@@ -27,7 +28,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class PostDetail extends StatefulWidget {
   const PostDetail({
@@ -48,9 +48,6 @@ class PostDetail extends StatefulWidget {
 class _PostDetailState extends State<PostDetail> {
   late Post _post = widget.post;
   bool isDeleted = false;
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
   bool loading = true;
   bool failure = false;
   List<Post> _replies = [];
@@ -71,6 +68,7 @@ class _PostDetailState extends State<PostDetail> {
   }
 
   void _onScrollUp() {
+    // TODO:
     context.read<RepliesBloc>().add(
       RepliesEvent.get(post: widget.post, lastPost: _replies.last),
     );
@@ -261,13 +259,7 @@ class _PostDetailState extends State<PostDetail> {
                     loading = false;
                     failure = false;
                     hasNextPage = state.hasNext;
-                    if (_refreshController.headerStatus ==
-                        RefreshStatus.refreshing) {
-                      _refreshController.refreshCompleted();
-                    }
-                    if (_refreshController.footerStatus == LoadStatus.loading) {
-                      _refreshController.loadComplete();
-                    }
+                    //   TODO: Stop loader
                   });
                 }
               }
@@ -279,13 +271,7 @@ class _PostDetailState extends State<PostDetail> {
                       failure = true;
                     });
                   }
-                  if (_refreshController.headerStatus ==
-                      RefreshStatus.refreshing) {
-                    _refreshController.refreshFailed();
-                  }
-                  if (_refreshController.footerStatus == LoadStatus.loading) {
-                    _refreshController.loadFailed();
-                  }
+                  //   TODO: Stop loader with failure message
                 }
               }
             },
@@ -307,15 +293,11 @@ class _PostDetailState extends State<PostDetail> {
           body: isDeleted
               ? Center(child: Text('This post has been deleted by the author'))
               : CustomScrollView(
+                  reverse: true,
                   slivers: <Widget>[
                     SliverFillRemaining(
-                      child: SmartRefresher(
-                        enablePullDown: false,
-                        enablePullUp: hasNextPage,
-                        footer: ClassicFooter(),
-                        controller: _refreshController,
-                        onLoading: _onScrollUp,
-                        child: ListView(
+                      child: SingleChildScrollView(
+                        child: Column(
                           children: [
                             _post.replyTo == null
                                 ? Column(
@@ -326,32 +308,26 @@ class _PostDetailState extends State<PostDetail> {
                                   )
                                 : Column(
                                     children: [
-                                      Column(
-                                        children: [
-                                          if (widget.showAsRepost)
-                                            Stack(
-                                              children: [
-                                                ThreadLine(
-                                                  showBottomThread: true,
-                                                  showTopThread: true,
-                                                ),
-                                                Container(
-                                                  margin: EdgeInsets.only(
-                                                    left: 30,
-                                                  ),
-                                                  child: _repostBanner(),
-                                                ),
-                                              ],
+                                      if (widget.showAsRepost)
+                                        Stack(
+                                          children: [
+                                            ThreadLine(
+                                              showBottomThread: true,
+                                              showTopThread: true,
                                             ),
-                                          Stack(
-                                            children: [
-                                              ThreadLine(
-                                                showBottomThread: false,
-                                                showTopThread: true,
-                                              ),
-                                              _PostContainer(post: _post),
-                                            ],
+                                            Container(
+                                              margin: EdgeInsets.only(left: 30),
+                                              child: _repostBanner(),
+                                            ),
+                                          ],
+                                        ),
+                                      Stack(
+                                        children: [
+                                          ThreadLine(
+                                            showBottomThread: false,
+                                            showTopThread: true,
                                           ),
+                                          _PostContainer(post: _post),
                                         ],
                                       ),
                                     ],
@@ -370,28 +346,7 @@ class _PostDetailState extends State<PostDetail> {
                                     )
                                   : failure
                                   ? FailureRetryButton(onPressed: _getData)
-                                  : ListView.builder(
-                                      shrinkWrap: true,
-                                      physics: NeverScrollableScrollPhysics(),
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                            Post post = _replies[index];
-                                            return PostTile(
-                                              key: ValueKey(post.id),
-                                              post: post,
-                                              checkVisibility: true,
-                                              showThreadedReplies:
-                                                  post.thread.isEmpty
-                                                  ? false
-                                                  : true,
-                                              showBottomThread:
-                                                  post.thread.isEmpty
-                                                  ? false
-                                                  : true,
-                                            );
-                                          },
-                                      itemCount: _replies.length,
-                                    ),
+                                  : Replies(replies: _replies),
                             ),
                           ],
                         ),
@@ -406,6 +361,7 @@ class _PostDetailState extends State<PostDetail> {
                           });
                         },
                         child: ListView.builder(
+                          reverse: true,
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           itemBuilder: (BuildContext context, int index) {

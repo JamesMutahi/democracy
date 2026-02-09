@@ -40,8 +40,8 @@ class PetitionTile extends StatelessWidget {
                   ? Colors.transparent
                   : Theme.of(context).colorScheme.tertiaryContainer,
               borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(12),
-                topRight: Radius.circular(12),
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
               ),
               image: DecorationImage(
                 image: NetworkImage(petition.image),
@@ -57,8 +57,8 @@ class PetitionTile extends StatelessWidget {
                   ? Colors.transparent
                   : Theme.of(context).colorScheme.tertiaryContainer,
               borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(12),
-                bottomRight: Radius.circular(12),
+                bottomLeft: Radius.circular(10),
+                bottomRight: Radius.circular(10),
               ),
             ),
             child: Column(
