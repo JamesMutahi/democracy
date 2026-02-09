@@ -306,147 +306,125 @@ class _PostDetailState extends State<PostDetail> {
           appBar: AppBar(title: Text('Post')),
           body: isDeleted
               ? Center(child: Text('This post has been deleted by the author'))
-              : SmartRefresher(
-                  enablePullDown: hasNextPage,
-                  enablePullUp: false,
-                  header: ClassicHeader(
-                    // CustomScrollView is in reverse
-                    idleIcon: Icon(
-                      Icons.arrow_upward_rounded,
-                      color: Colors.grey,
-                    ),
-                    idleText: 'Pull up to load more',
-                    releaseText: 'Release to load more',
-                    completeText: 'Loaded',
-                  ),
-                  footer: ClassicFooter(
-                    // CustomScrollView is in reverse
-                    idleIcon: Icon(
-                      Icons.arrow_downward_rounded,
-                      color: Colors.grey,
-                    ),
-                    idleText: 'Show more',
-                  ),
-                  controller: _refreshController,
-                  onRefresh: _onScrollUp,
-                  child: CustomScrollView(
-                    reverse: true,
-                    slivers: <Widget>[
-                      SliverFillRemaining(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              _post.replyTo == null
-                                  ? Column(
-                                      children: [
-                                        if (widget.showAsRepost)
-                                          _repostBanner(),
-                                        _PostContainer(post: _post),
-                                      ],
-                                    )
-                                  : Column(
-                                      children: [
-                                        Column(
-                                          children: [
-                                            if (widget.showAsRepost)
-                                              Stack(
-                                                children: [
-                                                  ThreadLine(
-                                                    showBottomThread: true,
-                                                    showTopThread: true,
-                                                  ),
-                                                  Container(
-                                                    margin: EdgeInsets.only(
-                                                      left: 30,
-                                                    ),
-                                                    child: _repostBanner(),
-                                                  ),
-                                                ],
-                                              ),
+              : CustomScrollView(
+                  slivers: <Widget>[
+                    SliverFillRemaining(
+                      child: SmartRefresher(
+                        enablePullDown: false,
+                        enablePullUp: hasNextPage,
+                        footer: ClassicFooter(),
+                        controller: _refreshController,
+                        onLoading: _onScrollUp,
+                        child: ListView(
+                          children: [
+                            _post.replyTo == null
+                                ? Column(
+                                    children: [
+                                      if (widget.showAsRepost) _repostBanner(),
+                                      _PostContainer(post: _post),
+                                    ],
+                                  )
+                                : Column(
+                                    children: [
+                                      Column(
+                                        children: [
+                                          if (widget.showAsRepost)
                                             Stack(
                                               children: [
                                                 ThreadLine(
-                                                  showBottomThread: false,
+                                                  showBottomThread: true,
                                                   showTopThread: true,
                                                 ),
-                                                _PostContainer(post: _post),
+                                                Container(
+                                                  margin: EdgeInsets.only(
+                                                    left: 30,
+                                                  ),
+                                                  child: _repostBanner(),
+                                                ),
                                               ],
                                             ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                              PostListener(
-                                posts: _replies,
-                                onPostsUpdated: (posts) {
-                                  setState(() {
-                                    _replies = posts;
-                                  });
-                                },
-                                child: loading
-                                    ? Container(
-                                        margin: EdgeInsets.only(top: 50),
-                                        child: BottomLoader(),
-                                      )
-                                    : failure
-                                    ? FailureRetryButton(onPressed: _getData)
-                                    : ListView.builder(
-                                        shrinkWrap: true,
-                                        physics: NeverScrollableScrollPhysics(),
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                              Post post = _replies[index];
-                                              return PostTile(
-                                                key: ValueKey(post.id),
-                                                post: post,
-                                                checkVisibility: true,
-                                                showThreadedReplies:
-                                                    post.thread.isEmpty
-                                                    ? false
-                                                    : true,
-                                                showBottomThread:
-                                                    post.thread.isEmpty
-                                                    ? false
-                                                    : true,
-                                              );
-                                            },
-                                        itemCount: _replies.length,
+                                          Stack(
+                                            children: [
+                                              ThreadLine(
+                                                showBottomThread: false,
+                                                showTopThread: true,
+                                              ),
+                                              _PostContainer(post: _post),
+                                            ],
+                                          ),
+                                        ],
                                       ),
-                              ),
-                            ],
-                          ),
+                                    ],
+                                  ),
+                            PostListener(
+                              posts: _replies,
+                              onPostsUpdated: (posts) {
+                                setState(() {
+                                  _replies = posts;
+                                });
+                              },
+                              child: loading
+                                  ? Container(
+                                      margin: EdgeInsets.only(top: 50),
+                                      child: BottomLoader(),
+                                    )
+                                  : failure
+                                  ? FailureRetryButton(onPressed: _getData)
+                                  : ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                            Post post = _replies[index];
+                                            return PostTile(
+                                              key: ValueKey(post.id),
+                                              post: post,
+                                              checkVisibility: true,
+                                              showThreadedReplies:
+                                                  post.thread.isEmpty
+                                                  ? false
+                                                  : true,
+                                              showBottomThread:
+                                                  post.thread.isEmpty
+                                                  ? false
+                                                  : true,
+                                            );
+                                          },
+                                      itemCount: _replies.length,
+                                    ),
+                            ),
+                          ],
                         ),
                       ),
-                      SliverToBoxAdapter(
-                        child: PostListener(
-                          posts: _replyTos,
-                          onPostsUpdated: (posts) {
-                            setState(() {
-                              _replyTos = posts;
-                            });
+                    ),
+                    SliverToBoxAdapter(
+                      child: PostListener(
+                        posts: _replyTos,
+                        onPostsUpdated: (posts) {
+                          setState(() {
+                            _replyTos = posts;
+                          });
+                        },
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemBuilder: (BuildContext context, int index) {
+                            Post post = _replyTos[index];
+                            return PostWidgetSelector(
+                              key: ValueKey(post.id),
+                              post: post,
+                              showTopThread:
+                                  post.replyTo != null ||
+                                  post.communityNoteOf != null,
+                              showBottomThread: true,
+                              hideBorder: true,
+                            );
                           },
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            reverse: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemBuilder: (BuildContext context, int index) {
-                              Post post = _replyTos[index];
-                              return PostWidgetSelector(
-                                key: ValueKey(post.id),
-                                post: post,
-                                showTopThread:
-                                    post.replyTo != null ||
-                                    post.communityNoteOf != null,
-                                showBottomThread: true,
-                                hideBorder: true,
-                              );
-                            },
-                            itemCount: _replyTos.length,
-                          ),
+                          itemCount: _replyTos.length,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
           bottomNavigationBar: _post.author.hasBlocked
               ? Container(
