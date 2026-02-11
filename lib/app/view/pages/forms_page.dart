@@ -11,6 +11,7 @@ import 'package:democracy/survey/view/surveys.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class FormsPage extends StatefulWidget {
   const FormsPage({super.key, required this.user, required this.notifications});
@@ -137,6 +138,9 @@ class _SurveysSearchBar extends StatelessWidget {
         context.read<SurveysBloc>().add(
           SurveysEvent.get(
             searchTerm: state.searchTerm,
+            status: state.status,
+            sortBy: state.sortBy,
+            filterByRegion: state.filterByRegion,
             startDate: state.startDate,
             endDate: state.endDate,
           ),
@@ -158,9 +162,12 @@ class _SurveysSearchBar extends StatelessWidget {
               transitionDuration: const Duration(milliseconds: 300),
               pageBuilder: (context, animation, secondaryAnimation) {
                 return _FiltersModal(
+                  status: state.status,
+                  filterByRegion: state.filterByRegion,
+                  sortBy: state.sortBy,
+                  formsTabBarStatus: FormsTabBarStatus.onSurveys,
                   startDate: state.startDate,
                   endDate: state.endDate,
-                  formsTabBarStatus: FormsTabBarStatus.onSurveys,
                 );
               },
             );
@@ -183,6 +190,9 @@ class _PetitionsSearchBar extends StatelessWidget {
         context.read<PetitionsBloc>().add(
           PetitionsEvent.get(
             searchTerm: state.searchTerm,
+            status: state.status,
+            sortBy: state.sortBy,
+            filterByRegion: state.filterByRegion,
             startDate: state.startDate,
             endDate: state.endDate,
           ),
@@ -204,9 +214,12 @@ class _PetitionsSearchBar extends StatelessWidget {
               transitionDuration: const Duration(milliseconds: 300),
               pageBuilder: (context, animation, secondaryAnimation) {
                 return _FiltersModal(
+                  status: state.status,
+                  filterByRegion: state.filterByRegion,
+                  sortBy: state.sortBy,
+                  formsTabBarStatus: FormsTabBarStatus.onPetitions,
                   startDate: state.startDate,
                   endDate: state.endDate,
-                  formsTabBarStatus: FormsTabBarStatus.onPetitions,
                 );
               },
             );
@@ -248,20 +261,29 @@ class PetitionsTab extends StatelessWidget {
 
 class _FiltersModal extends StatefulWidget {
   const _FiltersModal({
+    required this.formsTabBarStatus,
+    required this.status,
+    required this.filterByRegion,
+    required this.sortBy,
     required this.startDate,
     required this.endDate,
-    required this.formsTabBarStatus,
   });
 
+  final FormsTabBarStatus formsTabBarStatus;
+  final String status;
+  final bool filterByRegion;
+  final String sortBy;
   final DateTime? startDate;
   final DateTime? endDate;
-  final FormsTabBarStatus formsTabBarStatus;
 
   @override
   State<_FiltersModal> createState() => _FiltersModalState();
 }
 
 class _FiltersModalState extends State<_FiltersModal> {
+  late String status = widget.status;
+  late bool filterByRegion = widget.filterByRegion;
+  late String sortBy = widget.sortBy;
   late DateTime? startDate = widget.startDate;
   late DateTime? endDate = widget.endDate;
 
@@ -271,17 +293,40 @@ class _FiltersModalState extends State<_FiltersModal> {
       builder: (context, state) {
         return FiltersModal(
           applyButtonIsDisabled:
-              (startDate == widget.startDate && endDate == widget.startDate),
-          clearButtonIsDisabled: startDate == null && endDate == null,
+              status == widget.status &&
+              filterByRegion == widget.filterByRegion &&
+              sortBy == widget.sortBy &&
+              startDate == widget.startDate &&
+              endDate == widget.endDate,
+          clearButtonIsDisabled: switch (widget.formsTabBarStatus) {
+            FormsTabBarStatus.onSurveys =>
+              status == 'open' &&
+                  sortBy == 'recent' &&
+                  filterByRegion == true &&
+                  startDate == null &&
+                  endDate == null,
+            FormsTabBarStatus.onPetitions =>
+              status == 'open' &&
+                  sortBy == 'popular' &&
+                  filterByRegion == true &&
+                  startDate == null &&
+                  endDate == null,
+          },
           onApply: () {
             switch (widget.formsTabBarStatus) {
               case FormsTabBarStatus.onSurveys:
-                context.read<SurveyFilterCubit>().datesChanged(
+                context.read<SurveyFilterCubit>().filtersChanged(
+                  status: status,
+                  filterByRegion: filterByRegion,
+                  sortBy: sortBy,
                   startDate: startDate,
                   endDate: endDate,
                 );
               case FormsTabBarStatus.onPetitions:
-                context.read<PetitionFilterCubit>().datesChanged(
+                context.read<PetitionFilterCubit>().filtersChanged(
+                  status: status,
+                  filterByRegion: filterByRegion,
+                  sortBy: sortBy,
                   startDate: startDate,
                   endDate: endDate,
                 );
@@ -291,15 +336,132 @@ class _FiltersModalState extends State<_FiltersModal> {
             switch (widget.formsTabBarStatus) {
               case FormsTabBarStatus.onSurveys:
                 context.read<SurveyFilterCubit>().clearFilters();
+                setState(() {
+                  status = 'open';
+                  filterByRegion = true;
+                  sortBy = 'recent';
+                  startDate = null;
+                  endDate = null;
+                });
               case FormsTabBarStatus.onPetitions:
                 context.read<PetitionFilterCubit>().clearFilters();
+                setState(() {
+                  status = 'open';
+                  filterByRegion = true;
+                  sortBy = 'popular';
+                  startDate = null;
+                  endDate = null;
+                });
             }
-            setState(() {
-              startDate = null;
-              endDate = null;
-            });
+            Navigator.pop(context);
           },
           widgets: [
+            Text('Status:', style: Theme.of(context).textTheme.titleMedium),
+            FormBuilderRadioGroup<String>(
+              name: 'status',
+              initialValue: status,
+              orientation: OptionsOrientation.vertical,
+              decoration: InputDecoration(border: InputBorder.none),
+              options: [
+                FormBuilderFieldOption<String>(
+                  value: 'open',
+                  child: Text('Open (default)'),
+                ),
+                FormBuilderFieldOption<String>(
+                  value: 'closed',
+                  child: Text('Closed'),
+                ),
+                FormBuilderFieldOption<String>(
+                  value: 'all',
+                  child: Text('Show all'),
+                ),
+              ],
+              onChanged: (value) {
+                setState(() {
+                  status = value!;
+                });
+              },
+            ),
+            Divider(),
+            Container(
+              margin: EdgeInsets.only(top: 10),
+              child: Text(
+                'Sort by:',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+            if (state.status == FormsTabBarStatus.onPetitions)
+              FormBuilderRadioGroup<String>(
+                name: 'sort by',
+                initialValue: sortBy,
+                orientation: OptionsOrientation.vertical,
+                decoration: InputDecoration(border: InputBorder.none),
+                options: [
+                  FormBuilderFieldOption<String>(
+                    value: 'popular',
+                    child: Text('Most supporters (default)'),
+                  ),
+                  FormBuilderFieldOption<String>(
+                    value: 'recent',
+                    child: Text('Newest first'),
+                  ),
+                  FormBuilderFieldOption<String>(
+                    value: 'oldest',
+                    child: Text('Oldest first'),
+                  ),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    sortBy = value!;
+                  });
+                },
+              ),
+            if (state.status == FormsTabBarStatus.onSurveys)
+              FormBuilderRadioGroup<String>(
+                name: 'sort by',
+                initialValue: sortBy,
+                orientation: OptionsOrientation.vertical,
+                decoration: InputDecoration(border: InputBorder.none),
+                options: [
+                  FormBuilderFieldOption<String>(
+                    value: 'recent',
+                    child: Text('Newest first (default)'),
+                  ),
+                  FormBuilderFieldOption<String>(
+                    value: 'oldest',
+                    child: Text('Oldest first'),
+                  ),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    sortBy = value!;
+                  });
+                },
+              ),
+            Divider(),
+            Container(
+              margin: EdgeInsets.only(top: 10),
+              child: Text(
+                'Filter by region:',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+            FormBuilderRadioGroup<bool>(
+              name: 'region',
+              initialValue: filterByRegion,
+              orientation: OptionsOrientation.vertical,
+              decoration: InputDecoration(border: InputBorder.none),
+              options: [
+                FormBuilderFieldOption<bool>(value: true, child: Text('Yes')),
+                FormBuilderFieldOption<bool>(value: false, child: Text('No')),
+              ],
+              onChanged: (value) {
+                setState(() {
+                  filterByRegion = value!;
+                });
+              },
+            ),
+            Divider(),
             DateRangeFilter(
               value: [startDate, endDate],
               onValueChanged: (dates) {
@@ -309,7 +471,6 @@ class _FiltersModalState extends State<_FiltersModal> {
                 });
               },
             ),
-            const Divider(),
           ],
         );
       },

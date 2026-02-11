@@ -22,6 +22,7 @@ class FiltersModal extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 1,
         automaticallyImplyLeading: false,
         title: const Padding(
           padding: EdgeInsets.only(left: 3.0),
@@ -33,7 +34,7 @@ class FiltersModal extends StatelessWidget {
             icon: const Icon(Symbols.close_rounded),
           ),
         ],
-        actionsPadding: EdgeInsets.only(right: 15),
+        actionsPadding: EdgeInsets.only(right: 10),
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
@@ -42,11 +43,7 @@ class FiltersModal extends StatelessWidget {
             bottom: BorderSide(color: Colors.black12),
           ), // Uniform radius
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: widgets,
-        ),
+        child: ListView(children: widgets),
       ),
       bottomNavigationBar: BottomAppBar(
         height: 65,
@@ -94,9 +91,12 @@ class DateRangeFilter extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Date range',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+        Container(
+          margin: EdgeInsets.only(top: 10),
+          child: const Text(
+            'Date range',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+          ),
         ),
         const SizedBox(height: 10.0),
         CalendarDatePicker2(
@@ -125,13 +125,7 @@ class _FilterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: isDisabled
-            ? Theme.of(context).disabledColor
-            : Theme.of(context).colorScheme.tertiaryContainer,
-        shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(2)),
-      ),
+      onPressed: isDisabled ? null : onPressed,
       child: Text(text),
     );
   }

@@ -5,6 +5,9 @@ sealed class PetitionsEvent with _$PetitionsEvent {
   const factory PetitionsEvent.get({
     String? searchTerm,
     Petition? lastPetition,
+    String? status,
+    String? sortBy,
+    bool? filterByRegion,
     DateTime? startDate,
     DateTime? endDate,
   }) = _Get;

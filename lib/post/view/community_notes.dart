@@ -182,6 +182,7 @@ class _CommunityNotesState extends State<CommunityNotes> {
                         CommunityNotesEvent.get(
                           post: widget.post,
                           lastPost: _communityNotes.last,
+                          sortBy: sortBy,
                         ),
                       );
                     },

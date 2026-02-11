@@ -5,6 +5,9 @@ sealed class SurveysEvent with _$SurveysEvent {
   const factory SurveysEvent.get({
     String? searchTerm,
     Survey? lastSurvey,
+    String? status,
+    String? sortBy,
+    bool? filterByRegion,
     DateTime? startDate,
     DateTime? endDate,
   }) = _Get;

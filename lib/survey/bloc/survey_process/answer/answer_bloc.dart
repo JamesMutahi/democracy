@@ -19,7 +19,6 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
   AnswerBloc({required this.webSocketService}) : super(const AnswerState()) {
     webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
-        print(message['payload']);
         switch (message['payload']['action']) {
           case 'submit':
             add(_Submitted(payload: message['payload']));

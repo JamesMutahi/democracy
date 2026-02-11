@@ -115,45 +115,44 @@ class _SurveysState extends State<Surveys> with AutomaticKeepAliveClientMixin {
           },
         ),
       ],
-      child:
-          loading
-              ? BottomLoader()
-              : failure
-              ? FailureRetryButton(
-                onPressed: () {
-                  context.read<SurveysBloc>().add(SurveysEvent.get());
-                },
-              )
-              : SmartRefresher(
-                enablePullDown: true,
-                enablePullUp: hasNextPage,
-                header: ClassicHeader(),
-                controller: _refreshController,
-                onRefresh: () {
-                  context.read<SurveysBloc>().add(SurveysEvent.get());
-                },
-                onLoading: () {
-                  context.read<SurveysBloc>().add(
-                    SurveysEvent.get(lastSurvey: _surveys.last),
+      child: loading
+          ? BottomLoader()
+          : failure
+          ? FailureRetryButton(
+              onPressed: () {
+                context.read<SurveysBloc>().add(SurveysEvent.get());
+              },
+            )
+          : SmartRefresher(
+              enablePullDown: true,
+              enablePullUp: hasNextPage,
+              header: ClassicHeader(),
+              controller: _refreshController,
+              onRefresh: () {
+                context.read<SurveysBloc>().add(SurveysEvent.get());
+              },
+              onLoading: () {
+                context.read<SurveysBloc>().add(
+                  SurveysEvent.get(lastSurvey: _surveys.last),
+                );
+              },
+              footer: ClassicFooter(),
+              child: ListView.builder(
+                padding: EdgeInsets.all(15),
+                itemBuilder: (BuildContext context, int index) {
+                  Survey survey = _surveys[index];
+                  return Container(
+                    margin: EdgeInsets.only(bottom: 10),
+                    child: SurveyTile(
+                      key: ValueKey(survey.id),
+                      survey: survey,
+                      isDependency: false,
+                    ),
                   );
                 },
-                footer: ClassicFooter(),
-                child: ListView.builder(
-                  padding: EdgeInsets.all(15),
-                  itemBuilder: (BuildContext context, int index) {
-                    Survey survey = _surveys[index];
-                    return Container(
-                      margin: EdgeInsets.only(bottom: 10),
-                      child: SurveyTile(
-                        key: ValueKey(survey.id),
-                        survey: survey,
-                        isDependency: false,
-                      ),
-                    );
-                  },
-                  itemCount: _surveys.length,
-                ),
+                itemCount: _surveys.length,
               ),
+            ),
     );
   }
 }

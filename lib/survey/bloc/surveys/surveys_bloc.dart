@@ -37,6 +37,9 @@ class SurveysBloc extends Bloc<SurveysEvent, SurveysState> {
         'request_id': requestId,
         'search_term': event.searchTerm,
         'last_survey': event.lastSurvey?.id,
+        'status': event.status,
+        'sortBy': event.sortBy,
+        'filter_by_region': event.filterByRegion ?? true,
         'start_date': event.startDate?.toIso8601String(),
         'end_date': event.endDate?.toIso8601String(),
       },
@@ -54,8 +57,9 @@ class SurveysBloc extends Bloc<SurveysEvent, SurveysState> {
       emit(
         state.copyWith(
           status: SurveysStatus.success,
-          surveys:
-              lastSurvey == null ? surveys : [...state.surveys, ...surveys],
+          surveys: lastSurvey == null
+              ? surveys
+              : [...state.surveys, ...surveys],
           hasNext: event.payload['data']['has_next'],
         ),
       );
