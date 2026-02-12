@@ -9,6 +9,9 @@ class BallotFilterCubit extends Cubit<BallotFilterState> {
     : super(
         const BallotFilterState.changed(
           searchTerm: '',
+          isActive: true,
+          filterByRegion: true,
+          sortBy: 'recent',
           startDate: null,
           endDate: null,
         ),
@@ -18,19 +21,28 @@ class BallotFilterCubit extends Cubit<BallotFilterState> {
     emit(
       BallotFilterState.changed(
         searchTerm: searchTerm,
+        isActive: state.isActive,
+        filterByRegion: state.filterByRegion,
+        sortBy: state.sortBy,
         startDate: state.startDate,
         endDate: state.endDate,
       ),
     );
   }
 
-  void datesChanged({
+  void filtersChanged({
+    required bool? isActive,
+    required bool filterByRegion,
+    required String sortBy,
     required DateTime? startDate,
     required DateTime? endDate,
   }) {
     emit(
       BallotFilterState.changed(
         searchTerm: state.searchTerm,
+        isActive: isActive,
+        filterByRegion: filterByRegion,
+        sortBy: sortBy,
         startDate: startDate,
         endDate: endDate,
       ),
@@ -41,6 +53,9 @@ class BallotFilterCubit extends Cubit<BallotFilterState> {
     emit(
       BallotFilterState.changed(
         searchTerm: state.searchTerm,
+        isActive: true,
+        filterByRegion: true,
+        sortBy: 'recent',
         startDate: null,
         endDate: null,
       ),

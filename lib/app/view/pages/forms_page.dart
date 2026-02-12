@@ -300,13 +300,13 @@ class _FiltersModalState extends State<_FiltersModal> {
               endDate == widget.endDate,
           clearButtonIsDisabled: switch (widget.formsTabBarStatus) {
             FormsTabBarStatus.onSurveys =>
-              isActive == false &&
+              isActive == true &&
                   sortBy == 'recent' &&
                   filterByRegion == true &&
                   startDate == null &&
                   endDate == null,
             FormsTabBarStatus.onPetitions =>
-              isActive == false &&
+              isActive == true &&
                   sortBy == 'popular' &&
                   filterByRegion == true &&
                   startDate == null &&
@@ -336,22 +336,8 @@ class _FiltersModalState extends State<_FiltersModal> {
             switch (widget.formsTabBarStatus) {
               case FormsTabBarStatus.onSurveys:
                 context.read<SurveyFilterCubit>().clearFilters();
-                setState(() {
-                  isActive = true;
-                  filterByRegion = true;
-                  sortBy = 'recent';
-                  startDate = null;
-                  endDate = null;
-                });
               case FormsTabBarStatus.onPetitions:
                 context.read<PetitionFilterCubit>().clearFilters();
-                setState(() {
-                  isActive = true;
-                  filterByRegion = true;
-                  sortBy = 'popular';
-                  startDate = null;
-                  endDate = null;
-                });
             }
             Navigator.pop(context);
           },

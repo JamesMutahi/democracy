@@ -6,6 +6,7 @@ import 'package:democracy/ballot/view/ballots.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class BallotPage extends StatefulWidget {
   const BallotPage({
@@ -46,6 +47,9 @@ class _BallotPageState extends State<BallotPage>
                   context.read<BallotsBloc>().add(
                     BallotsEvent.get(
                       searchTerm: state.searchTerm,
+                      isActive: state.isActive,
+                      sortBy: state.sortBy,
+                      filterByRegion: state.filterByRegion,
                       startDate: state.startDate,
                       endDate: state.endDate,
                     ),
@@ -65,6 +69,9 @@ class _BallotPageState extends State<BallotPage>
                         transitionDuration: const Duration(milliseconds: 300),
                         pageBuilder: (context, animation, secondaryAnimation) {
                           return _FiltersModal(
+                            isActive: state.isActive,
+                            filterByRegion: state.filterByRegion,
+                            sortBy: state.sortBy,
                             startDate: state.startDate,
                             endDate: state.endDate,
                           );
@@ -84,8 +91,17 @@ class _BallotPageState extends State<BallotPage>
 }
 
 class _FiltersModal extends StatefulWidget {
-  const _FiltersModal({required this.startDate, required this.endDate});
+  const _FiltersModal({
+    required this.isActive,
+    required this.filterByRegion,
+    required this.sortBy,
+    required this.startDate,
+    required this.endDate,
+  });
 
+  final bool? isActive;
+  final bool filterByRegion;
+  final String sortBy;
   final DateTime? startDate;
   final DateTime? endDate;
 
@@ -94,6 +110,9 @@ class _FiltersModal extends StatefulWidget {
 }
 
 class _FiltersModalState extends State<_FiltersModal> {
+  late bool? isActive = widget.isActive;
+  late bool filterByRegion = widget.filterByRegion;
+  late String sortBy = widget.sortBy;
   late DateTime? startDate = widget.startDate;
   late DateTime? endDate = widget.endDate;
 
@@ -101,22 +120,104 @@ class _FiltersModalState extends State<_FiltersModal> {
   Widget build(BuildContext context) {
     return FiltersModal(
       applyButtonIsDisabled:
-          (startDate == widget.startDate && endDate == widget.startDate),
-      clearButtonIsDisabled: startDate == null && endDate == null,
+          isActive == widget.isActive &&
+          filterByRegion == widget.filterByRegion &&
+          sortBy == widget.sortBy &&
+          startDate == widget.startDate &&
+          endDate == widget.endDate,
+      clearButtonIsDisabled:
+          isActive == true &&
+          sortBy == 'recent' &&
+          filterByRegion == true &&
+          startDate == null &&
+          endDate == null,
       onApply: () {
-        context.read<BallotFilterCubit>().datesChanged(
+        context.read<BallotFilterCubit>().filtersChanged(
+          isActive: isActive,
+          filterByRegion: filterByRegion,
+          sortBy: sortBy,
           startDate: startDate,
           endDate: endDate,
         );
       },
       onClear: () {
         context.read<BallotFilterCubit>().clearFilters();
-        setState(() {
-          startDate = null;
-          endDate = null;
-        });
+        Navigator.pop(context);
       },
       widgets: [
+        Text('Status:', style: Theme.of(context).textTheme.titleMedium),
+        FormBuilderRadioGroup<bool?>(
+          name: 'active',
+          initialValue: isActive,
+          orientation: OptionsOrientation.vertical,
+          decoration: InputDecoration(border: InputBorder.none),
+          options: [
+            FormBuilderFieldOption<bool?>(
+              value: true,
+              child: Text('Open (default)'),
+            ),
+            FormBuilderFieldOption<bool?>(value: false, child: Text('Closed')),
+            FormBuilderFieldOption<bool?>(value: null, child: Text('Show all')),
+          ],
+          onChanged: (value) {
+            setState(() {
+              isActive = value;
+            });
+          },
+        ),
+        Divider(),
+        Container(
+          margin: EdgeInsets.only(top: 10),
+          child: Text(
+            'Sort by:',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+        ),
+        FormBuilderRadioGroup<String>(
+          name: 'sort by',
+          initialValue: sortBy,
+          orientation: OptionsOrientation.vertical,
+          decoration: InputDecoration(border: InputBorder.none),
+          options: [
+            FormBuilderFieldOption<String>(
+              value: 'recent',
+              child: Text('Newest first (default)'),
+            ),
+            FormBuilderFieldOption<String>(
+              value: 'oldest',
+              child: Text('Oldest first'),
+            ),
+          ],
+          onChanged: (value) {
+            setState(() {
+              sortBy = value!;
+            });
+          },
+        ),
+        Divider(),
+        Container(
+          margin: EdgeInsets.only(top: 10),
+          child: Text(
+            'Filter by region:',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+        ),
+        FormBuilderRadioGroup<bool>(
+          name: 'region',
+          initialValue: filterByRegion,
+          orientation: OptionsOrientation.vertical,
+          decoration: InputDecoration(border: InputBorder.none),
+          options: [
+            FormBuilderFieldOption<bool>(value: true, child: Text('Yes')),
+            FormBuilderFieldOption<bool>(value: false, child: Text('No')),
+          ],
+          onChanged: (value) {
+            setState(() {
+              filterByRegion = value!;
+            });
+          },
+        ),
+        Divider(),
         DateRangeFilter(
           value: [startDate, endDate],
           onValueChanged: (dates) {
@@ -126,7 +227,6 @@ class _FiltersModalState extends State<_FiltersModal> {
             });
           },
         ),
-        const Divider(),
       ],
     );
   }

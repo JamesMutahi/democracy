@@ -5,6 +5,9 @@ sealed class BallotsEvent with _$BallotsEvent {
   const factory BallotsEvent.get({
     String? searchTerm,
     Ballot? lastBallot,
+    bool? isActive,
+    String? sortBy,
+    bool? filterByRegion,
     DateTime? startDate,
     DateTime? endDate,
   }) = _Get;
