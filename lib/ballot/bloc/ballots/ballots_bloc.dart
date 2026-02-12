@@ -38,7 +38,7 @@ class BallotsBloc extends Bloc<BallotsEvent, BallotsState> {
         'search_term': event.searchTerm,
         'last_ballot': event.lastBallot?.id,
         'is_active': event.isActive,
-        'sortBy': event.sortBy,
+        'sort_by': event.sortBy,
         'filter_by_region': event.filterByRegion ?? true,
         'start_date': event.startDate?.toIso8601String(),
         'end_date': event.endDate?.toIso8601String(),

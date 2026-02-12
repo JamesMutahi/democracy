@@ -27,7 +27,7 @@ final class MeetingsState extends Equatable {
 
   @override
   String toString() {
-    return '''MeetingsState { status: $status, ballots: ${meetings.length}, hasNext: $hasNext }''';
+    return '''MeetingsState { status: $status, meetings: ${meetings.length}, hasNext: $hasNext }''';
   }
 
   @override

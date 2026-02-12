@@ -4,6 +4,9 @@ part of 'meeting_filter_cubit.dart';
 sealed class MeetingFilterState with _$MeetingFilterState {
   const factory MeetingFilterState.changed({
     required String searchTerm,
+    required bool? isActive,
+    required bool filterByRegion,
+    required String sortBy,
     required DateTime? startDate,
     required DateTime? endDate,
   }) = _Changed;

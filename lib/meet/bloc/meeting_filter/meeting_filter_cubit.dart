@@ -9,6 +9,9 @@ class MeetingFilterCubit extends Cubit<MeetingFilterState> {
     : super(
         const MeetingFilterState.changed(
           searchTerm: '',
+          isActive: true,
+          filterByRegion: true,
+          sortBy: 'recent',
           startDate: null,
           endDate: null,
         ),
@@ -18,16 +21,28 @@ class MeetingFilterCubit extends Cubit<MeetingFilterState> {
     emit(
       MeetingFilterState.changed(
         searchTerm: searchTerm,
+        isActive: state.isActive,
+        filterByRegion: state.filterByRegion,
+        sortBy: state.sortBy,
         startDate: state.startDate,
         endDate: state.endDate,
       ),
     );
   }
 
-  void datesChanged({required DateTime? startDate, required DateTime? endDate}) {
+  void filtersChanged({
+    required bool? isActive,
+    required bool filterByRegion,
+    required String sortBy,
+    required DateTime? startDate,
+    required DateTime? endDate,
+  }) {
     emit(
       MeetingFilterState.changed(
         searchTerm: state.searchTerm,
+        isActive: isActive,
+        filterByRegion: filterByRegion,
+        sortBy: sortBy,
         startDate: startDate,
         endDate: endDate,
       ),
@@ -38,6 +53,9 @@ class MeetingFilterCubit extends Cubit<MeetingFilterState> {
     emit(
       MeetingFilterState.changed(
         searchTerm: state.searchTerm,
+        isActive: true,
+        filterByRegion: true,
+        sortBy: 'recent',
         startDate: null,
         endDate: null,
       ),
