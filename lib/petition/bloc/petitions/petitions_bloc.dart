@@ -40,7 +40,7 @@ class PetitionsBloc extends Bloc<PetitionsEvent, PetitionsState> {
         'request_id': requestId,
         'search_term': event.searchTerm,
         'last_ballot': event.lastPetition?.id,
-        'status': event.status,
+        'is_open': event.isOpen,
         'sort_by': event.sortBy,
         'filter_by_region': event.filterByRegion ?? true,
         'start_date': event.startDate?.toIso8601String(),

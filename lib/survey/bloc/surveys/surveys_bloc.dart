@@ -37,7 +37,7 @@ class SurveysBloc extends Bloc<SurveysEvent, SurveysState> {
         'request_id': requestId,
         'search_term': event.searchTerm,
         'last_survey': event.lastSurvey?.id,
-        'status': event.status,
+        'is_active': event.isActive,
         'sortBy': event.sortBy,
         'filter_by_region': event.filterByRegion ?? true,
         'start_date': event.startDate?.toIso8601String(),

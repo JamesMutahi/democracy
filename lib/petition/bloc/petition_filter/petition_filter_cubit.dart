@@ -9,7 +9,7 @@ class PetitionFilterCubit extends Cubit<PetitionFilterState> {
     : super(
         const PetitionFilterState.changed(
           searchTerm: '',
-          status: 'open',
+          isOpen: true,
           filterByRegion: true,
           sortBy: 'popular',
           startDate: null,
@@ -21,7 +21,7 @@ class PetitionFilterCubit extends Cubit<PetitionFilterState> {
     emit(
       PetitionFilterState.changed(
         searchTerm: searchTerm,
-        status: state.status,
+        isOpen: state.isOpen,
         filterByRegion: state.filterByRegion,
         sortBy: state.sortBy,
         startDate: state.startDate,
@@ -31,7 +31,7 @@ class PetitionFilterCubit extends Cubit<PetitionFilterState> {
   }
 
   void filtersChanged({
-    required String status,
+    required bool? isOpen,
     required bool filterByRegion,
     required String sortBy,
     required DateTime? startDate,
@@ -40,7 +40,7 @@ class PetitionFilterCubit extends Cubit<PetitionFilterState> {
     emit(
       PetitionFilterState.changed(
         searchTerm: state.searchTerm,
-        status: status,
+        isOpen: isOpen,
         filterByRegion: filterByRegion,
         sortBy: sortBy,
         startDate: startDate,
@@ -53,7 +53,7 @@ class PetitionFilterCubit extends Cubit<PetitionFilterState> {
     emit(
       PetitionFilterState.changed(
         searchTerm: state.searchTerm,
-        status: 'open',
+        isOpen: true,
         filterByRegion: true,
         sortBy: 'popular',
         startDate: null,

@@ -138,7 +138,7 @@ class _SurveysSearchBar extends StatelessWidget {
         context.read<SurveysBloc>().add(
           SurveysEvent.get(
             searchTerm: state.searchTerm,
-            status: state.status,
+            isActive: state.isActive,
             sortBy: state.sortBy,
             filterByRegion: state.filterByRegion,
             startDate: state.startDate,
@@ -162,7 +162,7 @@ class _SurveysSearchBar extends StatelessWidget {
               transitionDuration: const Duration(milliseconds: 300),
               pageBuilder: (context, animation, secondaryAnimation) {
                 return _FiltersModal(
-                  status: state.status,
+                  isActive: state.isActive,
                   filterByRegion: state.filterByRegion,
                   sortBy: state.sortBy,
                   formsTabBarStatus: FormsTabBarStatus.onSurveys,
@@ -190,7 +190,7 @@ class _PetitionsSearchBar extends StatelessWidget {
         context.read<PetitionsBloc>().add(
           PetitionsEvent.get(
             searchTerm: state.searchTerm,
-            status: state.status,
+            isOpen: state.isOpen,
             sortBy: state.sortBy,
             filterByRegion: state.filterByRegion,
             startDate: state.startDate,
@@ -214,7 +214,7 @@ class _PetitionsSearchBar extends StatelessWidget {
               transitionDuration: const Duration(milliseconds: 300),
               pageBuilder: (context, animation, secondaryAnimation) {
                 return _FiltersModal(
-                  status: state.status,
+                  isActive: state.isOpen,
                   filterByRegion: state.filterByRegion,
                   sortBy: state.sortBy,
                   formsTabBarStatus: FormsTabBarStatus.onPetitions,
@@ -262,7 +262,7 @@ class PetitionsTab extends StatelessWidget {
 class _FiltersModal extends StatefulWidget {
   const _FiltersModal({
     required this.formsTabBarStatus,
-    required this.status,
+    required this.isActive,
     required this.filterByRegion,
     required this.sortBy,
     required this.startDate,
@@ -270,7 +270,7 @@ class _FiltersModal extends StatefulWidget {
   });
 
   final FormsTabBarStatus formsTabBarStatus;
-  final String status;
+  final bool? isActive;
   final bool filterByRegion;
   final String sortBy;
   final DateTime? startDate;
@@ -281,7 +281,7 @@ class _FiltersModal extends StatefulWidget {
 }
 
 class _FiltersModalState extends State<_FiltersModal> {
-  late String status = widget.status;
+  late bool? isActive = widget.isActive;
   late bool filterByRegion = widget.filterByRegion;
   late String sortBy = widget.sortBy;
   late DateTime? startDate = widget.startDate;
@@ -293,20 +293,20 @@ class _FiltersModalState extends State<_FiltersModal> {
       builder: (context, state) {
         return FiltersModal(
           applyButtonIsDisabled:
-              status == widget.status &&
+              isActive == widget.isActive &&
               filterByRegion == widget.filterByRegion &&
               sortBy == widget.sortBy &&
               startDate == widget.startDate &&
               endDate == widget.endDate,
           clearButtonIsDisabled: switch (widget.formsTabBarStatus) {
             FormsTabBarStatus.onSurveys =>
-              status == 'open' &&
+              isActive == false &&
                   sortBy == 'recent' &&
                   filterByRegion == true &&
                   startDate == null &&
                   endDate == null,
             FormsTabBarStatus.onPetitions =>
-              status == 'open' &&
+              isActive == false &&
                   sortBy == 'popular' &&
                   filterByRegion == true &&
                   startDate == null &&
@@ -316,7 +316,7 @@ class _FiltersModalState extends State<_FiltersModal> {
             switch (widget.formsTabBarStatus) {
               case FormsTabBarStatus.onSurveys:
                 context.read<SurveyFilterCubit>().filtersChanged(
-                  status: status,
+                  isActive: isActive,
                   filterByRegion: filterByRegion,
                   sortBy: sortBy,
                   startDate: startDate,
@@ -324,7 +324,7 @@ class _FiltersModalState extends State<_FiltersModal> {
                 );
               case FormsTabBarStatus.onPetitions:
                 context.read<PetitionFilterCubit>().filtersChanged(
-                  status: status,
+                  isOpen: isActive,
                   filterByRegion: filterByRegion,
                   sortBy: sortBy,
                   startDate: startDate,
@@ -337,7 +337,7 @@ class _FiltersModalState extends State<_FiltersModal> {
               case FormsTabBarStatus.onSurveys:
                 context.read<SurveyFilterCubit>().clearFilters();
                 setState(() {
-                  status = 'open';
+                  isActive = true;
                   filterByRegion = true;
                   sortBy = 'recent';
                   startDate = null;
@@ -346,7 +346,7 @@ class _FiltersModalState extends State<_FiltersModal> {
               case FormsTabBarStatus.onPetitions:
                 context.read<PetitionFilterCubit>().clearFilters();
                 setState(() {
-                  status = 'open';
+                  isActive = true;
                   filterByRegion = true;
                   sortBy = 'popular';
                   startDate = null;
@@ -357,28 +357,28 @@ class _FiltersModalState extends State<_FiltersModal> {
           },
           widgets: [
             Text('Status:', style: Theme.of(context).textTheme.titleMedium),
-            FormBuilderRadioGroup<String>(
-              name: 'status',
-              initialValue: status,
+            FormBuilderRadioGroup<bool?>(
+              name: 'active',
+              initialValue: isActive,
               orientation: OptionsOrientation.vertical,
               decoration: InputDecoration(border: InputBorder.none),
               options: [
-                FormBuilderFieldOption<String>(
-                  value: 'open',
+                FormBuilderFieldOption<bool?>(
+                  value: true,
                   child: Text('Open (default)'),
                 ),
-                FormBuilderFieldOption<String>(
-                  value: 'closed',
+                FormBuilderFieldOption<bool?>(
+                  value: false,
                   child: Text('Closed'),
                 ),
-                FormBuilderFieldOption<String>(
-                  value: 'all',
+                FormBuilderFieldOption<bool?>(
+                  value: null,
                   child: Text('Show all'),
                 ),
               ],
               onChanged: (value) {
                 setState(() {
-                  status = value!;
+                  isActive = value;
                 });
               },
             ),
