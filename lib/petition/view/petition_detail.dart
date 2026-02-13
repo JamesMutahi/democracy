@@ -119,7 +119,21 @@ class _PetitionDetailState extends State<PetitionDetail> {
                               },
                               child: PetitionSupportersRow(petition: _petition),
                             ),
-                            SupportButton(petition: _petition),
+                            _petition.isOpen
+                                ? SupportButton(petition: _petition)
+                                : Card.outlined(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Text(
+                                        'Closed',
+                                        style: TextStyle(
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.error,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                           ],
                         ),
                         SizedBox(height: 10),

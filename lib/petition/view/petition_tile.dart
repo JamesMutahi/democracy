@@ -1,12 +1,17 @@
 import 'package:democracy/app/utils/custom_bottom_sheet.dart';
+import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/utils/more_pop_up.dart';
+import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
+import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_detail.dart';
 import 'package:democracy/post/view/post_create.dart';
+import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class PetitionTile extends StatelessWidget {
@@ -146,27 +151,56 @@ class PetitionPopUpMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MorePopUp(
-      onSelected: (selected) {
-        switch (selected) {
-          case 'Post':
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => PostCreate(petition: petition),
-              ),
-            );
-          case 'Share':
-            showModalBottomSheet<void>(
-              context: context,
-              shape: const BeveledRectangleBorder(),
-              builder: (BuildContext context) {
-                return ShareBottomSheet(petition: petition);
-              },
-            );
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        late User user;
+        if (state is Authenticated) {
+          user = state.user;
         }
+        return MorePopUp(
+          onSelected: (selected) {
+            switch (selected) {
+              case 'Post':
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PostCreate(petition: petition),
+                  ),
+                );
+              case 'Share':
+                showModalBottomSheet<void>(
+                  context: context,
+                  shape: const BeveledRectangleBorder(),
+                  builder: (BuildContext context) {
+                    return ShareBottomSheet(petition: petition);
+                  },
+                );
+              case 'Close':
+                showDialog(
+                  context: context,
+                  builder: (context) => CustomDialog(
+                    title: 'Close petition',
+                    content:
+                        'Are you sure you want to close this petition?'
+                        '\nYour petition  will no longer allow any supporters',
+                    button1Text: 'Yes',
+                    onButton1Pressed: () {
+                      context.read<PetitionDetailBloc>().add(
+                        PetitionDetailEvent.close(petition: petition),
+                      );
+                      Navigator.pop(context);
+                    },
+                    button2Text: 'No',
+                    onButton2Pressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                );
+            }
+          },
+          texts: ['Post', 'Share', if (user.id == petition.author.id) 'Close'],
+        );
       },
-      texts: ['Post', 'Share'],
     );
   }
 }

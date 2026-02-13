@@ -46,6 +46,9 @@ class PetitionDetailBloc
     on<_Support>((event, emit) {
       _onSupport(event, emit);
     });
+    on<_Close>((event, emit) {
+      _onClose(event, emit);
+    });
     on<_Received>((event, emit) {
       _onReceived(event, emit);
     });
@@ -101,6 +104,18 @@ class PetitionDetailBloc
       'stream': stream,
       'payload': {
         "action": 'support',
+        'request_id': requestId,
+        'pk': event.petition.id,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  Future _onClose(_Close event, Emitter<PetitionDetailState> emit) async {
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        "action": 'close',
         'request_id': requestId,
         'pk': event.petition.id,
       },
