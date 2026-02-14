@@ -39,7 +39,7 @@ class SurveysBloc extends Bloc<SurveysEvent, SurveysState> {
         'last_survey': event.lastSurvey?.id,
         'is_active': event.isActive,
         'sort_by': event.sortBy,
-        'filter_by_region': event.filterByRegion ?? true,
+        'filter_by_region': event.filterByRegion,
         'start_date': event.startDate?.toIso8601String(),
         'end_date': event.endDate?.toIso8601String(),
       },

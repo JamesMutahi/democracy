@@ -1,6 +1,7 @@
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
+import 'package:democracy/survey/bloc/survey_filter/survey_filter_cubit.dart';
 import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
 import 'package:democracy/survey/bloc/surveys/surveys_bloc.dart';
 import 'package:democracy/survey/models/survey.dart';
@@ -30,7 +31,9 @@ class _SurveysState extends State<Surveys> with AutomaticKeepAliveClientMixin {
 
   @override
   void initState() {
-    context.read<SurveysBloc>().add(SurveysEvent.get());
+    context.read<SurveysBloc>().add(
+      SurveysEvent.get(isActive: true, filterByRegion: true),
+    );
     super.initState();
   }
 
@@ -115,44 +118,54 @@ class _SurveysState extends State<Surveys> with AutomaticKeepAliveClientMixin {
           },
         ),
       ],
-      child: loading
-          ? BottomLoader()
-          : failure
-          ? FailureRetryButton(
-              onPressed: () {
-                context.read<SurveysBloc>().add(SurveysEvent.get());
-              },
-            )
-          : SmartRefresher(
-              enablePullDown: true,
-              enablePullUp: hasNextPage,
-              header: ClassicHeader(),
-              controller: _refreshController,
-              onRefresh: () {
-                context.read<SurveysBloc>().add(SurveysEvent.get());
-              },
-              onLoading: () {
-                context.read<SurveysBloc>().add(
-                  SurveysEvent.get(lastSurvey: _surveys.last),
-                );
-              },
-              footer: ClassicFooter(),
-              child: ListView.builder(
-                padding: EdgeInsets.all(15),
-                itemBuilder: (BuildContext context, int index) {
-                  Survey survey = _surveys[index];
-                  return Container(
-                    margin: EdgeInsets.only(bottom: 10),
-                    child: SurveyTile(
-                      key: ValueKey(survey.id),
-                      survey: survey,
-                      isDependency: false,
-                    ),
-                  );
-                },
-                itemCount: _surveys.length,
+      child: BlocBuilder<SurveyFilterCubit, SurveyFilterState>(
+        builder: (context, state) {
+          void getSurveys({Survey? lastSurvey}) {
+            context.read<SurveysBloc>().add(
+              SurveysEvent.get(
+                lastSurvey: lastSurvey,
+                searchTerm: state.searchTerm,
+                isActive: state.isActive,
+                sortBy: state.sortBy,
+                filterByRegion: state.filterByRegion,
+                startDate: state.startDate,
+                endDate: state.endDate,
               ),
-            ),
+            );
+          }
+
+          return loading
+              ? BottomLoader()
+              : failure
+              ? FailureRetryButton(onPressed: getSurveys)
+              : SmartRefresher(
+                  enablePullDown: true,
+                  enablePullUp: hasNextPage,
+                  header: ClassicHeader(),
+                  controller: _refreshController,
+                  onRefresh: getSurveys,
+                  onLoading: () {
+                    getSurveys(lastSurvey: _surveys.last);
+                  },
+                  footer: ClassicFooter(),
+                  child: ListView.builder(
+                    padding: EdgeInsets.all(15),
+                    itemBuilder: (BuildContext context, int index) {
+                      Survey survey = _surveys[index];
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: SurveyTile(
+                          key: ValueKey(survey.id),
+                          survey: survey,
+                          isDependency: false,
+                        ),
+                      );
+                    },
+                    itemCount: _surveys.length,
+                  ),
+                );
+        },
+      ),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
+import 'package:democracy/ballot/bloc/ballot_filter/ballot_filter_cubit.dart';
 import 'package:democracy/ballot/bloc/ballots/ballots_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
@@ -26,7 +27,9 @@ class _BallotsState extends State<Ballots> {
 
   @override
   void initState() {
-    context.read<BallotsBloc>().add(BallotsEvent.get());
+    context.read<BallotsBloc>().add(
+      BallotsEvent.get(isActive: true, filterByRegion: true),
+    );
     super.initState();
   }
 
@@ -97,50 +100,54 @@ class _BallotsState extends State<Ballots> {
           },
         ),
       ],
-      child: loading
-          ? BottomLoader()
-          : failure
-          ? FailureRetryButton(
-              onPressed: () {
-                context.read<BallotsBloc>().add(BallotsEvent.get());
-              },
-            )
-          : SmartRefresher(
-              enablePullDown: true,
-              enablePullUp: hasNextPage,
-              header: ClassicHeader(),
-              controller: _refreshController,
-              onRefresh: () {
-                context.read<BallotsBloc>().add(BallotsEvent.get());
-              },
-              onLoading: () {
-                context.read<BallotsBloc>().add(
-                  BallotsEvent.get(
-                    lastBallot: _ballots.last,
-                    // TODO:
-                    // searchTerm: ,
-                    // startDate: ,
-                    // endDate: ,
+      child: BlocBuilder<BallotFilterCubit, BallotFilterState>(
+        builder: (context, state) {
+          void getBallots({Ballot? lastBallot}) {
+            context.read<BallotsBloc>().add(
+              BallotsEvent.get(
+                lastBallot: lastBallot,
+                searchTerm: state.searchTerm,
+                isActive: state.isActive,
+                sortBy: state.sortBy,
+                filterByRegion: state.filterByRegion,
+                startDate: state.startDate,
+                endDate: state.endDate,
+              ),
+            );
+          }
+
+          return loading
+              ? BottomLoader()
+              : failure
+              ? FailureRetryButton(onPressed: getBallots)
+              : SmartRefresher(
+                  enablePullDown: true,
+                  enablePullUp: hasNextPage,
+                  header: ClassicHeader(),
+                  controller: _refreshController,
+                  onRefresh: getBallots,
+                  onLoading: () {
+                    getBallots(lastBallot: _ballots.last);
+                  },
+                  footer: ClassicFooter(),
+                  child: ListView.builder(
+                    padding: EdgeInsets.all(15),
+                    itemBuilder: (BuildContext context, int index) {
+                      Ballot ballot = _ballots[index];
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: BallotTile(
+                          key: ValueKey(ballot.id),
+                          ballot: ballot,
+                          isDependency: false,
+                        ),
+                      );
+                    },
+                    itemCount: _ballots.length,
                   ),
                 );
-              },
-              footer: ClassicFooter(),
-              child: ListView.builder(
-                padding: EdgeInsets.all(15),
-                itemBuilder: (BuildContext context, int index) {
-                  Ballot ballot = _ballots[index];
-                  return Container(
-                    margin: EdgeInsets.only(bottom: 10),
-                    child: BallotTile(
-                      key: ValueKey(ballot.id),
-                      ballot: ballot,
-                      isDependency: false,
-                    ),
-                  );
-                },
-                itemCount: _ballots.length,
-              ),
-            ),
+        },
+      ),
     );
   }
 }

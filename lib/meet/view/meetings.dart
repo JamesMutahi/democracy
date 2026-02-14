@@ -2,6 +2,7 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/meet/bloc/meeting_detail/meeting_detail_bloc.dart';
+import 'package:democracy/meet/bloc/meeting_filter/meeting_filter_cubit.dart';
 import 'package:democracy/meet/bloc/meetings/meetings_bloc.dart';
 import 'package:democracy/meet/models/meeting.dart';
 import 'package:democracy/meet/view/meeting_tile.dart';
@@ -27,7 +28,9 @@ class _MeetingsState extends State<Meetings> {
 
   @override
   void initState() {
-    context.read<MeetingsBloc>().add(MeetingsEvent.get());
+    context.read<MeetingsBloc>().add(
+      MeetingsEvent.get(isActive: true, filterByRegion: true),
+    );
     super.initState();
   }
 
@@ -109,45 +112,54 @@ class _MeetingsState extends State<Meetings> {
           },
         ),
       ],
-      child:
-          loading
+      child: BlocBuilder<MeetingFilterCubit, MeetingFilterState>(
+        builder: (context, state) {
+          void getMeetings({Meeting? lastMeeting}) {
+            context.read<MeetingsBloc>().add(
+              MeetingsEvent.get(
+                lastMeeting: lastMeeting,
+                searchTerm: state.searchTerm,
+                isActive: state.isActive,
+                sortBy: state.sortBy,
+                filterByRegion: state.filterByRegion,
+                startDate: state.startDate,
+                endDate: state.endDate,
+              ),
+            );
+          }
+
+          return loading
               ? BottomLoader()
               : failure
-              ? FailureRetryButton(
-                onPressed: () {
-                  context.read<MeetingsBloc>().add(MeetingsEvent.get());
-                },
-              )
+              ? FailureRetryButton(onPressed: getMeetings)
               : SmartRefresher(
-                enablePullDown: true,
-                enablePullUp: hasNextPage,
-                header: ClassicHeader(),
-                controller: _refreshController,
-                onRefresh: () {
-                  context.read<MeetingsBloc>().add(MeetingsEvent.get());
-                },
-                onLoading: () {
-                  context.read<MeetingsBloc>().add(
-                    MeetingsEvent.get(lastMeeting: _meetings.last),
-                  );
-                },
-                footer: ClassicFooter(),
-                child: ListView.builder(
-                  padding: EdgeInsets.all(15),
-                  itemBuilder: (BuildContext context, int index) {
-                    Meeting meeting = _meetings[index];
-                    return Container(
-                      margin: EdgeInsets.only(bottom: 10),
-                      child: MeetingTile(
-                        key: ValueKey(meeting.id),
-                        meeting: meeting,
-                        isDependency: false,
-                      ),
-                    );
+                  enablePullDown: true,
+                  enablePullUp: hasNextPage,
+                  header: ClassicHeader(),
+                  controller: _refreshController,
+                  onRefresh: getMeetings,
+                  onLoading: () {
+                    getMeetings(lastMeeting: _meetings.last);
                   },
-                  itemCount: _meetings.length,
-                ),
-              ),
+                  footer: ClassicFooter(),
+                  child: ListView.builder(
+                    padding: EdgeInsets.all(15),
+                    itemBuilder: (BuildContext context, int index) {
+                      Meeting meeting = _meetings[index];
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: MeetingTile(
+                          key: ValueKey(meeting.id),
+                          meeting: meeting,
+                          isDependency: false,
+                        ),
+                      );
+                    },
+                    itemCount: _meetings.length,
+                  ),
+                );
+        },
+      ),
     );
   }
 }

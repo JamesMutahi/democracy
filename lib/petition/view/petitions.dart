@@ -2,6 +2,7 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
+import 'package:democracy/petition/bloc/petition_filter/petition_filter_cubit.dart';
 import 'package:democracy/petition/bloc/petitions/petitions_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
@@ -31,7 +32,9 @@ class _PetitionsState extends State<Petitions>
 
   @override
   void initState() {
-    context.read<PetitionsBloc>().add(PetitionsEvent.get());
+    context.read<PetitionsBloc>().add(
+      PetitionsEvent.get(isOpen: true, filterByRegion: true),
+    );
     super.initState();
   }
 
@@ -110,50 +113,54 @@ class _PetitionsState extends State<Petitions>
           },
         ),
       ],
-      child: loading
-          ? BottomLoader()
-          : failure
-          ? FailureRetryButton(
-              onPressed: () {
-                context.read<PetitionsBloc>().add(PetitionsEvent.get());
-              },
-            )
-          : SmartRefresher(
-              enablePullDown: true,
-              enablePullUp: hasNextPage,
-              header: ClassicHeader(),
-              controller: _refreshController,
-              onRefresh: () {
-                context.read<PetitionsBloc>().add(PetitionsEvent.get());
-              },
-              onLoading: () {
-                context.read<PetitionsBloc>().add(
-                  PetitionsEvent.get(
-                    lastPetition: _petitions.last,
-                    // TODO:
-                    // searchTerm: ,
-                    //   startDate: ,
-                    //   endDate: ,
+      child: BlocBuilder<PetitionFilterCubit, PetitionFilterState>(
+        builder: (context, state) {
+          void getPetitions({Petition? lastPetition}) {
+            context.read<PetitionsBloc>().add(
+              PetitionsEvent.get(
+                lastPetition: lastPetition,
+                searchTerm: state.searchTerm,
+                isOpen: state.isOpen,
+                sortBy: state.sortBy,
+                filterByRegion: state.filterByRegion,
+                startDate: state.startDate,
+                endDate: state.endDate,
+              ),
+            );
+          }
+
+          return loading
+              ? BottomLoader()
+              : failure
+              ? FailureRetryButton(onPressed: getPetitions)
+              : SmartRefresher(
+                  enablePullDown: true,
+                  enablePullUp: hasNextPage,
+                  header: ClassicHeader(),
+                  controller: _refreshController,
+                  onRefresh: getPetitions,
+                  onLoading: () {
+                    getPetitions(lastPetition: _petitions.last);
+                  },
+                  footer: ClassicFooter(),
+                  child: ListView.builder(
+                    padding: EdgeInsets.all(15),
+                    itemBuilder: (BuildContext context, int index) {
+                      Petition petition = _petitions[index];
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: PetitionTile(
+                          key: ValueKey(petition.id),
+                          petition: petition,
+                          isDependency: false,
+                        ),
+                      );
+                    },
+                    itemCount: _petitions.length,
                   ),
                 );
-              },
-              footer: ClassicFooter(),
-              child: ListView.builder(
-                padding: EdgeInsets.all(15),
-                itemBuilder: (BuildContext context, int index) {
-                  Petition petition = _petitions[index];
-                  return Container(
-                    margin: EdgeInsets.only(bottom: 10),
-                    child: PetitionTile(
-                      key: ValueKey(petition.id),
-                      petition: petition,
-                      isDependency: false,
-                    ),
-                  );
-                },
-                itemCount: _petitions.length,
-              ),
-            ),
+        },
+      ),
     );
   }
 }
