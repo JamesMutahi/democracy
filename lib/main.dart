@@ -11,6 +11,7 @@ import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/ballot/bloc/ballot_filter/ballot_filter_cubit.dart';
 import 'package:democracy/ballot/bloc/ballots/ballots_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
+import 'package:democracy/chat/bloc/chat_filter/chat_filter_cubit.dart';
 import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
@@ -175,6 +176,7 @@ void main() async {
             create: (context) =>
                 MessagesBloc(webSocketService: webSocketService),
           ),
+          BlocProvider(create: (context) => ChatFilterCubit()),
           BlocProvider(
             create: (context) =>
                 MessageDetailBloc(webSocketService: webSocketService),

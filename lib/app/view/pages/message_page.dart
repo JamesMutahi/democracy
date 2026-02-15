@@ -1,4 +1,5 @@
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
+import 'package:democracy/chat/bloc/chat_filter/chat_filter_cubit.dart';
 import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
 import 'package:democracy/chat/view/chats.dart';
 import 'package:democracy/chat/view/create_message.dart';
@@ -25,6 +26,8 @@ class _MessagePageState extends State<MessagePage>
   @override
   bool get wantKeepAlive => true;
 
+  final TextEditingController _controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -40,11 +43,21 @@ class _MessagePageState extends State<MessagePage>
             ),
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(60.0),
-              child: CustomSearchBar(
-                hintText: 'Search',
-                onChanged: (value) {
+              child: BlocConsumer<ChatFilterCubit, ChatFilterState>(
+                listener: (context, state) {
                   context.read<ChatsBloc>().add(
-                    ChatsEvent.get(searchTerm: value),
+                    ChatsEvent.get(searchTerm: state.searchTerm),
+                  );
+                },
+                builder: (context, state) {
+                  return CustomSearchBar(
+                    controller: _controller,
+                    hintText: 'Search',
+                    onChanged: (value) {
+                      context.read<ChatFilterCubit>().searchTermChanged(
+                        searchTerm: value,
+                      );
+                    },
                   );
                 },
               ),

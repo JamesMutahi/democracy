@@ -4,6 +4,7 @@ import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
+import 'package:democracy/chat/bloc/chat_filter/chat_filter_cubit.dart';
 import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
@@ -162,64 +163,65 @@ class _ChatsState extends State<Chats> {
           },
         ),
       ],
-      child: loading
-          ? BottomLoader()
-          : failure
-          ? FailureRetryButton(
-              onPressed: () {
-                context.read<ChatsBloc>().add(ChatsEvent.get());
-              },
-            )
-          : BlocBuilder<AuthBloc, AuthState>(
-              builder: (context, state) {
-                late User currentUser;
-                if (state is Authenticated) {
-                  currentUser = state.user;
-                }
-                return SmartRefresher(
-                  enablePullDown: true,
-                  enablePullUp: hasNextPage,
-                  header: ClassicHeader(),
-                  controller: _refreshController,
-                  onRefresh: () {
-                    context.read<ChatsBloc>().add(ChatsEvent.get());
-                  },
-                  onLoading: () {
-                    context.read<ChatsBloc>().add(
-                      ChatsEvent.get(
-                        lastChat: _chats.last,
-                        // TODO:
-                        // searchTerm: ,
-                      ),
-                    );
-                  },
-                  footer: ClassicFooter(),
-                  child: ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    itemBuilder: (BuildContext context, int index) {
-                      Chat chat = _chats[index];
-                      User otherUser = currentUser;
-                      if (chat.users.length > 1) {
-                        otherUser = chat.users.firstWhere(
-                          (u) => u.id != currentUser.id,
-                        );
-                      }
-                      return Visibility(
-                        visible: chat.lastMessage != null,
-                        child: ChatTile(
-                          key: ValueKey(chat.id),
-                          chat: chat,
-                          currentUser: currentUser,
-                          otherUser: otherUser,
-                        ),
-                      );
-                    },
-                    itemCount: _chats.length,
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          late User currentUser;
+          if (state is Authenticated) {
+            currentUser = state.user;
+          }
+          return BlocBuilder<ChatFilterCubit, ChatFilterState>(
+            builder: (context, state) {
+              void getChats({Chat? lastChat}) {
+                context.read<ChatsBloc>().add(
+                  ChatsEvent.get(
+                    lastChat: lastChat,
+                    searchTerm: state.searchTerm,
                   ),
                 );
-              },
-            ),
+              }
+
+              return loading
+                  ? BottomLoader()
+                  : failure
+                  ? FailureRetryButton(onPressed: getChats)
+                  : SmartRefresher(
+                      enablePullDown: true,
+                      enablePullUp: hasNextPage,
+                      header: ClassicHeader(),
+                      controller: _refreshController,
+                      onRefresh: getChats,
+                      onLoading: () {
+                        getChats(lastChat: _chats.last);
+                      },
+                      footer: ClassicFooter(),
+                      child: ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemBuilder: (BuildContext context, int index) {
+                          Chat chat = _chats[index];
+                          User otherUser = currentUser;
+                          if (chat.users.length > 1) {
+                            otherUser = chat.users.firstWhere(
+                              (u) => u.id != currentUser.id,
+                            );
+                          }
+                          return Visibility(
+                            visible: chat.lastMessage != null,
+                            child: ChatTile(
+                              key: ValueKey(chat.id),
+                              chat: chat,
+                              currentUser: currentUser,
+                              otherUser: otherUser,
+                            ),
+                          );
+                        },
+                        itemCount: _chats.length,
+                      ),
+                    );
+            },
+          );
+        },
+      ),
     );
   }
 }
