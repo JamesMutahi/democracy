@@ -147,7 +147,6 @@ class _SurveysSearchBar extends StatelessWidget {
         );
       },
       builder: (context, state) {
-        controller.text = state.searchTerm;
         return CustomSearchBar(
           controller: controller,
           hintText: 'Search surveys',
@@ -199,7 +198,6 @@ class _PetitionsSearchBar extends StatelessWidget {
         );
       },
       builder: (context, state) {
-        controller.text = state.searchTerm;
         return CustomSearchBar(
           controller: controller,
           hintText: 'Search petitions',

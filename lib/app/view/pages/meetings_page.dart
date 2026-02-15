@@ -27,6 +27,8 @@ class _MeetingsPageState extends State<MeetingsPage>
   @override
   bool get wantKeepAlive => true;
 
+  final TextEditingController _controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -57,6 +59,7 @@ class _MeetingsPageState extends State<MeetingsPage>
                 },
                 builder: (context, state) {
                   return CustomSearchBar(
+                    controller: _controller,
                     hintText: 'Search',
                     onChanged: (value) {
                       context.read<MeetingFilterCubit>().searchTermChanged(

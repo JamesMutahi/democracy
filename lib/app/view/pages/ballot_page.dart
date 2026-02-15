@@ -27,6 +27,8 @@ class _BallotPageState extends State<BallotPage>
   @override
   bool get wantKeepAlive => true;
 
+  final TextEditingController _controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -57,6 +59,7 @@ class _BallotPageState extends State<BallotPage>
                 },
                 builder: (context, state) {
                   return CustomSearchBar(
+                    controller: _controller,
                     hintText: 'Search',
                     onChanged: (value) {
                       context.read<BallotFilterCubit>().searchTermChanged(
