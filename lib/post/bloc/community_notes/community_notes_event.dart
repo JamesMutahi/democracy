@@ -6,7 +6,7 @@ class CommunityNotesEvent with _$CommunityNotesEvent {
     required Post post,
     String? searchTerm,
     String? sortBy,
-    Post? lastPost,
+    List<Post>? lastPosts,
   }) = _Get;
   const factory CommunityNotesEvent.received({
     required Map<String, dynamic> payload,

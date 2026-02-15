@@ -36,7 +36,7 @@ class UserRepliesBloc extends Bloc<UserRepliesEvent, UserRepliesState> {
         'action': action,
         'request_id': event.user.id,
         'user': event.user.id,
-        'last_post': event.lastPost?.id,
+        'last_posts': event.lastPosts?.map((post) => post.id).toList(),
       },
     };
     webSocketService.send(message);
@@ -48,11 +48,11 @@ class UserRepliesBloc extends Bloc<UserRepliesEvent, UserRepliesState> {
       final List<Post> posts = List.from(
         event.payload['data']['results'].map((e) => Post.fromJson(e)),
       );
-      int? lastPost = event.payload['data']['last_post'];
+      List lastPosts = event.payload['data']['last_posts'] ?? [];
       emit(
         state.copyWith(
           status: UserRepliesStatus.success,
-          posts: lastPost == null ? posts : [...state.posts, ...posts],
+          posts: lastPosts.isEmpty ? posts : [...state.posts, ...posts],
           userId: event.payload['request_id'],
           hasNext: event.payload['data']['has_next'],
         ),

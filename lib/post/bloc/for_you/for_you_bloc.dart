@@ -34,7 +34,7 @@ class ForYouBloc extends Bloc<ForYouEvent, ForYouState> {
       'payload': {
         'action': action,
         'request_id': requestId,
-        'last_post': event.lastPost?.id,
+        'last_posts': event.lastPosts?.map((post) => post.id).toList(),
       },
     };
     webSocketService.send(message);
@@ -46,11 +46,11 @@ class ForYouBloc extends Bloc<ForYouEvent, ForYouState> {
       final List<Post> posts = List.from(
         event.payload['data']['results'].map((e) => Post.fromJson(e)),
       );
-      int? lastPost = event.payload['data']['last_post'];
+      List lastPosts = event.payload['data']['last_posts'] ?? [];
       emit(
         state.copyWith(
           status: ForYouStatus.success,
-          posts: lastPost == null ? posts : [...state.posts, ...posts],
+          posts: lastPosts.isEmpty ? posts : [...state.posts, ...posts],
           hasNext: event.payload['data']['has_next'],
         ),
       );

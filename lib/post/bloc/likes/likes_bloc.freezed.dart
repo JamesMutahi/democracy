@@ -119,10 +119,10 @@ return received(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( User user,  Post? lastPost)?  get,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( User user,  List<Post>? lastPosts)?  get,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.user,_that.lastPost);case _Received() when received != null:
+return get(_that.user,_that.lastPosts);case _Received() when received != null:
 return received(_that.payload);case _:
   return orElse();
 
@@ -141,10 +141,10 @@ return received(_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( User user,  Post? lastPost)  get,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( User user,  List<Post>? lastPosts)  get,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
 switch (_that) {
 case _Get():
-return get(_that.user,_that.lastPost);case _Received():
+return get(_that.user,_that.lastPosts);case _Received():
 return received(_that.payload);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -159,10 +159,10 @@ return received(_that.payload);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( User user,  Post? lastPost)?  get,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( User user,  List<Post>? lastPosts)?  get,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.user,_that.lastPost);case _Received() when received != null:
+return get(_that.user,_that.lastPosts);case _Received() when received != null:
 return received(_that.payload);case _:
   return null;
 
@@ -175,11 +175,19 @@ return received(_that.payload);case _:
 
 
 class _Get implements LikesEvent {
-  const _Get({required this.user, this.lastPost});
+  const _Get({required this.user, final  List<Post>? lastPosts}): _lastPosts = lastPosts;
   
 
  final  User user;
- final  Post? lastPost;
+ final  List<Post>? _lastPosts;
+ List<Post>? get lastPosts {
+  final value = _lastPosts;
+  if (value == null) return null;
+  if (_lastPosts is EqualUnmodifiableListView) return _lastPosts;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
 
 /// Create a copy of LikesEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -191,16 +199,16 @@ _$GetCopyWith<_Get> get copyWith => __$GetCopyWithImpl<_Get>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.user, user) || other.user == user)&&(identical(other.lastPost, lastPost) || other.lastPost == lastPost));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.user, user) || other.user == user)&&const DeepCollectionEquality().equals(other._lastPosts, _lastPosts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,user,lastPost);
+int get hashCode => Object.hash(runtimeType,user,const DeepCollectionEquality().hash(_lastPosts));
 
 @override
 String toString() {
-  return 'LikesEvent.get(user: $user, lastPost: $lastPost)';
+  return 'LikesEvent.get(user: $user, lastPosts: $lastPosts)';
 }
 
 
@@ -211,11 +219,11 @@ abstract mixin class _$GetCopyWith<$Res> implements $LikesEventCopyWith<$Res> {
   factory _$GetCopyWith(_Get value, $Res Function(_Get) _then) = __$GetCopyWithImpl;
 @useResult
 $Res call({
- User user, Post? lastPost
+ User user, List<Post>? lastPosts
 });
 
 
-$UserCopyWith<$Res> get user;$PostCopyWith<$Res>? get lastPost;
+$UserCopyWith<$Res> get user;
 
 }
 /// @nodoc
@@ -228,11 +236,11 @@ class __$GetCopyWithImpl<$Res>
 
 /// Create a copy of LikesEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? user = null,Object? lastPost = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? user = null,Object? lastPosts = freezed,}) {
   return _then(_Get(
 user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as User,lastPost: freezed == lastPost ? _self.lastPost : lastPost // ignore: cast_nullable_to_non_nullable
-as Post?,
+as User,lastPosts: freezed == lastPosts ? _self._lastPosts : lastPosts // ignore: cast_nullable_to_non_nullable
+as List<Post>?,
   ));
 }
 
@@ -244,18 +252,6 @@ $UserCopyWith<$Res> get user {
   
   return $UserCopyWith<$Res>(_self.user, (value) {
     return _then(_self.copyWith(user: value));
-  });
-}/// Create a copy of LikesEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$PostCopyWith<$Res>? get lastPost {
-    if (_self.lastPost == null) {
-    return null;
-  }
-
-  return $PostCopyWith<$Res>(_self.lastPost!, (value) {
-    return _then(_self.copyWith(lastPost: value));
   });
 }
 }

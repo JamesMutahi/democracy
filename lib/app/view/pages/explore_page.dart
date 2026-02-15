@@ -148,7 +148,7 @@ class _ExplorePageState extends State<ExplorePage> {
           },
           onLoading: () {
             context.read<PostsBloc>().add(
-              PostsEvent.get(lastPost: _posts.last),
+              PostsEvent.get(lastPosts: _posts),
             );
           },
           onFailure: () {
@@ -188,10 +188,7 @@ class _FiltersModalState extends State<_FiltersModal> {
       },
       onClear: () {
         context.read<PostFilterCubit>().clearFilters();
-        setState(() {
-          startDate = null;
-          endDate = null;
-        });
+        Navigator.pop(context);
       },
       widgets: [
         DateRangeFilter(

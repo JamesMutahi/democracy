@@ -119,10 +119,10 @@ return received(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Post? lastPost)?  get,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( List<Post>? lastPosts)?  get,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.lastPost);case _Received() when received != null:
+return get(_that.lastPosts);case _Received() when received != null:
 return received(_that.payload);case _:
   return orElse();
 
@@ -141,10 +141,10 @@ return received(_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Post? lastPost)  get,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( List<Post>? lastPosts)  get,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
 switch (_that) {
 case _Get():
-return get(_that.lastPost);case _Received():
+return get(_that.lastPosts);case _Received():
 return received(_that.payload);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -159,10 +159,10 @@ return received(_that.payload);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Post? lastPost)?  get,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( List<Post>? lastPosts)?  get,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.lastPost);case _Received() when received != null:
+return get(_that.lastPosts);case _Received() when received != null:
 return received(_that.payload);case _:
   return null;
 
@@ -175,10 +175,18 @@ return received(_that.payload);case _:
 
 
 class _Get implements ForYouEvent {
-  const _Get({this.lastPost});
+  const _Get({final  List<Post>? lastPosts}): _lastPosts = lastPosts;
   
 
- final  Post? lastPost;
+ final  List<Post>? _lastPosts;
+ List<Post>? get lastPosts {
+  final value = _lastPosts;
+  if (value == null) return null;
+  if (_lastPosts is EqualUnmodifiableListView) return _lastPosts;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
 
 /// Create a copy of ForYouEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -190,16 +198,16 @@ _$GetCopyWith<_Get> get copyWith => __$GetCopyWithImpl<_Get>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.lastPost, lastPost) || other.lastPost == lastPost));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&const DeepCollectionEquality().equals(other._lastPosts, _lastPosts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,lastPost);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_lastPosts));
 
 @override
 String toString() {
-  return 'ForYouEvent.get(lastPost: $lastPost)';
+  return 'ForYouEvent.get(lastPosts: $lastPosts)';
 }
 
 
@@ -210,11 +218,11 @@ abstract mixin class _$GetCopyWith<$Res> implements $ForYouEventCopyWith<$Res> {
   factory _$GetCopyWith(_Get value, $Res Function(_Get) _then) = __$GetCopyWithImpl;
 @useResult
 $Res call({
- Post? lastPost
+ List<Post>? lastPosts
 });
 
 
-$PostCopyWith<$Res>? get lastPost;
+
 
 }
 /// @nodoc
@@ -227,26 +235,14 @@ class __$GetCopyWithImpl<$Res>
 
 /// Create a copy of ForYouEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? lastPost = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? lastPosts = freezed,}) {
   return _then(_Get(
-lastPost: freezed == lastPost ? _self.lastPost : lastPost // ignore: cast_nullable_to_non_nullable
-as Post?,
+lastPosts: freezed == lastPosts ? _self._lastPosts : lastPosts // ignore: cast_nullable_to_non_nullable
+as List<Post>?,
   ));
 }
 
-/// Create a copy of ForYouEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$PostCopyWith<$Res>? get lastPost {
-    if (_self.lastPost == null) {
-    return null;
-  }
 
-  return $PostCopyWith<$Res>(_self.lastPost!, (value) {
-    return _then(_self.copyWith(lastPost: value));
-  });
-}
 }
 
 /// @nodoc

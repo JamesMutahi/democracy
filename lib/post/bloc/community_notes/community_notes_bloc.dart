@@ -45,7 +45,7 @@ class CommunityNotesBloc
         'pk': event.post.id,
         'search_term': event.searchTerm,
         'sort_by': event.sortBy,
-        'last_post': event.lastPost?.id,
+        'last_posts': event.lastPosts?.map((post) => post.id).toList(),
       },
     };
     webSocketService.send(message);
@@ -57,11 +57,11 @@ class CommunityNotesBloc
       final List<Post> communityNotes = List.from(
         event.payload['data']['results'].map((e) => Post.fromJson(e)),
       );
-      int? lastCommunityNote = event.payload['data']['last_post'];
+      List lastPosts = event.payload['data']['last_posts'] ?? [];
       emit(
         state.copyWith(
           status: CommunityNotesStatus.success,
-          communityNotes: lastCommunityNote == null
+          communityNotes: lastPosts.isEmpty
               ? communityNotes
               : [...state.communityNotes, ...communityNotes],
           postId: event.payload['request_id'],

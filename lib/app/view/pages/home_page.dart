@@ -198,9 +198,7 @@ class _ForYouTabState extends State<ForYouTab>
           context.read<ForYouBloc>().add(ForYouEvent.get());
         },
         onLoading: () {
-          context.read<ForYouBloc>().add(
-            ForYouEvent.get(lastPost: _posts.last),
-          );
+          context.read<ForYouBloc>().add(ForYouEvent.get(lastPosts: _posts));
         },
         onFailure: () {
           context.read<ForYouBloc>().add(ForYouEvent.get());
@@ -297,7 +295,7 @@ class _FollowingTabState extends State<FollowingTab> {
         },
         onLoading: () {
           context.read<FollowingPostsBloc>().add(
-            FollowingPostsEvent.get(lastPost: _posts.last),
+            FollowingPostsEvent.get(lastPosts: _posts),
           );
         },
         onFailure: () {

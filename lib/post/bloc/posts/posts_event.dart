@@ -4,7 +4,7 @@ part of 'posts_bloc.dart';
 sealed class PostsEvent with _$PostsEvent {
   const factory PostsEvent.get({
     String? searchTerm,
-    Post? lastPost,
+    List<Post>? lastPosts,
     DateTime? startDate,
     DateTime? endDate,
   }) = _Get;

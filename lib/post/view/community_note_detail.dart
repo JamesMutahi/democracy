@@ -62,7 +62,7 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
 
   void _onScrollUp() {
     context.read<RepliesBloc>().add(
-      RepliesEvent.get(post: widget.communityNote, lastPost: _replies.last),
+      RepliesEvent.get(post: widget.communityNote, lastPosts: _replies),
     );
   }
 

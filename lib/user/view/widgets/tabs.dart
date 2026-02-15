@@ -112,7 +112,7 @@ class _UserPostsState extends State<UserPosts> {
           },
           onLoading: () {
             context.read<UserPostsBloc>().add(
-              UserPostsEvent.get(user: widget.user, lastPost: _posts.last),
+              UserPostsEvent.get(user: widget.user, lastPosts: _posts),
             );
           },
           onFailure: () {
@@ -223,7 +223,7 @@ class _UserRepliesState extends State<UserReplies> {
           },
           onLoading: () {
             context.read<UserRepliesBloc>().add(
-              UserRepliesEvent.get(user: widget.user, lastPost: _posts.last),
+              UserRepliesEvent.get(user: widget.user, lastPosts: _posts),
             );
           },
           onFailure: () {
@@ -351,7 +351,7 @@ class _LikesState extends State<Likes> {
           },
           onLoading: () {
             context.read<LikesBloc>().add(
-              LikesEvent.get(user: widget.user, lastPost: _posts.last),
+              LikesEvent.get(user: widget.user, lastPosts: _posts),
             );
           },
           onFailure: () {
@@ -462,7 +462,7 @@ class _UserCommunityNotesState extends State<UserCommunityNotes> {
             context.read<UserCommunityNotesBloc>().add(
               UserCommunityNotesEvent.get(
                 user: widget.user,
-                lastPost: _posts.last,
+                lastPosts: _posts,
               ),
             );
           },

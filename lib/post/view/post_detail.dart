@@ -70,7 +70,7 @@ class _PostDetailState extends State<PostDetail> {
   void _onScrollUp() {
     // TODO:
     context.read<RepliesBloc>().add(
-      RepliesEvent.get(post: widget.post, lastPost: _replies.last),
+      RepliesEvent.get(post: widget.post, lastPosts: _replies),
     );
   }
 

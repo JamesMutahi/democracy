@@ -1,12 +1,9 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/utils/bottom_loader.dart';
-import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/post/bloc/community_notes/community_notes_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/community_note_create.dart';
-import 'package:democracy/post/view/widgets/community_note_tile.dart';
-import 'package:democracy/post/view/widgets/post_listener.dart';
+import 'package:democracy/post/view/widgets/post_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -35,7 +32,7 @@ class _CommunityNotesState extends State<CommunityNotes> {
   @override
   void initState() {
     context.read<CommunityNotesBloc>().add(
-      CommunityNotesEvent.get(post: widget.post),
+      CommunityNotesEvent.get(post: widget.post, sortBy: 'score'),
     );
     super.initState();
   }
@@ -146,63 +143,43 @@ class _CommunityNotesState extends State<CommunityNotes> {
               ),
             ];
           },
-          body: loading
-              ? BottomLoader()
-              : failure
-              ? FailureRetryButton(
-                  onPressed: () {
-                    context.read<CommunityNotesBloc>().add(
-                      CommunityNotesEvent.get(post: widget.post),
-                    );
-                  },
-                )
-              : PostListener(
-                  posts: _communityNotes,
-                  onPostsUpdated: (posts) {
-                    setState(() {
-                      _communityNotes = posts;
-                    });
-                  },
-                  child: SmartRefresher(
-                    enablePullDown: true,
-                    enablePullUp: hasNextPage,
-                    header: ClassicHeader(),
-                    controller: _refreshController,
-                    onRefresh: () {
-                      context.read<CommunityNotesBloc>().add(
-                        CommunityNotesEvent.get(
-                          post: widget.post,
-                          searchTerm: _searchController.text,
-                          sortBy: sortBy,
-                        ),
-                      );
-                    },
-                    onLoading: () {
-                      context.read<CommunityNotesBloc>().add(
-                        CommunityNotesEvent.get(
-                          post: widget.post,
-                          lastPost: _communityNotes.last,
-                          sortBy: sortBy,
-                        ),
-                      );
-                    },
-                    footer: ClassicFooter(),
-                    child: ListView.builder(
-                      padding: EdgeInsets.only(bottom: 20),
-                      itemBuilder: (BuildContext context, int index) {
-                        Post communityNote = _communityNotes[index];
-                        return CommunityNoteTile(
-                          key: ValueKey(communityNote.id),
-                          communityNote: communityNote,
-                          navigateToDetailPage: true,
-                          showWholeText: false,
-                          isDependency: false,
-                        );
-                      },
-                      itemCount: _communityNotes.length,
-                    ),
-                  ),
+          body: PostListView(
+            posts: _communityNotes,
+            loading: loading,
+            failure: failure,
+            onPostsUpdated: (posts) {
+              setState(() {
+                _communityNotes = posts;
+              });
+            },
+            refreshController: _refreshController,
+            enablePullDown: true,
+            enablePullUp: hasNextPage,
+            checkVisibility: true,
+            onRefresh: () {
+              context.read<CommunityNotesBloc>().add(
+                CommunityNotesEvent.get(
+                  post: widget.post,
+                  searchTerm: _searchController.text,
+                  sortBy: sortBy,
                 ),
+              );
+            },
+            onLoading: () {
+              context.read<CommunityNotesBloc>().add(
+                CommunityNotesEvent.get(
+                  post: widget.post,
+                  lastPosts: _communityNotes,
+                  sortBy: sortBy,
+                ),
+              );
+            },
+            onFailure: () {
+              context.read<CommunityNotesBloc>().add(
+                CommunityNotesEvent.get(post: widget.post, sortBy: sortBy),
+              );
+            },
+          ),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {

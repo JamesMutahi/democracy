@@ -39,7 +39,7 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
         "action": action,
         "request_id": requestId,
         'search_term': event.searchTerm,
-        'last_post': event.lastPost?.id,
+        'last_posts': event.lastPosts?.map((post) => post.id).toList(),
         'start_date': event.startDate?.toIso8601String(),
         'end_date': event.endDate?.toIso8601String(),
       },
@@ -53,11 +53,11 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
       final List<Post> posts = List.from(
         event.payload['data']['results'].map((e) => Post.fromJson(e)),
       );
-      int? lastPost = event.payload['data']['last_post'];
+      List lastPosts = event.payload['data']['last_posts'] ?? [];
       emit(
         state.copyWith(
           status: PostsStatus.success,
-          posts: lastPost == null ? posts : [...state.posts, ...posts],
+          posts: lastPosts.isEmpty ? posts : [...state.posts, ...posts],
           hasNext: event.payload['data']['has_next'],
         ),
       );
@@ -68,8 +68,9 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
 
   Future _onResubscribe(_Resubscribe event, Emitter<PostsState> emit) async {
     List<int> postIds = event.posts.map((post) => post.id).toList();
-    List<Post> reposts =
-        event.posts.where((post) => post.repostOf != null).toList();
+    List<Post> reposts = event.posts
+        .where((post) => post.repostOf != null)
+        .toList();
     postIds.addAll(reposts.map((post) => post.id).toList());
     Map<String, dynamic> message = {
       'stream': stream,

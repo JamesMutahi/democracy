@@ -32,7 +32,10 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
   Future _onGet(_Get event, Emitter<BookmarksState> emit) async {
     Map<String, dynamic> message = {
       'stream': stream,
-      'payload': {'action': action, 'last_post': event.lastPost?.id},
+      'payload': {
+        'action': action,
+        'last_posts': event.lastPosts?.map((post) => post.id).toList(),
+      },
     };
     webSocketService.send(message);
   }
@@ -43,11 +46,11 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
       final List<Post> posts = List.from(
         event.payload['data']['results'].map((e) => Post.fromJson(e)),
       );
-      int? lastPost = event.payload['data']['last_post'];
+      List lastPosts = event.payload['data']['last_posts'] ?? [];
       emit(
         state.copyWith(
           status: BookmarksStatus.success,
-          posts: lastPost == null ? posts : [...state.posts, ...posts],
+          posts: lastPosts.isEmpty ? posts : [...state.posts, ...posts],
           hasNext: event.payload['data']['has_next'],
         ),
       );
