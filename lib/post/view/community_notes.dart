@@ -169,7 +169,7 @@ class _CommunityNotesState extends State<CommunityNotes> {
               context.read<CommunityNotesBloc>().add(
                 CommunityNotesEvent.get(
                   post: widget.post,
-                  lastPosts: _communityNotes,
+                  previousPosts: _communityNotes,
                   sortBy: sortBy,
                 ),
               );

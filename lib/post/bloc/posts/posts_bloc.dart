@@ -39,7 +39,7 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
         "action": action,
         "request_id": requestId,
         'search_term': event.searchTerm,
-        'last_posts': event.lastPosts?.map((post) => post.id).toList(),
+        'previous_posts': event.previousPosts?.map((post) => post.id).toList(),
         'start_date': event.startDate?.toIso8601String(),
         'end_date': event.endDate?.toIso8601String(),
       },
@@ -53,11 +53,11 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
       final List<Post> posts = List.from(
         event.payload['data']['results'].map((e) => Post.fromJson(e)),
       );
-      List lastPosts = event.payload['data']['last_posts'] ?? [];
+      List previousPosts = event.payload['data']['previous_posts'] ?? [];
       emit(
         state.copyWith(
           status: PostsStatus.success,
-          posts: lastPosts.isEmpty ? posts : [...state.posts, ...posts],
+          posts: previousPosts.isEmpty ? posts : [...state.posts, ...posts],
           hasNext: event.payload['data']['has_next'],
         ),
       );

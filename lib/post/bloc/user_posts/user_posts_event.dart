@@ -4,7 +4,7 @@ part of 'user_posts_bloc.dart';
 sealed class UserPostsEvent with _$UserPostsEvent {
   const factory UserPostsEvent.get({
     required User user,
-    List<Post>? lastPosts,
+    List<Post>? previousPosts,
   }) = _Get;
   const factory UserPostsEvent.received({
     required Map<String, dynamic> payload,

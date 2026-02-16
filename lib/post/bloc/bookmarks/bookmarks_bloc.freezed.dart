@@ -119,10 +119,10 @@ return received(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( List<Post>? lastPosts)?  get,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( List<Post>? previousPosts)?  get,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.lastPosts);case _Received() when received != null:
+return get(_that.previousPosts);case _Received() when received != null:
 return received(_that.payload);case _:
   return orElse();
 
@@ -141,10 +141,10 @@ return received(_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( List<Post>? lastPosts)  get,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( List<Post>? previousPosts)  get,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
 switch (_that) {
 case _Get():
-return get(_that.lastPosts);case _Received():
+return get(_that.previousPosts);case _Received():
 return received(_that.payload);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -159,10 +159,10 @@ return received(_that.payload);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( List<Post>? lastPosts)?  get,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( List<Post>? previousPosts)?  get,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.lastPosts);case _Received() when received != null:
+return get(_that.previousPosts);case _Received() when received != null:
 return received(_that.payload);case _:
   return null;
 
@@ -175,14 +175,14 @@ return received(_that.payload);case _:
 
 
 class _Get implements BookmarksEvent {
-  const _Get({final  List<Post>? lastPosts}): _lastPosts = lastPosts;
+  const _Get({final  List<Post>? previousPosts}): _previousPosts = previousPosts;
   
 
- final  List<Post>? _lastPosts;
- List<Post>? get lastPosts {
-  final value = _lastPosts;
+ final  List<Post>? _previousPosts;
+ List<Post>? get previousPosts {
+  final value = _previousPosts;
   if (value == null) return null;
-  if (_lastPosts is EqualUnmodifiableListView) return _lastPosts;
+  if (_previousPosts is EqualUnmodifiableListView) return _previousPosts;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(value);
 }
@@ -198,16 +198,16 @@ _$GetCopyWith<_Get> get copyWith => __$GetCopyWithImpl<_Get>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&const DeepCollectionEquality().equals(other._lastPosts, _lastPosts));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&const DeepCollectionEquality().equals(other._previousPosts, _previousPosts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_lastPosts));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_previousPosts));
 
 @override
 String toString() {
-  return 'BookmarksEvent.get(lastPosts: $lastPosts)';
+  return 'BookmarksEvent.get(previousPosts: $previousPosts)';
 }
 
 
@@ -218,7 +218,7 @@ abstract mixin class _$GetCopyWith<$Res> implements $BookmarksEventCopyWith<$Res
   factory _$GetCopyWith(_Get value, $Res Function(_Get) _then) = __$GetCopyWithImpl;
 @useResult
 $Res call({
- List<Post>? lastPosts
+ List<Post>? previousPosts
 });
 
 
@@ -235,9 +235,9 @@ class __$GetCopyWithImpl<$Res>
 
 /// Create a copy of BookmarksEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? lastPosts = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? previousPosts = freezed,}) {
   return _then(_Get(
-lastPosts: freezed == lastPosts ? _self._lastPosts : lastPosts // ignore: cast_nullable_to_non_nullable
+previousPosts: freezed == previousPosts ? _self._previousPosts : previousPosts // ignore: cast_nullable_to_non_nullable
 as List<Post>?,
   ));
 }

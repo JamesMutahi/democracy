@@ -40,7 +40,7 @@ class RepliesBloc extends Bloc<RepliesEvent, RepliesState> {
         'action': 'replies',
         'request_id': event.post.id,
         'pk': event.post.id,
-        'last_posts': event.lastPosts?.map((post) => post.id).toList(),
+        'previous_posts': event.previousPosts?.map((post) => post.id).toList(),
       },
     };
     webSocketService.send(message);
@@ -52,11 +52,11 @@ class RepliesBloc extends Bloc<RepliesEvent, RepliesState> {
       final List<Post> posts = List.from(
         event.payload['data']['results'].map((e) => Post.fromJson(e)),
       );
-      List lastPosts = event.payload['data']['last_posts'] ?? [];
+      List previousPosts = event.payload['data']['previous_posts'] ?? [];
       emit(
         state.copyWith(
           status: RepliesStatus.success,
-          posts: lastPosts.isEmpty ? posts : [...state.posts, ...posts],
+          posts: previousPosts.isEmpty ? posts : [...state.posts, ...posts],
           postId: event.payload['request_id'],
           hasNext: event.payload['data']['has_next'],
         ),

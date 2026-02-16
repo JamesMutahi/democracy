@@ -120,7 +120,7 @@ class _BookmarksState extends State<Bookmarks> {
             },
             onLoading: () {
               context.read<BookmarksBloc>().add(
-                BookmarksEvent.get(lastPosts: _posts),
+                BookmarksEvent.get(previousPosts: _posts),
               );
             },
             onFailure: () {

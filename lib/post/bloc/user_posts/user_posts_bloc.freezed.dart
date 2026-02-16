@@ -125,10 +125,10 @@ return resubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( User user,  List<Post>? lastPosts)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( User user,  List<Post> posts)?  unsubscribe,TResult Function( User user,  List<Post> posts)?  resubscribe,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( User user,  List<Post>? previousPosts)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( User user,  List<Post> posts)?  unsubscribe,TResult Function( User user,  List<Post> posts)?  resubscribe,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.user,_that.lastPosts);case _Received() when received != null:
+return get(_that.user,_that.previousPosts);case _Received() when received != null:
 return received(_that.payload);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that.user,_that.posts);case _Resubscribe() when resubscribe != null:
 return resubscribe(_that.user,_that.posts);case _:
@@ -149,10 +149,10 @@ return resubscribe(_that.user,_that.posts);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( User user,  List<Post>? lastPosts)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( User user,  List<Post> posts)  unsubscribe,required TResult Function( User user,  List<Post> posts)  resubscribe,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( User user,  List<Post>? previousPosts)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( User user,  List<Post> posts)  unsubscribe,required TResult Function( User user,  List<Post> posts)  resubscribe,}) {final _that = this;
 switch (_that) {
 case _Get():
-return get(_that.user,_that.lastPosts);case _Received():
+return get(_that.user,_that.previousPosts);case _Received():
 return received(_that.payload);case _Unsubscribe():
 return unsubscribe(_that.user,_that.posts);case _Resubscribe():
 return resubscribe(_that.user,_that.posts);}
@@ -169,10 +169,10 @@ return resubscribe(_that.user,_that.posts);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( User user,  List<Post>? lastPosts)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( User user,  List<Post> posts)?  unsubscribe,TResult? Function( User user,  List<Post> posts)?  resubscribe,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( User user,  List<Post>? previousPosts)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( User user,  List<Post> posts)?  unsubscribe,TResult? Function( User user,  List<Post> posts)?  resubscribe,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.user,_that.lastPosts);case _Received() when received != null:
+return get(_that.user,_that.previousPosts);case _Received() when received != null:
 return received(_that.payload);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that.user,_that.posts);case _Resubscribe() when resubscribe != null:
 return resubscribe(_that.user,_that.posts);case _:
@@ -187,15 +187,15 @@ return resubscribe(_that.user,_that.posts);case _:
 
 
 class _Get implements UserPostsEvent {
-  const _Get({required this.user, final  List<Post>? lastPosts}): _lastPosts = lastPosts;
+  const _Get({required this.user, final  List<Post>? previousPosts}): _previousPosts = previousPosts;
   
 
  final  User user;
- final  List<Post>? _lastPosts;
- List<Post>? get lastPosts {
-  final value = _lastPosts;
+ final  List<Post>? _previousPosts;
+ List<Post>? get previousPosts {
+  final value = _previousPosts;
   if (value == null) return null;
-  if (_lastPosts is EqualUnmodifiableListView) return _lastPosts;
+  if (_previousPosts is EqualUnmodifiableListView) return _previousPosts;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(value);
 }
@@ -211,16 +211,16 @@ _$GetCopyWith<_Get> get copyWith => __$GetCopyWithImpl<_Get>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.user, user) || other.user == user)&&const DeepCollectionEquality().equals(other._lastPosts, _lastPosts));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.user, user) || other.user == user)&&const DeepCollectionEquality().equals(other._previousPosts, _previousPosts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,user,const DeepCollectionEquality().hash(_lastPosts));
+int get hashCode => Object.hash(runtimeType,user,const DeepCollectionEquality().hash(_previousPosts));
 
 @override
 String toString() {
-  return 'UserPostsEvent.get(user: $user, lastPosts: $lastPosts)';
+  return 'UserPostsEvent.get(user: $user, previousPosts: $previousPosts)';
 }
 
 
@@ -231,7 +231,7 @@ abstract mixin class _$GetCopyWith<$Res> implements $UserPostsEventCopyWith<$Res
   factory _$GetCopyWith(_Get value, $Res Function(_Get) _then) = __$GetCopyWithImpl;
 @useResult
 $Res call({
- User user, List<Post>? lastPosts
+ User user, List<Post>? previousPosts
 });
 
 
@@ -248,10 +248,10 @@ class __$GetCopyWithImpl<$Res>
 
 /// Create a copy of UserPostsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? user = null,Object? lastPosts = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? user = null,Object? previousPosts = freezed,}) {
   return _then(_Get(
 user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as User,lastPosts: freezed == lastPosts ? _self._lastPosts : lastPosts // ignore: cast_nullable_to_non_nullable
+as User,previousPosts: freezed == previousPosts ? _self._previousPosts : previousPosts // ignore: cast_nullable_to_non_nullable
 as List<Post>?,
   ));
 }

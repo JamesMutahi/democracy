@@ -106,7 +106,7 @@ class _DraftsPostsState extends State<DraftPosts> {
                 },
                 onLoading: () {
                   context.read<DraftPostsBloc>().add(
-                    DraftPostsEvent.get(lastPosts: _posts),
+                    DraftPostsEvent.get(previousPosts: _posts),
                   );
                 },
                 footer: ClassicFooter(),
