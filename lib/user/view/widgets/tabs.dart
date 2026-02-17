@@ -616,7 +616,7 @@ class _UserPetitionsState extends State<UserPetitions> {
                   context.read<UserPetitionsBloc>().add(
                     UserPetitionsEvent.get(
                       user: widget.user,
-                      lastPetition: _petitions.last,
+                      previousPetitions: _petitions,
                     ),
                   );
                 },

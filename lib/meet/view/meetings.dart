@@ -114,10 +114,10 @@ class _MeetingsState extends State<Meetings> {
       ],
       child: BlocBuilder<MeetingFilterCubit, MeetingFilterState>(
         builder: (context, state) {
-          void getMeetings({Meeting? lastMeeting}) {
+          void getMeetings({List<Meeting>? previousMeetings}) {
             context.read<MeetingsBloc>().add(
               MeetingsEvent.get(
-                lastMeeting: lastMeeting,
+                previousMeetings: previousMeetings,
                 searchTerm: state.searchTerm,
                 isActive: state.isActive,
                 sortBy: state.sortBy,
@@ -139,7 +139,7 @@ class _MeetingsState extends State<Meetings> {
                   controller: _refreshController,
                   onRefresh: getMeetings,
                   onLoading: () {
-                    getMeetings(lastMeeting: _meetings.last);
+                    getMeetings(previousMeetings: _meetings);
                   },
                   footer: ClassicFooter(),
                   child: ListView.builder(

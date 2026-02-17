@@ -40,7 +40,9 @@ class MeetingsBloc extends Bloc<MeetingsEvent, MeetingsState> {
         'action': 'list',
         'request_id': requestId,
         'search_term': event.searchTerm,
-        'last_meeting': event.lastMeeting?.id,
+        'previous_meetings': event.previousMeetings
+            ?.map((survey) => survey.id)
+            .toList(),
         'is_active': event.isActive,
         'sort_by': event.sortBy,
         'filter_by_region': event.filterByRegion,
@@ -57,11 +59,11 @@ class MeetingsBloc extends Bloc<MeetingsEvent, MeetingsState> {
       final List<Meeting> meetings = List.from(
         event.payload['data']['results'].map((e) => Meeting.fromJson(e)),
       );
-      int? lastMeeting = event.payload['data']['last_meeting'];
+      List previousMeetings = event.payload['data']['previous_meetings'] ?? [];
       emit(
         state.copyWith(
           status: MeetingsStatus.success,
-          meetings: lastMeeting == null
+          meetings: previousMeetings.isEmpty
               ? meetings
               : [...state.meetings, ...meetings],
           hasNext: event.payload['data']['has_next'],

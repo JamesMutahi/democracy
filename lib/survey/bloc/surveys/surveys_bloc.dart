@@ -36,7 +36,9 @@ class SurveysBloc extends Bloc<SurveysEvent, SurveysState> {
         'action': 'list',
         'request_id': requestId,
         'search_term': event.searchTerm,
-        'last_survey': event.lastSurvey?.id,
+        'previous_surveys': event.previousSurveys
+            ?.map((survey) => survey.id)
+            .toList(),
         'is_active': event.isActive,
         'sort_by': event.sortBy,
         'filter_by_region': event.filterByRegion,
@@ -53,11 +55,11 @@ class SurveysBloc extends Bloc<SurveysEvent, SurveysState> {
       final List<Survey> surveys = List.from(
         event.payload['data']['results'].map((e) => Survey.fromJson(e)),
       );
-      int? lastSurvey = event.payload['data']['last_survey'];
+      List previousSurveys = event.payload['data']['previous_surveys'] ?? [];
       emit(
         state.copyWith(
           status: SurveysStatus.success,
-          surveys: lastSurvey == null
+          surveys: previousSurveys.isEmpty
               ? surveys
               : [...state.surveys, ...surveys],
           hasNext: event.payload['data']['has_next'],

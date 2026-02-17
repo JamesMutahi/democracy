@@ -39,7 +39,9 @@ class PetitionsBloc extends Bloc<PetitionsEvent, PetitionsState> {
         'action': 'list',
         'request_id': requestId,
         'search_term': event.searchTerm,
-        'last_ballot': event.lastPetition?.id,
+        'previous_petitions': event.previousPetitions
+            ?.map((petition) => petition.id)
+            .toList(),
         'is_open': event.isOpen,
         'sort_by': event.sortBy,
         'filter_by_region': event.filterByRegion,
@@ -56,14 +58,14 @@ class PetitionsBloc extends Bloc<PetitionsEvent, PetitionsState> {
       final List<Petition> petitions = List.from(
         event.payload['data']['results'].map((e) => Petition.fromJson(e)),
       );
-      int? lastPetition = event.payload['data']['last_petition'];
+      List previousPetitions =
+          event.payload['data']['previous_petitions'] ?? [];
       emit(
         state.copyWith(
           status: PetitionsStatus.success,
-          petitions:
-              lastPetition == null
-                  ? petitions
-                  : [...state.petitions, ...petitions],
+          petitions: previousPetitions.isEmpty
+              ? petitions
+              : [...state.petitions, ...petitions],
           hasNext: event.payload['data']['has_next'],
         ),
       );
@@ -76,8 +78,9 @@ class PetitionsBloc extends Bloc<PetitionsEvent, PetitionsState> {
     _Resubscribe event,
     Emitter<PetitionsState> emit,
   ) async {
-    List<int> petitionIds =
-        event.petitions.map((petition) => petition.id).toList();
+    List<int> petitionIds = event.petitions
+        .map((petition) => petition.id)
+        .toList();
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

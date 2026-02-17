@@ -4,7 +4,7 @@ part of 'surveys_bloc.dart';
 sealed class SurveysEvent with _$SurveysEvent {
   const factory SurveysEvent.get({
     String? searchTerm,
-    Survey? lastSurvey,
+    List<Survey>? previousSurveys,
     bool? isActive,
     String? sortBy,
     bool? filterByRegion,

@@ -122,10 +122,10 @@ return resubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  Petition? lastPetition,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( List<Petition> petitions)?  resubscribe,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  List<Petition>? previousPetitions,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( List<Petition> petitions)?  resubscribe,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.searchTerm,_that.lastPetition,_that.isOpen,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
+return get(_that.searchTerm,_that.previousPetitions,_that.isOpen,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
 return received(_that.payload);case _Resubscribe() when resubscribe != null:
 return resubscribe(_that.petitions);case _:
   return orElse();
@@ -145,10 +145,10 @@ return resubscribe(_that.petitions);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  Petition? lastPetition,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( List<Petition> petitions)  resubscribe,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  List<Petition>? previousPetitions,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( List<Petition> petitions)  resubscribe,}) {final _that = this;
 switch (_that) {
 case _Get():
-return get(_that.searchTerm,_that.lastPetition,_that.isOpen,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received():
+return get(_that.searchTerm,_that.previousPetitions,_that.isOpen,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received():
 return received(_that.payload);case _Resubscribe():
 return resubscribe(_that.petitions);}
 }
@@ -164,10 +164,10 @@ return resubscribe(_that.petitions);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  Petition? lastPetition,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( List<Petition> petitions)?  resubscribe,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  List<Petition>? previousPetitions,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( List<Petition> petitions)?  resubscribe,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.searchTerm,_that.lastPetition,_that.isOpen,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
+return get(_that.searchTerm,_that.previousPetitions,_that.isOpen,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
 return received(_that.payload);case _Resubscribe() when resubscribe != null:
 return resubscribe(_that.petitions);case _:
   return null;
@@ -181,11 +181,19 @@ return resubscribe(_that.petitions);case _:
 
 
 class _Get implements PetitionsEvent {
-  const _Get({this.searchTerm, this.lastPetition, this.isOpen, this.sortBy, this.filterByRegion, this.startDate, this.endDate});
+  const _Get({this.searchTerm, final  List<Petition>? previousPetitions, this.isOpen, this.sortBy, this.filterByRegion, this.startDate, this.endDate}): _previousPetitions = previousPetitions;
   
 
  final  String? searchTerm;
- final  Petition? lastPetition;
+ final  List<Petition>? _previousPetitions;
+ List<Petition>? get previousPetitions {
+  final value = _previousPetitions;
+  if (value == null) return null;
+  if (_previousPetitions is EqualUnmodifiableListView) return _previousPetitions;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
  final  bool? isOpen;
  final  String? sortBy;
  final  bool? filterByRegion;
@@ -202,16 +210,16 @@ _$GetCopyWith<_Get> get copyWith => __$GetCopyWithImpl<_Get>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&(identical(other.lastPetition, lastPetition) || other.lastPetition == lastPetition)&&(identical(other.isOpen, isOpen) || other.isOpen == isOpen)&&(identical(other.sortBy, sortBy) || other.sortBy == sortBy)&&(identical(other.filterByRegion, filterByRegion) || other.filterByRegion == filterByRegion)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&const DeepCollectionEquality().equals(other._previousPetitions, _previousPetitions)&&(identical(other.isOpen, isOpen) || other.isOpen == isOpen)&&(identical(other.sortBy, sortBy) || other.sortBy == sortBy)&&(identical(other.filterByRegion, filterByRegion) || other.filterByRegion == filterByRegion)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,searchTerm,lastPetition,isOpen,sortBy,filterByRegion,startDate,endDate);
+int get hashCode => Object.hash(runtimeType,searchTerm,const DeepCollectionEquality().hash(_previousPetitions),isOpen,sortBy,filterByRegion,startDate,endDate);
 
 @override
 String toString() {
-  return 'PetitionsEvent.get(searchTerm: $searchTerm, lastPetition: $lastPetition, isOpen: $isOpen, sortBy: $sortBy, filterByRegion: $filterByRegion, startDate: $startDate, endDate: $endDate)';
+  return 'PetitionsEvent.get(searchTerm: $searchTerm, previousPetitions: $previousPetitions, isOpen: $isOpen, sortBy: $sortBy, filterByRegion: $filterByRegion, startDate: $startDate, endDate: $endDate)';
 }
 
 
@@ -222,11 +230,11 @@ abstract mixin class _$GetCopyWith<$Res> implements $PetitionsEventCopyWith<$Res
   factory _$GetCopyWith(_Get value, $Res Function(_Get) _then) = __$GetCopyWithImpl;
 @useResult
 $Res call({
- String? searchTerm, Petition? lastPetition, bool? isOpen, String? sortBy, bool? filterByRegion, DateTime? startDate, DateTime? endDate
+ String? searchTerm, List<Petition>? previousPetitions, bool? isOpen, String? sortBy, bool? filterByRegion, DateTime? startDate, DateTime? endDate
 });
 
 
-$PetitionCopyWith<$Res>? get lastPetition;
+
 
 }
 /// @nodoc
@@ -239,11 +247,11 @@ class __$GetCopyWithImpl<$Res>
 
 /// Create a copy of PetitionsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? searchTerm = freezed,Object? lastPetition = freezed,Object? isOpen = freezed,Object? sortBy = freezed,Object? filterByRegion = freezed,Object? startDate = freezed,Object? endDate = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? searchTerm = freezed,Object? previousPetitions = freezed,Object? isOpen = freezed,Object? sortBy = freezed,Object? filterByRegion = freezed,Object? startDate = freezed,Object? endDate = freezed,}) {
   return _then(_Get(
 searchTerm: freezed == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
-as String?,lastPetition: freezed == lastPetition ? _self.lastPetition : lastPetition // ignore: cast_nullable_to_non_nullable
-as Petition?,isOpen: freezed == isOpen ? _self.isOpen : isOpen // ignore: cast_nullable_to_non_nullable
+as String?,previousPetitions: freezed == previousPetitions ? _self._previousPetitions : previousPetitions // ignore: cast_nullable_to_non_nullable
+as List<Petition>?,isOpen: freezed == isOpen ? _self.isOpen : isOpen // ignore: cast_nullable_to_non_nullable
 as bool?,sortBy: freezed == sortBy ? _self.sortBy : sortBy // ignore: cast_nullable_to_non_nullable
 as String?,filterByRegion: freezed == filterByRegion ? _self.filterByRegion : filterByRegion // ignore: cast_nullable_to_non_nullable
 as bool?,startDate: freezed == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
@@ -252,19 +260,7 @@ as DateTime?,
   ));
 }
 
-/// Create a copy of PetitionsEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$PetitionCopyWith<$Res>? get lastPetition {
-    if (_self.lastPetition == null) {
-    return null;
-  }
 
-  return $PetitionCopyWith<$Res>(_self.lastPetition!, (value) {
-    return _then(_self.copyWith(lastPetition: value));
-  });
-}
 }
 
 /// @nodoc

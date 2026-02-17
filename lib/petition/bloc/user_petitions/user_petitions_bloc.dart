@@ -42,7 +42,9 @@ class UserPetitionsBloc extends Bloc<UserPetitionsEvent, UserPetitionsState> {
         'action': action,
         'request_id': event.user.id,
         'user': event.user.id,
-        'last_petition': event.lastPetition?.id,
+        'previous_petitions': event.previousPetitions
+            ?.map((petition) => petition.id)
+            .toList(),
       },
     };
     webSocketService.send(message);
@@ -54,11 +56,12 @@ class UserPetitionsBloc extends Bloc<UserPetitionsEvent, UserPetitionsState> {
       final List<Petition> petitions = List.from(
         event.payload['data']['results'].map((e) => Petition.fromJson(e)),
       );
-      int? lastPetition = event.payload['data']['last_petition'];
+      List previousPetitions =
+          event.payload['data']['previous_petitions'] ?? [];
       emit(
         state.copyWith(
           status: UserPetitionsStatus.success,
-          petitions: lastPetition == null
+          petitions: previousPetitions.isEmpty
               ? petitions
               : [...state.petitions, ...petitions],
           userId: event.payload['request_id'],

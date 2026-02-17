@@ -120,10 +120,10 @@ class _SurveysState extends State<Surveys> with AutomaticKeepAliveClientMixin {
       ],
       child: BlocBuilder<SurveyFilterCubit, SurveyFilterState>(
         builder: (context, state) {
-          void getSurveys({Survey? lastSurvey}) {
+          void getSurveys({List<Survey>? previousSurveys}) {
             context.read<SurveysBloc>().add(
               SurveysEvent.get(
-                lastSurvey: lastSurvey,
+                previousSurveys: previousSurveys,
                 searchTerm: state.searchTerm,
                 isActive: state.isActive,
                 sortBy: state.sortBy,
@@ -145,7 +145,7 @@ class _SurveysState extends State<Surveys> with AutomaticKeepAliveClientMixin {
                   controller: _refreshController,
                   onRefresh: getSurveys,
                   onLoading: () {
-                    getSurveys(lastSurvey: _surveys.last);
+                    getSurveys(previousSurveys: _surveys);
                   },
                   footer: ClassicFooter(),
                   child: ListView.builder(

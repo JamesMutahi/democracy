@@ -125,10 +125,10 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( User user,  Petition? lastPetition)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( User user,  List<Petition> petitions)?  resubscribe,TResult Function( User user,  List<Petition> petitions)?  unsubscribe,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( User user,  List<Petition>? previousPetitions)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( User user,  List<Petition> petitions)?  resubscribe,TResult Function( User user,  List<Petition> petitions)?  unsubscribe,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.user,_that.lastPetition);case _Received() when received != null:
+return get(_that.user,_that.previousPetitions);case _Received() when received != null:
 return received(_that.payload);case _Resubscribe() when resubscribe != null:
 return resubscribe(_that.user,_that.petitions);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that.user,_that.petitions);case _:
@@ -149,10 +149,10 @@ return unsubscribe(_that.user,_that.petitions);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( User user,  Petition? lastPetition)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( User user,  List<Petition> petitions)  resubscribe,required TResult Function( User user,  List<Petition> petitions)  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( User user,  List<Petition>? previousPetitions)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( User user,  List<Petition> petitions)  resubscribe,required TResult Function( User user,  List<Petition> petitions)  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Get():
-return get(_that.user,_that.lastPetition);case _Received():
+return get(_that.user,_that.previousPetitions);case _Received():
 return received(_that.payload);case _Resubscribe():
 return resubscribe(_that.user,_that.petitions);case _Unsubscribe():
 return unsubscribe(_that.user,_that.petitions);}
@@ -169,10 +169,10 @@ return unsubscribe(_that.user,_that.petitions);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( User user,  Petition? lastPetition)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( User user,  List<Petition> petitions)?  resubscribe,TResult? Function( User user,  List<Petition> petitions)?  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( User user,  List<Petition>? previousPetitions)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( User user,  List<Petition> petitions)?  resubscribe,TResult? Function( User user,  List<Petition> petitions)?  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.user,_that.lastPetition);case _Received() when received != null:
+return get(_that.user,_that.previousPetitions);case _Received() when received != null:
 return received(_that.payload);case _Resubscribe() when resubscribe != null:
 return resubscribe(_that.user,_that.petitions);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that.user,_that.petitions);case _:
@@ -187,11 +187,19 @@ return unsubscribe(_that.user,_that.petitions);case _:
 
 
 class _Get implements UserPetitionsEvent {
-  const _Get({required this.user, this.lastPetition});
+  const _Get({required this.user, final  List<Petition>? previousPetitions}): _previousPetitions = previousPetitions;
   
 
  final  User user;
- final  Petition? lastPetition;
+ final  List<Petition>? _previousPetitions;
+ List<Petition>? get previousPetitions {
+  final value = _previousPetitions;
+  if (value == null) return null;
+  if (_previousPetitions is EqualUnmodifiableListView) return _previousPetitions;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
 
 /// Create a copy of UserPetitionsEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -203,16 +211,16 @@ _$GetCopyWith<_Get> get copyWith => __$GetCopyWithImpl<_Get>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.user, user) || other.user == user)&&(identical(other.lastPetition, lastPetition) || other.lastPetition == lastPetition));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.user, user) || other.user == user)&&const DeepCollectionEquality().equals(other._previousPetitions, _previousPetitions));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,user,lastPetition);
+int get hashCode => Object.hash(runtimeType,user,const DeepCollectionEquality().hash(_previousPetitions));
 
 @override
 String toString() {
-  return 'UserPetitionsEvent.get(user: $user, lastPetition: $lastPetition)';
+  return 'UserPetitionsEvent.get(user: $user, previousPetitions: $previousPetitions)';
 }
 
 
@@ -223,11 +231,11 @@ abstract mixin class _$GetCopyWith<$Res> implements $UserPetitionsEventCopyWith<
   factory _$GetCopyWith(_Get value, $Res Function(_Get) _then) = __$GetCopyWithImpl;
 @useResult
 $Res call({
- User user, Petition? lastPetition
+ User user, List<Petition>? previousPetitions
 });
 
 
-$UserCopyWith<$Res> get user;$PetitionCopyWith<$Res>? get lastPetition;
+$UserCopyWith<$Res> get user;
 
 }
 /// @nodoc
@@ -240,11 +248,11 @@ class __$GetCopyWithImpl<$Res>
 
 /// Create a copy of UserPetitionsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? user = null,Object? lastPetition = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? user = null,Object? previousPetitions = freezed,}) {
   return _then(_Get(
 user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as User,lastPetition: freezed == lastPetition ? _self.lastPetition : lastPetition // ignore: cast_nullable_to_non_nullable
-as Petition?,
+as User,previousPetitions: freezed == previousPetitions ? _self._previousPetitions : previousPetitions // ignore: cast_nullable_to_non_nullable
+as List<Petition>?,
   ));
 }
 
@@ -256,18 +264,6 @@ $UserCopyWith<$Res> get user {
   
   return $UserCopyWith<$Res>(_self.user, (value) {
     return _then(_self.copyWith(user: value));
-  });
-}/// Create a copy of UserPetitionsEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$PetitionCopyWith<$Res>? get lastPetition {
-    if (_self.lastPetition == null) {
-    return null;
-  }
-
-  return $PetitionCopyWith<$Res>(_self.lastPetition!, (value) {
-    return _then(_self.copyWith(lastPetition: value));
   });
 }
 }

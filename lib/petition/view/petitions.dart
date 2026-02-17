@@ -115,10 +115,10 @@ class _PetitionsState extends State<Petitions>
       ],
       child: BlocBuilder<PetitionFilterCubit, PetitionFilterState>(
         builder: (context, state) {
-          void getPetitions({Petition? lastPetition}) {
+          void getPetitions({List<Petition>? previousPetitions}) {
             context.read<PetitionsBloc>().add(
               PetitionsEvent.get(
-                lastPetition: lastPetition,
+                previousPetitions: previousPetitions,
                 searchTerm: state.searchTerm,
                 isOpen: state.isOpen,
                 sortBy: state.sortBy,
@@ -140,7 +140,7 @@ class _PetitionsState extends State<Petitions>
                   controller: _refreshController,
                   onRefresh: getPetitions,
                   onLoading: () {
-                    getPetitions(lastPetition: _petitions.last);
+                    getPetitions(previousPetitions: _petitions);
                   },
                   footer: ClassicFooter(),
                   child: ListView.builder(

@@ -4,7 +4,7 @@ part of 'meetings_bloc.dart';
 sealed class MeetingsEvent with _$MeetingsEvent {
   const factory MeetingsEvent.get({
     String? searchTerm,
-    Meeting? lastMeeting,
+    List<Meeting>? previousMeetings,
     bool? isActive,
     String? sortBy,
     bool? filterByRegion,

@@ -4,7 +4,7 @@ part of 'petitions_bloc.dart';
 sealed class PetitionsEvent with _$PetitionsEvent {
   const factory PetitionsEvent.get({
     String? searchTerm,
-    Petition? lastPetition,
+    List<Petition>? previousPetitions,
     bool? isOpen,
     String? sortBy,
     bool? filterByRegion,

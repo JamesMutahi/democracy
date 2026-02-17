@@ -4,7 +4,7 @@ part of 'user_petitions_bloc.dart';
 sealed class UserPetitionsEvent with _$UserPetitionsEvent {
   const factory UserPetitionsEvent.get({
     required User user,
-    Petition? lastPetition,
+    List<Petition>? previousPetitions,
   }) = _Get;
   const factory UserPetitionsEvent.received({
     required Map<String, dynamic> payload,

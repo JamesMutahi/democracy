@@ -119,10 +119,10 @@ return received(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  Survey? lastSurvey,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  List<Survey>? previousSurveys,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.searchTerm,_that.lastSurvey,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
+return get(_that.searchTerm,_that.previousSurveys,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
 return received(_that.payload);case _:
   return orElse();
 
@@ -141,10 +141,10 @@ return received(_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  Survey? lastSurvey,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  List<Survey>? previousSurveys,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
 switch (_that) {
 case _Get():
-return get(_that.searchTerm,_that.lastSurvey,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received():
+return get(_that.searchTerm,_that.previousSurveys,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received():
 return received(_that.payload);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -159,10 +159,10 @@ return received(_that.payload);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  Survey? lastSurvey,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  List<Survey>? previousSurveys,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.searchTerm,_that.lastSurvey,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
+return get(_that.searchTerm,_that.previousSurveys,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
 return received(_that.payload);case _:
   return null;
 
@@ -175,11 +175,19 @@ return received(_that.payload);case _:
 
 
 class _Get implements SurveysEvent {
-  const _Get({this.searchTerm, this.lastSurvey, this.isActive, this.sortBy, this.filterByRegion, this.startDate, this.endDate});
+  const _Get({this.searchTerm, final  List<Survey>? previousSurveys, this.isActive, this.sortBy, this.filterByRegion, this.startDate, this.endDate}): _previousSurveys = previousSurveys;
   
 
  final  String? searchTerm;
- final  Survey? lastSurvey;
+ final  List<Survey>? _previousSurveys;
+ List<Survey>? get previousSurveys {
+  final value = _previousSurveys;
+  if (value == null) return null;
+  if (_previousSurveys is EqualUnmodifiableListView) return _previousSurveys;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
  final  bool? isActive;
  final  String? sortBy;
  final  bool? filterByRegion;
@@ -196,16 +204,16 @@ _$GetCopyWith<_Get> get copyWith => __$GetCopyWithImpl<_Get>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&(identical(other.lastSurvey, lastSurvey) || other.lastSurvey == lastSurvey)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.sortBy, sortBy) || other.sortBy == sortBy)&&(identical(other.filterByRegion, filterByRegion) || other.filterByRegion == filterByRegion)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&const DeepCollectionEquality().equals(other._previousSurveys, _previousSurveys)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.sortBy, sortBy) || other.sortBy == sortBy)&&(identical(other.filterByRegion, filterByRegion) || other.filterByRegion == filterByRegion)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,searchTerm,lastSurvey,isActive,sortBy,filterByRegion,startDate,endDate);
+int get hashCode => Object.hash(runtimeType,searchTerm,const DeepCollectionEquality().hash(_previousSurveys),isActive,sortBy,filterByRegion,startDate,endDate);
 
 @override
 String toString() {
-  return 'SurveysEvent.get(searchTerm: $searchTerm, lastSurvey: $lastSurvey, isActive: $isActive, sortBy: $sortBy, filterByRegion: $filterByRegion, startDate: $startDate, endDate: $endDate)';
+  return 'SurveysEvent.get(searchTerm: $searchTerm, previousSurveys: $previousSurveys, isActive: $isActive, sortBy: $sortBy, filterByRegion: $filterByRegion, startDate: $startDate, endDate: $endDate)';
 }
 
 
@@ -216,11 +224,11 @@ abstract mixin class _$GetCopyWith<$Res> implements $SurveysEventCopyWith<$Res> 
   factory _$GetCopyWith(_Get value, $Res Function(_Get) _then) = __$GetCopyWithImpl;
 @useResult
 $Res call({
- String? searchTerm, Survey? lastSurvey, bool? isActive, String? sortBy, bool? filterByRegion, DateTime? startDate, DateTime? endDate
+ String? searchTerm, List<Survey>? previousSurveys, bool? isActive, String? sortBy, bool? filterByRegion, DateTime? startDate, DateTime? endDate
 });
 
 
-$SurveyCopyWith<$Res>? get lastSurvey;
+
 
 }
 /// @nodoc
@@ -233,11 +241,11 @@ class __$GetCopyWithImpl<$Res>
 
 /// Create a copy of SurveysEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? searchTerm = freezed,Object? lastSurvey = freezed,Object? isActive = freezed,Object? sortBy = freezed,Object? filterByRegion = freezed,Object? startDate = freezed,Object? endDate = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? searchTerm = freezed,Object? previousSurveys = freezed,Object? isActive = freezed,Object? sortBy = freezed,Object? filterByRegion = freezed,Object? startDate = freezed,Object? endDate = freezed,}) {
   return _then(_Get(
 searchTerm: freezed == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
-as String?,lastSurvey: freezed == lastSurvey ? _self.lastSurvey : lastSurvey // ignore: cast_nullable_to_non_nullable
-as Survey?,isActive: freezed == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
+as String?,previousSurveys: freezed == previousSurveys ? _self._previousSurveys : previousSurveys // ignore: cast_nullable_to_non_nullable
+as List<Survey>?,isActive: freezed == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
 as bool?,sortBy: freezed == sortBy ? _self.sortBy : sortBy // ignore: cast_nullable_to_non_nullable
 as String?,filterByRegion: freezed == filterByRegion ? _self.filterByRegion : filterByRegion // ignore: cast_nullable_to_non_nullable
 as bool?,startDate: freezed == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
@@ -246,19 +254,7 @@ as DateTime?,
   ));
 }
 
-/// Create a copy of SurveysEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$SurveyCopyWith<$Res>? get lastSurvey {
-    if (_self.lastSurvey == null) {
-    return null;
-  }
 
-  return $SurveyCopyWith<$Res>(_self.lastSurvey!, (value) {
-    return _then(_self.copyWith(lastSurvey: value));
-  });
-}
 }
 
 /// @nodoc

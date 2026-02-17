@@ -122,10 +122,10 @@ return resubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  Meeting? lastMeeting,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( List<Meeting> meetings)?  resubscribe,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  List<Meeting>? previousMeetings,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( List<Meeting> meetings)?  resubscribe,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.searchTerm,_that.lastMeeting,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
+return get(_that.searchTerm,_that.previousMeetings,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
 return received(_that.payload);case _Resubscribe() when resubscribe != null:
 return resubscribe(_that.meetings);case _:
   return orElse();
@@ -145,10 +145,10 @@ return resubscribe(_that.meetings);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  Meeting? lastMeeting,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( List<Meeting> meetings)  resubscribe,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  List<Meeting>? previousMeetings,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( List<Meeting> meetings)  resubscribe,}) {final _that = this;
 switch (_that) {
 case _Get():
-return get(_that.searchTerm,_that.lastMeeting,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received():
+return get(_that.searchTerm,_that.previousMeetings,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received():
 return received(_that.payload);case _Resubscribe():
 return resubscribe(_that.meetings);}
 }
@@ -164,10 +164,10 @@ return resubscribe(_that.meetings);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  Meeting? lastMeeting,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( List<Meeting> meetings)?  resubscribe,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  List<Meeting>? previousMeetings,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( List<Meeting> meetings)?  resubscribe,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.searchTerm,_that.lastMeeting,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
+return get(_that.searchTerm,_that.previousMeetings,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
 return received(_that.payload);case _Resubscribe() when resubscribe != null:
 return resubscribe(_that.meetings);case _:
   return null;
@@ -181,11 +181,19 @@ return resubscribe(_that.meetings);case _:
 
 
 class _Get implements MeetingsEvent {
-  const _Get({this.searchTerm, this.lastMeeting, this.isActive, this.sortBy, this.filterByRegion, this.startDate, this.endDate});
+  const _Get({this.searchTerm, final  List<Meeting>? previousMeetings, this.isActive, this.sortBy, this.filterByRegion, this.startDate, this.endDate}): _previousMeetings = previousMeetings;
   
 
  final  String? searchTerm;
- final  Meeting? lastMeeting;
+ final  List<Meeting>? _previousMeetings;
+ List<Meeting>? get previousMeetings {
+  final value = _previousMeetings;
+  if (value == null) return null;
+  if (_previousMeetings is EqualUnmodifiableListView) return _previousMeetings;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
  final  bool? isActive;
  final  String? sortBy;
  final  bool? filterByRegion;
@@ -202,16 +210,16 @@ _$GetCopyWith<_Get> get copyWith => __$GetCopyWithImpl<_Get>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&(identical(other.lastMeeting, lastMeeting) || other.lastMeeting == lastMeeting)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.sortBy, sortBy) || other.sortBy == sortBy)&&(identical(other.filterByRegion, filterByRegion) || other.filterByRegion == filterByRegion)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&const DeepCollectionEquality().equals(other._previousMeetings, _previousMeetings)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.sortBy, sortBy) || other.sortBy == sortBy)&&(identical(other.filterByRegion, filterByRegion) || other.filterByRegion == filterByRegion)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,searchTerm,lastMeeting,isActive,sortBy,filterByRegion,startDate,endDate);
+int get hashCode => Object.hash(runtimeType,searchTerm,const DeepCollectionEquality().hash(_previousMeetings),isActive,sortBy,filterByRegion,startDate,endDate);
 
 @override
 String toString() {
-  return 'MeetingsEvent.get(searchTerm: $searchTerm, lastMeeting: $lastMeeting, isActive: $isActive, sortBy: $sortBy, filterByRegion: $filterByRegion, startDate: $startDate, endDate: $endDate)';
+  return 'MeetingsEvent.get(searchTerm: $searchTerm, previousMeetings: $previousMeetings, isActive: $isActive, sortBy: $sortBy, filterByRegion: $filterByRegion, startDate: $startDate, endDate: $endDate)';
 }
 
 
@@ -222,11 +230,11 @@ abstract mixin class _$GetCopyWith<$Res> implements $MeetingsEventCopyWith<$Res>
   factory _$GetCopyWith(_Get value, $Res Function(_Get) _then) = __$GetCopyWithImpl;
 @useResult
 $Res call({
- String? searchTerm, Meeting? lastMeeting, bool? isActive, String? sortBy, bool? filterByRegion, DateTime? startDate, DateTime? endDate
+ String? searchTerm, List<Meeting>? previousMeetings, bool? isActive, String? sortBy, bool? filterByRegion, DateTime? startDate, DateTime? endDate
 });
 
 
-$MeetingCopyWith<$Res>? get lastMeeting;
+
 
 }
 /// @nodoc
@@ -239,11 +247,11 @@ class __$GetCopyWithImpl<$Res>
 
 /// Create a copy of MeetingsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? searchTerm = freezed,Object? lastMeeting = freezed,Object? isActive = freezed,Object? sortBy = freezed,Object? filterByRegion = freezed,Object? startDate = freezed,Object? endDate = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? searchTerm = freezed,Object? previousMeetings = freezed,Object? isActive = freezed,Object? sortBy = freezed,Object? filterByRegion = freezed,Object? startDate = freezed,Object? endDate = freezed,}) {
   return _then(_Get(
 searchTerm: freezed == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
-as String?,lastMeeting: freezed == lastMeeting ? _self.lastMeeting : lastMeeting // ignore: cast_nullable_to_non_nullable
-as Meeting?,isActive: freezed == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
+as String?,previousMeetings: freezed == previousMeetings ? _self._previousMeetings : previousMeetings // ignore: cast_nullable_to_non_nullable
+as List<Meeting>?,isActive: freezed == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
 as bool?,sortBy: freezed == sortBy ? _self.sortBy : sortBy // ignore: cast_nullable_to_non_nullable
 as String?,filterByRegion: freezed == filterByRegion ? _self.filterByRegion : filterByRegion // ignore: cast_nullable_to_non_nullable
 as bool?,startDate: freezed == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
@@ -252,19 +260,7 @@ as DateTime?,
   ));
 }
 
-/// Create a copy of MeetingsEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$MeetingCopyWith<$Res>? get lastMeeting {
-    if (_self.lastMeeting == null) {
-    return null;
-  }
 
-  return $MeetingCopyWith<$Res>(_self.lastMeeting!, (value) {
-    return _then(_self.copyWith(lastMeeting: value));
-  });
-}
 }
 
 /// @nodoc
