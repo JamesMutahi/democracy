@@ -36,7 +36,9 @@ class BallotsBloc extends Bloc<BallotsEvent, BallotsState> {
         'action': 'list',
         'request_id': requestId,
         'search_term': event.searchTerm,
-        'last_ballot': event.lastBallot?.id,
+        'previous_ballots': event.previousBallots
+            ?.map((ballot) => ballot.id)
+            .toList(),
         'is_active': event.isActive,
         'sort_by': event.sortBy,
         'filter_by_region': event.filterByRegion,
@@ -53,12 +55,13 @@ class BallotsBloc extends Bloc<BallotsEvent, BallotsState> {
       final List<Ballot> ballots = List.from(
         event.payload['data']['results'].map((e) => Ballot.fromJson(e)),
       );
-      int? lastBallot = event.payload['data']['last_ballot'];
+      List previousBallots = event.payload['data']['previous_ballots'] ?? [];
       emit(
         state.copyWith(
           status: BallotsStatus.success,
-          ballots:
-              lastBallot == null ? ballots : [...state.ballots, ...ballots],
+          ballots: previousBallots.isEmpty
+              ? ballots
+              : [...state.ballots, ...ballots],
           hasNext: event.payload['data']['has_next'],
         ),
       );

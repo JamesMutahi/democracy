@@ -102,10 +102,10 @@ class _BallotsState extends State<Ballots> {
       ],
       child: BlocBuilder<BallotFilterCubit, BallotFilterState>(
         builder: (context, state) {
-          void getBallots({Ballot? lastBallot}) {
+          void getBallots({List<Ballot>? previousBallots}) {
             context.read<BallotsBloc>().add(
               BallotsEvent.get(
-                lastBallot: lastBallot,
+                previousBallots: previousBallots,
                 searchTerm: state.searchTerm,
                 isActive: state.isActive,
                 sortBy: state.sortBy,
@@ -127,7 +127,7 @@ class _BallotsState extends State<Ballots> {
                   controller: _refreshController,
                   onRefresh: getBallots,
                   onLoading: () {
-                    getBallots(lastBallot: _ballots.last);
+                    getBallots(previousBallots: _ballots);
                   },
                   footer: ClassicFooter(),
                   child: ListView.builder(

@@ -4,7 +4,7 @@ part of 'ballots_bloc.dart';
 sealed class BallotsEvent with _$BallotsEvent {
   const factory BallotsEvent.get({
     String? searchTerm,
-    Ballot? lastBallot,
+    List<Ballot>? previousBallots,
     bool? isActive,
     String? sortBy,
     bool? filterByRegion,
