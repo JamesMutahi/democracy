@@ -153,9 +153,10 @@ class _PostsState extends State<_Posts> {
       ],
       child: BlocBuilder<PostFilterCubit, PostFilterState>(
         builder: (context, state) {
-          void getPosts({List<Post>? lastPosts}) {
+          void getPosts({List<Post>? previousPosts}) {
             context.read<PostsBloc>().add(
               PostsEvent.get(
+                previousPosts: previousPosts,
                 searchTerm: state.searchTerm,
                 startDate: state.startDate,
                 endDate: state.endDate,
@@ -178,7 +179,7 @@ class _PostsState extends State<_Posts> {
             checkVisibility: true,
             onRefresh: getPosts,
             onLoading: () {
-              getPosts(lastPosts: _posts);
+              getPosts(previousPosts: _posts);
             },
             onFailure: getPosts,
           );

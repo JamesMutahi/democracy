@@ -41,7 +41,7 @@ class MeetingsBloc extends Bloc<MeetingsEvent, MeetingsState> {
         'request_id': requestId,
         'search_term': event.searchTerm,
         'previous_meetings': event.previousMeetings
-            ?.map((survey) => survey.id)
+            ?.map((meeting) => meeting.id)
             .toList(),
         'is_active': event.isActive,
         'sort_by': event.sortBy,

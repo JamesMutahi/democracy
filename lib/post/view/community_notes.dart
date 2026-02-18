@@ -143,42 +143,44 @@ class _CommunityNotesState extends State<CommunityNotes> {
               ),
             ];
           },
-          body: PostListView(
-            posts: _communityNotes,
-            loading: loading,
-            failure: failure,
-            onPostsUpdated: (posts) {
-              setState(() {
-                _communityNotes = posts;
-              });
-            },
-            refreshController: _refreshController,
-            enablePullDown: true,
-            enablePullUp: hasNextPage,
-            checkVisibility: true,
-            onRefresh: () {
-              context.read<CommunityNotesBloc>().add(
-                CommunityNotesEvent.get(
-                  post: widget.post,
-                  searchTerm: _searchController.text,
-                  sortBy: sortBy,
-                ),
-              );
-            },
-            onLoading: () {
-              context.read<CommunityNotesBloc>().add(
-                CommunityNotesEvent.get(
-                  post: widget.post,
-                  previousPosts: _communityNotes,
-                  sortBy: sortBy,
-                ),
-              );
-            },
-            onFailure: () {
-              context.read<CommunityNotesBloc>().add(
-                CommunityNotesEvent.get(post: widget.post, sortBy: sortBy),
-              );
-            },
+          body: SafeArea(
+            child: PostListView(
+              posts: _communityNotes,
+              loading: loading,
+              failure: failure,
+              onPostsUpdated: (posts) {
+                setState(() {
+                  _communityNotes = posts;
+                });
+              },
+              refreshController: _refreshController,
+              enablePullDown: true,
+              enablePullUp: hasNextPage,
+              checkVisibility: true,
+              onRefresh: () {
+                context.read<CommunityNotesBloc>().add(
+                  CommunityNotesEvent.get(
+                    post: widget.post,
+                    searchTerm: _searchController.text,
+                    sortBy: sortBy,
+                  ),
+                );
+              },
+              onLoading: () {
+                context.read<CommunityNotesBloc>().add(
+                  CommunityNotesEvent.get(
+                    post: widget.post,
+                    previousPosts: _communityNotes,
+                    sortBy: sortBy,
+                  ),
+                );
+              },
+              onFailure: () {
+                context.read<CommunityNotesBloc>().add(
+                  CommunityNotesEvent.get(post: widget.post, sortBy: sortBy),
+                );
+              },
+            ),
           ),
         ),
         floatingActionButton: FloatingActionButton(
