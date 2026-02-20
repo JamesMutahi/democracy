@@ -224,6 +224,7 @@ class RepostButton extends StatelessWidget {
                 context: context,
                 isScrollControlled: true,
                 shape: const BeveledRectangleBorder(),
+                useSafeArea: true,
                 builder: (BuildContext context) {
                   return CustomBottomSheet(
                     title: 'Repost',

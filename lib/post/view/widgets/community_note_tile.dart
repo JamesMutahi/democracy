@@ -84,52 +84,57 @@ class CommunityNoteTile extends StatelessWidget {
                       children: [
                         if (!isDependency)
                           Container(
-                            color: Theme.of(context).scaffoldBackgroundColor,
                             margin: EdgeInsets.only(
                               top: showTopThread ? 20 : 0,
                               left: 5,
                             ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                  icon: Icon(
-                                    Icons.keyboard_arrow_up_rounded,
-                                    size: 42,
-                                    color: communityNote.isUpvoted
-                                        ? Colors.blue
-                                        : null,
+                            child: ColoredBox(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.keyboard_arrow_up_rounded,
+                                      size: 42,
+                                      color: communityNote.isUpvoted
+                                          ? Colors.blue
+                                          : null,
+                                    ),
+                                    onPressed: () {
+                                      context.read<PostDetailBloc>().add(
+                                        PostDetailEvent.upvote(
+                                          post: communityNote,
+                                        ),
+                                      );
+                                    },
                                   ),
-                                  onPressed: () {
-                                    context.read<PostDetailBloc>().add(
-                                      PostDetailEvent.upvote(
-                                        post: communityNote,
-                                      ),
-                                    );
-                                  },
-                                ),
-                                Text(
-                                  '${communityNote.upvotes - communityNote.downvotes}',
-                                  style: Theme.of(context).textTheme.titleLarge,
-                                ),
-                                IconButton(
-                                  icon: Icon(
-                                    Icons.keyboard_arrow_down_rounded,
-                                    size: 42,
-                                    color: communityNote.isDownvoted
-                                        ? Colors.blue
-                                        : null,
+                                  Text(
+                                    '${communityNote.upvotes - communityNote.downvotes}',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.titleLarge,
                                   ),
-                                  onPressed: () {
-                                    context.read<PostDetailBloc>().add(
-                                      PostDetailEvent.downvote(
-                                        post: communityNote,
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.keyboard_arrow_down_rounded,
+                                      size: 42,
+                                      color: communityNote.isDownvoted
+                                          ? Colors.blue
+                                          : null,
+                                    ),
+                                    onPressed: () {
+                                      context.read<PostDetailBloc>().add(
+                                        PostDetailEvent.downvote(
+                                          post: communityNote,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         SizedBox(width: 10),

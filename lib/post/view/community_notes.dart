@@ -90,61 +90,61 @@ class _CommunityNotesState extends State<CommunityNotes> {
         ),
       ],
       child: Scaffold(
-        body: NestedScrollView(
-          headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-            return [
-              SliverAppBar(
-                floating: true,
-                snap: true,
-                forceElevated: true,
-                title: Row(
-                  children: [
-                    Icon(Icons.people_rounded, color: Colors.blueAccent),
-                    SizedBox(width: 10),
-                    Text('Community notes'),
-                  ],
-                ),
-                bottom: PreferredSize(
-                  preferredSize: Size.fromHeight(50.0),
-                  child: CustomSearchBar(
-                    controller: _searchController,
-                    hintText: 'Search',
-                    onChanged: (value) {
-                      context.read<CommunityNotesBloc>().add(
-                        CommunityNotesEvent.get(
-                          post: widget.post,
-                          searchTerm: value,
-                        ),
-                      );
-                    },
-                    onFilterTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => _SortByDialog(selected: sortBy),
-                      ).then((value) {
-                        if (value != null) {
-                          setState(() {
-                            sortBy = value;
-                          });
-                          if (context.mounted) {
-                            context.read<CommunityNotesBloc>().add(
-                              CommunityNotesEvent.get(
-                                post: widget.post,
-                                searchTerm: _searchController.text,
-                                sortBy: value,
-                              ),
-                            );
+        body: SafeArea(
+          child: NestedScrollView(
+            headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  floating: true,
+                  snap: true,
+                  forceElevated: true,
+                  title: Row(
+                    children: [
+                      Icon(Icons.people_rounded, color: Colors.blueAccent),
+                      SizedBox(width: 10),
+                      Text('Community notes'),
+                    ],
+                  ),
+                  bottom: PreferredSize(
+                    preferredSize: Size.fromHeight(50.0),
+                    child: CustomSearchBar(
+                      controller: _searchController,
+                      hintText: 'Search',
+                      onChanged: (value) {
+                        context.read<CommunityNotesBloc>().add(
+                          CommunityNotesEvent.get(
+                            post: widget.post,
+                            searchTerm: value,
+                          ),
+                        );
+                      },
+                      onFilterTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => _SortByDialog(selected: sortBy),
+                        ).then((value) {
+                          if (value != null) {
+                            setState(() {
+                              sortBy = value;
+                            });
+                            if (context.mounted) {
+                              context.read<CommunityNotesBloc>().add(
+                                CommunityNotesEvent.get(
+                                  post: widget.post,
+                                  searchTerm: _searchController.text,
+                                  sortBy: value,
+                                ),
+                              );
+                            }
                           }
-                        }
-                      });
-                    },
+                        });
+                      },
+                    ),
                   ),
                 ),
-              ),
-            ];
-          },
-          body: SafeArea(
-            child: PostListView(
+              ];
+            },
+            body: PostListView(
               posts: _communityNotes,
               loading: loading,
               failure: failure,

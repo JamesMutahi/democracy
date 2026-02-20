@@ -21,56 +21,58 @@ class CustomBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 10, bottom: 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Column(
-            children: [
-              Center(
-                child: Container(
-                  height: 5,
-                  width: 50,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Column(
+              children: [
+                Center(
+                  child: Container(
+                    height: 5,
+                    width: 50,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.outlineVariant,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(bottom: 10),
+                  padding: EdgeInsets.only(left: 15),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.outlineVariant,
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: 10),
-                padding: EdgeInsets.only(left: 15),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Theme.of(context).disabledColor.withAlpha(30),
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Theme.of(context).disabledColor.withAlpha(30),
+                      ),
                     ),
                   ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(title, style: Theme.of(context).textTheme.titleLarge),
+                      IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: Icon(Symbols.close),
+                      ),
+                    ],
+                  ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(title, style: Theme.of(context).textTheme.titleLarge),
-                    IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: Icon(Symbols.close),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          Container(
-            margin: EdgeInsets.only(left: 15, right: 15),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: children,
+              ],
             ),
-          ),
-        ],
+            Container(
+              margin: EdgeInsets.only(left: 15, right: 15),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: children,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
