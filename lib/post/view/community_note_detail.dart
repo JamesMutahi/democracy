@@ -16,6 +16,7 @@ import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class CommunityNoteDetail extends StatefulWidget {
   const CommunityNoteDetail({
@@ -34,6 +35,9 @@ class CommunityNoteDetail extends StatefulWidget {
 }
 
 class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
+  final RefreshController _refreshController = RefreshController(
+    initialRefresh: false,
+  );
   late Post _communityNote = widget.communityNote;
   late Post _communityNoteOf = widget.communityNote.communityNoteOf!;
   bool isDeleted = false;
@@ -41,6 +45,7 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
   bool failure = false;
   List<Post> _replies = [];
   bool hasNextPage = false;
+  List<Widget> widgets = [];
 
   @override
   void initState() {
@@ -52,17 +57,12 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
     context.read<RepliesBloc>().add(
       RepliesEvent.get(post: widget.communityNote),
     );
+    // Resubscribing to the parent post ie. the post with a community note
     context.read<RepliesBloc>().add(
       RepliesEvent.resubscribe(
         post: widget.communityNote,
         replies: [widget.communityNote.communityNoteOf!],
       ),
-    );
-  }
-
-  void _onScrollUp() {
-    context.read<RepliesBloc>().add(
-      RepliesEvent.get(post: widget.communityNote, previousPosts: _replies),
     );
   }
 
@@ -84,6 +84,13 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
         listeners: [
           BlocListener<WebsocketBloc, WebsocketState>(
             listener: (context, state) {
+              // Resubscribing to the parent post ie. the post with a community note
+              context.read<RepliesBloc>().add(
+                RepliesEvent.resubscribe(
+                  post: widget.communityNote,
+                  replies: [widget.communityNote.communityNoteOf!],
+                ),
+              );
               if (state.status == WebsocketStatus.connected) {
                 if (_replies.isNotEmpty) {
                   context.read<RepliesBloc>().add(
@@ -195,7 +202,13 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
                     loading = false;
                     failure = false;
                     hasNextPage = state.hasNext;
-                    //   TODO: Stop loader
+                    if (_refreshController.headerStatus ==
+                        RefreshStatus.refreshing) {
+                      _refreshController.refreshCompleted();
+                    }
+                    if (_refreshController.footerStatus == LoadStatus.loading) {
+                      _refreshController.loadComplete();
+                    }
                   });
                 }
               }
@@ -207,7 +220,13 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
                       failure = true;
                     });
                   }
-                  //   TODO: Stop loader with failure message
+                  if (_refreshController.headerStatus ==
+                      RefreshStatus.refreshing) {
+                    _refreshController.refreshFailed();
+                  }
+                  if (_refreshController.footerStatus == LoadStatus.loading) {
+                    _refreshController.loadFailed();
+                  }
                 }
               }
             },
@@ -221,59 +240,79 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
                     'This community note has been deleted by the author',
                   ),
                 )
-              : CustomScrollView(
-                  reverse: true,
-                  slivers: <Widget>[
-                    SliverFillRemaining(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            if (widget.showAsRepost)
-                              Stack(
-                                children: [
-                                  ThreadLine(
-                                    showBottomThread: true,
-                                    showTopThread: true,
-                                  ),
-                                  _repostBanner(),
-                                ],
-                              ),
-                            CommunityNoteTile(
-                              communityNote: _communityNote,
-                              navigateToDetailPage: false,
-                              showWholeText: true,
-                              isDependency: false,
-                              showTopThread: true,
-                              showBottomThread: false,
-                            ),
-                            PostListener(
-                              posts: _replies,
-                              onPostsUpdated: (posts) {
-                                setState(() {
-                                  _replies = posts;
-                                });
-                              },
-                              child: loading
-                                  ? Container(
-                                      margin: EdgeInsets.only(top: 50),
-                                      child: BottomLoader(),
-                                    )
-                                  : failure
-                                  ? FailureRetryButton(onPressed: _getData)
-                                  : Replies(replies: _replies),
-                            ),
-                          ],
+              : SafeArea(
+                  child: SmartRefresher(
+                    enablePullDown: false,
+                    enablePullUp: hasNextPage,
+                    header: ClassicHeader(),
+                    footer: ClassicFooter(),
+                    controller: _refreshController,
+                    onLoading: () {
+                      context.read<RepliesBloc>().add(
+                        RepliesEvent.get(
+                          post: widget.communityNote,
+                          previousPosts: _replies,
                         ),
-                      ),
+                      );
+                    },
+                    child: CustomScrollView(
+                      slivers: <Widget>[
+                        SliverToBoxAdapter(
+                          child: PostTile(
+                            showBottomThread: true,
+                            hideBorder: true,
+                            post: _communityNoteOf,
+                          ),
+                        ),
+                        SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: Column(
+                            children: [
+                              if (widget.showAsRepost)
+                                Stack(
+                                  children: [
+                                    ThreadLine(
+                                      showBottomThread: true,
+                                      showTopThread: true,
+                                    ),
+                                    _repostBanner(),
+                                  ],
+                                ),
+                              CommunityNoteTile(
+                                communityNote: _communityNote,
+                                navigateToDetailPage: false,
+                                showWholeText: true,
+                                isDependency: false,
+                                showTopThread: true,
+                                showBottomThread: false,
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (loading)
+                          SliverToBoxAdapter(
+                            child: Container(
+                              margin: EdgeInsets.only(top: 50),
+                              child: BottomLoader(),
+                            ),
+                          )
+                        else if (failure)
+                          SliverToBoxAdapter(
+                            child: FailureRetryButton(onPressed: _getData),
+                          )
+                        else
+                          PostListener(
+                            posts: _replies,
+                            onPostsUpdated: (List<Post> posts) {
+                              setState(() {
+                                _replies = posts;
+                              });
+                            },
+                            child: Replies(replies: _replies),
+                          ),
+                      ],
                     ),
-                    SliverToBoxAdapter(
-                      child: PostTile(
-                        showBottomThread: true,
-                        hideBorder: true,
-                        post: _communityNoteOf,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
           bottomNavigationBar: _communityNote.author.hasBlocked
               ? Container(

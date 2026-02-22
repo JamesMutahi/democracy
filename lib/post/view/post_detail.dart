@@ -28,6 +28,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class PostDetail extends StatefulWidget {
   const PostDetail({
@@ -47,6 +48,9 @@ class PostDetail extends StatefulWidget {
 
 class _PostDetailState extends State<PostDetail> {
   late Post _post = widget.post;
+  final RefreshController _refreshController = RefreshController(
+    initialRefresh: false,
+  );
   bool isDeleted = false;
   bool loading = true;
   bool failure = false;
@@ -65,13 +69,6 @@ class _PostDetailState extends State<PostDetail> {
     if (widget.post.replyTo != null) {
       context.read<ReplyToBloc>().add(ReplyToEvent.get(post: widget.post));
     }
-  }
-
-  void _onScrollUp() {
-    // TODO:
-    context.read<RepliesBloc>().add(
-      RepliesEvent.get(post: widget.post, previousPosts: _replies),
-    );
   }
 
   @override
@@ -259,7 +256,13 @@ class _PostDetailState extends State<PostDetail> {
                     loading = false;
                     failure = false;
                     hasNextPage = state.hasNext;
-                    //   TODO: Stop loader
+                    if (_refreshController.headerStatus ==
+                        RefreshStatus.refreshing) {
+                      _refreshController.refreshCompleted();
+                    }
+                    if (_refreshController.footerStatus == LoadStatus.loading) {
+                      _refreshController.loadComplete();
+                    }
                   });
                 }
               }
@@ -271,7 +274,13 @@ class _PostDetailState extends State<PostDetail> {
                       failure = true;
                     });
                   }
-                  //   TODO: Stop loader with failure message
+                  if (_refreshController.headerStatus ==
+                      RefreshStatus.refreshing) {
+                    _refreshController.refreshFailed();
+                  }
+                  if (_refreshController.footerStatus == LoadStatus.loading) {
+                    _refreshController.loadFailed();
+                  }
                 }
               }
             },
@@ -292,11 +301,49 @@ class _PostDetailState extends State<PostDetail> {
           appBar: AppBar(title: Text('Post')),
           body: isDeleted
               ? Center(child: Text('This post has been deleted by the author'))
-              : CustomScrollView(
-                  reverse: true,
-                  slivers: <Widget>[
-                    SliverFillRemaining(
-                      child: SingleChildScrollView(
+              : SmartRefresher(
+                  enablePullDown: false,
+                  enablePullUp: hasNextPage,
+                  header: ClassicHeader(),
+                  footer: ClassicFooter(),
+                  controller: _refreshController,
+                  onLoading: () {
+                    context.read<RepliesBloc>().add(
+                      RepliesEvent.get(
+                        post: widget.post,
+                        previousPosts: _replies,
+                      ),
+                    );
+                  },
+                  child: CustomScrollView(
+                    slivers: <Widget>[
+                      PostListener(
+                        posts: _replyTos,
+                        onPostsUpdated: (posts) {
+                          setState(() {
+                            _replyTos = posts;
+                          });
+                        },
+                        child: SliverList(
+                          delegate: SliverChildBuilderDelegate((
+                            BuildContext context,
+                            int index,
+                          ) {
+                            Post post = _replyTos[index];
+                            return PostWidgetSelector(
+                              key: ValueKey(post.id),
+                              post: post,
+                              showTopThread:
+                                  post.replyTo != null ||
+                                  post.communityNoteOf != null,
+                              showBottomThread: true,
+                              hideBorder: true,
+                            );
+                          }, childCount: _replyTos.length),
+                        ),
+                      ),
+                      SliverFillRemaining(
+                        hasScrollBody: false,
                         child: Column(
                           children: [
                             _post.replyTo == null
@@ -332,55 +379,32 @@ class _PostDetailState extends State<PostDetail> {
                                       ),
                                     ],
                                   ),
-                            PostListener(
-                              posts: _replies,
-                              onPostsUpdated: (posts) {
-                                setState(() {
-                                  _replies = posts;
-                                });
-                              },
-                              child: loading
-                                  ? Container(
-                                      margin: EdgeInsets.only(top: 50),
-                                      child: BottomLoader(),
-                                    )
-                                  : failure
-                                  ? FailureRetryButton(onPressed: _getData)
-                                  : Replies(replies: _replies),
-                            ),
                           ],
                         ),
                       ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: PostListener(
-                        posts: _replyTos,
-                        onPostsUpdated: (posts) {
-                          setState(() {
-                            _replyTos = posts;
-                          });
-                        },
-                        child: ListView.builder(
-                          reverse: true,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (BuildContext context, int index) {
-                            Post post = _replyTos[index];
-                            return PostWidgetSelector(
-                              key: ValueKey(post.id),
-                              post: post,
-                              showTopThread:
-                                  post.replyTo != null ||
-                                  post.communityNoteOf != null,
-                              showBottomThread: true,
-                              hideBorder: true,
-                            );
+                      if (loading)
+                        SliverToBoxAdapter(
+                          child: Container(
+                            margin: EdgeInsets.only(top: 50),
+                            child: BottomLoader(),
+                          ),
+                        )
+                      else if (failure)
+                        SliverToBoxAdapter(
+                          child: FailureRetryButton(onPressed: _getData),
+                        )
+                      else
+                        PostListener(
+                          posts: _replies,
+                          onPostsUpdated: (List<Post> posts) {
+                            setState(() {
+                              _replies = posts;
+                            });
                           },
-                          itemCount: _replyTos.length,
+                          child: Replies(replies: _replies),
                         ),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
           bottomNavigationBar: _post.author.hasBlocked
               ? Container(

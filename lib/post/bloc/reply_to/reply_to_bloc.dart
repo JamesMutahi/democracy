@@ -54,7 +54,7 @@ class ReplyToBloc extends Bloc<ReplyToEvent, ReplyToState> {
       emit(
         state.copyWith(
           status: ReplyToStatus.success,
-          posts: posts,
+          posts: posts.reversed.toList(),
           postId: event.payload['request_id'],
         ),
       );

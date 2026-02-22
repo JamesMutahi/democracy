@@ -9,20 +9,17 @@ class Replies extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemBuilder: (BuildContext context, int index) {
-        Post post = replies[index];
+    return SliverList(
+      delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+        Post reply = replies[index];
         return PostTile(
-          key: ValueKey(post.id),
-          post: post,
+          key: ValueKey(reply.id),
+          post: reply,
           checkVisibility: true,
-          showThreadedReplies: post.thread.isEmpty ? false : true,
-          showBottomThread: post.thread.isEmpty ? false : true,
+          showThreadedReplies: reply.thread.isEmpty ? false : true,
+          showBottomThread: reply.thread.isEmpty ? false : true,
         );
-      },
-      itemCount: replies.length,
+      }, childCount: replies.length),
     );
   }
 }
