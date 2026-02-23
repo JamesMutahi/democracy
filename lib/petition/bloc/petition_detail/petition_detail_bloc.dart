@@ -3,6 +3,9 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/geo/models/constituency.dart';
+import 'package:democracy/geo/models/county.dart';
+import 'package:democracy/geo/models/ward.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -60,7 +63,7 @@ class PetitionDetailBloc
       Petition petition = Petition.fromJson(event.payload['data']);
       emit(PetitionCreated(petition: petition));
     } else {
-      emit(PetitionDetailFailure(error: event.payload['errors'][0]));
+      emit(PetitionDetailFailure(error: event.payload['errors'][0].toString()));
     }
   }
 
@@ -93,6 +96,9 @@ class PetitionDetailBloc
           'title': event.title,
           'image_base64': base64Encode(File(event.imagePath).readAsBytesSync()),
           'description': event.description,
+          'county_id': event.county?.id,
+          'constituency_id': event.constituency?.id,
+          'ward_id': event.ward?.id,
         },
       },
     };

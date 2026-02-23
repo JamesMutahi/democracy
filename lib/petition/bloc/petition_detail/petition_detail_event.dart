@@ -15,6 +15,9 @@ sealed class PetitionDetailEvent with _$PetitionDetailEvent {
     required String title,
     required String imagePath,
     required String description,
+    required County? county,
+    required Constituency? constituency,
+    required Ward? ward,
   }) = _Create;
   const factory PetitionDetailEvent.support({required Petition petition}) =
       _Support;

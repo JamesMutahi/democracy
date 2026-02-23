@@ -19,6 +19,7 @@ import 'package:democracy/chat/bloc/messages/messages_bloc.dart';
 import 'package:democracy/constitution/bloc/constitution/constitution_bloc.dart';
 import 'package:democracy/constitution/bloc/section_detail/section_detail_bloc.dart';
 import 'package:democracy/constitution/bloc/sections/sections_bloc.dart';
+import 'package:democracy/geo/bloc/geo/geo_cubit.dart';
 import 'package:democracy/meet/bloc/meeting_detail/meeting_detail_bloc.dart';
 import 'package:democracy/meet/bloc/meeting_filter/meeting_filter_cubit.dart';
 import 'package:democracy/meet/bloc/meetings/meetings_bloc.dart';
@@ -85,6 +86,7 @@ void main() async {
         RepositoryProvider.value(
           value: AuthRepository(authProvider: AuthProvider(dio: dio)),
         ),
+        RepositoryProvider.value(value: GeoRepository(dio: dio)),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -275,6 +277,12 @@ void main() async {
           BlocProvider(
             create: (context) =>
                 UserCommunityNotesBloc(webSocketService: webSocketService),
+          ),
+          BlocProvider(
+            create: (context) => GeoCubit(
+              authRepository: context.read<AuthRepository>(),
+              geoRepository: context.read<GeoRepository>(),
+            ),
           ),
         ],
         child: const MyApp(),

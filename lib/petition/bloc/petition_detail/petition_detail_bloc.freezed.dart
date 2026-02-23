@@ -670,13 +670,13 @@ return received(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( String title,  String imagePath,  String description)?  create,TResult Function( Petition petition)?  support,TResult Function( Petition petition)?  close,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( String title,  String imagePath,  String description,  County? county,  Constituency? constituency,  Ward? ward)?  create,TResult Function( Petition petition)?  support,TResult Function( Petition petition)?  close,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Create() when create != null:
-return create(_that.title,_that.imagePath,_that.description);case _Support() when support != null:
+return create(_that.title,_that.imagePath,_that.description,_that.county,_that.constituency,_that.ward);case _Support() when support != null:
 return support(_that.petition);case _Close() when close != null:
 return close(_that.petition);case _Received() when received != null:
 return received(_that.payload);case _:
@@ -697,13 +697,13 @@ return received(_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( String title,  String imagePath,  String description)  create,required TResult Function( Petition petition)  support,required TResult Function( Petition petition)  close,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( String title,  String imagePath,  String description,  County? county,  Constituency? constituency,  Ward? ward)  create,required TResult Function( Petition petition)  support,required TResult Function( Petition petition)  close,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Updated():
 return updated(_that.payload);case _Deleted():
 return deleted(_that.payload);case _Create():
-return create(_that.title,_that.imagePath,_that.description);case _Support():
+return create(_that.title,_that.imagePath,_that.description,_that.county,_that.constituency,_that.ward);case _Support():
 return support(_that.petition);case _Close():
 return close(_that.petition);case _Received():
 return received(_that.payload);}
@@ -720,13 +720,13 @@ return received(_that.payload);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( String title,  String imagePath,  String description)?  create,TResult? Function( Petition petition)?  support,TResult? Function( Petition petition)?  close,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( String title,  String imagePath,  String description,  County? county,  Constituency? constituency,  Ward? ward)?  create,TResult? Function( Petition petition)?  support,TResult? Function( Petition petition)?  close,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Create() when create != null:
-return create(_that.title,_that.imagePath,_that.description);case _Support() when support != null:
+return create(_that.title,_that.imagePath,_that.description,_that.county,_that.constituency,_that.ward);case _Support() when support != null:
 return support(_that.petition);case _Close() when close != null:
 return close(_that.petition);case _Received() when received != null:
 return received(_that.payload);case _:
@@ -957,12 +957,15 @@ as Map<String, dynamic>,
 
 
 class _Create implements PetitionDetailEvent {
-  const _Create({required this.title, required this.imagePath, required this.description});
+  const _Create({required this.title, required this.imagePath, required this.description, required this.county, required this.constituency, required this.ward});
   
 
  final  String title;
  final  String imagePath;
  final  String description;
+ final  County? county;
+ final  Constituency? constituency;
+ final  Ward? ward;
 
 /// Create a copy of PetitionDetailEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -974,16 +977,16 @@ _$CreateCopyWith<_Create> get copyWith => __$CreateCopyWithImpl<_Create>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Create&&(identical(other.title, title) || other.title == title)&&(identical(other.imagePath, imagePath) || other.imagePath == imagePath)&&(identical(other.description, description) || other.description == description));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Create&&(identical(other.title, title) || other.title == title)&&(identical(other.imagePath, imagePath) || other.imagePath == imagePath)&&(identical(other.description, description) || other.description == description)&&(identical(other.county, county) || other.county == county)&&(identical(other.constituency, constituency) || other.constituency == constituency)&&(identical(other.ward, ward) || other.ward == ward));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,title,imagePath,description);
+int get hashCode => Object.hash(runtimeType,title,imagePath,description,county,constituency,ward);
 
 @override
 String toString() {
-  return 'PetitionDetailEvent.create(title: $title, imagePath: $imagePath, description: $description)';
+  return 'PetitionDetailEvent.create(title: $title, imagePath: $imagePath, description: $description, county: $county, constituency: $constituency, ward: $ward)';
 }
 
 
@@ -994,11 +997,11 @@ abstract mixin class _$CreateCopyWith<$Res> implements $PetitionDetailEventCopyW
   factory _$CreateCopyWith(_Create value, $Res Function(_Create) _then) = __$CreateCopyWithImpl;
 @useResult
 $Res call({
- String title, String imagePath, String description
+ String title, String imagePath, String description, County? county, Constituency? constituency, Ward? ward
 });
 
 
-
+$CountyCopyWith<$Res>? get county;$ConstituencyCopyWith<$Res>? get constituency;$WardCopyWith<$Res>? get ward;
 
 }
 /// @nodoc
@@ -1011,16 +1014,55 @@ class __$CreateCopyWithImpl<$Res>
 
 /// Create a copy of PetitionDetailEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? title = null,Object? imagePath = null,Object? description = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? title = null,Object? imagePath = null,Object? description = null,Object? county = freezed,Object? constituency = freezed,Object? ward = freezed,}) {
   return _then(_Create(
 title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,imagePath: null == imagePath ? _self.imagePath : imagePath // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String,
+as String,county: freezed == county ? _self.county : county // ignore: cast_nullable_to_non_nullable
+as County?,constituency: freezed == constituency ? _self.constituency : constituency // ignore: cast_nullable_to_non_nullable
+as Constituency?,ward: freezed == ward ? _self.ward : ward // ignore: cast_nullable_to_non_nullable
+as Ward?,
   ));
 }
 
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CountyCopyWith<$Res>? get county {
+    if (_self.county == null) {
+    return null;
+  }
 
+  return $CountyCopyWith<$Res>(_self.county!, (value) {
+    return _then(_self.copyWith(county: value));
+  });
+}/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ConstituencyCopyWith<$Res>? get constituency {
+    if (_self.constituency == null) {
+    return null;
+  }
+
+  return $ConstituencyCopyWith<$Res>(_self.constituency!, (value) {
+    return _then(_self.copyWith(constituency: value));
+  });
+}/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$WardCopyWith<$Res>? get ward {
+    if (_self.ward == null) {
+    return null;
+  }
+
+  return $WardCopyWith<$Res>(_self.ward!, (value) {
+    return _then(_self.copyWith(ward: value));
+  });
+}
 }
 
 /// @nodoc
