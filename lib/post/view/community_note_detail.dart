@@ -264,8 +264,7 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
                             post: _communityNoteOf,
                           ),
                         ),
-                        SliverFillRemaining(
-                          hasScrollBody: false,
+                        SliverToBoxAdapter(
                           child: Column(
                             children: [
                               if (widget.showAsRepost)

@@ -342,8 +342,7 @@ class _PostDetailState extends State<PostDetail> {
                           }, childCount: _replyTos.length),
                         ),
                       ),
-                      SliverFillRemaining(
-                        hasScrollBody: false,
+                      SliverToBoxAdapter(
                         child: Column(
                           children: [
                             _post.replyTo == null

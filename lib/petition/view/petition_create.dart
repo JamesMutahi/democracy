@@ -262,15 +262,19 @@ class _CreatePetitionState extends State<CreatePetition> {
                                         )
                                         .toList(),
                                     onChanged: (value) {
-                                      setState(() {
-                                        county = value;
-                                        constituency = null;
-                                        ward = null;
-                                      });
-                                      if (showConstituencies == true) {
-                                        context
-                                            .read<GeoCubit>()
-                                            .getConstituencies(county: value!);
+                                      if (value != county) {
+                                        setState(() {
+                                          county = value;
+                                          constituency = null;
+                                          ward = null;
+                                        });
+                                        if (showConstituencies == true) {
+                                          context
+                                              .read<GeoCubit>()
+                                              .getConstituencies(
+                                                county: value!,
+                                              );
+                                        }
                                       }
                                     },
                                   ),
@@ -334,14 +338,16 @@ class _CreatePetitionState extends State<CreatePetition> {
                                         )
                                         .toList(),
                                     onChanged: (value) {
-                                      setState(() {
-                                        constituency = value;
-                                        ward = null;
-                                      });
-                                      if (showWards == true) {
-                                        context.read<GeoCubit>().getWards(
-                                          constituency: value!,
-                                        );
+                                      if (value != constituency) {
+                                        setState(() {
+                                          constituency = value;
+                                          ward = null;
+                                        });
+                                        if (showWards == true) {
+                                          context.read<GeoCubit>().getWards(
+                                            constituency: value!,
+                                          );
+                                        }
                                       }
                                     },
                                   ),
@@ -406,9 +412,11 @@ class _CreatePetitionState extends State<CreatePetition> {
                                         )
                                         .toList(),
                                     onChanged: (value) {
-                                      setState(() {
-                                        ward = value;
-                                      });
+                                      if (value != ward) {
+                                        setState(() {
+                                          ward = value;
+                                        });
+                                      }
                                     },
                                   ),
                                 ],
