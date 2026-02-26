@@ -35,9 +35,7 @@ class CommunityNoteDetail extends StatefulWidget {
 }
 
 class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
+  final RefreshController _refreshController = RefreshController();
   late Post _communityNote = widget.communityNote;
   late Post _communityNoteOf = widget.communityNote.communityNoteOf!;
   bool isDeleted = false;
@@ -109,10 +107,7 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
                 case PostCreated(post: final post):
                   if (widget.communityNote.id == post.replyTo?.id) {
                     setState(() {
-                      int index = _replies.indexWhere(
-                        (element) => element.author.id != post.author.id,
-                      );
-                      _replies.insert(index, post);
+                      _replies.insert(0, post);
                     });
                   }
                 case PostLoaded(:final post):
@@ -242,29 +237,31 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
                 )
               : SafeArea(
                   child: SmartRefresher(
-                    enablePullDown: false,
-                    enablePullUp: hasNextPage,
-                    header: ClassicHeader(),
+                    enablePullDown: hasNextPage,
+                    enablePullUp: false,
+                    header: ClassicHeader(
+                      idleIcon: Icon(
+                        Icons.arrow_upward_rounded,
+                        color: Theme.of(context).disabledColor,
+                      ),
+                      idleText: 'Pull up to load more',
+                      releaseText: 'Release to load more',
+                      refreshingText: 'Loading...',
+                    ),
                     footer: ClassicFooter(),
                     controller: _refreshController,
-                    onLoading: () {
+                    onRefresh: () {
                       context.read<RepliesBloc>().add(
                         RepliesEvent.get(
-                          post: widget.communityNote,
+                          post: _communityNote,
                           previousPosts: _replies,
                         ),
                       );
                     },
                     child: CustomScrollView(
+                      reverse: true,
                       slivers: <Widget>[
-                        SliverToBoxAdapter(
-                          child: PostTile(
-                            showBottomThread: true,
-                            hideBorder: true,
-                            post: _communityNoteOf,
-                          ),
-                        ),
-                        SliverToBoxAdapter(
+                        SliverFillRemaining(
                           child: Column(
                             children: [
                               if (widget.showAsRepost)
@@ -285,30 +282,33 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
                                 showTopThread: true,
                                 showBottomThread: false,
                               ),
+                              if (loading)
+                                Container(
+                                  margin: EdgeInsets.only(top: 50),
+                                  child: BottomLoader(),
+                                )
+                              else if (failure)
+                                FailureRetryButton(onPressed: _getData)
+                              else
+                                PostListener(
+                                  posts: _replies,
+                                  onPostsUpdated: (List<Post> posts) {
+                                    setState(() {
+                                      _replies = posts;
+                                    });
+                                  },
+                                  child: Replies(replies: _replies),
+                                ),
                             ],
                           ),
                         ),
-                        if (loading)
-                          SliverToBoxAdapter(
-                            child: Container(
-                              margin: EdgeInsets.only(top: 50),
-                              child: BottomLoader(),
-                            ),
-                          )
-                        else if (failure)
-                          SliverToBoxAdapter(
-                            child: FailureRetryButton(onPressed: _getData),
-                          )
-                        else
-                          PostListener(
-                            posts: _replies,
-                            onPostsUpdated: (List<Post> posts) {
-                              setState(() {
-                                _replies = posts;
-                              });
-                            },
-                            child: Replies(replies: _replies),
+                        SliverToBoxAdapter(
+                          child: PostTile(
+                            showBottomThread: true,
+                            hideBorder: true,
+                            post: _communityNoteOf,
                           ),
+                        ),
                       ],
                     ),
                   ),

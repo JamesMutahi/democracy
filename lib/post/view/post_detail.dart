@@ -48,9 +48,7 @@ class PostDetail extends StatefulWidget {
 
 class _PostDetailState extends State<PostDetail> {
   late Post _post = widget.post;
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
+  final RefreshController _refreshController = RefreshController();
   bool isDeleted = false;
   bool loading = true;
   bool failure = false;
@@ -302,47 +300,28 @@ class _PostDetailState extends State<PostDetail> {
           body: isDeleted
               ? Center(child: Text('This post has been deleted by the author'))
               : SmartRefresher(
-                  enablePullDown: false,
-                  enablePullUp: hasNextPage,
-                  header: ClassicHeader(),
+                  enablePullDown: hasNextPage,
+                  enablePullUp: false,
+                  header: ClassicHeader(
+                    idleIcon: Icon(
+                      Icons.arrow_upward_rounded,
+                      color: Theme.of(context).disabledColor,
+                    ),
+                    idleText: 'Pull up to load more',
+                    releaseText: 'Release to load more',
+                    refreshingText: 'Loading...',
+                  ),
                   footer: ClassicFooter(),
                   controller: _refreshController,
-                  onLoading: () {
+                  onRefresh: () {
                     context.read<RepliesBloc>().add(
-                      RepliesEvent.get(
-                        post: widget.post,
-                        previousPosts: _replies,
-                      ),
+                      RepliesEvent.get(post: _post, previousPosts: _replies),
                     );
                   },
                   child: CustomScrollView(
+                    reverse: true,
                     slivers: <Widget>[
-                      PostListener(
-                        posts: _replyTos,
-                        onPostsUpdated: (posts) {
-                          setState(() {
-                            _replyTos = posts;
-                          });
-                        },
-                        child: SliverList(
-                          delegate: SliverChildBuilderDelegate((
-                            BuildContext context,
-                            int index,
-                          ) {
-                            Post post = _replyTos[index];
-                            return PostWidgetSelector(
-                              key: ValueKey(post.id),
-                              post: post,
-                              showTopThread:
-                                  post.replyTo != null ||
-                                  post.communityNoteOf != null,
-                              showBottomThread: true,
-                              hideBorder: true,
-                            );
-                          }, childCount: _replyTos.length),
-                        ),
-                      ),
-                      SliverToBoxAdapter(
+                      SliverFillRemaining(
                         child: Column(
                           children: [
                             _post.replyTo == null
@@ -378,30 +357,51 @@ class _PostDetailState extends State<PostDetail> {
                                       ),
                                     ],
                                   ),
+                            if (loading)
+                              Container(
+                                margin: EdgeInsets.only(top: 50),
+                                child: BottomLoader(),
+                              )
+                            else if (failure)
+                              FailureRetryButton(onPressed: _getData)
+                            else
+                              PostListener(
+                                posts: _replies,
+                                onPostsUpdated: (List<Post> posts) {
+                                  setState(() {
+                                    _replies = posts;
+                                  });
+                                },
+                                child: Replies(replies: _replies),
+                              ),
                           ],
                         ),
                       ),
-                      if (loading)
-                        SliverToBoxAdapter(
-                          child: Container(
-                            margin: EdgeInsets.only(top: 50),
-                            child: BottomLoader(),
-                          ),
-                        )
-                      else if (failure)
-                        SliverToBoxAdapter(
-                          child: FailureRetryButton(onPressed: _getData),
-                        )
-                      else
-                        PostListener(
-                          posts: _replies,
-                          onPostsUpdated: (List<Post> posts) {
-                            setState(() {
-                              _replies = posts;
-                            });
-                          },
-                          child: Replies(replies: _replies),
+                      PostListener(
+                        posts: _replyTos,
+                        onPostsUpdated: (posts) {
+                          setState(() {
+                            _replyTos = posts;
+                          });
+                        },
+                        child: SliverList(
+                          delegate: SliverChildBuilderDelegate((
+                            BuildContext context,
+                            int index,
+                          ) {
+                            Post post = _replyTos[index];
+                            return PostWidgetSelector(
+                              key: ValueKey(post.id),
+                              post: post,
+                              showTopThread:
+                                  post.replyTo != null ||
+                                  post.communityNoteOf != null,
+                              showBottomThread: true,
+                              hideBorder: true,
+                            );
+                          }, childCount: _replyTos.length),
                         ),
+                      ),
                     ],
                   ),
                 ),
