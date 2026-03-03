@@ -9,12 +9,4 @@ sealed class UserPostsEvent with _$UserPostsEvent {
   const factory UserPostsEvent.received({
     required Map<String, dynamic> payload,
   }) = _Received;
-  const factory UserPostsEvent.unsubscribe({
-    required User user,
-    required List<Post> posts,
-  }) = _Unsubscribe;
-  const factory UserPostsEvent.resubscribe({
-    required User user,
-    required List<Post> posts,
-  }) = _Resubscribe;
 }

@@ -8,12 +8,4 @@ sealed class RepliesEvent with _$RepliesEvent {
   }) = _Get;
   const factory RepliesEvent.received({required Map<String, dynamic> payload}) =
       _Received;
-  const factory RepliesEvent.resubscribe({
-    required Post post,
-    required List<Post> replies,
-  }) = _Resubscribe;
-  const factory RepliesEvent.unsubscribe({
-    required Post post,
-    required List<Post> replies,
-  }) = _Unsubscribe;
 }

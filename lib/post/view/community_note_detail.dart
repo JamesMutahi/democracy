@@ -47,21 +47,13 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
 
   @override
   void initState() {
-    _getData();
-    super.initState();
-  }
-
-  void _getData() {
+    context.read<PostDetailBloc>().add(
+      PostDetailEvent.get(post: widget.communityNote),
+    );
     context.read<RepliesBloc>().add(
       RepliesEvent.get(post: widget.communityNote),
     );
-    // Resubscribing to the parent post ie. the post with a community note
-    context.read<RepliesBloc>().add(
-      RepliesEvent.resubscribe(
-        post: widget.communityNote,
-        replies: [widget.communityNote.communityNoteOf!],
-      ),
-    );
+    super.initState();
   }
 
   @override
@@ -70,11 +62,8 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
       canPop: true,
       onPopInvokedWithResult: (_, __) {
         if (_replies.isNotEmpty) {
-          context.read<RepliesBloc>().add(
-            RepliesEvent.unsubscribe(
-              post: widget.communityNote,
-              replies: _replies,
-            ),
+          context.read<PostDetailBloc>().add(
+            PostDetailEvent.unsubscribe(post: widget.communityNote),
           );
         }
       },
@@ -82,23 +71,9 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
         listeners: [
           BlocListener<WebsocketBloc, WebsocketState>(
             listener: (context, state) {
-              // Resubscribing to the parent post ie. the post with a community note
-              context.read<RepliesBloc>().add(
-                RepliesEvent.resubscribe(
-                  post: widget.communityNote,
-                  replies: [widget.communityNote.communityNoteOf!],
-                ),
+              context.read<PostDetailBloc>().add(
+                PostDetailEvent.get(post: widget.communityNote),
               );
-              if (state.status == WebsocketStatus.connected) {
-                if (_replies.isNotEmpty) {
-                  context.read<RepliesBloc>().add(
-                    RepliesEvent.resubscribe(
-                      post: widget.communityNote,
-                      replies: _replies,
-                    ),
-                  );
-                }
-              }
             },
           ),
           BlocListener<PostDetailBloc, PostDetailState>(
@@ -288,7 +263,15 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
                                   child: BottomLoader(),
                                 )
                               else if (failure)
-                                FailureRetryButton(onPressed: _getData)
+                                FailureRetryButton(
+                                  onPressed: () {
+                                    context.read<RepliesBloc>().add(
+                                      RepliesEvent.get(
+                                        post: widget.communityNote,
+                                      ),
+                                    );
+                                  },
+                                )
                               else
                                 PostListener(
                                   posts: _replies,

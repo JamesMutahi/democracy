@@ -1,11 +1,9 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/expandable_fab.dart';
 import 'package:democracy/post/bloc/following_posts/following_posts_bloc.dart';
 import 'package:democracy/post/bloc/for_you/for_you_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
-import 'package:democracy/post/bloc/posts/posts_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
 import 'package:democracy/user/models/user.dart';
@@ -171,15 +169,6 @@ class _ForYouTabState extends State<ForYouTab>
             }
           },
         ),
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state.status == WebsocketStatus.connected) {
-              context.read<PostsBloc>().add(
-                PostsEvent.resubscribe(posts: _posts),
-              );
-            }
-          },
-        ),
       ],
       child: PostListView(
         posts: _posts,
@@ -264,15 +253,6 @@ class _FollowingTabState extends State<FollowingTab> {
               if (_refreshController.footerStatus == LoadStatus.loading) {
                 _refreshController.loadFailed();
               }
-            }
-          },
-        ),
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state.status == WebsocketStatus.connected) {
-              context.read<PostsBloc>().add(
-                PostsEvent.resubscribe(posts: _posts),
-              );
             }
           },
         ),

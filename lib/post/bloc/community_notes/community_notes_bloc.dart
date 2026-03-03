@@ -28,12 +28,6 @@ class CommunityNotesBloc
     on<_Received>((event, emit) {
       _onReceived(event, emit);
     });
-    on<_Resubscribe>((event, emit) {
-      _onResubscribe(event, emit);
-    });
-    on<_Unsubscribe>((event, emit) {
-      _onUnsubscribe(event, emit);
-    });
   }
 
   Future _onGet(_Get event, Emitter<CommunityNotesState> emit) async {
@@ -71,44 +65,6 @@ class CommunityNotesBloc
     } else {
       emit(state.copyWith(status: CommunityNotesStatus.failure));
     }
-  }
-
-  Future _onResubscribe(
-    _Resubscribe event,
-    Emitter<CommunityNotesState> emit,
-  ) async {
-    List<int> pks = [];
-    for (Post post in event.communityNotes) {
-      pks.add(post.id);
-    }
-    Map<String, dynamic> message = {
-      'stream': stream,
-      'payload': {
-        "action": 'resubscribe_community_notes',
-        'request_id': event.post.id,
-        'pks': pks,
-      },
-    };
-    webSocketService.send(message);
-  }
-
-  Future _onUnsubscribe(
-    _Unsubscribe event,
-    Emitter<CommunityNotesState> emit,
-  ) async {
-    List<int> pks = [];
-    for (Post post in event.communityNotes) {
-      pks.add(post.id);
-    }
-    Map<String, dynamic> message = {
-      'stream': stream,
-      'payload': {
-        'action': 'unsubscribe_community_notes',
-        'request_id': event.post.id,
-        'pks': pks,
-      },
-    };
-    webSocketService.send(message);
   }
 
   final WebSocketService webSocketService;

@@ -1,9 +1,6 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_bloc.dart';
-import 'package:democracy/post/bloc/user_posts/user_posts_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
-import 'package:democracy/post/view/widgets/posts_pop_scope.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,98 +32,82 @@ class _BookmarksState extends State<Bookmarks> {
 
   @override
   Widget build(BuildContext context) {
-    return PostsPopScope(
-      user: widget.user,
-      posts: _posts,
-      child: Scaffold(
-        appBar: AppBar(title: Text('Bookmarks')),
-        body: MultiBlocListener(
-          listeners: [
-            BlocListener<BookmarksBloc, BookmarksState>(
-              listener: (context, state) {
-                if (state.status == BookmarksStatus.loading) {
-                  setState(() {
-                    if (_refreshController.headerStatus !=
-                            RefreshStatus.refreshing &&
-                        _refreshController.footerStatus != LoadStatus.loading) {
-                      setState(() {
-                        loading = true;
-                        failure = false;
-                      });
-                    }
-                  });
-                }
-                if (state.status == BookmarksStatus.success) {
-                  setState(() {
-                    loading = false;
-                    failure = false;
-                    _posts = state.posts;
-                    hasNextPage = state.hasNext;
-                    if (_refreshController.headerStatus ==
-                        RefreshStatus.refreshing) {
-                      _refreshController.refreshCompleted();
-                    }
-                    if (_refreshController.footerStatus == LoadStatus.loading) {
-                      _refreshController.loadComplete();
-                    }
-                  });
-                }
-                if (state.status == BookmarksStatus.failure) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Bookmarks')),
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<BookmarksBloc, BookmarksState>(
+            listener: (context, state) {
+              if (state.status == BookmarksStatus.loading) {
+                setState(() {
                   if (_refreshController.headerStatus !=
                           RefreshStatus.refreshing &&
                       _refreshController.footerStatus != LoadStatus.loading) {
                     setState(() {
-                      loading = false;
-                      failure = true;
+                      loading = true;
+                      failure = false;
                     });
                   }
+                });
+              }
+              if (state.status == BookmarksStatus.success) {
+                setState(() {
+                  loading = false;
+                  failure = false;
+                  _posts = state.posts;
+                  hasNextPage = state.hasNext;
                   if (_refreshController.headerStatus ==
                       RefreshStatus.refreshing) {
-                    _refreshController.refreshFailed();
+                    _refreshController.refreshCompleted();
                   }
                   if (_refreshController.footerStatus == LoadStatus.loading) {
-                    _refreshController.loadFailed();
+                    _refreshController.loadComplete();
                   }
+                });
+              }
+              if (state.status == BookmarksStatus.failure) {
+                if (_refreshController.headerStatus !=
+                        RefreshStatus.refreshing &&
+                    _refreshController.footerStatus != LoadStatus.loading) {
+                  setState(() {
+                    loading = false;
+                    failure = true;
+                  });
                 }
-              },
-            ),
-            BlocListener<WebsocketBloc, WebsocketState>(
-              listener: (context, state) {
-                if (state.status == WebsocketStatus.connected) {
-                  context.read<UserPostsBloc>().add(
-                    UserPostsEvent.resubscribe(
-                      user: widget.user,
-                      posts: _posts,
-                    ),
-                  );
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshFailed();
                 }
-              },
-            ),
-          ],
-          child: PostListView(
-            posts: _posts,
-            loading: loading,
-            failure: failure,
-            onPostsUpdated: (posts) {
-              setState(() {
-                _posts = posts;
-              });
-            },
-            refreshController: _refreshController,
-            enablePullDown: true,
-            enablePullUp: hasNextPage,
-            onRefresh: () {
-              context.read<BookmarksBloc>().add(BookmarksEvent.get());
-            },
-            onLoading: () {
-              context.read<BookmarksBloc>().add(
-                BookmarksEvent.get(previousPosts: _posts),
-              );
-            },
-            onFailure: () {
-              context.read<BookmarksBloc>().add(BookmarksEvent.get());
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadFailed();
+                }
+              }
             },
           ),
+        ],
+        child: PostListView(
+          posts: _posts,
+          loading: loading,
+          failure: failure,
+          onPostsUpdated: (posts) {
+            setState(() {
+              _posts = posts;
+            });
+          },
+          refreshController: _refreshController,
+          enablePullDown: true,
+          enablePullUp: hasNextPage,
+          onRefresh: () {
+            context.read<BookmarksBloc>().add(BookmarksEvent.get());
+          },
+          onLoading: () {
+            context.read<BookmarksBloc>().add(
+              BookmarksEvent.get(previousPosts: _posts),
+            );
+          },
+          onFailure: () {
+            context.read<BookmarksBloc>().add(BookmarksEvent.get());
+          },
         ),
       ),
     );

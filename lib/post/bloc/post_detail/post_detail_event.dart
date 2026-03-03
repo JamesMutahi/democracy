@@ -22,6 +22,21 @@ sealed class PostDetailEvent with _$PostDetailEvent {
     required Map<String, dynamic> payload,
   }) = _Reported;
 
+  const factory PostDetailEvent.liked({required Map<String, dynamic> payload}) =
+      _Liked;
+
+  const factory PostDetailEvent.bookmarked({
+    required Map<String, dynamic> payload,
+  }) = _Bookmarked;
+
+  const factory PostDetailEvent.upvoted({
+    required Map<String, dynamic> payload,
+  }) = _Upvoted;
+
+  const factory PostDetailEvent.downvoted({
+    required Map<String, dynamic> payload,
+  }) = _Downvoted;
+
   const factory PostDetailEvent.create({
     required String body,
     required PostStatus status,
@@ -63,4 +78,7 @@ sealed class PostDetailEvent with _$PostDetailEvent {
     required String issue,
     required Post post,
   }) = _Report;
+
+  const factory PostDetailEvent.unsubscribe({required Post post}) =
+      _Unsubscribe;
 }

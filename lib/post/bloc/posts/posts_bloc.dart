@@ -27,9 +27,6 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
     on<_Received>((event, emit) {
       _onReceived(event, emit);
     });
-    on<_Resubscribe>((event, emit) {
-      _onResubscribe(event, emit);
-    });
   }
 
   Future _onGet(_Get event, Emitter<PostsState> emit) async {
@@ -64,23 +61,6 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
     } else {
       emit(state.copyWith(status: PostsStatus.failure));
     }
-  }
-
-  Future _onResubscribe(_Resubscribe event, Emitter<PostsState> emit) async {
-    List<int> postIds = event.posts.map((post) => post.id).toList();
-    List<Post> reposts = event.posts
-        .where((post) => post.repostOf != null)
-        .toList();
-    postIds.addAll(reposts.map((post) => post.id).toList());
-    Map<String, dynamic> message = {
-      'stream': stream,
-      'payload': {
-        "action": 'resubscribe',
-        'request_id': requestId,
-        'pks': postIds,
-      },
-    };
-    webSocketService.send(message);
   }
 
   final WebSocketService webSocketService;

@@ -1,4 +1,3 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
@@ -75,38 +74,13 @@ class _PostDetailState extends State<PostDetail> {
       canPop: true,
       onPopInvokedWithResult: (_, __) {
         if (_replies.isNotEmpty) {
-          context.read<RepliesBloc>().add(
-            RepliesEvent.unsubscribe(post: widget.post, replies: _replies),
-          );
-          context.read<ReplyToBloc>().add(
-            ReplyToEvent.unsubscribe(post: widget.post, posts: _replyTos),
+          context.read<PostDetailBloc>().add(
+            PostDetailEvent.unsubscribe(post: widget.post),
           );
         }
       },
       child: MultiBlocListener(
         listeners: [
-          BlocListener<WebsocketBloc, WebsocketState>(
-            listener: (context, state) {
-              if (state.status == WebsocketStatus.connected) {
-                if (_replies.isNotEmpty) {
-                  context.read<RepliesBloc>().add(
-                    RepliesEvent.resubscribe(
-                      post: widget.post,
-                      replies: _replies,
-                    ),
-                  );
-                }
-                if (_replyTos.isNotEmpty) {
-                  context.read<ReplyToBloc>().add(
-                    ReplyToEvent.resubscribe(
-                      post: widget.post,
-                      posts: _replyTos,
-                    ),
-                  );
-                }
-              }
-            },
-          ),
           BlocListener<PostDetailBloc, PostDetailState>(
             listener: (context, state) {
               switch (state) {

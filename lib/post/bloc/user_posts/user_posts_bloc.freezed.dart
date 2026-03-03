@@ -55,14 +55,12 @@ extension UserPostsEventPatterns on UserPostsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Unsubscribe value)?  unsubscribe,TResult Function( _Resubscribe value)?  resubscribe,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
-return received(_that);case _Unsubscribe() when unsubscribe != null:
-return unsubscribe(_that);case _Resubscribe() when resubscribe != null:
-return resubscribe(_that);case _:
+return received(_that);case _:
   return orElse();
 
 }
@@ -80,14 +78,12 @@ return resubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Unsubscribe value)  unsubscribe,required TResult Function( _Resubscribe value)  resubscribe,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,}){
 final _that = this;
 switch (_that) {
 case _Get():
 return get(_that);case _Received():
-return received(_that);case _Unsubscribe():
-return unsubscribe(_that);case _Resubscribe():
-return resubscribe(_that);}
+return received(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -101,14 +97,12 @@ return resubscribe(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Unsubscribe value)?  unsubscribe,TResult? Function( _Resubscribe value)?  resubscribe,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
-return received(_that);case _Unsubscribe() when unsubscribe != null:
-return unsubscribe(_that);case _Resubscribe() when resubscribe != null:
-return resubscribe(_that);case _:
+return received(_that);case _:
   return null;
 
 }
@@ -125,13 +119,11 @@ return resubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( User user,  List<Post>? previousPosts)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( User user,  List<Post> posts)?  unsubscribe,TResult Function( User user,  List<Post> posts)?  resubscribe,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( User user,  List<Post>? previousPosts)?  get,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.user,_that.previousPosts);case _Received() when received != null:
-return received(_that.payload);case _Unsubscribe() when unsubscribe != null:
-return unsubscribe(_that.user,_that.posts);case _Resubscribe() when resubscribe != null:
-return resubscribe(_that.user,_that.posts);case _:
+return received(_that.payload);case _:
   return orElse();
 
 }
@@ -149,13 +141,11 @@ return resubscribe(_that.user,_that.posts);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( User user,  List<Post>? previousPosts)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( User user,  List<Post> posts)  unsubscribe,required TResult Function( User user,  List<Post> posts)  resubscribe,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( User user,  List<Post>? previousPosts)  get,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
 switch (_that) {
 case _Get():
 return get(_that.user,_that.previousPosts);case _Received():
-return received(_that.payload);case _Unsubscribe():
-return unsubscribe(_that.user,_that.posts);case _Resubscribe():
-return resubscribe(_that.user,_that.posts);}
+return received(_that.payload);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -169,13 +159,11 @@ return resubscribe(_that.user,_that.posts);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( User user,  List<Post>? previousPosts)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( User user,  List<Post> posts)?  unsubscribe,TResult? Function( User user,  List<Post> posts)?  resubscribe,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( User user,  List<Post>? previousPosts)?  get,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.user,_that.previousPosts);case _Received() when received != null:
-return received(_that.payload);case _Unsubscribe() when unsubscribe != null:
-return unsubscribe(_that.user,_that.posts);case _Resubscribe() when resubscribe != null:
-return resubscribe(_that.user,_that.posts);case _:
+return received(_that.payload);case _:
   return null;
 
 }
@@ -338,172 +326,6 @@ as Map<String, dynamic>,
 }
 
 
-}
-
-/// @nodoc
-
-
-class _Unsubscribe implements UserPostsEvent {
-  const _Unsubscribe({required this.user, required final  List<Post> posts}): _posts = posts;
-  
-
- final  User user;
- final  List<Post> _posts;
- List<Post> get posts {
-  if (_posts is EqualUnmodifiableListView) return _posts;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_posts);
-}
-
-
-/// Create a copy of UserPostsEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$UnsubscribeCopyWith<_Unsubscribe> get copyWith => __$UnsubscribeCopyWithImpl<_Unsubscribe>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Unsubscribe&&(identical(other.user, user) || other.user == user)&&const DeepCollectionEquality().equals(other._posts, _posts));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,user,const DeepCollectionEquality().hash(_posts));
-
-@override
-String toString() {
-  return 'UserPostsEvent.unsubscribe(user: $user, posts: $posts)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$UnsubscribeCopyWith<$Res> implements $UserPostsEventCopyWith<$Res> {
-  factory _$UnsubscribeCopyWith(_Unsubscribe value, $Res Function(_Unsubscribe) _then) = __$UnsubscribeCopyWithImpl;
-@useResult
-$Res call({
- User user, List<Post> posts
-});
-
-
-$UserCopyWith<$Res> get user;
-
-}
-/// @nodoc
-class __$UnsubscribeCopyWithImpl<$Res>
-    implements _$UnsubscribeCopyWith<$Res> {
-  __$UnsubscribeCopyWithImpl(this._self, this._then);
-
-  final _Unsubscribe _self;
-  final $Res Function(_Unsubscribe) _then;
-
-/// Create a copy of UserPostsEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? user = null,Object? posts = null,}) {
-  return _then(_Unsubscribe(
-user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as User,posts: null == posts ? _self._posts : posts // ignore: cast_nullable_to_non_nullable
-as List<Post>,
-  ));
-}
-
-/// Create a copy of UserPostsEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UserCopyWith<$Res> get user {
-  
-  return $UserCopyWith<$Res>(_self.user, (value) {
-    return _then(_self.copyWith(user: value));
-  });
-}
-}
-
-/// @nodoc
-
-
-class _Resubscribe implements UserPostsEvent {
-  const _Resubscribe({required this.user, required final  List<Post> posts}): _posts = posts;
-  
-
- final  User user;
- final  List<Post> _posts;
- List<Post> get posts {
-  if (_posts is EqualUnmodifiableListView) return _posts;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_posts);
-}
-
-
-/// Create a copy of UserPostsEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$ResubscribeCopyWith<_Resubscribe> get copyWith => __$ResubscribeCopyWithImpl<_Resubscribe>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Resubscribe&&(identical(other.user, user) || other.user == user)&&const DeepCollectionEquality().equals(other._posts, _posts));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,user,const DeepCollectionEquality().hash(_posts));
-
-@override
-String toString() {
-  return 'UserPostsEvent.resubscribe(user: $user, posts: $posts)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$ResubscribeCopyWith<$Res> implements $UserPostsEventCopyWith<$Res> {
-  factory _$ResubscribeCopyWith(_Resubscribe value, $Res Function(_Resubscribe) _then) = __$ResubscribeCopyWithImpl;
-@useResult
-$Res call({
- User user, List<Post> posts
-});
-
-
-$UserCopyWith<$Res> get user;
-
-}
-/// @nodoc
-class __$ResubscribeCopyWithImpl<$Res>
-    implements _$ResubscribeCopyWith<$Res> {
-  __$ResubscribeCopyWithImpl(this._self, this._then);
-
-  final _Resubscribe _self;
-  final $Res Function(_Resubscribe) _then;
-
-/// Create a copy of UserPostsEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? user = null,Object? posts = null,}) {
-  return _then(_Resubscribe(
-user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as User,posts: null == posts ? _self._posts : posts // ignore: cast_nullable_to_non_nullable
-as List<Post>,
-  ));
-}
-
-/// Create a copy of UserPostsEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UserCopyWith<$Res> get user {
-  
-  return $UserCopyWith<$Res>(_self.user, (value) {
-    return _then(_self.copyWith(user: value));
-  });
-}
 }
 
 // dart format on

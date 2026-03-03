@@ -25,12 +25,6 @@ class RepliesBloc extends Bloc<RepliesEvent, RepliesState> {
     on<_Received>((event, emit) {
       _onReceived(event, emit);
     });
-    on<_Resubscribe>((event, emit) {
-      _onResubscribe(event, emit);
-    });
-    on<_Unsubscribe>((event, emit) {
-      _onUnsubscribe(event, emit);
-    });
   }
 
   Future _onGet(_Get event, Emitter<RepliesState> emit) async {
@@ -64,44 +58,6 @@ class RepliesBloc extends Bloc<RepliesEvent, RepliesState> {
     } else {
       emit(state.copyWith(status: RepliesStatus.failure));
     }
-  }
-
-  Future _onResubscribe(_Resubscribe event, Emitter<RepliesState> emit) async {
-    List<int> postIds = [];
-    for (Post post in event.replies) {
-      postIds.add(post.id);
-      if (post.thread.isNotEmpty) {
-        postIds.addAll(getThreadIds(post.thread));
-      }
-    }
-    Map<String, dynamic> message = {
-      'stream': stream,
-      'payload': {
-        "action": 'resubscribe_replies',
-        'request_id': event.post.id,
-        'pks': postIds,
-      },
-    };
-    webSocketService.send(message);
-  }
-
-  Future _onUnsubscribe(_Unsubscribe event, Emitter<RepliesState> emit) async {
-    List<int> postIds = [];
-    for (Post post in event.replies) {
-      postIds.add(post.id);
-      if (post.thread.isNotEmpty) {
-        postIds.addAll(getThreadIds(post.thread));
-      }
-    }
-    Map<String, dynamic> message = {
-      'stream': stream,
-      'payload': {
-        'action': 'unsubscribe_replies',
-        'request_id': event.post.id,
-        'pks': postIds,
-      },
-    };
-    webSocketService.send(message);
   }
 
   final WebSocketService webSocketService;

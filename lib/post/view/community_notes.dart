@@ -1,4 +1,3 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/post/bloc/community_notes/community_notes_bloc.dart';
 import 'package:democracy/post/models/post.dart';
@@ -41,18 +40,6 @@ class _CommunityNotesState extends State<CommunityNotes> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state.status == WebsocketStatus.connected) {
-              context.read<CommunityNotesBloc>().add(
-                CommunityNotesEvent.resubscribe(
-                  post: widget.post,
-                  communityNotes: _communityNotes,
-                ),
-              );
-            }
-          },
-        ),
         BlocListener<CommunityNotesBloc, CommunityNotesState>(
           listener: (context, state) {
             if (state.status == CommunityNotesStatus.success) {

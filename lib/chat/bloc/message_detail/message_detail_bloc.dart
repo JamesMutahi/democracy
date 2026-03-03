@@ -23,8 +23,10 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
       if (message['stream'] == stream) {
         switch (message['payload']['action']) {
           case 'create':
+            print('____________________MESSAGE CREATED: ${message['payload']}');
             add(_Created(payload: message['payload']));
           case 'update':
+            print('____________________MESSAGE UPDATED: ${message['payload']}');
             add(_Updated(payload: message['payload']));
           case 'delete':
             add(_Deleted(payload: message['payload']));

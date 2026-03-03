@@ -32,6 +32,30 @@ class PostDetailState with _$PostDetailState {
     required bool isActive,
   }) = PostUpdated;
 
+  const factory PostDetailState.liked({
+    required int postId,
+    required bool isLiked,
+    required int likes,
+  }) = PostLiked;
+
+  const factory PostDetailState.bookmarked({
+    required int postId,
+    required bool isBookmarked,
+    required int bookmarks,
+  }) = PostBookmarked;
+
+  const factory PostDetailState.upvoted({
+    required int postId,
+    required bool isUpvoted,
+    required int upvotes,
+  }) = PostUpvoted;
+
+  const factory PostDetailState.downvoted({
+    required int postId,
+    required bool isDownvoted,
+    required int downvotes,
+  }) = PostDownvoted;
+
   const factory PostDetailState.deleted({required int postId}) = PostDeleted;
 
   const factory PostDetailState.reported() = PostReported;

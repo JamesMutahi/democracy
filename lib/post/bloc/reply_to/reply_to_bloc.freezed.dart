@@ -55,14 +55,12 @@ extension ReplyToEventPatterns on ReplyToEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Resubscribe value)?  resubscribe,TResult Function( _Unsubscribe value)?  unsubscribe,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
-return received(_that);case _Resubscribe() when resubscribe != null:
-return resubscribe(_that);case _Unsubscribe() when unsubscribe != null:
-return unsubscribe(_that);case _:
+return received(_that);case _:
   return orElse();
 
 }
@@ -80,14 +78,12 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Resubscribe value)  resubscribe,required TResult Function( _Unsubscribe value)  unsubscribe,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,}){
 final _that = this;
 switch (_that) {
 case _Get():
 return get(_that);case _Received():
-return received(_that);case _Resubscribe():
-return resubscribe(_that);case _Unsubscribe():
-return unsubscribe(_that);}
+return received(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -101,14 +97,12 @@ return unsubscribe(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Resubscribe value)?  resubscribe,TResult? Function( _Unsubscribe value)?  unsubscribe,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
-return received(_that);case _Resubscribe() when resubscribe != null:
-return resubscribe(_that);case _Unsubscribe() when unsubscribe != null:
-return unsubscribe(_that);case _:
+return received(_that);case _:
   return null;
 
 }
@@ -125,13 +119,11 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Post post)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Post post,  List<Post> posts)?  resubscribe,TResult Function( Post post,  List<Post> posts)?  unsubscribe,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Post post)?  get,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.post);case _Received() when received != null:
-return received(_that.payload);case _Resubscribe() when resubscribe != null:
-return resubscribe(_that.post,_that.posts);case _Unsubscribe() when unsubscribe != null:
-return unsubscribe(_that.post,_that.posts);case _:
+return received(_that.payload);case _:
   return orElse();
 
 }
@@ -149,13 +141,11 @@ return unsubscribe(_that.post,_that.posts);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Post post)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Post post,  List<Post> posts)  resubscribe,required TResult Function( Post post,  List<Post> posts)  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Post post)  get,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
 switch (_that) {
 case _Get():
 return get(_that.post);case _Received():
-return received(_that.payload);case _Resubscribe():
-return resubscribe(_that.post,_that.posts);case _Unsubscribe():
-return unsubscribe(_that.post,_that.posts);}
+return received(_that.payload);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -169,13 +159,11 @@ return unsubscribe(_that.post,_that.posts);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Post post)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Post post,  List<Post> posts)?  resubscribe,TResult? Function( Post post,  List<Post> posts)?  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Post post)?  get,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.post);case _Received() when received != null:
-return received(_that.payload);case _Resubscribe() when resubscribe != null:
-return resubscribe(_that.post,_that.posts);case _Unsubscribe() when unsubscribe != null:
-return unsubscribe(_that.post,_that.posts);case _:
+return received(_that.payload);case _:
   return null;
 
 }
@@ -328,172 +316,6 @@ as Map<String, dynamic>,
 }
 
 
-}
-
-/// @nodoc
-
-
-class _Resubscribe implements ReplyToEvent {
-  const _Resubscribe({required this.post, required final  List<Post> posts}): _posts = posts;
-  
-
- final  Post post;
- final  List<Post> _posts;
- List<Post> get posts {
-  if (_posts is EqualUnmodifiableListView) return _posts;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_posts);
-}
-
-
-/// Create a copy of ReplyToEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$ResubscribeCopyWith<_Resubscribe> get copyWith => __$ResubscribeCopyWithImpl<_Resubscribe>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Resubscribe&&(identical(other.post, post) || other.post == post)&&const DeepCollectionEquality().equals(other._posts, _posts));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,post,const DeepCollectionEquality().hash(_posts));
-
-@override
-String toString() {
-  return 'ReplyToEvent.resubscribe(post: $post, posts: $posts)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$ResubscribeCopyWith<$Res> implements $ReplyToEventCopyWith<$Res> {
-  factory _$ResubscribeCopyWith(_Resubscribe value, $Res Function(_Resubscribe) _then) = __$ResubscribeCopyWithImpl;
-@useResult
-$Res call({
- Post post, List<Post> posts
-});
-
-
-$PostCopyWith<$Res> get post;
-
-}
-/// @nodoc
-class __$ResubscribeCopyWithImpl<$Res>
-    implements _$ResubscribeCopyWith<$Res> {
-  __$ResubscribeCopyWithImpl(this._self, this._then);
-
-  final _Resubscribe _self;
-  final $Res Function(_Resubscribe) _then;
-
-/// Create a copy of ReplyToEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? post = null,Object? posts = null,}) {
-  return _then(_Resubscribe(
-post: null == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
-as Post,posts: null == posts ? _self._posts : posts // ignore: cast_nullable_to_non_nullable
-as List<Post>,
-  ));
-}
-
-/// Create a copy of ReplyToEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$PostCopyWith<$Res> get post {
-  
-  return $PostCopyWith<$Res>(_self.post, (value) {
-    return _then(_self.copyWith(post: value));
-  });
-}
-}
-
-/// @nodoc
-
-
-class _Unsubscribe implements ReplyToEvent {
-  const _Unsubscribe({required this.post, required final  List<Post> posts}): _posts = posts;
-  
-
- final  Post post;
- final  List<Post> _posts;
- List<Post> get posts {
-  if (_posts is EqualUnmodifiableListView) return _posts;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_posts);
-}
-
-
-/// Create a copy of ReplyToEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$UnsubscribeCopyWith<_Unsubscribe> get copyWith => __$UnsubscribeCopyWithImpl<_Unsubscribe>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Unsubscribe&&(identical(other.post, post) || other.post == post)&&const DeepCollectionEquality().equals(other._posts, _posts));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,post,const DeepCollectionEquality().hash(_posts));
-
-@override
-String toString() {
-  return 'ReplyToEvent.unsubscribe(post: $post, posts: $posts)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$UnsubscribeCopyWith<$Res> implements $ReplyToEventCopyWith<$Res> {
-  factory _$UnsubscribeCopyWith(_Unsubscribe value, $Res Function(_Unsubscribe) _then) = __$UnsubscribeCopyWithImpl;
-@useResult
-$Res call({
- Post post, List<Post> posts
-});
-
-
-$PostCopyWith<$Res> get post;
-
-}
-/// @nodoc
-class __$UnsubscribeCopyWithImpl<$Res>
-    implements _$UnsubscribeCopyWith<$Res> {
-  __$UnsubscribeCopyWithImpl(this._self, this._then);
-
-  final _Unsubscribe _self;
-  final $Res Function(_Unsubscribe) _then;
-
-/// Create a copy of ReplyToEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? post = null,Object? posts = null,}) {
-  return _then(_Unsubscribe(
-post: null == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
-as Post,posts: null == posts ? _self._posts : posts // ignore: cast_nullable_to_non_nullable
-as List<Post>,
-  ));
-}
-
-/// Create a copy of ReplyToEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$PostCopyWith<$Res> get post {
-  
-  return $PostCopyWith<$Res>(_self.post, (value) {
-    return _then(_self.copyWith(post: value));
-  });
-}
 }
 
 // dart format on

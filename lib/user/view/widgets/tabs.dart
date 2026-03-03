@@ -11,7 +11,6 @@ import 'package:democracy/post/bloc/user_posts/user_posts_bloc.dart';
 import 'package:democracy/post/bloc/user_replies/user_replies_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
-import 'package:democracy/post/view/widgets/posts_pop_scope.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -80,47 +79,34 @@ class _UserPostsState extends State<UserPosts> {
             }
           },
         ),
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state.status == WebsocketStatus.connected) {
-              context.read<UserPostsBloc>().add(
-                UserPostsEvent.resubscribe(user: widget.user, posts: _posts),
-              );
-            }
-          },
-        ),
       ],
-      child: PostsPopScope(
-        user: widget.user,
+      child: PostListView(
         posts: _posts,
-        child: PostListView(
-          posts: _posts,
-          loading: loading,
-          failure: failure,
-          refreshController: _refreshController,
-          enablePullDown: true,
-          enablePullUp: hasNextPage,
-          onPostsUpdated: (posts) {
-            setState(() {
-              _posts = posts;
-            });
-          },
-          onRefresh: () {
-            context.read<UserPostsBloc>().add(
-              UserPostsEvent.get(user: widget.user),
-            );
-          },
-          onLoading: () {
-            context.read<UserPostsBloc>().add(
-              UserPostsEvent.get(user: widget.user, previousPosts: _posts),
-            );
-          },
-          onFailure: () {
-            context.read<UserPostsBloc>().add(
-              UserPostsEvent.get(user: widget.user),
-            );
-          },
-        ),
+        loading: loading,
+        failure: failure,
+        refreshController: _refreshController,
+        enablePullDown: true,
+        enablePullUp: hasNextPage,
+        onPostsUpdated: (posts) {
+          setState(() {
+            _posts = posts;
+          });
+        },
+        onRefresh: () {
+          context.read<UserPostsBloc>().add(
+            UserPostsEvent.get(user: widget.user),
+          );
+        },
+        onLoading: () {
+          context.read<UserPostsBloc>().add(
+            UserPostsEvent.get(user: widget.user, previousPosts: _posts),
+          );
+        },
+        onFailure: () {
+          context.read<UserPostsBloc>().add(
+            UserPostsEvent.get(user: widget.user),
+          );
+        },
       ),
     );
   }
@@ -191,47 +177,34 @@ class _UserRepliesState extends State<UserReplies> {
             }
           },
         ),
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state.status == WebsocketStatus.connected) {
-              context.read<UserPostsBloc>().add(
-                UserPostsEvent.resubscribe(user: widget.user, posts: _posts),
-              );
-            }
-          },
-        ),
       ],
-      child: PostsPopScope(
-        user: widget.user,
+      child: PostListView(
         posts: _posts,
-        child: PostListView(
-          posts: _posts,
-          loading: loading,
-          failure: failure,
-          refreshController: _refreshController,
-          enablePullDown: true,
-          enablePullUp: hasNextPage,
-          onPostsUpdated: (posts) {
-            setState(() {
-              _posts = posts;
-            });
-          },
-          onRefresh: () {
-            context.read<UserRepliesBloc>().add(
-              UserRepliesEvent.get(user: widget.user),
-            );
-          },
-          onLoading: () {
-            context.read<UserRepliesBloc>().add(
-              UserRepliesEvent.get(user: widget.user, previousPosts: _posts),
-            );
-          },
-          onFailure: () {
-            context.read<UserRepliesBloc>().add(
-              UserRepliesEvent.get(user: widget.user),
-            );
-          },
-        ),
+        loading: loading,
+        failure: failure,
+        refreshController: _refreshController,
+        enablePullDown: true,
+        enablePullUp: hasNextPage,
+        onPostsUpdated: (posts) {
+          setState(() {
+            _posts = posts;
+          });
+        },
+        onRefresh: () {
+          context.read<UserRepliesBloc>().add(
+            UserRepliesEvent.get(user: widget.user),
+          );
+        },
+        onLoading: () {
+          context.read<UserRepliesBloc>().add(
+            UserRepliesEvent.get(user: widget.user, previousPosts: _posts),
+          );
+        },
+        onFailure: () {
+          context.read<UserRepliesBloc>().add(
+            UserRepliesEvent.get(user: widget.user),
+          );
+        },
       ),
     );
   }
@@ -321,43 +294,30 @@ class _LikesState extends State<Likes> {
             }
           },
         ),
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state.status == WebsocketStatus.connected) {
-              context.read<UserPostsBloc>().add(
-                UserPostsEvent.resubscribe(user: widget.user, posts: _posts),
-              );
-            }
-          },
-        ),
       ],
-      child: PostsPopScope(
-        user: widget.user,
+      child: PostListView(
         posts: _posts,
-        child: PostListView(
-          posts: _posts,
-          loading: loading,
-          failure: failure,
-          refreshController: _refreshController,
-          enablePullDown: true,
-          enablePullUp: hasNextPage,
-          onPostsUpdated: (posts) {
-            setState(() {
-              _posts = posts;
-            });
-          },
-          onRefresh: () {
-            context.read<LikesBloc>().add(LikesEvent.get(user: widget.user));
-          },
-          onLoading: () {
-            context.read<LikesBloc>().add(
-              LikesEvent.get(user: widget.user, previousPosts: _posts),
-            );
-          },
-          onFailure: () {
-            context.read<LikesBloc>().add(LikesEvent.get(user: widget.user));
-          },
-        ),
+        loading: loading,
+        failure: failure,
+        refreshController: _refreshController,
+        enablePullDown: true,
+        enablePullUp: hasNextPage,
+        onPostsUpdated: (posts) {
+          setState(() {
+            _posts = posts;
+          });
+        },
+        onRefresh: () {
+          context.read<LikesBloc>().add(LikesEvent.get(user: widget.user));
+        },
+        onLoading: () {
+          context.read<LikesBloc>().add(
+            LikesEvent.get(user: widget.user, previousPosts: _posts),
+          );
+        },
+        onFailure: () {
+          context.read<LikesBloc>().add(LikesEvent.get(user: widget.user));
+        },
       ),
     );
   }
@@ -428,50 +388,37 @@ class _UserCommunityNotesState extends State<UserCommunityNotes> {
             }
           },
         ),
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state.status == WebsocketStatus.connected) {
-              context.read<UserPostsBloc>().add(
-                UserPostsEvent.resubscribe(user: widget.user, posts: _posts),
-              );
-            }
-          },
-        ),
       ],
-      child: PostsPopScope(
-        user: widget.user,
+      child: PostListView(
         posts: _posts,
-        child: PostListView(
-          posts: _posts,
-          loading: loading,
-          failure: failure,
-          refreshController: _refreshController,
-          enablePullDown: true,
-          enablePullUp: hasNextPage,
-          onPostsUpdated: (posts) {
-            setState(() {
-              _posts = posts;
-            });
-          },
-          onRefresh: () {
-            context.read<UserCommunityNotesBloc>().add(
-              UserCommunityNotesEvent.get(user: widget.user),
-            );
-          },
-          onLoading: () {
-            context.read<UserCommunityNotesBloc>().add(
-              UserCommunityNotesEvent.get(
-                user: widget.user,
-                previousPosts: _posts,
-              ),
-            );
-          },
-          onFailure: () {
-            context.read<UserCommunityNotesBloc>().add(
-              UserCommunityNotesEvent.get(user: widget.user),
-            );
-          },
-        ),
+        loading: loading,
+        failure: failure,
+        refreshController: _refreshController,
+        enablePullDown: true,
+        enablePullUp: hasNextPage,
+        onPostsUpdated: (posts) {
+          setState(() {
+            _posts = posts;
+          });
+        },
+        onRefresh: () {
+          context.read<UserCommunityNotesBloc>().add(
+            UserCommunityNotesEvent.get(user: widget.user),
+          );
+        },
+        onLoading: () {
+          context.read<UserCommunityNotesBloc>().add(
+            UserCommunityNotesEvent.get(
+              user: widget.user,
+              previousPosts: _posts,
+            ),
+          );
+        },
+        onFailure: () {
+          context.read<UserCommunityNotesBloc>().add(
+            UserCommunityNotesEvent.get(user: widget.user),
+          );
+        },
       ),
     );
   }

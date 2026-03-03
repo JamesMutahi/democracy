@@ -28,8 +28,14 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
             add(_Updated(payload: message['payload']));
           case 'delete':
             add(_Deleted(payload: message['payload']));
+          case 'like':
+            add(_Liked(payload: message['payload']));
           case 'bookmark':
-            break;
+            add(_Bookmarked(payload: message['payload']));
+          case 'upvote':
+            add(_Upvoted(payload: message['payload']));
+          case 'downvote':
+            add(_Downvoted(payload: message['payload']));
           case 'report':
             add(_Reported(payload: message['payload']));
         }
@@ -80,8 +86,23 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     on<_DeleteRepost>((event, emit) {
       _onDeleteRepost(event, emit);
     });
+    on<_Liked>((event, emit) {
+      _onLiked(event, emit);
+    });
+    on<_Bookmarked>((event, emit) {
+      _onBookmarked(event, emit);
+    });
+    on<_Upvoted>((event, emit) {
+      _onUpvoted(event, emit);
+    });
+    on<_Downvoted>((event, emit) {
+      _onDownvoted(event, emit);
+    });
     on<_Report>((event, emit) {
       _onReport(event, emit);
+    });
+    on<_Unsubscribe>((event, emit) {
+      _onUnsubscribe(event);
     });
   }
 
@@ -90,7 +111,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       final Post post = Post.fromJson(event.payload['data']);
       emit(PostCreated(post: post));
     } else {
-      emit(PostDetailFailure(error: event.payload['errors'][0].toString()));
+      emit(PostDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -100,7 +121,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       final Post post = Post.fromJson(event.payload['data']);
       emit(PostLoaded(post: post));
     } else {
-      emit(PostDetailFailure(error: event.payload['errors'][0].toString()));
+      emit(PostDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -131,7 +152,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
         ),
       );
     } else {
-      emit(PostDetailFailure(error: event.payload['errors'][0].toString()));
+      emit(PostDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -140,7 +161,63 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     if (event.payload['response_status'] == 204) {
       emit(PostDeleted(postId: event.payload['pk']));
     } else {
-      emit(PostDetailFailure(error: event.payload['errors'][0].toString()));
+      emit(PostDetailFailure(error: event.payload['errors'].toString()));
+    }
+  }
+
+  Future _onLiked(_Liked event, Emitter<PostDetailState> emit) async {
+    if (event.payload['response_status'] == 200) {
+      emit(
+        PostLiked(
+          postId: event.payload['data']['pk'],
+          isLiked: event.payload['data']['is_liked'],
+          likes: event.payload['data']['likes'],
+        ),
+      );
+    } else {
+      emit(PostDetailFailure(error: event.payload['errors'].toString()));
+    }
+  }
+
+  Future _onBookmarked(_Bookmarked event, Emitter<PostDetailState> emit) async {
+    if (event.payload['response_status'] == 200) {
+      emit(
+        PostBookmarked(
+          postId: event.payload['data']['pk'],
+          isBookmarked: event.payload['data']['is_bookmarked'],
+          bookmarks: event.payload['data']['bookmarks'],
+        ),
+      );
+    } else {
+      emit(PostDetailFailure(error: event.payload['errors'].toString()));
+    }
+  }
+
+  Future _onUpvoted(_Upvoted event, Emitter<PostDetailState> emit) async {
+    if (event.payload['response_status'] == 200) {
+      emit(
+        PostUpvoted(
+          postId: event.payload['data']['pk'],
+          isUpvoted: event.payload['data']['is_upvoted'],
+          upvotes: event.payload['data']['upvotes'],
+        ),
+      );
+    } else {
+      emit(PostDetailFailure(error: event.payload['errors'].toString()));
+    }
+  }
+
+  Future _onDownvoted(_Downvoted event, Emitter<PostDetailState> emit) async {
+    if (event.payload['response_status'] == 200) {
+      emit(
+        PostDownvoted(
+          postId: event.payload['data']['pk'],
+          isDownvoted: event.payload['data']['is_downvoted'],
+          downvotes: event.payload['data']['downvotes'],
+        ),
+      );
+    } else {
+      emit(PostDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -149,7 +226,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     if (event.payload['response_status'] == 200) {
       emit(PostReported());
     } else {
-      emit(PostDetailFailure(error: event.payload['errors'][0].toString()));
+      emit(PostDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -302,6 +379,18 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       'payload': {
         'action': 'report',
         'data': {'issue': event.issue, 'post': event.post.id},
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  Future _onUnsubscribe(_Unsubscribe event) async {
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        'action': 'unsubscribe',
+        'request_id': event.post.id,
+        'pk': event.post.id,
       },
     };
     webSocketService.send(message);

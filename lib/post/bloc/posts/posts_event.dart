@@ -10,6 +10,4 @@ sealed class PostsEvent with _$PostsEvent {
   }) = _Get;
   const factory PostsEvent.received({required Map<String, dynamic> payload}) =
       _Received;
-  const factory PostsEvent.resubscribe({required List<Post> posts}) =
-      _Resubscribe;
 }

@@ -235,6 +235,7 @@ class _PostContainer extends StatelessWidget {
                           if (post.repostOf != null && !isDependency)
                             DependencyContainer(
                               child: PostWidgetSelector(
+                                key: ValueKey('repost ${post.repostOf!.id}'),
                                 post: post.repostOf!,
                                 isDependency: true,
                               ),

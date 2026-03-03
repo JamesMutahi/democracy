@@ -1,4 +1,3 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/filters_modal.dart';
 import 'package:democracy/post/bloc/post_filter/post_filter_cubit.dart';
@@ -138,15 +137,6 @@ class _PostsState extends State<_Posts> {
               if (_refreshController.footerStatus == LoadStatus.loading) {
                 _refreshController.loadFailed();
               }
-            }
-          },
-        ),
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state.status == WebsocketStatus.connected) {
-              context.read<PostsBloc>().add(
-                PostsEvent.resubscribe(posts: _posts),
-              );
             }
           },
         ),
