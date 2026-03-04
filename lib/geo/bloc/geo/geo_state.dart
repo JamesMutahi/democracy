@@ -1,4 +1,4 @@
-part of 'geo_cubit.dart';
+part of 'geo_bloc.dart';
 
 enum GeoStatus { initial, loading, success, failure }
 

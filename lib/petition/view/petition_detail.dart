@@ -24,6 +24,14 @@ class _PetitionDetailState extends State<PetitionDetail> {
   bool isDeleted = false;
 
   @override
+  void initState() {
+    context.read<PetitionDetailBloc>().add(
+      PetitionDetailEvent.retrieve(petition: widget.petition),
+    );
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocListener<PetitionDetailBloc, PetitionDetailState>(
       listener: (context, state) {
@@ -51,107 +59,117 @@ class _PetitionDetailState extends State<PetitionDetail> {
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Petition'),
-          actions: [PetitionPopUpMenu(petition: _petition)],
-        ),
-        body: isDeleted
-            ? Center(
-                child: Text('This petition has been deleted by the author'),
-              )
-            : ListView(
-                padding: EdgeInsets.symmetric(vertical: 15),
-                children: [
-                  Container(
-                    height: MediaQuery.of(context).size.height / 4,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(_petition.image),
-                        fit: BoxFit.cover,
+      child: PopScope(
+        canPop: true,
+        onPopInvokedWithResult: (_, __) {
+          context.read<PetitionDetailBloc>().add(
+            PetitionDetailEvent.unsubscribe(petition: _petition),
+          );
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text('Petition'),
+            actions: [PetitionPopUpMenu(petition: _petition)],
+          ),
+          body: isDeleted
+              ? Center(
+                  child: Text('This petition has been deleted by the author'),
+                )
+              : ListView(
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                  children: [
+                    Container(
+                      height: MediaQuery.of(context).size.height / 4,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(_petition.image),
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 10, left: 20, right: 20),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (_petition.county != null)
-                          Container(
-                            margin: EdgeInsets.only(bottom: 10),
-                            child: GeoChipRow(
-                              county: _petition.county,
-                              constituency: _petition.constituency,
-                              ward: _petition.ward,
-                            ),
-                          ),
-                        Text(
-                          _petition.title,
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        SizedBox(height: 10),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    ProfilePage(user: _petition.author),
+                    Container(
+                      margin: EdgeInsets.only(top: 10, left: 20, right: 20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (_petition.county != null)
+                            Container(
+                              margin: EdgeInsets.only(bottom: 10),
+                              child: GeoChipRow(
+                                county: _petition.county,
+                                constituency: _petition.constituency,
+                                ward: _petition.ward,
                               ),
-                            );
-                          },
-                          child: PetitionAuthorInfo(petition: _petition),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        Supporters(petition: _petition),
-                                  ),
-                                );
-                              },
-                              child: PetitionSupportersRow(petition: _petition),
                             ),
-                            _petition.isOpen
-                                ? SupportButton(petition: _petition)
-                                : Card.outlined(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: Text(
-                                        'Closed',
-                                        style: TextStyle(
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.error,
+                          Text(
+                            _petition.title,
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          SizedBox(height: 10),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ProfilePage(user: _petition.author),
+                                ),
+                              );
+                            },
+                            child: PetitionAuthorInfo(petition: _petition),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          Supporters(petition: _petition),
+                                    ),
+                                  );
+                                },
+                                child: PetitionSupportersRow(
+                                  petition: _petition,
+                                ),
+                              ),
+                              _petition.isOpen
+                                  ? SupportButton(petition: _petition)
+                                  : Card.outlined(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Text(
+                                          'Closed',
+                                          style: TextStyle(
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.error,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          'The problem',
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        CustomText(
-                          text: _petition.description,
-                          style: Theme.of(context).textTheme.bodyMedium!,
-                          showAllText: true,
-                          suffix: '',
-                        ),
-                      ],
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            'The problem',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          CustomText(
+                            text: _petition.description,
+                            style: Theme.of(context).textTheme.bodyMedium!,
+                            showAllText: true,
+                            suffix: '',
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+        ),
       ),
     );
   }

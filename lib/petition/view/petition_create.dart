@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/utils/media_tools.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
-import 'package:democracy/geo/bloc/geo/geo_cubit.dart';
+import 'package:democracy/geo/bloc/geo/geo_bloc.dart';
 import 'package:democracy/geo/models/constituency.dart';
 import 'package:democracy/geo/models/county.dart';
 import 'package:democracy/geo/models/ward.dart';
@@ -35,7 +35,7 @@ class _CreatePetitionState extends State<CreatePetition> {
 
   @override
   void initState() {
-    context.read<GeoCubit>().start();
+    context.read<GeoBloc>().add(GeoEvent.started());
     super.initState();
   }
 
@@ -202,7 +202,7 @@ class _CreatePetitionState extends State<CreatePetition> {
                       maxLength: 500,
                     ),
                     SizedBox(height: 10),
-                    BlocBuilder<GeoCubit, GeoState>(
+                    BlocBuilder<GeoBloc, GeoState>(
                       builder: (context, state) {
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -215,7 +215,9 @@ class _CreatePetitionState extends State<CreatePetition> {
                                   setState(() {
                                     showCounties = true;
                                   });
-                                  context.read<GeoCubit>().getCounties();
+                                  context.read<GeoBloc>().add(
+                                    GeoEvent.getCounties(),
+                                  );
                                 },
                                 child: Text(
                                   'Add county',
@@ -269,11 +271,11 @@ class _CreatePetitionState extends State<CreatePetition> {
                                           ward = null;
                                         });
                                         if (showConstituencies == true) {
-                                          context
-                                              .read<GeoCubit>()
-                                              .getConstituencies(
-                                                county: value!,
-                                              );
+                                          context.read<GeoBloc>().add(
+                                            GeoEvent.getConstituencies(
+                                              county: county!,
+                                            ),
+                                          );
                                         }
                                       }
                                     },
@@ -290,8 +292,10 @@ class _CreatePetitionState extends State<CreatePetition> {
                                     showConstituencies = true;
                                   });
                                   if (county != null) {
-                                    context.read<GeoCubit>().getConstituencies(
-                                      county: county!,
+                                    context.read<GeoBloc>().add(
+                                      GeoEvent.getConstituencies(
+                                        county: county!,
+                                      ),
                                     );
                                   }
                                 },
@@ -344,8 +348,10 @@ class _CreatePetitionState extends State<CreatePetition> {
                                           ward = null;
                                         });
                                         if (showWards == true) {
-                                          context.read<GeoCubit>().getWards(
-                                            constituency: value!,
+                                          context.read<GeoBloc>().add(
+                                            GeoEvent.getWards(
+                                              constituency: constituency!,
+                                            ),
                                           );
                                         }
                                       }
@@ -363,8 +369,10 @@ class _CreatePetitionState extends State<CreatePetition> {
                                     showWards = true;
                                   });
                                   if (constituency != null) {
-                                    context.read<GeoCubit>().getWards(
-                                      constituency: constituency!,
+                                    context.read<GeoBloc>().add(
+                                      GeoEvent.getWards(
+                                        constituency: constituency!,
+                                      ),
                                     );
                                   }
                                 },

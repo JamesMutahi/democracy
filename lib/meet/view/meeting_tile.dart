@@ -201,12 +201,12 @@ class MeetingBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<MeetingDetailBloc, MeetingDetailState>(
       listener: (context, state) {
-        if (state is MeetingJoined) {
+        if (state is MeetingLoaded) {
           Navigator.pop(context);
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => MeetingDetail(meeting: meeting),
+              builder: (context) => MeetingDetail(meeting: state.meeting),
             ),
           );
         }

@@ -5,6 +5,9 @@ sealed class PetitionDetailEvent with _$PetitionDetailEvent {
   const factory PetitionDetailEvent.created({
     required Map<String, dynamic> payload,
   }) = _Created;
+  const factory PetitionDetailEvent.loaded({
+    required Map<String, dynamic> payload,
+  }) = _Loaded;
   const factory PetitionDetailEvent.updated({
     required Map<String, dynamic> payload,
   }) = _Updated;
@@ -19,11 +22,15 @@ sealed class PetitionDetailEvent with _$PetitionDetailEvent {
     required Constituency? constituency,
     required Ward? ward,
   }) = _Create;
+  const factory PetitionDetailEvent.retrieve({required Petition petition}) =
+      _Retrieve;
   const factory PetitionDetailEvent.support({required Petition petition}) =
       _Support;
-  const factory PetitionDetailEvent.close({required Petition petition}) =
-      _Close;
+  const factory PetitionDetailEvent.changeStatus({required Petition petition}) =
+      _ChangeStatus;
   const factory PetitionDetailEvent.received({
     required Map<String, dynamic> payload,
   }) = _Received;
+  const factory PetitionDetailEvent.unsubscribe({required Petition petition}) =
+      _Unsubscribe;
 }

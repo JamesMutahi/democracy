@@ -19,17 +19,22 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
         switch (message['payload']['action']) {
           case 'create':
             add(_Created(payload: message['payload']));
+          case 'retrieve':
+            add(_Loaded(payload: message['payload']));
           case 'update':
             add(_Updated(payload: message['payload']));
           case 'delete':
             add(_Deleted(payload: message['payload']));
           case 'vote':
-            add(_Received(payload: message['payload']));
+            add(_Voted(payload: message['payload']));
         }
       }
     });
     on<_Created>((event, emit) {
       _onCreated(event, emit);
+    });
+    on<_Loaded>((event, emit) {
+      _onLoaded(event, emit);
     });
     on<_Updated>((event, emit) {
       _onUpdated(event, emit);
@@ -37,14 +42,20 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
     on<_Deleted>((event, emit) {
       _onDeleted(event, emit);
     });
+    on<_Retrieve>((event, emit) {
+      _onRetrieve(event, emit);
+    });
     on<_Vote>((event, emit) {
       _onVote(event, emit);
     });
-    on<_Received>((event, emit) {
-      _onReceived(event, emit);
+    on<_Voted>((event, emit) {
+      _onVoted(event, emit);
     });
     on<_SubmitReason>((event, emit) {
       _onSubmitReason(event, emit);
+    });
+    on<_Unsubscribe>((event, emit) {
+      _onUnsubscribe(event, emit);
     });
   }
 
@@ -54,7 +65,17 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
       Ballot ballot = Ballot.fromJson(event.payload['data']);
       emit(BallotCreated(ballot: ballot));
     } else {
-      emit(BallotDetailFailure(error: event.payload['errors'][0]));
+      emit(BallotDetailFailure(error: event.payload['errors'].toString()));
+    }
+  }
+
+  Future _onLoaded(_Loaded event, Emitter<BallotDetailState> emit) async {
+    emit(BallotDetailLoading());
+    if (event.payload['response_status'] == 200) {
+      Ballot ballot = Ballot.fromJson(event.payload['data']);
+      emit(BallotLoaded(ballot: ballot));
+    } else {
+      emit(BallotDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -64,7 +85,7 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
       final Ballot ballot = Ballot.fromJson(event.payload['data']);
       emit(BallotUpdated(ballot: ballot));
     } else {
-      emit(BallotDetailFailure(error: event.payload['errors'][0]));
+      emit(BallotDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -73,8 +94,20 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
     if (event.payload['response_status'] == 204) {
       emit(BallotDeleted(ballotId: event.payload['pk']));
     } else {
-      emit(BallotDetailFailure(error: event.payload['errors'][0]));
+      emit(BallotDetailFailure(error: event.payload['errors'].toString()));
     }
+  }
+
+  Future _onRetrieve(_Retrieve event, Emitter<BallotDetailState> emit) async {
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        'action': 'retrieve',
+        'request_id': requestId,
+        'pk': event.ballot.id,
+      },
+    };
+    webSocketService.send(message);
   }
 
   Future _onVote(_Vote event, Emitter<BallotDetailState> emit) async {
@@ -89,12 +122,12 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
     webSocketService.send(message);
   }
 
-  Future _onReceived(_Received event, Emitter<BallotDetailState> emit) async {
+  Future _onVoted(_Voted event, Emitter<BallotDetailState> emit) async {
     emit(BallotDetailLoading());
     if (event.payload['response_status'] == 200) {
       //
     } else {
-      emit(BallotDetailFailure(error: event.payload['errors'][0]));
+      emit(BallotDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -109,6 +142,21 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
         'request_id': requestId,
         'pk': event.ballot.id,
         'text': event.text,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  Future _onUnsubscribe(
+    _Unsubscribe event,
+    Emitter<BallotDetailState> emit,
+  ) async {
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        'action': 'unsubscribe',
+        'request_id': requestId,
+        'pk': event.ballot.id,
       },
     };
     webSocketService.send(message);

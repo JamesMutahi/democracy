@@ -25,6 +25,8 @@ class PetitionDetailBloc
         switch (message['payload']['action']) {
           case 'create':
             add(_Created(payload: message['payload']));
+          case 'retrieve':
+            add(_Loaded(payload: message['payload']));
           case 'update':
             add(_Updated(payload: message['payload']));
           case 'delete':
@@ -37,6 +39,9 @@ class PetitionDetailBloc
     on<_Created>((event, emit) {
       _onCreated(event, emit);
     });
+    on<_Loaded>((event, emit) {
+      _onLoaded(event, emit);
+    });
     on<_Updated>((event, emit) {
       _onUpdated(event, emit);
     });
@@ -46,14 +51,20 @@ class PetitionDetailBloc
     on<_Create>((event, emit) {
       _onCreate(event, emit);
     });
+    on<_Retrieve>((event, emit) {
+      _onRetrieve(event, emit);
+    });
     on<_Support>((event, emit) {
       _onSupport(event, emit);
     });
-    on<_Close>((event, emit) {
-      _onClose(event, emit);
+    on<_ChangeStatus>((event, emit) {
+      _onChangeStatus(event, emit);
     });
     on<_Received>((event, emit) {
       _onReceived(event, emit);
+    });
+    on<_Unsubscribe>((event, emit) {
+      _onUnsubscribe(event, emit);
     });
   }
 
@@ -63,7 +74,17 @@ class PetitionDetailBloc
       Petition petition = Petition.fromJson(event.payload['data']);
       emit(PetitionCreated(petition: petition));
     } else {
-      emit(PetitionDetailFailure(error: event.payload['errors'][0].toString()));
+      emit(PetitionDetailFailure(error: event.payload['errors'].toString()));
+    }
+  }
+
+  Future _onLoaded(_Loaded event, Emitter<PetitionDetailState> emit) async {
+    emit(PetitionDetailLoading());
+    if (event.payload['response_status'] == 200) {
+      Petition petition = Petition.fromJson(event.payload['data']);
+      emit(PetitionLoaded(petition: petition));
+    } else {
+      emit(PetitionDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -73,7 +94,7 @@ class PetitionDetailBloc
       final Petition petition = Petition.fromJson(event.payload['data']);
       emit(PetitionUpdated(petition: petition));
     } else {
-      emit(PetitionDetailFailure(error: event.payload['errors'][0]));
+      emit(PetitionDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -82,7 +103,7 @@ class PetitionDetailBloc
     if (event.payload['response_status'] == 204) {
       emit(PetitionDeleted(petitionId: event.payload['pk']));
     } else {
-      emit(PetitionDetailFailure(error: event.payload['errors'][0]));
+      emit(PetitionDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -105,6 +126,18 @@ class PetitionDetailBloc
     webSocketService.send(message);
   }
 
+  Future _onRetrieve(_Retrieve event, Emitter<PetitionDetailState> emit) async {
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        'action': 'retrieve',
+        'request_id': requestId,
+        'pk': event.petition.id,
+      },
+    };
+    webSocketService.send(message);
+  }
+
   Future _onSupport(_Support event, Emitter<PetitionDetailState> emit) async {
     Map<String, dynamic> message = {
       'stream': stream,
@@ -117,11 +150,11 @@ class PetitionDetailBloc
     webSocketService.send(message);
   }
 
-  Future _onClose(_Close event, Emitter<PetitionDetailState> emit) async {
+  Future _onChangeStatus(_ChangeStatus event, Emitter<PetitionDetailState> emit) async {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
-        "action": 'close',
+        "action": 'change_status',
         'request_id': requestId,
         'pk': event.petition.id,
       },
@@ -136,6 +169,21 @@ class PetitionDetailBloc
     } else {
       emit(PetitionDetailFailure(error: event.payload['errors'][0]));
     }
+  }
+
+  Future _onUnsubscribe(
+    _Unsubscribe event,
+    Emitter<PetitionDetailState> emit,
+  ) async {
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        'action': 'unsubscribe',
+        'request_id': requestId,
+        'pk': event.petition.id,
+      },
+    };
+    webSocketService.send(message);
   }
 
   final WebSocketService webSocketService;

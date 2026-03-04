@@ -9,6 +9,9 @@ class BallotDetailState with _$BallotDetailState {
   const factory BallotDetailState.created({required Ballot ballot}) =
       BallotCreated;
 
+  const factory BallotDetailState.loaded({required Ballot ballot}) =
+      BallotLoaded;
+
   const factory BallotDetailState.updated({required Ballot ballot}) =
       BallotUpdated;
 

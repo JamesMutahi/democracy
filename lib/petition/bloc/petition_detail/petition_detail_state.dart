@@ -9,6 +9,9 @@ class PetitionDetailState with _$PetitionDetailState {
   const factory PetitionDetailState.created({required Petition petition}) =
       PetitionCreated;
 
+  const factory PetitionDetailState.loaded({required Petition petition}) =
+      PetitionLoaded;
+
   const factory PetitionDetailState.updated({required Petition petition}) =
       PetitionUpdated;
 

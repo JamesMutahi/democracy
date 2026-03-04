@@ -22,6 +22,14 @@ class _BallotDetailState extends State<BallotDetail> {
   bool changingVote = false;
 
   @override
+  void initState() {
+    context.read<BallotDetailBloc>().add(
+      BallotDetailEvent.retrieve(ballot: widget.ballot),
+    );
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     bool userHasVoted = _ballot.votedOption != null;
     return BlocListener<BallotDetailBloc, BallotDetailState>(
@@ -43,129 +51,141 @@ class _BallotDetailState extends State<BallotDetail> {
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Ballot'),
-          actions: [
-            Container(
-              margin: EdgeInsets.only(right: 15),
-              child: BallotPopUp(ballot: _ballot),
-            ),
-          ],
-        ),
-        body: SingleChildScrollView(
-          child: Container(
-            margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (_ballot.county != null)
-                  Container(
-                    margin: EdgeInsets.only(bottom: 10),
-                    child: GeoChipRow(
-                      county: _ballot.county,
-                      constituency: _ballot.constituency,
-                      ward: _ballot.ward,
+      child: PopScope(
+        canPop: true,
+        onPopInvokedWithResult: (_, __) {
+          context.read<BallotDetailBloc>().add(
+            BallotDetailEvent.unsubscribe(ballot: _ballot),
+          );
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text('Ballot'),
+            actions: [
+              Container(
+                margin: EdgeInsets.only(right: 15),
+                child: BallotPopUp(ballot: _ballot),
+              ),
+            ],
+          ),
+          body: SingleChildScrollView(
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (_ballot.county != null)
+                    Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      child: GeoChipRow(
+                        county: _ballot.county,
+                        constituency: _ballot.constituency,
+                        ward: _ballot.ward,
+                      ),
                     ),
+                  Text(
+                    _ballot.title,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
-                Text(
-                  _ballot.title,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                SizedBox(height: 5),
-                Text(_ballot.description),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TimeLeft(
-                      startTime: _ballot.startTime,
-                      endTime: _ballot.endTime,
-                    ),
-                    Text(
-                      '${_ballot.totalVotes} ${_ballot.totalVotes == 1 ? 'vote' : 'votes'}',
-                      style: TextStyle(color: Theme.of(context).disabledColor),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Container(
-                  padding: EdgeInsets.only(
-                    top: 10,
-                    left: 10,
-                    right: 10,
-                    bottom: 5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.tertiaryContainer,
-                    borderRadius: BorderRadius.all(const Radius.circular(8)),
-                  ),
-                  child: Column(
+                  SizedBox(height: 5),
+                  Text(_ballot.description),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      ..._ballot.options.map((option) {
-                        return AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 300),
-                          child:
-                              (!_ballot.isActive ||
-                                  (userHasVoted && !changingVote))
-                              ? BallotPercentIndicator(
-                                  key: ValueKey(option.id),
-                                  ballot: _ballot,
-                                  option: option,
-                                  animateToInitialPercent: true,
-                                )
-                              : OptionTile(
-                                  option: option,
-                                  onTap: () {
-                                    if (_ballot.isActive) {
-                                      context.read<BallotDetailBloc>().add(
-                                        BallotDetailEvent.vote(option: option),
-                                      );
-                                      setState(() {
-                                        changingVote = false;
-                                      });
-                                    } else {
-                                      final snackBar = getSnackBar(
-                                        context: context,
-                                        message: 'Closed',
-                                        status: SnackBarStatus.info,
-                                      );
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).clearSnackBars();
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(snackBar);
-                                    }
-                                  },
-                                ),
-                        );
-                      }),
+                      TimeLeft(
+                        startTime: _ballot.startTime,
+                        endTime: _ballot.endTime,
+                      ),
+                      Text(
+                        '${_ballot.totalVotes} ${_ballot.totalVotes == 1 ? 'vote' : 'votes'}',
+                        style: TextStyle(
+                          color: Theme.of(context).disabledColor,
+                        ),
+                      ),
                     ],
                   ),
-                ),
-                SizedBox(height: 10),
-                userHasVoted && _ballot.isActive
-                    ? changingVote
-                          ? SizedBox.shrink()
-                          : Align(
-                              alignment: Alignment.topRight,
-                              child: OutlinedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    changingVote = true;
-                                  });
-                                },
-                                child: Text('Change'),
-                              ),
-                            )
-                    : SizedBox.shrink(),
-                SizedBox(height: 20),
-                !changingVote
-                    ? ReasonWidget(ballot: _ballot)
-                    : SizedBox.shrink(),
-              ],
+                  SizedBox(height: 10),
+                  Container(
+                    padding: EdgeInsets.only(
+                      top: 10,
+                      left: 10,
+                      right: 10,
+                      bottom: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.tertiaryContainer,
+                      borderRadius: BorderRadius.all(const Radius.circular(8)),
+                    ),
+                    child: Column(
+                      children: [
+                        ..._ballot.options.map((option) {
+                          return AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 300),
+                            child:
+                                (!_ballot.isActive ||
+                                    (userHasVoted && !changingVote))
+                                ? BallotPercentIndicator(
+                                    key: ValueKey(option.id),
+                                    ballot: _ballot,
+                                    option: option,
+                                    animateToInitialPercent: true,
+                                  )
+                                : OptionTile(
+                                    option: option,
+                                    onTap: () {
+                                      if (_ballot.isActive) {
+                                        context.read<BallotDetailBloc>().add(
+                                          BallotDetailEvent.vote(
+                                            option: option,
+                                          ),
+                                        );
+                                        setState(() {
+                                          changingVote = false;
+                                        });
+                                      } else {
+                                        final snackBar = getSnackBar(
+                                          context: context,
+                                          message: 'Closed',
+                                          status: SnackBarStatus.info,
+                                        );
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).clearSnackBars();
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(snackBar);
+                                      }
+                                    },
+                                  ),
+                          );
+                        }),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  userHasVoted && _ballot.isActive
+                      ? changingVote
+                            ? SizedBox.shrink()
+                            : Align(
+                                alignment: Alignment.topRight,
+                                child: OutlinedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      changingVote = true;
+                                    });
+                                  },
+                                  child: Text('Change'),
+                                ),
+                              )
+                      : SizedBox.shrink(),
+                  SizedBox(height: 20),
+                  !changingVote
+                      ? ReasonWidget(ballot: _ballot)
+                      : SizedBox.shrink(),
+                ],
+              ),
             ),
           ),
         ),

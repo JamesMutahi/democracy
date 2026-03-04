@@ -62,6 +62,7 @@ class _PostDetailState extends State<PostDetail> {
   }
 
   void _getData() {
+    context.read<PostDetailBloc>().add(PostDetailEvent.get(post: widget.post));
     context.read<RepliesBloc>().add(RepliesEvent.get(post: widget.post));
     if (widget.post.replyTo != null) {
       context.read<ReplyToBloc>().add(ReplyToEvent.get(post: widget.post));

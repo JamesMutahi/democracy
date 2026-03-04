@@ -18,12 +18,12 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
         switch (message['payload']['action']) {
           case 'create':
             add(_Created(payload: message['payload']));
+          case 'join':
+            add(_Loaded(payload: message['payload']));
           case 'update':
             add(_Updated(payload: message['payload']));
           case 'delete':
             add(_Deleted(payload: message['payload']));
-          case 'join':
-            add(_Joined(payload: message['payload']));
           case 'leave':
             add(_Left(payload: message['payload']));
         }
@@ -31,6 +31,9 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
     });
     on<_Created>((event, emit) {
       _onCreated(event, emit);
+    });
+    on<_Loaded>((event, emit) {
+      _onLoaded(event, emit);
     });
     on<_Updated>((event, emit) {
       _onUpdated(event, emit);
@@ -40,9 +43,6 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
     });
     on<_Join>((event, emit) {
       _onJoin(event, emit);
-    });
-    on<_Joined>((event, emit) {
-      _onJoined(event, emit);
     });
     on<_Leave>((event, emit) {
       _onLeave(event, emit);
@@ -58,7 +58,17 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
       Meeting meeting = Meeting.fromJson(event.payload['data']);
       emit(MeetingCreated(meeting: meeting));
     } else {
-      emit(MeetingDetailFailure(error: event.payload['errors'][0]));
+      emit(MeetingDetailFailure(error: event.payload['errors'].toString()));
+    }
+  }
+
+  Future _onLoaded(_Loaded event, Emitter<MeetingDetailState> emit) async {
+    emit(MeetingDetailLoading());
+    if (event.payload['response_status'] == 200) {
+      Meeting meeting = Meeting.fromJson(event.payload['data']);
+      emit(MeetingLoaded(meeting: meeting));
+    } else {
+      emit(MeetingDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -68,7 +78,7 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
       final Meeting meeting = Meeting.fromJson(event.payload['data']);
       emit(MeetingUpdated(meeting: meeting));
     } else {
-      emit(MeetingDetailFailure(error: event.payload['errors'][0]));
+      emit(MeetingDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -77,7 +87,7 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
     if (event.payload['response_status'] == 204) {
       emit(MeetingDeleted(meetingId: event.payload['pk']));
     } else {
-      emit(MeetingDetailFailure(error: event.payload['errors'][0]));
+      emit(MeetingDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -91,15 +101,6 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
       },
     };
     webSocketService.send(message);
-  }
-
-  Future _onJoined(_Joined event, Emitter<MeetingDetailState> emit) async {
-    emit(MeetingDetailLoading());
-    if (event.payload['response_status'] == 200) {
-      emit(MeetingJoined(meetingId: event.payload['data']['pk']));
-    } else {
-      emit(MeetingDetailFailure(error: event.payload['errors'][0]));
-    }
   }
 
   Future _onLeave(_Leave event, Emitter<MeetingDetailState> emit) async {
@@ -119,7 +120,7 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
     if (event.payload['response_status'] == 200) {
       emit(MeetingLeft(meetingId: event.payload['data']['pk']));
     } else {
-      emit(MeetingDetailFailure(error: event.payload['errors'][0]));
+      emit(MeetingDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 

@@ -21,6 +21,7 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
           case 'retrieve':
             add(_Retrieved(payload: message['payload']));
           case 'update':
+          case 'follow':
           case 'mute':
           case 'block':
             add(_Updated(payload: message['payload']));

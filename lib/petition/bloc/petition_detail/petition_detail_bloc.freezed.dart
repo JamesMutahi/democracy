@@ -55,13 +55,14 @@ extension PetitionDetailStatePatterns on PetitionDetailState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( PetitionDetailInitial value)?  initial,TResult Function( PetitionDetailLoading value)?  loading,TResult Function( PetitionCreated value)?  created,TResult Function( PetitionUpdated value)?  updated,TResult Function( PetitionDeleted value)?  deleted,TResult Function( PetitionDetailFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( PetitionDetailInitial value)?  initial,TResult Function( PetitionDetailLoading value)?  loading,TResult Function( PetitionCreated value)?  created,TResult Function( PetitionLoaded value)?  loaded,TResult Function( PetitionUpdated value)?  updated,TResult Function( PetitionDeleted value)?  deleted,TResult Function( PetitionDetailFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case PetitionDetailInitial() when initial != null:
 return initial(_that);case PetitionDetailLoading() when loading != null:
 return loading(_that);case PetitionCreated() when created != null:
-return created(_that);case PetitionUpdated() when updated != null:
+return created(_that);case PetitionLoaded() when loaded != null:
+return loaded(_that);case PetitionUpdated() when updated != null:
 return updated(_that);case PetitionDeleted() when deleted != null:
 return deleted(_that);case PetitionDetailFailure() when failure != null:
 return failure(_that);case _:
@@ -82,13 +83,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( PetitionDetailInitial value)  initial,required TResult Function( PetitionDetailLoading value)  loading,required TResult Function( PetitionCreated value)  created,required TResult Function( PetitionUpdated value)  updated,required TResult Function( PetitionDeleted value)  deleted,required TResult Function( PetitionDetailFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( PetitionDetailInitial value)  initial,required TResult Function( PetitionDetailLoading value)  loading,required TResult Function( PetitionCreated value)  created,required TResult Function( PetitionLoaded value)  loaded,required TResult Function( PetitionUpdated value)  updated,required TResult Function( PetitionDeleted value)  deleted,required TResult Function( PetitionDetailFailure value)  failure,}){
 final _that = this;
 switch (_that) {
 case PetitionDetailInitial():
 return initial(_that);case PetitionDetailLoading():
 return loading(_that);case PetitionCreated():
-return created(_that);case PetitionUpdated():
+return created(_that);case PetitionLoaded():
+return loaded(_that);case PetitionUpdated():
 return updated(_that);case PetitionDeleted():
 return deleted(_that);case PetitionDetailFailure():
 return failure(_that);case _:
@@ -108,13 +110,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( PetitionDetailInitial value)?  initial,TResult? Function( PetitionDetailLoading value)?  loading,TResult? Function( PetitionCreated value)?  created,TResult? Function( PetitionUpdated value)?  updated,TResult? Function( PetitionDeleted value)?  deleted,TResult? Function( PetitionDetailFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( PetitionDetailInitial value)?  initial,TResult? Function( PetitionDetailLoading value)?  loading,TResult? Function( PetitionCreated value)?  created,TResult? Function( PetitionLoaded value)?  loaded,TResult? Function( PetitionUpdated value)?  updated,TResult? Function( PetitionDeleted value)?  deleted,TResult? Function( PetitionDetailFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case PetitionDetailInitial() when initial != null:
 return initial(_that);case PetitionDetailLoading() when loading != null:
 return loading(_that);case PetitionCreated() when created != null:
-return created(_that);case PetitionUpdated() when updated != null:
+return created(_that);case PetitionLoaded() when loaded != null:
+return loaded(_that);case PetitionUpdated() when updated != null:
 return updated(_that);case PetitionDeleted() when deleted != null:
 return deleted(_that);case PetitionDetailFailure() when failure != null:
 return failure(_that);case _:
@@ -134,12 +137,13 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Petition petition)?  created,TResult Function( Petition petition)?  updated,TResult Function( int petitionId)?  deleted,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Petition petition)?  created,TResult Function( Petition petition)?  loaded,TResult Function( Petition petition)?  updated,TResult Function( int petitionId)?  deleted,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case PetitionDetailInitial() when initial != null:
 return initial();case PetitionDetailLoading() when loading != null:
 return loading();case PetitionCreated() when created != null:
-return created(_that.petition);case PetitionUpdated() when updated != null:
+return created(_that.petition);case PetitionLoaded() when loaded != null:
+return loaded(_that.petition);case PetitionUpdated() when updated != null:
 return updated(_that.petition);case PetitionDeleted() when deleted != null:
 return deleted(_that.petitionId);case PetitionDetailFailure() when failure != null:
 return failure(_that.error);case _:
@@ -160,12 +164,13 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Petition petition)  created,required TResult Function( Petition petition)  updated,required TResult Function( int petitionId)  deleted,required TResult Function( String error)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Petition petition)  created,required TResult Function( Petition petition)  loaded,required TResult Function( Petition petition)  updated,required TResult Function( int petitionId)  deleted,required TResult Function( String error)  failure,}) {final _that = this;
 switch (_that) {
 case PetitionDetailInitial():
 return initial();case PetitionDetailLoading():
 return loading();case PetitionCreated():
-return created(_that.petition);case PetitionUpdated():
+return created(_that.petition);case PetitionLoaded():
+return loaded(_that.petition);case PetitionUpdated():
 return updated(_that.petition);case PetitionDeleted():
 return deleted(_that.petitionId);case PetitionDetailFailure():
 return failure(_that.error);case _:
@@ -185,12 +190,13 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Petition petition)?  created,TResult? Function( Petition petition)?  updated,TResult? Function( int petitionId)?  deleted,TResult? Function( String error)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Petition petition)?  created,TResult? Function( Petition petition)?  loaded,TResult? Function( Petition petition)?  updated,TResult? Function( int petitionId)?  deleted,TResult? Function( String error)?  failure,}) {final _that = this;
 switch (_that) {
 case PetitionDetailInitial() when initial != null:
 return initial();case PetitionDetailLoading() when loading != null:
 return loading();case PetitionCreated() when created != null:
-return created(_that.petition);case PetitionUpdated() when updated != null:
+return created(_that.petition);case PetitionLoaded() when loaded != null:
+return loaded(_that.petition);case PetitionUpdated() when updated != null:
 return updated(_that.petition);case PetitionDeleted() when deleted != null:
 return deleted(_that.petitionId);case PetitionDetailFailure() when failure != null:
 return failure(_that.error);case _:
@@ -323,6 +329,81 @@ class _$PetitionCreatedCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? petition = null,}) {
   return _then(PetitionCreated(
+petition: null == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
+as Petition,
+  ));
+}
+
+/// Create a copy of PetitionDetailState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PetitionCopyWith<$Res> get petition {
+  
+  return $PetitionCopyWith<$Res>(_self.petition, (value) {
+    return _then(_self.copyWith(petition: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class PetitionLoaded implements PetitionDetailState {
+  const PetitionLoaded({required this.petition});
+  
+
+ final  Petition petition;
+
+/// Create a copy of PetitionDetailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PetitionLoadedCopyWith<PetitionLoaded> get copyWith => _$PetitionLoadedCopyWithImpl<PetitionLoaded>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PetitionLoaded&&(identical(other.petition, petition) || other.petition == petition));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,petition);
+
+@override
+String toString() {
+  return 'PetitionDetailState.loaded(petition: $petition)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $PetitionLoadedCopyWith<$Res> implements $PetitionDetailStateCopyWith<$Res> {
+  factory $PetitionLoadedCopyWith(PetitionLoaded value, $Res Function(PetitionLoaded) _then) = _$PetitionLoadedCopyWithImpl;
+@useResult
+$Res call({
+ Petition petition
+});
+
+
+$PetitionCopyWith<$Res> get petition;
+
+}
+/// @nodoc
+class _$PetitionLoadedCopyWithImpl<$Res>
+    implements $PetitionLoadedCopyWith<$Res> {
+  _$PetitionLoadedCopyWithImpl(this._self, this._then);
+
+  final PetitionLoaded _self;
+  final $Res Function(PetitionLoaded) _then;
+
+/// Create a copy of PetitionDetailState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? petition = null,}) {
+  return _then(PetitionLoaded(
 petition: null == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
 as Petition,
   ));
@@ -591,17 +672,20 @@ extension PetitionDetailEventPatterns on PetitionDetailEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Create value)?  create,TResult Function( _Support value)?  support,TResult Function( _Close value)?  close,TResult Function( _Received value)?  received,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Loaded value)?  loaded,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Create value)?  create,TResult Function( _Retrieve value)?  retrieve,TResult Function( _Support value)?  support,TResult Function( _ChangeStatus value)?  changeStatus,TResult Function( _Received value)?  received,TResult Function( _Unsubscribe value)?  unsubscribe,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
-return created(_that);case _Updated() when updated != null:
+return created(_that);case _Loaded() when loaded != null:
+return loaded(_that);case _Updated() when updated != null:
 return updated(_that);case _Deleted() when deleted != null:
 return deleted(_that);case _Create() when create != null:
-return create(_that);case _Support() when support != null:
-return support(_that);case _Close() when close != null:
-return close(_that);case _Received() when received != null:
-return received(_that);case _:
+return create(_that);case _Retrieve() when retrieve != null:
+return retrieve(_that);case _Support() when support != null:
+return support(_that);case _ChangeStatus() when changeStatus != null:
+return changeStatus(_that);case _Received() when received != null:
+return received(_that);case _Unsubscribe() when unsubscribe != null:
+return unsubscribe(_that);case _:
   return orElse();
 
 }
@@ -619,17 +703,20 @@ return received(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Create value)  create,required TResult Function( _Support value)  support,required TResult Function( _Close value)  close,required TResult Function( _Received value)  received,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Loaded value)  loaded,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Create value)  create,required TResult Function( _Retrieve value)  retrieve,required TResult Function( _Support value)  support,required TResult Function( _ChangeStatus value)  changeStatus,required TResult Function( _Received value)  received,required TResult Function( _Unsubscribe value)  unsubscribe,}){
 final _that = this;
 switch (_that) {
 case _Created():
-return created(_that);case _Updated():
+return created(_that);case _Loaded():
+return loaded(_that);case _Updated():
 return updated(_that);case _Deleted():
 return deleted(_that);case _Create():
-return create(_that);case _Support():
-return support(_that);case _Close():
-return close(_that);case _Received():
-return received(_that);}
+return create(_that);case _Retrieve():
+return retrieve(_that);case _Support():
+return support(_that);case _ChangeStatus():
+return changeStatus(_that);case _Received():
+return received(_that);case _Unsubscribe():
+return unsubscribe(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -643,17 +730,20 @@ return received(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Create value)?  create,TResult? Function( _Support value)?  support,TResult? Function( _Close value)?  close,TResult? Function( _Received value)?  received,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Create value)?  create,TResult? Function( _Retrieve value)?  retrieve,TResult? Function( _Support value)?  support,TResult? Function( _ChangeStatus value)?  changeStatus,TResult? Function( _Received value)?  received,TResult? Function( _Unsubscribe value)?  unsubscribe,}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
-return created(_that);case _Updated() when updated != null:
+return created(_that);case _Loaded() when loaded != null:
+return loaded(_that);case _Updated() when updated != null:
 return updated(_that);case _Deleted() when deleted != null:
 return deleted(_that);case _Create() when create != null:
-return create(_that);case _Support() when support != null:
-return support(_that);case _Close() when close != null:
-return close(_that);case _Received() when received != null:
-return received(_that);case _:
+return create(_that);case _Retrieve() when retrieve != null:
+return retrieve(_that);case _Support() when support != null:
+return support(_that);case _ChangeStatus() when changeStatus != null:
+return changeStatus(_that);case _Received() when received != null:
+return received(_that);case _Unsubscribe() when unsubscribe != null:
+return unsubscribe(_that);case _:
   return null;
 
 }
@@ -670,16 +760,19 @@ return received(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( String title,  String imagePath,  String description,  County? county,  Constituency? constituency,  Ward? ward)?  create,TResult Function( Petition petition)?  support,TResult Function( Petition petition)?  close,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( String title,  String imagePath,  String description,  County? county,  Constituency? constituency,  Ward? ward)?  create,TResult Function( Petition petition)?  retrieve,TResult Function( Petition petition)?  support,TResult Function( Petition petition)?  changeStatus,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Petition petition)?  unsubscribe,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
-return created(_that.payload);case _Updated() when updated != null:
+return created(_that.payload);case _Loaded() when loaded != null:
+return loaded(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Create() when create != null:
-return create(_that.title,_that.imagePath,_that.description,_that.county,_that.constituency,_that.ward);case _Support() when support != null:
-return support(_that.petition);case _Close() when close != null:
-return close(_that.petition);case _Received() when received != null:
-return received(_that.payload);case _:
+return create(_that.title,_that.imagePath,_that.description,_that.county,_that.constituency,_that.ward);case _Retrieve() when retrieve != null:
+return retrieve(_that.petition);case _Support() when support != null:
+return support(_that.petition);case _ChangeStatus() when changeStatus != null:
+return changeStatus(_that.petition);case _Received() when received != null:
+return received(_that.payload);case _Unsubscribe() when unsubscribe != null:
+return unsubscribe(_that.petition);case _:
   return orElse();
 
 }
@@ -697,16 +790,19 @@ return received(_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( String title,  String imagePath,  String description,  County? county,  Constituency? constituency,  Ward? ward)  create,required TResult Function( Petition petition)  support,required TResult Function( Petition petition)  close,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( String title,  String imagePath,  String description,  County? county,  Constituency? constituency,  Ward? ward)  create,required TResult Function( Petition petition)  retrieve,required TResult Function( Petition petition)  support,required TResult Function( Petition petition)  changeStatus,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Petition petition)  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Created():
-return created(_that.payload);case _Updated():
+return created(_that.payload);case _Loaded():
+return loaded(_that.payload);case _Updated():
 return updated(_that.payload);case _Deleted():
 return deleted(_that.payload);case _Create():
-return create(_that.title,_that.imagePath,_that.description,_that.county,_that.constituency,_that.ward);case _Support():
-return support(_that.petition);case _Close():
-return close(_that.petition);case _Received():
-return received(_that.payload);}
+return create(_that.title,_that.imagePath,_that.description,_that.county,_that.constituency,_that.ward);case _Retrieve():
+return retrieve(_that.petition);case _Support():
+return support(_that.petition);case _ChangeStatus():
+return changeStatus(_that.petition);case _Received():
+return received(_that.payload);case _Unsubscribe():
+return unsubscribe(_that.petition);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -720,16 +816,19 @@ return received(_that.payload);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( String title,  String imagePath,  String description,  County? county,  Constituency? constituency,  Ward? ward)?  create,TResult? Function( Petition petition)?  support,TResult? Function( Petition petition)?  close,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( String title,  String imagePath,  String description,  County? county,  Constituency? constituency,  Ward? ward)?  create,TResult? Function( Petition petition)?  retrieve,TResult? Function( Petition petition)?  support,TResult? Function( Petition petition)?  changeStatus,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Petition petition)?  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
-return created(_that.payload);case _Updated() when updated != null:
+return created(_that.payload);case _Loaded() when loaded != null:
+return loaded(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Create() when create != null:
-return create(_that.title,_that.imagePath,_that.description,_that.county,_that.constituency,_that.ward);case _Support() when support != null:
-return support(_that.petition);case _Close() when close != null:
-return close(_that.petition);case _Received() when received != null:
-return received(_that.payload);case _:
+return create(_that.title,_that.imagePath,_that.description,_that.county,_that.constituency,_that.ward);case _Retrieve() when retrieve != null:
+return retrieve(_that.petition);case _Support() when support != null:
+return support(_that.petition);case _ChangeStatus() when changeStatus != null:
+return changeStatus(_that.petition);case _Received() when received != null:
+return received(_that.payload);case _Unsubscribe() when unsubscribe != null:
+return unsubscribe(_that.petition);case _:
   return null;
 
 }
@@ -801,6 +900,78 @@ class __$CreatedCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
   return _then(_Created(
+payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _Loaded implements PetitionDetailEvent {
+  const _Loaded({required final  Map<String, dynamic> payload}): _payload = payload;
+  
+
+ final  Map<String, dynamic> _payload;
+ Map<String, dynamic> get payload {
+  if (_payload is EqualUnmodifiableMapView) return _payload;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_payload);
+}
+
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&const DeepCollectionEquality().equals(other._payload, _payload));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
+
+@override
+String toString() {
+  return 'PetitionDetailEvent.loaded(payload: $payload)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$LoadedCopyWith<$Res> implements $PetitionDetailEventCopyWith<$Res> {
+  factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, dynamic> payload
+});
+
+
+
+
+}
+/// @nodoc
+class __$LoadedCopyWithImpl<$Res>
+    implements _$LoadedCopyWith<$Res> {
+  __$LoadedCopyWithImpl(this._self, this._then);
+
+  final _Loaded _self;
+  final $Res Function(_Loaded) _then;
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
+  return _then(_Loaded(
 payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>,
   ));
@@ -1068,6 +1239,81 @@ $WardCopyWith<$Res>? get ward {
 /// @nodoc
 
 
+class _Retrieve implements PetitionDetailEvent {
+  const _Retrieve({required this.petition});
+  
+
+ final  Petition petition;
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$RetrieveCopyWith<_Retrieve> get copyWith => __$RetrieveCopyWithImpl<_Retrieve>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Retrieve&&(identical(other.petition, petition) || other.petition == petition));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,petition);
+
+@override
+String toString() {
+  return 'PetitionDetailEvent.retrieve(petition: $petition)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$RetrieveCopyWith<$Res> implements $PetitionDetailEventCopyWith<$Res> {
+  factory _$RetrieveCopyWith(_Retrieve value, $Res Function(_Retrieve) _then) = __$RetrieveCopyWithImpl;
+@useResult
+$Res call({
+ Petition petition
+});
+
+
+$PetitionCopyWith<$Res> get petition;
+
+}
+/// @nodoc
+class __$RetrieveCopyWithImpl<$Res>
+    implements _$RetrieveCopyWith<$Res> {
+  __$RetrieveCopyWithImpl(this._self, this._then);
+
+  final _Retrieve _self;
+  final $Res Function(_Retrieve) _then;
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? petition = null,}) {
+  return _then(_Retrieve(
+petition: null == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
+as Petition,
+  ));
+}
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PetitionCopyWith<$Res> get petition {
+  
+  return $PetitionCopyWith<$Res>(_self.petition, (value) {
+    return _then(_self.copyWith(petition: value));
+  });
+}
+}
+
+/// @nodoc
+
+
 class _Support implements PetitionDetailEvent {
   const _Support({required this.petition});
   
@@ -1143,8 +1389,8 @@ $PetitionCopyWith<$Res> get petition {
 /// @nodoc
 
 
-class _Close implements PetitionDetailEvent {
-  const _Close({required this.petition});
+class _ChangeStatus implements PetitionDetailEvent {
+  const _ChangeStatus({required this.petition});
   
 
  final  Petition petition;
@@ -1153,13 +1399,13 @@ class _Close implements PetitionDetailEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$CloseCopyWith<_Close> get copyWith => __$CloseCopyWithImpl<_Close>(this, _$identity);
+_$ChangeStatusCopyWith<_ChangeStatus> get copyWith => __$ChangeStatusCopyWithImpl<_ChangeStatus>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Close&&(identical(other.petition, petition) || other.petition == petition));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChangeStatus&&(identical(other.petition, petition) || other.petition == petition));
 }
 
 
@@ -1168,15 +1414,15 @@ int get hashCode => Object.hash(runtimeType,petition);
 
 @override
 String toString() {
-  return 'PetitionDetailEvent.close(petition: $petition)';
+  return 'PetitionDetailEvent.changeStatus(petition: $petition)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$CloseCopyWith<$Res> implements $PetitionDetailEventCopyWith<$Res> {
-  factory _$CloseCopyWith(_Close value, $Res Function(_Close) _then) = __$CloseCopyWithImpl;
+abstract mixin class _$ChangeStatusCopyWith<$Res> implements $PetitionDetailEventCopyWith<$Res> {
+  factory _$ChangeStatusCopyWith(_ChangeStatus value, $Res Function(_ChangeStatus) _then) = __$ChangeStatusCopyWithImpl;
 @useResult
 $Res call({
  Petition petition
@@ -1187,17 +1433,17 @@ $PetitionCopyWith<$Res> get petition;
 
 }
 /// @nodoc
-class __$CloseCopyWithImpl<$Res>
-    implements _$CloseCopyWith<$Res> {
-  __$CloseCopyWithImpl(this._self, this._then);
+class __$ChangeStatusCopyWithImpl<$Res>
+    implements _$ChangeStatusCopyWith<$Res> {
+  __$ChangeStatusCopyWithImpl(this._self, this._then);
 
-  final _Close _self;
-  final $Res Function(_Close) _then;
+  final _ChangeStatus _self;
+  final $Res Function(_ChangeStatus) _then;
 
 /// Create a copy of PetitionDetailEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? petition = null,}) {
-  return _then(_Close(
+  return _then(_ChangeStatus(
 petition: null == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
 as Petition,
   ));
@@ -1285,6 +1531,81 @@ as Map<String, dynamic>,
 }
 
 
+}
+
+/// @nodoc
+
+
+class _Unsubscribe implements PetitionDetailEvent {
+  const _Unsubscribe({required this.petition});
+  
+
+ final  Petition petition;
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$UnsubscribeCopyWith<_Unsubscribe> get copyWith => __$UnsubscribeCopyWithImpl<_Unsubscribe>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Unsubscribe&&(identical(other.petition, petition) || other.petition == petition));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,petition);
+
+@override
+String toString() {
+  return 'PetitionDetailEvent.unsubscribe(petition: $petition)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$UnsubscribeCopyWith<$Res> implements $PetitionDetailEventCopyWith<$Res> {
+  factory _$UnsubscribeCopyWith(_Unsubscribe value, $Res Function(_Unsubscribe) _then) = __$UnsubscribeCopyWithImpl;
+@useResult
+$Res call({
+ Petition petition
+});
+
+
+$PetitionCopyWith<$Res> get petition;
+
+}
+/// @nodoc
+class __$UnsubscribeCopyWithImpl<$Res>
+    implements _$UnsubscribeCopyWith<$Res> {
+  __$UnsubscribeCopyWithImpl(this._self, this._then);
+
+  final _Unsubscribe _self;
+  final $Res Function(_Unsubscribe) _then;
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? petition = null,}) {
+  return _then(_Unsubscribe(
+petition: null == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
+as Petition,
+  ));
+}
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PetitionCopyWith<$Res> get petition {
+  
+  return $PetitionCopyWith<$Res>(_self.petition, (value) {
+    return _then(_self.copyWith(petition: value));
+  });
+}
 }
 
 // dart format on

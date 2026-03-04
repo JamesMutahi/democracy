@@ -182,11 +182,32 @@ class PetitionPopUpMenu extends StatelessWidget {
                     title: 'Close petition',
                     content:
                         'Are you sure you want to close this petition?'
-                        '\nYour petition  will no longer allow any supporters',
+                        '\nYour petition will no longer allow any supporters',
                     button1Text: 'Yes',
                     onButton1Pressed: () {
                       context.read<PetitionDetailBloc>().add(
-                        PetitionDetailEvent.close(petition: petition),
+                        PetitionDetailEvent.changeStatus(petition: petition),
+                      );
+                      Navigator.pop(context);
+                    },
+                    button2Text: 'No',
+                    onButton2Pressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                );
+              case 'Open':
+                showDialog(
+                  context: context,
+                  builder: (context) => CustomDialog(
+                    title: 'Open petition',
+                    content:
+                        'Are you sure you want to open this petition?'
+                        '\nPeople will be able to add and remove support',
+                    button1Text: 'Yes',
+                    onButton1Pressed: () {
+                      context.read<PetitionDetailBloc>().add(
+                        PetitionDetailEvent.changeStatus(petition: petition),
                       );
                       Navigator.pop(context);
                     },
@@ -198,7 +219,12 @@ class PetitionPopUpMenu extends StatelessWidget {
                 );
             }
           },
-          texts: ['Post', 'Share', if (user.id == petition.author.id) 'Close'],
+          texts: [
+            'Post',
+            'Share',
+            if (user.id == petition.author.id)
+              if (petition.isOpen) 'Close' else 'Open',
+          ],
         );
       },
     );
