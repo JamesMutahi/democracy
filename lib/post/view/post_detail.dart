@@ -1,3 +1,4 @@
+import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
@@ -82,6 +83,15 @@ class _PostDetailState extends State<PostDetail> {
       },
       child: MultiBlocListener(
         listeners: [
+          BlocListener<WebsocketBloc, WebsocketState>(
+            listener: (context, state) {
+              if (state.status == WebsocketStatus.connected) {
+                context.read<PostDetailBloc>().add(
+                  PostDetailEvent.get(post: widget.post),
+                );
+              }
+            },
+          ),
           BlocListener<PostDetailBloc, PostDetailState>(
             listener: (context, state) {
               switch (state) {

@@ -1,3 +1,4 @@
+import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
@@ -32,25 +33,38 @@ class _BallotDetailState extends State<BallotDetail> {
   @override
   Widget build(BuildContext context) {
     bool userHasVoted = _ballot.votedOption != null;
-    return BlocListener<BallotDetailBloc, BallotDetailState>(
-      listener: (context, state) {
-        if (state is BallotUpdated) {
-          if (_ballot.id == state.ballot.id) {
-            setState(() {
-              _ballot = state.ballot;
-            });
-          }
-        }
-        if (state is BallotDetailFailure) {
-          final snackBar = getSnackBar(
-            context: context,
-            message: state.error,
-            status: SnackBarStatus.failure,
-          );
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<WebsocketBloc, WebsocketState>(
+          listener: (context, state) {
+            if (state.status == WebsocketStatus.connected) {
+              context.read<BallotDetailBloc>().add(
+                BallotDetailEvent.retrieve(ballot: widget.ballot),
+              );
+            }
+          },
+        ),
+        BlocListener<BallotDetailBloc, BallotDetailState>(
+          listener: (context, state) {
+            if (state is BallotUpdated) {
+              if (_ballot.id == state.ballot.id) {
+                setState(() {
+                  _ballot = state.ballot;
+                });
+              }
+            }
+            if (state is BallotDetailFailure) {
+              final snackBar = getSnackBar(
+                context: context,
+                message: state.error,
+                status: SnackBarStatus.failure,
+              );
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+          },
+        ),
+      ],
       child: PopScope(
         canPop: true,
         onPopInvokedWithResult: (_, __) {

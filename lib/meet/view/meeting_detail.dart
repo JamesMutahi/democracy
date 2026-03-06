@@ -1,3 +1,4 @@
+import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/meet/bloc/meeting_detail/meeting_detail_bloc.dart';
 import 'package:democracy/meet/models/meeting.dart';
@@ -20,23 +21,36 @@ class _MeetingDetailState extends State<MeetingDetail> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<MeetingDetailBloc, MeetingDetailState>(
-      listener: (context, state) {
-        switch (state) {
-          case MeetingUpdated(:final meeting):
-            if (meeting.id == _meeting.id) {
-              setState(() {
-                _meeting = meeting;
-              });
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<WebsocketBloc, WebsocketState>(
+          listener: (context, state) {
+            if (state.status == WebsocketStatus.connected) {
+              context.read<MeetingDetailBloc>().add(
+                MeetingDetailEvent.join(meeting: widget.meeting),
+              );
             }
-          case MeetingDeleted(:final meetingId):
-            if (meetingId == _meeting.id) {
-              setState(() {
-                isDeleted = true;
-              });
+          },
+        ),
+        BlocListener<MeetingDetailBloc, MeetingDetailState>(
+          listener: (context, state) {
+            switch (state) {
+              case MeetingUpdated(:final meeting):
+                if (meeting.id == _meeting.id) {
+                  setState(() {
+                    _meeting = meeting;
+                  });
+                }
+              case MeetingDeleted(:final meetingId):
+                if (meetingId == _meeting.id) {
+                  setState(() {
+                    isDeleted = true;
+                  });
+                }
             }
-        }
-      },
+          },
+        ),
+      ],
       child: PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, result) {
@@ -45,23 +59,21 @@ class _MeetingDetailState extends State<MeetingDetail> {
           }
           showDialog(
             context: context,
-            builder:
-                (context) => ExitMeetingDialog(
-                  onYesPressed: () {
-                    context.read<MeetingDetailBloc>().add(
-                      MeetingDetailEvent.leave(meeting: _meeting),
-                    );
-                    Navigator.pop(context);
-                  },
-                ),
+            builder: (context) => ExitMeetingDialog(
+              onYesPressed: () {
+                context.read<MeetingDetailBloc>().add(
+                  MeetingDetailEvent.leave(meeting: _meeting),
+                );
+                Navigator.pop(context);
+              },
+            ),
           );
         },
         child: Scaffold(
           appBar: AppBar(title: Text('Meeting')),
-          body:
-              isDeleted || !_meeting.isActive
-                  ? Center(child: Text('This meeting has been closed'))
-                  : Center(child: ListenersRow(meeting: _meeting)),
+          body: isDeleted || !_meeting.isActive
+              ? Center(child: Text('This meeting has been closed'))
+              : Center(child: ListenersRow(meeting: _meeting)),
         ),
       ),
     );

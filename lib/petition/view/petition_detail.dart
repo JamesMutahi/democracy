@@ -1,3 +1,4 @@
+import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/custom_text.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
@@ -33,32 +34,45 @@ class _PetitionDetailState extends State<PetitionDetail> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<PetitionDetailBloc, PetitionDetailState>(
-      listener: (context, state) {
-        if (state is PetitionUpdated) {
-          if (_petition.id == state.petition.id) {
-            setState(() {
-              _petition = state.petition;
-            });
-          }
-        }
-        if (state is PetitionDeleted) {
-          if (_petition.id == state.petitionId) {
-            setState(() {
-              isDeleted = true;
-            });
-          }
-        }
-        if (state is PetitionDetailFailure) {
-          final snackBar = getSnackBar(
-            context: context,
-            message: state.error,
-            status: SnackBarStatus.failure,
-          );
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<WebsocketBloc, WebsocketState>(
+          listener: (context, state) {
+            if (state.status == WebsocketStatus.connected) {
+              context.read<PetitionDetailBloc>().add(
+                PetitionDetailEvent.retrieve(petition: widget.petition),
+              );
+            }
+          },
+        ),
+        BlocListener<PetitionDetailBloc, PetitionDetailState>(
+          listener: (context, state) {
+            if (state is PetitionUpdated) {
+              if (_petition.id == state.petition.id) {
+                setState(() {
+                  _petition = state.petition;
+                });
+              }
+            }
+            if (state is PetitionDeleted) {
+              if (_petition.id == state.petitionId) {
+                setState(() {
+                  isDeleted = true;
+                });
+              }
+            }
+            if (state is PetitionDetailFailure) {
+              final snackBar = getSnackBar(
+                context: context,
+                message: state.error,
+                status: SnackBarStatus.failure,
+              );
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+          },
+        ),
+      ],
       child: PopScope(
         canPop: true,
         onPopInvokedWithResult: (_, __) {
