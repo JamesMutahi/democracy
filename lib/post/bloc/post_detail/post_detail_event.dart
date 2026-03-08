@@ -18,6 +18,10 @@ sealed class PostDetailEvent with _$PostDetailEvent {
     required Map<String, dynamic> payload,
   }) = _Deleted;
 
+  const factory PostDetailEvent.repostDeleted({
+    required Map<String, dynamic> payload,
+  }) = _RepostDeleted;
+
   const factory PostDetailEvent.reported({
     required Map<String, dynamic> payload,
   }) = _Reported;
@@ -36,6 +40,10 @@ sealed class PostDetailEvent with _$PostDetailEvent {
   const factory PostDetailEvent.downvoted({
     required Map<String, dynamic> payload,
   }) = _Downvoted;
+
+  const factory PostDetailEvent.viewAdded({
+    required Map<String, dynamic> payload,
+  }) = _ViewAdded;
 
   const factory PostDetailEvent.create({
     required String body,
@@ -59,7 +67,7 @@ sealed class PostDetailEvent with _$PostDetailEvent {
     required List<Map> tags,
   }) = _Update;
 
-  const factory PostDetailEvent.viewed({required Post post}) = _Viewed;
+  const factory PostDetailEvent.addView({required Post post}) = _AddView;
 
   const factory PostDetailEvent.like({required Post post}) = _Like;
 

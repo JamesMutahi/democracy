@@ -56,7 +56,14 @@ class PostDetailState with _$PostDetailState {
     required int downvotes,
   }) = PostDownvoted;
 
+  const factory PostDetailState.viewed({required int postId}) = PostViewed;
+
   const factory PostDetailState.deleted({required int postId}) = PostDeleted;
+
+  const factory PostDetailState.repostDeleted({
+    required int postId,
+    required int repostId,
+  }) = RepostDeleted;
 
   const factory PostDetailState.reported() = PostReported;
 

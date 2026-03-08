@@ -55,9 +55,6 @@ _Post _$PostFromJson(Map<String, dynamic> json) => _Post(
   taggedUsers: (json['tagged_users'] as List<dynamic>)
       .map((e) => User.fromJson(e as Map<String, dynamic>))
       .toList(),
-  taggedSections: (json['tagged_sections'] as List<dynamic>)
-      .map((e) => Section.fromJson(e as Map<String, dynamic>))
-      .toList(),
   isUpvoted: json['is_upvoted'] as bool,
   isDownvoted: json['is_downvoted'] as bool,
   upvotes: (json['upvotes'] as num).toInt(),
@@ -103,7 +100,6 @@ Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
   'petition': instance.petition,
   'meeting': instance.meeting,
   'tagged_users': instance.taggedUsers,
-  'tagged_sections': instance.taggedSections,
   'is_upvoted': instance.isUpvoted,
   'is_downvoted': instance.isDownvoted,
   'upvotes': instance.upvotes,

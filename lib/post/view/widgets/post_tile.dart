@@ -64,7 +64,7 @@ class PostTile extends StatelessWidget {
           var visibilityPercentage = visibilityInfo.visibleFraction * 100;
           if (visibilityPercentage > 75 && !post.isViewed) {
             context.read<PostDetailBloc>().add(
-              PostDetailEvent.viewed(post: post),
+              PostDetailEvent.addView(post: post),
             );
           }
         },

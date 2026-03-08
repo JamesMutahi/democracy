@@ -5,6 +5,8 @@ import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class CustomBottomSheet extends StatelessWidget {
@@ -52,7 +54,10 @@ class CustomBottomSheet extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(title, style: Theme.of(context).textTheme.titleLarge),
+                      Text(
+                        title,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
                       IconButton(
                         onPressed: () => Navigator.pop(context),
                         icon: Icon(Symbols.close),
@@ -96,17 +101,53 @@ class ShareBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    late String object;
+    late int objectId;
+    if (post != null) {
+      object = 'post';
+      objectId = post!.id;
+    }
+    if (ballot != null) {
+      object = 'ballot';
+      objectId = ballot!.id;
+    }
+    if (survey != null) {
+      object = 'survey';
+      objectId = survey!.id;
+    }
+    if (meeting != null) {
+      object = 'meeting';
+      objectId = meeting!.id;
+    }
+    if (petition != null) {
+      object = 'petition';
+      objectId = petition!.id;
+    }
     return CustomBottomSheet(
-      title: post != null
-          ? 'Share post'
-          : ballot != null
-          ? 'Share ballot'
-          : survey != null
-          ? 'Share survey'
-          : meeting != null
-          ? 'Share meeting'
-          : 'Share',
+      title: 'Share $object',
       children: [
+        InkWell(
+          highlightColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          onTap: () async {
+            Navigator.pop(context);
+            String baseUrl = dotenv.env['BASE_URL']!;
+            String text = '$baseUrl$object/$objectId/';
+            await Clipboard.setData(ClipboardData(text: text));
+          },
+          child: Column(
+            children: [
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Icon(Icons.link_rounded),
+                ),
+              ),
+              Text('Copy link'),
+            ],
+          ),
+        ),
+        SizedBox(height: 10),
         CustomBottomSheetContainer(
           text: 'Send via Direct Message',
           iconData: Symbols.email_rounded,

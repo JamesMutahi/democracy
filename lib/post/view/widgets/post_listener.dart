@@ -25,6 +25,17 @@ class PostListener extends StatelessWidget {
         BlocListener<PostDetailBloc, PostDetailState>(
           listener: (context, state) {
             switch (state) {
+              case PostCreated(:final post):
+                // Update repost_of
+                if (post.repostOf != null) {
+                  if (posts.any((element) => element.id == post.repostOf!.id)) {
+                    int postIndex = posts.indexWhere(
+                      (element) => element.id == post.repostOf!.id,
+                    );
+                    posts[postIndex] = post.repostOf!;
+                    onPostsUpdated(posts);
+                  }
+                }
               case PostLoaded(:final post):
                 // Update posts
                 if (posts.any((element) => element.id == post.id)) {
@@ -198,12 +209,12 @@ class PostListener extends StatelessWidget {
                 }
                 // Update reposts
                 if (posts.any(
-                      (element) => element.repostOf?.id == state.postId,
+                  (element) => element.repostOf?.id == state.postId,
                 )) {
                   for (Post p
-                  in posts
-                      .where((e) => e.repostOf?.id == state.postId)
-                      .toList()) {
+                      in posts
+                          .where((e) => e.repostOf?.id == state.postId)
+                          .toList()) {
                     Post repost = p.repostOf!.copyWith(
                       isDownvoted: state.isDownvoted,
                       downvotes: state.downvotes,
@@ -216,6 +227,30 @@ class PostListener extends StatelessWidget {
                 // Remove post
                 if (posts.any((element) => element.id == postId)) {
                   posts.removeWhere((element) => element.id == postId);
+                  onPostsUpdated(posts);
+                }
+              case RepostDeleted(:final postId):
+                // Update post
+                if (posts.any((element) => element.id == postId)) {
+                  int postIndex = posts.indexWhere(
+                    (element) => element.id == state.postId,
+                  );
+                  posts[postIndex] = posts[postIndex].copyWith(
+                    isReposted: false,
+                    reposts: posts[postIndex].reposts - 1,
+                  );
+                }
+                // Remove repost
+                if (posts.any((element) => element.id == state.repostId)) {
+                  posts.removeWhere((element) => element.id == state.repostId);
+                }
+                onPostsUpdated(posts);
+              case PostViewed():
+                if (posts.any((element) => element.id == state.postId)) {
+                  int postIndex = posts.indexWhere(
+                    (element) => element.id == state.postId,
+                  );
+                  posts[postIndex] = posts[postIndex].copyWith(isViewed: true);
                   onPostsUpdated(posts);
                 }
             }

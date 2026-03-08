@@ -28,6 +28,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
             add(_Updated(payload: message['payload']));
           case 'delete':
             add(_Deleted(payload: message['payload']));
+          case 'delete_repost':
+            add(_RepostDeleted(payload: message['payload']));
           case 'like':
             add(_Liked(payload: message['payload']));
           case 'bookmark':
@@ -36,6 +38,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
             add(_Upvoted(payload: message['payload']));
           case 'downvote':
             add(_Downvoted(payload: message['payload']));
+          case 'add_view':
+            add(_ViewAdded(payload: message['payload']));
           case 'report':
             add(_Reported(payload: message['payload']));
         }
@@ -53,6 +57,9 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     on<_Deleted>((event, emit) {
       _onDeleted(event, emit);
     });
+    on<_RepostDeleted>((event, emit) {
+      _onRepostDeleted(event, emit);
+    });
     on<_Reported>((event, emit) {
       _onReported(event, emit);
     });
@@ -65,8 +72,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     on<_Update>((event, emit) {
       _onUpdate(event, emit);
     });
-    on<_Viewed>((event, emit) {
-      _onViewed(event, emit);
+    on<_AddView>((event, emit) {
+      _onAddView(event, emit);
     });
     on<_Like>((event, emit) {
       _onLike(event, emit);
@@ -97,6 +104,9 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     });
     on<_Downvoted>((event, emit) {
       _onDownvoted(event, emit);
+    });
+    on<_ViewAdded>((event, emit) {
+      _onViewAdded(event, emit);
     });
     on<_Report>((event, emit) {
       _onReport(event, emit);
@@ -159,7 +169,24 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   Future _onDeleted(_Deleted event, Emitter<PostDetailState> emit) async {
     emit(PostDetailLoading());
     if (event.payload['response_status'] == 204) {
-      emit(PostDeleted(postId: event.payload['pk']));
+      emit(PostDeleted(postId: event.payload['data']['pk']));
+    } else {
+      emit(PostDetailFailure(error: event.payload['errors'].toString()));
+    }
+  }
+
+  Future _onRepostDeleted(
+    _RepostDeleted event,
+    Emitter<PostDetailState> emit,
+  ) async {
+    emit(PostDetailLoading());
+    if (event.payload['response_status'] == 204) {
+      emit(
+        RepostDeleted(
+          postId: event.payload['data']['pk'],
+          repostId: event.payload['data']['repost'],
+        ),
+      );
     } else {
       emit(PostDetailFailure(error: event.payload['errors'].toString()));
     }
@@ -216,6 +243,14 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           downvotes: event.payload['data']['downvotes'],
         ),
       );
+    } else {
+      emit(PostDetailFailure(error: event.payload['errors'].toString()));
+    }
+  }
+
+  Future _onViewAdded(_ViewAdded event, Emitter<PostDetailState> emit) async {
+    if (event.payload['response_status'] == 200) {
+      emit(PostViewed(postId: event.payload['data']['pk']));
     } else {
       emit(PostDetailFailure(error: event.payload['errors'].toString()));
     }
@@ -286,7 +321,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     webSocketService.send(message);
   }
 
-  Future _onViewed(_Viewed event, Emitter<PostDetailState> emit) async {
+  Future _onAddView(_AddView event, Emitter<PostDetailState> emit) async {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

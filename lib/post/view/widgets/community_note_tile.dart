@@ -55,7 +55,7 @@ class CommunityNoteTile extends StatelessWidget {
           var visibilityPercentage = visibilityInfo.visibleFraction * 100;
           if (visibilityPercentage > 75 && !communityNote.isViewed) {
             context.read<PostDetailBloc>().add(
-              PostDetailEvent.viewed(post: communityNote),
+              PostDetailEvent.addView(post: communityNote),
             );
           }
         },
