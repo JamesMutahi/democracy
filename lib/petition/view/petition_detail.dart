@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/custom_text.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
@@ -96,7 +97,7 @@ class _PetitionDetailState extends State<PetitionDetail> {
                       height: MediaQuery.of(context).size.height / 4,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: NetworkImage(_petition.image),
+                          image: CachedNetworkImageProvider(_petition.image),
                           fit: BoxFit.cover,
                         ),
                       ),

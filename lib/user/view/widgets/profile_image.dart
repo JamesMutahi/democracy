@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/profile.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class ProfileImage extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: NetworkImage(user.image),
+              image: CachedNetworkImageProvider(user.image),
               fit: BoxFit.cover,
             ),
             borderRadius: BorderRadius.circular(100),

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/utils/media_tools.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
@@ -54,32 +55,31 @@ class _EditProfileState extends State<EditProfile> {
               OutlinedButton(
                 onPressed:
                     (image == null &&
-                            coverPhoto == null &&
-                            name == widget.user.name &&
+                        coverPhoto == null &&
+                        name == widget.user.name &&
                         bio == widget.user.bio)
-                        ? null
-                        : () {
-                          showDialog(
-                            context: context,
-                            builder:
-                                (context) => _SaveDialog(
-                                  onYesPressed: () {
-                                    setState(() {
-                                      waiting = true;
-                                    });
-                                    context.read<UserDetailBloc>().add(
-                                      UserDetailEvent.update(
-                                        user: widget.user,
-                                        name: name,
-                                        bio: bio,
-                                        imagePath: image?.path,
-                                        coverPhotoPath: coverPhoto?.path,
-                                      ),
-                                    );
-                                  },
+                    ? null
+                    : () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => _SaveDialog(
+                            onYesPressed: () {
+                              setState(() {
+                                waiting = true;
+                              });
+                              context.read<UserDetailBloc>().add(
+                                UserDetailEvent.update(
+                                  user: widget.user,
+                                  name: name,
+                                  bio: bio,
+                                  imagePath: image?.path,
+                                  coverPhotoPath: coverPhoto?.path,
                                 ),
-                          );
-                        },
+                              );
+                            },
+                          ),
+                        );
+                      },
                 child: Text('Save'),
               ),
             ],
@@ -121,10 +121,11 @@ class _EditProfileState extends State<EditProfile> {
                         height: coverPhotoHeight,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image:
-                                coverPhoto == null
-                                    ? NetworkImage(widget.user.coverPhoto)
-                                    : FileImage(coverPhoto!),
+                            image: coverPhoto == null
+                                ? CachedNetworkImageProvider(
+                                    widget.user.coverPhoto,
+                                  )
+                                : FileImage(coverPhoto!),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -211,10 +212,9 @@ class _EditProfileState extends State<EditProfile> {
                         Container(
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                              image:
-                                  image == null
-                                      ? NetworkImage(widget.user.image)
-                                      : FileImage(image!),
+                              image: image == null
+                                  ? NetworkImage(widget.user.image)
+                                  : FileImage(image!),
                               fit: BoxFit.cover,
                             ),
                             borderRadius: BorderRadius.circular(100),

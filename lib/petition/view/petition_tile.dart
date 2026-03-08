@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/app/utils/custom_bottom_sheet.dart';
 import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/utils/more_pop_up.dart';
@@ -49,7 +50,7 @@ class PetitionTile extends StatelessWidget {
                 topRight: Radius.circular(10),
               ),
               image: DecorationImage(
-                image: NetworkImage(petition.image),
+                image: CachedNetworkImageProvider(petition.image),
                 fit: BoxFit.cover,
               ),
             ),

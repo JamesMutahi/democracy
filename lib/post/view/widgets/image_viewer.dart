@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -236,7 +237,7 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
             heroAttributes: PhotoViewHeroAttributes(tag: item.id),
           )
         : PhotoViewGalleryPageOptions(
-            imageProvider: NetworkImage(item.resource),
+            imageProvider: CachedNetworkImageProvider(item.resource),
             initialScale: PhotoViewComputedScale.contained,
             minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
             maxScale: PhotoViewComputedScale.covered * 4.1,
@@ -272,7 +273,13 @@ class GalleryExampleItemThumbnail extends StatelessWidget {
         onTap: onTap,
         child: Hero(
           tag: galleryExampleItem.id,
-          child: Image.network(galleryExampleItem.resource, height: 80.0),
+          child: CachedNetworkImage(
+            imageUrl: galleryExampleItem.resource,
+            progressIndicatorBuilder: (context, url, downloadProgress) =>
+                CircularProgressIndicator(value: downloadProgress.progress),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+            height: 80.0,
+          ),
         ),
       ),
     );
