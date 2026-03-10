@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/utils/media_tools.dart';
+import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/meet/models/meeting.dart';
@@ -58,6 +59,18 @@ class _PostCreateState extends State<PostCreate> {
       context.read<ReplyToBloc>().add(ReplyToEvent.get(post: widget.post!));
     }
     super.initState();
+  }
+
+  bool isValidPost(String text) {
+    final textWithoutLink = text.replaceAll(
+      RegExp(
+        r"(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?",
+      ),
+      "",
+    );
+    String textWithoutSpaces = textWithoutLink.replaceAll(RegExp(r'\s+'), '');
+    // If the remaining text is empty, it was only a link
+    return textWithoutSpaces.isNotEmpty;
   }
 
   void _createPost({PostStatus status = PostStatus.published}) {
@@ -143,11 +156,24 @@ class _PostCreateState extends State<PostCreate> {
                 onPressed: _disablePostButton
                     ? null
                     : () {
-                        showDialog(
-                          context: context,
-                          builder: (context) =>
-                              PostCreateDialog(onYesPressed: _createPost),
+                        bool hasContent = isValidPost(
+                          _controller.formattedText,
                         );
+                        if (hasContent) {
+                          showDialog(
+                            context: context,
+                            builder: (context) =>
+                                PostCreateDialog(onYesPressed: _createPost),
+                          );
+                        } else {
+                          final snackBar = getSnackBar(
+                            context: context,
+                            message:
+                                'Add context. Unable to post links without context',
+                            status: SnackBarStatus.failure,
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        }
                       },
                 child: Text(widget.isReply ? 'Reply' : 'Post'),
               ),

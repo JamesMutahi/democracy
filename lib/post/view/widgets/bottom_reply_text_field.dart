@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:democracy/app/utils/bottom_text_form_field.dart';
+import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/app/utils/tagging.dart';
 import 'package:democracy/constitution/bloc/sections/sections_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
@@ -166,6 +167,9 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
             },
             hintText: 'Reply',
             prefixIcon: null,
+            onNewImage: (image) {
+              //   TODO:
+            },
             onSend: _disableSendButton ? null : _createPost,
           );
         },
@@ -173,28 +177,50 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
     );
   }
 
-  void _createPost() {
-    List<Map> tags = [];
-    for (var tag in _controller.tags) {
-      tags.add({'id': tag.id, 'text': tag.text});
-    }
-    context.read<PostDetailBloc>().add(
-      PostDetailEvent.create(
-        body: _controller.formattedText,
-        status: PostStatus.published,
-        replyTo: widget.post,
-        repostOf: null,
-        communityNoteOf: null,
-        ballot: null,
-        survey: null,
-        petition: null,
-        meeting: null,
-        tags: tags,
+  bool isValidPost(String text) {
+    final textWithoutLink = text.replaceAll(
+      RegExp(
+        r"(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?",
       ),
+      "",
     );
-    _controller.clear();
-    setState(() {
-      _disableSendButton = true;
-    });
+    String textWithoutSpaces = textWithoutLink.replaceAll(RegExp(r'\s+'), '');
+    // If the remaining text is empty, it was only a link
+    return textWithoutSpaces.isNotEmpty;
+  }
+
+  void _createPost() {
+    bool hasContent = isValidPost(_controller.formattedText);
+    if (hasContent) {
+      List<Map> tags = [];
+      for (var tag in _controller.tags) {
+        tags.add({'id': tag.id, 'text': tag.text});
+      }
+      context.read<PostDetailBloc>().add(
+        PostDetailEvent.create(
+          body: _controller.formattedText,
+          status: PostStatus.published,
+          replyTo: widget.post,
+          repostOf: null,
+          communityNoteOf: null,
+          ballot: null,
+          survey: null,
+          petition: null,
+          meeting: null,
+          tags: tags,
+        ),
+      );
+      _controller.clear();
+      setState(() {
+        _disableSendButton = true;
+      });
+    } else {
+      final snackBar = getSnackBar(
+        context: context,
+        message: 'Add context. Unable to post links without context.',
+        status: SnackBarStatus.failure,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 }

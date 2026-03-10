@@ -24,16 +24,27 @@ class PostListener extends StatelessWidget {
       listeners: [
         BlocListener<PostDetailBloc, PostDetailState>(
           listener: (context, state) {
+            bool updatePosts = false;
             switch (state) {
               case PostCreated(:final post):
-                // Update repost_of
+                // Update repostOf
                 if (post.repostOf != null) {
                   if (posts.any((element) => element.id == post.repostOf!.id)) {
                     int postIndex = posts.indexWhere(
                       (element) => element.id == post.repostOf!.id,
                     );
                     posts[postIndex] = post.repostOf!;
-                    onPostsUpdated(posts);
+                    updatePosts = true;
+                  }
+                }
+                // Update replyTo
+                if (post.replyTo != null) {
+                  if (posts.any((element) => element.id == post.replyTo!.id)) {
+                    int postIndex = posts.indexWhere(
+                      (element) => element.id == post.replyTo!.id,
+                    );
+                    posts[postIndex] = post.replyTo!;
+                    updatePosts = true;
                   }
                 }
               case PostLoaded(:final post):
@@ -43,7 +54,7 @@ class PostListener extends StatelessWidget {
                     (element) => element.id == state.post.id,
                   );
                   posts[postIndex] = post;
-                  onPostsUpdated(posts);
+                  updatePosts = true;
                 }
                 // Update reposts
                 List<Post> reposts = posts
@@ -53,7 +64,7 @@ class PostListener extends StatelessWidget {
                   for (Post p in reposts) {
                     posts[posts.indexOf(p)] = p.copyWith(repostOf: post);
                   }
-                  onPostsUpdated(posts);
+                  updatePosts = true;
                 }
               case PostUpdated():
                 // Update posts
@@ -81,7 +92,7 @@ class PostListener extends StatelessWidget {
                     isDeleted: state.isDeleted,
                     isActive: state.isActive,
                   );
-                  onPostsUpdated(posts);
+                  updatePosts = true;
                 }
                 // Update reposts
                 if (posts.any(
@@ -113,7 +124,7 @@ class PostListener extends StatelessWidget {
                     );
                     posts[posts.indexOf(p)] = p.copyWith(repostOf: repost);
                   }
-                  onPostsUpdated(posts);
+                  updatePosts = true;
                 }
               case PostLiked():
                 if (posts.any((element) => element.id == state.postId)) {
@@ -124,7 +135,7 @@ class PostListener extends StatelessWidget {
                     likes: state.likes,
                     isLiked: state.isLiked,
                   );
-                  onPostsUpdated(posts);
+                  updatePosts = true;
                 }
                 // Update reposts
                 if (posts.any(
@@ -140,7 +151,7 @@ class PostListener extends StatelessWidget {
                     );
                     posts[posts.indexOf(p)] = p.copyWith(repostOf: repost);
                   }
-                  onPostsUpdated(posts);
+                  updatePosts = true;
                 }
               case PostBookmarked():
                 if (posts.any((element) => element.id == state.postId)) {
@@ -151,7 +162,7 @@ class PostListener extends StatelessWidget {
                     bookmarks: state.bookmarks,
                     isBookmarked: state.isBookmarked,
                   );
-                  onPostsUpdated(posts);
+                  updatePosts = true;
                 }
                 // Update reposts
                 if (posts.any(
@@ -167,7 +178,7 @@ class PostListener extends StatelessWidget {
                     );
                     posts[posts.indexOf(p)] = p.copyWith(repostOf: repost);
                   }
-                  onPostsUpdated(posts);
+                  updatePosts = true;
                 }
               case PostUpvoted():
                 if (posts.any((element) => element.id == state.postId)) {
@@ -178,7 +189,7 @@ class PostListener extends StatelessWidget {
                     isUpvoted: state.isUpvoted,
                     upvotes: state.upvotes,
                   );
-                  onPostsUpdated(posts);
+                  updatePosts = true;
                 }
                 // Update reposts
                 if (posts.any(
@@ -194,7 +205,7 @@ class PostListener extends StatelessWidget {
                     );
                     posts[posts.indexOf(p)] = p.copyWith(repostOf: repost);
                   }
-                  onPostsUpdated(posts);
+                  updatePosts = true;
                 }
               case PostDownvoted():
                 if (posts.any((element) => element.id == state.postId)) {
@@ -205,7 +216,7 @@ class PostListener extends StatelessWidget {
                     isDownvoted: state.isDownvoted,
                     downvotes: state.downvotes,
                   );
-                  onPostsUpdated(posts);
+                  updatePosts = true;
                 }
                 // Update reposts
                 if (posts.any(
@@ -221,13 +232,32 @@ class PostListener extends StatelessWidget {
                     );
                     posts[posts.indexOf(p)] = p.copyWith(repostOf: repost);
                   }
-                  onPostsUpdated(posts);
+                  updatePosts = true;
+                }
+              case PostViewed():
+                if (posts.any((element) => element.id == state.postId)) {
+                  int postIndex = posts.indexWhere(
+                    (element) => element.id == state.postId,
+                  );
+                  posts[postIndex] = posts[postIndex].copyWith(isViewed: true);
+                  updatePosts = true;
                 }
               case PostDeleted(:final postId):
                 // Remove post
                 if (posts.any((element) => element.id == postId)) {
                   posts.removeWhere((element) => element.id == postId);
-                  onPostsUpdated(posts);
+                  updatePosts = true;
+                }
+                // Update repostOf
+                if (posts.any((element) => element.repostOf!.id == postId)) {
+                  for (Post p
+                      in posts
+                          .where((e) => e.repostOf?.id == postId)
+                          .toList()) {
+                    Post repost = p.repostOf!.copyWith(isDeleted: true);
+                    posts[posts.indexOf(p)] = p.copyWith(repostOf: repost);
+                  }
+                  updatePosts = true;
                 }
               case RepostDeleted(:final postId):
                 // Update post
@@ -237,22 +267,17 @@ class PostListener extends StatelessWidget {
                   );
                   posts[postIndex] = posts[postIndex].copyWith(
                     isReposted: false,
-                    reposts: posts[postIndex].reposts - 1,
+                    reposts: state.reposts,
                   );
                 }
                 // Remove repost
                 if (posts.any((element) => element.id == state.repostId)) {
                   posts.removeWhere((element) => element.id == state.repostId);
                 }
-                onPostsUpdated(posts);
-              case PostViewed():
-                if (posts.any((element) => element.id == state.postId)) {
-                  int postIndex = posts.indexWhere(
-                    (element) => element.id == state.postId,
-                  );
-                  posts[postIndex] = posts[postIndex].copyWith(isViewed: true);
-                  onPostsUpdated(posts);
-                }
+                updatePosts = true;
+            }
+            if (updatePosts) {
+              onPostsUpdated(posts);
             }
           },
         ),

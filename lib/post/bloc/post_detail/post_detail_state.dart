@@ -63,6 +63,7 @@ class PostDetailState with _$PostDetailState {
   const factory PostDetailState.repostDeleted({
     required int postId,
     required int repostId,
+    required int reposts,
   }) = RepostDeleted;
 
   const factory PostDetailState.reported() = PostReported;

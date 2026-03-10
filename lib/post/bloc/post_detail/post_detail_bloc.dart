@@ -184,7 +184,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       emit(
         RepostDeleted(
           postId: event.payload['data']['pk'],
-          repostId: event.payload['data']['repost'],
+          repostId: event.payload['data']['repost_pk'],
+          reposts: event.payload['data']['reposts'],
         ),
       );
     } else {
