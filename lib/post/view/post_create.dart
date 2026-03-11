@@ -64,7 +64,7 @@ class _PostCreateState extends State<PostCreate> {
   bool isValidPost(String text) {
     final textWithoutLink = text.replaceAll(
       RegExp(
-        r"(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?",
+        r"(http|ftp|https)://([\w_-]+(?:\.[\w_-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?",
       ),
       "",
     );
@@ -299,7 +299,7 @@ class _PostCreateState extends State<PostCreate> {
           bottomNavigationBar: PostBottomNavBar(
             controller: _controller,
             onPickMedia: () async {
-              List<File> newFiles = await ImagePickerUtil.pickMedia(
+              List<File> newFiles = await ImagePickerUtil.pickMultiImage(
                 limit: files.isEmpty ? fileLimit : fileLimit - files.length,
               );
               if (newFiles.isNotEmpty) {

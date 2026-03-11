@@ -48,7 +48,7 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
       Preferences preferences = Preferences.fromJson(event.payload['data']);
       emit(PreferencesLoaded(preferences: preferences));
     } else {
-      emit(PreferencesFailure(error: event.payload['errors'][0]));
+      emit(PreferencesFailure(error: event.payload['errors'].toString()));
     }
   }
 

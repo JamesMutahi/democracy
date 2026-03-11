@@ -167,7 +167,7 @@ class PetitionDetailBloc
     if (event.payload['response_status'] == 200) {
       //
     } else {
-      emit(PetitionDetailFailure(error: event.payload['errors'][0]));
+      emit(PetitionDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 

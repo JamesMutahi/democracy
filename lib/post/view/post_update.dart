@@ -182,7 +182,7 @@ class _PostUpdateState extends State<PostUpdate> {
           bottomNavigationBar: PostBottomNavBar(
             controller: _controller,
             onPickMedia: () async {
-              List<File> newFiles = await ImagePickerUtil.pickMedia(
+              List<File> newFiles = await ImagePickerUtil.pickMultiImage(
                 limit: files.isEmpty ? fileLimit : fileLimit - files.length,
               );
               if (newFiles.isNotEmpty) {

@@ -55,7 +55,7 @@ class SectionDetailBloc extends Bloc<SectionDetailEvent, SectionDetailState> {
       Section section = Section.fromJson(event.payload['data']);
       emit(SectionLoaded(section: section));
     } else {
-      emit(SectionDetailFailure(error: event.payload['errors'][0]));
+      emit(SectionDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -80,7 +80,7 @@ class SectionDetailBloc extends Bloc<SectionDetailEvent, SectionDetailState> {
       Section section = Section.fromJson(event.payload['data']);
       emit(SectionBookmarked(section: section));
     } else {
-      emit(SectionDetailFailure(error: event.payload['errors'][0]));
+      emit(SectionDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 

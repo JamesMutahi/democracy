@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -7,9 +8,10 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 class ImageViewer extends StatefulWidget {
-  const ImageViewer({super.key, required this.post});
+  const ImageViewer({super.key, this.post, this.message});
 
-  final Post post;
+  final Post? post;
+  final Message? message;
 
   @override
   State<ImageViewer> createState() => _ImageViewerState();
@@ -21,18 +23,36 @@ class _ImageViewerState extends State<ImageViewer> {
   @override
   Widget build(BuildContext context) {
     List<String> images = [];
-    if (widget.post.image1Url != null) {
-      images.add(widget.post.image1Url!);
+    if (widget.post != null) {
+      if (widget.post!.image1Url != null) {
+        images.add(widget.post!.image1Url!);
+      }
+      if (widget.post!.image2Url != null) {
+        images.add(widget.post!.image2Url!);
+      }
+      if (widget.post!.image3Url != null) {
+        images.add(widget.post!.image3Url!);
+      }
+      if (widget.post!.image4Url != null) {
+        images.add(widget.post!.image4Url!);
+      }
     }
-    if (widget.post.image2Url != null) {
-      images.add(widget.post.image2Url!);
+
+    if (widget.message != null) {
+      if (widget.message!.image1Url != null) {
+        images.add(widget.message!.image1Url!);
+      }
+      if (widget.message!.image2Url != null) {
+        images.add(widget.message!.image2Url!);
+      }
+      if (widget.message!.image3Url != null) {
+        images.add(widget.message!.image3Url!);
+      }
+      if (widget.message!.image4Url != null) {
+        images.add(widget.message!.image4Url!);
+      }
     }
-    if (widget.post.image3Url != null) {
-      images.add(widget.post.image3Url!);
-    }
-    if (widget.post.image4Url != null) {
-      images.add(widget.post.image4Url!);
-    }
+
     List<GalleryItem> galleryItems = List.generate(
       images.length,
       (index) => GalleryItem(id: index.toString(), resource: images[index]),

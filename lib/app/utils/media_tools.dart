@@ -25,8 +25,8 @@ class ImagePickerUtil {
     return null;
   }
 
-  static Future<List<File>> pickMedia({required int limit}) async {
-    final pickedFiles = await _picker.pickMultipleMedia(
+  static Future<List<File>> pickMultiImage({required int limit}) async {
+    final pickedFiles = await _picker.pickMultiImage(
       imageQuality: 100,
       limit: limit,
     );
@@ -49,90 +49,28 @@ class MediaDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+    return AlertDialog(
+      title: Text('Take from:'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          GestureDetector(
+          ListTile(
             onTap: () {
               Navigator.pop(context);
               onCameraPressed();
             },
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.horizontal(
-                  left: Radius.circular(10),
-                ),
-                color: Theme.of(context).colorScheme.secondaryContainer,
-              ),
-              padding: const EdgeInsets.all(30),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.camera_alt_rounded,
-                    color: Theme.of(context).colorScheme.tertiaryContainer,
-                  ),
-                  const SizedBox(width: 5),
-                  Text('Camera', style: Theme.of(context).textTheme.bodyMedium),
-                ],
-              ),
-            ),
+            leading: Icon(Icons.photo_camera_outlined, size: 30),
+            title: Text('Camera'),
           ),
-          GestureDetector(
+          ListTile(
             onTap: () {
               Navigator.pop(context);
               onGalleryPressed();
             },
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.horizontal(
-                  right: Radius.circular(10),
-                ),
-                color: Theme.of(context).colorScheme.tertiaryContainer,
-              ),
-              padding: const EdgeInsets.all(30),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.image,
-                    color: Theme.of(context).colorScheme.secondaryContainer,
-                  ),
-                  const SizedBox(width: 5),
-                  Text(
-                    'Gallery',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ],
-              ),
-            ),
+            leading: Icon(Icons.photo_library_outlined, size: 30),
+            title: Text('Gallery'),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class Thumbnail extends StatelessWidget {
-  const Thumbnail({super.key, required this.thumbnail});
-
-  final File thumbnail;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 100,
-      width: 100,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-      padding: const EdgeInsets.only(right: 10, bottom: 10),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: Image.file(
-          thumbnail,
-          height: 150,
-          width: 150,
-          fit: BoxFit.cover,
-        ),
       ),
     );
   }

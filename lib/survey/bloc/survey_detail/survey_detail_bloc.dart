@@ -44,7 +44,7 @@ class SurveyDetailBloc extends Bloc<SurveyDetailEvent, SurveyDetailState> {
       Survey survey = Survey.fromJson(event.payload['data']);
       emit(SurveyCreated(survey: survey));
     } else {
-      emit(SurveyDetailFailure(error: event.payload['errors'][0]));
+      emit(SurveyDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -54,7 +54,7 @@ class SurveyDetailBloc extends Bloc<SurveyDetailEvent, SurveyDetailState> {
       final Survey survey = Survey.fromJson(event.payload['data']);
       emit(SurveyUpdated(survey: survey));
     } else {
-      emit(SurveyDetailFailure(error: event.payload['errors'][0]));
+      emit(SurveyDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -63,7 +63,7 @@ class SurveyDetailBloc extends Bloc<SurveyDetailEvent, SurveyDetailState> {
     if (event.payload['response_status'] == 204) {
       emit(SurveyDeleted(surveyId: event.payload['pk']));
     } else {
-      emit(SurveyDetailFailure(error: event.payload['errors'][0]));
+      emit(SurveyDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 

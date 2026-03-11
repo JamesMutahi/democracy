@@ -167,7 +167,17 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
             },
             hintText: 'Reply',
             prefixIcon: null,
-            onNewImage: (image) {
+            onNewImages: (images) {
+              //   TODO:
+            },
+            selectedImages: [
+              //   TODO:
+            ],
+            onNewFile: (file) {
+              //   TODO:
+            },
+            selectedFile: null, //   TODO:
+            onContentInsertion: (data) {
               //   TODO:
             },
             onSend: _disableSendButton ? null : _createPost,
@@ -180,7 +190,7 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
   bool isValidPost(String text) {
     final textWithoutLink = text.replaceAll(
       RegExp(
-        r"(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?",
+        r"(http|ftp|https)://([\w_-]+(?:\.[\w_-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?",
       ),
       "",
     );

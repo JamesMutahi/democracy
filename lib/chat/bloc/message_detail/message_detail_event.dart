@@ -22,6 +22,12 @@ sealed class MessageDetailEvent with _$MessageDetailEvent {
     Survey? survey,
     Petition? petition,
     Meeting? meeting,
+    String? imagePath1,
+    String? imagePath2,
+    String? imagePath3,
+    String? imagePath4,
+    String? filePath,
+    String? location,
   }) = _Create;
 
   const factory MessageDetailEvent.edit({

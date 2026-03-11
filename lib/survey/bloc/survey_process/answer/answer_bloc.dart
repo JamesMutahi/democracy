@@ -184,7 +184,7 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
       emit(
         state.copyWith(
           status: AnswerStatus.submissionFailure,
-          submissionError: event.payload['errors'][0],
+          submissionError: event.payload['errors'].toString(),
         ),
       );
     }

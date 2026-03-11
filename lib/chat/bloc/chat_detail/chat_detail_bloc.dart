@@ -73,7 +73,7 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
       final Chat chat = Chat.fromJson(event.payload['data']);
       emit(ChatCreated(chat: chat, userId: event.payload['request_id']));
     } else {
-      emit(ChatDetailFailure(error: event.payload['errors'][0]));
+      emit(ChatDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -83,7 +83,7 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
       final Chat chat = Chat.fromJson(event.payload['data']);
       emit(ChatLoaded(chat: chat));
     } else {
-      emit(ChatDetailFailure(error: event.payload['errors'][0]));
+      emit(ChatDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -93,7 +93,7 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
       final Chat chat = Chat.fromJson(event.payload['data']);
       emit(ChatUpdated(chat: chat));
     } else {
-      emit(ChatDetailFailure(error: event.payload['errors'][0]));
+      emit(ChatDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -102,7 +102,7 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
     if (event.payload['response_status'] == 204) {
       emit(ChatDeleted(chatId: event.payload['pk']));
     } else {
-      emit(ChatDetailFailure(error: event.payload['errors'][0]));
+      emit(ChatDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -117,7 +117,7 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
       );
       emit(DirectMessageSent(chats: chats));
     } else {
-      emit(ChatDetailFailure(error: event.payload['errors']));
+      emit(ChatDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 

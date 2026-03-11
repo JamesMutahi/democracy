@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/ballot/models/ballot.dart';
@@ -23,10 +26,8 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
       if (message['stream'] == stream) {
         switch (message['payload']['action']) {
           case 'create':
-            print('____________________MESSAGE CREATED: ${message['payload']}');
             add(_Created(payload: message['payload']));
           case 'update':
-            print('____________________MESSAGE UPDATED: ${message['payload']}');
             add(_Updated(payload: message['payload']));
           case 'delete':
             add(_Deleted(payload: message['payload']));
@@ -59,7 +60,7 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
       Message message = Message.fromJson(event.payload['data']);
       emit(MessageCreated(message: message));
     } else {
-      emit(MessageDetailFailure(error: event.payload['errors'][0]));
+      emit(MessageDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -69,7 +70,7 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
       Message message = Message.fromJson(event.payload['data']);
       emit(MessageUpdated(message: message));
     } else {
-      emit(MessageDetailFailure(error: event.payload['errors'][0]));
+      emit(MessageDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -78,7 +79,7 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
     if (event.payload['response_status'] == 204) {
       emit(MessageDeleted(messageId: event.payload['pk']));
     } else {
-      emit(MessageDetailFailure(error: event.payload['errors'][0]));
+      emit(MessageDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -96,6 +97,24 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
           'survey_id': event.survey?.id,
           'petition_id': event.petition?.id,
           'meeting_id': event.meeting?.id,
+          if (event.imagePath1 != null)
+            'image1_base64': base64Encode(
+              File(event.imagePath1!).readAsBytesSync(),
+            ),
+          if (event.imagePath2 != null)
+            'image2_base64': base64Encode(
+              File(event.imagePath2!).readAsBytesSync(),
+            ),
+          if (event.imagePath3 != null)
+            'image3_base64': base64Encode(
+              File(event.imagePath3!).readAsBytesSync(),
+            ),
+          if (event.imagePath4 != null)
+            'image4_base64': base64Encode(
+              File(event.imagePath4!).readAsBytesSync(),
+            ),
+          'file': event.filePath,
+          'location': event.location,
         },
       },
     };

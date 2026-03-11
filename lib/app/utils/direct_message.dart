@@ -154,10 +154,9 @@ class _DirectMessageState extends State<DirectMessage> {
                         );
                       }),
                     SizedBox(
-                      width:
-                          selectedUsers.length < 2
-                              ? MediaQuery.of(context).size.width
-                              : 200,
+                      width: selectedUsers.length < 2
+                          ? MediaQuery.of(context).size.width
+                          : 200,
                       child: TextFormField(
                         onChanged: (value) {
                           context.read<UsersBloc>().add(
@@ -167,17 +166,15 @@ class _DirectMessageState extends State<DirectMessage> {
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Theme.of(context).scaffoldBackgroundColor,
-                          hintText:
-                              selectedUsers.isEmpty
-                                  ? 'Search for people'
-                                  : null,
+                          hintText: selectedUsers.isEmpty
+                              ? 'Search for people'
+                              : null,
                           hintStyle: TextStyle(
                             color: Theme.of(context).hintColor,
                           ),
-                          prefixIcon:
-                              selectedUsers.isEmpty
-                                  ? Icon(Symbols.search_rounded)
-                                  : null,
+                          prefixIcon: selectedUsers.isEmpty
+                              ? Icon(Symbols.search_rounded)
+                              : null,
                           prefixIconConstraints: const BoxConstraints(
                             minWidth: 0,
                             minHeight: 0,
@@ -233,22 +230,34 @@ class _DirectMessageState extends State<DirectMessage> {
           onChanged: (value) {},
           hintText: 'Add a comment',
           prefixIcon: null,
-          onSend:
-              selectedUsers.isEmpty
-                  ? null
-                  : () {
-                    context.read<ChatDetailBloc>().add(
-                      ChatDetailEvent.sendDirectMessage(
-                        users: selectedUsers,
-                        text: controller.text,
-                        post: widget.post,
-                        ballot: widget.ballot,
-                        survey: widget.survey,
-                        petition: widget.petition,
-                        meeting: widget.meeting,
-                      ),
-                    );
-                  },
+          onNewImages: (images) {
+            //   TODO:
+          },
+          selectedImages: [
+            //   TODO:
+          ],
+          onNewFile: (file) {
+            //   TODO:
+          },
+          selectedFile: null, //   TODO:
+          onContentInsertion: (data) {
+            //   TODO:
+          },
+          onSend: selectedUsers.isEmpty
+              ? null
+              : () {
+                  context.read<ChatDetailBloc>().add(
+                    ChatDetailEvent.sendDirectMessage(
+                      users: selectedUsers,
+                      text: controller.text,
+                      post: widget.post,
+                      ballot: widget.ballot,
+                      survey: widget.survey,
+                      petition: widget.petition,
+                      meeting: widget.meeting,
+                    ),
+                  );
+                },
         ),
       ),
     );

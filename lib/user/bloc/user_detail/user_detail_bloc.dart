@@ -57,7 +57,7 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
       User user = User.fromJson(event.payload['data']);
       emit(UserLoaded(user: user));
     } else {
-      emit(UserDetailFailure(error: event.payload['errors'][0]));
+      emit(UserDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -67,7 +67,7 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
       User user = User.fromJson(event.payload['data']);
       emit(UserUpdated(user: user));
     } else {
-      emit(UserDetailFailure(error: event.payload['errors'][0]));
+      emit(UserDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 

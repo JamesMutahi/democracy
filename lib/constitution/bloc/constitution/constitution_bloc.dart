@@ -44,7 +44,7 @@ class ConstitutionBloc extends Bloc<ConstitutionEvent, ConstitutionState> {
       );
       emit(ConstitutionState.loaded(sections: sections));
     } else {
-      emit(ConstitutionState.failure(error: event.payload['errors'][0]));
+      emit(ConstitutionState.failure(error: event.payload['errors'].toString()));
     }
   }
 

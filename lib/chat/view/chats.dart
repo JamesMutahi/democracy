@@ -271,6 +271,12 @@ class _ChatTileState extends State<ChatTile> {
               ? _LastMessageText(text: '${lastMessagePrefix}Shared a survey')
               : widget.chat.lastMessage!.petition != null
               ? _LastMessageText(text: '${lastMessagePrefix}Shared a petition')
+              : widget.chat.lastMessage!.image1Url != null
+              ? _LastMessageText(text: '${lastMessagePrefix}Shared an image')
+              : widget.chat.lastMessage!.fileUrl != null
+              ? _LastMessageText(text: '${lastMessagePrefix}Shared a file')
+              : widget.chat.lastMessage!.location != null
+              ? _LastMessageText(text: '${lastMessagePrefix}Shared a location')
               : Text(''),
         ],
       ),

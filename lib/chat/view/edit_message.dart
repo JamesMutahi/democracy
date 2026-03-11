@@ -75,18 +75,30 @@ class _EditMessageState extends State<EditMessage> {
         },
         hintText: 'Edit message',
         prefixIcon: null,
-        onSend:
-            _disableSendButton
-                ? null
-                : () {
-                  context.read<MessageDetailBloc>().add(
-                    MessageDetailEvent.edit(
-                      messageId: widget.message.id,
-                      text: _controller.text,
-                    ),
-                  );
-                  Navigator.pop(context);
-                },
+        onNewImages: (images) {
+          //   TODO:
+        },
+        selectedImages: [
+          //   TODO:
+        ],
+        onNewFile: (file) {
+          //   TODO:
+        },
+        selectedFile: null, //   TODO:
+        onContentInsertion: (data) {
+          //   TODO:
+        },
+        onSend: _disableSendButton
+            ? null
+            : () {
+                context.read<MessageDetailBloc>().add(
+                  MessageDetailEvent.edit(
+                    messageId: widget.message.id,
+                    text: _controller.text,
+                  ),
+                );
+                Navigator.pop(context);
+              },
       ),
     );
   }

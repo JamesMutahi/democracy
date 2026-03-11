@@ -53,7 +53,7 @@ class NotificationDetailBloc
       Notification notification = Notification.fromJson(event.payload['data']);
       emit(NotificationCreated(notification: notification));
     } else {
-      emit(NotificationDetailFailure(error: event.payload['errors'][0]));
+      emit(NotificationDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -66,7 +66,7 @@ class NotificationDetailBloc
       Notification notification = Notification.fromJson(event.payload['data']);
       emit(NotificationUpdated(notification: notification));
     } else {
-      emit(NotificationDetailFailure(error: event.payload['errors'][0]));
+      emit(NotificationDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
@@ -78,7 +78,7 @@ class NotificationDetailBloc
     if (event.payload['response_status'] == 204) {
       emit(NotificationDeleted(notificationId: event.payload['pk']));
     } else {
-      emit(NotificationDetailFailure(error: event.payload['errors'][0]));
+      emit(NotificationDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 

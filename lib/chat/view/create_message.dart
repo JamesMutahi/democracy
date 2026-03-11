@@ -16,7 +16,7 @@ class CreateMessage extends StatefulWidget {
 }
 
 class _CreateMessageState extends State<CreateMessage> {
-  TextEditingController _controller = TextEditingController();
+  TextEditingController controller = TextEditingController();
   bool loading = true;
   bool failure = false;
   List<User> _users = [];
@@ -109,7 +109,7 @@ class _CreateMessageState extends State<CreateMessage> {
                 ),
               ),
               child: TextFormField(
-                controller: _controller,
+                controller: controller,
                 onChanged: (value) {
                   context.read<UsersBloc>().add(
                     UsersEvent.get(searchTerm: value),
@@ -147,7 +147,7 @@ class _CreateMessageState extends State<CreateMessage> {
                 onLoading: () {
                   context.read<UsersBloc>().add(
                     UsersEvent.get(
-                      searchTerm: _controller.text,
+                      searchTerm: controller.text,
                       lastUser: _users.last,
                     ),
                   );

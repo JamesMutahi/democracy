@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_text_form_field.dart';
 import 'package:democracy/app/utils/dialogs.dart';
@@ -69,6 +71,8 @@ class _ChatScaffoldState extends State<ChatScaffold> {
   bool showMessageActions = false;
   Set<Message> messages = {};
   bool hideChat = true;
+  List<File> _selectedImages = [];
+  File? _selectedFile;
 
   @override
   void initState() {
@@ -159,29 +163,28 @@ class _ChatScaffoldState extends State<ChatScaffold> {
         },
         child: Scaffold(
           appBar: AppBar(
-            title:
-                showMessageActions
-                    ? SizedBox.shrink()
-                    : Row(
-                      children: [
-                        ProfileImage(user: otherUser, navigateToProfile: true),
-                        SizedBox(width: 10),
-                        Flexible(
-                          child: Text(
-                            otherUser.name,
-                            maxLines: 1,
-                            style: TextStyle(overflow: TextOverflow.ellipsis),
-                          ),
+            title: showMessageActions
+                ? SizedBox.shrink()
+                : Row(
+                    children: [
+                      ProfileImage(user: otherUser, navigateToProfile: true),
+                      SizedBox(width: 10),
+                      Flexible(
+                        child: Text(
+                          otherUser.name,
+                          maxLines: 1,
+                          style: TextStyle(overflow: TextOverflow.ellipsis),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
             actions: [
               showMessageActions
                   ? _MessageActions(
-                    chat: widget.chat,
-                    messages: messages,
-                    currentUser: widget.currentUser,
-                  )
+                      chat: widget.chat,
+                      messages: messages,
+                      currentUser: widget.currentUser,
+                    )
                   : SizedBox.shrink(),
               ChatPopUpMenu(
                 chat: widget.chat,
@@ -190,55 +193,75 @@ class _ChatScaffoldState extends State<ChatScaffold> {
               ),
             ],
           ),
-          body:
-              (hideChat && otherUser.isBlocked)
-                  ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          '@${otherUser.username} is blocked',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        SizedBox(height: 10),
-                        OutlinedButton(
-                          onPressed: () {
-                            setState(() {
-                              hideChat = false;
-                            });
-                          },
-                          child: Text('View messages'),
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          'Will not unblock them',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.labelMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.outline,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                  : Messages(
-                    chat: widget.chat,
-                    currentUser: widget.currentUser,
+          body: (hideChat && otherUser.isBlocked)
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        '@${otherUser.username} is blocked',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      SizedBox(height: 10),
+                      OutlinedButton(
+                        onPressed: () {
+                          setState(() {
+                            hideChat = false;
+                          });
+                        },
+                        child: Text('View messages'),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        'Will not unblock them',
+                        style: Theme.of(context).textTheme.labelMedium
+                            ?.copyWith(
+                              color: Theme.of(context).colorScheme.outline,
+                            ),
+                      ),
+                    ],
                   ),
-          bottomNavigationBar:
-              otherUser.isBlocked && hideChat
-                  ? SizedBox.shrink()
-                  : otherUser.isBlocked && !hideChat
-                  ? otherUser.hasBlocked
-                      ? Container(
+                )
+              : Stack(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(
+                        bottom: _selectedImages.isNotEmpty ? 100 : 0,
+                      ),
+                      child: Messages(
+                        chat: widget.chat,
+                        currentUser: widget.currentUser,
+                      ),
+                    ),
+                    if (_selectedImages.isNotEmpty)
+                      MultiImageView(
+                        images: _selectedImages,
+                        onAdd: (files) {
+                          setState(() {
+                            _selectedImages.addAll(files);
+                          });
+                        },
+                        onRemove: (index) {
+                          setState(() {
+                            _selectedImages.removeAt(index);
+                          });
+                        },
+                      ),
+                  ],
+                ),
+          bottomNavigationBar: otherUser.isBlocked && hideChat
+              ? SizedBox.shrink()
+              : otherUser.isBlocked && !hideChat
+              ? otherUser.hasBlocked
+                    ? Container(
                         margin: const EdgeInsets.only(bottom: 8.0),
                         child: Text(
                           'You have been blocked',
                           textAlign: TextAlign.center,
                         ),
                       )
-                      : OutlinedButton(
+                    : OutlinedButton(
                         style: ButtonStyle(
                           padding: WidgetStateProperty.all(
                             EdgeInsets.symmetric(vertical: 15),
@@ -257,41 +280,79 @@ class _ChatScaffoldState extends State<ChatScaffold> {
                         },
                         child: Text('Unblock'),
                       )
-                  : BottomTextFormField(
-                    focusNode: _focusNode,
-                    showCursor: true,
-                    readOnly: false,
-                    controller: _controller,
-                    onTap: () {},
-                    onChanged: (value) {
-                      if (value == '') {
-                        setState(() {
-                          _disableSendButton = true;
-                        });
-                      } else {
-                        setState(() {
-                          _disableSendButton = false;
-                        });
-                      }
-                    },
-                    hintText: 'Message',
-                    prefixIcon: null,
-                    onSend:
-                        _disableSendButton
-                            ? null
-                            : () {
-                              context.read<MessageDetailBloc>().add(
-                                MessageDetailEvent.create(
-                                  chat: widget.chat,
-                                  text: _controller.text,
-                                ),
-                              );
-                              _controller.clear();
-                              setState(() {
-                                _disableSendButton = true;
-                              });
-                            },
-                  ),
+              : BottomTextFormField(
+                  focusNode: _focusNode,
+                  showCursor: true,
+                  readOnly: false,
+                  controller: _controller,
+                  onTap: () {},
+                  onChanged: (value) {
+                    if (value == '') {
+                      setState(() {
+                        _disableSendButton = true;
+                      });
+                    } else {
+                      setState(() {
+                        _disableSendButton = false;
+                      });
+                    }
+                  },
+                  hintText: 'Message',
+                  prefixIcon: null,
+                  onNewImages: (images) {
+                    setState(() {
+                      _selectedImages = images;
+                    });
+                  },
+                  selectedImages: _selectedImages,
+                  onNewFile: (file) {
+                    setState(() {
+                      _selectedFile = file;
+                    });
+                  },
+                  selectedFile: _selectedFile,
+                  onContentInsertion: (imageFile) {
+                    context.read<MessageDetailBloc>().add(
+                      MessageDetailEvent.create(
+                        chat: widget.chat,
+                        text: _controller.text,
+                        imagePath1: imageFile.path,
+                      ),
+                    );
+                  },
+                  onSend:
+                      _disableSendButton &&
+                          _selectedImages.isEmpty &&
+                          _selectedFile == null
+                      ? null
+                      : () {
+                          context.read<MessageDetailBloc>().add(
+                            MessageDetailEvent.create(
+                              chat: widget.chat,
+                              text: _controller.text,
+                              imagePath1: _selectedImages.isNotEmpty
+                                  ? _selectedImages[0].path
+                                  : null,
+                              imagePath2: _selectedImages.length > 1
+                                  ? _selectedImages[1].path
+                                  : null,
+                              imagePath3: _selectedImages.length > 2
+                                  ? _selectedImages[2].path
+                                  : null,
+                              imagePath4: _selectedImages.length > 3
+                                  ? _selectedImages[3].path
+                                  : null,
+                              filePath: _selectedFile?.path,
+                            ),
+                          );
+                          _controller.clear();
+                          setState(() {
+                            _selectedFile = null;
+                            _selectedImages = [];
+                            _disableSendButton = true;
+                          });
+                        },
+                ),
         ),
       ),
     );
@@ -326,10 +387,9 @@ class ChatPopUpMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List texts =
-        currentUser.id == otherUser.id
-            ? []
-            : [otherUser.isBlocked ? 'Unblock' : 'Block'];
+    List texts = currentUser.id == otherUser.id
+        ? []
+        : [otherUser.isBlocked ? 'Unblock' : 'Block'];
     return PopupMenuButton<String>(
       padding: EdgeInsets.zero,
       menuPadding: EdgeInsets.zero,
@@ -345,15 +405,14 @@ class ChatPopUpMenu extends StatelessWidget {
             );
         }
       },
-      itemBuilder:
-          (BuildContext context) => [
-            ...texts.map((text) {
-              return PopupMenuItem<String>(
-                value: text,
-                child: Text(text, textAlign: TextAlign.center),
-              );
-            }),
-          ],
+      itemBuilder: (BuildContext context) => [
+        ...texts.map((text) {
+          return PopupMenuItem<String>(
+            value: text,
+            child: Text(text, textAlign: TextAlign.center),
+          );
+        }),
+      ],
       icon: Icon(
         Symbols.more_vert_rounded,
         color: Theme.of(context).colorScheme.outline,
@@ -387,9 +446,8 @@ class _MessageActions extends StatelessWidget {
                   Navigator.of(context).push(
                     PageRouteBuilder(
                       opaque: false,
-                      pageBuilder:
-                          (_, __, ___) =>
-                              EditMessage(chat: chat, message: messages.first),
+                      pageBuilder: (_, __, ___) =>
+                          EditMessage(chat: chat, message: messages.first),
                     ),
                   );
                 },
@@ -400,10 +458,9 @@ class _MessageActions extends StatelessWidget {
             context.read<MessageActionsCubit>().closeActionButtons();
             await Clipboard.setData(
               ClipboardData(
-                text:
-                    (messages.length == 1)
-                        ? messages.first.text
-                        : copyMultiple(forCopy: messages),
+                text: (messages.length == 1)
+                    ? messages.first.text
+                    : copyMultiple(forCopy: messages),
               ),
             );
           },
@@ -412,36 +469,35 @@ class _MessageActions extends StatelessWidget {
         (messages.any((message) => message.user.id != currentUser.id))
             ? SizedBox.shrink()
             : IconButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder:
-                      (context) => CustomDialog(
-                        title: 'Delete message',
-                        content:
-                            'Are you sure you want to delete this? \n'
-                            'The message will be permanently deleted',
-                        button1Text: 'Yes',
-                        onButton1Pressed: () {
-                          Navigator.pop(context);
-                          context.read<MessageDetailBloc>().add(
-                            MessageDetailEvent.delete(
-                              messages: messages.toList(),
-                            ),
-                          );
-                          context
-                              .read<MessageActionsCubit>()
-                              .closeActionButtons();
-                        },
-                        button2Text: 'No',
-                        onButton2Pressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                );
-              },
-              icon: Icon(Symbols.delete_rounded),
-            ),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => CustomDialog(
+                      title: 'Delete message',
+                      content:
+                          'Are you sure you want to delete this? \n'
+                          'The message will be permanently deleted',
+                      button1Text: 'Yes',
+                      onButton1Pressed: () {
+                        Navigator.pop(context);
+                        context.read<MessageDetailBloc>().add(
+                          MessageDetailEvent.delete(
+                            messages: messages.toList(),
+                          ),
+                        );
+                        context
+                            .read<MessageActionsCubit>()
+                            .closeActionButtons();
+                      },
+                      button2Text: 'No',
+                      onButton2Pressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  );
+                },
+                icon: Icon(Symbols.delete_rounded),
+              ),
       ],
     );
   }
