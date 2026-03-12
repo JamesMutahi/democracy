@@ -88,6 +88,18 @@ class _MessagesState extends State<Messages> {
               ),
             );
           }
+          if (message.image1Url != null) {
+            if (message.text.isNotEmpty) {
+              widgets.add(SizedBox(height: messageMargin));
+            }
+            widgets.add(
+              AlignmentContainer(
+                message: message,
+                alignedRight: alignedRight,
+                child: ImageViewer(message: message),
+              ),
+            );
+          }
           if (message.post != null) {
             if (message.text.isNotEmpty) {
               widgets.add(SizedBox(height: messageMargin));
@@ -154,18 +166,6 @@ class _MessagesState extends State<Messages> {
                   meeting: message.meeting!,
                   isDependency: true,
                 ),
-              ),
-            );
-          }
-          if (message.image1Url != null) {
-            if (message.text.isNotEmpty) {
-              widgets.add(SizedBox(height: messageMargin));
-            }
-            widgets.add(
-              AlignmentContainer(
-                message: message,
-                alignedRight: alignedRight,
-                child: ImageViewer(message: message),
               ),
             );
           }
@@ -403,7 +403,7 @@ class _AlignmentContainerState extends State<AlignmentContainer> {
 
   @override
   Widget build(BuildContext context) {
-    double messageWidth = 0.8 * MediaQuery.of(context).size.width;
+    double messageWidth = 0.75 * MediaQuery.of(context).size.width;
     return BlocListener<MessageActionsCubit, MessageActionsState>(
       listener: (context, state) {
         if (state.status == MessageActionsStatus.actionButtonsOpened) {
@@ -458,10 +458,7 @@ class _AlignmentContainerState extends State<AlignmentContainer> {
                   left: widget.alignedRight ? 0 : messageMargin,
                   right: widget.alignedRight ? messageMargin : 0,
                 ),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 10.0,
-                  horizontal: 15,
-                ),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(15),

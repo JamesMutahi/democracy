@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:democracy/app/utils/bottom_text_form_field.dart';
 import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/utils/media_tools.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
@@ -30,6 +31,9 @@ class _PostUpdateState extends State<PostUpdate> {
   bool _disablePostButton = true;
   List<File> files = [];
   int fileLimit = 4;
+  List<File> _selectedImages = [];
+  File? _selectedFile;
+  File? _insertedContent;
 
   void _updatePost({PostStatus status = PostStatus.published}) {
     List<Map> tags = [];
@@ -130,7 +134,35 @@ class _PostUpdateState extends State<PostUpdate> {
                             });
                           }
                         },
+                        onContentInsertion: (imageFile) {
+                          setState(() {
+                            _insertedContent = imageFile;
+                          });
+                        },
                       ),
+                      if (_insertedContent != null)
+                        SingleImageView(
+                          image: _insertedContent!,
+                          onRemove: () {
+                            setState(() {
+                              _insertedContent = null;
+                            });
+                          },
+                        ),
+                      if (_selectedImages.isNotEmpty)
+                        MultiImageView(
+                          images: _selectedImages,
+                          onAdd: (images) {
+                            setState(() {
+                              _selectedImages.addAll(images);
+                            });
+                          },
+                          onRemove: (index) {
+                            setState(() {
+                              _selectedImages.removeAt(index);
+                            });
+                          },
+                        ),
                       if (widget.post.repostOf != null)
                         DependencyContainer(
                           child: PostWidgetSelector(
@@ -193,6 +225,16 @@ class _PostUpdateState extends State<PostUpdate> {
             },
             files: files,
             fileLimit: fileLimit,
+            onNewImages: (images) {
+              setState(() {
+                _selectedImages = images;
+              });
+            },
+            onNewFile: (file) {
+              setState(() {
+                _selectedFile = file;
+              });
+            },
           ),
         ),
       ),

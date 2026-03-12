@@ -27,48 +27,50 @@ class _PostBodyState extends State<PostBody> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomText(
-      text: widget.post.body,
-      style: Theme.of(context).textTheme.bodyMedium!,
-      suffix: widget.showWholeText ? '' : suffix,
-      showAllText: widget.showWholeText ? true : readMore,
-      onSuffixPressed: () {
-        if (widget.isDependency) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => widget.post.communityNoteOf == null
-                  ? PostDetail(
-                      post: widget.post,
-                      showAsRepost: false,
-                      repost: widget.post,
-                    )
-                  : CommunityNoteDetail(communityNote: widget.post),
-            ),
+    return widget.post.body.isEmpty
+        ? SizedBox.shrink()
+        : CustomText(
+            text: widget.post.body,
+            style: Theme.of(context).textTheme.bodyMedium!,
+            suffix: widget.showWholeText ? '' : suffix,
+            showAllText: widget.showWholeText ? true : readMore,
+            onSuffixPressed: () {
+              if (widget.isDependency) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => widget.post.communityNoteOf == null
+                        ? PostDetail(
+                            post: widget.post,
+                            showAsRepost: false,
+                            repost: widget.post,
+                          )
+                        : CommunityNoteDetail(communityNote: widget.post),
+                  ),
+                );
+              } else {
+                setState(() {
+                  if (readMore) {
+                    suffix = '...Show more';
+                    readMore = false;
+                  } else {
+                    suffix = '\nShow less';
+                    readMore = true;
+                  }
+                });
+              }
+            },
+            onUserTagPressed: (userId) {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => ProfilePage(
+                    user: widget.post.taggedUsers.firstWhere(
+                      (user) => user.id == int.parse(userId),
+                    ),
+                  ),
+                ),
+              );
+            },
           );
-        } else {
-          setState(() {
-            if (readMore) {
-              suffix = '...Show more';
-              readMore = false;
-            } else {
-              suffix = '\nShow less';
-              readMore = true;
-            }
-          });
-        }
-      },
-      onUserTagPressed: (userId) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => ProfilePage(
-              user: widget.post.taggedUsers.firstWhere(
-                (user) => user.id == int.parse(userId),
-              ),
-            ),
-          ),
-        );
-      },
-    );
   }
 }

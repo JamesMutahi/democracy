@@ -1,12 +1,12 @@
 import 'dart:io';
 
+import 'package:democracy/app/utils/custom_bottom_sheet.dart';
 import 'package:democracy/app/utils/media_tools.dart';
+import 'package:democracy/post/view/widgets/post_form_widgets.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
-
-import 'custom_bottom_sheet.dart';
 
 class BottomTextFormField extends StatelessWidget {
   const BottomTextFormField({
@@ -23,9 +23,14 @@ class BottomTextFormField extends StatelessWidget {
     required this.prefixIcon,
     required this.onNewImages,
     required this.selectedImages,
+    required this.onAddImages,
+    required this.onRemoveImage,
     required this.onNewFile,
     required this.selectedFile,
     required this.onContentInsertion,
+    required this.insertedContent,
+    required this.onRemoveInsertedContent,
+    required this.allowedMimeTypes,
     this.onSend,
   });
 
@@ -41,9 +46,14 @@ class BottomTextFormField extends StatelessWidget {
   final Widget? prefixIcon;
   final void Function(List<File>) onNewImages;
   final List<File> selectedImages;
+  final void Function(List<File>) onAddImages;
+  final void Function(int) onRemoveImage;
   final void Function(File) onNewFile;
   final File? selectedFile;
   final void Function(File) onContentInsertion;
+  final File? insertedContent;
+  final VoidCallback? onRemoveInsertedContent;
+  final List<String> allowedMimeTypes;
   final void Function()? onSend;
 
   @override
@@ -58,98 +68,112 @@ class BottomTextFormField extends StatelessWidget {
           top: BorderSide(color: Theme.of(context).canvasColor, width: 1.0),
         ),
       ),
-      child: Row(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          if (selectedImages.isEmpty)
-            GestureDetector(
-              onTap: () {
-                showModalBottomSheet<void>(
-                  context: context,
-                  isScrollControlled: true,
-                  shape: const BeveledRectangleBorder(),
-                  useSafeArea: true,
-                  builder: (BuildContext context) {
-                    return _FileBottomSheet(
-                      onNewImages: onNewImages,
-                      onNewFile: onNewFile,
+          if (insertedContent != null)
+            SingleImageView(
+              image: insertedContent!,
+              onRemove: onRemoveInsertedContent!,
+            ),
+          if (selectedImages.isNotEmpty)
+            MultiImageView(
+              images: selectedImages,
+              onAdd: onAddImages,
+              onRemove: onRemoveImage,
+            ),
+          Row(
+            children: [
+              if (selectedImages.isEmpty)
+                GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet<void>(
+                      context: context,
+                      isScrollControlled: true,
+                      shape: const BeveledRectangleBorder(),
+                      useSafeArea: true,
+                      builder: (BuildContext context) {
+                        return _FileBottomSheet(
+                          onNewImages: onNewImages,
+                          onNewFile: onNewFile,
+                        );
+                      },
                     );
                   },
-                );
-              },
-              child: Card(
-                margin: EdgeInsets.only(left: 10),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Icon(Icons.add_rounded),
+                  child: Card(
+                    margin: EdgeInsets.only(left: 10),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(Icons.add_rounded),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          Flexible(
-            flex: 6,
-            child: TextFormField(
-              focusNode: focusNode,
-              showCursor: showCursor,
-              readOnly: readOnly,
-              autofocus: autoFocus,
-              keyboardType: TextInputType.multiline,
-              minLines: 1,
-              maxLines: 4,
-              maxLength: 500,
-              maxLengthEnforcement: MaxLengthEnforcement.enforced,
-              textAlignVertical: TextAlignVertical.center,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Theme.of(context).scaffoldBackgroundColor,
-                hintText: hintText,
-                hintStyle: TextStyle(color: Theme.of(context).hintColor),
-                counterText: '',
-                prefixIcon: prefixIcon,
-                prefixIconConstraints: const BoxConstraints(
-                  minWidth: 0,
-                  minHeight: 0,
-                ),
-                prefixStyle: TextStyle(color: Theme.of(context).primaryColor),
-                contentPadding: const EdgeInsets.all(15),
-                border: InputBorder.none,
-                focusedBorder: UnderlineInputBorder(
-                  borderRadius: BorderRadius.circular(0),
-                  borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.primary,
+              Flexible(
+                flex: 6,
+                child: TextFormField(
+                  focusNode: focusNode,
+                  showCursor: showCursor,
+                  readOnly: readOnly,
+                  autofocus: autoFocus,
+                  keyboardType: TextInputType.multiline,
+                  minLines: 1,
+                  maxLines: 4,
+                  maxLength: 500,
+                  maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                  textAlignVertical: TextAlignVertical.center,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Theme.of(context).scaffoldBackgroundColor,
+                    hintText: hintText,
+                    hintStyle: TextStyle(color: Theme.of(context).hintColor),
+                    counterText: '',
+                    prefixIcon: prefixIcon,
+                    prefixIconConstraints: const BoxConstraints(
+                      minWidth: 0,
+                      minHeight: 0,
+                    ),
+                    prefixStyle: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    contentPadding: const EdgeInsets.all(15),
+                    border: InputBorder.none,
+                    focusedBorder: UnderlineInputBorder(
+                      borderRadius: BorderRadius.circular(0),
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                  controller: controller,
+                  onTap: onTap,
+                  onChanged: onChanged,
+                  contentInsertionConfiguration: ContentInsertionConfiguration(
+                    allowedMimeTypes: allowedMimeTypes,
+                    onContentInserted: (KeyboardInsertedContent content) async {
+                      if (content.hasData) {
+                        final Uint8List bytes = content.data!;
+                        // Get the application documents directory
+                        final directory =
+                            await getApplicationDocumentsDirectory();
+                        final String filePath =
+                            '${directory.path}/${content.uri.split('/').last}';
+                        // Write the bytes to a file
+                        final File file = File(filePath);
+                        await file.writeAsBytes(bytes);
+
+                        onContentInsertion(file);
+                      }
+                    },
                   ),
                 ),
               ),
-              controller: controller,
-              onTap: onTap,
-              onChanged: onChanged,
-              contentInsertionConfiguration: ContentInsertionConfiguration(
-                allowedMimeTypes: const <String>['image/png', 'image/gif'],
-                onContentInserted: (KeyboardInsertedContent content) async {
-                  if (content.hasData) {
-                    final Uint8List bytes = content.data!;
-                    final String mimeType = content.mimeType;
-                    // Determine file extension from mime type (basic example)
-                    final String extension = mimeType.split('/').last;
-
-                    // Get the application documents directory
-                    final directory = await getApplicationDocumentsDirectory();
-                    final String filePath =
-                        '${directory.path}/inserted_content.$extension';
-
-                    // Write the bytes to a file
-                    final File file = File(filePath);
-                    await file.writeAsBytes(bytes);
-
-                    onContentInsertion(file);
-                  }
-                },
+              Flexible(
+                child: IconButton(
+                  onPressed: onSend,
+                  icon: Icon(Icons.send_rounded),
+                ),
               ),
-            ),
-          ),
-          Flexible(
-            child: IconButton(
-              onPressed: onSend,
-              icon: Icon(Icons.send_rounded),
-            ),
+            ],
           ),
         ],
       ),

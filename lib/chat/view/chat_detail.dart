@@ -234,20 +234,6 @@ class _ChatScaffoldState extends State<ChatScaffold> {
                         currentUser: widget.currentUser,
                       ),
                     ),
-                    if (_selectedImages.isNotEmpty)
-                      MultiImageView(
-                        images: _selectedImages,
-                        onAdd: (files) {
-                          setState(() {
-                            _selectedImages.addAll(files);
-                          });
-                        },
-                        onRemove: (index) {
-                          setState(() {
-                            _selectedImages.removeAt(index);
-                          });
-                        },
-                      ),
                   ],
                 ),
           bottomNavigationBar: otherUser.isBlocked && hideChat
@@ -305,6 +291,16 @@ class _ChatScaffoldState extends State<ChatScaffold> {
                     });
                   },
                   selectedImages: _selectedImages,
+                  onAddImages: (images) {
+                    setState(() {
+                      _selectedImages.addAll(images);
+                    });
+                  },
+                  onRemoveImage: (index) {
+                    setState(() {
+                      _selectedImages.removeAt(index);
+                    });
+                  },
                   onNewFile: (file) {
                     setState(() {
                       _selectedFile = file;
@@ -320,6 +316,9 @@ class _ChatScaffoldState extends State<ChatScaffold> {
                       ),
                     );
                   },
+                  insertedContent: null,
+                  onRemoveInsertedContent: null,
+                  allowedMimeTypes: const <String>['image/png', 'image/gif'],
                   onSend:
                       _disableSendButton &&
                           _selectedImages.isEmpty &&

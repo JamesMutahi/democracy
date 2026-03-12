@@ -249,7 +249,7 @@ class PostListener extends StatelessWidget {
                   updatePosts = true;
                 }
                 // Update repostOf
-                if (posts.any((element) => element.repostOf!.id == postId)) {
+                if (posts.any((element) => element.repostOf?.id == postId)) {
                   for (Post p
                       in posts
                           .where((e) => e.repostOf?.id == postId)

@@ -141,6 +141,7 @@ class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
                                   });
                                 }
                               },
+                              onContentInsertion: (imageFile) {},
                             ),
                           ],
                         ),

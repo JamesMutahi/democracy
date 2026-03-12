@@ -18,8 +18,6 @@ class ImageViewer extends StatefulWidget {
 }
 
 class _ImageViewerState extends State<ImageViewer> {
-  bool verticalGallery = false;
-
   @override
   Widget build(BuildContext context) {
     List<String> images = [];
@@ -58,46 +56,67 @@ class _ImageViewerState extends State<ImageViewer> {
       (index) => GalleryItem(id: index.toString(), resource: images[index]),
     );
 
-    final List<Widget> imageWidgets = images
-        .map(
-          (item) => StaggeredGridTile.count(
-            crossAxisCellCount: images.length == 1 ? 4 : 2,
-            mainAxisCellCount: images.length == 1
-                ? 4
-                : images.length == 3 && images.indexOf(item) == 0
-                ? 4
-                : 2,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => GalleryPhotoViewWrapper(
-                      galleryItems: galleryItems,
-                      backgroundDecoration: BoxDecoration(
-                        color: Theme.of(context).canvasColor,
-                      ),
-                      initialIndex: images.indexOf(item),
-                      scrollDirection: verticalGallery
-                          ? Axis.vertical
-                          : Axis.horizontal,
-                    ),
+    return images.length == 1
+        ? _ImageWidget(
+            images: images,
+            galleryItems: galleryItems,
+            image: images.first,
+          )
+        : StaggeredGrid.count(
+            crossAxisCount: 4,
+            mainAxisSpacing: 4,
+            crossAxisSpacing: 4,
+            children: [
+              ...images.map(
+                (image) => StaggeredGridTile.count(
+                  crossAxisCellCount: 2,
+                  mainAxisCellCount:
+                      images.length == 3 && images.indexOf(image) == 0 ? 4 : 2,
+                  child: _ImageWidget(
+                    images: images,
+                    galleryItems: galleryItems,
+                    image: image,
                   ),
-                );
-              },
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                child: Image.network(item, fit: BoxFit.cover, width: 1000.0),
+                ),
               ),
+            ],
+          );
+  }
+}
+
+class _ImageWidget extends StatelessWidget {
+  const _ImageWidget({
+    required this.images,
+    required this.galleryItems,
+    required this.image,
+  });
+
+  final List<String> images;
+  final List<GalleryItem> galleryItems;
+  final String image;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => GalleryPhotoViewWrapper(
+              galleryItems: galleryItems,
+              backgroundDecoration: BoxDecoration(
+                color: Theme.of(context).canvasColor,
+              ),
+              initialIndex: images.indexOf(image),
+              scrollDirection: Axis.horizontal,
             ),
           ),
-        )
-        .toList();
-    return StaggeredGrid.count(
-      crossAxisCount: 4,
-      mainAxisSpacing: 4,
-      crossAxisSpacing: 4,
-      children: imageWidgets,
+        );
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        child: Image.network(image, fit: BoxFit.cover, width: 1000.0),
+      ),
     );
   }
 }

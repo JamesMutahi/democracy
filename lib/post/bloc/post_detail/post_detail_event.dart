@@ -48,14 +48,20 @@ sealed class PostDetailEvent with _$PostDetailEvent {
   const factory PostDetailEvent.create({
     required String body,
     required PostStatus status,
-    required Post? repostOf,
-    required Post? replyTo,
-    required Post? communityNoteOf,
-    required Ballot? ballot,
-    required Survey? survey,
-    required Petition? petition,
-    required Meeting? meeting,
+    Post? repostOf,
+    Post? replyTo,
+    Post? communityNoteOf,
+    Ballot? ballot,
+    Survey? survey,
+    Petition? petition,
+    Meeting? meeting,
     required List<Map> tags,
+    String? imagePath1,
+    String? imagePath2,
+    String? imagePath3,
+    String? imagePath4,
+    String? filePath,
+    String? location,
   }) = _Create;
 
   const factory PostDetailEvent.get({required Post post}) = _Get;

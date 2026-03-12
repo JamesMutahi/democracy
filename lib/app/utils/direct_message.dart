@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:democracy/app/utils/bottom_text_form_field.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/ballot/models/ballot.dart';
@@ -45,6 +47,9 @@ class _DirectMessageState extends State<DirectMessage> {
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
   );
+  List<File> _selectedImages = [];
+  File? _selectedFile;
+  File? _insertedContent;
 
   @override
   void dispose() {
@@ -231,18 +236,45 @@ class _DirectMessageState extends State<DirectMessage> {
           hintText: 'Add a comment',
           prefixIcon: null,
           onNewImages: (images) {
-            //   TODO:
+            setState(() {
+              _selectedImages = images;
+              _insertedContent =  null;
+              _selectedFile = null;
+            });
           },
-          selectedImages: [
-            //   TODO:
-          ],
+          selectedImages: _selectedImages,
+          onAddImages: (images) {
+            setState(() {
+              _selectedImages.addAll(images);
+            });
+          },
+          onRemoveImage: (index) {
+            setState(() {
+              _selectedImages.removeAt(index);
+            });
+          },
           onNewFile: (file) {
-            //   TODO:
+            setState(() {
+              _selectedFile = file;
+              _selectedImages = [];
+              _insertedContent =  null;
+            });
           },
-          selectedFile: null, //   TODO:
-          onContentInsertion: (data) {
-            //   TODO:
+          selectedFile: _selectedFile,
+          onContentInsertion: (imageFile) {
+            setState(() {
+              _insertedContent = imageFile;
+              _selectedImages = [];
+              _selectedFile = null;
+            });
           },
+          insertedContent: _insertedContent,
+          onRemoveInsertedContent: () {
+            setState(() {
+              _insertedContent = null;
+            });
+          },
+          allowedMimeTypes: const <String>['image/png', 'image/gif'],
           onSend: selectedUsers.isEmpty
               ? null
               : () {
@@ -255,6 +287,22 @@ class _DirectMessageState extends State<DirectMessage> {
                       survey: widget.survey,
                       petition: widget.petition,
                       meeting: widget.meeting,
+                      imagePath1: _insertedContent != null
+                          ? _insertedContent!.path
+                          : _selectedImages.isNotEmpty
+                          ? _selectedImages[0].path
+                          : null,
+                      imagePath2: _selectedImages.length > 1
+                          ? _selectedImages[1].path
+                          : null,
+                      imagePath3: _selectedImages.length > 2
+                          ? _selectedImages[2].path
+                          : null,
+                      imagePath4: _selectedImages.length > 3
+                          ? _selectedImages[3].path
+                          : null,
+                      filePath: _selectedFile?.path,
+                      location: null, //TODO:
                     ),
                   );
                 },

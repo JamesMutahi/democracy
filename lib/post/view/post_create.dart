@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:democracy/app/utils/bottom_text_form_field.dart'
+    show MultiImageView;
 import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/utils/media_tools.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
@@ -52,6 +54,9 @@ class _PostCreateState extends State<PostCreate> {
   List<File> files = [];
   int fileLimit = 4;
   List<Post> _replyTos = [];
+  List<File> _selectedImages = [];
+  File? _selectedFile;
+  File? _insertedContent;
 
   @override
   void initState() {
@@ -90,6 +95,16 @@ class _PostCreateState extends State<PostCreate> {
         petition: widget.petition,
         meeting: widget.meeting,
         tags: tags,
+        imagePath1: _insertedContent != null
+            ? _insertedContent!.path
+            : _selectedImages.isNotEmpty
+            ? _selectedImages[0].path
+            : null,
+        imagePath2: _selectedImages.length > 1 ? _selectedImages[1].path : null,
+        imagePath3: _selectedImages.length > 2 ? _selectedImages[2].path : null,
+        imagePath4: _selectedImages.length > 3 ? _selectedImages[3].path : null,
+        filePath: _selectedFile?.path,
+        location: null, //TODO:
       ),
     );
   }
@@ -221,9 +236,39 @@ class _PostCreateState extends State<PostCreate> {
                                       });
                                     }
                                   },
+                                  onContentInsertion: (imageFile) {
+                                    setState(() {
+                                      _insertedContent = imageFile;
+                                      _selectedImages = [];
+                                      _selectedFile = null;
+                                    });
+                                  },
                                 ),
                               ],
                             ),
+                            if (_insertedContent != null)
+                              SingleImageView(
+                                image: _insertedContent!,
+                                onRemove: () {
+                                  setState(() {
+                                    _insertedContent = null;
+                                  });
+                                },
+                              ),
+                            if (_selectedImages.isNotEmpty)
+                              MultiImageView(
+                                images: _selectedImages,
+                                onAdd: (images) {
+                                  setState(() {
+                                    _selectedImages.addAll(images);
+                                  });
+                                },
+                                onRemove: (index) {
+                                  setState(() {
+                                    _selectedImages.removeAt(index);
+                                  });
+                                },
+                              ),
                             if (widget.post != null && !widget.isReply)
                               DependencyContainer(
                                 child: PostTile(
@@ -310,6 +355,20 @@ class _PostCreateState extends State<PostCreate> {
             },
             files: files,
             fileLimit: fileLimit,
+            onNewImages: (images) {
+              setState(() {
+                _selectedImages = images;
+                _selectedFile = null;
+                _insertedContent = null;
+              });
+            },
+            onNewFile: (file) {
+              setState(() {
+                _selectedFile = file;
+                _selectedImages = [];
+                _insertedContent = null;
+              });
+            },
           ),
         ),
       ),

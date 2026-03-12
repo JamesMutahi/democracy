@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:democracy/app/utils/bottom_text_form_field.dart';
-import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/app/utils/tagging.dart';
 import 'package:democracy/constitution/bloc/sections/sections_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
@@ -26,6 +26,9 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
   late AnimationController _animationController;
   late Animation<Offset> _animation;
   bool _disableSendButton = true;
+  List<File> _selectedImages = [];
+  File? _selectedFile;
+  File? _insertedContent;
 
   double overlayHeight = 300;
   SearchResultView _view = SearchResultView.none;
@@ -167,70 +170,84 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
             },
             hintText: 'Reply',
             prefixIcon: null,
+            selectedImages: _selectedImages,
+            selectedFile: _selectedFile,
             onNewImages: (images) {
-              //   TODO:
+              setState(() {
+                _selectedImages = images;
+                _selectedFile = null;
+                _insertedContent = null;
+              });
             },
-            selectedImages: [
-              //   TODO:
-            ],
+            onAddImages: (images) {
+              setState(() {
+                _selectedImages.addAll(images);
+              });
+            },
+            onRemoveImage: (index) {
+              setState(() {
+                _selectedImages.removeAt(index);
+              });
+            },
             onNewFile: (file) {
-              //   TODO:
+              setState(() {
+                _selectedFile = file;
+                _selectedImages = [];
+                _insertedContent = null;
+              });
             },
-            selectedFile: null, //   TODO:
-            onContentInsertion: (data) {
-              //   TODO:
+            onContentInsertion: (imageFile) {
+              setState(() {
+                _insertedContent = imageFile;
+                _selectedImages = [];
+                _selectedFile = null;
+              });
             },
-            onSend: _disableSendButton ? null : _createPost,
+            insertedContent: _insertedContent,
+            onRemoveInsertedContent: () {
+              setState(() {
+                _insertedContent = null;
+              });
+            },
+            allowedMimeTypes: const <String>['image/gif'],
+            onSend: _disableSendButton && _insertedContent == null
+                ? null
+                : _createPost,
           );
         },
       ),
     );
   }
 
-  bool isValidPost(String text) {
-    final textWithoutLink = text.replaceAll(
-      RegExp(
-        r"(http|ftp|https)://([\w_-]+(?:\.[\w_-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?",
-      ),
-      "",
-    );
-    String textWithoutSpaces = textWithoutLink.replaceAll(RegExp(r'\s+'), '');
-    // If the remaining text is empty, it was only a link
-    return textWithoutSpaces.isNotEmpty;
-  }
-
   void _createPost() {
-    bool hasContent = isValidPost(_controller.formattedText);
-    if (hasContent) {
-      List<Map> tags = [];
-      for (var tag in _controller.tags) {
-        tags.add({'id': tag.id, 'text': tag.text});
-      }
-      context.read<PostDetailBloc>().add(
-        PostDetailEvent.create(
-          body: _controller.formattedText,
-          status: PostStatus.published,
-          replyTo: widget.post,
-          repostOf: null,
-          communityNoteOf: null,
-          ballot: null,
-          survey: null,
-          petition: null,
-          meeting: null,
-          tags: tags,
-        ),
-      );
-      _controller.clear();
-      setState(() {
-        _disableSendButton = true;
-      });
-    } else {
-      final snackBar = getSnackBar(
-        context: context,
-        message: 'Add context. Unable to post links without context.',
-        status: SnackBarStatus.failure,
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    List<Map> tags = [];
+    for (var tag in _controller.tags) {
+      tags.add({'id': tag.id, 'text': tag.text});
     }
+    context.read<PostDetailBloc>().add(
+      PostDetailEvent.create(
+        body: _controller.formattedText,
+        status: PostStatus.published,
+        replyTo: widget.post,
+        tags: tags,
+        imagePath1: _insertedContent != null
+            ? _insertedContent!.path
+            : _selectedImages.isNotEmpty
+            ? _selectedImages[0].path
+            : null,
+        imagePath2: _selectedImages.length > 1 ? _selectedImages[1].path : null,
+        imagePath3: _selectedImages.length > 2 ? _selectedImages[2].path : null,
+        imagePath4: _selectedImages.length > 3 ? _selectedImages[3].path : null,
+        filePath: _selectedFile?.path,
+        location: null, //TODO:
+      ),
+    );
+    _controller.clear();
+    setState(() {
+      _disableSendButton = true;
+      _selectedFile = null;
+      _insertedContent = null;
+      _selectedImages = [];
+    });
   }
 }

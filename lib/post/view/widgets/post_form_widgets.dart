@@ -1,18 +1,20 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:democracy/app/utils/media_tools.dart';
 import 'package:democracy/app/utils/tagging.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/constitution/bloc/sections/sections_bloc.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:fluttertagger/fluttertagger.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:path_provider/path_provider.dart';
 
 class PostAuthor extends StatelessWidget {
   const PostAuthor({super.key});
@@ -37,11 +39,13 @@ class PostTextField extends StatelessWidget {
     required this.controller,
     required this.hintText,
     required this.onChanged,
+    required this.onContentInsertion,
   });
 
   final TextEditingController controller;
   final String hintText;
   final void Function(String) onChanged;
+  final void Function(File) onContentInsertion;
 
   @override
   Widget build(BuildContext context) {
@@ -76,8 +80,65 @@ class PostTextField extends StatelessWidget {
             contentPadding: const EdgeInsets.all(15),
             border: InputBorder.none,
           ),
+          contentInsertionConfiguration: ContentInsertionConfiguration(
+            allowedMimeTypes: const <String>['image/gif'],
+            onContentInserted: (KeyboardInsertedContent content) async {
+              if (content.hasData) {
+                final Uint8List bytes = content.data!;
+                // Get the application documents directory
+                final directory = await getApplicationDocumentsDirectory();
+                final String filePath =
+                    '${directory.path}/${content.uri.split('/').last}';
+                // Write the bytes to a file
+                final File file = File(filePath);
+                await file.writeAsBytes(bytes);
+
+                onContentInsertion(file);
+              }
+            },
+          ),
         ),
       ),
+    );
+  }
+}
+
+class SingleImageView extends StatelessWidget {
+  const SingleImageView({
+    super.key,
+    required this.image,
+    required this.onRemove,
+  });
+
+  final File image;
+  final VoidCallback onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+          padding: const EdgeInsets.only(right: 10, bottom: 10),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.file(image, fit: BoxFit.cover),
+          ),
+        ),
+        Positioned(
+          right: 2,
+          top: -7,
+          child: GestureDetector(
+            onTap: onRemove,
+            child: const Icon(
+              Icons.highlight_remove_rounded,
+              color: Colors.red,
+              size: 25,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -89,12 +150,16 @@ class PostBottomNavBar extends StatefulWidget {
     required this.onPickMedia,
     required this.files,
     required this.fileLimit,
+    required this.onNewImages,
+    required this.onNewFile,
   });
 
   final FlutterTaggerController controller;
   final VoidCallback onPickMedia;
   final List<File> files;
   final int fileLimit;
+  final void Function(List<File>) onNewImages;
+  final void Function(File) onNewFile;
 
   @override
   State<PostBottomNavBar> createState() => _PostBottomNavBarState();
@@ -236,28 +301,50 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   PostExtraButton(
-                    iconData: Symbols.gallery_thumbnail_rounded,
+                    onTap: () async {
+                      File? newImage = await ImagePickerUtil.takePhoto();
+                      if (newImage != null) {
+                        widget.onNewImages([newImage]);
+                      }
+                    },
+                    iconData: Icons.photo_camera_outlined,
+                    text: 'Camera',
+                  ),
+                  PostExtraButton(
+                    onTap: () async {
+                      List<File>? newImages =
+                          await ImagePickerUtil.pickMultiImage(limit: 4);
+                      if (newImages.isNotEmpty) {
+                        widget.onNewImages(newImages);
+                      }
+                    },
+                    iconData: Icons.photo_library_outlined,
                     text: 'Gallery',
-                    onTap: widget.files.length == widget.fileLimit
-                        ? () {
-                            // TODO
-                          }
-                        : widget.onPickMedia,
                   ),
-                  SizedBox(width: 15),
                   PostExtraButton(
-                    iconData: Symbols.edit_calendar_rounded,
-                    text: 'Schedule',
-                    onTap: () {},
-                  ),
-                  SizedBox(width: 15),
-                  PostExtraButton(
-                    iconData: Symbols.location_pin_rounded,
+                    onTap: () {
+                      // TODO:
+                    },
+                    iconData: Icons.location_on_outlined,
                     text: 'Location',
-                    onTap: () {},
+                  ),
+                  PostExtraButton(
+                    onTap: () async {
+                      FilePickerResult? result = await FilePicker.platform
+                          .pickFiles(
+                            type: FileType.custom,
+                            allowedExtensions: ['pdf', 'doc'],
+                          );
+                      if (result != null) {
+                        File file = File(result.files.single.path!);
+                        widget.onNewFile(file);
+                      }
+                    },
+                    iconData: Icons.edit_document,
+                    text: 'Document',
                   ),
                 ],
               ),
@@ -284,23 +371,20 @@ class PostExtraButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      borderRadius: BorderRadius.all(Radius.circular(20)),
-      splashColor: Theme.of(context).colorScheme.secondaryFixedDim,
       onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(7),
-        decoration: BoxDecoration(
-          // color: Theme.of(context).canvasColor,
-          border: Border.all(color: Theme.of(context).disabledColor),
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-        ),
-        child: Row(
-          children: [
-            Icon(iconData, size: 20),
-            SizedBox(width: 2.5),
-            Text(text),
-          ],
-        ),
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Icon(iconData, size: 30),
+            ),
+          ),
+          Text(text),
+        ],
       ),
     );
   }

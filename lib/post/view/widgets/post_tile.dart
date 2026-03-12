@@ -231,13 +231,13 @@ class _PostContainer extends StatelessWidget {
                             ],
                           ),
                           PostBody(post: post, isDependency: isDependency),
-                          SizedBox(height: 5),
                           if (post.image1Url != null)
-                            Column(
-                              children: [
-                                ImageViewer(key: ValueKey(post.id), post: post),
-                                SizedBox(height: 5),
-                              ],
+                            Container(
+                              margin: EdgeInsets.only(top: 10),
+                              child: ImageViewer(
+                                key: ValueKey(post.id),
+                                post: post,
+                              ),
                             ),
                           if (post.repostOf != null && !isDependency)
                             DependencyContainer(
@@ -275,7 +275,6 @@ class _PostContainer extends StatelessWidget {
                                 isDependency: true,
                               ),
                             ),
-                          SizedBox(height: 5),
                           if (post.communityNote.isNotEmpty)
                             CommunityNote(post: post),
                           SizedBox(height: 5),
@@ -343,7 +342,7 @@ class DependencyContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 5),
+      margin: EdgeInsets.only(top: 10),
       decoration: BoxDecoration(
         border: Border.all(
           color: Theme.of(context).disabledColor.withAlpha(30),

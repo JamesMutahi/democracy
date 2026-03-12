@@ -98,10 +98,14 @@ class _PostDetailState extends State<PostDetail> {
                 case PostCreated(post: final post):
                   if (widget.post.id == post.replyTo?.id) {
                     setState(() {
-                      int index = _replies.indexWhere(
-                        (element) => element.author.id != post.author.id,
-                      );
-                      _replies.insert(index, post);
+                      if (_replies.any((e) => e.author.id == post.author.id)) {
+                        int index = _replies.lastIndexWhere(
+                          (element) => element.author.id != post.author.id,
+                        );
+                        _replies.insert(index, post);
+                      } else {
+                        _replies.insert(0, post);
+                      }
                     });
                   }
                 case PostLoaded(:final post):
