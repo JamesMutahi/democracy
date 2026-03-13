@@ -71,6 +71,12 @@ sealed class PostDetailEvent with _$PostDetailEvent {
     required String body,
     required PostStatus status,
     required List<Map> tags,
+    String? imagePath1,
+    String? imagePath2,
+    String? imagePath3,
+    String? imagePath4,
+    String? filePath,
+    String? location,
   }) = _Update;
 
   const factory PostDetailEvent.addView({required Post post}) = _AddView;

@@ -124,7 +124,7 @@ class PetitionSupportersRow extends StatelessWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: NetworkImage(user.image),
+                          image: CachedNetworkImageProvider(user.image),
                           fit: BoxFit.cover,
                         ),
                         borderRadius: BorderRadius.circular(100),

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/meet/bloc/meeting_detail/meeting_detail_bloc.dart';
@@ -129,7 +130,7 @@ class ListenersRow extends StatelessWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: NetworkImage(user.image),
+                          image: CachedNetworkImageProvider(user.image),
                           fit: BoxFit.cover,
                         ),
                         borderRadius: BorderRadius.circular(100),

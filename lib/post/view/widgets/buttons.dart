@@ -237,7 +237,7 @@ class RepostButton extends StatelessWidget {
                           Navigator.pop(context);
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => PostCreate(post: post),
+                              builder: (context) => PostCreate(repostOf: post),
                             ),
                           );
                         },
@@ -331,7 +331,7 @@ class ReplyButton extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => PostCreate(post: post, isReply: true),
+                  builder: (context) => PostCreate(replyTo: post),
                 ),
               );
             },

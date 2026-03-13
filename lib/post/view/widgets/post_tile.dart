@@ -78,77 +78,70 @@ class PostTile extends StatelessWidget {
                     ),
             ),
           ),
-          child: post.isDeleted
-              ? Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Text('This post has been deleted by the author'),
-                  ),
-                )
-              : Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              if (showAsRepost) {
-                                return post.repostOf!.communityNoteOf == null
-                                    ? PostDetail(
-                                        key: ValueKey(post.id),
-                                        post: post.repostOf!,
-                                        showAsRepost: true,
-                                        repost: post,
-                                      )
-                                    : CommunityNoteDetail(
-                                        communityNote: post.repostOf!,
-                                        showAsRepost: true,
-                                        repost: post,
-                                      );
-                              } else {
-                                return PostDetail(
+          child: Column(
+            children: [
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        if (showAsRepost) {
+                          return post.repostOf!.communityNoteOf == null
+                              ? PostDetail(
                                   key: ValueKey(post.id),
-                                  post: post,
-                                  showAsRepost: false,
+                                  post: post.repostOf!,
+                                  showAsRepost: true,
+                                  repost: post,
+                                )
+                              : CommunityNoteDetail(
+                                  communityNote: post.repostOf!,
+                                  showAsRepost: true,
                                   repost: post,
                                 );
-                              }
-                            },
-                          ),
-                        );
+                        } else {
+                          return PostDetail(
+                            key: ValueKey(post.id),
+                            post: post,
+                            showAsRepost: false,
+                            repost: post,
+                          );
+                        }
                       },
-                      child: showAsRepost
-                          ? Column(
-                              children: [
-                                _repostBanner(),
-                                PostWidgetSelector(
-                                  post: post.repostOf!,
-                                  isDependency: false,
-                                ),
-                              ],
-                            )
-                          : Stack(
-                              children: [
-                                ThreadLine(
-                                  showBottomThread: showBottomThread,
-                                  showTopThread: showTopThread,
-                                ),
-                                _PostContainer(
-                                  post: post,
-                                  isDependency: isDependency,
-                                ),
-                              ],
-                            ),
                     ),
-                    if (showThreadedReplies)
-                      Thread(
-                        key: ValueKey(post.id),
-                        post: post,
-                        showWholeThread: showWholeThread,
+                  );
+                },
+                child: showAsRepost
+                    ? Column(
+                        children: [
+                          _repostBanner(),
+                          PostWidgetSelector(
+                            post: post.repostOf!,
+                            isDependency: false,
+                          ),
+                        ],
+                      )
+                    : Stack(
+                        children: [
+                          ThreadLine(
+                            showBottomThread: showBottomThread,
+                            showTopThread: showTopThread,
+                          ),
+                          _PostContainer(
+                            post: post,
+                            isDependency: isDependency,
+                          ),
+                        ],
                       ),
-                  ],
+              ),
+              if (showThreadedReplies)
+                Thread(
+                  key: ValueKey(post.id),
+                  post: post,
+                  showWholeThread: showWholeThread,
                 ),
+            ],
+          ),
         ),
       ),
     );

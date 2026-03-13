@@ -337,6 +337,24 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
               ? 'published'
               : 'draft',
           'tags': event.tags,
+          if (event.imagePath1 != null)
+            'image1_base64': base64Encode(
+              File(event.imagePath1!).readAsBytesSync(),
+            ),
+          if (event.imagePath2 != null)
+            'image2_base64': base64Encode(
+              File(event.imagePath2!).readAsBytesSync(),
+            ),
+          if (event.imagePath3 != null)
+            'image3_base64': base64Encode(
+              File(event.imagePath3!).readAsBytesSync(),
+            ),
+          if (event.imagePath4 != null)
+            'image4_base64': base64Encode(
+              File(event.imagePath4!).readAsBytesSync(),
+            ),
+          'file': event.filePath,
+          'location': event.location,
         },
       },
     };

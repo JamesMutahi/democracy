@@ -115,7 +115,13 @@ class _ImageWidget extends StatelessWidget {
       },
       child: ClipRRect(
         borderRadius: BorderRadius.all(Radius.circular(5.0)),
-        child: Image.network(image, fit: BoxFit.cover, width: 1000.0),
+        child: CachedNetworkImage(
+          fit: BoxFit.cover,
+          width: 1000.0,
+          imageUrl: image,
+          placeholder: (context, url) => CircularProgressIndicator(),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+        ),
       ),
     );
   }

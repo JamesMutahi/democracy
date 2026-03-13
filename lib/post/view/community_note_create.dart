@@ -4,7 +4,7 @@ import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_form_widgets.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
-import 'package:democracy/post/view/widgets/post_widget_selector.dart';
+import 'package:democracy/post/view/widgets/reply_tos.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,6 +23,7 @@ class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
   final _controller = TextEditingController();
   bool _disablePostButton = true;
   List<Post> _replyTos = [];
+  ValueKey centerKey = ValueKey('Center');
 
   @override
   void initState() {
@@ -35,13 +36,7 @@ class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
       PostDetailEvent.create(
         body: _controller.text,
         status: PostStatus.published,
-        replyTo: null,
         communityNoteOf: widget.post,
-        repostOf: null,
-        ballot: null,
-        survey: null,
-        petition: null,
-        meeting: null,
         tags: [],
       ),
     );
@@ -108,9 +103,19 @@ class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
             actionsPadding: EdgeInsets.only(right: 15),
           ),
           body: CustomScrollView(
-            reverse: true,
+            center: centerKey,
             slivers: <Widget>[
-              SliverFillRemaining(
+              PostListener(
+                posts: _replyTos,
+                onPostsUpdated: (posts) {
+                  setState(() {
+                    _replyTos = posts;
+                  });
+                },
+                child: ReplyTos(replyTos: _replyTos),
+              ),
+              SliverToBoxAdapter(
+                key: centerKey,
                 child: Stack(
                   children: [
                     ThreadLine(showBottomThread: false, showTopThread: true),
@@ -148,35 +153,6 @@ class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
                       ),
                     ),
                   ],
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: PostListener(
-                  posts: _replyTos,
-                  onPostsUpdated: (posts) {
-                    setState(() {
-                      _replyTos = posts;
-                    });
-                  },
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    reverse: true,
-                    padding: EdgeInsets.zero,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (BuildContext context, int index) {
-                      Post post = _replyTos[index];
-                      return PostWidgetSelector(
-                        key: ValueKey(post.id),
-                        post: post,
-                        showTopThread:
-                            post.replyTo != null ||
-                            post.communityNoteOf != null,
-                        showBottomThread: true,
-                        hideBorder: true,
-                      );
-                    },
-                    itemCount: _replyTos.length,
-                  ),
                 ),
               ),
             ],

@@ -4,7 +4,6 @@ import 'package:democracy/app/utils/bottom_text_form_field.dart'
     show MultiImageView;
 import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/utils/media_tools.dart';
-import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/meet/models/meeting.dart';
@@ -17,7 +16,7 @@ import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_form_widgets.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
-import 'package:democracy/post/view/widgets/post_widget_selector.dart';
+import 'package:democracy/post/view/widgets/reply_tos.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
@@ -29,20 +28,20 @@ import 'package:material_symbols_icons/symbols.dart';
 class PostCreate extends StatefulWidget {
   const PostCreate({
     super.key,
-    this.post,
+    this.replyTo,
+    this.repostOf,
     this.ballot,
     this.survey,
     this.petition,
     this.meeting,
-    this.isReply = false,
   });
 
-  final Post? post;
+  final Post? replyTo;
+  final Post? repostOf;
   final Ballot? ballot;
   final Survey? survey;
   final Petition? petition;
   final Meeting? meeting;
-  final bool isReply;
 
   @override
   State<PostCreate> createState() => _PostCreateState();
@@ -50,6 +49,7 @@ class PostCreate extends StatefulWidget {
 
 class _PostCreateState extends State<PostCreate> {
   final _controller = FlutterTaggerController();
+  ValueKey centerKey = ValueKey('Center');
   bool _disablePostButton = true;
   List<File> files = [];
   int fileLimit = 4;
@@ -60,22 +60,10 @@ class _PostCreateState extends State<PostCreate> {
 
   @override
   void initState() {
-    if (widget.isReply) {
-      context.read<ReplyToBloc>().add(ReplyToEvent.get(post: widget.post!));
+    if (widget.replyTo != null) {
+      context.read<ReplyToBloc>().add(ReplyToEvent.get(post: widget.replyTo!));
     }
     super.initState();
-  }
-
-  bool isValidPost(String text) {
-    final textWithoutLink = text.replaceAll(
-      RegExp(
-        r"(http|ftp|https)://([\w_-]+(?:\.[\w_-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?",
-      ),
-      "",
-    );
-    String textWithoutSpaces = textWithoutLink.replaceAll(RegExp(r'\s+'), '');
-    // If the remaining text is empty, it was only a link
-    return textWithoutSpaces.isNotEmpty;
   }
 
   void _createPost({PostStatus status = PostStatus.published}) {
@@ -87,9 +75,8 @@ class _PostCreateState extends State<PostCreate> {
       PostDetailEvent.create(
         body: _controller.formattedText,
         status: status,
-        replyTo: widget.isReply ? widget.post : null,
-        repostOf: widget.isReply ? null : widget.post,
-        communityNoteOf: null,
+        replyTo: widget.replyTo,
+        repostOf: widget.repostOf,
         ballot: widget.ballot,
         survey: widget.survey,
         petition: widget.petition,
@@ -122,10 +109,10 @@ class _PostCreateState extends State<PostCreate> {
         ),
         BlocListener<ReplyToBloc, ReplyToState>(
           listener: (context, state) {
-            if (state.status == ReplyToStatus.success && widget.isReply) {
-              if (widget.post!.id == state.postId) {
+            if (state.status == ReplyToStatus.success) {
+              if (widget.replyTo?.id == state.postId) {
                 setState(() {
-                  _replyTos.add(widget.post!);
+                  _replyTos.add(widget.replyTo!);
                   _replyTos.addAll(state.posts.toList());
                 });
               }
@@ -139,7 +126,7 @@ class _PostCreateState extends State<PostCreate> {
           if (didPop) {
             return;
           }
-          widget.isReply
+          widget.replyTo != null
               ? Navigator.pop(context)
               : _disablePostButton
               ? Navigator.pop(context)
@@ -171,37 +158,34 @@ class _PostCreateState extends State<PostCreate> {
                 onPressed: _disablePostButton
                     ? null
                     : () {
-                        bool hasContent = isValidPost(
-                          _controller.formattedText,
+                        showDialog(
+                          context: context,
+                          builder: (context) =>
+                              PostCreateDialog(onYesPressed: _createPost),
                         );
-                        if (hasContent) {
-                          showDialog(
-                            context: context,
-                            builder: (context) =>
-                                PostCreateDialog(onYesPressed: _createPost),
-                          );
-                        } else {
-                          final snackBar = getSnackBar(
-                            context: context,
-                            message:
-                                'Add context. Unable to post links without context',
-                            status: SnackBarStatus.failure,
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        }
                       },
-                child: Text(widget.isReply ? 'Reply' : 'Post'),
+                child: Text(widget.replyTo != null ? 'Reply' : 'Post'),
               ),
             ],
             actionsPadding: EdgeInsets.only(right: 15),
           ),
           body: CustomScrollView(
-            reverse: true,
+            center: centerKey,
             slivers: <Widget>[
-              SliverFillRemaining(
+              PostListener(
+                posts: _replyTos,
+                onPostsUpdated: (posts) {
+                  setState(() {
+                    _replyTos = posts;
+                  });
+                },
+                child: ReplyTos(replyTos: _replyTos),
+              ),
+              SliverToBoxAdapter(
+                key: centerKey,
                 child: Stack(
                   children: [
-                    if (widget.isReply)
+                    if (widget.replyTo != null)
                       ThreadLine(showBottomThread: false, showTopThread: true),
                     Container(
                       padding: EdgeInsets.only(
@@ -210,133 +194,103 @@ class _PostCreateState extends State<PostCreate> {
                         top: 10,
                         bottom: 5,
                       ),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                PostAuthor(),
-                                PostTextField(
-                                  controller: _controller,
-                                  hintText: widget.isReply
-                                      ? 'Reply'
-                                      : "What's new?",
-                                  onChanged: (value) {
-                                    if (value == '') {
-                                      setState(() {
-                                        _disablePostButton = true;
-                                      });
-                                    } else {
-                                      setState(() {
-                                        _disablePostButton = false;
-                                      });
-                                    }
-                                  },
-                                  onContentInsertion: (imageFile) {
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              PostAuthor(),
+                              PostTextField(
+                                controller: _controller,
+                                hintText: widget.replyTo != null
+                                    ? 'Reply'
+                                    : "What's new?",
+                                onChanged: (value) {
+                                  if (value == '') {
                                     setState(() {
-                                      _insertedContent = imageFile;
-                                      _selectedImages = [];
-                                      _selectedFile = null;
+                                      _disablePostButton = true;
                                     });
-                                  },
-                                ),
-                              ],
+                                  } else {
+                                    setState(() {
+                                      _disablePostButton = false;
+                                    });
+                                  }
+                                },
+                                onContentInsertion: (imageFile) {
+                                  setState(() {
+                                    _insertedContent = imageFile;
+                                    _selectedImages = [];
+                                    _selectedFile = null;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                          if (_insertedContent != null)
+                            SingleImageView(
+                              image: _insertedContent!,
+                              onRemove: () {
+                                setState(() {
+                                  _insertedContent = null;
+                                });
+                              },
                             ),
-                            if (_insertedContent != null)
-                              SingleImageView(
-                                image: _insertedContent!,
-                                onRemove: () {
-                                  setState(() {
-                                    _insertedContent = null;
-                                  });
-                                },
+                          if (_selectedImages.isNotEmpty)
+                            MultiImageView(
+                              images: _selectedImages,
+                              onAdd: (images) {
+                                setState(() {
+                                  _selectedImages.addAll(images);
+                                });
+                              },
+                              onRemove: (index) {
+                                setState(() {
+                                  _selectedImages.removeAt(index);
+                                });
+                              },
+                            ),
+                          if (widget.repostOf != null)
+                            DependencyContainer(
+                              child: PostTile(
+                                post: widget.repostOf!,
+                                isDependency: true,
                               ),
-                            if (_selectedImages.isNotEmpty)
-                              MultiImageView(
-                                images: _selectedImages,
-                                onAdd: (images) {
-                                  setState(() {
-                                    _selectedImages.addAll(images);
-                                  });
-                                },
-                                onRemove: (index) {
-                                  setState(() {
-                                    _selectedImages.removeAt(index);
-                                  });
-                                },
+                            ),
+                          if (widget.ballot != null)
+                            DependencyContainer(
+                              child: BallotTile(
+                                ballot: widget.ballot!,
+                                isDependency: true,
                               ),
-                            if (widget.post != null && !widget.isReply)
-                              DependencyContainer(
-                                child: PostTile(
-                                  post: widget.post!,
-                                  isDependency: true,
-                                ),
+                            ),
+                          if (widget.survey != null)
+                            DependencyContainer(
+                              child: SurveyTile(
+                                survey: widget.survey!,
+                                isDependency: true,
                               ),
-                            if (widget.ballot != null)
-                              DependencyContainer(
-                                child: BallotTile(
-                                  ballot: widget.ballot!,
-                                  isDependency: true,
-                                ),
+                            ),
+                          if (widget.petition != null)
+                            DependencyContainer(
+                              child: PetitionTile(
+                                petition: widget.petition!,
+                                isDependency: true,
                               ),
-                            if (widget.survey != null)
-                              DependencyContainer(
-                                child: SurveyTile(
-                                  survey: widget.survey!,
-                                  isDependency: true,
-                                ),
+                            ),
+                          if (widget.meeting != null)
+                            DependencyContainer(
+                              child: MeetingTile(
+                                meeting: widget.meeting!,
+                                isDependency: true,
                               ),
-                            if (widget.petition != null)
-                              DependencyContainer(
-                                child: PetitionTile(
-                                  petition: widget.petition!,
-                                  isDependency: true,
-                                ),
-                              ),
-                            if (widget.meeting != null)
-                              DependencyContainer(
-                                child: MeetingTile(
-                                  meeting: widget.meeting!,
-                                  isDependency: true,
-                                ),
-                              ),
-                          ],
-                        ),
+                            ),
+                        ],
                       ),
                     ),
                   ],
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: PostListener(
-                  posts: _replyTos,
-                  onPostsUpdated: (posts) {
-                    setState(() {
-                      _replyTos = posts;
-                    });
-                  },
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    reverse: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (BuildContext context, int index) {
-                      Post post = _replyTos[index];
-                      return PostWidgetSelector(
-                        key: ValueKey(post.id),
-                        post: post,
-                        showTopThread:
-                            post.replyTo != null ||
-                            post.communityNoteOf != null,
-                        showBottomThread: true,
-                        hideBorder: true,
-                      );
-                    },
-                    itemCount: _replyTos.length,
-                  ),
                 ),
               ),
             ],

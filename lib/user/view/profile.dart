@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/dialogs.dart';
@@ -333,7 +334,7 @@ class ProfileAppBarDelegate extends SliverPersistentHeaderDelegate {
                     child: Container(
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: NetworkImage(user.coverPhoto),
+                          image: CachedNetworkImageProvider(user.coverPhoto),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -358,7 +359,7 @@ class ProfileAppBarDelegate extends SliverPersistentHeaderDelegate {
                   child: Container(
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: NetworkImage(user.image),
+                        image: CachedNetworkImageProvider(user.image),
                         fit: BoxFit.cover,
                       ),
                       borderRadius: BorderRadius.circular(100),

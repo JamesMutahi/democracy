@@ -213,7 +213,7 @@ class _EditProfileState extends State<EditProfile> {
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               image: image == null
-                                  ? NetworkImage(widget.user.image)
+                                  ? CachedNetworkImageProvider(widget.user.image)
                                   : FileImage(image!),
                               fit: BoxFit.cover,
                             ),

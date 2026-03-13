@@ -223,19 +223,7 @@ class _ChatScaffoldState extends State<ChatScaffold> {
                     ],
                   ),
                 )
-              : Stack(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(
-                        bottom: _selectedImages.isNotEmpty ? 100 : 0,
-                      ),
-                      child: Messages(
-                        chat: widget.chat,
-                        currentUser: widget.currentUser,
-                      ),
-                    ),
-                  ],
-                ),
+              : Messages(chat: widget.chat, currentUser: widget.currentUser),
           bottomNavigationBar: otherUser.isBlocked && hideChat
               ? SizedBox.shrink()
               : otherUser.isBlocked && !hideChat
