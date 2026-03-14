@@ -4,6 +4,7 @@ import 'package:democracy/post/view/community_note_detail.dart';
 import 'package:democracy/post/view/post_detail.dart';
 import 'package:democracy/user/view/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class PostBody extends StatefulWidget {
   const PostBody({
@@ -27,10 +28,11 @@ class _PostBodyState extends State<PostBody> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.post.body.isEmpty
+    String text = extractLink(widget.post);
+    return text.isEmpty
         ? SizedBox.shrink()
         : CustomText(
-            text: widget.post.body,
+            text: text,
             style: Theme.of(context).textTheme.bodyMedium!,
             suffix: widget.showWholeText ? '' : suffix,
             showAllText: widget.showWholeText ? true : readMore,
@@ -73,4 +75,89 @@ class _PostBodyState extends State<PostBody> {
             },
           );
   }
+}
+
+String extractLink(Post post) {
+  String text = post.body;
+  // The regular expression to match URLs (supporting http, https, and www.)
+  final RegExp linkRegExp = RegExp(
+    r'(http|https)://[\w-]+(\.[\w-]+)+([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?',
+  );
+
+  // Find all matches in the text
+  final Iterable<RegExpMatch> urlMatches = linkRegExp.allMatches(text);
+
+  // Extract the actual URL strings from the matches
+  List<String> urls = urlMatches
+      .map((urlMatch) => text.substring(urlMatch.start, urlMatch.end))
+      .toList();
+
+  // Get all links using base url
+  String baseUrl = dotenv.env['BASE_URL']!;
+  List<String> matchingLinks = [];
+  for (String url in urls) {
+    if (url.contains(baseUrl)) {
+      matchingLinks.add(url);
+    }
+  }
+
+  // Extract link from text and return text if related object is present
+  if (matchingLinks.isNotEmpty) {
+    if (post.repostOf != null) {
+      for (String url in matchingLinks) {
+        Uri uri = Uri.parse(url);
+        if (uri.path.contains('post')) {
+          String intString = uri.path.replaceAll(RegExp(r'[^0-9]'), '');
+          if (post.repostOf!.id == int.parse(intString)) {
+            text = post.body.replaceAll(url, '');
+          }
+        }
+      }
+    }
+    if (post.meeting != null) {
+      for (String url in matchingLinks) {
+        Uri uri = Uri.parse(url);
+        if (uri.path.contains('meeting')) {
+          String intString = uri.path.replaceAll(RegExp(r'[^0-9]'), '');
+          if (post.meeting!.id == int.parse(intString)) {
+            text = post.body.replaceAll(url, '');
+          }
+        }
+      }
+    }
+    if (post.ballot != null) {
+      for (String url in matchingLinks) {
+        Uri uri = Uri.parse(url);
+        if (uri.path.contains('ballot')) {
+          String intString = uri.path.replaceAll(RegExp(r'[^0-9]'), '');
+          if (post.ballot!.id == int.parse(intString)) {
+            text = post.body.replaceAll(url, '');
+          }
+        }
+      }
+    }
+    if (post.survey != null) {
+      for (String url in matchingLinks) {
+        Uri uri = Uri.parse(url);
+        if (uri.path.contains('survey')) {
+          String intString = uri.path.replaceAll(RegExp(r'[^0-9]'), '');
+          if (post.survey!.id == int.parse(intString)) {
+            text = post.body.replaceAll(url, '');
+          }
+        }
+      }
+    }
+    if (post.petition != null) {
+      for (String url in matchingLinks) {
+        Uri uri = Uri.parse(url);
+        if (uri.path.contains('petition')) {
+          String intString = uri.path.replaceAll(RegExp(r'[^0-9]'), '');
+          if (post.petition!.id == int.parse(intString)) {
+            text = post.body.replaceAll(url, '');
+          }
+        }
+      }
+    }
+  }
+  return text;
 }

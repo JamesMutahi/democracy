@@ -234,95 +234,85 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
                     'This community note has been deleted by the author',
                   ),
                 )
-              : SafeArea(
-                  child: SmartRefresher(
-                    enablePullDown: hasNextPage,
-                    enablePullUp: false,
-                    header: ClassicHeader(
-                      idleIcon: Icon(
-                        Icons.arrow_upward_rounded,
-                        color: Theme.of(context).disabledColor,
+              : SmartRefresher(
+                  enablePullDown: false,
+                  enablePullUp: hasNextPage,
+                  header: ClassicHeader(),
+                  footer: ClassicFooter(),
+                  controller: _refreshController,
+                  onLoading: () {
+                    context.read<RepliesBloc>().add(
+                      RepliesEvent.get(
+                        post: _communityNote,
+                        previousPosts: _replies,
                       ),
-                      idleText: 'Pull up to load more',
-                      releaseText: 'Release to load more',
-                      refreshingText: 'Loading...',
-                    ),
-                    footer: ClassicFooter(),
-                    controller: _refreshController,
-                    onRefresh: () {
-                      context.read<RepliesBloc>().add(
-                        RepliesEvent.get(
-                          post: _communityNote,
-                          previousPosts: _replies,
+                    );
+                  },
+                  child: CustomScrollView(
+                    center: centerKey,
+                    slivers: <Widget>[
+                      PostListener(
+                        posts: _replyTos,
+                        onPostsUpdated: (posts) {
+                          setState(() {
+                            _replyTos = posts;
+                          });
+                        },
+                        child: ReplyTos(replyTos: _replyTos),
+                      ),
+                      SliverToBoxAdapter(
+                        key: centerKey,
+                        child: Column(
+                          children: [
+                            if (widget.showAsRepost)
+                              Stack(
+                                children: [
+                                  ThreadLine(
+                                    showBottomThread: true,
+                                    showTopThread: true,
+                                  ),
+                                  _repostBanner(),
+                                ],
+                              ),
+                            CommunityNoteTile(
+                              communityNote: _communityNote,
+                              navigateToDetailPage: false,
+                              showWholeText: true,
+                              isDependency: false,
+                              showTopThread: true,
+                              showBottomThread: false,
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                    child: CustomScrollView(
-                      center: centerKey,
-                      slivers: <Widget>[
+                      ),
+                      if (loading)
+                        SliverToBoxAdapter(
+                          child: Container(
+                            margin: EdgeInsets.only(top: 50),
+                            child: BottomLoader(),
+                          ),
+                        )
+                      else if (failure)
+                        SliverToBoxAdapter(
+                          child: FailureRetryButton(
+                            onPressed: () {
+                              context.read<RepliesBloc>().add(
+                                RepliesEvent.get(post: widget.communityNote),
+                              );
+                            },
+                          ),
+                        )
+                      else
                         PostListener(
-                          posts: _replyTos,
-                          onPostsUpdated: (posts) {
+                          posts: _replies,
+                          onPostsUpdated: (List<Post> posts) {
                             setState(() {
-                              _replyTos = posts;
+                              _replies = posts;
                             });
                           },
-                          child: ReplyTos(replyTos: _replyTos),
+                          child: Replies(replies: _replies),
                         ),
-                        SliverToBoxAdapter(
-                          key: centerKey,
-                          child: Column(
-                            children: [
-                              if (widget.showAsRepost)
-                                Stack(
-                                  children: [
-                                    ThreadLine(
-                                      showBottomThread: true,
-                                      showTopThread: true,
-                                    ),
-                                    _repostBanner(),
-                                  ],
-                                ),
-                              CommunityNoteTile(
-                                communityNote: _communityNote,
-                                navigateToDetailPage: false,
-                                showWholeText: true,
-                                isDependency: false,
-                                showTopThread: true,
-                                showBottomThread: false,
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (loading)
-                          SliverToBoxAdapter(
-                            child: Container(
-                              margin: EdgeInsets.only(top: 50),
-                              child: BottomLoader(),
-                            ),
-                          )
-                        else if (failure)
-                          SliverToBoxAdapter(
-                            child: FailureRetryButton(
-                              onPressed: () {
-                                context.read<RepliesBloc>().add(
-                                  RepliesEvent.get(post: widget.communityNote),
-                                );
-                              },
-                            ),
-                          )
-                        else
-                          PostListener(
-                            posts: _replies,
-                            onPostsUpdated: (List<Post> posts) {
-                              setState(() {
-                                _replies = posts;
-                              });
-                            },
-                            child: Replies(replies: _replies),
-                          ),
-                      ],
-                    ),
+                    ],
                   ),
                 ),
           bottomNavigationBar: _communityNote.author.hasBlocked
