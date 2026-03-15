@@ -51,7 +51,7 @@ class _EditMessageState extends State<EditMessage> {
             key: ValueKey(widget.message.id),
             message: widget.message,
             alignedRight: true,
-            child: MessageCard(alignedRight: true, message: widget.message),
+            child: MessageCard(text: widget.message.text),
           ),
         ],
       ),
