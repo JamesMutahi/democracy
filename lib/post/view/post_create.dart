@@ -103,7 +103,11 @@ class _PostCreateState extends State<PostCreate> {
         BlocListener<PostDetailBloc, PostDetailState>(
           listener: (context, state) {
             if (state is PostCreated) {
-              Navigator.pop(context);
+              if (!_replyTos.any(
+                (element) => element.id == state.post.repostOf?.id,
+              )) {
+                Navigator.pop(context);
+              }
             }
           },
         ),

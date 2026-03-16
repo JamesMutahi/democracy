@@ -172,7 +172,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   Future _onDeleted(_Deleted event, Emitter<PostDetailState> emit) async {
     emit(PostDetailLoading());
     if (event.payload['response_status'] == 204) {
-      emit(PostDeleted(postId: event.payload['data']['pk']));
+      emit(PostDeleted(postId: event.payload['request_id']));
     } else {
       emit(PostDetailFailure(error: event.payload['errors'].toString()));
     }
@@ -426,7 +426,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       'stream': stream,
       'payload': {
         'action': 'delete',
-        'request_id': requestId,
+        'request_id': event.post.id,
         'pk': event.post.id,
       },
     };

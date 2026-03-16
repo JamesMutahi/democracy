@@ -16,7 +16,6 @@ import 'package:democracy/app/utils/image_viewer.dart';
 import 'package:democracy/post/view/widgets/post_body.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
-import 'package:democracy/post/view/widgets/post_widget_selector.dart';
 import 'package:democracy/post/view/widgets/replies.dart';
 import 'package:democracy/post/view/widgets/reply_tos.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
@@ -100,14 +99,7 @@ class _PostDetailState extends State<PostDetail> {
                 case PostCreated(post: final post):
                   if (widget.post.id == post.replyTo?.id) {
                     setState(() {
-                      if (_replies.any((e) => e.author.id == post.author.id)) {
-                        int index = _replies.lastIndexWhere(
-                          (element) => element.author.id != post.author.id,
-                        );
-                        _replies.insert(index, post);
-                      } else {
-                        _replies.insert(0, post);
-                      }
+                      _replies.insert(0, post);
                     });
                   }
                 case PostLoaded(:final post):
@@ -288,97 +280,97 @@ class _PostDetailState extends State<PostDetail> {
         ],
         child: Scaffold(
           appBar: AppBar(title: Text('Post')),
-          body: isDeleted
-              ? Center(child: Text('This post has been deleted by the author'))
-              : SmartRefresher(
-                  enablePullDown: false,
-                  enablePullUp: hasNextPage,
-                  header: ClassicHeader(),
-                  footer: ClassicFooter(),
-                  controller: _refreshController,
-                  onLoading: () {
-                    context.read<RepliesBloc>().add(
-                      RepliesEvent.get(post: _post, previousPosts: _replies),
-                    );
+          body: SmartRefresher(
+            enablePullDown: false,
+            enablePullUp: hasNextPage,
+            header: ClassicHeader(),
+            footer: ClassicFooter(),
+            controller: _refreshController,
+            onLoading: () {
+              context.read<RepliesBloc>().add(
+                RepliesEvent.get(post: _post, previousPosts: _replies),
+              );
+            },
+            child: CustomScrollView(
+              center: centerKey,
+              slivers: <Widget>[
+                PostListener(
+                  posts: _replyTos,
+                  onPostsUpdated: (posts) {
+                    setState(() {
+                      _replyTos = posts;
+                    });
                   },
-                  child: CustomScrollView(
-                    center: centerKey,
-                    slivers: <Widget>[
-                      PostListener(
-                        posts: _replyTos,
-                        onPostsUpdated: (posts) {
-                          setState(() {
-                            _replyTos = posts;
-                          });
-                        },
-                        child: ReplyTos(replyTos: _replyTos),
-                      ),
-                      SliverToBoxAdapter(
-                        key: centerKey,
-                        child: Column(
+                  child: ReplyTos(replyTos: _replyTos),
+                ),
+                SliverToBoxAdapter(
+                  key: centerKey,
+                  child: Column(
+                    children: [
+                      if (_post.replyTo == null)
+                        Column(
                           children: [
-                            if (_post.replyTo == null)
-                              Column(
+                            if (widget.showAsRepost) _repostBanner(),
+                            _PostContainer(post: _post),
+                          ],
+                        )
+                      else
+                        Column(
+                          children: [
+                            if (widget.showAsRepost)
+                              Stack(
                                 children: [
-                                  if (widget.showAsRepost) _repostBanner(),
-                                  _PostContainer(post: _post),
-                                ],
-                              )
-                            else
-                              Column(
-                                children: [
-                                  if (widget.showAsRepost)
-                                    Stack(
-                                      children: [
-                                        ThreadLine(
-                                          showBottomThread: true,
-                                          showTopThread: true,
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.only(left: 30),
-                                          child: _repostBanner(),
-                                        ),
-                                      ],
-                                    ),
-                                  Stack(
-                                    children: [
-                                      ThreadLine(
-                                        showBottomThread: false,
-                                        showTopThread: true,
-                                      ),
-                                      _PostContainer(post: _post),
-                                    ],
+                                  ThreadLine(
+                                    showBottomThread: true,
+                                    showTopThread: true,
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(left: 30),
+                                    child: _repostBanner(),
                                   ),
                                 ],
                               ),
+                            Stack(
+                              children: [
+                                ThreadLine(
+                                  showBottomThread: false,
+                                  showTopThread: true,
+                                ),
+                                _PostContainer(post: _post),
+                              ],
+                            ),
                           ],
-                        ),
-                      ),
-                      if (loading)
-                        SliverToBoxAdapter(
-                          child: Container(
-                            margin: EdgeInsets.only(top: 50),
-                            child: BottomLoader(),
-                          ),
-                        )
-                      else if (failure)
-                        SliverToBoxAdapter(
-                          child: FailureRetryButton(onPressed: _getData),
-                        )
-                      else
-                        PostListener(
-                          posts: _replies,
-                          onPostsUpdated: (List<Post> posts) {
-                            setState(() {
-                              _replies = posts;
-                            });
-                          },
-                          child: Replies(replies: _replies),
                         ),
                     ],
                   ),
                 ),
-          bottomNavigationBar: _post.author.hasBlocked
+                if (loading)
+                  SliverToBoxAdapter(
+                    child: Container(
+                      margin: EdgeInsets.only(top: 50),
+                      child: BottomLoader(),
+                    ),
+                  )
+                else if (failure)
+                  SliverToBoxAdapter(
+                    child: FailureRetryButton(onPressed: _getData),
+                  )
+                else
+                  PostListener(
+                    posts: _replies,
+                    onPostsUpdated: (List<Post> posts) {
+                      setState(() {
+                        _replies = posts;
+                      });
+                    },
+                    child: Replies(replies: _replies),
+                  ),
+              ],
+            ),
+          ),
+          bottomNavigationBar: _post.isDeleted
+              ? SizedBox.shrink()
+              : _post.author.hasBlocked
               ? Container(
                   margin: const EdgeInsets.only(bottom: 8.0),
                   child: Text(
@@ -494,16 +486,12 @@ class _PostContainer extends StatelessWidget {
                     ),
                     SizedBox(height: 5),
                     PostBody(post: post, showWholeText: true),
-                    SizedBox(height: 5),
-                    if (post.image1Url != null) ImageViewer(post: post),
-                    SizedBox(height: 5),
-                    if (post.repostOf != null)
-                      DependencyContainer(
-                        child: PostWidgetSelector(
-                          post: post.repostOf!,
-                          isDependency: true,
-                        ),
+                    if (post.image1Url != null)
+                      Container(
+                        margin: EdgeInsets.only(top: 10),
+                        child: ImageViewer(key: ValueKey(post.id), post: post),
                       ),
+                    if (post.repostOf != null) PostDependency(post: post),
                     if (post.ballot != null)
                       DependencyContainer(
                         child: BallotTile(
@@ -532,7 +520,6 @@ class _PostContainer extends StatelessWidget {
                           isDependency: true,
                         ),
                       ),
-                    SizedBox(height: 5),
                     if (post.communityNote.isNotEmpty)
                       CommunityNote(post: post),
                     SizedBox(height: 5),
@@ -560,10 +547,12 @@ class _PostContainer extends StatelessWidget {
                   ],
                 ),
         ),
-        Align(
-          alignment: Alignment.topRight,
-          child: PostPopUp(post: post),
-        ),
+        post.isDeleted
+            ? SizedBox.shrink()
+            : Align(
+                alignment: Alignment.topRight,
+                child: PostPopUp(post: post),
+              ),
       ],
     );
   }

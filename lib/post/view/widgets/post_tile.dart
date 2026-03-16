@@ -135,11 +135,7 @@ class PostTile extends StatelessWidget {
                       ),
               ),
               if (showThreadedReplies)
-                Thread(
-                  key: ValueKey(post.id),
-                  post: post,
-                  showWholeThread: showWholeThread,
-                ),
+                Thread(post: post, showWholeThread: showWholeThread),
             ],
           ),
         ),
@@ -191,11 +187,16 @@ class _PostContainer extends StatelessWidget {
     var numberFormat = NumberFormat.compact(locale: "en_UK");
     return Stack(
       children: [
-        Padding(
-          padding: EdgeInsets.only(left: 10, right: 15, top: 10, bottom: 5),
-          child: post.isDeleted
-              ? PostDeletedWidget()
-              : Row(
+        post.isDeleted
+            ? PostDeletedWidget()
+            : Padding(
+                padding: EdgeInsets.only(
+                  left: 10,
+                  right: 15,
+                  top: 10,
+                  bottom: 5,
+                ),
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -233,13 +234,7 @@ class _PostContainer extends StatelessWidget {
                               ),
                             ),
                           if (post.repostOf != null && !isDependency)
-                            DependencyContainer(
-                              child: PostWidgetSelector(
-                                key: ValueKey('repost ${post.repostOf!.id}'),
-                                post: post.repostOf!,
-                                isDependency: true,
-                              ),
-                            ),
+                            PostDependency(post: post),
                           if (post.ballot != null)
                             DependencyContainer(
                               child: BallotTile(
@@ -302,8 +297,8 @@ class _PostContainer extends StatelessWidget {
                     ),
                   ],
                 ),
-        ),
-        if (!isDependency)
+              ),
+        if (!isDependency && !post.isDeleted)
           Align(
             alignment: Alignment.topRight,
             child: PostPopUp(post: post),
@@ -320,9 +315,28 @@ class PostDeletedWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
         child: Text('This post was deleted by the author'),
       ),
+    );
+  }
+}
+
+class PostDependency extends StatelessWidget {
+  const PostDependency({super.key, required this.post});
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context) {
+    return DependencyContainer(
+      child: post.repostOf!.isDeleted
+          ? PostDeletedWidget()
+          : PostWidgetSelector(
+              key: ValueKey('repost ${post.repostOf!.id}'),
+              post: post.repostOf!,
+              isDependency: true,
+            ),
     );
   }
 }

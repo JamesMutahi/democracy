@@ -12,17 +12,19 @@ class ThreadLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      // 23 -> circle avatar radius, 10 -> margin
-      left: 23 + 10,
-      top: 0,
-      bottom: showBottomThread ? 0 : null,
-      child: Container(
-        margin: showTopThread ? null : EdgeInsets.only(top: 20),
-        height: showBottomThread ? null : 20,
-        width: 2,
-        color: Theme.of(context).colorScheme.outlineVariant,
-      ),
-    );
+    return !showBottomThread && !showTopThread
+        ? SizedBox.shrink()
+        : Positioned(
+            // 23 -> circle avatar radius, 10 -> margin
+            left: 23 + 10,
+            top: 0,
+            bottom: showBottomThread ? 0 : null,
+            child: Container(
+              margin: showTopThread ? null : EdgeInsets.only(top: 20),
+              height: showBottomThread ? null : 20,
+              width: 2,
+              color: Theme.of(context).colorScheme.outlineVariant,
+            ),
+          );
   }
 }
