@@ -10,7 +10,10 @@ import 'package:democracy/post/bloc/user_community_notes/user_community_notes_bl
 import 'package:democracy/post/bloc/user_posts/user_posts_bloc.dart';
 import 'package:democracy/post/bloc/user_replies/user_replies_bloc.dart';
 import 'package:democracy/post/models/post.dart';
+import 'package:democracy/post/view/widgets/community_note_tile.dart';
+import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
+import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -80,34 +83,61 @@ class _UserPostsState extends State<UserPosts> {
           },
         ),
       ],
-      child: PostListView(
-        posts: _posts,
-        loading: loading,
-        failure: failure,
-        refreshController: _refreshController,
-        enablePullDown: true,
-        enablePullUp: hasNextPage,
-        onPostsUpdated: (posts) {
-          setState(() {
-            _posts = posts;
-          });
-        },
-        onRefresh: () {
-          context.read<UserPostsBloc>().add(
-            UserPostsEvent.get(user: widget.user),
-          );
-        },
-        onLoading: () {
-          context.read<UserPostsBloc>().add(
-            UserPostsEvent.get(user: widget.user, previousPosts: _posts),
-          );
-        },
-        onFailure: () {
-          context.read<UserPostsBloc>().add(
-            UserPostsEvent.get(user: widget.user),
-          );
-        },
-      ),
+      child: loading
+          ? Container(margin: EdgeInsets.only(top: 20), child: BottomLoader())
+          : failure
+          ? FailureRetryButton(
+              onPressed: () {
+                context.read<UserPostsBloc>().add(
+                  UserPostsEvent.get(user: widget.user),
+                );
+              },
+            )
+          : PostListener(
+              posts: _posts,
+              onPostsUpdated: (posts) {
+                setState(() {
+                  _posts = posts;
+                });
+              },
+              child: SmartRefresher(
+                enablePullDown: true,
+                enablePullUp: hasNextPage,
+                header: ClassicHeader(),
+                footer: ClassicFooter(),
+                controller: _refreshController,
+
+                onRefresh: () {
+                  context.read<UserPostsBloc>().add(
+                    UserPostsEvent.get(user: widget.user),
+                  );
+                },
+                onLoading: () {
+                  context.read<UserPostsBloc>().add(
+                    UserPostsEvent.get(
+                      user: widget.user,
+                      previousPosts: _posts,
+                    ),
+                  );
+                },
+
+                child: ListView.builder(
+                  padding: EdgeInsets.only(bottom: 20),
+                  itemBuilder: (BuildContext context, int index) {
+                    Post post = _posts[index];
+                    return PostTile(
+                      key: ValueKey(post.id),
+                      post: post,
+                      checkVisibility: true,
+                      showThreadedReplies: post.thread.isNotEmpty,
+                      showBottomThread: post.thread.isNotEmpty,
+                      showWholeThread: true,
+                    );
+                  },
+                  itemCount: _posts.length,
+                ),
+              ),
+            ),
     );
   }
 }
@@ -178,34 +208,68 @@ class _UserRepliesState extends State<UserReplies> {
           },
         ),
       ],
-      child: PostListView(
-        posts: _posts,
-        loading: loading,
-        failure: failure,
-        refreshController: _refreshController,
-        enablePullDown: true,
-        enablePullUp: hasNextPage,
-        onPostsUpdated: (posts) {
-          setState(() {
-            _posts = posts;
-          });
-        },
-        onRefresh: () {
-          context.read<UserRepliesBloc>().add(
-            UserRepliesEvent.get(user: widget.user),
-          );
-        },
-        onLoading: () {
-          context.read<UserRepliesBloc>().add(
-            UserRepliesEvent.get(user: widget.user, previousPosts: _posts),
-          );
-        },
-        onFailure: () {
-          context.read<UserRepliesBloc>().add(
-            UserRepliesEvent.get(user: widget.user),
-          );
-        },
-      ),
+      child: loading
+          ? Container(margin: EdgeInsets.only(top: 20), child: BottomLoader())
+          : failure
+          ? FailureRetryButton(
+              onPressed: () {
+                context.read<UserRepliesBloc>().add(
+                  UserRepliesEvent.get(user: widget.user),
+                );
+              },
+            )
+          : PostListener(
+              posts: _posts,
+              onPostsUpdated: (posts) {
+                setState(() {
+                  _posts = posts;
+                });
+              },
+              child: SmartRefresher(
+                enablePullDown: true,
+                enablePullUp: hasNextPage,
+                header: ClassicHeader(),
+                footer: ClassicFooter(),
+                controller: _refreshController,
+                onRefresh: () {
+                  context.read<UserRepliesBloc>().add(
+                    UserRepliesEvent.get(user: widget.user),
+                  );
+                },
+                onLoading: () {
+                  context.read<UserRepliesBloc>().add(
+                    UserRepliesEvent.get(
+                      user: widget.user,
+                      previousPosts: _posts,
+                    ),
+                  );
+                },
+                child: ListView.builder(
+                  padding: EdgeInsets.only(bottom: 20),
+                  itemBuilder: (BuildContext context, int index) {
+                    Post post = _posts[index];
+                    return Column(
+                      children: [
+                        PostTile(
+                          key: ValueKey(post.replyTo!.id),
+                          post: post.replyTo!,
+                          checkVisibility: true,
+                          showBottomThread: true,
+                          hideBorder: true,
+                        ),
+                        PostTile(
+                          key: ValueKey(post.id),
+                          post: post,
+                          checkVisibility: true,
+                          showTopThread: true,
+                        ),
+                      ],
+                    );
+                  },
+                  itemCount: _posts.length,
+                ),
+              ),
+            ),
     );
   }
 }
@@ -389,37 +453,55 @@ class _UserCommunityNotesState extends State<UserCommunityNotes> {
           },
         ),
       ],
-      child: PostListView(
-        posts: _posts,
-        loading: loading,
-        failure: failure,
-        refreshController: _refreshController,
-        enablePullDown: true,
-        enablePullUp: hasNextPage,
-        onPostsUpdated: (posts) {
-          setState(() {
-            _posts = posts;
-          });
-        },
-        onRefresh: () {
-          context.read<UserCommunityNotesBloc>().add(
-            UserCommunityNotesEvent.get(user: widget.user),
-          );
-        },
-        onLoading: () {
-          context.read<UserCommunityNotesBloc>().add(
-            UserCommunityNotesEvent.get(
-              user: widget.user,
-              previousPosts: _posts,
+      child: loading
+          ? Container(margin: EdgeInsets.only(top: 20), child: BottomLoader())
+          : failure
+          ? FailureRetryButton(
+              onPressed: () {
+                context.read<UserCommunityNotesBloc>().add(
+                  UserCommunityNotesEvent.get(user: widget.user),
+                );
+              },
+            )
+          : PostListener(
+              posts: _posts,
+              onPostsUpdated: (posts) {
+                setState(() {
+                  _posts = posts;
+                });
+              },
+              child: SmartRefresher(
+                enablePullDown: true,
+                enablePullUp: hasNextPage,
+                header: ClassicHeader(),
+                footer: ClassicFooter(),
+                controller: _refreshController,
+                onRefresh: () {
+                  context.read<UserCommunityNotesBloc>().add(
+                    UserCommunityNotesEvent.get(user: widget.user),
+                  );
+                },
+                onLoading: () {
+                  context.read<UserCommunityNotesBloc>().add(
+                    UserCommunityNotesEvent.get(
+                      user: widget.user,
+                      previousPosts: _posts,
+                    ),
+                  );
+                },
+                child: ListView.builder(
+                  padding: EdgeInsets.only(bottom: 20),
+                  itemBuilder: (BuildContext context, int index) {
+                    Post post = _posts[index];
+                    return CommunityNoteTile(
+                      key: ValueKey(post.id),
+                      communityNote: post,
+                    );
+                  },
+                  itemCount: _posts.length,
+                ),
+              ),
             ),
-          );
-        },
-        onFailure: () {
-          context.read<UserCommunityNotesBloc>().add(
-            UserCommunityNotesEvent.get(user: widget.user),
-          );
-        },
-      ),
     );
   }
 }

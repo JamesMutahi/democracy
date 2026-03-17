@@ -16,8 +16,8 @@ class Replies extends StatelessWidget {
           key: ValueKey(reply.id),
           post: reply,
           checkVisibility: true,
-          showThreadedReplies: reply.thread.isEmpty ? false : true,
-          showBottomThread: reply.thread.isEmpty ? false : true,
+          showThreadedReplies: reply.thread.isNotEmpty,
+          showBottomThread: reply.thread.isNotEmpty,
         );
       }, childCount: replies.length),
     );

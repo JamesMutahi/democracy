@@ -9,7 +9,6 @@ import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 class PostListView extends StatelessWidget {
   const PostListView({
     super.key,
-    this.physics,
     required this.posts,
     required this.loading,
     required this.failure,
@@ -23,7 +22,6 @@ class PostListView extends StatelessWidget {
     required this.onFailure,
   });
 
-  final ScrollPhysics? physics;
   final List<Post> posts;
   final bool loading;
   final bool failure;
@@ -54,7 +52,6 @@ class PostListView extends StatelessWidget {
               onLoading: onLoading,
               footer: ClassicFooter(),
               child: ListView.builder(
-                physics: physics,
                 padding: EdgeInsets.only(bottom: 20),
                 itemBuilder: (BuildContext context, int index) {
                   Post post = posts[index];

@@ -35,7 +35,7 @@ class _ThreadState extends State<Thread> {
                   key: ValueKey(_posts.first.id),
                   post: _posts.first,
                   showTopThread: true,
-                  showBottomThread: _posts.first.thread.isEmpty ? false : true,
+                  showBottomThread: _posts.first.thread.isNotEmpty,
                   showThreadedReplies: false,
                   hideBorder: true,
                   showWholeThread: showWholeThread,
@@ -77,8 +77,9 @@ class _ThreadState extends State<Thread> {
                   key: ValueKey(post.id),
                   post: post,
                   showTopThread: true,
-                  showBottomThread: post.thread.isEmpty ? false : true,
-                  showThreadedReplies: post.thread.isEmpty ? false : true,
+                  showBottomThread:
+                      post.thread.isNotEmpty || _posts.length != index + 1,
+                  showThreadedReplies: post.thread.isNotEmpty,
                   showWholeThread: true,
                   hideBorder: true,
                 );
