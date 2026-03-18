@@ -14,6 +14,7 @@ import 'package:democracy/post/view/widgets/community_note_tile.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
+import 'package:democracy/post/view/widgets/post_widget_selector.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -250,7 +251,7 @@ class _UserRepliesState extends State<UserReplies> {
                     Post post = _posts[index];
                     return Column(
                       children: [
-                        PostTile(
+                        PostWidgetSelector(
                           key: ValueKey(post.replyTo!.id),
                           post: post.replyTo!,
                           checkVisibility: true,

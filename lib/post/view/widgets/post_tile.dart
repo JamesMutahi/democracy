@@ -25,7 +25,7 @@ import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-class PostTile extends StatelessWidget {
+class PostTile extends StatefulWidget {
   const PostTile({
     super.key,
     required this.post,
@@ -48,23 +48,37 @@ class PostTile extends StatelessWidget {
   final bool showWholeThread;
 
   @override
+  State<PostTile> createState() => _PostTileState();
+}
+
+class _PostTileState extends State<PostTile> {
+  late bool checkVisibility = widget.checkVisibility;
+  late bool isDependency = widget.isDependency;
+  late bool hideBorder = widget.hideBorder;
+  late bool showThreadedReplies = widget.showThreadedReplies;
+  late bool showTopThread = widget.showTopThread;
+  late bool showBottomThread = widget.showBottomThread;
+  late bool showWholeThread = widget.showWholeThread;
+
+  @override
   Widget build(BuildContext context) {
-    bool showAsRepost = post.body.isEmpty && post.repostOf != null;
+    bool showAsRepost =
+        widget.post.body.isEmpty && widget.post.repostOf != null;
     bool visible = true;
     if (checkVisibility && !isDependency) {
-      if (post.author.isBlocked || post.author.isMuted) {
+      if (widget.post.author.isBlocked || widget.post.author.isMuted) {
         visible = false;
       }
     }
     return Visibility(
       visible: visible,
       child: VisibilityDetector(
-        key: Key('${post.id}'),
+        key: Key('${widget.post.id}'),
         onVisibilityChanged: (visibilityInfo) {
           var visibilityPercentage = visibilityInfo.visibleFraction * 100;
-          if (visibilityPercentage > 75 && !post.isViewed) {
+          if (visibilityPercentage > 75 && !widget.post.isViewed) {
             context.read<PostDetailBloc>().add(
-              PostDetailEvent.addView(post: post),
+              PostDetailEvent.addView(post: widget.post),
             );
           }
         },
@@ -87,24 +101,24 @@ class PostTile extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) {
                         if (showAsRepost) {
-                          return post.repostOf!.communityNoteOf == null
+                          return widget.post.repostOf!.communityNoteOf == null
                               ? PostDetail(
-                                  key: ValueKey(post.id),
-                                  post: post.repostOf!,
+                                  key: ValueKey(widget.post.id),
+                                  post: widget.post.repostOf!,
                                   showAsRepost: true,
-                                  repost: post,
+                                  repost: widget.post,
                                 )
                               : CommunityNoteDetail(
-                                  communityNote: post.repostOf!,
+                                  communityNote: widget.post.repostOf!,
                                   showAsRepost: true,
-                                  repost: post,
+                                  repost: widget.post,
                                 );
                         } else {
                           return PostDetail(
-                            key: ValueKey(post.id),
-                            post: post,
+                            key: ValueKey(widget.post.id),
+                            post: widget.post,
                             showAsRepost: false,
-                            repost: post,
+                            repost: widget.post,
                           );
                         }
                       },
@@ -116,7 +130,7 @@ class PostTile extends StatelessWidget {
                         children: [
                           _repostBanner(),
                           PostWidgetSelector(
-                            post: post.repostOf!,
+                            post: widget.post.repostOf!,
                             isDependency: false,
                           ),
                         ],
@@ -128,14 +142,14 @@ class PostTile extends StatelessWidget {
                             showTopThread: showTopThread,
                           ),
                           _PostContainer(
-                            post: post,
+                            post: widget.post,
                             isDependency: isDependency,
                           ),
                         ],
                       ),
               ),
               if (showThreadedReplies)
-                Thread(post: post, showWholeThread: showWholeThread),
+                Thread(post: widget.post, showWholeThread: showWholeThread),
             ],
           ),
         ),
@@ -148,10 +162,10 @@ class PostTile extends StatelessWidget {
       builder: (context, state) {
         late User user;
         if (state is Authenticated) user = state.user;
-        String text = user.id == post.author.id
+        String text = user.id == widget.post.author.id
             ? 'You reposted'
-            : '${post.author.name} reposted';
-        if (post.repostOf!.communityNoteOf != null) {
+            : '${widget.post.author.name} reposted';
+        if (widget.post.repostOf!.communityNoteOf != null) {
           text = '$text a community note';
         }
         return Container(
