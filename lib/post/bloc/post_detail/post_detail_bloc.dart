@@ -27,6 +27,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
             add(_Created(payload: message['payload']));
           case 'retrieve':
             add(_Loaded(payload: message['payload']));
+          case 'patch':
+            add(_Patched(payload: message['payload']));
           case 'update':
             add(_Updated(payload: message['payload']));
           case 'delete':
@@ -54,6 +56,9 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     on<_Loaded>((event, emit) {
       _onLoaded(event, emit);
     });
+    on<_Patched>((event, emit) {
+      _onPatched(event, emit);
+    });
     on<_Updated>((event, emit) {
       _onUpdated(event, emit);
     });
@@ -72,8 +77,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     on<_Get>((event, emit) {
       _onGet(event, emit);
     });
-    on<_Update>((event, emit) {
-      _onUpdate(event, emit);
+    on<_Patch>((event, emit) {
+      _onPatch(event, emit);
     });
     on<_AddView>((event, emit) {
       _onAddView(event, emit);
@@ -138,12 +143,22 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     }
   }
 
+  Future _onPatched(_Patched event, Emitter<PostDetailState> emit) async {
+    emit(PostDetailLoading());
+    if (event.payload['response_status'] == 200) {
+      final Post post = Post.fromJson(event.payload['data']);
+      emit(PostPatched(post: post));
+    } else {
+      emit(PostDetailFailure(error: event.payload['errors'].toString()));
+    }
+  }
+
   Future _onUpdated(_Updated event, Emitter<PostDetailState> emit) async {
     emit(PostDetailLoading());
     if (event.payload['response_status'] == 200) {
       emit(
         PostUpdated(
-          postId: event.payload['pk'],
+          postId: event.payload['data']['id'],
           body: event.payload['data']['body'],
           likes: event.payload['data']['likes'],
           isLiked: event.payload['data']['is_liked'],
@@ -324,7 +339,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     webSocketService.send(message);
   }
 
-  Future _onUpdate(_Update event, Emitter<PostDetailState> emit) async {
+  Future _onPatch(_Patch event, Emitter<PostDetailState> emit) async {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

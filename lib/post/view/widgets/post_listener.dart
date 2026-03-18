@@ -66,6 +66,20 @@ class PostListener extends StatelessWidget {
                   }
                   updatePosts = true;
                 }
+              case PostPatched(:final post):
+                // Update posts
+                if (posts.any((element) => element.id == post.id)) {
+                  if (post.status == PostStatus.published) {
+                    posts.removeWhere((element) => element.id == state.post.id);
+                    updatePosts = true;
+                  } else {
+                    int postIndex = posts.indexWhere(
+                      (element) => element.id == state.post.id,
+                    );
+                    posts[postIndex] = post;
+                  }
+                  updatePosts = true;
+                }
               case PostUpdated():
                 // Update posts
                 if (posts.any((element) => element.id == state.postId)) {

@@ -146,8 +146,6 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
         overlayHeight: overlayHeight,
         overlay: _view == SearchResultView.users
             ? UserListView(tagController: _controller, animation: _animation)
-            : _view == SearchResultView.hashtag
-            ? SectionListView(tagController: _controller, animation: _animation)
             : SizedBox.shrink(),
         builder: (context, containerKey) {
           return BottomTextFormField(

@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:democracy/app/utils/media_tools.dart';
 import 'package:democracy/app/utils/tagging.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
-import 'package:democracy/constitution/bloc/sections/sections_bloc.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
@@ -241,16 +240,6 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
             }
           },
         ),
-        BlocListener<SectionsBloc, SectionsState>(
-          listener: (context, state) {
-            if (state is SectionsLoaded) {
-              setState(() {
-                _view = SearchResultView.hashtag;
-                changeOverlayHeight(state.sections.length);
-              });
-            }
-          },
-        ),
       ],
       child: FlutterTagger(
         triggerStrategy: TriggerStrategy.eager,
@@ -267,14 +256,10 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
             setState(() {
               _view = SearchResultView.hashtag;
             });
-            context.read<SectionsBloc>().add(
-              SectionsEvent.get(searchTerm: query),
-            );
           }
         },
         triggerCharacterAndStyles: const {
           "@": TextStyle(color: Colors.blueAccent),
-          "#": TextStyle(color: Colors.blueAccent),
         },
         tagTextFormatter: (id, tag, triggerCharacter) {
           return "$triggerCharacter$id#$tag#";
@@ -282,11 +267,6 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
         overlayHeight: overlayHeight,
         overlay: _view == SearchResultView.users
             ? UserListView(
-                tagController: widget.controller,
-                animation: _animation,
-              )
-            : _view == SearchResultView.hashtag
-            ? SectionListView(
                 tagController: widget.controller,
                 animation: _animation,
               )

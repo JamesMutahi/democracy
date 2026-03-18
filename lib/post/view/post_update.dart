@@ -30,10 +30,10 @@ class PostUpdate extends StatefulWidget {
 }
 
 class _PostUpdateState extends State<PostUpdate> {
-  late final _controller = FlutterTaggerController(text: widget.post.body);
+  late final _controller = FlutterTaggerController();
   ValueKey centerKey = ValueKey('Center');
   List<Post> _replyTos = [];
-  bool _disablePostButton = true;
+  bool _disablePostButton = false;
   List<File> files = [];
   int fileLimit = 4;
   List<File> _selectedImages = [];
@@ -46,6 +46,9 @@ class _PostUpdateState extends State<PostUpdate> {
       context.read<ReplyToBloc>().add(ReplyToEvent.get(post: widget.post));
     }
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _controller.text = widget.post.body;
+    });
   }
 
   void _updatePost({PostStatus status = PostStatus.published}) {
@@ -54,7 +57,7 @@ class _PostUpdateState extends State<PostUpdate> {
       tags.add({'id': tag.id, 'text': tag.text});
     }
     context.read<PostDetailBloc>().add(
-      PostDetailEvent.update(
+      PostDetailEvent.patch(
         id: widget.post.id,
         body: _controller.formattedText,
         status: status,
@@ -90,14 +93,29 @@ class _PostUpdateState extends State<PostUpdate> {
                 ),
               );
       },
-      child: BlocListener<PostDetailBloc, PostDetailState>(
-        listener: (context, state) {
-          if (state is PostUpdated) {
-            if (state.postId == widget.post.id) {
-              Navigator.pop(context);
-            }
-          }
-        },
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<PostDetailBloc, PostDetailState>(
+            listener: (context, state) {
+              if (state is PostPatched) {
+                if (state.post.id == widget.post.id) {
+                  Navigator.pop(context);
+                }
+              }
+            },
+          ),
+          BlocListener<ReplyToBloc, ReplyToState>(
+            listener: (context, state) {
+              if (state.status == ReplyToStatus.success) {
+                if (widget.post.id == state.postId) {
+                  setState(() {
+                    _replyTos = state.posts;
+                  });
+                }
+              }
+            },
+          ),
+        ],
         child: Scaffold(
           appBar: AppBar(
             leading: IconButton(

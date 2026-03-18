@@ -46,6 +46,17 @@ class _HomePageState extends State<HomePage>
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
+        if (state is PostPatched) {
+          String message = state.post.status == PostStatus.published
+              ? 'Posted'
+              : 'Saved';
+          final snackBar = getSnackBar(
+            context: context,
+            message: message,
+            status: SnackBarStatus.success,
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
       },
       child: Stack(
         children: [
@@ -187,7 +198,9 @@ class _ForYouTabState extends State<ForYouTab>
           context.read<ForYouBloc>().add(ForYouEvent.get());
         },
         onLoading: () {
-          context.read<ForYouBloc>().add(ForYouEvent.get(previousPosts: _posts));
+          context.read<ForYouBloc>().add(
+            ForYouEvent.get(previousPosts: _posts),
+          );
         },
         onFailure: () {
           context.read<ForYouBloc>().add(ForYouEvent.get());

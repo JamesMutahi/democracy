@@ -10,6 +10,10 @@ sealed class PostDetailEvent with _$PostDetailEvent {
     required Map<String, dynamic> payload,
   }) = _Loaded;
 
+  const factory PostDetailEvent.patched({
+    required Map<String, dynamic> payload,
+  }) = _Patched;
+
   const factory PostDetailEvent.updated({
     required Map<String, dynamic> payload,
   }) = _Updated;
@@ -66,7 +70,7 @@ sealed class PostDetailEvent with _$PostDetailEvent {
 
   const factory PostDetailEvent.get({required Post post}) = _Get;
 
-  const factory PostDetailEvent.update({
+  const factory PostDetailEvent.patch({
     required int id,
     required String body,
     required PostStatus status,
@@ -77,7 +81,7 @@ sealed class PostDetailEvent with _$PostDetailEvent {
     String? imagePath4,
     String? filePath,
     String? location,
-  }) = _Update;
+  }) = _Patch;
 
   const factory PostDetailEvent.addView({required Post post}) = _AddView;
 
