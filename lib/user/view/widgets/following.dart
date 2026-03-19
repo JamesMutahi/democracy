@@ -1,7 +1,5 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/user/bloc/followers/followers_bloc.dart';
 import 'package:democracy/user/bloc/following/following_bloc.dart';
-import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/profile.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
@@ -73,15 +71,6 @@ class _FollowersTabState extends State<_FollowersTab> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state.status == WebsocketStatus.connected) {
-              context.read<UsersBloc>().add(
-                UsersEvent.resubscribe(users: _users),
-              );
-            }
-          },
-        ),
         BlocListener<FollowersBloc, FollowersState>(
           listener: (context, state) {
             if (state.status == FollowersStatus.success) {
@@ -185,15 +174,6 @@ class _FollowingTabState extends State<_FollowingTab> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state.status == WebsocketStatus.connected) {
-              context.read<UsersBloc>().add(
-                UsersEvent.resubscribe(users: _users),
-              );
-            }
-          },
-        ),
         BlocListener<FollowingBloc, FollowingState>(
           listener: (context, state) {
             if (state.status == FollowingStatus.success) {

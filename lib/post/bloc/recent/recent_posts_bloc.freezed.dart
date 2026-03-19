@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'users_bloc.dart';
+part of 'recent_posts_bloc.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -12,7 +12,7 @@ part of 'users_bloc.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$UsersEvent {
+mixin _$RecentPostsEvent {
 
 
 
@@ -20,7 +20,7 @@ mixin _$UsersEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UsersEvent);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RecentPostsEvent);
 }
 
 
@@ -29,20 +29,20 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'UsersEvent()';
+  return 'RecentPostsEvent()';
 }
 
 
 }
 
 /// @nodoc
-class $UsersEventCopyWith<$Res>  {
-$UsersEventCopyWith(UsersEvent _, $Res Function(UsersEvent) __);
+class $RecentPostsEventCopyWith<$Res>  {
+$RecentPostsEventCopyWith(RecentPostsEvent _, $Res Function(RecentPostsEvent) __);
 }
 
 
-/// Adds pattern-matching-related methods to [UsersEvent].
-extension UsersEventPatterns on UsersEvent {
+/// Adds pattern-matching-related methods to [RecentPostsEvent].
+extension RecentPostsEventPatterns on RecentPostsEvent {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -119,10 +119,10 @@ return received(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  User? lastUser)?  get,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  List<Post>? previousPosts,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.searchTerm,_that.lastUser);case _Received() when received != null:
+return get(_that.searchTerm,_that.previousPosts,_that.startDate,_that.endDate);case _Received() when received != null:
 return received(_that.payload);case _:
   return orElse();
 
@@ -141,10 +141,10 @@ return received(_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  User? lastUser)  get,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  List<Post>? previousPosts,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
 switch (_that) {
 case _Get():
-return get(_that.searchTerm,_that.lastUser);case _Received():
+return get(_that.searchTerm,_that.previousPosts,_that.startDate,_that.endDate);case _Received():
 return received(_that.payload);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -159,10 +159,10 @@ return received(_that.payload);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  User? lastUser)?  get,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  List<Post>? previousPosts,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.searchTerm,_that.lastUser);case _Received() when received != null:
+return get(_that.searchTerm,_that.previousPosts,_that.startDate,_that.endDate);case _Received() when received != null:
 return received(_that.payload);case _:
   return null;
 
@@ -174,14 +174,24 @@ return received(_that.payload);case _:
 /// @nodoc
 
 
-class _Get implements UsersEvent {
-  const _Get({this.searchTerm, this.lastUser});
+class _Get implements RecentPostsEvent {
+  const _Get({this.searchTerm, final  List<Post>? previousPosts, this.startDate, this.endDate}): _previousPosts = previousPosts;
   
 
  final  String? searchTerm;
- final  User? lastUser;
+ final  List<Post>? _previousPosts;
+ List<Post>? get previousPosts {
+  final value = _previousPosts;
+  if (value == null) return null;
+  if (_previousPosts is EqualUnmodifiableListView) return _previousPosts;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
 
-/// Create a copy of UsersEvent
+ final  DateTime? startDate;
+ final  DateTime? endDate;
+
+/// Create a copy of RecentPostsEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -191,31 +201,31 @@ _$GetCopyWith<_Get> get copyWith => __$GetCopyWithImpl<_Get>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&(identical(other.lastUser, lastUser) || other.lastUser == lastUser));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&const DeepCollectionEquality().equals(other._previousPosts, _previousPosts)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,searchTerm,lastUser);
+int get hashCode => Object.hash(runtimeType,searchTerm,const DeepCollectionEquality().hash(_previousPosts),startDate,endDate);
 
 @override
 String toString() {
-  return 'UsersEvent.get(searchTerm: $searchTerm, lastUser: $lastUser)';
+  return 'RecentPostsEvent.get(searchTerm: $searchTerm, previousPosts: $previousPosts, startDate: $startDate, endDate: $endDate)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$GetCopyWith<$Res> implements $UsersEventCopyWith<$Res> {
+abstract mixin class _$GetCopyWith<$Res> implements $RecentPostsEventCopyWith<$Res> {
   factory _$GetCopyWith(_Get value, $Res Function(_Get) _then) = __$GetCopyWithImpl;
 @useResult
 $Res call({
- String? searchTerm, User? lastUser
+ String? searchTerm, List<Post>? previousPosts, DateTime? startDate, DateTime? endDate
 });
 
 
-$UserCopyWith<$Res>? get lastUser;
+
 
 }
 /// @nodoc
@@ -226,35 +236,25 @@ class __$GetCopyWithImpl<$Res>
   final _Get _self;
   final $Res Function(_Get) _then;
 
-/// Create a copy of UsersEvent
+/// Create a copy of RecentPostsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? searchTerm = freezed,Object? lastUser = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? searchTerm = freezed,Object? previousPosts = freezed,Object? startDate = freezed,Object? endDate = freezed,}) {
   return _then(_Get(
 searchTerm: freezed == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
-as String?,lastUser: freezed == lastUser ? _self.lastUser : lastUser // ignore: cast_nullable_to_non_nullable
-as User?,
+as String?,previousPosts: freezed == previousPosts ? _self._previousPosts : previousPosts // ignore: cast_nullable_to_non_nullable
+as List<Post>?,startDate: freezed == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,endDate: freezed == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 
-/// Create a copy of UsersEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UserCopyWith<$Res>? get lastUser {
-    if (_self.lastUser == null) {
-    return null;
-  }
 
-  return $UserCopyWith<$Res>(_self.lastUser!, (value) {
-    return _then(_self.copyWith(lastUser: value));
-  });
-}
 }
 
 /// @nodoc
 
 
-class _Received implements UsersEvent {
+class _Received implements RecentPostsEvent {
   const _Received({required final  Map<String, dynamic> payload}): _payload = payload;
   
 
@@ -266,7 +266,7 @@ class _Received implements UsersEvent {
 }
 
 
-/// Create a copy of UsersEvent
+/// Create a copy of RecentPostsEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -285,14 +285,14 @@ int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(
 
 @override
 String toString() {
-  return 'UsersEvent.received(payload: $payload)';
+  return 'RecentPostsEvent.received(payload: $payload)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$ReceivedCopyWith<$Res> implements $UsersEventCopyWith<$Res> {
+abstract mixin class _$ReceivedCopyWith<$Res> implements $RecentPostsEventCopyWith<$Res> {
   factory _$ReceivedCopyWith(_Received value, $Res Function(_Received) _then) = __$ReceivedCopyWithImpl;
 @useResult
 $Res call({
@@ -311,7 +311,7 @@ class __$ReceivedCopyWithImpl<$Res>
   final _Received _self;
   final $Res Function(_Received) _then;
 
-/// Create a copy of UsersEvent
+/// Create a copy of RecentPostsEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
   return _then(_Received(

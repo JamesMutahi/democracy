@@ -40,6 +40,7 @@ import 'package:democracy/post/bloc/likes/likes_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/post_filter/post_filter_cubit.dart';
 import 'package:democracy/post/bloc/posts/posts_bloc.dart';
+import 'package:democracy/post/bloc/recent/recent_posts_bloc.dart';
 import 'package:democracy/post/bloc/replies/replies_bloc.dart';
 import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
 import 'package:democracy/post/bloc/user_community_notes/user_community_notes_bloc.dart';
@@ -131,6 +132,10 @@ void main() async {
             create: (context) => PostsBloc(webSocketService: webSocketService),
           ),
           BlocProvider(create: (context) => PostFilterCubit()),
+          BlocProvider(
+            create: (context) =>
+                RecentPostsBloc(webSocketService: webSocketService),
+          ),
           BlocProvider(
             create: (context) =>
                 PostDetailBloc(webSocketService: webSocketService),

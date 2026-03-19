@@ -1,7 +1,5 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/user/bloc/blocked/blocked_bloc.dart';
 import 'package:democracy/user/bloc/muted/muted_bloc.dart';
-import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/profile.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
@@ -72,15 +70,6 @@ class _MutedTabState extends State<_MutedTab> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state.status == WebsocketStatus.connected) {
-              context.read<UsersBloc>().add(
-                UsersEvent.resubscribe(users: _users),
-              );
-            }
-          },
-        ),
         BlocListener<MutedBloc, MutedState>(
           listener: (context, state) {
             if (state.status == MutedStatus.success) {
@@ -114,43 +103,37 @@ class _MutedTabState extends State<_MutedTab> {
           },
         ),
       ],
-      child: PopScope(
-        canPop: true,
-        onPopInvokedWithResult: (_, __) {
-          context.read<UsersBloc>().add(UsersEvent.unsubscribe(users: _users));
+      child: UsersListView(
+        users: _users,
+        selectedUsers: selectedUsers,
+        loading: loading,
+        failure: failure,
+        refreshController: _refreshController,
+        enablePullDown: true,
+        enablePullUp: hasNextPage,
+        showProfileButtons: true,
+        onUsersUpdated: (users) {
+          setState(() {
+            _users = users;
+          });
         },
-        child: UsersListView(
-          users: _users,
-          selectedUsers: selectedUsers,
-          loading: loading,
-          failure: failure,
-          refreshController: _refreshController,
-          enablePullDown: true,
-          enablePullUp: hasNextPage,
-          showProfileButtons: true,
-          onUsersUpdated: (users) {
-            setState(() {
-              _users = users;
-            });
-          },
-          onUserTap: (user) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ProfilePage(user: user)),
-            );
-          },
-          onRefresh: () {
-            context.read<MutedBloc>().add(MutedEvent.get());
-          },
-          onLoading: () {
-            context.read<MutedBloc>().add(
-              MutedEvent.get(lastUser: _users.last),
-            );
-          },
-          onFailure: () {
-            context.read<MutedBloc>().add(MutedEvent.get());
-          },
-        ),
+        onUserTap: (user) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ProfilePage(user: user)),
+          );
+        },
+        onRefresh: () {
+          context.read<MutedBloc>().add(MutedEvent.get());
+        },
+        onLoading: () {
+          context.read<MutedBloc>().add(
+            MutedEvent.get(lastUser: _users.last),
+          );
+        },
+        onFailure: () {
+          context.read<MutedBloc>().add(MutedEvent.get());
+        },
       ),
     );
   }
@@ -184,15 +167,6 @@ class _BlockedTabState extends State<_BlockedTab> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state.status == WebsocketStatus.connected) {
-              context.read<UsersBloc>().add(
-                UsersEvent.resubscribe(users: _users),
-              );
-            }
-          },
-        ),
         BlocListener<BlockedBloc, BlockedState>(
           listener: (context, state) {
             if (state.status == BlockedStatus.success) {
@@ -227,43 +201,37 @@ class _BlockedTabState extends State<_BlockedTab> {
           },
         ),
       ],
-      child: PopScope(
-        canPop: true,
-        onPopInvokedWithResult: (_, __) {
-          context.read<UsersBloc>().add(UsersEvent.unsubscribe(users: _users));
+      child: UsersListView(
+        users: _users,
+        selectedUsers: selectedUsers,
+        loading: loading,
+        failure: failure,
+        refreshController: _refreshController,
+        enablePullDown: true,
+        enablePullUp: hasNextPage,
+        showProfileButtons: true,
+        onUsersUpdated: (users) {
+          setState(() {
+            _users = users;
+          });
         },
-        child: UsersListView(
-          users: _users,
-          selectedUsers: selectedUsers,
-          loading: loading,
-          failure: failure,
-          refreshController: _refreshController,
-          enablePullDown: true,
-          enablePullUp: hasNextPage,
-          showProfileButtons: true,
-          onUsersUpdated: (users) {
-            setState(() {
-              _users = users;
-            });
-          },
-          onUserTap: (user) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ProfilePage(user: user)),
-            );
-          },
-          onRefresh: () {
-            context.read<BlockedBloc>().add(BlockedEvent.get());
-          },
-          onLoading: () {
-            context.read<BlockedBloc>().add(
-              BlockedEvent.get(lastUser: _users.last),
-            );
-          },
-          onFailure: () {
-            context.read<BlockedBloc>().add(BlockedEvent.get());
-          },
-        ),
+        onUserTap: (user) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ProfilePage(user: user)),
+          );
+        },
+        onRefresh: () {
+          context.read<BlockedBloc>().add(BlockedEvent.get());
+        },
+        onLoading: () {
+          context.read<BlockedBloc>().add(
+            BlockedEvent.get(lastUser: _users.last),
+          );
+        },
+        onFailure: () {
+          context.read<BlockedBloc>().add(BlockedEvent.get());
+        },
       ),
     );
   }

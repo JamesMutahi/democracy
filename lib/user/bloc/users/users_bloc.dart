@@ -27,12 +27,6 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     on<_Received>((event, emit) {
       _onReceived(event, emit);
     });
-    on<_Resubscribe>((event, emit) {
-      _onResubscribe(event, emit);
-    });
-    on<_Unsubscribe>((event, emit) {
-      _onUnsubscribe(event, emit);
-    });
   }
 
   Future _onGet(_Get event, Emitter<UsersState> emit) async {
@@ -40,7 +34,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
       'stream': stream,
       'payload': {
         'action': 'list',
-        'request_id': requestId,
+        'request_id': event.searchTerm,
         'search_term': event.searchTerm,
         'last_user': event.lastUser?.id,
       },
@@ -58,6 +52,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
       emit(
         state.copyWith(
           status: UsersStatus.success,
+          searchTerm: event.payload['request_id'],
           users: lastUser == null ? users : [...state.users, ...users],
           hasNext: event.payload['data']['has_next'],
         ),
@@ -65,32 +60,6 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     } else {
       emit(state.copyWith(status: UsersStatus.failure));
     }
-  }
-
-  Future _onResubscribe(_Resubscribe event, Emitter<UsersState> emit) async {
-    List<int> userIds = event.users.map((user) => user.id).toList();
-    Map<String, dynamic> message = {
-      'stream': stream,
-      'payload': {
-        "action": 'resubscribe',
-        'request_id': requestId,
-        'pks': userIds,
-      },
-    };
-    webSocketService.send(message);
-  }
-
-  Future _onUnsubscribe(_Unsubscribe event, Emitter<UsersState> emit) async {
-    List<int> userIds = event.users.map((user) => user.id).toList();
-    Map<String, dynamic> message = {
-      'stream': stream,
-      'payload': {
-        'action': 'unsubscribe',
-        'request_id': requestId,
-        'pks': userIds,
-      },
-    };
-    webSocketService.send(message);
   }
 
   final WebSocketService webSocketService;

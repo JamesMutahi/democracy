@@ -64,13 +64,15 @@ class CustomSearchBar extends StatelessWidget {
     super.key,
     this.controller,
     required this.hintText,
-    required this.onChanged,
+    this.onChanged,
+    this.onSubmitted,
     this.onFilterTap,
   });
 
   final TextEditingController? controller;
   final String hintText;
-  final void Function(String) onChanged;
+  final void Function(String)? onChanged;
+  final void Function(String)? onSubmitted;
   final VoidCallback? onFilterTap;
 
   @override
@@ -86,7 +88,7 @@ class CustomSearchBar extends StatelessWidget {
           if (onFilterTap != null)
             IconButton(
               onPressed: onFilterTap,
-              icon: Icon(Symbols.filter_list_rounded),
+              icon: Icon(Icons.tune_rounded),
             ),
         ],
         hintText: hintText,
@@ -97,6 +99,7 @@ class CustomSearchBar extends StatelessWidget {
           FocusManager.instance.primaryFocus?.unfocus();
         },
         onChanged: onChanged,
+        onSubmitted: onSubmitted,
       ),
     );
   }

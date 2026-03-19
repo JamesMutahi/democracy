@@ -11,7 +11,6 @@ import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/view/edit_message.dart';
 import 'package:democracy/chat/view/messages.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
-import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:flutter/material.dart';
@@ -96,8 +95,8 @@ class _ChatScaffoldState extends State<ChatScaffold> {
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
             if (state.status == WebsocketStatus.connected) {
-              context.read<UsersBloc>().add(
-                UsersEvent.resubscribe(users: [otherUser]),
+              context.read<UserDetailBloc>().add(
+                UserDetailEvent.get(user: otherUser),
               );
             }
           },
@@ -157,8 +156,8 @@ class _ChatScaffoldState extends State<ChatScaffold> {
           if (showMessageActions) {
             context.read<MessageActionsCubit>().closeActionButtons();
           }
-          context.read<UsersBloc>().add(
-            UsersEvent.unsubscribe(users: [otherUser]),
+          context.read<UserDetailBloc>().add(
+            UserDetailEvent.unsubscribe(user: otherUser),
           );
         },
         child: Scaffold(

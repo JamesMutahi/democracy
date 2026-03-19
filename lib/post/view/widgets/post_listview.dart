@@ -1,5 +1,6 @@
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
+import 'package:democracy/app/utils/no_results.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_widget_selector.dart';
@@ -51,19 +52,21 @@ class PostListView extends StatelessWidget {
               onRefresh: onRefresh,
               onLoading: onLoading,
               footer: ClassicFooter(),
-              child: ListView.builder(
-                padding: EdgeInsets.only(bottom: 20),
-                itemBuilder: (BuildContext context, int index) {
-                  Post post = posts[index];
-                  return PostWidgetSelector(
-                    key: ValueKey(post.id),
-                    post: post,
-                    isDependency: false,
-                    checkVisibility: checkVisibility,
-                  );
-                },
-                itemCount: posts.length,
-              ),
+              child: posts.isEmpty
+                  ? NoResults(text: 'No results')
+                  : ListView.builder(
+                      padding: EdgeInsets.only(bottom: 20),
+                      itemBuilder: (BuildContext context, int index) {
+                        Post post = posts[index];
+                        return PostWidgetSelector(
+                          key: ValueKey(post.id),
+                          post: post,
+                          isDependency: false,
+                          checkVisibility: checkVisibility,
+                        );
+                      },
+                      itemCount: posts.length,
+                    ),
             ),
           );
   }

@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PostFilterState {
 
- String get searchTerm; DateTime? get startDate; DateTime? get endDate;
+ bool get onExplorePage; String get searchTerm; DateTime? get startDate; DateTime? get endDate;
 /// Create a copy of PostFilterState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $PostFilterStateCopyWith<PostFilterState> get copyWith => _$PostFilterStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostFilterState&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostFilterState&&(identical(other.onExplorePage, onExplorePage) || other.onExplorePage == onExplorePage)&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,searchTerm,startDate,endDate);
+int get hashCode => Object.hash(runtimeType,onExplorePage,searchTerm,startDate,endDate);
 
 @override
 String toString() {
-  return 'PostFilterState(searchTerm: $searchTerm, startDate: $startDate, endDate: $endDate)';
+  return 'PostFilterState(onExplorePage: $onExplorePage, searchTerm: $searchTerm, startDate: $startDate, endDate: $endDate)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $PostFilterStateCopyWith<$Res>  {
   factory $PostFilterStateCopyWith(PostFilterState value, $Res Function(PostFilterState) _then) = _$PostFilterStateCopyWithImpl;
 @useResult
 $Res call({
- String searchTerm, DateTime? startDate, DateTime? endDate
+ bool onExplorePage, String searchTerm, DateTime? startDate, DateTime? endDate
 });
 
 
@@ -62,9 +62,10 @@ class _$PostFilterStateCopyWithImpl<$Res>
 
 /// Create a copy of PostFilterState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? searchTerm = null,Object? startDate = freezed,Object? endDate = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? onExplorePage = null,Object? searchTerm = null,Object? startDate = freezed,Object? endDate = freezed,}) {
   return _then(_self.copyWith(
-searchTerm: null == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
+onExplorePage: null == onExplorePage ? _self.onExplorePage : onExplorePage // ignore: cast_nullable_to_non_nullable
+as bool,searchTerm: null == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
 as String,startDate: freezed == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,endDate: freezed == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,
@@ -149,10 +150,10 @@ return changed(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String searchTerm,  DateTime? startDate,  DateTime? endDate)?  changed,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( bool onExplorePage,  String searchTerm,  DateTime? startDate,  DateTime? endDate)?  changed,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Changed() when changed != null:
-return changed(_that.searchTerm,_that.startDate,_that.endDate);case _:
+return changed(_that.onExplorePage,_that.searchTerm,_that.startDate,_that.endDate);case _:
   return orElse();
 
 }
@@ -170,10 +171,10 @@ return changed(_that.searchTerm,_that.startDate,_that.endDate);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String searchTerm,  DateTime? startDate,  DateTime? endDate)  changed,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( bool onExplorePage,  String searchTerm,  DateTime? startDate,  DateTime? endDate)  changed,}) {final _that = this;
 switch (_that) {
 case _Changed():
-return changed(_that.searchTerm,_that.startDate,_that.endDate);}
+return changed(_that.onExplorePage,_that.searchTerm,_that.startDate,_that.endDate);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -187,10 +188,10 @@ return changed(_that.searchTerm,_that.startDate,_that.endDate);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String searchTerm,  DateTime? startDate,  DateTime? endDate)?  changed,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( bool onExplorePage,  String searchTerm,  DateTime? startDate,  DateTime? endDate)?  changed,}) {final _that = this;
 switch (_that) {
 case _Changed() when changed != null:
-return changed(_that.searchTerm,_that.startDate,_that.endDate);case _:
+return changed(_that.onExplorePage,_that.searchTerm,_that.startDate,_that.endDate);case _:
   return null;
 
 }
@@ -202,9 +203,10 @@ return changed(_that.searchTerm,_that.startDate,_that.endDate);case _:
 
 
 class _Changed implements PostFilterState {
-  const _Changed({required this.searchTerm, required this.startDate, required this.endDate});
+  const _Changed({required this.onExplorePage, required this.searchTerm, required this.startDate, required this.endDate});
   
 
+@override final  bool onExplorePage;
 @override final  String searchTerm;
 @override final  DateTime? startDate;
 @override final  DateTime? endDate;
@@ -219,16 +221,16 @@ _$ChangedCopyWith<_Changed> get copyWith => __$ChangedCopyWithImpl<_Changed>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Changed&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Changed&&(identical(other.onExplorePage, onExplorePage) || other.onExplorePage == onExplorePage)&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,searchTerm,startDate,endDate);
+int get hashCode => Object.hash(runtimeType,onExplorePage,searchTerm,startDate,endDate);
 
 @override
 String toString() {
-  return 'PostFilterState.changed(searchTerm: $searchTerm, startDate: $startDate, endDate: $endDate)';
+  return 'PostFilterState.changed(onExplorePage: $onExplorePage, searchTerm: $searchTerm, startDate: $startDate, endDate: $endDate)';
 }
 
 
@@ -239,7 +241,7 @@ abstract mixin class _$ChangedCopyWith<$Res> implements $PostFilterStateCopyWith
   factory _$ChangedCopyWith(_Changed value, $Res Function(_Changed) _then) = __$ChangedCopyWithImpl;
 @override @useResult
 $Res call({
- String searchTerm, DateTime? startDate, DateTime? endDate
+ bool onExplorePage, String searchTerm, DateTime? startDate, DateTime? endDate
 });
 
 
@@ -256,9 +258,10 @@ class __$ChangedCopyWithImpl<$Res>
 
 /// Create a copy of PostFilterState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? searchTerm = null,Object? startDate = freezed,Object? endDate = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? onExplorePage = null,Object? searchTerm = null,Object? startDate = freezed,Object? endDate = freezed,}) {
   return _then(_Changed(
-searchTerm: null == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
+onExplorePage: null == onExplorePage ? _self.onExplorePage : onExplorePage // ignore: cast_nullable_to_non_nullable
+as bool,searchTerm: null == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
 as String,startDate: freezed == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,endDate: freezed == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,

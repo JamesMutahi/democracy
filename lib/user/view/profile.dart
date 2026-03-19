@@ -8,7 +8,6 @@ import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/view/chat_detail.dart';
 import 'package:democracy/post/view/draft_posts.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
-import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/edit_profile.dart';
 import 'package:democracy/user/view/widgets/following.dart';
@@ -113,8 +112,8 @@ class _ProfilePageState extends State<ProfilePage> {
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
             if (state.status == WebsocketStatus.connected) {
-              context.read<UsersBloc>().add(
-                UsersEvent.resubscribe(users: [widget.user]),
+              context.read<UserDetailBloc>().add(
+                UserDetailEvent.get(user: widget.user),
               );
             }
           },
@@ -145,8 +144,8 @@ class _ProfilePageState extends State<ProfilePage> {
             child: PopScope(
               canPop: true,
               onPopInvokedWithResult: (_, __) {
-                context.read<UsersBloc>().add(
-                  UsersEvent.unsubscribe(users: [user]),
+                context.read<UserDetailBloc>().add(
+                  UserDetailEvent.unsubscribe(user: user),
                 );
               },
               child: Scaffold(

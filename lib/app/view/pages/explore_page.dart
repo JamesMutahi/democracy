@@ -2,11 +2,16 @@ import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/filters_modal.dart';
 import 'package:democracy/post/bloc/post_filter/post_filter_cubit.dart';
 import 'package:democracy/post/bloc/posts/posts_bloc.dart';
+import 'package:democracy/post/bloc/recent/recent_posts_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
+import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
+import 'package:democracy/user/view/profile.dart';
+import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class ExplorePage extends StatefulWidget {
@@ -23,16 +28,13 @@ class ExplorePage extends StatefulWidget {
   State<ExplorePage> createState() => _ExplorePageState();
 }
 
-class _ExplorePageState extends State<ExplorePage>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
+class _ExplorePageState extends State<ExplorePage> {
   final TextEditingController _controller = TextEditingController();
+  DateTime? startDate;
+  DateTime? endDate;
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return NestedScrollView(
       headerSliverBuilder: (context, bool innerBoxIsScrolled) {
         return [
@@ -47,22 +49,43 @@ class _ExplorePageState extends State<ExplorePage>
               preferredSize: Size.fromHeight(60.0),
               child: BlocConsumer<PostFilterCubit, PostFilterState>(
                 listener: (context, state) {
-                  context.read<PostsBloc>().add(
-                    PostsEvent.get(
-                      searchTerm: state.searchTerm,
-                      startDate: state.startDate,
-                      endDate: state.endDate,
-                    ),
-                  );
+                  if (state.onExplorePage) {
+                    if (state.startDate != startDate ||
+                        state.endDate != endDate) {
+                      setState(() {
+                        startDate = state.startDate;
+                        endDate = state.endDate;
+                      });
+                    }
+                  }
                 },
                 builder: (context, state) {
                   return CustomSearchBar(
                     controller: _controller,
                     hintText: 'Search',
-                    onChanged: (value) {
-                      context.read<PostFilterCubit>().searchTermChanged(
-                        searchTerm: value,
-                      );
+                    onSubmitted: (value) {
+                      if (_controller.text.trim().isNotEmpty) {
+                        context.read<PostFilterCubit>().searchTermChanged(
+                          onExplorePage: true,
+                          searchTerm: _controller.text,
+                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ResultsPage(
+                              searchTerm: _controller.text,
+                              startDate: startDate,
+                              endDate: endDate,
+                            ),
+                          ),
+                        ).whenComplete(() {
+                          _controller.clear();
+                          setState(() {
+                            startDate = null;
+                            endDate = null;
+                          });
+                        });
+                      }
                     },
                     onFilterTap: () {
                       showGeneralDialog(
@@ -70,8 +93,9 @@ class _ExplorePageState extends State<ExplorePage>
                         transitionDuration: const Duration(milliseconds: 300),
                         pageBuilder: (context, animation, secondaryAnimation) {
                           return _FiltersModal(
-                            startDate: state.startDate,
-                            endDate: state.endDate,
+                            onExplorePage: true,
+                            startDate: startDate,
+                            endDate: endDate,
                           );
                         },
                       );
@@ -83,64 +107,257 @@ class _ExplorePageState extends State<ExplorePage>
           ),
         ];
       },
-      body: _Posts(),
+      body: Placeholder(),
     );
   }
 }
 
-class _Posts extends StatefulWidget {
-  const _Posts();
+class ResultsPage extends StatefulWidget {
+  const ResultsPage({
+    super.key,
+    required this.searchTerm,
+    required this.startDate,
+    required this.endDate,
+  });
+
+  final String searchTerm;
+  final DateTime? startDate;
+  final DateTime? endDate;
 
   @override
-  State<_Posts> createState() => _PostsState();
+  State<ResultsPage> createState() => _ResultsPageState();
 }
 
-class _PostsState extends State<_Posts> {
-  bool loading = false;
+class _ResultsPageState extends State<ResultsPage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.text = widget.searchTerm;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        body: SafeArea(
+          child: BlocBuilder<PostFilterCubit, PostFilterState>(
+            builder: (context, state) {
+              return NestedScrollView(
+                headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+                  return [
+                    SliverAppBar(
+                      floating: true,
+                      snap: true,
+                      forceElevated: true,
+                      automaticallyImplyLeading: false,
+                      flexibleSpace: Builder(
+                        builder: (context) {
+                          return SizedBox(
+                            height: 50,
+                            child: Row(
+                              children: [
+                                BackButton(),
+                                Expanded(
+                                  child: Container(
+                                    margin: EdgeInsets.only(right: 15),
+                                    child: SearchBar(
+                                      controller: _controller,
+                                      padding: WidgetStateProperty.all(
+                                        EdgeInsets.only(left: 15),
+                                      ),
+                                      leading: Icon(Symbols.search_rounded),
+                                      trailing: [
+                                        IconButton(
+                                          onPressed: () {
+                                            showGeneralDialog(
+                                              context: context,
+                                              transitionDuration:
+                                                  const Duration(
+                                                    milliseconds: 300,
+                                                  ),
+                                              pageBuilder:
+                                                  (
+                                                    context,
+                                                    animation,
+                                                    secondaryAnimation,
+                                                  ) {
+                                                    return _FiltersModal(
+                                                      onExplorePage: false,
+                                                      startDate:
+                                                          widget.startDate,
+                                                      endDate: widget.endDate,
+                                                    );
+                                                  },
+                                            );
+                                          },
+                                          icon: Icon(Icons.tune_rounded),
+                                        ),
+                                      ],
+                                      onTapOutside: (event) {
+                                        FocusManager.instance.primaryFocus
+                                            ?.unfocus();
+                                      },
+                                      onSubmitted: (value) {
+                                        if (widget.searchTerm !=
+                                                _controller.text ||
+                                            state.startDate !=
+                                                widget.startDate ||
+                                            state.endDate != widget.endDate &&
+                                                _controller.text
+                                                    .trim()
+                                                    .isNotEmpty) {
+                                          context
+                                              .read<PostFilterCubit>()
+                                              .searchTermChanged(
+                                                onExplorePage: false,
+                                                searchTerm: _controller.text,
+                                              );
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => ResultsPage(
+                                                searchTerm: _controller.text,
+                                                startDate: state.startDate,
+                                                endDate: state.endDate,
+                                              ),
+                                            ),
+                                          ).whenComplete(() {
+                                            _controller.text =
+                                                widget.searchTerm;
+                                          });
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                      bottom: TabBar(
+                        dividerColor: Theme.of(
+                          context,
+                        ).colorScheme.outlineVariant,
+                        labelStyle: Theme.of(context).textTheme.titleMedium,
+                        tabs: [
+                          Tab(text: 'Top'),
+                          Tab(text: 'Recent'),
+                          Tab(text: 'Profiles'),
+                        ],
+                      ),
+                    ),
+                  ];
+                },
+                body: TabBarView(
+                  physics: NeverScrollableScrollPhysics(),
+                  children: [
+                    _TopPosts(
+                      searchTerm: widget.searchTerm,
+                      startDate: state.startDate,
+                      endDate: state.endDate,
+                    ),
+                    _RecentPosts(
+                      searchTerm: widget.searchTerm,
+                      startDate: state.startDate,
+                      endDate: state.endDate,
+                    ),
+                    _ProfilesTab(searchTerm: widget.searchTerm),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TopPosts extends StatefulWidget {
+  const _TopPosts({
+    required this.searchTerm,
+    required this.startDate,
+    required this.endDate,
+  });
+
+  final String searchTerm;
+  final DateTime? startDate;
+  final DateTime? endDate;
+
+  @override
+  State<_TopPosts> createState() => _TopPostsState();
+}
+
+class _TopPostsState extends State<_TopPosts>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  bool loading = true;
   bool failure = false;
   List<Post> _posts = [];
   bool hasNextPage = false;
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
   );
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<PostsBloc>().add(
+      PostsEvent.get(
+        searchTerm: widget.searchTerm,
+        startDate: widget.startDate,
+        endDate: widget.endDate,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<PostsBloc, PostsState>(
-          listener: (context, state) {
-            if (state.status == PostsStatus.success) {
-              setState(() {
-                _posts = state.posts.toList();
-                loading = false;
-                failure = false;
-                hasNextPage = state.hasNext;
-                if (_refreshController.headerStatus ==
-                    RefreshStatus.refreshing) {
-                  _refreshController.refreshCompleted();
-                }
-                if (_refreshController.footerStatus == LoadStatus.loading) {
-                  _refreshController.loadComplete();
-                }
-              });
-            }
-            if (state.status == PostsStatus.failure) {
-              if (loading) {
-                setState(() {
-                  loading = false;
-                  failure = true;
-                });
-              }
+    super.build(context);
+    return BlocListener<PostsBloc, PostsState>(
+      listener: (context, state) {
+        if (state.status == PostsStatus.success) {
+          if (state.searchTerm == widget.searchTerm) {
+            setState(() {
+              _posts = state.posts.toList();
+              loading = false;
+              failure = false;
+              hasNextPage = state.hasNext;
               if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshFailed();
+                _refreshController.refreshCompleted();
               }
               if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadFailed();
+                _refreshController.loadComplete();
               }
-            }
-          },
-        ),
-      ],
+            });
+          }
+        }
+        if (state.status == PostsStatus.failure) {
+          if (loading) {
+            setState(() {
+              loading = false;
+              failure = true;
+            });
+          }
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshFailed();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadFailed();
+          }
+        }
+      },
       child: BlocBuilder<PostFilterCubit, PostFilterState>(
         builder: (context, state) {
           void getPosts({List<Post>? previousPosts}) {
@@ -179,9 +396,229 @@ class _PostsState extends State<_Posts> {
   }
 }
 
-class _FiltersModal extends StatefulWidget {
-  const _FiltersModal({required this.startDate, required this.endDate});
+class _RecentPosts extends StatefulWidget {
+  const _RecentPosts({required this.searchTerm, this.startDate, this.endDate});
 
+  final String searchTerm;
+  final DateTime? startDate;
+  final DateTime? endDate;
+
+  @override
+  State<_RecentPosts> createState() => _RecentPostsState();
+}
+
+class _RecentPostsState extends State<_RecentPosts>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  bool loading = true;
+  bool failure = false;
+  List<Post> _posts = [];
+  bool hasNextPage = false;
+  final RefreshController _refreshController = RefreshController(
+    initialRefresh: false,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<RecentPostsBloc>().add(
+      RecentPostsEvent.get(
+        searchTerm: widget.searchTerm,
+        startDate: widget.startDate,
+        endDate: widget.endDate,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return BlocListener<RecentPostsBloc, RecentPostsState>(
+      listener: (context, state) {
+        if (state.status == RecentPostsStatus.success) {
+          if (state.searchTerm == widget.searchTerm) {
+            setState(() {
+              _posts = state.posts.toList();
+              loading = false;
+              failure = false;
+              hasNextPage = state.hasNext;
+              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+                _refreshController.refreshCompleted();
+              }
+              if (_refreshController.footerStatus == LoadStatus.loading) {
+                _refreshController.loadComplete();
+              }
+            });
+          }
+        }
+        if (state.status == RecentPostsStatus.failure) {
+          if (loading) {
+            setState(() {
+              loading = false;
+              failure = true;
+            });
+          }
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshFailed();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadFailed();
+          }
+        }
+      },
+      child: BlocBuilder<PostFilterCubit, PostFilterState>(
+        builder: (context, state) {
+          void getPosts({List<Post>? previousPosts}) {
+            context.read<RecentPostsBloc>().add(
+              RecentPostsEvent.get(
+                previousPosts: previousPosts,
+                searchTerm: state.searchTerm,
+                startDate: state.startDate,
+                endDate: state.endDate,
+              ),
+            );
+          }
+
+          return PostListView(
+            posts: _posts,
+            loading: loading,
+            failure: failure,
+            onPostsUpdated: (posts) {
+              setState(() {
+                _posts = posts;
+              });
+            },
+            refreshController: _refreshController,
+            enablePullDown: true,
+            enablePullUp: hasNextPage,
+            checkVisibility: true,
+            onRefresh: getPosts,
+            onLoading: () {
+              getPosts(previousPosts: _posts);
+            },
+            onFailure: getPosts,
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _ProfilesTab extends StatefulWidget {
+  const _ProfilesTab({required this.searchTerm});
+
+  final String searchTerm;
+
+  @override
+  State<_ProfilesTab> createState() => _ProfilesTabState();
+}
+
+class _ProfilesTabState extends State<_ProfilesTab>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  bool loading = true;
+  bool failure = false;
+  List<User> _users = [];
+  bool hasNextPage = false;
+  final RefreshController _refreshController = RefreshController(
+    initialRefresh: false,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<UsersBloc>().add(
+      UsersEvent.get(searchTerm: widget.searchTerm),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return BlocListener<UsersBloc, UsersState>(
+      listener: (context, state) {
+        if (state.status == UsersStatus.success) {
+          if (state.searchTerm == widget.searchTerm) {
+            setState(() {
+              _users = state.users;
+              loading = false;
+              failure = false;
+              hasNextPage = state.hasNext;
+            });
+            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+              _refreshController.refreshCompleted();
+            }
+            if (_refreshController.footerStatus == LoadStatus.loading) {
+              _refreshController.loadComplete();
+            }
+          }
+        }
+        if (state.status == UsersStatus.failure) {
+          if (loading) {
+            setState(() {
+              loading = false;
+              failure = true;
+            });
+          }
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshFailed();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadFailed();
+          }
+        }
+      },
+      child: BlocBuilder<PostFilterCubit, PostFilterState>(
+        builder: (context, state) {
+          void getUsers({User? lastUser}) {
+            context.read<UsersBloc>().add(
+              UsersEvent.get(lastUser: lastUser, searchTerm: state.searchTerm),
+            );
+          }
+
+          return UsersListView(
+            users: _users,
+            loading: loading,
+            failure: failure,
+            refreshController: _refreshController,
+            enablePullUp: hasNextPage,
+            showProfileButtons: true,
+            onUserTap: (user) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfilePage(user: user),
+                ),
+              );
+            },
+            onLoading: () {
+              getUsers(lastUser: _users.last);
+            },
+            onFailure: getUsers,
+            onUsersUpdated: (users) {
+              setState(() {
+                _users = users;
+              });
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _FiltersModal extends StatefulWidget {
+  const _FiltersModal({
+    required this.onExplorePage,
+    required this.startDate,
+    required this.endDate,
+  });
+
+  final bool onExplorePage;
   final DateTime? startDate;
   final DateTime? endDate;
 
@@ -201,12 +638,15 @@ class _FiltersModalState extends State<_FiltersModal> {
       clearButtonIsDisabled: startDate == null && endDate == null,
       onApply: () {
         context.read<PostFilterCubit>().datesChanged(
+          onExplorePage: widget.onExplorePage,
           startDate: startDate,
           endDate: endDate,
         );
       },
       onClear: () {
-        context.read<PostFilterCubit>().clearFilters();
+        context.read<PostFilterCubit>().clearFilters(
+          onExplorePage: widget.onExplorePage,
+        );
         Navigator.pop(context);
       },
       widgets: [

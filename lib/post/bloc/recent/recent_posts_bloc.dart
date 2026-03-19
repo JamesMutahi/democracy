@@ -5,15 +5,16 @@ import 'package:democracy/post/models/post.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'posts_bloc.freezed.dart';
-part 'posts_state.dart';
-part 'posts_event.dart';
+part 'recent_posts_event.dart';
+part 'recent_posts_state.dart';
+part 'recent_posts_bloc.freezed.dart';
 
 const String stream = 'posts';
-const String action = 'list';
+const String action = 'recent';
 
-class PostsBloc extends Bloc<PostsEvent, PostsState> {
-  PostsBloc({required this.webSocketService}) : super(PostsState()) {
+class RecentPostsBloc extends Bloc<RecentPostsEvent, RecentPostsState> {
+  RecentPostsBloc({required this.webSocketService})
+    : super(RecentPostsState()) {
     webSocketService.messages.listen((message) {
       if (message['stream'] == stream &&
           message['payload']['action'] == action) {
@@ -28,7 +29,7 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
     });
   }
 
-  Future _onGet(_Get event, Emitter<PostsState> emit) async {
+  Future _onGet(_Get event, Emitter<RecentPostsState> emit) async {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -43,8 +44,8 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
     webSocketService.send(message);
   }
 
-  Future _onReceived(_Received event, Emitter<PostsState> emit) async {
-    emit(state.copyWith(status: PostsStatus.loading));
+  Future _onReceived(_Received event, Emitter<RecentPostsState> emit) async {
+    emit(state.copyWith(status: RecentPostsStatus.loading));
     if (event.payload['response_status'] == 200) {
       final List<Post> posts = List.from(
         event.payload['data']['results'].map((e) => Post.fromJson(e)),
@@ -52,14 +53,14 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
       List previousPosts = event.payload['data']['previous_posts'] ?? [];
       emit(
         state.copyWith(
-          status: PostsStatus.success,
+          status: RecentPostsStatus.success,
           searchTerm: event.payload['request_id'],
           posts: previousPosts.isEmpty ? posts : [...state.posts, ...posts],
           hasNext: event.payload['data']['has_next'],
         ),
       );
     } else {
-      emit(state.copyWith(status: PostsStatus.failure));
+      emit(state.copyWith(status: RecentPostsStatus.failure));
     }
   }
 

@@ -25,4 +25,6 @@ sealed class UserDetailEvent with _$UserDetailEvent {
   const factory UserDetailEvent.mute({required User user}) = _Mute;
 
   const factory UserDetailEvent.block({required User user}) = _Block;
+
+  const factory UserDetailEvent.unsubscribe({required User user}) = _Unsubscribe;
 }

@@ -49,6 +49,9 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
     on<_Block>((event, emit) {
       _onBlock(event, emit);
     });
+    on<_Unsubscribe>((event, emit) {
+      _onUnsubscribe(event, emit);
+    });
   }
 
   Future _onRetrieved(_Retrieved event, Emitter<UserDetailState> emit) async {
@@ -136,6 +139,21 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
       'stream': stream,
       'payload': {
         'action': 'block',
+        'request_id': requestId,
+        'pk': event.user.id,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  Future _onUnsubscribe(
+    _Unsubscribe event,
+    Emitter<UserDetailState> emit,
+  ) async {
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        'action': 'unsubscribe',
         'request_id': requestId,
         'pk': event.user.id,
       },
