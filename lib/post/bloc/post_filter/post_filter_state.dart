@@ -7,5 +7,6 @@ sealed class PostFilterState with _$PostFilterState {
     required String searchTerm,
     required DateTime? startDate,
     required DateTime? endDate,
+    required int count,
   }) = _Changed;
 }

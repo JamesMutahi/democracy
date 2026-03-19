@@ -64,6 +64,7 @@ class CustomSearchBar extends StatelessWidget {
     super.key,
     this.controller,
     required this.hintText,
+    this.filterCount = 0,
     this.onChanged,
     this.onSubmitted,
     this.onFilterTap,
@@ -71,24 +72,41 @@ class CustomSearchBar extends StatelessWidget {
 
   final TextEditingController? controller;
   final String hintText;
+  final int filterCount;
   final void Function(String)? onChanged;
   final void Function(String)? onSubmitted;
   final VoidCallback? onFilterTap;
 
   @override
   Widget build(BuildContext context) {
+    Color color = Theme.of(context).disabledColor;
     return Container(
       height: 50,
       margin: EdgeInsets.symmetric(vertical: 7, horizontal: 10),
       child: SearchBar(
         controller: controller,
         padding: WidgetStateProperty.all(EdgeInsets.only(left: 15)),
-        leading: Icon(Symbols.search_rounded),
+        leading: Icon(Symbols.search_rounded, color: color),
         trailing: [
           if (onFilterTap != null)
-            IconButton(
-              onPressed: onFilterTap,
-              icon: Icon(Icons.tune_rounded),
+            Stack(
+              children: [
+                IconButton(
+                  onPressed: onFilterTap,
+                  icon: Icon(Icons.tune_rounded, color: color),
+                ),
+                filterCount == 0
+                    ? SizedBox.shrink()
+                    : Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          filterCount.toString(),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyLarge?.copyWith(color: color),
+                        ),
+                      ),
+              ],
             ),
         ],
         hintText: hintText,

@@ -1,5 +1,6 @@
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/filters_modal.dart';
+import 'package:democracy/app/view/widgets/results_search_bar.dart';
 import 'package:democracy/post/bloc/post_filter/post_filter_cubit.dart';
 import 'package:democracy/post/bloc/posts/posts_bloc.dart';
 import 'package:democracy/post/bloc/recent/recent_posts_bloc.dart';
@@ -11,7 +12,6 @@ import 'package:democracy/user/view/profile.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class ExplorePage extends StatefulWidget {
@@ -32,6 +32,7 @@ class _ExplorePageState extends State<ExplorePage> {
   final TextEditingController _controller = TextEditingController();
   DateTime? startDate;
   DateTime? endDate;
+  int filterCount = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +56,7 @@ class _ExplorePageState extends State<ExplorePage> {
                       setState(() {
                         startDate = state.startDate;
                         endDate = state.endDate;
+                        filterCount = state.count;
                       });
                     }
                   }
@@ -63,6 +65,7 @@ class _ExplorePageState extends State<ExplorePage> {
                   return CustomSearchBar(
                     controller: _controller,
                     hintText: 'Search',
+                    filterCount: filterCount,
                     onSubmitted: (value) {
                       if (_controller.text.trim().isNotEmpty) {
                         context.read<PostFilterCubit>().searchTermChanged(
@@ -76,6 +79,7 @@ class _ExplorePageState extends State<ExplorePage> {
                               searchTerm: _controller.text,
                               startDate: startDate,
                               endDate: endDate,
+                              filterCount: filterCount,
                             ),
                           ),
                         ).whenComplete(() {
@@ -83,6 +87,7 @@ class _ExplorePageState extends State<ExplorePage> {
                           setState(() {
                             startDate = null;
                             endDate = null;
+                            filterCount = 0;
                           });
                         });
                       }
@@ -118,11 +123,13 @@ class ResultsPage extends StatefulWidget {
     required this.searchTerm,
     required this.startDate,
     required this.endDate,
+    required this.filterCount,
   });
 
   final String searchTerm;
   final DateTime? startDate;
   final DateTime? endDate;
+  final int filterCount;
 
   @override
   State<ResultsPage> createState() => _ResultsPageState();
@@ -134,6 +141,9 @@ class _ResultsPageState extends State<ResultsPage>
   bool get wantKeepAlive => true;
 
   final TextEditingController _controller = TextEditingController();
+  late DateTime? startDate = widget.startDate;
+  late DateTime? endDate = widget.endDate;
+  late int filterCount = widget.filterCount;
 
   @override
   void initState() {
@@ -148,133 +158,114 @@ class _ResultsPageState extends State<ResultsPage>
       length: 3,
       child: Scaffold(
         body: SafeArea(
-          child: BlocBuilder<PostFilterCubit, PostFilterState>(
-            builder: (context, state) {
-              return NestedScrollView(
-                headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-                  return [
-                    SliverAppBar(
-                      floating: true,
-                      snap: true,
-                      forceElevated: true,
-                      automaticallyImplyLeading: false,
-                      flexibleSpace: Builder(
-                        builder: (context) {
-                          return SizedBox(
-                            height: 50,
-                            child: Row(
-                              children: [
-                                BackButton(),
-                                Expanded(
-                                  child: Container(
-                                    margin: EdgeInsets.only(right: 15),
-                                    child: SearchBar(
-                                      controller: _controller,
-                                      padding: WidgetStateProperty.all(
-                                        EdgeInsets.only(left: 15),
-                                      ),
-                                      leading: Icon(Symbols.search_rounded),
-                                      trailing: [
-                                        IconButton(
-                                          onPressed: () {
-                                            showGeneralDialog(
-                                              context: context,
-                                              transitionDuration:
-                                                  const Duration(
-                                                    milliseconds: 300,
-                                                  ),
-                                              pageBuilder:
-                                                  (
-                                                    context,
-                                                    animation,
-                                                    secondaryAnimation,
-                                                  ) {
-                                                    return _FiltersModal(
-                                                      onExplorePage: false,
-                                                      startDate:
-                                                          widget.startDate,
-                                                      endDate: widget.endDate,
-                                                    );
-                                                  },
-                                            );
-                                          },
-                                          icon: Icon(Icons.tune_rounded),
-                                        ),
-                                      ],
-                                      onTapOutside: (event) {
-                                        FocusManager.instance.primaryFocus
-                                            ?.unfocus();
-                                      },
-                                      onSubmitted: (value) {
-                                        if (widget.searchTerm !=
-                                                _controller.text ||
-                                            state.startDate !=
-                                                widget.startDate ||
-                                            state.endDate != widget.endDate &&
-                                                _controller.text
-                                                    .trim()
-                                                    .isNotEmpty) {
-                                          context
-                                              .read<PostFilterCubit>()
-                                              .searchTermChanged(
-                                                onExplorePage: false,
-                                                searchTerm: _controller.text,
-                                              );
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => ResultsPage(
-                                                searchTerm: _controller.text,
-                                                startDate: state.startDate,
-                                                endDate: state.endDate,
-                                              ),
-                                            ),
-                                          ).whenComplete(() {
-                                            _controller.text =
-                                                widget.searchTerm;
-                                          });
-                                        }
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                      bottom: TabBar(
-                        dividerColor: Theme.of(
-                          context,
-                        ).colorScheme.outlineVariant,
-                        labelStyle: Theme.of(context).textTheme.titleMedium,
-                        tabs: [
-                          Tab(text: 'Top'),
-                          Tab(text: 'Recent'),
-                          Tab(text: 'Profiles'),
-                        ],
-                      ),
-                    ),
-                  ];
-                },
-                body: TabBarView(
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    _TopPosts(
-                      searchTerm: widget.searchTerm,
-                      startDate: state.startDate,
-                      endDate: state.endDate,
-                    ),
-                    _RecentPosts(
-                      searchTerm: widget.searchTerm,
-                      startDate: state.startDate,
-                      endDate: state.endDate,
-                    ),
-                    _ProfilesTab(searchTerm: widget.searchTerm),
-                  ],
-                ),
-              );
+          child: BlocListener<PostFilterCubit, PostFilterState>(
+            listener: (context, state) {
+              if (state.searchTerm == widget.searchTerm) {
+                context.read<PostsBloc>().add(
+                  PostsEvent.get(
+                    searchTerm: widget.searchTerm,
+                    startDate: state.startDate,
+                    endDate: state.endDate,
+                  ),
+                );
+                context.read<RecentPostsBloc>().add(
+                  RecentPostsEvent.get(
+                    searchTerm: widget.searchTerm,
+                    startDate: state.startDate,
+                    endDate: state.endDate,
+                  ),
+                );
+                setState(() {
+                  startDate = state.startDate;
+                  endDate = state.endDate;
+                  filterCount = state.count;
+                });
+              }
             },
+            child: NestedScrollView(
+              headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+                return [
+                  SliverAppBar(
+                    floating: true,
+                    snap: true,
+                    forceElevated: true,
+                    automaticallyImplyLeading: false,
+                    flexibleSpace: Builder(
+                      builder: (context) {
+                        return SizedBox(
+                          height: 50,
+                          child: Row(
+                            children: [
+                              BackButton(),
+                              ResultsSearchBar(
+                                controller: _controller,
+                                filterCount: filterCount,
+                                filterModal: _FiltersModal(
+                                  onExplorePage: false,
+                                  startDate: startDate,
+                                  endDate: endDate,
+                                ),
+                                onSubmitted: (value) {
+                                  if (_controller.text.isNotEmpty &&
+                                      widget.searchTerm != _controller.text) {
+                                    context
+                                        .read<PostFilterCubit>()
+                                        .searchTermChanged(
+                                          onExplorePage: false,
+                                          searchTerm: _controller.text,
+                                        );
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ResultsPage(
+                                          searchTerm: _controller.text,
+                                          startDate: startDate,
+                                          endDate: endDate,
+                                          filterCount: filterCount,
+                                        ),
+                                      ),
+                                    ).whenComplete(() {
+                                      _controller.text = widget.searchTerm;
+                                    });
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                    bottom: TabBar(
+                      dividerColor: Theme.of(
+                        context,
+                      ).colorScheme.outlineVariant,
+                      labelStyle: Theme.of(context).textTheme.titleMedium,
+                      tabs: [
+                        Tab(text: 'Top'),
+                        Tab(text: 'Recent'),
+                        Tab(text: 'Profiles'),
+                      ],
+                    ),
+                  ),
+                ];
+              },
+              body: TabBarView(
+                physics: NeverScrollableScrollPhysics(),
+                children: [
+                  _TopPosts(
+                    searchTerm: widget.searchTerm,
+                    startDate: startDate,
+                    endDate: endDate,
+                  ),
+                  _RecentPosts(
+                    searchTerm: widget.searchTerm,
+                    startDate: startDate,
+                    endDate: endDate,
+                  ),
+                  _ProfilesTab(searchTerm: widget.searchTerm),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -313,8 +304,13 @@ class _TopPostsState extends State<_TopPosts>
   @override
   void initState() {
     super.initState();
+    _getPosts();
+  }
+
+  void _getPosts({List<Post>? previousPosts}) {
     context.read<PostsBloc>().add(
       PostsEvent.get(
+        previousPosts: previousPosts,
         searchTerm: widget.searchTerm,
         startDate: widget.startDate,
         endDate: widget.endDate,
@@ -325,6 +321,7 @@ class _TopPostsState extends State<_TopPosts>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
     return BlocListener<PostsBloc, PostsState>(
       listener: (context, state) {
         if (state.status == PostsStatus.success) {
@@ -358,19 +355,19 @@ class _TopPostsState extends State<_TopPosts>
           }
         }
       },
-      child: BlocBuilder<PostFilterCubit, PostFilterState>(
-        builder: (context, state) {
-          void getPosts({List<Post>? previousPosts}) {
+      child: BlocConsumer<PostFilterCubit, PostFilterState>(
+        listener: (context, state) {
+          if (state.searchTerm == widget.searchTerm) {
             context.read<PostsBloc>().add(
               PostsEvent.get(
-                previousPosts: previousPosts,
-                searchTerm: state.searchTerm,
+                searchTerm: widget.searchTerm,
                 startDate: state.startDate,
                 endDate: state.endDate,
               ),
             );
           }
-
+        },
+        builder: (context, state) {
           return PostListView(
             posts: _posts,
             loading: loading,
@@ -384,11 +381,11 @@ class _TopPostsState extends State<_TopPosts>
             enablePullDown: true,
             enablePullUp: hasNextPage,
             checkVisibility: true,
-            onRefresh: getPosts,
+            onRefresh: _getPosts,
             onLoading: () {
-              getPosts(previousPosts: _posts);
+              _getPosts(previousPosts: _posts);
             },
-            onFailure: getPosts,
+            onFailure: _getPosts,
           );
         },
       ),
@@ -423,8 +420,13 @@ class _RecentPostsState extends State<_RecentPosts>
   @override
   void initState() {
     super.initState();
+    _getPosts();
+  }
+
+  void _getPosts({List<Post>? previousPosts}) {
     context.read<RecentPostsBloc>().add(
       RecentPostsEvent.get(
+        previousPosts: previousPosts,
         searchTerm: widget.searchTerm,
         startDate: widget.startDate,
         endDate: widget.endDate,
@@ -468,39 +470,24 @@ class _RecentPostsState extends State<_RecentPosts>
           }
         }
       },
-      child: BlocBuilder<PostFilterCubit, PostFilterState>(
-        builder: (context, state) {
-          void getPosts({List<Post>? previousPosts}) {
-            context.read<RecentPostsBloc>().add(
-              RecentPostsEvent.get(
-                previousPosts: previousPosts,
-                searchTerm: state.searchTerm,
-                startDate: state.startDate,
-                endDate: state.endDate,
-              ),
-            );
-          }
-
-          return PostListView(
-            posts: _posts,
-            loading: loading,
-            failure: failure,
-            onPostsUpdated: (posts) {
-              setState(() {
-                _posts = posts;
-              });
-            },
-            refreshController: _refreshController,
-            enablePullDown: true,
-            enablePullUp: hasNextPage,
-            checkVisibility: true,
-            onRefresh: getPosts,
-            onLoading: () {
-              getPosts(previousPosts: _posts);
-            },
-            onFailure: getPosts,
-          );
+      child: PostListView(
+        posts: _posts,
+        loading: loading,
+        failure: failure,
+        onPostsUpdated: (posts) {
+          setState(() {
+            _posts = posts;
+          });
         },
+        refreshController: _refreshController,
+        enablePullDown: true,
+        enablePullUp: hasNextPage,
+        checkVisibility: true,
+        onRefresh: _getPosts,
+        onLoading: () {
+          _getPosts(previousPosts: _posts);
+        },
+        onFailure: _getPosts,
       ),
     );
   }
