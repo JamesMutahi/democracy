@@ -24,10 +24,8 @@ class FiltersModal extends StatelessWidget {
       appBar: AppBar(
         elevation: 1,
         automaticallyImplyLeading: false,
-        title: const Padding(
-          padding: EdgeInsets.only(left: 3.0),
-          child: Text('Filters'),
-        ),
+        // centerTitle: true,
+        title: const Text('Sort & Filter'),
         actions: [
           IconButton(
             onPressed: () => Navigator.pop(context),
@@ -91,14 +89,7 @@ class DateRangeFilter extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          margin: EdgeInsets.only(top: 10),
-          child: const Text(
-            'Date range',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-          ),
-        ),
-        const SizedBox(height: 10.0),
+        FilterHeader(text: 'Date range'),
         CalendarDatePicker2(
           config: CalendarDatePicker2Config(
             calendarType: CalendarDatePicker2Type.range,
@@ -107,6 +98,22 @@ class DateRangeFilter extends StatelessWidget {
           onValueChanged: onValueChanged,
         ),
       ],
+    );
+  }
+}
+
+class FilterHeader extends StatelessWidget {
+  const FilterHeader({super.key, required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+        color: Theme.of(context).colorScheme.outline,
+      ),
     );
   }
 }

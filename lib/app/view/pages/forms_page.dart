@@ -150,6 +150,7 @@ class _SurveysSearchBar extends StatelessWidget {
         return CustomSearchBar(
           controller: controller,
           hintText: 'Search surveys',
+          filterCount: state.count,
           onChanged: (value) {
             context.read<SurveyFilterCubit>().searchTermChanged(
               searchTerm: value,
@@ -201,6 +202,7 @@ class _PetitionsSearchBar extends StatelessWidget {
         return CustomSearchBar(
           controller: controller,
           hintText: 'Search petitions',
+          filterCount: state.count,
           onChanged: (value) {
             context.read<PetitionFilterCubit>().searchTermChanged(
               searchTerm: value,
@@ -340,40 +342,7 @@ class _FiltersModalState extends State<_FiltersModal> {
             Navigator.pop(context);
           },
           widgets: [
-            Text('Status:', style: Theme.of(context).textTheme.titleMedium),
-            FormBuilderRadioGroup<bool?>(
-              name: 'active',
-              initialValue: isActive,
-              orientation: OptionsOrientation.vertical,
-              decoration: InputDecoration(border: InputBorder.none),
-              options: [
-                FormBuilderFieldOption<bool?>(
-                  value: true,
-                  child: Text('Open (default)'),
-                ),
-                FormBuilderFieldOption<bool?>(
-                  value: false,
-                  child: Text('Closed'),
-                ),
-                FormBuilderFieldOption<bool?>(
-                  value: null,
-                  child: Text('Show all'),
-                ),
-              ],
-              onChanged: (value) {
-                setState(() {
-                  isActive = value;
-                });
-              },
-            ),
-            Divider(),
-            Container(
-              margin: EdgeInsets.only(top: 10),
-              child: Text(
-                'Sort by:',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
+            FilterHeader(text: 'Sort by'),
             if (state.status == FormsTabBarStatus.onPetitions)
               FormBuilderRadioGroup<String>(
                 name: 'sort by',
@@ -422,14 +391,33 @@ class _FiltersModalState extends State<_FiltersModal> {
                   });
                 },
               ),
-            Divider(),
-            Container(
-              margin: EdgeInsets.only(top: 10),
-              child: Text(
-                'Filter by region:',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+            FilterHeader(text: 'Status'),
+            FormBuilderRadioGroup<bool?>(
+              name: 'active',
+              initialValue: isActive,
+              orientation: OptionsOrientation.vertical,
+              decoration: InputDecoration(border: InputBorder.none),
+              options: [
+                FormBuilderFieldOption<bool?>(
+                  value: true,
+                  child: Text('Open (default)'),
+                ),
+                FormBuilderFieldOption<bool?>(
+                  value: false,
+                  child: Text('Closed'),
+                ),
+                FormBuilderFieldOption<bool?>(
+                  value: null,
+                  child: Text('Show all'),
+                ),
+              ],
+              onChanged: (value) {
+                setState(() {
+                  isActive = value;
+                });
+              },
             ),
+            FilterHeader(text: 'Filter by region'),
             FormBuilderRadioGroup<bool>(
               name: 'region',
               initialValue: filterByRegion,
@@ -445,7 +433,6 @@ class _FiltersModalState extends State<_FiltersModal> {
                 });
               },
             ),
-            Divider(),
             DateRangeFilter(
               value: [startDate, endDate],
               onValueChanged: (dates) {

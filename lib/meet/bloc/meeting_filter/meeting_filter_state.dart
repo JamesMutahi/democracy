@@ -9,5 +9,6 @@ sealed class MeetingFilterState with _$MeetingFilterState {
     required String sortBy,
     required DateTime? startDate,
     required DateTime? endDate,
+    required int count,
   }) = _Changed;
 }

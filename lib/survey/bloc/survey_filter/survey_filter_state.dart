@@ -9,5 +9,6 @@ sealed class SurveyFilterState with _$SurveyFilterState {
     required String sortBy,
     required DateTime? startDate,
     required DateTime? endDate,
+    required int count,
   }) = _Changed;
 }

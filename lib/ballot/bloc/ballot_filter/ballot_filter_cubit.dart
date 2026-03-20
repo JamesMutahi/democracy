@@ -14,10 +14,24 @@ class BallotFilterCubit extends Cubit<BallotFilterState> {
           sortBy: 'recent',
           startDate: null,
           endDate: null,
+          count: 0,
         ),
       );
 
   void searchTermChanged({required String searchTerm}) {
+    int count = 0;
+    if (state.isActive != true) {
+      count += 1;
+    }
+    if (state.filterByRegion != true) {
+      count += 1;
+    }
+    if (state.sortBy != 'recent') {
+      count += 1;
+    }
+    if (state.startDate != null || state.endDate != null) {
+      count += 1;
+    }
     emit(
       BallotFilterState.changed(
         searchTerm: searchTerm,
@@ -26,6 +40,7 @@ class BallotFilterCubit extends Cubit<BallotFilterState> {
         sortBy: state.sortBy,
         startDate: state.startDate,
         endDate: state.endDate,
+        count: count,
       ),
     );
   }
@@ -37,6 +52,19 @@ class BallotFilterCubit extends Cubit<BallotFilterState> {
     required DateTime? startDate,
     required DateTime? endDate,
   }) {
+    int count = 0;
+    if (isActive != true) {
+      count += 1;
+    }
+    if (filterByRegion != true) {
+      count += 1;
+    }
+    if (sortBy != 'recent') {
+      count += 1;
+    }
+    if (startDate != null || endDate != null) {
+      count += 1;
+    }
     emit(
       BallotFilterState.changed(
         searchTerm: state.searchTerm,
@@ -45,6 +73,7 @@ class BallotFilterCubit extends Cubit<BallotFilterState> {
         sortBy: sortBy,
         startDate: startDate,
         endDate: endDate,
+        count: count,
       ),
     );
   }
@@ -58,6 +87,7 @@ class BallotFilterCubit extends Cubit<BallotFilterState> {
         sortBy: 'recent',
         startDate: null,
         endDate: null,
+        count: 0,
       ),
     );
   }

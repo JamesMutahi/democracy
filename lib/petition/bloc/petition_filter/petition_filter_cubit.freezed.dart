@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PetitionFilterState {
 
- String get searchTerm; bool? get isOpen; bool get filterByRegion; String get sortBy; DateTime? get startDate; DateTime? get endDate;
+ String get searchTerm; bool? get isOpen; bool get filterByRegion; String get sortBy; DateTime? get startDate; DateTime? get endDate; int get count;
 /// Create a copy of PetitionFilterState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $PetitionFilterStateCopyWith<PetitionFilterState> get copyWith => _$PetitionFilt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PetitionFilterState&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&(identical(other.isOpen, isOpen) || other.isOpen == isOpen)&&(identical(other.filterByRegion, filterByRegion) || other.filterByRegion == filterByRegion)&&(identical(other.sortBy, sortBy) || other.sortBy == sortBy)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PetitionFilterState&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&(identical(other.isOpen, isOpen) || other.isOpen == isOpen)&&(identical(other.filterByRegion, filterByRegion) || other.filterByRegion == filterByRegion)&&(identical(other.sortBy, sortBy) || other.sortBy == sortBy)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.count, count) || other.count == count));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,searchTerm,isOpen,filterByRegion,sortBy,startDate,endDate);
+int get hashCode => Object.hash(runtimeType,searchTerm,isOpen,filterByRegion,sortBy,startDate,endDate,count);
 
 @override
 String toString() {
-  return 'PetitionFilterState(searchTerm: $searchTerm, isOpen: $isOpen, filterByRegion: $filterByRegion, sortBy: $sortBy, startDate: $startDate, endDate: $endDate)';
+  return 'PetitionFilterState(searchTerm: $searchTerm, isOpen: $isOpen, filterByRegion: $filterByRegion, sortBy: $sortBy, startDate: $startDate, endDate: $endDate, count: $count)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $PetitionFilterStateCopyWith<$Res>  {
   factory $PetitionFilterStateCopyWith(PetitionFilterState value, $Res Function(PetitionFilterState) _then) = _$PetitionFilterStateCopyWithImpl;
 @useResult
 $Res call({
- String searchTerm, bool? isOpen, bool filterByRegion, String sortBy, DateTime? startDate, DateTime? endDate
+ String searchTerm, bool? isOpen, bool filterByRegion, String sortBy, DateTime? startDate, DateTime? endDate, int count
 });
 
 
@@ -62,7 +62,7 @@ class _$PetitionFilterStateCopyWithImpl<$Res>
 
 /// Create a copy of PetitionFilterState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? searchTerm = null,Object? isOpen = freezed,Object? filterByRegion = null,Object? sortBy = null,Object? startDate = freezed,Object? endDate = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? searchTerm = null,Object? isOpen = freezed,Object? filterByRegion = null,Object? sortBy = null,Object? startDate = freezed,Object? endDate = freezed,Object? count = null,}) {
   return _then(_self.copyWith(
 searchTerm: null == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
 as String,isOpen: freezed == isOpen ? _self.isOpen : isOpen // ignore: cast_nullable_to_non_nullable
@@ -70,7 +70,8 @@ as bool?,filterByRegion: null == filterByRegion ? _self.filterByRegion : filterB
 as bool,sortBy: null == sortBy ? _self.sortBy : sortBy // ignore: cast_nullable_to_non_nullable
 as String,startDate: freezed == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,endDate: freezed == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,count: null == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -152,10 +153,10 @@ return changed(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String searchTerm,  bool? isOpen,  bool filterByRegion,  String sortBy,  DateTime? startDate,  DateTime? endDate)?  changed,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String searchTerm,  bool? isOpen,  bool filterByRegion,  String sortBy,  DateTime? startDate,  DateTime? endDate,  int count)?  changed,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Changed() when changed != null:
-return changed(_that.searchTerm,_that.isOpen,_that.filterByRegion,_that.sortBy,_that.startDate,_that.endDate);case _:
+return changed(_that.searchTerm,_that.isOpen,_that.filterByRegion,_that.sortBy,_that.startDate,_that.endDate,_that.count);case _:
   return orElse();
 
 }
@@ -173,10 +174,10 @@ return changed(_that.searchTerm,_that.isOpen,_that.filterByRegion,_that.sortBy,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String searchTerm,  bool? isOpen,  bool filterByRegion,  String sortBy,  DateTime? startDate,  DateTime? endDate)  changed,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String searchTerm,  bool? isOpen,  bool filterByRegion,  String sortBy,  DateTime? startDate,  DateTime? endDate,  int count)  changed,}) {final _that = this;
 switch (_that) {
 case _Changed():
-return changed(_that.searchTerm,_that.isOpen,_that.filterByRegion,_that.sortBy,_that.startDate,_that.endDate);}
+return changed(_that.searchTerm,_that.isOpen,_that.filterByRegion,_that.sortBy,_that.startDate,_that.endDate,_that.count);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -190,10 +191,10 @@ return changed(_that.searchTerm,_that.isOpen,_that.filterByRegion,_that.sortBy,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String searchTerm,  bool? isOpen,  bool filterByRegion,  String sortBy,  DateTime? startDate,  DateTime? endDate)?  changed,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String searchTerm,  bool? isOpen,  bool filterByRegion,  String sortBy,  DateTime? startDate,  DateTime? endDate,  int count)?  changed,}) {final _that = this;
 switch (_that) {
 case _Changed() when changed != null:
-return changed(_that.searchTerm,_that.isOpen,_that.filterByRegion,_that.sortBy,_that.startDate,_that.endDate);case _:
+return changed(_that.searchTerm,_that.isOpen,_that.filterByRegion,_that.sortBy,_that.startDate,_that.endDate,_that.count);case _:
   return null;
 
 }
@@ -205,7 +206,7 @@ return changed(_that.searchTerm,_that.isOpen,_that.filterByRegion,_that.sortBy,_
 
 
 class _Changed implements PetitionFilterState {
-  const _Changed({required this.searchTerm, required this.isOpen, required this.filterByRegion, required this.sortBy, required this.startDate, required this.endDate});
+  const _Changed({required this.searchTerm, required this.isOpen, required this.filterByRegion, required this.sortBy, required this.startDate, required this.endDate, required this.count});
   
 
 @override final  String searchTerm;
@@ -214,6 +215,7 @@ class _Changed implements PetitionFilterState {
 @override final  String sortBy;
 @override final  DateTime? startDate;
 @override final  DateTime? endDate;
+@override final  int count;
 
 /// Create a copy of PetitionFilterState
 /// with the given fields replaced by the non-null parameter values.
@@ -225,16 +227,16 @@ _$ChangedCopyWith<_Changed> get copyWith => __$ChangedCopyWithImpl<_Changed>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Changed&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&(identical(other.isOpen, isOpen) || other.isOpen == isOpen)&&(identical(other.filterByRegion, filterByRegion) || other.filterByRegion == filterByRegion)&&(identical(other.sortBy, sortBy) || other.sortBy == sortBy)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Changed&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&(identical(other.isOpen, isOpen) || other.isOpen == isOpen)&&(identical(other.filterByRegion, filterByRegion) || other.filterByRegion == filterByRegion)&&(identical(other.sortBy, sortBy) || other.sortBy == sortBy)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.count, count) || other.count == count));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,searchTerm,isOpen,filterByRegion,sortBy,startDate,endDate);
+int get hashCode => Object.hash(runtimeType,searchTerm,isOpen,filterByRegion,sortBy,startDate,endDate,count);
 
 @override
 String toString() {
-  return 'PetitionFilterState.changed(searchTerm: $searchTerm, isOpen: $isOpen, filterByRegion: $filterByRegion, sortBy: $sortBy, startDate: $startDate, endDate: $endDate)';
+  return 'PetitionFilterState.changed(searchTerm: $searchTerm, isOpen: $isOpen, filterByRegion: $filterByRegion, sortBy: $sortBy, startDate: $startDate, endDate: $endDate, count: $count)';
 }
 
 
@@ -245,7 +247,7 @@ abstract mixin class _$ChangedCopyWith<$Res> implements $PetitionFilterStateCopy
   factory _$ChangedCopyWith(_Changed value, $Res Function(_Changed) _then) = __$ChangedCopyWithImpl;
 @override @useResult
 $Res call({
- String searchTerm, bool? isOpen, bool filterByRegion, String sortBy, DateTime? startDate, DateTime? endDate
+ String searchTerm, bool? isOpen, bool filterByRegion, String sortBy, DateTime? startDate, DateTime? endDate, int count
 });
 
 
@@ -262,7 +264,7 @@ class __$ChangedCopyWithImpl<$Res>
 
 /// Create a copy of PetitionFilterState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? searchTerm = null,Object? isOpen = freezed,Object? filterByRegion = null,Object? sortBy = null,Object? startDate = freezed,Object? endDate = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? searchTerm = null,Object? isOpen = freezed,Object? filterByRegion = null,Object? sortBy = null,Object? startDate = freezed,Object? endDate = freezed,Object? count = null,}) {
   return _then(_Changed(
 searchTerm: null == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
 as String,isOpen: freezed == isOpen ? _self.isOpen : isOpen // ignore: cast_nullable_to_non_nullable
@@ -270,7 +272,8 @@ as bool?,filterByRegion: null == filterByRegion ? _self.filterByRegion : filterB
 as bool,sortBy: null == sortBy ? _self.sortBy : sortBy // ignore: cast_nullable_to_non_nullable
 as String,startDate: freezed == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,endDate: freezed == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,count: null == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

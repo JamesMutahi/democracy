@@ -75,7 +75,7 @@ class _ExplorePageState extends State<ExplorePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ResultsPage(
+                            builder: (context) => _ResultsPage(
                               searchTerm: _controller.text,
                               startDate: startDate,
                               endDate: endDate,
@@ -117,9 +117,8 @@ class _ExplorePageState extends State<ExplorePage> {
   }
 }
 
-class ResultsPage extends StatefulWidget {
-  const ResultsPage({
-    super.key,
+class _ResultsPage extends StatefulWidget {
+  const _ResultsPage({
     required this.searchTerm,
     required this.startDate,
     required this.endDate,
@@ -132,10 +131,10 @@ class ResultsPage extends StatefulWidget {
   final int filterCount;
 
   @override
-  State<ResultsPage> createState() => _ResultsPageState();
+  State<_ResultsPage> createState() => _ResultsPageState();
 }
 
-class _ResultsPageState extends State<ResultsPage>
+class _ResultsPageState extends State<_ResultsPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
@@ -217,7 +216,7 @@ class _ResultsPageState extends State<ResultsPage>
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => ResultsPage(
+                                        builder: (context) => _ResultsPage(
                                           searchTerm: _controller.text,
                                           startDate: startDate,
                                           endDate: endDate,

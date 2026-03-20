@@ -14,10 +14,24 @@ class PetitionFilterCubit extends Cubit<PetitionFilterState> {
           sortBy: 'popular',
           startDate: null,
           endDate: null,
+          count: 0,
         ),
       );
 
   void searchTermChanged({required String searchTerm}) {
+    int count = 0;
+    if (state.isOpen != true) {
+      count += 1;
+    }
+    if (state.filterByRegion != true) {
+      count += 1;
+    }
+    if (state.sortBy != 'popular') {
+      count += 1;
+    }
+    if (state.startDate != null || state.endDate != null) {
+      count += 1;
+    }
     emit(
       PetitionFilterState.changed(
         searchTerm: searchTerm,
@@ -26,6 +40,7 @@ class PetitionFilterCubit extends Cubit<PetitionFilterState> {
         sortBy: state.sortBy,
         startDate: state.startDate,
         endDate: state.endDate,
+        count: count,
       ),
     );
   }
@@ -37,6 +52,19 @@ class PetitionFilterCubit extends Cubit<PetitionFilterState> {
     required DateTime? startDate,
     required DateTime? endDate,
   }) {
+    int count = 0;
+    if (isOpen != true) {
+      count += 1;
+    }
+    if (filterByRegion != true) {
+      count += 1;
+    }
+    if (sortBy != 'popular') {
+      count += 1;
+    }
+    if (startDate != null || endDate != null) {
+      count += 1;
+    }
     emit(
       PetitionFilterState.changed(
         searchTerm: state.searchTerm,
@@ -45,6 +73,7 @@ class PetitionFilterCubit extends Cubit<PetitionFilterState> {
         sortBy: sortBy,
         startDate: startDate,
         endDate: endDate,
+        count: count,
       ),
     );
   }
@@ -58,6 +87,7 @@ class PetitionFilterCubit extends Cubit<PetitionFilterState> {
         sortBy: 'popular',
         startDate: null,
         endDate: null,
+        count: 0,
       ),
     );
   }
