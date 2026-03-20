@@ -1,3 +1,4 @@
+import 'package:democracy/app/utils/more_pop_up.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/filters_modal.dart';
 import 'package:democracy/app/view/widgets/results_search_bar.dart';
@@ -112,7 +113,85 @@ class _ExplorePageState extends State<ExplorePage> {
           ),
         ];
       },
-      body: Placeholder(),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.only(top: 20, left: 10, bottom: 10),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: Theme.of(context).disabledColor.withAlpha(30),
+                ),
+              ),
+            ),
+            child: Text(
+              'Trending now',
+              style: TextStyle(color: Theme.of(context).colorScheme.outline),
+            ),
+          ),
+          // Divider(),
+          Stack(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Theme.of(context).disabledColor.withAlpha(30),
+                    ),
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'AI - Cognitive decline',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 5),
+                    Row(
+                      children: [
+                        Stack(
+                          children: [
+                            CircleAvatar(
+                              radius: 10,
+                              backgroundColor: Colors.red,
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(left: 10),
+                              child: CircleAvatar(
+                                radius: 10,
+                                backgroundColor: Colors.blue,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(width: 10),
+                        Text('4000 posts'),
+                      ],
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.outline,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Align(
+                alignment: Alignment.topRight,
+                child: MorePopUp(texts: []),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
