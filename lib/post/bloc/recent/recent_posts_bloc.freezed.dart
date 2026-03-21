@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'posts_bloc.dart';
+part of 'recent_posts_bloc.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -12,7 +12,7 @@ part of 'posts_bloc.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$PostsEvent {
+mixin _$RecentPostsEvent {
 
 
 
@@ -20,7 +20,7 @@ mixin _$PostsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostsEvent);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RecentPostsEvent);
 }
 
 
@@ -29,20 +29,20 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'PostsEvent()';
+  return 'RecentPostsEvent()';
 }
 
 
 }
 
 /// @nodoc
-class $PostsEventCopyWith<$Res>  {
-$PostsEventCopyWith(PostsEvent _, $Res Function(PostsEvent) __);
+class $RecentPostsEventCopyWith<$Res>  {
+$RecentPostsEventCopyWith(RecentPostsEvent _, $Res Function(RecentPostsEvent) __);
 }
 
 
-/// Adds pattern-matching-related methods to [PostsEvent].
-extension PostsEventPatterns on PostsEvent {
+/// Adds pattern-matching-related methods to [RecentPostsEvent].
+extension RecentPostsEventPatterns on RecentPostsEvent {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -174,7 +174,7 @@ return received(_that.payload);case _:
 /// @nodoc
 
 
-class _Get implements PostsEvent {
+class _Get implements RecentPostsEvent {
   const _Get({this.searchTerm, final  List<Post>? previousPosts, this.startDate, this.endDate}): _previousPosts = previousPosts;
   
 
@@ -191,7 +191,7 @@ class _Get implements PostsEvent {
  final  DateTime? startDate;
  final  DateTime? endDate;
 
-/// Create a copy of PostsEvent
+/// Create a copy of RecentPostsEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -210,14 +210,14 @@ int get hashCode => Object.hash(runtimeType,searchTerm,const DeepCollectionEqual
 
 @override
 String toString() {
-  return 'PostsEvent.get(searchTerm: $searchTerm, previousPosts: $previousPosts, startDate: $startDate, endDate: $endDate)';
+  return 'RecentPostsEvent.get(searchTerm: $searchTerm, previousPosts: $previousPosts, startDate: $startDate, endDate: $endDate)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$GetCopyWith<$Res> implements $PostsEventCopyWith<$Res> {
+abstract mixin class _$GetCopyWith<$Res> implements $RecentPostsEventCopyWith<$Res> {
   factory _$GetCopyWith(_Get value, $Res Function(_Get) _then) = __$GetCopyWithImpl;
 @useResult
 $Res call({
@@ -236,7 +236,7 @@ class __$GetCopyWithImpl<$Res>
   final _Get _self;
   final $Res Function(_Get) _then;
 
-/// Create a copy of PostsEvent
+/// Create a copy of RecentPostsEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? searchTerm = freezed,Object? previousPosts = freezed,Object? startDate = freezed,Object? endDate = freezed,}) {
   return _then(_Get(
@@ -254,7 +254,7 @@ as DateTime?,
 /// @nodoc
 
 
-class _Received implements PostsEvent {
+class _Received implements RecentPostsEvent {
   const _Received({required final  Map<String, dynamic> payload}): _payload = payload;
   
 
@@ -266,7 +266,7 @@ class _Received implements PostsEvent {
 }
 
 
-/// Create a copy of PostsEvent
+/// Create a copy of RecentPostsEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -285,14 +285,14 @@ int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(
 
 @override
 String toString() {
-  return 'PostsEvent.received(payload: $payload)';
+  return 'RecentPostsEvent.received(payload: $payload)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$ReceivedCopyWith<$Res> implements $PostsEventCopyWith<$Res> {
+abstract mixin class _$ReceivedCopyWith<$Res> implements $RecentPostsEventCopyWith<$Res> {
   factory _$ReceivedCopyWith(_Received value, $Res Function(_Received) _then) = __$ReceivedCopyWithImpl;
 @useResult
 $Res call({
@@ -311,7 +311,7 @@ class __$ReceivedCopyWithImpl<$Res>
   final _Received _self;
   final $Res Function(_Received) _then;
 
-/// Create a copy of PostsEvent
+/// Create a copy of RecentPostsEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
   return _then(_Received(

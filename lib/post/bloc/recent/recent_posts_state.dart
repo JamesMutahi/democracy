@@ -1,27 +1,27 @@
-part of 'posts_bloc.dart';
+part of 'recent_posts_bloc.dart';
 
-enum PostsStatus { initial, loading, success, failure }
+enum RecentPostsStatus { initial, loading, success, failure }
 
-final class PostsState extends Equatable {
-  const PostsState({
-    this.status = PostsStatus.initial,
+final class RecentPostsState extends Equatable {
+  const RecentPostsState({
+    this.status = RecentPostsStatus.initial,
     this.searchTerm = '',
     this.posts = const [],
     this.hasNext = false,
   });
 
-  final PostsStatus status;
+  final RecentPostsStatus status;
   final String searchTerm;
   final List<Post> posts;
   final bool hasNext;
 
-  PostsState copyWith({
-    PostsStatus? status,
+  RecentPostsState copyWith({
+    RecentPostsStatus? status,
     String? searchTerm,
     List<Post>? posts,
     bool? hasNext,
   }) {
-    return PostsState(
+    return RecentPostsState(
       status: status ?? this.status,
       searchTerm: searchTerm ?? this.searchTerm,
       posts: posts ?? this.posts,
@@ -31,9 +31,10 @@ final class PostsState extends Equatable {
 
   @override
   String toString() {
-    return '''PostsState { status: $status, searchTerm: $searchTerm, posts: ${posts.length}, hasNext: $hasNext }''';
+    return '''RecentPostsState { status: $status, searchTerm: $searchTerm, posts: ${posts.length}, hasNext: $hasNext }''';
   }
 
   @override
   List<Object> get props => [status, posts];
 }
+
