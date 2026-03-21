@@ -119,10 +119,10 @@ return received(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  List<Post>? previousPosts,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? sortBy,  String? searchTerm,  List<Post>? previousPosts,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.searchTerm,_that.previousPosts,_that.startDate,_that.endDate);case _Received() when received != null:
+return get(_that.sortBy,_that.searchTerm,_that.previousPosts,_that.startDate,_that.endDate);case _Received() when received != null:
 return received(_that.payload);case _:
   return orElse();
 
@@ -141,10 +141,10 @@ return received(_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  List<Post>? previousPosts,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? sortBy,  String? searchTerm,  List<Post>? previousPosts,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
 switch (_that) {
 case _Get():
-return get(_that.searchTerm,_that.previousPosts,_that.startDate,_that.endDate);case _Received():
+return get(_that.sortBy,_that.searchTerm,_that.previousPosts,_that.startDate,_that.endDate);case _Received():
 return received(_that.payload);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -159,10 +159,10 @@ return received(_that.payload);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  List<Post>? previousPosts,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? sortBy,  String? searchTerm,  List<Post>? previousPosts,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.searchTerm,_that.previousPosts,_that.startDate,_that.endDate);case _Received() when received != null:
+return get(_that.sortBy,_that.searchTerm,_that.previousPosts,_that.startDate,_that.endDate);case _Received() when received != null:
 return received(_that.payload);case _:
   return null;
 
@@ -175,9 +175,10 @@ return received(_that.payload);case _:
 
 
 class _Get implements PostsEvent {
-  const _Get({this.searchTerm, final  List<Post>? previousPosts, this.startDate, this.endDate}): _previousPosts = previousPosts;
+  const _Get({this.sortBy, this.searchTerm, final  List<Post>? previousPosts, this.startDate, this.endDate}): _previousPosts = previousPosts;
   
 
+ final  String? sortBy;
  final  String? searchTerm;
  final  List<Post>? _previousPosts;
  List<Post>? get previousPosts {
@@ -201,16 +202,16 @@ _$GetCopyWith<_Get> get copyWith => __$GetCopyWithImpl<_Get>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&const DeepCollectionEquality().equals(other._previousPosts, _previousPosts)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.sortBy, sortBy) || other.sortBy == sortBy)&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&const DeepCollectionEquality().equals(other._previousPosts, _previousPosts)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,searchTerm,const DeepCollectionEquality().hash(_previousPosts),startDate,endDate);
+int get hashCode => Object.hash(runtimeType,sortBy,searchTerm,const DeepCollectionEquality().hash(_previousPosts),startDate,endDate);
 
 @override
 String toString() {
-  return 'PostsEvent.get(searchTerm: $searchTerm, previousPosts: $previousPosts, startDate: $startDate, endDate: $endDate)';
+  return 'PostsEvent.get(sortBy: $sortBy, searchTerm: $searchTerm, previousPosts: $previousPosts, startDate: $startDate, endDate: $endDate)';
 }
 
 
@@ -221,7 +222,7 @@ abstract mixin class _$GetCopyWith<$Res> implements $PostsEventCopyWith<$Res> {
   factory _$GetCopyWith(_Get value, $Res Function(_Get) _then) = __$GetCopyWithImpl;
 @useResult
 $Res call({
- String? searchTerm, List<Post>? previousPosts, DateTime? startDate, DateTime? endDate
+ String? sortBy, String? searchTerm, List<Post>? previousPosts, DateTime? startDate, DateTime? endDate
 });
 
 
@@ -238,9 +239,10 @@ class __$GetCopyWithImpl<$Res>
 
 /// Create a copy of PostsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? searchTerm = freezed,Object? previousPosts = freezed,Object? startDate = freezed,Object? endDate = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? sortBy = freezed,Object? searchTerm = freezed,Object? previousPosts = freezed,Object? startDate = freezed,Object? endDate = freezed,}) {
   return _then(_Get(
-searchTerm: freezed == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
+sortBy: freezed == sortBy ? _self.sortBy : sortBy // ignore: cast_nullable_to_non_nullable
+as String?,searchTerm: freezed == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
 as String?,previousPosts: freezed == previousPosts ? _self._previousPosts : previousPosts // ignore: cast_nullable_to_non_nullable
 as List<Post>?,startDate: freezed == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,endDate: freezed == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable

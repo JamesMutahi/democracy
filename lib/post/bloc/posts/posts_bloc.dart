@@ -33,7 +33,8 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
       'stream': stream,
       'payload': {
         "action": action,
-        "request_id": event.searchTerm,
+        "request_id": {'searchTerm': event.searchTerm, 'sort_by': event.sortBy},
+        'sort_by': event.sortBy,
         'search_term': event.searchTerm,
         'previous_posts': event.previousPosts?.map((post) => post.id).toList(),
         'start_date': event.startDate?.toIso8601String(),
@@ -53,7 +54,8 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
       emit(
         state.copyWith(
           status: PostsStatus.success,
-          searchTerm: event.payload['request_id'],
+          searchTerm: event.payload['request_id']['searchTerm'],
+          sortBy: event.payload['request_id']['sort_by'],
           posts: previousPosts.isEmpty ? posts : [...state.posts, ...posts],
           hasNext: event.payload['data']['has_next'],
         ),
