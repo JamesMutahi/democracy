@@ -279,32 +279,35 @@ class _PostContainer extends StatelessWidget {
                             ),
                           if (post.communityNote.isNotEmpty)
                             CommunityNote(post: post),
-                          SizedBox(height: 5),
                           if (!isDependency)
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                ReplyButton(
-                                  post: post,
-                                  numberFormat: numberFormat,
-                                ),
-                                RepostButton(
-                                  post: post,
-                                  numberFormat: numberFormat,
-                                ),
-                                LikeButton(
-                                  post: post,
-                                  numberFormat: numberFormat,
-                                ),
-                                BookmarkButton(
-                                  post: post,
-                                  numberFormat: numberFormat,
-                                ),
-                                ViewsButton(
-                                  post: post,
-                                  numberFormat: numberFormat,
-                                ),
-                              ],
+                            Container(
+                              margin: EdgeInsets.only(top: 5),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  ReplyButton(
+                                    post: post,
+                                    numberFormat: numberFormat,
+                                  ),
+                                  RepostButton(
+                                    post: post,
+                                    numberFormat: numberFormat,
+                                  ),
+                                  LikeButton(
+                                    post: post,
+                                    numberFormat: numberFormat,
+                                  ),
+                                  BookmarkButton(
+                                    post: post,
+                                    numberFormat: numberFormat,
+                                  ),
+                                  ViewsButton(
+                                    post: post,
+                                    numberFormat: numberFormat,
+                                  ),
+                                ],
+                              ),
                             ),
                         ],
                       ),

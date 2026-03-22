@@ -139,35 +139,6 @@ class PostPopUp extends StatelessWidget {
   }
 }
 
-class PostTileButton extends StatelessWidget {
-  const PostTileButton({
-    super.key,
-    required this.child,
-    this.trailing,
-    required this.onTap,
-  });
-
-  final Widget child;
-  final Text? trailing;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        InkWell(
-          onTap: onTap,
-          customBorder: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Padding(padding: const EdgeInsets.all(7.5), child: child),
-        ),
-        (trailing == null) ? SizedBox.shrink() : trailing!,
-      ],
-    );
-  }
-}
-
 class LikeButton extends StatelessWidget {
   const LikeButton({super.key, required this.post, required this.numberFormat});
 
@@ -180,18 +151,14 @@ class LikeButton extends StatelessWidget {
       onTap: () {
         context.read<PostDetailBloc>().add(PostDetailEvent.like(post: post));
       },
-      trailing: (post.likes > 0)
-          ? Text(
-              numberFormat.format(post.likes),
-              style: TextStyle(color: Theme.of(context).colorScheme.outline),
-            )
-          : null,
-      child: PostButtonIcon(
-        iconData: Symbols.favorite_rounded,
+      number: post.likes,
+      icon: Icon(
+        Symbols.favorite_rounded,
         color: post.isLiked
             ? Colors.red
             : Theme.of(context).colorScheme.outline,
         fill: post.isLiked ? 1 : 0,
+        size: 20,
       ),
     );
   }
@@ -255,7 +222,7 @@ class RepostButton extends StatelessWidget {
                             )
                           : CustomBottomSheetContainer(
                               text: 'Repost',
-                              iconData: Icons.loop_rounded,
+                              iconData: Icons.repeat_rounded,
                               onTap: () {
                                 Navigator.pop(context);
                                 context.read<PostDetailBloc>().add(
@@ -267,12 +234,6 @@ class RepostButton extends StatelessWidget {
                                             post.repostOf != null
                                         ? post.repostOf
                                         : post,
-                                    replyTo: null,
-                                    communityNoteOf: null,
-                                    ballot: null,
-                                    survey: null,
-                                    petition: null,
-                                    meeting: null,
                                     tags: [],
                                   ),
                                 );
@@ -283,23 +244,15 @@ class RepostButton extends StatelessWidget {
                 },
               );
             },
-      trailing: (post.reposts > 0)
-          ? Text(
-              numberFormat.format(post.reposts),
-              style: TextStyle(
-                color: post.author.hasBlocked
-                    ? Theme.of(context).disabledColor
-                    : Theme.of(context).colorScheme.outline,
-              ),
-            )
-          : null,
-      child: PostButtonIcon(
-        iconData: Symbols.loop_rounded,
+      number: post.reposts,
+      icon: Icon(
+        Symbols.repeat_rounded,
         color: post.author.hasBlocked
             ? Theme.of(context).disabledColor
             : post.isReposted || post.isQuoted
             ? Colors.green
             : Theme.of(context).colorScheme.outline,
+        size: 20,
       ),
     );
   }
@@ -335,21 +288,13 @@ class ReplyButton extends StatelessWidget {
                 ),
               );
             },
-      trailing: (post.replies > 0)
-          ? Text(
-              numberFormat.format(post.replies),
-              style: TextStyle(
-                color: post.author.hasBlocked
-                    ? Theme.of(context).disabledColor
-                    : Theme.of(context).colorScheme.outline,
-              ),
-            )
-          : null,
-      child: PostButtonIcon(
-        iconData: Symbols.message_rounded,
+      number: post.replies,
+      icon: Icon(
+        Symbols.message_rounded,
         color: post.author.hasBlocked
             ? Theme.of(context).disabledColor
             : Theme.of(context).colorScheme.outline,
+        size: 20,
       ),
     );
   }
@@ -369,13 +314,12 @@ class ViewsButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return PostTileButton(
       onTap: () {},
-      trailing: (post.views > 0)
-          ? Text(
-              numberFormat.format(post.views),
-              style: TextStyle(color: Theme.of(context).colorScheme.outline),
-            )
-          : null,
-      child: PostButtonIcon(iconData: Symbols.visibility),
+      number: post.views,
+      icon: Icon(
+        Symbols.visibility,
+        color: Theme.of(context).colorScheme.outline,
+        size: 20,
+      ),
     );
   }
 }
@@ -400,43 +344,49 @@ class BookmarkButton extends StatelessWidget {
           PostDetailEvent.bookmark(post: post),
         );
       },
-      trailing: (post.bookmarks > 0 && showTrailing)
-          ? Text(
-              numberFormat.format(post.bookmarks),
-              style: TextStyle(color: Theme.of(context).colorScheme.outline),
-            )
-          : null,
-      child: PostButtonIcon(
-        iconData: Symbols.bookmark_rounded,
+      number: showTrailing ? post.bookmarks : 0,
+      icon: Icon(
+        Symbols.bookmark_rounded,
         color: post.isBookmarked
             ? Colors.blue
             : Theme.of(context).colorScheme.outline,
         fill: post.isBookmarked ? 1 : 0,
+        size: 20,
       ),
     );
   }
 }
 
-class PostButtonIcon extends StatelessWidget {
-  const PostButtonIcon({
+class PostTileButton extends StatelessWidget {
+  const PostTileButton({
     super.key,
-    required this.iconData,
-    this.color,
-    this.fill = 0,
+    required this.icon,
+    required this.number,
+    required this.onTap,
   });
 
-  final IconData iconData;
-  final Color? color;
-  final double fill;
+  final Icon icon;
+  final int number;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Icon(
-      iconData,
-      size: 20,
-      weight: 500,
-      color: color ?? Theme.of(context).colorScheme.outline,
-      fill: fill,
+    return Row(
+      children: [
+        InkWell(
+          onTap: onTap,
+          customBorder: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50),
+          ),
+          child: Padding(padding: const EdgeInsets.all(7.5), child: icon),
+        ),
+        number > 0
+            ? Text(
+                number.toString(),
+                style: TextStyle(color: Theme.of(context).colorScheme.outline),
+              )
+            : SizedBox.shrink(),
+      ],
     );
   }
 }

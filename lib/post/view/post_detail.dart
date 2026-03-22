@@ -69,6 +69,11 @@ class _PostDetailState extends State<PostDetail> {
     if (widget.post.replyTo != null) {
       context.read<ReplyToBloc>().add(ReplyToEvent.get(post: widget.post));
     }
+    if (!widget.post.isViewed) {
+      context.read<PostDetailBloc>().add(
+        PostDetailEvent.addView(post: widget.post),
+      );
+    }
   }
 
   @override

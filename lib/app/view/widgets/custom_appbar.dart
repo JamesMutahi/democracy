@@ -154,13 +154,19 @@ class NotificationButton extends StatelessWidget {
           ),
           if (notifications > 0)
             Positioned(
-              top: -1,
-              right: 9,
-              child: CircleAvatar(
-                radius: 10,
+              right: 10,
+              top: 0,
+              child: Container(
+                padding: EdgeInsets.all(1),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(10), // Makes it a circle
+                ),
+                constraints: BoxConstraints(minWidth: 18, minHeight: 18),
                 child: Text(
                   notifications.toString(),
-                  style: Theme.of(context).textTheme.labelSmall,
+                  style: TextStyle(color: Colors.white, fontSize: 10),
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),
