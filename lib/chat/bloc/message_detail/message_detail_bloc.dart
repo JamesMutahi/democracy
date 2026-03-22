@@ -24,13 +24,15 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
     : super(const MessageDetailState.initial()) {
     webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
-        switch (message['payload']['action']) {
-          case 'create':
-            add(_Created(payload: message['payload']));
-          case 'update':
-            add(_Updated(payload: message['payload']));
-          case 'delete':
-            add(_Deleted(payload: message['payload']));
+        if (message['payload']['request_id'] == requestId) {
+          switch (message['payload']['action']) {
+            case 'create':
+              add(_Created(payload: message['payload']));
+            case 'update':
+              add(_Updated(payload: message['payload']));
+            case 'delete':
+              add(_Deleted(payload: message['payload']));
+          }
         }
       }
     });
