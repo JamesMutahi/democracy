@@ -1,3 +1,4 @@
+import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
@@ -7,16 +8,20 @@ import 'package:bloc_test/bloc_test.dart';
 import '../../objects.dart';
 
 class MockAuthRepository extends Mock implements AuthRepository {}
+class MockWebsocketService extends Mock implements WebSocketService {}
 
 void main() {
   group(LoginCubit, () {
     late LoginCubit loginCubit;
     late MockAuthRepository mockAuthRepository;
+    late MockWebsocketService mockWebsocketService;
 
     setUp(() {
       mockAuthRepository = MockAuthRepository();
+      mockWebsocketService = MockWebsocketService();
       loginCubit = LoginCubit(
         authRepository: mockAuthRepository,
+        webSocketService: mockWebsocketService,
       );
     });
 

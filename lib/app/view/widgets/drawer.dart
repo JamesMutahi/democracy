@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/view/widgets/bookmarks.dart';
 import 'package:democracy/constitution/view/constitution.dart';
@@ -128,7 +127,6 @@ class LogoutDialog extends StatelessWidget {
       button1Text: 'Yes',
       onButton1Pressed: () {
         Navigator.pop(context);
-        context.read<WebsocketBloc>().add(WebsocketEvent.disconnect());
         context.read<LoginCubit>().logout();
       },
       button2Text: 'No',

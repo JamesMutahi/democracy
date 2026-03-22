@@ -61,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         );
                       default:
-                        return FilledButton(
+                        return FilledButton.tonal(
                           onPressed: () {
                             context.read<LoginCubit>().login(
                               email: '${dotenv.env['FAKE_EMAIL']}',

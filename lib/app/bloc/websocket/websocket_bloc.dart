@@ -18,6 +18,15 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       String key = 'websocket';
       if (message.containsKey(key)) {
         switch (message[key]) {
+          case WebsocketStatus.initial:
+            add(
+              _ChangeState(
+                state: state.copyWith(
+                  status: WebsocketStatus.initial,
+                  initialConnectionAchieved: false,
+                ),
+              ),
+            );
           case WebsocketStatus.connected:
             add(
               _ChangeState(
@@ -46,10 +55,6 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       _onConnect(emit);
     });
     on<_ChangeState>((event, emit) => emit(event.state));
-    on<_Disconnect>((event, emit) async {
-      await webSocketService.disconnect();
-      emit(WebsocketState());
-    });
   }
 
   Future _onConnect(Emitter<WebsocketState> emit) async {

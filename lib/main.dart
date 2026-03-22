@@ -104,8 +104,10 @@ void main() async {
             lazy: false,
           ),
           BlocProvider(
-            create: (context) =>
-                LoginCubit(authRepository: context.read<AuthRepository>()),
+            create: (context) => LoginCubit(
+              authRepository: context.read<AuthRepository>(),
+              webSocketService: webSocketService,
+            ),
           ),
           BlocProvider(
             create: (context) => WebsocketBloc(
