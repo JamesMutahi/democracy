@@ -25,7 +25,7 @@ sealed class Message with _$Message {
     @JsonKey(name: 'image2') required String? image2Url,
     @JsonKey(name: 'image3') required String? image3Url,
     @JsonKey(name: 'image4') required String? image4Url,
-    required final String? fileUrl,
+    @JsonKey(name: 'file') required final String? fileUrl,
     required final String? location,
     @JsonKey(name: 'is_read') required final bool isRead,
     @JsonKey(name: 'is_edited') required final bool isEdited,

@@ -86,6 +86,13 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
   }
 
   Future _onCreate(_Create event, Emitter<MessageDetailState> emit) async {
+    String? fileBase64;
+    String? fileName;
+    if (event.filePath != null) {
+      File file = File(event.filePath!);
+      fileBase64 = base64Encode(file.readAsBytesSync());
+      fileName = file.path.split('/').last;
+    }
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -115,7 +122,8 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
             'image4_base64': base64Encode(
               File(event.imagePath4!).readAsBytesSync(),
             ),
-          'file': event.filePath,
+          'file_base64': fileBase64,
+          'file_name': fileName,
           'location': event.location,
         },
       },

@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Message {
 
- int get id; int get chat; User get user; String get text; Post? get post; Ballot? get ballot; Survey? get survey; Petition? get petition; Meeting? get meeting;@JsonKey(name: 'image1') String? get image1Url;@JsonKey(name: 'image2') String? get image2Url;@JsonKey(name: 'image3') String? get image3Url;@JsonKey(name: 'image4') String? get image4Url; String? get fileUrl; String? get location;@JsonKey(name: 'is_read') bool get isRead;@JsonKey(name: 'is_edited') bool get isEdited;@JsonKey(name: 'is_deleted') bool get isDeleted;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt;
+ int get id; int get chat; User get user; String get text; Post? get post; Ballot? get ballot; Survey? get survey; Petition? get petition; Meeting? get meeting;@JsonKey(name: 'image1') String? get image1Url;@JsonKey(name: 'image2') String? get image2Url;@JsonKey(name: 'image3') String? get image3Url;@JsonKey(name: 'image4') String? get image4Url;@JsonKey(name: 'file') String? get fileUrl; String? get location;@JsonKey(name: 'is_read') bool get isRead;@JsonKey(name: 'is_edited') bool get isEdited;@JsonKey(name: 'is_deleted') bool get isDeleted;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt;
 /// Create a copy of Message
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $MessageCopyWith<$Res>  {
   factory $MessageCopyWith(Message value, $Res Function(Message) _then) = _$MessageCopyWithImpl;
 @useResult
 $Res call({
- int id, int chat, User user, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting,@JsonKey(name: 'image1') String? image1Url,@JsonKey(name: 'image2') String? image2Url,@JsonKey(name: 'image3') String? image3Url,@JsonKey(name: 'image4') String? image4Url, String? fileUrl, String? location,@JsonKey(name: 'is_read') bool isRead,@JsonKey(name: 'is_edited') bool isEdited,@JsonKey(name: 'is_deleted') bool isDeleted,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt
+ int id, int chat, User user, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting,@JsonKey(name: 'image1') String? image1Url,@JsonKey(name: 'image2') String? image2Url,@JsonKey(name: 'image3') String? image3Url,@JsonKey(name: 'image4') String? image4Url,@JsonKey(name: 'file') String? fileUrl, String? location,@JsonKey(name: 'is_read') bool isRead,@JsonKey(name: 'is_edited') bool isEdited,@JsonKey(name: 'is_deleted') bool isDeleted,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt
 });
 
 
@@ -238,7 +238,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int chat,  User user,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting, @JsonKey(name: 'image1')  String? image1Url, @JsonKey(name: 'image2')  String? image2Url, @JsonKey(name: 'image3')  String? image3Url, @JsonKey(name: 'image4')  String? image4Url,  String? fileUrl,  String? location, @JsonKey(name: 'is_read')  bool isRead, @JsonKey(name: 'is_edited')  bool isEdited, @JsonKey(name: 'is_deleted')  bool isDeleted, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int chat,  User user,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting, @JsonKey(name: 'image1')  String? image1Url, @JsonKey(name: 'image2')  String? image2Url, @JsonKey(name: 'image3')  String? image3Url, @JsonKey(name: 'image4')  String? image4Url, @JsonKey(name: 'file')  String? fileUrl,  String? location, @JsonKey(name: 'is_read')  bool isRead, @JsonKey(name: 'is_edited')  bool isEdited, @JsonKey(name: 'is_deleted')  bool isDeleted, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Message() when $default != null:
 return $default(_that.id,_that.chat,_that.user,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.image1Url,_that.image2Url,_that.image3Url,_that.image4Url,_that.fileUrl,_that.location,_that.isRead,_that.isEdited,_that.isDeleted,_that.createdAt,_that.updatedAt);case _:
@@ -259,7 +259,7 @@ return $default(_that.id,_that.chat,_that.user,_that.text,_that.post,_that.ballo
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int chat,  User user,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting, @JsonKey(name: 'image1')  String? image1Url, @JsonKey(name: 'image2')  String? image2Url, @JsonKey(name: 'image3')  String? image3Url, @JsonKey(name: 'image4')  String? image4Url,  String? fileUrl,  String? location, @JsonKey(name: 'is_read')  bool isRead, @JsonKey(name: 'is_edited')  bool isEdited, @JsonKey(name: 'is_deleted')  bool isDeleted, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int chat,  User user,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting, @JsonKey(name: 'image1')  String? image1Url, @JsonKey(name: 'image2')  String? image2Url, @JsonKey(name: 'image3')  String? image3Url, @JsonKey(name: 'image4')  String? image4Url, @JsonKey(name: 'file')  String? fileUrl,  String? location, @JsonKey(name: 'is_read')  bool isRead, @JsonKey(name: 'is_edited')  bool isEdited, @JsonKey(name: 'is_deleted')  bool isDeleted, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _Message():
 return $default(_that.id,_that.chat,_that.user,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.image1Url,_that.image2Url,_that.image3Url,_that.image4Url,_that.fileUrl,_that.location,_that.isRead,_that.isEdited,_that.isDeleted,_that.createdAt,_that.updatedAt);}
@@ -276,7 +276,7 @@ return $default(_that.id,_that.chat,_that.user,_that.text,_that.post,_that.ballo
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int chat,  User user,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting, @JsonKey(name: 'image1')  String? image1Url, @JsonKey(name: 'image2')  String? image2Url, @JsonKey(name: 'image3')  String? image3Url, @JsonKey(name: 'image4')  String? image4Url,  String? fileUrl,  String? location, @JsonKey(name: 'is_read')  bool isRead, @JsonKey(name: 'is_edited')  bool isEdited, @JsonKey(name: 'is_deleted')  bool isDeleted, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int chat,  User user,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting, @JsonKey(name: 'image1')  String? image1Url, @JsonKey(name: 'image2')  String? image2Url, @JsonKey(name: 'image3')  String? image3Url, @JsonKey(name: 'image4')  String? image4Url, @JsonKey(name: 'file')  String? fileUrl,  String? location, @JsonKey(name: 'is_read')  bool isRead, @JsonKey(name: 'is_edited')  bool isEdited, @JsonKey(name: 'is_deleted')  bool isDeleted, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Message() when $default != null:
 return $default(_that.id,_that.chat,_that.user,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.image1Url,_that.image2Url,_that.image3Url,_that.image4Url,_that.fileUrl,_that.location,_that.isRead,_that.isEdited,_that.isDeleted,_that.createdAt,_that.updatedAt);case _:
@@ -291,7 +291,7 @@ return $default(_that.id,_that.chat,_that.user,_that.text,_that.post,_that.ballo
 @JsonSerializable()
 
 class _Message implements Message {
-  const _Message({required this.id, required this.chat, required this.user, required this.text, required this.post, required this.ballot, required this.survey, required this.petition, required this.meeting, @JsonKey(name: 'image1') required this.image1Url, @JsonKey(name: 'image2') required this.image2Url, @JsonKey(name: 'image3') required this.image3Url, @JsonKey(name: 'image4') required this.image4Url, required this.fileUrl, required this.location, @JsonKey(name: 'is_read') required this.isRead, @JsonKey(name: 'is_edited') required this.isEdited, @JsonKey(name: 'is_deleted') required this.isDeleted, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt});
+  const _Message({required this.id, required this.chat, required this.user, required this.text, required this.post, required this.ballot, required this.survey, required this.petition, required this.meeting, @JsonKey(name: 'image1') required this.image1Url, @JsonKey(name: 'image2') required this.image2Url, @JsonKey(name: 'image3') required this.image3Url, @JsonKey(name: 'image4') required this.image4Url, @JsonKey(name: 'file') required this.fileUrl, required this.location, @JsonKey(name: 'is_read') required this.isRead, @JsonKey(name: 'is_edited') required this.isEdited, @JsonKey(name: 'is_deleted') required this.isDeleted, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt});
   factory _Message.fromJson(Map<String, dynamic> json) => _$MessageFromJson(json);
 
 @override final  int id;
@@ -307,7 +307,7 @@ class _Message implements Message {
 @override@JsonKey(name: 'image2') final  String? image2Url;
 @override@JsonKey(name: 'image3') final  String? image3Url;
 @override@JsonKey(name: 'image4') final  String? image4Url;
-@override final  String? fileUrl;
+@override@JsonKey(name: 'file') final  String? fileUrl;
 @override final  String? location;
 @override@JsonKey(name: 'is_read') final  bool isRead;
 @override@JsonKey(name: 'is_edited') final  bool isEdited;
@@ -348,7 +348,7 @@ abstract mixin class _$MessageCopyWith<$Res> implements $MessageCopyWith<$Res> {
   factory _$MessageCopyWith(_Message value, $Res Function(_Message) _then) = __$MessageCopyWithImpl;
 @override @useResult
 $Res call({
- int id, int chat, User user, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting,@JsonKey(name: 'image1') String? image1Url,@JsonKey(name: 'image2') String? image2Url,@JsonKey(name: 'image3') String? image3Url,@JsonKey(name: 'image4') String? image4Url, String? fileUrl, String? location,@JsonKey(name: 'is_read') bool isRead,@JsonKey(name: 'is_edited') bool isEdited,@JsonKey(name: 'is_deleted') bool isDeleted,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt
+ int id, int chat, User user, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting,@JsonKey(name: 'image1') String? image1Url,@JsonKey(name: 'image2') String? image2Url,@JsonKey(name: 'image3') String? image3Url,@JsonKey(name: 'image4') String? image4Url,@JsonKey(name: 'file') String? fileUrl, String? location,@JsonKey(name: 'is_read') bool isRead,@JsonKey(name: 'is_edited') bool isEdited,@JsonKey(name: 'is_deleted') bool isDeleted,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt
 });
 
 

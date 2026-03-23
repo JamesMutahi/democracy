@@ -208,7 +208,11 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
               });
             },
             allowedMimeTypes: const <String>['image/gif'],
-            onSend: _disableSendButton && _insertedContent == null
+            onSend:
+                _disableSendButton &&
+                    _insertedContent == null &&
+                    _selectedFile == null &&
+                    _selectedImages.isEmpty
                 ? null
                 : _createPost,
           );

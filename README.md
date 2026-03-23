@@ -21,3 +21,12 @@ A true democracy means that the power lies solely with the people and that the p
 <img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/bf7c3086-b2c5-49cc-a7fa-87ffc73ef120" />
 
 <img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/9748ff67-9b3c-4142-bb69-bc244de90b55" />
+
+
+```
+BASE_URL='http://100.100.100.100:8000/'
+WEBSOCKET_URL='ws://100.100.100.100:8000/ws/'
+
+FAKE_EMAIL='FAKE_EMAIL'
+FAKE_PASSWORD='FAKE_PASSWORD'
+```

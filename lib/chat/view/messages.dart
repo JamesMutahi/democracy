@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:democracy/app/utils/file_widget.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/custom_text.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
@@ -96,6 +97,18 @@ class _MessagesState extends State<Messages> {
                 message: message,
                 alignedRight: alignedRight,
                 child: ImageViewer(message: message),
+              ),
+            );
+          }
+          if (message.fileUrl != null) {
+            if (message.text.isNotEmpty) {
+              widgets.add(SizedBox(height: messageMargin));
+            }
+            widgets.add(
+              AlignmentContainer(
+                message: message,
+                alignedRight: alignedRight,
+                child: FileWidget(url: message.fileUrl!),
               ),
             );
           }

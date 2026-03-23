@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:democracy/app/utils/custom_bottom_sheet.dart';
+import 'package:democracy/app/utils/file_widget.dart';
 import 'package:democracy/app/utils/media_tools.dart';
 import 'package:democracy/post/view/widgets/post_form_widgets.dart';
 import 'package:file_picker/file_picker.dart';
@@ -82,6 +83,7 @@ class BottomTextFormField extends StatelessWidget {
               onAdd: onAddImages,
               onRemove: onRemoveImage,
             ),
+          if (selectedFile != null) FileWidget(url: selectedFile!.path),
           Row(
             children: [
               if (selectedImages.isEmpty)

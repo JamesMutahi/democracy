@@ -212,7 +212,7 @@ class RepostButton extends StatelessWidget {
                       post.isReposted
                           ? CustomBottomSheetContainer(
                               text: 'Undo repost',
-                              iconData: Icons.loop_rounded,
+                              iconData: Icons.repeat_rounded,
                               onTap: () {
                                 Navigator.pop(context);
                                 context.read<PostDetailBloc>().add(

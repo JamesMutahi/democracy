@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:democracy/app/utils/bottom_text_form_field.dart'
     show MultiImageView;
 import 'package:democracy/app/utils/dialogs.dart';
+import 'package:democracy/app/utils/file_widget.dart';
 import 'package:democracy/app/utils/media_tools.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
@@ -256,6 +257,8 @@ class _PostCreateState extends State<PostCreate> {
                                 });
                               },
                             ),
+                          if (_selectedFile != null)
+                            FileWidget(url: _selectedFile!.path),
                           if (widget.repostOf != null)
                             DependencyContainer(
                               child: PostTile(

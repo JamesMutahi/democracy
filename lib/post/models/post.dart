@@ -24,6 +24,7 @@ sealed class Post with _$Post {
     @JsonKey(name: 'video1') required String? video1Url,
     @JsonKey(name: 'video2') required String? video2Url,
     @JsonKey(name: 'video3') required String? video3Url,
+    @JsonKey(name: 'file') required String? fileUrl,
     required int likes,
     @JsonKey(name: 'is_liked') required bool isLiked,
     required int bookmarks,

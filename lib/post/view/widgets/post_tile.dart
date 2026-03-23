@@ -1,4 +1,5 @@
 import 'package:democracy/app/utils/custom_text.dart';
+import 'package:democracy/app/utils/file_widget.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/meet/view/meeting_tile.dart';
@@ -208,7 +209,7 @@ class _PostContainer extends StatelessWidget {
                   left: 10,
                   right: 15,
                   top: 10,
-                  bottom: 5,
+                  bottom: isDependency ? 10 : 5,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -246,6 +247,10 @@ class _PostContainer extends StatelessWidget {
                                 key: ValueKey(post.id),
                                 post: post,
                               ),
+                            ),
+                          if (post.fileUrl != null)
+                            DependencyContainer(
+                              child: FileWidget(url: post.fileUrl!),
                             ),
                           if (post.repostOf != null && !isDependency)
                             PostDependency(post: post),

@@ -126,28 +126,6 @@ class ShareBottomSheet extends StatelessWidget {
     return CustomBottomSheet(
       title: 'Share $object',
       children: [
-        InkWell(
-          highlightColor: Colors.transparent,
-          splashColor: Colors.transparent,
-          onTap: () async {
-            Navigator.pop(context);
-            String baseUrl = dotenv.env['BASE_URL']!;
-            String text = '$baseUrl$object/$objectId/';
-            await Clipboard.setData(ClipboardData(text: text));
-          },
-          child: Column(
-            children: [
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Icon(Icons.link_rounded),
-                ),
-              ),
-              Text('Copy link'),
-            ],
-          ),
-        ),
-        SizedBox(height: 10),
         CustomBottomSheetContainer(
           text: 'Send via Direct Message',
           iconData: Symbols.email_rounded,
@@ -169,6 +147,28 @@ class ShareBottomSheet extends StatelessWidget {
               ),
             );
           },
+        ),
+        SizedBox(height: 5),
+        InkWell(
+          highlightColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          onTap: () async {
+            Navigator.pop(context);
+            String baseUrl = dotenv.env['BASE_URL']!;
+            String text = '$baseUrl$object/$objectId/';
+            await Clipboard.setData(ClipboardData(text: text));
+          },
+          child: Column(
+            children: [
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Icon(Icons.link_rounded),
+                ),
+              ),
+              Text('Copy link'),
+            ],
+          ),
         ),
       ],
     );
