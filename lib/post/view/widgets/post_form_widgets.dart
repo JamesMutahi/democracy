@@ -316,7 +316,7 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
                       FilePickerResult? result = await FilePicker.platform
                           .pickFiles(
                             type: FileType.custom,
-                            allowedExtensions: ['pdf', 'doc'],
+                            allowedExtensions: ['pdf', 'doc', 'docx'],
                           );
                       if (result != null) {
                         File file = File(result.files.single.path!);

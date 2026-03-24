@@ -258,7 +258,10 @@ class _PostCreateState extends State<PostCreate> {
                               },
                             ),
                           if (_selectedFile != null)
-                            FileWidget(url: _selectedFile!.path),
+                            FileWidget(
+                              url: _selectedFile!.path,
+                              navigateToViewer: false,
+                            ),
                           if (widget.repostOf != null)
                             DependencyContainer(
                               child: PostTile(

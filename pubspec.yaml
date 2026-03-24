@@ -76,6 +76,9 @@ dependencies:
   path_provider: ^2.1.5
   rename_app: ^1.6.5
   path: ^1.9.1
+  open_file: ^3.5.11
+  permission_handler: ^12.0.1
+  docx_viewer: ^1.0.1
 
 dev_dependencies:
   flutter_test:

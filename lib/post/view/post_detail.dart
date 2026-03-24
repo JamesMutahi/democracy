@@ -1,6 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
+import 'package:democracy/app/utils/file_widget.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
@@ -495,6 +496,13 @@ class _PostContainer extends StatelessWidget {
                       Container(
                         margin: EdgeInsets.only(top: 10),
                         child: ImageViewer(key: ValueKey(post.id), post: post),
+                      ),
+                    if (post.fileUrl != null)
+                      DependencyContainer(
+                        child: FileWidget(
+                          url: post.fileUrl!,
+                          navigateToViewer: true,
+                        ),
                       ),
                     if (post.repostOf != null) PostDependency(post: post),
                     if (post.ballot != null)

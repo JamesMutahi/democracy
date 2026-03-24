@@ -83,7 +83,8 @@ class BottomTextFormField extends StatelessWidget {
               onAdd: onAddImages,
               onRemove: onRemoveImage,
             ),
-          if (selectedFile != null) FileWidget(url: selectedFile!.path),
+          if (selectedFile != null)
+            FileWidget(url: selectedFile!.path, navigateToViewer: false),
           Row(
             children: [
               if (selectedImages.isEmpty)
@@ -236,7 +237,7 @@ class _FileBottomSheet extends StatelessWidget {
                 Navigator.pop(context);
                 FilePickerResult? result = await FilePicker.platform.pickFiles(
                   type: FileType.custom,
-                  allowedExtensions: ['pdf', 'doc'],
+                  allowedExtensions: ['pdf', 'doc', 'docx'],
                 );
                 if (result != null) {
                   File file = File(result.files.single.path!);
