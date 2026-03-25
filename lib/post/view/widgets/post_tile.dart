@@ -249,7 +249,8 @@ class _PostContainer extends StatelessWidget {
                               ),
                             ),
                           if (post.fileUrl != null)
-                            DependencyContainer(
+                            Container(
+                              margin: EdgeInsets.only(top: 10),
                               child: FileWidget(url: post.fileUrl!),
                             ),
                           if (post.repostOf != null && !isDependency)

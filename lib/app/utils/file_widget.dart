@@ -29,7 +29,7 @@ class FileWidget extends StatelessWidget {
     if (extension == '.pdf') {
       icon = Icon(Icons.picture_as_pdf, color: Colors.red);
     } else {
-      icon = Icon(Icons.file_present_rounded, color: Colors.blue);
+      icon = Icon(Icons.note, color: Colors.blue);
     }
     return ListTile(
       onTap: !navigateToViewer
@@ -88,6 +88,14 @@ class FileWidget extends StatelessWidget {
                 }
               }
             },
+      shape: RoundedRectangleBorder(
+        side: BorderSide(
+          color: Theme.of(context).colorScheme.outlineVariant.withAlpha(30),
+          width: 1,
+        ),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      tileColor: Theme.of(context).colorScheme.tertiaryContainer,
       leading: icon,
       title: Text(fileName),
     );

@@ -498,7 +498,8 @@ class _PostContainer extends StatelessWidget {
                         child: ImageViewer(key: ValueKey(post.id), post: post),
                       ),
                     if (post.fileUrl != null)
-                      DependencyContainer(
+                      Container(
+                        margin: EdgeInsets.only(top: 10),
                         child: FileWidget(
                           url: post.fileUrl!,
                           navigateToViewer: true,
