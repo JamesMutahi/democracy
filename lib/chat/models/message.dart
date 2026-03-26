@@ -5,6 +5,7 @@ import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:latlong2/latlong.dart';
 
 part 'message.freezed.dart';
 part 'message.g.dart';
@@ -26,7 +27,7 @@ sealed class Message with _$Message {
     @JsonKey(name: 'image3') required String? image3Url,
     @JsonKey(name: 'image4') required String? image4Url,
     @JsonKey(name: 'file') required final String? fileUrl,
-    required final String? location,
+    required final LatLng? location,
     @JsonKey(name: 'is_read') required final bool isRead,
     @JsonKey(name: 'is_edited') required final bool isEdited,
     @JsonKey(name: 'is_deleted') required final bool isDeleted,

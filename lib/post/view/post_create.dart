@@ -4,6 +4,7 @@ import 'package:democracy/app/utils/bottom_text_form_field.dart'
     show MultiImageView;
 import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/utils/file_widget.dart';
+import 'package:democracy/app/utils/map_widget.dart';
 import 'package:democracy/app/utils/media_tools.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
@@ -24,6 +25,7 @@ import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertagger/fluttertagger.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class PostCreate extends StatefulWidget {
@@ -58,6 +60,7 @@ class _PostCreateState extends State<PostCreate> {
   List<File> _selectedImages = [];
   File? _selectedFile;
   File? _insertedContent;
+  LatLng? _location;
 
   @override
   void initState() {
@@ -92,7 +95,7 @@ class _PostCreateState extends State<PostCreate> {
         imagePath3: _selectedImages.length > 2 ? _selectedImages[2].path : null,
         imagePath4: _selectedImages.length > 3 ? _selectedImages[3].path : null,
         filePath: _selectedFile?.path,
-        location: null, //TODO:
+        location: _location,
       ),
     );
   }
@@ -262,6 +265,15 @@ class _PostCreateState extends State<PostCreate> {
                               url: _selectedFile!.path,
                               navigateToViewer: false,
                             ),
+                          if (_location != null)
+                            MapWidget(
+                              mapCenter: _location!,
+                              onRemove: () {
+                                setState(() {
+                                  _location = null;
+                                });
+                              },
+                            ),
                           if (widget.repostOf != null)
                             DependencyContainer(
                               child: PostTile(
@@ -331,6 +343,11 @@ class _PostCreateState extends State<PostCreate> {
                 _selectedFile = file;
                 _selectedImages = [];
                 _insertedContent = null;
+              });
+            },
+            onLocation: (point) {
+              setState(() {
+                _location = point;
               });
             },
           ),

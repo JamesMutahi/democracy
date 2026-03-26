@@ -2,6 +2,7 @@ import 'package:democracy/app.dart';
 import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
 import 'package:democracy/app/bloc/forms_tab_bar/forms_tab_bar_cubit.dart';
+import 'package:democracy/app/bloc/location/location_cubit.dart';
 import 'package:democracy/app/bloc/theme/theme_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
@@ -287,6 +288,7 @@ void main() async {
           BlocProvider(
             create: (context) => GeoBloc(webSocketService: webSocketService),
           ),
+          BlocProvider(create: (context) => LocationCubit()),
         ],
         child: const MyApp(),
       ),

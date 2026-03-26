@@ -2,12 +2,16 @@ import 'dart:io';
 
 import 'package:democracy/app/utils/custom_bottom_sheet.dart';
 import 'package:democracy/app/utils/file_widget.dart';
+import 'package:democracy/app/utils/location.dart';
+import 'package:democracy/app/utils/map_widget.dart';
 import 'package:democracy/app/utils/media_tools.dart';
 import 'package:democracy/post/view/widgets/post_form_widgets.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class BottomTextFormField extends StatelessWidget {
   const BottomTextFormField({
@@ -32,6 +36,9 @@ class BottomTextFormField extends StatelessWidget {
     required this.insertedContent,
     required this.onRemoveInsertedContent,
     required this.allowedMimeTypes,
+    required this.onLocation,
+    required this.location,
+    required this.onRemoveLocation,
     this.onSend,
   });
 
@@ -55,6 +62,9 @@ class BottomTextFormField extends StatelessWidget {
   final File? insertedContent;
   final VoidCallback? onRemoveInsertedContent;
   final List<String> allowedMimeTypes;
+  final void Function(LatLng) onLocation;
+  final LatLng? location;
+  final VoidCallback? onRemoveLocation;
   final void Function()? onSend;
 
   @override
@@ -83,6 +93,14 @@ class BottomTextFormField extends StatelessWidget {
               onAdd: onAddImages,
               onRemove: onRemoveImage,
             ),
+          if (location != null)
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 15),
+              child: MapWidget(
+                mapCenter: location!,
+                onRemove: onRemoveLocation,
+              ),
+            ),
           if (selectedFile != null)
             FileWidget(url: selectedFile!.path, navigateToViewer: false),
           Row(
@@ -99,6 +117,7 @@ class BottomTextFormField extends StatelessWidget {
                         return _FileBottomSheet(
                           onNewImages: onNewImages,
                           onNewFile: onNewFile,
+                          onLocation: onLocation,
                         );
                       },
                     );
@@ -185,10 +204,15 @@ class BottomTextFormField extends StatelessWidget {
 }
 
 class _FileBottomSheet extends StatelessWidget {
-  const _FileBottomSheet({required this.onNewImages, required this.onNewFile});
+  const _FileBottomSheet({
+    required this.onNewImages,
+    required this.onNewFile,
+    required this.onLocation,
+  });
 
   final void Function(List<File>) onNewImages;
   final void Function(File) onNewFile;
+  final void Function(LatLng) onLocation;
 
   @override
   Widget build(BuildContext context) {
@@ -196,6 +220,7 @@ class _FileBottomSheet extends StatelessWidget {
       title: 'Add file',
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             _FileCard(
               onTap: () async {
@@ -224,9 +249,20 @@ class _FileBottomSheet extends StatelessWidget {
             ),
             SizedBox(width: 20),
             _FileCard(
-              onTap: () {
-                Navigator.pop(context);
-                // TODO:
+              onTap: () async {
+                var status = await Permission.storage.status;
+                if (!status.isGranted) {
+                  await Permission.storage.request();
+                }
+                if (context.mounted) {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Location(onLocation: onLocation),
+                    ),
+                  );
+                }
               },
               iconData: Icons.location_on_outlined,
               text: 'Location',

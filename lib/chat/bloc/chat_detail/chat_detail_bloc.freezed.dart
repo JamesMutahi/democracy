@@ -840,7 +840,7 @@ return markAsRead(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Map<String, dynamic> payload)?  directMessageSent,TResult Function( User user)?  create,TResult Function( Chat chat)?  get,TResult Function( Chat chat)?  subscribe,TResult Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? filePath,  String? location)?  sendDirectMessage,TResult Function( Chat chat)?  markAsRead,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Map<String, dynamic> payload)?  directMessageSent,TResult Function( User user)?  create,TResult Function( Chat chat)?  get,TResult Function( Chat chat)?  subscribe,TResult Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? filePath,  LatLng? location)?  sendDirectMessage,TResult Function( Chat chat)?  markAsRead,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
@@ -870,7 +870,7 @@ return markAsRead(_that.chat);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Map<String, dynamic> payload)  directMessageSent,required TResult Function( User user)  create,required TResult Function( Chat chat)  get,required TResult Function( Chat chat)  subscribe,required TResult Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? filePath,  String? location)  sendDirectMessage,required TResult Function( Chat chat)  markAsRead,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Map<String, dynamic> payload)  directMessageSent,required TResult Function( User user)  create,required TResult Function( Chat chat)  get,required TResult Function( Chat chat)  subscribe,required TResult Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? filePath,  LatLng? location)  sendDirectMessage,required TResult Function( Chat chat)  markAsRead,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Loaded():
@@ -896,7 +896,7 @@ return markAsRead(_that.chat);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Map<String, dynamic> payload)?  directMessageSent,TResult? Function( User user)?  create,TResult? Function( Chat chat)?  get,TResult? Function( Chat chat)?  subscribe,TResult? Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? filePath,  String? location)?  sendDirectMessage,TResult? Function( Chat chat)?  markAsRead,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Map<String, dynamic> payload)?  directMessageSent,TResult? Function( User user)?  create,TResult? Function( Chat chat)?  get,TResult? Function( Chat chat)?  subscribe,TResult? Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? filePath,  LatLng? location)?  sendDirectMessage,TResult? Function( Chat chat)?  markAsRead,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
@@ -1526,7 +1526,7 @@ class _SendDirectMessage implements ChatDetailEvent {
  final  String? imagePath3;
  final  String? imagePath4;
  final  String? filePath;
- final  String? location;
+ final  LatLng? location;
 
 /// Create a copy of ChatDetailEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -1558,7 +1558,7 @@ abstract mixin class _$SendDirectMessageCopyWith<$Res> implements $ChatDetailEve
   factory _$SendDirectMessageCopyWith(_SendDirectMessage value, $Res Function(_SendDirectMessage) _then) = __$SendDirectMessageCopyWithImpl;
 @useResult
 $Res call({
- List<User> users, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting, String? imagePath1, String? imagePath2, String? imagePath3, String? imagePath4, String? filePath, String? location
+ List<User> users, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting, String? imagePath1, String? imagePath2, String? imagePath3, String? imagePath4, String? filePath, LatLng? location
 });
 
 
@@ -1590,7 +1590,7 @@ as String?,imagePath3: freezed == imagePath3 ? _self.imagePath3 : imagePath3 // 
 as String?,imagePath4: freezed == imagePath4 ? _self.imagePath4 : imagePath4 // ignore: cast_nullable_to_non_nullable
 as String?,filePath: freezed == filePath ? _self.filePath : filePath // ignore: cast_nullable_to_non_nullable
 as String?,location: freezed == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
-as String?,
+as LatLng?,
   ));
 }
 

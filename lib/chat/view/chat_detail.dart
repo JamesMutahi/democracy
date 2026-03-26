@@ -306,6 +306,17 @@ class _ChatScaffoldState extends State<ChatScaffold> {
                   insertedContent: null,
                   onRemoveInsertedContent: null,
                   allowedMimeTypes: const <String>['image/png', 'image/gif'],
+                  onLocation: (point) {
+                    context.read<MessageDetailBloc>().add(
+                      MessageDetailEvent.create(
+                        chat: widget.chat,
+                        text: _controller.text,
+                        location: point,
+                      ),
+                    );
+                  },
+                  location: null,
+                  onRemoveLocation: null,
                   onSend:
                       _disableSendButton &&
                           _selectedImages.isEmpty &&

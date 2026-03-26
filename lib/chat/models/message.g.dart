@@ -31,7 +31,9 @@ _Message _$MessageFromJson(Map<String, dynamic> json) => _Message(
   image3Url: json['image3'] as String?,
   image4Url: json['image4'] as String?,
   fileUrl: json['file'] as String?,
-  location: json['location'] as String?,
+  location: json['location'] == null
+      ? null
+      : LatLng.fromJson(json['location'] as Map<String, dynamic>),
   isRead: json['is_read'] as bool,
   isEdited: json['is_edited'] as bool,
   isDeleted: json['is_deleted'] as bool,

@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:fluttertagger/fluttertagger.dart';
+import 'package:latlong2/latlong.dart';
 
 class BottomReplyTextField extends StatefulWidget {
   const BottomReplyTextField({super.key, required this.post});
@@ -29,6 +30,7 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
   List<File> _selectedImages = [];
   File? _selectedFile;
   File? _insertedContent;
+  LatLng? _location;
 
   double overlayHeight = 300;
   SearchResultView _view = SearchResultView.none;
@@ -208,11 +210,23 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
               });
             },
             allowedMimeTypes: const <String>['image/gif'],
+            onLocation: (point) {
+              setState(() {
+                _location = point;
+              });
+            },
+            location: _location,
+            onRemoveLocation: () {
+              setState(() {
+                _location = null;
+              });
+            },
             onSend:
                 _disableSendButton &&
                     _insertedContent == null &&
                     _selectedFile == null &&
-                    _selectedImages.isEmpty
+                    _selectedImages.isEmpty &&
+                    _location == null
                 ? null
                 : _createPost,
           );
@@ -241,7 +255,7 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
         imagePath3: _selectedImages.length > 2 ? _selectedImages[2].path : null,
         imagePath4: _selectedImages.length > 3 ? _selectedImages[3].path : null,
         filePath: _selectedFile?.path,
-        location: null, //TODO:
+        location: _location,
       ),
     );
     _controller.clear();
@@ -250,6 +264,7 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
       _selectedFile = null;
       _insertedContent = null;
       _selectedImages = [];
+      _location = null;
     });
   }
 }

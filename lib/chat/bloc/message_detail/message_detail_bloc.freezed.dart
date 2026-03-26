@@ -667,7 +667,7 @@ return delete(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? filePath,  String? location)?  create,TResult Function( int messageId,  String text)?  edit,TResult Function( List<Message> messages)?  delete,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? filePath,  LatLng? location)?  create,TResult Function( int messageId,  String text)?  edit,TResult Function( List<Message> messages)?  delete,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Updated() when updated != null:
@@ -693,7 +693,7 @@ return delete(_that.messages);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? filePath,  String? location)  create,required TResult Function( int messageId,  String text)  edit,required TResult Function( List<Message> messages)  delete,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? filePath,  LatLng? location)  create,required TResult Function( int messageId,  String text)  edit,required TResult Function( List<Message> messages)  delete,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Updated():
@@ -715,7 +715,7 @@ return delete(_that.messages);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? filePath,  String? location)?  create,TResult? Function( int messageId,  String text)?  edit,TResult? Function( List<Message> messages)?  delete,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? filePath,  LatLng? location)?  create,TResult? Function( int messageId,  String text)?  edit,TResult? Function( List<Message> messages)?  delete,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Updated() when updated != null:
@@ -966,7 +966,7 @@ class _Create implements MessageDetailEvent {
  final  String? imagePath3;
  final  String? imagePath4;
  final  String? filePath;
- final  String? location;
+ final  LatLng? location;
 
 /// Create a copy of MessageDetailEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -998,7 +998,7 @@ abstract mixin class _$CreateCopyWith<$Res> implements $MessageDetailEventCopyWi
   factory _$CreateCopyWith(_Create value, $Res Function(_Create) _then) = __$CreateCopyWithImpl;
 @useResult
 $Res call({
- Chat chat, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting, String? imagePath1, String? imagePath2, String? imagePath3, String? imagePath4, String? filePath, String? location
+ Chat chat, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting, String? imagePath1, String? imagePath2, String? imagePath3, String? imagePath4, String? filePath, LatLng? location
 });
 
 
@@ -1030,7 +1030,7 @@ as String?,imagePath3: freezed == imagePath3 ? _self.imagePath3 : imagePath3 // 
 as String?,imagePath4: freezed == imagePath4 ? _self.imagePath4 : imagePath4 // ignore: cast_nullable_to_non_nullable
 as String?,filePath: freezed == filePath ? _self.filePath : filePath // ignore: cast_nullable_to_non_nullable
 as String?,location: freezed == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
-as String?,
+as LatLng?,
   ));
 }
 

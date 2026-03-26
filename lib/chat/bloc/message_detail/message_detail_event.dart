@@ -27,7 +27,7 @@ sealed class MessageDetailEvent with _$MessageDetailEvent {
     String? imagePath3,
     String? imagePath4,
     String? filePath,
-    String? location,
+    LatLng? location,
   }) = _Create;
 
   const factory MessageDetailEvent.edit({

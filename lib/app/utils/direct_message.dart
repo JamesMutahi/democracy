@@ -13,6 +13,7 @@ import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
@@ -50,6 +51,7 @@ class _DirectMessageState extends State<DirectMessage> {
   List<File> _selectedImages = [];
   File? _selectedFile;
   File? _insertedContent;
+  LatLng? location;
 
   @override
   void dispose() {
@@ -238,7 +240,7 @@ class _DirectMessageState extends State<DirectMessage> {
           onNewImages: (images) {
             setState(() {
               _selectedImages = images;
-              _insertedContent =  null;
+              _insertedContent = null;
               _selectedFile = null;
             });
           },
@@ -257,7 +259,7 @@ class _DirectMessageState extends State<DirectMessage> {
             setState(() {
               _selectedFile = file;
               _selectedImages = [];
-              _insertedContent =  null;
+              _insertedContent = null;
             });
           },
           selectedFile: _selectedFile,
@@ -275,6 +277,13 @@ class _DirectMessageState extends State<DirectMessage> {
             });
           },
           allowedMimeTypes: const <String>['image/png', 'image/gif'],
+          onLocation: (point) {
+            setState(() {
+              location = point;
+            });
+          },
+          location: location,
+          onRemoveLocation: null,
           onSend: selectedUsers.isEmpty
               ? null
               : () {

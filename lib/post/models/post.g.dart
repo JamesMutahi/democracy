@@ -19,6 +19,9 @@ _Post _$PostFromJson(Map<String, dynamic> json) => _Post(
   video2Url: json['video2'] as String?,
   video3Url: json['video3'] as String?,
   fileUrl: json['file'] as String?,
+  location: json['location'] == null
+      ? null
+      : LatLng.fromJson(json['location'] as Map<String, dynamic>),
   likes: (json['likes'] as num).toInt(),
   isLiked: json['is_liked'] as bool,
   bookmarks: (json['bookmarks'] as num).toInt(),
@@ -81,6 +84,7 @@ Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
   'video2': instance.video2Url,
   'video3': instance.video3Url,
   'file': instance.fileUrl,
+  'location': instance.location,
   'likes': instance.likes,
   'is_liked': instance.isLiked,
   'bookmarks': instance.bookmarks,

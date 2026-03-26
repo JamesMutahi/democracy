@@ -11,6 +11,7 @@ import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:latlong2/latlong.dart';
 
 part 'message_detail_bloc.freezed.dart';
 part 'message_detail_state.dart';
@@ -124,7 +125,9 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
             ),
           'file_base64': fileBase64,
           'file_name': fileName,
-          'location': event.location,
+          if (event.location != null)
+            'location':
+                'POINT (${event.location!.longitude} ${event.location!.latitude})',
         },
       },
     };

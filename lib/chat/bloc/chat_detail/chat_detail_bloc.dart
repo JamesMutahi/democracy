@@ -11,6 +11,7 @@ import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:latlong2/latlong.dart';
 
 part 'chat_detail_bloc.freezed.dart';
 part 'chat_detail_state.dart';
@@ -197,7 +198,9 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
               File(event.imagePath4!).readAsBytesSync(),
             ),
           'file': event.filePath,
-          'location': event.location,
+          if (event.location != null)
+            'location':
+                'POINT (${event.location!.longitude} ${event.location!.latitude})',
         },
       },
     };

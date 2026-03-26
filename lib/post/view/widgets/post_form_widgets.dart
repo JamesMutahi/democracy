@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:democracy/app/utils/location.dart';
 import 'package:democracy/app/utils/media_tools.dart';
 import 'package:democracy/app/utils/tagging.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
@@ -13,7 +14,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:fluttertagger/fluttertagger.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class PostAuthor extends StatelessWidget {
   const PostAuthor({super.key});
@@ -151,6 +154,7 @@ class PostBottomNavBar extends StatefulWidget {
     required this.fileLimit,
     required this.onNewImages,
     required this.onNewFile,
+    required this.onLocation,
   });
 
   final FlutterTaggerController controller;
@@ -159,6 +163,7 @@ class PostBottomNavBar extends StatefulWidget {
   final int fileLimit;
   final void Function(List<File>) onNewImages;
   final void Function(File) onNewFile;
+  final void Function(LatLng) onLocation;
 
   @override
   State<PostBottomNavBar> createState() => _PostBottomNavBarState();
@@ -305,8 +310,20 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
                     text: 'Gallery',
                   ),
                   PostExtraButton(
-                    onTap: () {
-                      // TODO:
+                    onTap: () async {
+                      var status = await Permission.storage.status;
+                      if (!status.isGranted) {
+                        await Permission.storage.request();
+                      }
+                      if (context.mounted) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                Location(onLocation: widget.onLocation),
+                          ),
+                        );
+                      }
                     },
                     iconData: Icons.location_on_outlined,
                     text: 'Location',

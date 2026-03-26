@@ -69,12 +69,23 @@ class FileWidget extends StatelessWidget {
                         ),
                       ),
                     );
-                    final snackBar = getSnackBar(
+                    showDialog(
                       context: context,
-                      message: 'No app found to open file',
-                      status: SnackBarStatus.info,
+                      builder: (context) => AlertDialog(
+                        title: Text('No app was found'),
+                        content: Text(
+                          'You may not have an app to open this file. This is provided when an app is not available.',
+                        ),
+                        actions: [
+                          OutlinedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text('OK'),
+                          ),
+                        ],
+                      ),
                     );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   }
                 }
               } else {

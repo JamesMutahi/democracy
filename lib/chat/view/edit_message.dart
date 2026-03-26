@@ -81,18 +81,13 @@ class _EditMessageState extends State<EditMessage> {
         onRemoveImage: (index) {},
         onNewFile: (file) {},
         selectedFile: null,
-        onContentInsertion: (imageFile) {
-          context.read<MessageDetailBloc>().add(
-            MessageDetailEvent.create(
-              chat: widget.chat,
-              text: _controller.text,
-              imagePath1: imageFile.path,
-            ),
-          );
-        },
+        onContentInsertion: (imageFile) {},
         insertedContent: null,
         onRemoveInsertedContent: null,
         allowedMimeTypes: const <String>['image/png', 'image/gif'],
+        onLocation: (point) {},
+        location: null,
+        onRemoveLocation: null,
         onSend: _disableSendButton
             ? null
             : () {

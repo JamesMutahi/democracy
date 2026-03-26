@@ -4,6 +4,7 @@ import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:latlong2/latlong.dart';
 
 part 'post.freezed.dart';
 part 'post.g.dart';
@@ -25,6 +26,7 @@ sealed class Post with _$Post {
     @JsonKey(name: 'video2') required String? video2Url,
     @JsonKey(name: 'video3') required String? video3Url,
     @JsonKey(name: 'file') required String? fileUrl,
+    required final LatLng? location,
     required int likes,
     @JsonKey(name: 'is_liked') required bool isLiked,
     required int bookmarks,

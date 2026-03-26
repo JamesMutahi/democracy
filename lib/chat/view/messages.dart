@@ -4,6 +4,7 @@ import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/custom_text.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/app/utils/image_viewer.dart';
+import 'package:democracy/app/utils/map_widget.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
@@ -109,6 +110,18 @@ class _MessagesState extends State<Messages> {
                 message: message,
                 alignedRight: alignedRight,
                 child: FileWidget(url: message.fileUrl!),
+              ),
+            );
+          }
+          if (message.location != null) {
+            if (message.text.isNotEmpty) {
+              widgets.add(SizedBox(height: messageMargin));
+            }
+            widgets.add(
+              AlignmentContainer(
+                message: message,
+                alignedRight: alignedRight,
+                child: MapWidget(mapCenter: message.location!),
               ),
             );
           }

@@ -1,5 +1,6 @@
 import 'package:democracy/app/utils/custom_text.dart';
 import 'package:democracy/app/utils/file_widget.dart';
+import 'package:democracy/app/utils/map_widget.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/meet/view/meeting_tile.dart';
@@ -252,6 +253,11 @@ class _PostContainer extends StatelessWidget {
                             Container(
                               margin: EdgeInsets.only(top: 10),
                               child: FileWidget(url: post.fileUrl!),
+                            ),
+                          if (post.location != null)
+                            Container(
+                              margin: EdgeInsets.only(top: 10),
+                              child: MapWidget(mapCenter: post.location!),
                             ),
                           if (post.repostOf != null && !isDependency)
                             PostDependency(post: post),

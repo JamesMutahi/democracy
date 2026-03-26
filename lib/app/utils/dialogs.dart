@@ -76,13 +76,12 @@ class CustomDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Center(child: Text(title)),
-      content: Text(content, textAlign: TextAlign.center),
+      title: Text(title),
+      content: Text(content),
       actions: <Widget>[
         OutlinedButton(onPressed: onButton1Pressed, child: Text(button1Text)),
         OutlinedButton(onPressed: onButton2Pressed, child: Text(button2Text)),
       ],
-      actionsAlignment: MainAxisAlignment.center,
       buttonPadding: const EdgeInsets.all(20.0),
     );
   }
