@@ -36,7 +36,8 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
         'action': action,
         'request_id': requestId,
         'chat': event.chat.id,
-        'last_message': event.lastMessage?.id,
+        'last_message': event.oldestMessage?.id,
+        'first_message': event.newestMessage?.id,
       },
     };
     webSocketService.send(message);
@@ -48,12 +49,16 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
       final List<Message> messages = List.from(
         event.payload['data']['results'].map((e) => Message.fromJson(e)),
       );
-      int? lastMessage = event.payload['data']['last_message'];
+      int? oldestMessage = event.payload['data']['oldest_message'];
+      int? newestMessage = event.payload['data']['newest_message'];
       emit(
         state.copyWith(
           status: MessagesStatus.success,
-          messages:
-              lastMessage == null ? messages : [...state.messages, ...messages],
+          messages: oldestMessage != null
+              ? [...state.messages, ...messages]
+              : newestMessage != null
+              ? [...messages, ...state.messages]
+              : messages,
           hasNext: event.payload['data']['has_next'],
         ),
       );

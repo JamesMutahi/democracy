@@ -119,10 +119,10 @@ return received(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Chat chat,  Message? lastMessage)?  get,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)?  get,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.chat,_that.lastMessage);case _Received() when received != null:
+return get(_that.chat,_that.oldestMessage,_that.newestMessage);case _Received() when received != null:
 return received(_that.payload);case _:
   return orElse();
 
@@ -141,10 +141,10 @@ return received(_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Chat chat,  Message? lastMessage)  get,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)  get,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
 switch (_that) {
 case _Get():
-return get(_that.chat,_that.lastMessage);case _Received():
+return get(_that.chat,_that.oldestMessage,_that.newestMessage);case _Received():
 return received(_that.payload);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -159,10 +159,10 @@ return received(_that.payload);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Chat chat,  Message? lastMessage)?  get,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)?  get,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.chat,_that.lastMessage);case _Received() when received != null:
+return get(_that.chat,_that.oldestMessage,_that.newestMessage);case _Received() when received != null:
 return received(_that.payload);case _:
   return null;
 
@@ -175,11 +175,12 @@ return received(_that.payload);case _:
 
 
 class _Get implements MessagesEvent {
-  const _Get({required this.chat, this.lastMessage});
+  const _Get({required this.chat, this.oldestMessage, this.newestMessage});
   
 
  final  Chat chat;
- final  Message? lastMessage;
+ final  Message? oldestMessage;
+ final  Message? newestMessage;
 
 /// Create a copy of MessagesEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -191,16 +192,16 @@ _$GetCopyWith<_Get> get copyWith => __$GetCopyWithImpl<_Get>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.chat, chat) || other.chat == chat)&&(identical(other.lastMessage, lastMessage) || other.lastMessage == lastMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.chat, chat) || other.chat == chat)&&(identical(other.oldestMessage, oldestMessage) || other.oldestMessage == oldestMessage)&&(identical(other.newestMessage, newestMessage) || other.newestMessage == newestMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,chat,lastMessage);
+int get hashCode => Object.hash(runtimeType,chat,oldestMessage,newestMessage);
 
 @override
 String toString() {
-  return 'MessagesEvent.get(chat: $chat, lastMessage: $lastMessage)';
+  return 'MessagesEvent.get(chat: $chat, oldestMessage: $oldestMessage, newestMessage: $newestMessage)';
 }
 
 
@@ -211,11 +212,11 @@ abstract mixin class _$GetCopyWith<$Res> implements $MessagesEventCopyWith<$Res>
   factory _$GetCopyWith(_Get value, $Res Function(_Get) _then) = __$GetCopyWithImpl;
 @useResult
 $Res call({
- Chat chat, Message? lastMessage
+ Chat chat, Message? oldestMessage, Message? newestMessage
 });
 
 
-$ChatCopyWith<$Res> get chat;$MessageCopyWith<$Res>? get lastMessage;
+$ChatCopyWith<$Res> get chat;$MessageCopyWith<$Res>? get oldestMessage;$MessageCopyWith<$Res>? get newestMessage;
 
 }
 /// @nodoc
@@ -228,10 +229,11 @@ class __$GetCopyWithImpl<$Res>
 
 /// Create a copy of MessagesEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? chat = null,Object? lastMessage = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? chat = null,Object? oldestMessage = freezed,Object? newestMessage = freezed,}) {
   return _then(_Get(
 chat: null == chat ? _self.chat : chat // ignore: cast_nullable_to_non_nullable
-as Chat,lastMessage: freezed == lastMessage ? _self.lastMessage : lastMessage // ignore: cast_nullable_to_non_nullable
+as Chat,oldestMessage: freezed == oldestMessage ? _self.oldestMessage : oldestMessage // ignore: cast_nullable_to_non_nullable
+as Message?,newestMessage: freezed == newestMessage ? _self.newestMessage : newestMessage // ignore: cast_nullable_to_non_nullable
 as Message?,
   ));
 }
@@ -249,13 +251,25 @@ $ChatCopyWith<$Res> get chat {
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$MessageCopyWith<$Res>? get lastMessage {
-    if (_self.lastMessage == null) {
+$MessageCopyWith<$Res>? get oldestMessage {
+    if (_self.oldestMessage == null) {
     return null;
   }
 
-  return $MessageCopyWith<$Res>(_self.lastMessage!, (value) {
-    return _then(_self.copyWith(lastMessage: value));
+  return $MessageCopyWith<$Res>(_self.oldestMessage!, (value) {
+    return _then(_self.copyWith(oldestMessage: value));
+  });
+}/// Create a copy of MessagesEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MessageCopyWith<$Res>? get newestMessage {
+    if (_self.newestMessage == null) {
+    return null;
+  }
+
+  return $MessageCopyWith<$Res>(_self.newestMessage!, (value) {
+    return _then(_self.copyWith(newestMessage: value));
   });
 }
 }

@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/file_widget.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/custom_text.dart';
@@ -212,6 +213,18 @@ class _MessagesState extends State<Messages> {
 
     return MultiBlocListener(
       listeners: [
+        BlocListener<WebsocketBloc, WebsocketState>(
+          listener: (context, state) {
+            if (state.status == WebsocketStatus.connected) {
+              context.read<MessagesBloc>().add(
+                MessagesEvent.get(
+                  chat: widget.chat,
+                  newestMessage: _messages.first,
+                ),
+              );
+            }
+          },
+        ),
         BlocListener<MessagesBloc, MessagesState>(
           listener: (context, state) {
             if (state.status == MessagesStatus.success) {
@@ -293,7 +306,7 @@ class _MessagesState extends State<Messages> {
                 context.read<MessagesBloc>().add(
                   MessagesEvent.get(
                     chat: widget.chat,
-                    lastMessage: _messages.last,
+                    oldestMessage: _messages.last,
                   ),
                 );
               },

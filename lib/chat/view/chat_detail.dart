@@ -36,7 +36,7 @@ class ChatDetail extends StatelessWidget {
         if (chat.users.length > 1) {
           otherUser = chat.users.firstWhere((u) => u.id != currentUser.id);
         }
-        return ChatScaffold(
+        return _ChatDetail(
           chat: chat,
           currentUser: currentUser,
           otherUser: otherUser,
@@ -46,9 +46,8 @@ class ChatDetail extends StatelessWidget {
   }
 }
 
-class ChatScaffold extends StatefulWidget {
-  const ChatScaffold({
-    super.key,
+class _ChatDetail extends StatefulWidget {
+  const _ChatDetail({
     required this.chat,
     required this.currentUser,
     required this.otherUser,
@@ -59,10 +58,10 @@ class ChatScaffold extends StatefulWidget {
   final User otherUser;
 
   @override
-  State<ChatScaffold> createState() => _ChatScaffoldState();
+  State<_ChatDetail> createState() => _ChatDetailState();
 }
 
-class _ChatScaffoldState extends State<ChatScaffold> {
+class _ChatDetailState extends State<_ChatDetail> {
   late User otherUser = widget.otherUser;
   final _controller = TextEditingController();
   final _focusNode = FocusNode();
