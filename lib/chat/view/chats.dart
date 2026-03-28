@@ -287,24 +287,20 @@ class _ChatTileState extends State<ChatTile> {
           if (widget.chat.lastMessage != null)
             _ChatTime(widget.chat.lastMessage!),
           if (widget.chat.unreadMessages > 0)
-            CircleAvatar(
-              radius: 8,
-              backgroundColor: Colors.green,
-              child: Text(
+            Badge(
+              label: Text(
                 widget.chat.unreadMessages.toString(),
                 style: Theme.of(context).textTheme.labelSmall,
               ),
+              backgroundColor: Colors.green,
             ),
         ],
       ),
       onTap: () {
-        if (widget.chat.lastMessage != null) {
-          if (!widget.chat.lastMessage!.isRead &&
-              widget.chat.lastMessage!.user.id != widget.currentUser.id) {
-            context.read<ChatDetailBloc>().add(
-              ChatDetailEvent.markAsRead(chat: widget.chat),
-            );
-          }
+        if (widget.chat.unreadMessages > 0) {
+          context.read<ChatDetailBloc>().add(
+            ChatDetailEvent.markAsRead(chat: widget.chat),
+          );
         }
         Navigator.of(context).push(
           MaterialPageRoute(

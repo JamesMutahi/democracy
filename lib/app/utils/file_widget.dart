@@ -27,9 +27,9 @@ class FileWidget extends StatelessWidget {
     String extension = p.extension(url).toLowerCase();
     late Icon icon;
     if (extension == '.pdf') {
-      icon = Icon(Icons.picture_as_pdf, color: Colors.red);
+      icon = Icon(Icons.picture_as_pdf, color: Colors.red, size: 30);
     } else {
-      icon = Icon(Icons.note, color: Colors.blue);
+      icon = Icon(Icons.file_present_rounded, color: Colors.blue, size: 30);
     }
     return ListTile(
       onTap: !navigateToViewer

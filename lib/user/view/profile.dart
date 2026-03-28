@@ -21,6 +21,13 @@ import 'package:material_symbols_icons/material_symbols_icons.dart';
 const List<Tab> tabs = <Tab>[
   Tab(text: 'Posts'),
   Tab(text: 'Replies'),
+  Tab(text: 'Comm. notes'),
+  Tab(text: 'Petitions'),
+];
+
+const List<Tab> userTabs = <Tab>[
+  Tab(text: 'Posts'),
+  Tab(text: 'Replies'),
   Tab(text: 'Likes'),
   Tab(text: 'Comm. notes'),
   Tab(text: 'Petitions'),
@@ -162,7 +169,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           },
                         )
                       : DefaultTabController(
-                          length: tabs.length,
+                          length: isCurrentUser ? userTabs.length : tabs.length,
                           child: NestedScrollView(
                             controller: _scrollController,
                             headerSliverBuilder:
@@ -193,7 +200,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                             dividerColor: Theme.of(
                                               context,
                                             ).colorScheme.outlineVariant,
-                                            tabs: tabs,
+                                            tabs: isCurrentUser
+                                                ? userTabs
+                                                : tabs,
                                           ),
                                         ),
                                         pinned: true,
@@ -250,7 +259,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                         key: ValueKey(user.id),
                                         user: user,
                                       ),
-                                      Likes(key: ValueKey(user.id), user: user),
+                                      if (isCurrentUser)
+                                        Likes(
+                                          key: ValueKey(user.id),
+                                          user: user,
+                                        ),
                                       UserCommunityNotes(
                                         key: ValueKey(user.id),
                                         user: user,
