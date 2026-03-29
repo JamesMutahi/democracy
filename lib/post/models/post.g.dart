@@ -15,9 +15,7 @@ _Post _$PostFromJson(Map<String, dynamic> json) => _Post(
   image2Url: json['image2'] as String?,
   image3Url: json['image3'] as String?,
   image4Url: json['image4'] as String?,
-  video1Url: json['video1'] as String?,
-  video2Url: json['video2'] as String?,
-  video3Url: json['video3'] as String?,
+  videoUrl: json['video'] as String?,
   fileUrl: json['file'] as String?,
   location: json['location'] == null
       ? null
@@ -80,9 +78,7 @@ Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
   'image2': instance.image2Url,
   'image3': instance.image3Url,
   'image4': instance.image4Url,
-  'video1': instance.video1Url,
-  'video2': instance.video2Url,
-  'video3': instance.video3Url,
+  'video': instance.videoUrl,
   'file': instance.fileUrl,
   'location': instance.location,
   'likes': instance.likes,

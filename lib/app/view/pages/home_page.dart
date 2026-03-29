@@ -57,6 +57,14 @@ class _HomePageState extends State<HomePage>
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
+        if (state is PostDetailFailure) {
+          final snackBar = getSnackBar(
+            context: context,
+            message: state.error,
+            status: SnackBarStatus.failure,
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
       },
       child: Stack(
         children: [

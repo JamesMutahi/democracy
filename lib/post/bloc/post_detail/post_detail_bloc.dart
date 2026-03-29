@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:democracy/app/bloc/repository/repository.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/meet/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
@@ -19,8 +21,11 @@ const String stream = 'posts';
 const String requestId = 'posts';
 
 class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
-  PostDetailBloc({required this.webSocketService})
-    : super(const PostDetailState.initial()) {
+  PostDetailBloc({
+    required this.webSocketService,
+    required this.authRepository,
+    required this.apiRepository,
+  }) : super(const PostDetailState.initial()) {
     webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
         switch (message['payload']['action']) {
@@ -72,8 +77,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     on<_Reported>((event, emit) {
       _onReported(event, emit);
     });
-    on<_Create>((event, emit) {
-      _onCreate(event, emit);
+    on<_Create>((event, emit) async {
+      await _onCreate(event, emit);
     });
     on<_Get>((event, emit) {
       _onGet(event, emit);
@@ -286,56 +291,33 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   Future _onCreate(_Create event, Emitter<PostDetailState> emit) async {
-    String? fileBase64;
-    String? fileName;
-    if (event.filePath != null) {
-      File file = File(event.filePath!);
-      fileBase64 = base64Encode(file.readAsBytesSync());
-      fileName = file.path.split('/').last;
+    emit(PostDetailLoading());
+    try {
+      String? token = await authRepository.getToken();
+      Post post = await apiRepository.createPost(
+        token: token!,
+        body: event.body,
+        status: event.status,
+        repostOf: event.repostOf,
+        replyTo: event.replyTo,
+        communityNoteOf: event.communityNoteOf,
+        ballot: event.ballot,
+        survey: event.survey,
+        petition: event.petition,
+        meeting: event.meeting,
+        tags: event.tags,
+        imagePath1: event.imagePath1,
+        imagePath2: event.imagePath2,
+        imagePath3: event.imagePath3,
+        imagePath4: event.imagePath4,
+        videoPath: event.videoPath,
+        filePath: event.filePath,
+        location: event.location,
+      );
+      emit(PostCreated(post: post));
+    } catch (e) {
+      emit(PostDetailFailure(error: e.toString()));
     }
-    Map<String, dynamic> message = {
-      'stream': stream,
-      'payload': {
-        'action': 'create',
-        'request_id': requestId,
-        'data': {
-          'body': event.body,
-          'reply_to_id': event.replyTo?.id,
-          'repost_of_id': event.repostOf?.id,
-          'community_note_of_id': event.communityNoteOf?.id,
-          'ballot_id': event.ballot?.id,
-          'survey_id': event.survey?.id,
-          'petition_id': event.petition?.id,
-          'meeting_id': event.meeting?.id,
-          'status': event.status == PostStatus.published
-              ? 'published'
-              : 'draft',
-          'tags': event.tags,
-          if (event.imagePath1 != null)
-            'image1_base64': base64Encode(
-              File(event.imagePath1!).readAsBytesSync(),
-            ),
-          if (event.imagePath2 != null)
-            'image2_base64': base64Encode(
-              File(event.imagePath2!).readAsBytesSync(),
-            ),
-          if (event.imagePath3 != null)
-            'image3_base64': base64Encode(
-              File(event.imagePath3!).readAsBytesSync(),
-            ),
-          if (event.imagePath4 != null)
-            'image4_base64': base64Encode(
-              File(event.imagePath4!).readAsBytesSync(),
-            ),
-          'file_base64': fileBase64,
-          'file_name': fileName,
-          if (event.location != null)
-            'location':
-            'POINT (${event.location!.longitude} ${event.location!.latitude})',
-        },
-      },
-    };
-    webSocketService.send(message);
   }
 
   Future _onGet(_Get event, Emitter<PostDetailState> emit) async {
@@ -501,4 +483,6 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   final WebSocketService webSocketService;
+  final AuthRepository authRepository;
+  final APIRepository apiRepository;
 }

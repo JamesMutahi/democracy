@@ -64,6 +64,7 @@ sealed class PostDetailEvent with _$PostDetailEvent {
     String? imagePath2,
     String? imagePath3,
     String? imagePath4,
+    String? videoPath,
     String? filePath,
     LatLng? location,
   }) = _Create;

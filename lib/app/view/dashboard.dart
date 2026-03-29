@@ -140,6 +140,7 @@ class _DashboardState extends State<Dashboard> {
                       }
                     },
                   ),
+
                 ],
                 child: PageView(
                   physics: const NeverScrollableScrollPhysics(),

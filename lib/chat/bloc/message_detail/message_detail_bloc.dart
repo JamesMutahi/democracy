@@ -1,8 +1,7 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:bloc/bloc.dart';
+import 'package:democracy/app/bloc/repository/repository.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
@@ -21,8 +20,11 @@ const String stream = 'chats';
 const String requestId = 'messages';
 
 class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
-  MessageDetailBloc({required this.webSocketService})
-    : super(const MessageDetailState.initial()) {
+  MessageDetailBloc({
+    required this.webSocketService,
+    required this.authRepository,
+    required this.apiRepository,
+  }) : super(const MessageDetailState.initial()) {
     webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
         if (message['payload']['request_id'] == requestId) {
@@ -46,8 +48,8 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
     on<_Deleted>((event, emit) {
       _onDeleted(event, emit);
     });
-    on<_Create>((event, emit) {
-      _onCreate(event, emit);
+    on<_Create>((event, emit) async {
+      await _onCreate(event, emit);
     });
     on<_Edit>((event, emit) {
       _onEdit(event, emit);
@@ -87,51 +89,29 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
   }
 
   Future _onCreate(_Create event, Emitter<MessageDetailState> emit) async {
-    String? fileBase64;
-    String? fileName;
-    if (event.filePath != null) {
-      File file = File(event.filePath!);
-      fileBase64 = base64Encode(file.readAsBytesSync());
-      fileName = file.path.split('/').last;
+    emit(MessageDetailLoading());
+    try {
+      String? token = await authRepository.getToken();
+      await apiRepository.createMessage(
+        token: token!,
+        chat: event.chat,
+        text: event.text,
+        post: event.post,
+        ballot: event.ballot,
+        survey: event.survey,
+        petition: event.petition,
+        meeting: event.meeting,
+        imagePath1: event.imagePath1,
+        imagePath2: event.imagePath2,
+        imagePath3: event.imagePath3,
+        imagePath4: event.imagePath4,
+        videoPath: event.videoPath,
+        filePath: event.filePath,
+        location: event.location,
+      );
+    } catch (e) {
+      emit(MessageDetailFailure(error: e.toString()));
     }
-    Map<String, dynamic> message = {
-      'stream': stream,
-      'payload': {
-        'action': 'create_message',
-        'request_id': requestId,
-        'data': {
-          'chat': event.chat.id,
-          'text': event.text,
-          'post_id': event.post?.id,
-          'ballot_id': event.ballot?.id,
-          'survey_id': event.survey?.id,
-          'petition_id': event.petition?.id,
-          'meeting_id': event.meeting?.id,
-          if (event.imagePath1 != null)
-            'image1_base64': base64Encode(
-              File(event.imagePath1!).readAsBytesSync(),
-            ),
-          if (event.imagePath2 != null)
-            'image2_base64': base64Encode(
-              File(event.imagePath2!).readAsBytesSync(),
-            ),
-          if (event.imagePath3 != null)
-            'image3_base64': base64Encode(
-              File(event.imagePath3!).readAsBytesSync(),
-            ),
-          if (event.imagePath4 != null)
-            'image4_base64': base64Encode(
-              File(event.imagePath4!).readAsBytesSync(),
-            ),
-          'file_base64': fileBase64,
-          'file_name': fileName,
-          if (event.location != null)
-            'location':
-                'POINT (${event.location!.longitude} ${event.location!.latitude})',
-        },
-      },
-    };
-    webSocketService.send(message);
   }
 
   Future _onEdit(_Edit event, Emitter<MessageDetailState> emit) async {
@@ -162,4 +142,6 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
   }
 
   final WebSocketService webSocketService;
+  final AuthRepository authRepository;
+  final APIRepository apiRepository;
 }

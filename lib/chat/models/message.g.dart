@@ -30,6 +30,7 @@ _Message _$MessageFromJson(Map<String, dynamic> json) => _Message(
   image2Url: json['image2'] as String?,
   image3Url: json['image3'] as String?,
   image4Url: json['image4'] as String?,
+  videoUrl: json['video'] as String?,
   fileUrl: json['file'] as String?,
   location: json['location'] == null
       ? null
@@ -55,6 +56,7 @@ Map<String, dynamic> _$MessageToJson(_Message instance) => <String, dynamic>{
   'image2': instance.image2Url,
   'image3': instance.image3Url,
   'image4': instance.image4Url,
+  'video': instance.videoUrl,
   'file': instance.fileUrl,
   'location': instance.location,
   'is_read': instance.isRead,

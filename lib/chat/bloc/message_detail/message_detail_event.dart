@@ -26,6 +26,7 @@ sealed class MessageDetailEvent with _$MessageDetailEvent {
     String? imagePath2,
     String? imagePath3,
     String? imagePath4,
+    String? videoPath,
     String? filePath,
     LatLng? location,
   }) = _Create;

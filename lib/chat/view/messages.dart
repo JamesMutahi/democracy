@@ -6,6 +6,7 @@ import 'package:democracy/app/utils/custom_text.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/app/utils/image_viewer.dart';
 import 'package:democracy/app/utils/map_widget.dart';
+import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
@@ -283,6 +284,14 @@ class _MessagesState extends State<Messages> {
                   );
                 });
               }
+            }
+            if (state is MessageDetailFailure) {
+              final snackBar = getSnackBar(
+                context: context,
+                message: state.error,
+                status: SnackBarStatus.failure,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
           },
         ),

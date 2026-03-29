@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Message {
 
- int get id; int get chat; User get user; String get text; Post? get post; Ballot? get ballot; Survey? get survey; Petition? get petition; Meeting? get meeting;@JsonKey(name: 'image1') String? get image1Url;@JsonKey(name: 'image2') String? get image2Url;@JsonKey(name: 'image3') String? get image3Url;@JsonKey(name: 'image4') String? get image4Url;@JsonKey(name: 'file') String? get fileUrl; LatLng? get location;@JsonKey(name: 'is_read') bool get isRead;@JsonKey(name: 'is_edited') bool get isEdited;@JsonKey(name: 'is_deleted') bool get isDeleted;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt;
+ int get id; int get chat; User get user; String get text; Post? get post; Ballot? get ballot; Survey? get survey; Petition? get petition; Meeting? get meeting;@JsonKey(name: 'image1') String? get image1Url;@JsonKey(name: 'image2') String? get image2Url;@JsonKey(name: 'image3') String? get image3Url;@JsonKey(name: 'image4') String? get image4Url;@JsonKey(name: 'video') String? get videoUrl;@JsonKey(name: 'file') String? get fileUrl; LatLng? get location;@JsonKey(name: 'is_read') bool get isRead;@JsonKey(name: 'is_edited') bool get isEdited;@JsonKey(name: 'is_deleted') bool get isDeleted;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt;
 /// Create a copy of Message
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $MessageCopyWith<Message> get copyWith => _$MessageCopyWithImpl<Message>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Message&&(identical(other.id, id) || other.id == id)&&(identical(other.chat, chat) || other.chat == chat)&&(identical(other.user, user) || other.user == user)&&(identical(other.text, text) || other.text == text)&&(identical(other.post, post) || other.post == post)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.image1Url, image1Url) || other.image1Url == image1Url)&&(identical(other.image2Url, image2Url) || other.image2Url == image2Url)&&(identical(other.image3Url, image3Url) || other.image3Url == image3Url)&&(identical(other.image4Url, image4Url) || other.image4Url == image4Url)&&(identical(other.fileUrl, fileUrl) || other.fileUrl == fileUrl)&&(identical(other.location, location) || other.location == location)&&(identical(other.isRead, isRead) || other.isRead == isRead)&&(identical(other.isEdited, isEdited) || other.isEdited == isEdited)&&(identical(other.isDeleted, isDeleted) || other.isDeleted == isDeleted)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Message&&(identical(other.id, id) || other.id == id)&&(identical(other.chat, chat) || other.chat == chat)&&(identical(other.user, user) || other.user == user)&&(identical(other.text, text) || other.text == text)&&(identical(other.post, post) || other.post == post)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.image1Url, image1Url) || other.image1Url == image1Url)&&(identical(other.image2Url, image2Url) || other.image2Url == image2Url)&&(identical(other.image3Url, image3Url) || other.image3Url == image3Url)&&(identical(other.image4Url, image4Url) || other.image4Url == image4Url)&&(identical(other.videoUrl, videoUrl) || other.videoUrl == videoUrl)&&(identical(other.fileUrl, fileUrl) || other.fileUrl == fileUrl)&&(identical(other.location, location) || other.location == location)&&(identical(other.isRead, isRead) || other.isRead == isRead)&&(identical(other.isEdited, isEdited) || other.isEdited == isEdited)&&(identical(other.isDeleted, isDeleted) || other.isDeleted == isDeleted)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,chat,user,text,post,ballot,survey,petition,meeting,image1Url,image2Url,image3Url,image4Url,fileUrl,location,isRead,isEdited,isDeleted,createdAt,updatedAt]);
+int get hashCode => Object.hashAll([runtimeType,id,chat,user,text,post,ballot,survey,petition,meeting,image1Url,image2Url,image3Url,image4Url,videoUrl,fileUrl,location,isRead,isEdited,isDeleted,createdAt,updatedAt]);
 
 @override
 String toString() {
-  return 'Message(id: $id, chat: $chat, user: $user, text: $text, post: $post, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, image1Url: $image1Url, image2Url: $image2Url, image3Url: $image3Url, image4Url: $image4Url, fileUrl: $fileUrl, location: $location, isRead: $isRead, isEdited: $isEdited, isDeleted: $isDeleted, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'Message(id: $id, chat: $chat, user: $user, text: $text, post: $post, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, image1Url: $image1Url, image2Url: $image2Url, image3Url: $image3Url, image4Url: $image4Url, videoUrl: $videoUrl, fileUrl: $fileUrl, location: $location, isRead: $isRead, isEdited: $isEdited, isDeleted: $isDeleted, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $MessageCopyWith<$Res>  {
   factory $MessageCopyWith(Message value, $Res Function(Message) _then) = _$MessageCopyWithImpl;
 @useResult
 $Res call({
- int id, int chat, User user, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting,@JsonKey(name: 'image1') String? image1Url,@JsonKey(name: 'image2') String? image2Url,@JsonKey(name: 'image3') String? image3Url,@JsonKey(name: 'image4') String? image4Url,@JsonKey(name: 'file') String? fileUrl, LatLng? location,@JsonKey(name: 'is_read') bool isRead,@JsonKey(name: 'is_edited') bool isEdited,@JsonKey(name: 'is_deleted') bool isDeleted,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt
+ int id, int chat, User user, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting,@JsonKey(name: 'image1') String? image1Url,@JsonKey(name: 'image2') String? image2Url,@JsonKey(name: 'image3') String? image3Url,@JsonKey(name: 'image4') String? image4Url,@JsonKey(name: 'video') String? videoUrl,@JsonKey(name: 'file') String? fileUrl, LatLng? location,@JsonKey(name: 'is_read') bool isRead,@JsonKey(name: 'is_edited') bool isEdited,@JsonKey(name: 'is_deleted') bool isDeleted,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt
 });
 
 
@@ -65,7 +65,7 @@ class _$MessageCopyWithImpl<$Res>
 
 /// Create a copy of Message
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? chat = null,Object? user = null,Object? text = null,Object? post = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? meeting = freezed,Object? image1Url = freezed,Object? image2Url = freezed,Object? image3Url = freezed,Object? image4Url = freezed,Object? fileUrl = freezed,Object? location = freezed,Object? isRead = null,Object? isEdited = null,Object? isDeleted = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? chat = null,Object? user = null,Object? text = null,Object? post = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? meeting = freezed,Object? image1Url = freezed,Object? image2Url = freezed,Object? image3Url = freezed,Object? image4Url = freezed,Object? videoUrl = freezed,Object? fileUrl = freezed,Object? location = freezed,Object? isRead = null,Object? isEdited = null,Object? isDeleted = null,Object? createdAt = null,Object? updatedAt = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,chat: null == chat ? _self.chat : chat // ignore: cast_nullable_to_non_nullable
@@ -80,6 +80,7 @@ as Meeting?,image1Url: freezed == image1Url ? _self.image1Url : image1Url // ign
 as String?,image2Url: freezed == image2Url ? _self.image2Url : image2Url // ignore: cast_nullable_to_non_nullable
 as String?,image3Url: freezed == image3Url ? _self.image3Url : image3Url // ignore: cast_nullable_to_non_nullable
 as String?,image4Url: freezed == image4Url ? _self.image4Url : image4Url // ignore: cast_nullable_to_non_nullable
+as String?,videoUrl: freezed == videoUrl ? _self.videoUrl : videoUrl // ignore: cast_nullable_to_non_nullable
 as String?,fileUrl: freezed == fileUrl ? _self.fileUrl : fileUrl // ignore: cast_nullable_to_non_nullable
 as String?,location: freezed == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
 as LatLng?,isRead: null == isRead ? _self.isRead : isRead // ignore: cast_nullable_to_non_nullable
@@ -238,10 +239,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int chat,  User user,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting, @JsonKey(name: 'image1')  String? image1Url, @JsonKey(name: 'image2')  String? image2Url, @JsonKey(name: 'image3')  String? image3Url, @JsonKey(name: 'image4')  String? image4Url, @JsonKey(name: 'file')  String? fileUrl,  LatLng? location, @JsonKey(name: 'is_read')  bool isRead, @JsonKey(name: 'is_edited')  bool isEdited, @JsonKey(name: 'is_deleted')  bool isDeleted, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int chat,  User user,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting, @JsonKey(name: 'image1')  String? image1Url, @JsonKey(name: 'image2')  String? image2Url, @JsonKey(name: 'image3')  String? image3Url, @JsonKey(name: 'image4')  String? image4Url, @JsonKey(name: 'video')  String? videoUrl, @JsonKey(name: 'file')  String? fileUrl,  LatLng? location, @JsonKey(name: 'is_read')  bool isRead, @JsonKey(name: 'is_edited')  bool isEdited, @JsonKey(name: 'is_deleted')  bool isDeleted, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Message() when $default != null:
-return $default(_that.id,_that.chat,_that.user,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.image1Url,_that.image2Url,_that.image3Url,_that.image4Url,_that.fileUrl,_that.location,_that.isRead,_that.isEdited,_that.isDeleted,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.chat,_that.user,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.image1Url,_that.image2Url,_that.image3Url,_that.image4Url,_that.videoUrl,_that.fileUrl,_that.location,_that.isRead,_that.isEdited,_that.isDeleted,_that.createdAt,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -259,10 +260,10 @@ return $default(_that.id,_that.chat,_that.user,_that.text,_that.post,_that.ballo
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int chat,  User user,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting, @JsonKey(name: 'image1')  String? image1Url, @JsonKey(name: 'image2')  String? image2Url, @JsonKey(name: 'image3')  String? image3Url, @JsonKey(name: 'image4')  String? image4Url, @JsonKey(name: 'file')  String? fileUrl,  LatLng? location, @JsonKey(name: 'is_read')  bool isRead, @JsonKey(name: 'is_edited')  bool isEdited, @JsonKey(name: 'is_deleted')  bool isDeleted, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int chat,  User user,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting, @JsonKey(name: 'image1')  String? image1Url, @JsonKey(name: 'image2')  String? image2Url, @JsonKey(name: 'image3')  String? image3Url, @JsonKey(name: 'image4')  String? image4Url, @JsonKey(name: 'video')  String? videoUrl, @JsonKey(name: 'file')  String? fileUrl,  LatLng? location, @JsonKey(name: 'is_read')  bool isRead, @JsonKey(name: 'is_edited')  bool isEdited, @JsonKey(name: 'is_deleted')  bool isDeleted, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _Message():
-return $default(_that.id,_that.chat,_that.user,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.image1Url,_that.image2Url,_that.image3Url,_that.image4Url,_that.fileUrl,_that.location,_that.isRead,_that.isEdited,_that.isDeleted,_that.createdAt,_that.updatedAt);}
+return $default(_that.id,_that.chat,_that.user,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.image1Url,_that.image2Url,_that.image3Url,_that.image4Url,_that.videoUrl,_that.fileUrl,_that.location,_that.isRead,_that.isEdited,_that.isDeleted,_that.createdAt,_that.updatedAt);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -276,10 +277,10 @@ return $default(_that.id,_that.chat,_that.user,_that.text,_that.post,_that.ballo
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int chat,  User user,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting, @JsonKey(name: 'image1')  String? image1Url, @JsonKey(name: 'image2')  String? image2Url, @JsonKey(name: 'image3')  String? image3Url, @JsonKey(name: 'image4')  String? image4Url, @JsonKey(name: 'file')  String? fileUrl,  LatLng? location, @JsonKey(name: 'is_read')  bool isRead, @JsonKey(name: 'is_edited')  bool isEdited, @JsonKey(name: 'is_deleted')  bool isDeleted, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int chat,  User user,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting, @JsonKey(name: 'image1')  String? image1Url, @JsonKey(name: 'image2')  String? image2Url, @JsonKey(name: 'image3')  String? image3Url, @JsonKey(name: 'image4')  String? image4Url, @JsonKey(name: 'video')  String? videoUrl, @JsonKey(name: 'file')  String? fileUrl,  LatLng? location, @JsonKey(name: 'is_read')  bool isRead, @JsonKey(name: 'is_edited')  bool isEdited, @JsonKey(name: 'is_deleted')  bool isDeleted, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Message() when $default != null:
-return $default(_that.id,_that.chat,_that.user,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.image1Url,_that.image2Url,_that.image3Url,_that.image4Url,_that.fileUrl,_that.location,_that.isRead,_that.isEdited,_that.isDeleted,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.chat,_that.user,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.image1Url,_that.image2Url,_that.image3Url,_that.image4Url,_that.videoUrl,_that.fileUrl,_that.location,_that.isRead,_that.isEdited,_that.isDeleted,_that.createdAt,_that.updatedAt);case _:
   return null;
 
 }
@@ -291,7 +292,7 @@ return $default(_that.id,_that.chat,_that.user,_that.text,_that.post,_that.ballo
 @JsonSerializable()
 
 class _Message implements Message {
-  const _Message({required this.id, required this.chat, required this.user, required this.text, required this.post, required this.ballot, required this.survey, required this.petition, required this.meeting, @JsonKey(name: 'image1') required this.image1Url, @JsonKey(name: 'image2') required this.image2Url, @JsonKey(name: 'image3') required this.image3Url, @JsonKey(name: 'image4') required this.image4Url, @JsonKey(name: 'file') required this.fileUrl, required this.location, @JsonKey(name: 'is_read') required this.isRead, @JsonKey(name: 'is_edited') required this.isEdited, @JsonKey(name: 'is_deleted') required this.isDeleted, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt});
+  const _Message({required this.id, required this.chat, required this.user, required this.text, required this.post, required this.ballot, required this.survey, required this.petition, required this.meeting, @JsonKey(name: 'image1') required this.image1Url, @JsonKey(name: 'image2') required this.image2Url, @JsonKey(name: 'image3') required this.image3Url, @JsonKey(name: 'image4') required this.image4Url, @JsonKey(name: 'video') required this.videoUrl, @JsonKey(name: 'file') required this.fileUrl, required this.location, @JsonKey(name: 'is_read') required this.isRead, @JsonKey(name: 'is_edited') required this.isEdited, @JsonKey(name: 'is_deleted') required this.isDeleted, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt});
   factory _Message.fromJson(Map<String, dynamic> json) => _$MessageFromJson(json);
 
 @override final  int id;
@@ -307,6 +308,7 @@ class _Message implements Message {
 @override@JsonKey(name: 'image2') final  String? image2Url;
 @override@JsonKey(name: 'image3') final  String? image3Url;
 @override@JsonKey(name: 'image4') final  String? image4Url;
+@override@JsonKey(name: 'video') final  String? videoUrl;
 @override@JsonKey(name: 'file') final  String? fileUrl;
 @override final  LatLng? location;
 @override@JsonKey(name: 'is_read') final  bool isRead;
@@ -328,16 +330,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Message&&(identical(other.id, id) || other.id == id)&&(identical(other.chat, chat) || other.chat == chat)&&(identical(other.user, user) || other.user == user)&&(identical(other.text, text) || other.text == text)&&(identical(other.post, post) || other.post == post)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.image1Url, image1Url) || other.image1Url == image1Url)&&(identical(other.image2Url, image2Url) || other.image2Url == image2Url)&&(identical(other.image3Url, image3Url) || other.image3Url == image3Url)&&(identical(other.image4Url, image4Url) || other.image4Url == image4Url)&&(identical(other.fileUrl, fileUrl) || other.fileUrl == fileUrl)&&(identical(other.location, location) || other.location == location)&&(identical(other.isRead, isRead) || other.isRead == isRead)&&(identical(other.isEdited, isEdited) || other.isEdited == isEdited)&&(identical(other.isDeleted, isDeleted) || other.isDeleted == isDeleted)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Message&&(identical(other.id, id) || other.id == id)&&(identical(other.chat, chat) || other.chat == chat)&&(identical(other.user, user) || other.user == user)&&(identical(other.text, text) || other.text == text)&&(identical(other.post, post) || other.post == post)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.image1Url, image1Url) || other.image1Url == image1Url)&&(identical(other.image2Url, image2Url) || other.image2Url == image2Url)&&(identical(other.image3Url, image3Url) || other.image3Url == image3Url)&&(identical(other.image4Url, image4Url) || other.image4Url == image4Url)&&(identical(other.videoUrl, videoUrl) || other.videoUrl == videoUrl)&&(identical(other.fileUrl, fileUrl) || other.fileUrl == fileUrl)&&(identical(other.location, location) || other.location == location)&&(identical(other.isRead, isRead) || other.isRead == isRead)&&(identical(other.isEdited, isEdited) || other.isEdited == isEdited)&&(identical(other.isDeleted, isDeleted) || other.isDeleted == isDeleted)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,chat,user,text,post,ballot,survey,petition,meeting,image1Url,image2Url,image3Url,image4Url,fileUrl,location,isRead,isEdited,isDeleted,createdAt,updatedAt]);
+int get hashCode => Object.hashAll([runtimeType,id,chat,user,text,post,ballot,survey,petition,meeting,image1Url,image2Url,image3Url,image4Url,videoUrl,fileUrl,location,isRead,isEdited,isDeleted,createdAt,updatedAt]);
 
 @override
 String toString() {
-  return 'Message(id: $id, chat: $chat, user: $user, text: $text, post: $post, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, image1Url: $image1Url, image2Url: $image2Url, image3Url: $image3Url, image4Url: $image4Url, fileUrl: $fileUrl, location: $location, isRead: $isRead, isEdited: $isEdited, isDeleted: $isDeleted, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'Message(id: $id, chat: $chat, user: $user, text: $text, post: $post, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, image1Url: $image1Url, image2Url: $image2Url, image3Url: $image3Url, image4Url: $image4Url, videoUrl: $videoUrl, fileUrl: $fileUrl, location: $location, isRead: $isRead, isEdited: $isEdited, isDeleted: $isDeleted, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -348,7 +350,7 @@ abstract mixin class _$MessageCopyWith<$Res> implements $MessageCopyWith<$Res> {
   factory _$MessageCopyWith(_Message value, $Res Function(_Message) _then) = __$MessageCopyWithImpl;
 @override @useResult
 $Res call({
- int id, int chat, User user, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting,@JsonKey(name: 'image1') String? image1Url,@JsonKey(name: 'image2') String? image2Url,@JsonKey(name: 'image3') String? image3Url,@JsonKey(name: 'image4') String? image4Url,@JsonKey(name: 'file') String? fileUrl, LatLng? location,@JsonKey(name: 'is_read') bool isRead,@JsonKey(name: 'is_edited') bool isEdited,@JsonKey(name: 'is_deleted') bool isDeleted,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt
+ int id, int chat, User user, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting,@JsonKey(name: 'image1') String? image1Url,@JsonKey(name: 'image2') String? image2Url,@JsonKey(name: 'image3') String? image3Url,@JsonKey(name: 'image4') String? image4Url,@JsonKey(name: 'video') String? videoUrl,@JsonKey(name: 'file') String? fileUrl, LatLng? location,@JsonKey(name: 'is_read') bool isRead,@JsonKey(name: 'is_edited') bool isEdited,@JsonKey(name: 'is_deleted') bool isDeleted,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt
 });
 
 
@@ -365,7 +367,7 @@ class __$MessageCopyWithImpl<$Res>
 
 /// Create a copy of Message
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? chat = null,Object? user = null,Object? text = null,Object? post = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? meeting = freezed,Object? image1Url = freezed,Object? image2Url = freezed,Object? image3Url = freezed,Object? image4Url = freezed,Object? fileUrl = freezed,Object? location = freezed,Object? isRead = null,Object? isEdited = null,Object? isDeleted = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? chat = null,Object? user = null,Object? text = null,Object? post = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? meeting = freezed,Object? image1Url = freezed,Object? image2Url = freezed,Object? image3Url = freezed,Object? image4Url = freezed,Object? videoUrl = freezed,Object? fileUrl = freezed,Object? location = freezed,Object? isRead = null,Object? isEdited = null,Object? isDeleted = null,Object? createdAt = null,Object? updatedAt = null,}) {
   return _then(_Message(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,chat: null == chat ? _self.chat : chat // ignore: cast_nullable_to_non_nullable
@@ -380,6 +382,7 @@ as Meeting?,image1Url: freezed == image1Url ? _self.image1Url : image1Url // ign
 as String?,image2Url: freezed == image2Url ? _self.image2Url : image2Url // ignore: cast_nullable_to_non_nullable
 as String?,image3Url: freezed == image3Url ? _self.image3Url : image3Url // ignore: cast_nullable_to_non_nullable
 as String?,image4Url: freezed == image4Url ? _self.image4Url : image4Url // ignore: cast_nullable_to_non_nullable
+as String?,videoUrl: freezed == videoUrl ? _self.videoUrl : videoUrl // ignore: cast_nullable_to_non_nullable
 as String?,fileUrl: freezed == fileUrl ? _self.fileUrl : fileUrl // ignore: cast_nullable_to_non_nullable
 as String?,location: freezed == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
 as LatLng?,isRead: null == isRead ? _self.isRead : isRead // ignore: cast_nullable_to_non_nullable

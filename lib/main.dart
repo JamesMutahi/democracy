@@ -3,6 +3,7 @@ import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
 import 'package:democracy/app/bloc/forms_tab_bar/forms_tab_bar_cubit.dart';
 import 'package:democracy/app/bloc/location/location_cubit.dart';
+import 'package:democracy/app/bloc/repository/repository.dart';
 import 'package:democracy/app/bloc/theme/theme_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
@@ -74,7 +75,7 @@ void main() async {
   final options = BaseOptions(
     baseUrl: dotenv.env['BASE_URL']!,
     connectTimeout: const Duration(seconds: 5),
-    receiveTimeout: const Duration(seconds: 3),
+    receiveTimeout: const Duration(seconds: 5),
     validateStatus: (status) {
       return status! < 520;
     },
@@ -88,6 +89,7 @@ void main() async {
         RepositoryProvider.value(
           value: AuthRepository(authProvider: AuthProvider(dio: dio)),
         ),
+        RepositoryProvider.value(value: APIRepository(dio: dio)),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -140,8 +142,11 @@ void main() async {
                 RecentPostsBloc(webSocketService: webSocketService),
           ),
           BlocProvider(
-            create: (context) =>
-                PostDetailBloc(webSocketService: webSocketService),
+            create: (context) => PostDetailBloc(
+              webSocketService: webSocketService,
+              authRepository: context.read<AuthRepository>(),
+              apiRepository: context.read<APIRepository>(),
+            ),
           ),
           BlocProvider(
             create: (context) =>
@@ -187,8 +192,11 @@ void main() async {
           ),
           BlocProvider(create: (context) => ChatFilterCubit()),
           BlocProvider(
-            create: (context) =>
-                MessageDetailBloc(webSocketService: webSocketService),
+            create: (context) => MessageDetailBloc(
+              webSocketService: webSocketService,
+              authRepository: context.read<AuthRepository>(),
+              apiRepository: context.read<APIRepository>(),
+            ),
           ),
           BlocProvider(create: (context) => MessageActionsCubit()),
           BlocProvider(
