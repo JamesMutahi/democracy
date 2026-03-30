@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:democracy/app/utils/custom_bottom_sheet.dart';
 import 'package:democracy/app/utils/file_widget.dart';
 import 'package:democracy/app/utils/location.dart';
 import 'package:democracy/app/utils/map_widget.dart';
@@ -13,7 +12,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class BottomTextFormField extends StatelessWidget {
+class BottomTextFormField extends StatefulWidget {
   const BottomTextFormField({
     super.key,
     this.containerKey,
@@ -68,9 +67,66 @@ class BottomTextFormField extends StatelessWidget {
   final void Function()? onSend;
 
   @override
+  State<BottomTextFormField> createState() => _BottomTextFormFieldState();
+}
+
+class _BottomTextFormFieldState extends State<BottomTextFormField>
+    with TickerProviderStateMixin {
+  late final AnimationController _extrasButtonAnimationController;
+  late final AnimationController _extrasRowAnimationController;
+  late final CurvedAnimation _extrasRowAnimation;
+  bool _open = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _extrasButtonAnimationController = AnimationController(
+      value: _open ? 1.0 : 0.0,
+      duration: const Duration(milliseconds: 250),
+      vsync: this,
+    );
+    _extrasRowAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _extrasRowAnimation = CurvedAnimation(
+      parent: _extrasRowAnimationController,
+      curve: Curves.easeInCubic,
+    );
+  }
+
+  void onExtrasButtonPressed() {
+    _toggle();
+    if (_extrasRowAnimationController.value == 1) {
+      _extrasRowAnimationController.reverse();
+    } else {
+      _extrasRowAnimationController.forward();
+    }
+  }
+
+  void _toggle() async {
+    setState(() {
+      _open = !_open;
+      if (_open) {
+        _extrasButtonAnimationController.forward();
+      } else {
+        _extrasButtonAnimationController.reverse();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _extrasButtonAnimationController.dispose();
+    _extrasRowAnimationController.dispose();
+    _extrasRowAnimation.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      key: containerKey,
+      key: widget.containerKey,
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
@@ -82,61 +138,53 @@ class BottomTextFormField extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (insertedContent != null)
+          if (widget.insertedContent != null)
             SingleImageView(
-              image: insertedContent!,
-              onRemove: onRemoveInsertedContent!,
+              image: widget.insertedContent!,
+              onRemove: widget.onRemoveInsertedContent!,
             ),
-          if (selectedImages.isNotEmpty)
+          if (widget.selectedImages.isNotEmpty)
             MultiImageView(
-              images: selectedImages,
-              onAdd: onAddImages,
-              onRemove: onRemoveImage,
+              images: widget.selectedImages,
+              onAdd: widget.onAddImages,
+              onRemove: widget.onRemoveImage,
             ),
-          if (location != null)
+          if (widget.location != null)
             Container(
               margin: EdgeInsets.symmetric(horizontal: 15),
               child: MapWidget(
-                mapCenter: location!,
-                onRemove: onRemoveLocation,
+                mapCenter: widget.location!,
+                onRemove: widget.onRemoveLocation,
               ),
             ),
-          if (selectedFile != null)
-            FileWidget(url: selectedFile!.path, navigateToViewer: false),
+          if (widget.selectedFile != null)
+            FileWidget(url: widget.selectedFile!.path, navigateToViewer: false),
+          _extrasRowWidget(),
           Row(
             children: [
-              if (selectedImages.isEmpty)
+              if (widget.selectedImages.isEmpty)
                 GestureDetector(
-                  onTap: () {
-                    showModalBottomSheet<void>(
-                      context: context,
-                      isScrollControlled: true,
-                      shape: const BeveledRectangleBorder(),
-                      useSafeArea: true,
-                      builder: (BuildContext context) {
-                        return _FileBottomSheet(
-                          onNewImages: onNewImages,
-                          onNewFile: onNewFile,
-                          onLocation: onLocation,
-                        );
-                      },
-                    );
-                  },
+                  onTap: onExtrasButtonPressed,
                   child: Card(
                     margin: EdgeInsets.only(left: 10),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Icon(Icons.add_rounded),
+                      child: Stack(
+                        children: [
+                          _buildTapToOpenFab(),
+                          if (_open) Icon(Icons.close_rounded),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               Flexible(
                 flex: 6,
                 child: TextFormField(
-                  focusNode: focusNode,
-                  showCursor: showCursor,
-                  readOnly: readOnly,
-                  autofocus: autoFocus,
+                  focusNode: widget.focusNode,
+                  showCursor: widget.showCursor,
+                  readOnly: widget.readOnly,
+                  autofocus: widget.autoFocus,
                   keyboardType: TextInputType.multiline,
                   minLines: 1,
                   maxLines: 4,
@@ -146,10 +194,10 @@ class BottomTextFormField extends StatelessWidget {
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Theme.of(context).scaffoldBackgroundColor,
-                    hintText: hintText,
+                    hintText: widget.hintText,
                     hintStyle: TextStyle(color: Theme.of(context).hintColor),
                     counterText: '',
-                    prefixIcon: prefixIcon,
+                    prefixIcon: widget.prefixIcon,
                     prefixIconConstraints: const BoxConstraints(
                       minWidth: 0,
                       minHeight: 0,
@@ -166,11 +214,11 @@ class BottomTextFormField extends StatelessWidget {
                       ),
                     ),
                   ),
-                  controller: controller,
-                  onTap: onTap,
-                  onChanged: onChanged,
+                  controller: widget.controller,
+                  onTap: widget.onTap,
+                  onChanged: widget.onChanged,
                   contentInsertionConfiguration: ContentInsertionConfiguration(
-                    allowedMimeTypes: allowedMimeTypes,
+                    allowedMimeTypes: widget.allowedMimeTypes,
                     onContentInserted: (KeyboardInsertedContent content) async {
                       if (content.hasData) {
                         final Uint8List bytes = content.data!;
@@ -183,7 +231,7 @@ class BottomTextFormField extends StatelessWidget {
                         final File file = File(filePath);
                         await file.writeAsBytes(bytes);
 
-                        onContentInsertion(file);
+                        widget.onContentInsertion(file);
                       }
                     },
                   ),
@@ -191,7 +239,7 @@ class BottomTextFormField extends StatelessWidget {
               ),
               Flexible(
                 child: IconButton(
-                  onPressed: onSend,
+                  onPressed: widget.onSend,
                   icon: Icon(Icons.send_rounded),
                 ),
               ),
@@ -201,33 +249,42 @@ class BottomTextFormField extends StatelessWidget {
       ),
     );
   }
-}
 
-class _FileBottomSheet extends StatelessWidget {
-  const _FileBottomSheet({
-    required this.onNewImages,
-    required this.onNewFile,
-    required this.onLocation,
-  });
+  Widget _buildTapToOpenFab() {
+    return IgnorePointer(
+      ignoring: _open,
+      child: AnimatedContainer(
+        transformAlignment: Alignment.center,
+        transform: Matrix4.diagonal3Values(
+          _open ? 0.7 : 1.0,
+          _open ? 0.7 : 1.0,
+          1.0,
+        ),
+        duration: const Duration(milliseconds: 250),
+        curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
+        child: AnimatedOpacity(
+          opacity: _open ? 0.0 : 1.0,
+          curve: const Interval(0.25, 1.0, curve: Curves.easeInOut),
+          duration: const Duration(milliseconds: 250),
+          child: Icon(Icons.add_rounded),
+        ),
+      ),
+    );
+  }
 
-  final void Function(List<File>) onNewImages;
-  final void Function(File) onNewFile;
-  final void Function(LatLng) onLocation;
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomBottomSheet(
-      title: 'Add file',
-      children: [
-        Row(
+  Widget _extrasRowWidget() {
+    return SizeTransition(
+      sizeFactor: _extrasRowAnimation,
+      child: ClipRect(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
+          children: <Widget>[
             _FileCard(
               onTap: () async {
                 Navigator.pop(context);
                 File? newImage = await ImagePickerUtil.takePhoto();
                 if (newImage != null) {
-                  onNewImages([newImage]);
+                  widget.onNewImages([newImage]);
                 }
               },
               iconData: Icons.photo_camera_outlined,
@@ -241,7 +298,7 @@ class _FileBottomSheet extends StatelessWidget {
                   limit: 4,
                 );
                 if (newImages.isNotEmpty) {
-                  onNewImages(newImages);
+                  widget.onNewImages(newImages);
                 }
               },
               iconData: Icons.photo_library_outlined,
@@ -254,12 +311,13 @@ class _FileBottomSheet extends StatelessWidget {
                 if (!status.isGranted) {
                   await Permission.storage.request();
                 }
-                if (context.mounted) {
+                if (mounted) {
                   Navigator.pop(context);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Location(onLocation: onLocation),
+                      builder: (context) =>
+                          Location(onLocation: widget.onLocation),
                     ),
                   );
                 }
@@ -277,7 +335,7 @@ class _FileBottomSheet extends StatelessWidget {
                 );
                 if (result != null) {
                   File file = File(result.files.single.path!);
-                  onNewFile(file);
+                  widget.onNewFile(file);
                 }
               },
               iconData: Icons.edit_document,
@@ -285,7 +343,7 @@ class _FileBottomSheet extends StatelessWidget {
             ),
           ],
         ),
-      ],
+      ),
     );
   }
 }
