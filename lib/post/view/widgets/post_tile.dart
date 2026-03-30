@@ -1,6 +1,7 @@
 import 'package:democracy/app/utils/custom_text.dart';
 import 'package:democracy/app/utils/file_widget.dart';
 import 'package:democracy/app/utils/map_widget.dart';
+import 'package:democracy/app/utils/video_viewer.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/meet/view/meeting_tile.dart';
@@ -248,6 +249,11 @@ class _PostContainer extends StatelessWidget {
                                 key: ValueKey(post.id),
                                 post: post,
                               ),
+                            ),
+                          if (post.videoUrl != null)
+                            Container(
+                              margin: EdgeInsets.only(top: 10),
+                              child: VideoViewer(urls: [post.videoUrl!]),
                             ),
                           if (post.fileUrl != null)
                             Container(
