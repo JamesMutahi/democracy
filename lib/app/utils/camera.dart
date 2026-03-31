@@ -630,7 +630,11 @@ class _SwitchCameraButtonState extends State<_SwitchCameraButton> {
 
   void _changeRotation() {
     setState(() {
-      turns += 1.0;
+      if (turns == 0) {
+        turns = 1.0;
+      } else {
+        turns = 0.0;
+      }
     });
   }
 
