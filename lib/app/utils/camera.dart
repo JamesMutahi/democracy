@@ -149,6 +149,7 @@ class _CameraPageState extends State<CameraPage>
                             Navigator.pop(context);
                           },
                           turns: turns,
+                          child: null,
                         ),
                         // TODO: Show when on video tab; Long press on camera button switches to video tab; Start and stop timer
                         RotatedBox(
@@ -164,10 +165,14 @@ class _CameraPageState extends State<CameraPage>
                             ),
                           ),
                         ),
-                        _CameraButton(
-                          iconData: Icons.flash_off_rounded,
-                          onPressed: () {
-                            //   TODO: Switch flash modes and icons
+                        _FlashModeButton(
+                          onPressed: (mode) async {
+                            try {
+                              await controller.setFlashMode(mode);
+                            } on CameraException catch (e) {
+                              _showCameraException(e);
+                              rethrow;
+                            }
                           },
                           turns: turns,
                         ),
@@ -188,6 +193,7 @@ class _CameraPageState extends State<CameraPage>
                             //   TODO: Open gallery
                           },
                           turns: turns,
+                          child: null,
                         ),
                         Container(
                           margin: EdgeInsets.all(10),
@@ -399,6 +405,24 @@ class _CameraPageState extends State<CameraPage>
     }
   }
 
+  void onSetFlashModeButtonPressed(FlashMode mode) {
+    setFlashMode(mode).then((_) {
+      if (mounted) {
+        setState(() {});
+      }
+      showInSnackBar('Flash mode set to ${mode.toString().split('.').last}');
+    });
+  }
+
+  Future<void> setFlashMode(FlashMode mode) async {
+    try {
+      await controller.setFlashMode(mode);
+    } on CameraException catch (e) {
+      _showCameraException(e);
+      rethrow;
+    }
+  }
+
   void showInSnackBar(String message) {
     ScaffoldMessenger.of(
       context,
@@ -428,8 +452,6 @@ class _Camera extends StatefulWidget {
 class _CameraState extends State<_Camera> with TickerProviderStateMixin {
   VoidCallback? videoPlayerListener;
   bool enableAudio = true;
-  late final AnimationController _flashModeControlRowAnimationController;
-  late final CurvedAnimation _flashModeControlRowAnimation;
   final double _minAvailableZoom = 1.0;
   final double _maxAvailableZoom = 1.0;
   double _currentScale = 1.0;
@@ -439,38 +461,13 @@ class _CameraState extends State<_Camera> with TickerProviderStateMixin {
   int _pointers = 0;
 
   @override
-  void initState() {
-    super.initState();
-    _flashModeControlRowAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
-    _flashModeControlRowAnimation = CurvedAnimation(
-      parent: _flashModeControlRowAnimationController,
-      curve: Curves.easeInCubic,
-    );
-  }
-
-  @override
-  void dispose() {
-    _flashModeControlRowAnimationController.dispose();
-    _flashModeControlRowAnimation.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Column(
-        children: <Widget>[
-          Expanded(
-            child: Container(
-              color: Colors.black,
-              child: _cameraPreviewWidget(),
-            ),
-          ),
-        ],
-      ),
+    return Column(
+      children: <Widget>[
+        Expanded(
+          child: Container(color: Colors.black, child: _cameraPreviewWidget()),
+        ),
+      ],
     );
   }
 
@@ -592,11 +589,13 @@ class _CameraState extends State<_Camera> with TickerProviderStateMixin {
 class _CameraButton extends StatelessWidget {
   const _CameraButton({
     required this.iconData,
+    required this.child,
     required this.onPressed,
     required this.turns,
   });
 
-  final IconData iconData;
+  final IconData? iconData;
+  final Widget? child;
   final VoidCallback onPressed;
   final int turns;
 
@@ -604,11 +603,15 @@ class _CameraButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return RotatedBox(
       quarterTurns: turns,
-      child: IconButton(
-        onPressed: onPressed,
-        icon: Icon(iconData, size: 25, color: Colors.white),
-        style: IconButton.styleFrom(
-          backgroundColor: Colors.black.withAlpha(75),
+      child: InkWell(
+        onTap: onPressed,
+        child: Container(
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.black.withAlpha(75),
+          ),
+          child: child ?? Icon(iconData, color: Colors.white, size: 25),
         ),
       ),
     );
@@ -650,6 +653,67 @@ class _SwitchCameraButtonState extends State<_SwitchCameraButton> {
           widget.onPressed();
         },
         turns: widget.turns,
+        child: null,
+      ),
+    );
+  }
+}
+
+class _FlashModeButton extends StatefulWidget {
+  const _FlashModeButton({required this.onPressed, required this.turns});
+
+  final Function(FlashMode mode) onPressed;
+  final int turns;
+
+  @override
+  State<_FlashModeButton> createState() => _FlashModeButtonState();
+}
+
+class _FlashModeButtonState extends State<_FlashModeButton> {
+  final List<IconData> _icons = [
+    Icons.flash_off_rounded,
+    Icons.flash_auto_rounded,
+    Icons.flash_on_rounded,
+  ];
+
+  int _currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return _CameraButton(
+      onPressed: () {
+        setState(() {
+          _currentIndex = (_currentIndex + 1) % _icons.length;
+        });
+        if (_currentIndex == 0) {
+          widget.onPressed(FlashMode.off);
+        }
+        if (_currentIndex == 1) {
+          widget.onPressed(FlashMode.auto);
+        }
+        if (_currentIndex == 2) {
+          widget.onPressed(FlashMode.always);
+        }
+      },
+      turns: widget.turns,
+      iconData: null,
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 500),
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0.0, -1.0),
+              end: Offset.zero,
+            ).animate(animation),
+            child: FadeTransition(opacity: animation, child: child),
+          );
+        },
+        child: Icon(
+          _icons[_currentIndex],
+          key: ValueKey<int>(_currentIndex),
+          size: 25,
+          color: Colors.white,
+        ),
       ),
     );
   }
