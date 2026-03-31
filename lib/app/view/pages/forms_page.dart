@@ -55,45 +55,42 @@ class _FormsPageState extends State<FormsPage>
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: NestedScrollView(
-        headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-          return [
-            CustomAppBar(
-              user: widget.user,
-              notifications: widget.notifications,
-              middle: Text(
-                'Forms',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              bottom: PreferredSize(
-                preferredSize: Size.fromHeight(100.0),
-                child: Column(
-                  children: [
-                    TabBar(
-                      controller: _tabController,
-                      labelStyle: Theme.of(context).textTheme.titleMedium,
-                      tabs: [
-                        Tab(text: 'Surveys'),
-                        Tab(text: 'Petitions'),
-                      ],
-                    ),
-                    FormsSearchBar(
-                      surveyController: _surveyController,
-                      petitionController: _petitionController,
-                    ),
-                  ],
-                ),
+    return NestedScrollView(
+      headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+        return [
+          CustomAppBar(
+            user: widget.user,
+            notifications: widget.notifications,
+            middle: Text(
+              'Forms',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(100.0),
+              child: Column(
+                children: [
+                  TabBar(
+                    controller: _tabController,
+                    labelStyle: Theme.of(context).textTheme.titleMedium,
+                    tabs: [
+                      Tab(text: 'Surveys'),
+                      Tab(text: 'Petitions'),
+                    ],
+                  ),
+                  FormsSearchBar(
+                    surveyController: _surveyController,
+                    petitionController: _petitionController,
+                  ),
+                ],
               ),
             ),
-          ];
-        },
-        body: TabBarView(
-          controller: _tabController,
-          physics: NeverScrollableScrollPhysics(),
-          children: [Surveys(), PetitionsTab()],
-        ),
+          ),
+        ];
+      },
+      body: TabBarView(
+        controller: _tabController,
+        physics: NeverScrollableScrollPhysics(),
+        children: [Surveys(), PetitionsTab()],
       ),
     );
   }

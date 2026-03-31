@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:democracy/app/utils/camera.dart';
 import 'package:democracy/app/utils/file_widget.dart';
 import 'package:democracy/app/utils/location.dart';
 import 'package:democracy/app/utils/map_widget.dart';
@@ -171,7 +172,7 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
                       padding: const EdgeInsets.all(8.0),
                       child: Stack(
                         children: [
-                          _buildTapToOpenFab(),
+                          _buildTapToOpenExtras(),
                           if (_open) Icon(Icons.close_rounded),
                         ],
                       ),
@@ -250,7 +251,7 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
     );
   }
 
-  Widget _buildTapToOpenFab() {
+  Widget _buildTapToOpenExtras() {
     return IgnorePointer(
       ignoring: _open,
       child: AnimatedContainer(
@@ -281,19 +282,13 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
           children: <Widget>[
             _FileCard(
               onTap: () async {
-                Navigator.pop(context);
-                File? newImage = await ImagePickerUtil.takePhoto();
-                if (newImage != null) {
-                  widget.onNewImages([newImage]);
-                }
+                openCamera(context: context);
               },
               iconData: Icons.photo_camera_outlined,
               text: 'Camera',
             ),
-            SizedBox(width: 20),
             _FileCard(
               onTap: () async {
-                Navigator.pop(context);
                 List<File>? newImages = await ImagePickerUtil.pickMultiImage(
                   limit: 4,
                 );
@@ -304,7 +299,6 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
               iconData: Icons.photo_library_outlined,
               text: 'Gallery',
             ),
-            SizedBox(width: 20),
             _FileCard(
               onTap: () async {
                 var status = await Permission.storage.status;
@@ -312,7 +306,6 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
                   await Permission.storage.request();
                 }
                 if (mounted) {
-                  Navigator.pop(context);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -325,10 +318,8 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
               iconData: Icons.location_on_outlined,
               text: 'Location',
             ),
-            SizedBox(width: 20),
             _FileCard(
               onTap: () async {
-                Navigator.pop(context);
                 FilePickerResult? result = await FilePicker.platform.pickFiles(
                   type: FileType.custom,
                   allowedExtensions: ['pdf', 'doc', 'docx'],
