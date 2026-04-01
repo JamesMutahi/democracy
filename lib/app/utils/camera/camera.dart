@@ -91,15 +91,17 @@ class _CameraPageState extends State<CameraPage>
         _tabController.index = index;
       });
     }
-    if (_tabController.index == 1) {
-      setState(() {
-        onVideoTab = true;
-      });
-    }
-    if (_tabController.index == 2) {
-      setState(() {
-        onVideoTab = false;
-      });
+    if (_tabController.indexIsChanging) {
+      if (_tabController.index == 1) {
+        setState(() {
+          onVideoTab = true;
+        });
+      }
+      if (_tabController.index == 2) {
+        setState(() {
+          onVideoTab = false;
+        });
+      }
     }
   }
 
@@ -239,8 +241,6 @@ class _CameraPageState extends State<CameraPage>
                           child: _MainCameraButton(
                             onVideoTab: onVideoTab,
                             cameraController: controller,
-                            onTakePictureButtonPressed:
-                                onTakePictureButtonPressed,
                             onVideoRecordButtonPressed:
                                 onVideoRecordButtonPressed,
                             onStopButtonPressed: onStopButtonPressed,
@@ -370,39 +370,6 @@ class _CameraPageState extends State<CameraPage>
 
     if (mounted) {
       setState(() {});
-    }
-  }
-
-  void onTakePictureButtonPressed() {
-    takePicture().then((XFile? file) {
-      if (mounted) {
-        setState(() {
-          imageFile = file;
-          videoController?.dispose();
-          videoController = null;
-        });
-      }
-    });
-  }
-
-  Future<XFile?> takePicture() async {
-    final CameraController cameraController = controller;
-    if (!cameraController.value.isInitialized) {
-      showInSnackBar('Error: select a camera first.');
-      return null;
-    }
-
-    if (cameraController.value.isTakingPicture) {
-      // A capture is already pending, do nothing.
-      return null;
-    }
-
-    try {
-      final XFile file = await cameraController.takePicture();
-      return file;
-    } on CameraException catch (e) {
-      showInSnackBar('Error: ${e.code}\n${e.description}');
-      return null;
     }
   }
 
@@ -819,7 +786,6 @@ class _MainCameraButton extends StatefulWidget {
   const _MainCameraButton({
     required this.onVideoTab,
     required this.cameraController,
-    required this.onTakePictureButtonPressed,
     required this.onVideoRecordButtonPressed,
     required this.onStopButtonPressed,
     required this.recipient,
@@ -829,7 +795,6 @@ class _MainCameraButton extends StatefulWidget {
 
   final bool onVideoTab;
   final CameraController cameraController;
-  final VoidCallback onTakePictureButtonPressed;
   final VoidCallback onVideoRecordButtonPressed;
   final VoidCallback onStopButtonPressed;
   final User? recipient;
@@ -890,6 +855,10 @@ class _MainCameraButtonState extends State<_MainCameraButton>
 
   @override
   Widget build(BuildContext context) {
+    final bool isRecording = widget.cameraController.value.isRecordingVideo;
+    final bool isVideoMode = widget.onVideoTab;
+
+    final double outerSize = isVideoMode ? (isRecording ? 80 : 70) : 70;
     return GestureDetector(
       onTap: () async {
         if (widget.cameraController.value.isInitialized) {
@@ -909,25 +878,19 @@ class _MainCameraButtonState extends State<_MainCameraButton>
       child: ScaleTransition(
         scale: _animation,
         child: AnimatedContainer(
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
-          width: 70,
-          height: 70,
+          width: outerSize,
+          height: outerSize,
           decoration: BoxDecoration(
-            border: BoxBorder.all(color: Colors.white, width: 5),
             shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 5),
           ),
-          padding: EdgeInsets.all(widget.onVideoTab ? 13 : 7.5),
-          child: AnimatedContainer(
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
+          padding: EdgeInsets.all(isVideoMode ? (isRecording ? 17 : 13) : 7.5),
+          child: Container(
             decoration: BoxDecoration(
-              color: widget.cameraController.value.isRecordingVideo
-                  ? Colors.red
-                  : Colors.white,
-              borderRadius: BorderRadius.circular(
-                widget.cameraController.value.isRecordingVideo ? 5 : 50,
-              ),
+              color: isRecording ? Colors.red : Colors.white,
+              borderRadius: BorderRadius.circular(isRecording ? 5 : 50),
             ),
           ),
         ),
