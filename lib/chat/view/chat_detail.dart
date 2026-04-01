@@ -348,6 +348,17 @@ class _ChatDetailState extends State<_ChatDetail> {
                             _disableSendButton = true;
                           });
                         },
+                  recipient: widget.otherUser,
+                  onImageEditingComplete: (image) {
+                    context.read<MessageDetailBloc>().add(
+                      MessageDetailEvent.create(
+                        chat: widget.chat,
+                        text: _controller.text,
+                        imagePath1: image.path,
+                      ),
+                    );
+                    _controller.clear();
+                  },
                 ),
         ),
       ),

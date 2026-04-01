@@ -175,7 +175,6 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
             onNewImages: (images) {
               setState(() {
                 _selectedImages = images;
-                _selectedFile = null;
                 _insertedContent = null;
               });
             },
@@ -192,15 +191,12 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
             onNewFile: (file) {
               setState(() {
                 _selectedFile = file;
-                _selectedImages = [];
-                _insertedContent = null;
               });
             },
             onContentInsertion: (imageFile) {
               setState(() {
                 _insertedContent = imageFile;
                 _selectedImages = [];
-                _selectedFile = null;
               });
             },
             insertedContent: _insertedContent,
@@ -229,6 +225,14 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
                     _location == null
                 ? null
                 : _createPost,
+            recipient: widget.post.author,
+            onImageEditingComplete: (image) {
+              setState(() {
+                _selectedImages.add(image);
+                _selectedFile = null;
+                _insertedContent = null;
+              });
+            },
           );
         },
       ),

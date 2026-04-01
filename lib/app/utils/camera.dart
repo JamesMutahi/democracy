@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:democracy/app/utils/image_editor.dart';
+import 'package:democracy/user/models/user.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:native_device_orientation/native_device_orientation.dart';
@@ -9,7 +12,12 @@ import 'package:video_player/video_player.dart';
 List<CameraDescription> get cameras => _cameras;
 List<CameraDescription> _cameras = <CameraDescription>[];
 
-void openCamera({required BuildContext context}) async {
+void openCamera({
+  required BuildContext context,
+  required User? recipient,
+  required TextEditingController textEditingController,
+  required void Function(File) onImageEditingComplete,
+}) async {
   try {
     _cameras = await availableCameras();
   } on CameraException catch (e) {
@@ -18,7 +26,13 @@ void openCamera({required BuildContext context}) async {
   if (context.mounted) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => CameraPage()),
+      MaterialPageRoute(
+        builder: (context) => CameraPage(
+          recipient: recipient,
+          textEditingController: textEditingController,
+          onImageEditingComplete: onImageEditingComplete,
+        ),
+      ),
     );
   }
 }
@@ -29,7 +43,16 @@ void _logError(String code, String? message) {
 }
 
 class CameraPage extends StatefulWidget {
-  const CameraPage({super.key});
+  const CameraPage({
+    super.key,
+    required this.recipient,
+    required this.textEditingController,
+    required this.onImageEditingComplete,
+  });
+
+  final User? recipient;
+  final TextEditingController textEditingController;
+  final void Function(File) onImageEditingComplete;
 
   @override
   State<CameraPage> createState() => _CameraPageState();
@@ -166,14 +189,7 @@ class _CameraPageState extends State<CameraPage>
                           ),
                         ),
                         _FlashModeButton(
-                          onPressed: (mode) async {
-                            try {
-                              await controller.setFlashMode(mode);
-                            } on CameraException catch (e) {
-                              _showCameraException(e);
-                              rethrow;
-                            }
-                          },
+                          onPressed: onSetFlashModeButtonPressed,
                           turns: turns,
                         ),
                       ],
@@ -348,9 +364,17 @@ class _CameraPageState extends State<CameraPage>
           videoController?.dispose();
           videoController = null;
         });
-        if (file != null) {
-          showInSnackBar('Picture saved to ${file.path}');
-        }
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ImageEditor(
+              recipient: widget.recipient,
+              textEditingController: widget.textEditingController,
+              onImageEditingComplete: widget.onImageEditingComplete,
+              path: imageFile!.path,
+            ),
+          ),
+        );
       }
     });
   }
@@ -424,6 +448,7 @@ class _CameraPageState extends State<CameraPage>
   }
 
   void showInSnackBar(String message) {
+    ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
@@ -698,7 +723,7 @@ class _FlashModeButtonState extends State<_FlashModeButton> {
       turns: widget.turns,
       iconData: null,
       child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 300),
         transitionBuilder: (Widget child, Animation<double> animation) {
           return SlideTransition(
             position: Tween<Offset>(

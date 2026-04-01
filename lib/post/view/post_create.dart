@@ -248,6 +248,8 @@ class _PostCreateState extends State<PostCreate> {
                             ),
                           if (_selectedImages.isNotEmpty)
                             MultiImageView(
+                              recipient: widget.replyTo?.author,
+                              textEditingController: _controller,
                               images: _selectedImages,
                               onAdd: (images) {
                                 setState(() {
@@ -261,18 +263,24 @@ class _PostCreateState extends State<PostCreate> {
                               },
                             ),
                           if (_selectedFile != null)
-                            FileWidget(
-                              url: _selectedFile!.path,
-                              navigateToViewer: false,
+                            Container(
+                              margin: EdgeInsets.only(top: 10),
+                              child: FileWidget(
+                                url: _selectedFile!.path,
+                                navigateToViewer: false,
+                              ),
                             ),
                           if (_location != null)
-                            MapWidget(
-                              mapCenter: _location!,
-                              onRemove: () {
-                                setState(() {
-                                  _location = null;
-                                });
-                              },
+                            Container(
+                              margin: EdgeInsets.only(top: 10),
+                              child: MapWidget(
+                                mapCenter: _location!,
+                                onRemove: () {
+                                  setState(() {
+                                    _location = null;
+                                  });
+                                },
+                              ),
                             ),
                           if (widget.repostOf != null)
                             DependencyContainer(
@@ -319,6 +327,7 @@ class _PostCreateState extends State<PostCreate> {
           ),
           bottomNavigationBar: PostBottomNavBar(
             controller: _controller,
+            reply: widget.replyTo,
             onPickMedia: () async {
               List<File> newFiles = await ImagePickerUtil.pickMultiImage(
                 limit: files.isEmpty ? fileLimit : fileLimit - files.length,
@@ -334,15 +343,12 @@ class _PostCreateState extends State<PostCreate> {
             onNewImages: (images) {
               setState(() {
                 _selectedImages = images;
-                _selectedFile = null;
                 _insertedContent = null;
               });
             },
             onNewFile: (file) {
               setState(() {
                 _selectedFile = file;
-                _selectedImages = [];
-                _insertedContent = null;
               });
             },
             onLocation: (point) {

@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:democracy/app/utils/camera.dart';
 import 'package:democracy/app/utils/location.dart';
 import 'package:democracy/app/utils/media_tools.dart';
 import 'package:democracy/app/utils/tagging.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
@@ -155,6 +157,7 @@ class PostBottomNavBar extends StatefulWidget {
     required this.onNewImages,
     required this.onNewFile,
     required this.onLocation,
+    this.reply,
   });
 
   final FlutterTaggerController controller;
@@ -164,6 +167,7 @@ class PostBottomNavBar extends StatefulWidget {
   final void Function(List<File>) onNewImages;
   final void Function(File) onNewFile;
   final void Function(LatLng) onLocation;
+  final Post? reply;
 
   @override
   State<PostBottomNavBar> createState() => _PostBottomNavBarState();
@@ -290,10 +294,14 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
                 children: [
                   PostExtraButton(
                     onTap: () async {
-                      File? newImage = await ImagePickerUtil.takePhoto();
-                      if (newImage != null) {
-                        widget.onNewImages([newImage]);
-                      }
+                      openCamera(
+                        context: context,
+                        recipient: widget.reply?.author,
+                        textEditingController: widget.controller,
+                        onImageEditingComplete: (newImage) {
+                          widget.onNewImages([newImage]);
+                        },
+                      );
                     },
                     iconData: Icons.photo_camera_outlined,
                     text: 'Camera',

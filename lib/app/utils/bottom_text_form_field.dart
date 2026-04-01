@@ -6,6 +6,7 @@ import 'package:democracy/app/utils/location.dart';
 import 'package:democracy/app/utils/map_widget.dart';
 import 'package:democracy/app/utils/media_tools.dart';
 import 'package:democracy/post/view/widgets/post_form_widgets.dart';
+import 'package:democracy/user/models/user.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -40,6 +41,8 @@ class BottomTextFormField extends StatefulWidget {
     required this.location,
     required this.onRemoveLocation,
     this.onSend,
+    this.recipient,
+    this.onImageEditingComplete,
   });
 
   final Key? containerKey;
@@ -66,6 +69,10 @@ class BottomTextFormField extends StatefulWidget {
   final LatLng? location;
   final VoidCallback? onRemoveLocation;
   final void Function()? onSend;
+
+  // For image editor in camera
+  final User? recipient;
+  final void Function(File)? onImageEditingComplete;
 
   @override
   State<BottomTextFormField> createState() => _BottomTextFormFieldState();
@@ -97,21 +104,12 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
   }
 
   void onExtrasButtonPressed() {
-    _toggle();
-    if (_extrasRowAnimationController.value == 1) {
-      _extrasRowAnimationController.reverse();
-    } else {
-      _extrasRowAnimationController.forward();
-    }
-  }
-
-  void _toggle() async {
     setState(() {
       _open = !_open;
-      if (_open) {
-        _extrasButtonAnimationController.forward();
+      if (_extrasRowAnimationController.value == 1) {
+        _extrasRowAnimationController.reverse();
       } else {
-        _extrasButtonAnimationController.reverse();
+        _extrasRowAnimationController.forward();
       }
     });
   }
@@ -140,45 +138,58 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
         mainAxisSize: MainAxisSize.min,
         children: [
           if (widget.insertedContent != null)
-            SingleImageView(
-              image: widget.insertedContent!,
-              onRemove: widget.onRemoveInsertedContent!,
+            Container(
+              margin: EdgeInsets.only(top: 10),
+              child: SingleImageView(
+                image: widget.insertedContent!,
+                onRemove: widget.onRemoveInsertedContent!,
+              ),
             ),
           if (widget.selectedImages.isNotEmpty)
-            MultiImageView(
-              images: widget.selectedImages,
-              onAdd: widget.onAddImages,
-              onRemove: widget.onRemoveImage,
+            Container(
+              margin: EdgeInsets.only(top: 10),
+              child: MultiImageView(
+                recipient: widget.recipient!,
+                textEditingController: widget.controller,
+                images: widget.selectedImages,
+                onAdd: widget.onAddImages,
+                onRemove: widget.onRemoveImage,
+              ),
             ),
           if (widget.location != null)
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 15),
+              margin: EdgeInsets.only(left: 15, right: 15, top: 10),
               child: MapWidget(
                 mapCenter: widget.location!,
                 onRemove: widget.onRemoveLocation,
               ),
             ),
           if (widget.selectedFile != null)
-            FileWidget(url: widget.selectedFile!.path, navigateToViewer: false),
+            Container(
+              margin: EdgeInsets.only(top: 10),
+              child: FileWidget(
+                url: widget.selectedFile!.path,
+                navigateToViewer: false,
+              ),
+            ),
           _extrasRowWidget(),
           Row(
             children: [
-              if (widget.selectedImages.isEmpty)
-                GestureDetector(
-                  onTap: onExtrasButtonPressed,
-                  child: Card(
-                    margin: EdgeInsets.only(left: 10),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Stack(
-                        children: [
-                          _buildTapToOpenExtras(),
-                          if (_open) Icon(Icons.close_rounded),
-                        ],
-                      ),
+              GestureDetector(
+                onTap: onExtrasButtonPressed,
+                child: Card(
+                  margin: EdgeInsets.only(left: 10),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Stack(
+                      children: [
+                        _buildTapToOpenExtras(),
+                        if (_open) Icon(Icons.close_rounded),
+                      ],
                     ),
                   ),
                 ),
+              ),
               Flexible(
                 flex: 6,
                 child: TextFormField(
@@ -252,23 +263,20 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
   }
 
   Widget _buildTapToOpenExtras() {
-    return IgnorePointer(
-      ignoring: _open,
-      child: AnimatedContainer(
-        transformAlignment: Alignment.center,
-        transform: Matrix4.diagonal3Values(
-          _open ? 0.7 : 1.0,
-          _open ? 0.7 : 1.0,
-          1.0,
-        ),
+    return AnimatedContainer(
+      transformAlignment: Alignment.center,
+      transform: Matrix4.diagonal3Values(
+        _open ? 0.7 : 1.0,
+        _open ? 0.7 : 1.0,
+        1.0,
+      ),
+      duration: const Duration(milliseconds: 250),
+      curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
+      child: AnimatedOpacity(
+        opacity: _open ? 0.0 : 1.0,
+        curve: const Interval(0.25, 1.0, curve: Curves.easeInOut),
         duration: const Duration(milliseconds: 250),
-        curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
-        child: AnimatedOpacity(
-          opacity: _open ? 0.0 : 1.0,
-          curve: const Interval(0.25, 1.0, curve: Curves.easeInOut),
-          duration: const Duration(milliseconds: 250),
-          child: Icon(Icons.add_rounded),
-        ),
+        child: Icon(Icons.add_rounded),
       ),
     );
   }
@@ -277,62 +285,74 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
     return SizeTransition(
       sizeFactor: _extrasRowAnimation,
       child: ClipRect(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            _FileCard(
-              onTap: () async {
-                openCamera(context: context);
-              },
-              iconData: Icons.photo_camera_outlined,
-              text: 'Camera',
-            ),
-            _FileCard(
-              onTap: () async {
-                List<File>? newImages = await ImagePickerUtil.pickMultiImage(
-                  limit: 4,
-                );
-                if (newImages.isNotEmpty) {
-                  widget.onNewImages(newImages);
-                }
-              },
-              iconData: Icons.photo_library_outlined,
-              text: 'Gallery',
-            ),
-            _FileCard(
-              onTap: () async {
-                var status = await Permission.storage.status;
-                if (!status.isGranted) {
-                  await Permission.storage.request();
-                }
-                if (mounted) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          Location(onLocation: widget.onLocation),
-                    ),
+        child: Container(
+          margin: EdgeInsets.only(top: 5),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              _FileCard(
+                onTap: () async {
+                  onExtrasButtonPressed();
+                  openCamera(
+                    context: context,
+                    recipient: widget.recipient!,
+                    textEditingController: widget.controller,
+                    onImageEditingComplete: widget.onImageEditingComplete!,
                   );
-                }
-              },
-              iconData: Icons.location_on_outlined,
-              text: 'Location',
-            ),
-            _FileCard(
-              onTap: () async {
-                FilePickerResult? result = await FilePicker.platform.pickFiles(
-                  type: FileType.custom,
-                  allowedExtensions: ['pdf', 'doc', 'docx'],
-                );
-                if (result != null) {
-                  File file = File(result.files.single.path!);
-                  widget.onNewFile(file);
-                }
-              },
-              iconData: Icons.edit_document,
-              text: 'Document',
-            ),
-          ],
+                },
+                iconData: Icons.photo_camera_outlined,
+                text: 'Camera',
+              ),
+              _FileCard(
+                onTap: () async {
+                  onExtrasButtonPressed();
+                  List<File>? newImages = await ImagePickerUtil.pickMultiImage(
+                    limit: 4,
+                  );
+                  if (newImages.isNotEmpty) {
+                    widget.onNewImages(newImages);
+                  }
+                },
+                iconData: Icons.photo_library_outlined,
+                text: 'Gallery',
+              ),
+              _FileCard(
+                onTap: () async {
+                  onExtrasButtonPressed();
+                  var status = await Permission.storage.status;
+                  if (!status.isGranted) {
+                    await Permission.storage.request();
+                  }
+                  if (mounted) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            Location(onLocation: widget.onLocation),
+                      ),
+                    );
+                  }
+                },
+                iconData: Icons.location_on_outlined,
+                text: 'Location',
+              ),
+              _FileCard(
+                onTap: () async {
+                  onExtrasButtonPressed();
+                  FilePickerResult? result = await FilePicker.platform.pickFiles(
+                    type: FileType.custom,
+                    allowedExtensions: ['pdf', 'doc', 'docx'],
+                  );
+                  if (result != null) {
+                    File file = File(result.files.single.path!);
+                    widget.onNewFile(file);
+                  }
+                },
+                iconData: Icons.edit_document,
+                text: 'Document',
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -374,11 +394,15 @@ class _FileCard extends StatelessWidget {
 class MultiImageView extends StatelessWidget {
   const MultiImageView({
     super.key,
+    required this.recipient,
+    required this.textEditingController,
     required this.images,
     required this.onAdd,
     required this.onRemove,
   });
 
+  final User? recipient;
+  final TextEditingController textEditingController;
   final List<File> images;
   final void Function(List<File>) onAdd;
   final void Function(int) onRemove;
@@ -399,10 +423,14 @@ class MultiImageView extends StatelessWidget {
           if (index == images.length) {
             return _AddFile(
               onCameraPressed: () async {
-                File? newImage = await ImagePickerUtil.takePhoto();
-                if (newImage != null) {
-                  onAdd([newImage]);
-                }
+                openCamera(
+                  context: context,
+                  recipient: recipient,
+                  textEditingController: textEditingController,
+                  onImageEditingComplete: (newImage) {
+                    onAdd([newImage]);
+                  },
+                );
               },
               onGalleryPressed: () async {
                 List<File> newImages = await ImagePickerUtil.pickMultiImage(

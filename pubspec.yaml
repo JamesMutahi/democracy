@@ -87,6 +87,7 @@ dependencies:
   flick_video_player: ^0.9.0
   provider: ^6.1.5+1
   native_device_orientation: ^2.1.0
+  pro_image_editor: ^11.3.0
 
 dev_dependencies:
   flutter_test:

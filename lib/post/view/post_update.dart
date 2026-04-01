@@ -221,6 +221,8 @@ class _PostUpdateState extends State<PostUpdate> {
                             ),
                           if (_selectedImages.isNotEmpty)
                             MultiImageView(
+                              recipient: widget.post.replyTo?.author,
+                              textEditingController: _controller,
                               images: _selectedImages,
                               onAdd: (images) {
                                 setState(() {
@@ -280,6 +282,7 @@ class _PostUpdateState extends State<PostUpdate> {
           ),
           bottomNavigationBar: PostBottomNavBar(
             controller: _controller,
+            reply: widget.post.replyTo,
             onPickMedia: () async {
               List<File> newFiles = await ImagePickerUtil.pickMultiImage(
                 limit: files.isEmpty ? fileLimit : fileLimit - files.length,
