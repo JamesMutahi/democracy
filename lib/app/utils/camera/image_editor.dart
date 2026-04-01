@@ -3,9 +3,9 @@ import 'dart:io';
 import 'dart:math';
 
 // Flutter imports:
-import 'package:democracy/app/utils/camera.dart';
-import 'package:democracy/app/utils/image_editor_helper.dart';
-import 'package:democracy/app/utils/image_editor_stickers.dart';
+import 'package:democracy/app/utils/camera/camera.dart';
+import 'package:democracy/app/utils/camera/image_editor_helper.dart';
+import 'package:democracy/app/utils/camera/image_editor_stickers.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';

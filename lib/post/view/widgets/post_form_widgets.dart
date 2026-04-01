@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:democracy/app/utils/camera.dart';
+import 'package:democracy/app/utils/camera/camera.dart';
 import 'package:democracy/app/utils/location.dart';
 import 'package:democracy/app/utils/media_tools.dart';
 import 'package:democracy/app/utils/tagging.dart';

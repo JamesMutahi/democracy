@@ -88,6 +88,7 @@ dependencies:
   provider: ^6.1.5+1
   native_device_orientation: ^2.1.0
   pro_image_editor: ^11.3.0
+  stop_watch_timer: ^3.2.2
 
 dev_dependencies:
   flutter_test:

@@ -2,11 +2,12 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
-import 'package:democracy/app/utils/image_editor.dart';
+import 'package:democracy/app/utils/camera/image_editor.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:native_device_orientation/native_device_orientation.dart';
+import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:video_player/video_player.dart';
 
 List<CameraDescription> get cameras => _cameras;
@@ -39,7 +40,9 @@ void openCamera({
 
 void _logError(String code, String? message) {
   // TODO: Log error
-  print('Error: $code${message == null ? '' : '\nError Message: $message'}');
+  debugPrint(
+    'Error: $code${message == null ? '' : '\nError Message: $message'}',
+  );
 }
 
 class CameraPage extends StatefulWidget {
@@ -63,9 +66,12 @@ class _CameraPageState extends State<CameraPage>
   late CameraController controller;
   VideoPlayerController? videoController;
   late TabController _tabController;
+  final StopWatchTimer _stopWatchTimer = StopWatchTimer();
 
   XFile? imageFile;
   XFile? videoFile;
+
+  bool onVideoTab = false;
 
   @override
   void initState() {
@@ -85,6 +91,16 @@ class _CameraPageState extends State<CameraPage>
         _tabController.index = index;
       });
     }
+    if (_tabController.index == 1) {
+      setState(() {
+        onVideoTab = true;
+      });
+    }
+    if (_tabController.index == 2) {
+      setState(() {
+        onVideoTab = false;
+      });
+    }
   }
 
   Future<void> _switchCamera() async {
@@ -100,12 +116,13 @@ class _CameraPageState extends State<CameraPage>
   }
 
   @override
-  void dispose() {
+  void dispose() async {
     WidgetsBinding.instance.removeObserver(this);
     controller.dispose();
     videoController?.dispose();
     _tabController.dispose();
     super.dispose();
+    await _stopWatchTimer.dispose();
   }
 
   // #docregion AppLifecycle
@@ -162,36 +179,38 @@ class _CameraPageState extends State<CameraPage>
                 Align(
                   alignment: Alignment.topCenter,
                   child: Container(
-                    margin: EdgeInsets.all(10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    height: 75,
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Stack(
                       children: [
-                        _CameraButton(
-                          iconData: Icons.close_rounded,
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          turns: turns,
-                          child: null,
-                        ),
-                        // TODO: Show when on video tab; Long press on camera button switches to video tab; Start and stop timer
-                        RotatedBox(
-                          quarterTurns: turns,
-                          child: Card(
-                            color: Colors.black.withAlpha(75),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                '00:00',
-                                style: TextStyle(color: Colors.white),
-                              ),
+                        if (!controller.value.isRecordingVideo)
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: _CameraButton(
+                              iconData: Icons.close_rounded,
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              turns: turns,
+                              child: null,
                             ),
                           ),
-                        ),
-                        _FlashModeButton(
-                          onPressed: onSetFlashModeButtonPressed,
-                          turns: turns,
-                        ),
+                        if (_tabController.index == 1)
+                          Align(
+                            alignment: Alignment.center,
+                            child: _Timer(
+                              stopWatchTimer: _stopWatchTimer,
+                              turns: turns,
+                            ),
+                          ),
+                        if (!controller.value.isRecordingVideo)
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: _FlashModeButton(
+                              onPressed: onSetFlashModeButtonPressed,
+                              turns: turns,
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -199,48 +218,44 @@ class _CameraPageState extends State<CameraPage>
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
-                    margin: EdgeInsets.all(10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    height: 100,
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Stack(
                       children: [
-                        _CameraButton(
-                          iconData: Icons.photo_outlined,
-                          onPressed: () {
-                            //   TODO: Open gallery
-                          },
-                          turns: turns,
-                          child: null,
-                        ),
-                        Container(
-                          margin: EdgeInsets.all(10),
-                          child: GestureDetector(
-                            onTap:
-                                controller.value.isInitialized &&
-                                    !controller.value.isRecordingVideo
-                                ? onTakePictureButtonPressed
-                                : null,
-                            onLongPress: () {
-                              // TODO: Animate circle avatar to red square and show recording timer at top center
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: BoxBorder.all(
-                                  color: Colors.white,
-                                  width: 5,
-                                ),
-                                shape: BoxShape.circle,
-                              ),
-                              padding: EdgeInsets.all(7.5),
-                              child: CircleAvatar(
-                                backgroundColor: Colors.white,
-                                radius: 25,
-                              ),
+                        if (!controller.value.isRecordingVideo)
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: _CameraButton(
+                              iconData: Icons.photo_outlined,
+                              onPressed: () {
+                                //   TODO: Open gallery
+                              },
+                              turns: turns,
+                              child: null,
                             ),
                           ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: _MainCameraButton(
+                            onVideoTab: onVideoTab,
+                            cameraController: controller,
+                            onTakePictureButtonPressed:
+                                onTakePictureButtonPressed,
+                            onVideoRecordButtonPressed:
+                                onVideoRecordButtonPressed,
+                            onStopButtonPressed: onStopButtonPressed,
+                            recipient: widget.recipient,
+                            textEditingController: widget.textEditingController,
+                            onImageEditingComplete:
+                                widget.onImageEditingComplete,
+                          ),
                         ),
-                        _SwitchCameraButton(
-                          onPressed: _switchCamera,
-                          turns: turns,
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: _SwitchCameraButton(
+                            onPressed: _switchCamera,
+                            turns: turns,
+                          ),
                         ),
                       ],
                     ),
@@ -256,40 +271,42 @@ class _CameraPageState extends State<CameraPage>
         height: 60.0,
         elevation: 100.0,
         color: Colors.black,
-        child: TabBar(
-          controller: _tabController,
-          isScrollable: true,
-          physics: NeverScrollableScrollPhysics(),
-          tabAlignment: TabAlignment.center,
-          labelStyle: Theme.of(context).textTheme.titleMedium,
-          splashBorderRadius: BorderRadius.circular(10),
-          indicator: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.white.withAlpha(50),
-          ),
-          padding: EdgeInsets.zero,
-          labelPadding: EdgeInsets.symmetric(horizontal: 10),
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white,
-          tabs: [
-            IgnorePointer(ignoring: true, child: SizedBox(width: 200)),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 10.0,
-                vertical: 5,
+        child: controller.value.isRecordingVideo
+            ? SizedBox.shrink()
+            : TabBar(
+                controller: _tabController,
+                isScrollable: true,
+                physics: NeverScrollableScrollPhysics(),
+                tabAlignment: TabAlignment.center,
+                labelStyle: Theme.of(context).textTheme.titleMedium,
+                splashBorderRadius: BorderRadius.circular(10),
+                indicator: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white.withAlpha(50),
+                ),
+                padding: EdgeInsets.zero,
+                labelPadding: EdgeInsets.symmetric(horizontal: 10),
+                labelColor: Colors.white,
+                unselectedLabelColor: Colors.white,
+                tabs: [
+                  IgnorePointer(ignoring: true, child: SizedBox(width: 200)),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                      vertical: 5,
+                    ),
+                    child: Text('Video'),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                      vertical: 5,
+                    ),
+                    child: Text('Photo'),
+                  ),
+                  IgnorePointer(ignoring: true, child: SizedBox(width: 200)),
+                ],
               ),
-              child: Text('Video'),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 10.0,
-                vertical: 5,
-              ),
-              child: Text('Photo'),
-            ),
-            IgnorePointer(ignoring: true, child: SizedBox(width: 200)),
-          ],
-        ),
       ),
     );
   }
@@ -364,17 +381,6 @@ class _CameraPageState extends State<CameraPage>
           videoController?.dispose();
           videoController = null;
         });
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ImageEditor(
-              recipient: widget.recipient,
-              textEditingController: widget.textEditingController,
-              onImageEditingComplete: widget.onImageEditingComplete,
-              path: imageFile!.path,
-            ),
-          ),
-        );
       }
     });
   }
@@ -423,9 +429,39 @@ class _CameraPageState extends State<CameraPage>
 
     try {
       await cameraController.startVideoRecording();
+      _stopWatchTimer.onStartTimer();
     } on CameraException catch (e) {
       _showCameraException(e);
       return;
+    }
+  }
+
+  void onStopButtonPressed() {
+    stopVideoRecording().then((XFile? file) {
+      if (mounted) {
+        setState(() {});
+      }
+      if (file != null) {
+        showInSnackBar('Video recorded to ${file.path}');
+      }
+    });
+  }
+
+  Future<XFile?> stopVideoRecording() async {
+    final CameraController cameraController = controller;
+
+    if (!cameraController.value.isRecordingVideo) {
+      return null;
+    }
+
+    try {
+      var file = await cameraController.stopVideoRecording();
+      _stopWatchTimer.onStopTimer();
+      _stopWatchTimer.onResetTimer();
+      return file;
+    } on CameraException catch (e) {
+      _showCameraException(e);
+      return null;
     }
   }
 
@@ -738,6 +774,162 @@ class _FlashModeButtonState extends State<_FlashModeButton> {
           key: ValueKey<int>(_currentIndex),
           size: 25,
           color: Colors.white,
+        ),
+      ),
+    );
+  }
+}
+
+class _Timer extends StatelessWidget {
+  const _Timer({required this.stopWatchTimer, required this.turns});
+
+  final StopWatchTimer stopWatchTimer;
+  final int turns;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<int>(
+      stream: stopWatchTimer.rawTime,
+      initialData: 0,
+      builder: (context, snap) {
+        final value = snap.data;
+        final displayTime = StopWatchTimer.getDisplayTime(
+          value!,
+          hours: false,
+          minute: true,
+          second: true,
+          milliSecond: false,
+        );
+        return RotatedBox(
+          quarterTurns: turns,
+          child: Card(
+            color: Colors.black.withAlpha(75),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(displayTime, style: TextStyle(color: Colors.white)),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _MainCameraButton extends StatefulWidget {
+  const _MainCameraButton({
+    required this.onVideoTab,
+    required this.cameraController,
+    required this.onTakePictureButtonPressed,
+    required this.onVideoRecordButtonPressed,
+    required this.onStopButtonPressed,
+    required this.recipient,
+    required this.textEditingController,
+    required this.onImageEditingComplete,
+  });
+
+  final bool onVideoTab;
+  final CameraController cameraController;
+  final VoidCallback onTakePictureButtonPressed;
+  final VoidCallback onVideoRecordButtonPressed;
+  final VoidCallback onStopButtonPressed;
+  final User? recipient;
+  final TextEditingController textEditingController;
+  final void Function(File) onImageEditingComplete;
+
+  @override
+  State<_MainCameraButton> createState() => _MainCameraButtonState();
+}
+
+class _MainCameraButtonState extends State<_MainCameraButton>
+    with TickerProviderStateMixin {
+  late final AnimationController _animationController;
+  late final Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+
+    _animation = Tween<double>(begin: 1.0, end: 1.25).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _takePhotoWithAnimation() async {
+    if (!widget.cameraController.value.isInitialized) return;
+    await _animationController.forward();
+    try {
+      XFile file = await widget.cameraController.takePicture();
+      await _animationController.reverse();
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ImageEditor(
+              recipient: widget.recipient,
+              textEditingController: widget.textEditingController,
+              onImageEditingComplete: widget.onImageEditingComplete,
+              path: file.path,
+            ),
+          ),
+        );
+      }
+    } on CameraException catch (e) {
+      //   TODO: Log error
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        if (widget.cameraController.value.isInitialized) {
+          if (widget.onVideoTab) {
+            if (widget.onVideoTab) {
+              if (widget.cameraController.value.isRecordingVideo) {
+                widget.onStopButtonPressed();
+              } else {
+                widget.onVideoRecordButtonPressed();
+              }
+            }
+          } else {
+            _takePhotoWithAnimation();
+          }
+        }
+      },
+      child: ScaleTransition(
+        scale: _animation,
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          width: 70,
+          height: 70,
+          decoration: BoxDecoration(
+            border: BoxBorder.all(color: Colors.white, width: 5),
+            shape: BoxShape.circle,
+          ),
+          padding: EdgeInsets.all(widget.onVideoTab ? 13 : 7.5),
+          child: AnimatedContainer(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            decoration: BoxDecoration(
+              color: widget.cameraController.value.isRecordingVideo
+                  ? Colors.red
+                  : Colors.white,
+              borderRadius: BorderRadius.circular(
+                widget.cameraController.value.isRecordingVideo ? 5 : 50,
+              ),
+            ),
+          ),
         ),
       ),
     );

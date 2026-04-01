@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:democracy/app/utils/camera.dart';
+import 'package:democracy/app/utils/camera/camera.dart';
 import 'package:democracy/app/utils/file_widget.dart';
 import 'package:democracy/app/utils/location.dart';
 import 'package:democracy/app/utils/map_widget.dart';
