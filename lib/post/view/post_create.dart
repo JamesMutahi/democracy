@@ -61,6 +61,7 @@ class _PostCreateState extends State<PostCreate> {
   File? _selectedFile;
   File? _insertedContent;
   LatLng? _location;
+  File? _selectedVideo;
 
   @override
   void initState() {
@@ -94,6 +95,7 @@ class _PostCreateState extends State<PostCreate> {
         imagePath2: _selectedImages.length > 1 ? _selectedImages[1].path : null,
         imagePath3: _selectedImages.length > 2 ? _selectedImages[2].path : null,
         imagePath4: _selectedImages.length > 3 ? _selectedImages[3].path : null,
+        videoPath: _selectedVideo?.path,
         filePath: _selectedFile?.path,
         location: _location,
       ),
@@ -262,6 +264,8 @@ class _PostCreateState extends State<PostCreate> {
                                 });
                               },
                             ),
+                          if (_selectedVideo != null)
+                            PostVideoViewer(video: _selectedVideo!),
                           if (_selectedFile != null)
                             Container(
                               margin: EdgeInsets.only(top: 10),
@@ -354,6 +358,11 @@ class _PostCreateState extends State<PostCreate> {
             onLocation: (point) {
               setState(() {
                 _location = point;
+              });
+            },
+            onNewVideo: (video) {
+              setState(() {
+                _selectedVideo = video;
               });
             },
           ),

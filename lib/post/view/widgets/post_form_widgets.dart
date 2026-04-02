@@ -5,6 +5,7 @@ import 'package:democracy/app/utils/camera/camera.dart';
 import 'package:democracy/app/utils/location.dart';
 import 'package:democracy/app/utils/media_tools.dart';
 import 'package:democracy/app/utils/tagging.dart';
+import 'package:democracy/app/utils/video_viewer.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
@@ -147,6 +148,21 @@ class SingleImageView extends StatelessWidget {
   }
 }
 
+class PostVideoViewer extends StatelessWidget {
+  const PostVideoViewer({super.key, required this.video});
+
+  final File video;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 200,
+      margin: EdgeInsets.only(top: 10),
+      child: VideoViewer(urls: [video.path]),
+    );
+  }
+}
+
 class PostBottomNavBar extends StatefulWidget {
   const PostBottomNavBar({
     super.key,
@@ -158,6 +174,7 @@ class PostBottomNavBar extends StatefulWidget {
     required this.onNewFile,
     required this.onLocation,
     this.reply,
+    required this.onNewVideo,
   });
 
   final FlutterTaggerController controller;
@@ -168,6 +185,7 @@ class PostBottomNavBar extends StatefulWidget {
   final void Function(File) onNewFile;
   final void Function(LatLng) onLocation;
   final Post? reply;
+  final void Function(File) onNewVideo;
 
   @override
   State<PostBottomNavBar> createState() => _PostBottomNavBarState();
@@ -301,6 +319,9 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
                         onImageEditingComplete: (newImage) {
                           widget.onNewImages([newImage]);
                         },
+                        onVideoEditingComplete: (video) {
+                          widget.onNewVideo(video);
+                        }
                       );
                     },
                     iconData: Icons.photo_camera_outlined,

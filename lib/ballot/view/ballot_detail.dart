@@ -67,7 +67,7 @@ class _BallotDetailState extends State<BallotDetail> {
       ],
       child: PopScope(
         canPop: true,
-        onPopInvokedWithResult: (_, __) {
+        onPopInvokedWithResult: (_, _) {
           context.read<BallotDetailBloc>().add(
             BallotDetailEvent.unsubscribe(ballot: _ballot),
           );

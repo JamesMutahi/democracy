@@ -43,6 +43,7 @@ class BottomTextFormField extends StatefulWidget {
     this.onSend,
     this.recipient,
     this.onImageEditingComplete,
+    this.onVideoEditingComplete,
   });
 
   final Key? containerKey;
@@ -70,9 +71,10 @@ class BottomTextFormField extends StatefulWidget {
   final VoidCallback? onRemoveLocation;
   final void Function()? onSend;
 
-  // For image editor in camera
+  // For editors in camera
   final User? recipient;
   final void Function(File)? onImageEditingComplete;
+  final void Function(File)? onVideoEditingComplete;
 
   @override
   State<BottomTextFormField> createState() => _BottomTextFormFieldState();
@@ -298,6 +300,7 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
                     recipient: widget.recipient!,
                     textEditingController: widget.controller,
                     onImageEditingComplete: widget.onImageEditingComplete!,
+                    onVideoEditingComplete: widget.onVideoEditingComplete,
                   );
                 },
                 iconData: Icons.photo_camera_outlined,

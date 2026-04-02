@@ -7,12 +7,13 @@ import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class WebSocketService {
+  WebSocketService({required this.storage});
+
+  final FlutterSecureStorage storage;
+
   late WebSocketChannel _channel;
   final StreamController<Map<String, dynamic>> _messageController =
       StreamController.broadcast();
-  final _storage = const FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-  );
 
   Stream<Map<String, dynamic>> get messages => _messageController.stream;
 
@@ -26,7 +27,7 @@ class WebSocketService {
     _channel.stream.listen(
       (message) => _messageController.add(jsonDecode(message)),
       onDone: () async {
-        String? token = await _storage.read(key: 'token');
+        String? token = await storage.read(key: 'token');
         if (token != null) {
           _setStatus(WebsocketStatus.disconnected);
           _reconnect(url, token);

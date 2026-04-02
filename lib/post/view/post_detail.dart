@@ -1,9 +1,10 @@
+import 'dart:io';
+
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/app/utils/file_widget.dart';
 import 'package:democracy/app/utils/map_widget.dart';
-import 'package:democracy/app/utils/video_viewer.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
@@ -17,6 +18,7 @@ import 'package:democracy/post/view/widgets/bottom_reply_text_field.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/app/utils/image_viewer.dart';
 import 'package:democracy/post/view/widgets/post_body.dart';
+import 'package:democracy/post/view/widgets/post_form_widgets.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/post/view/widgets/replies.dart';
@@ -83,7 +85,7 @@ class _PostDetailState extends State<PostDetail> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: true,
-      onPopInvokedWithResult: (_, __) {
+      onPopInvokedWithResult: (_, _) {
         if (_replies.isNotEmpty) {
           context.read<PostDetailBloc>().add(
             PostDetailEvent.unsubscribe(post: widget.post),
@@ -500,10 +502,7 @@ class _PostContainer extends StatelessWidget {
                         child: ImageViewer(key: ValueKey(post.id), post: post),
                       ),
                     if (post.videoUrl != null)
-                      Container(
-                        margin: EdgeInsets.only(top: 10),
-                        child: VideoViewer(urls: [post.videoUrl!]),
-                      ),
+                      PostVideoViewer(video: File(post.videoUrl!)),
                     if (post.fileUrl != null)
                       Container(
                         margin: EdgeInsets.only(top: 10),

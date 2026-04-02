@@ -66,7 +66,7 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: true,
-      onPopInvokedWithResult: (_, __) {
+      onPopInvokedWithResult: (_, _) {
         if (_replies.isNotEmpty) {
           context.read<PostDetailBloc>().add(
             PostDetailEvent.unsubscribe(post: widget.communityNote),

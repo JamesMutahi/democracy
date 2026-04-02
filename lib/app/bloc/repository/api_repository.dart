@@ -62,7 +62,7 @@ class APIRepository {
           'image4': await MultipartFile.fromFile(imagePath4),
         if (videoPath != null) 'video': await MultipartFile.fromFile(videoPath),
         if (filePath != null) 'file': await MultipartFile.fromFile(filePath),
-        if (fileName != null) 'file_name': fileName,
+        'file_name': ?fileName,
         if (location != null)
           'location': 'POINT (${location.longitude} ${location.latitude})',
       });
@@ -125,7 +125,7 @@ class APIRepository {
           'image4': await MultipartFile.fromFile(imagePath4),
         if (videoPath != null) 'video': await MultipartFile.fromFile(videoPath),
         if (filePath != null) 'file': await MultipartFile.fromFile(filePath),
-        if (fileName != null) 'file_name': fileName,
+        'file_name': ?fileName,
         if (location != null)
           'location': 'POINT (${location.longitude} ${location.latitude})',
       });

@@ -76,7 +76,7 @@ class _PetitionDetailState extends State<PetitionDetail> {
       ],
       child: PopScope(
         canPop: true,
-        onPopInvokedWithResult: (_, __) {
+        onPopInvokedWithResult: (_, _) {
           context.read<PetitionDetailBloc>().add(
             PetitionDetailEvent.unsubscribe(petition: _petition),
           );

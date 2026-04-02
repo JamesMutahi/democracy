@@ -3,17 +3,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:pro_image_editor/pro_image_editor.dart';
 
-/// A widget that demonstrates the building of sticker categories and displays
-/// them in a scrollable grid layout. It also allows interaction with stickers
-/// to be set in an image editor layer.
-class ImageEditorStickers extends StatelessWidget {
-  /// Creates a [DemoBuildStickers] widget.
-  ///
+class EditorStickers extends StatelessWidget {
   /// [setLayer] is a callback function to set the selected sticker widget in
   /// the editor.
   /// [scrollController] controls the scroll behavior of the sticker list.
   /// [categoryColor] defines the background color of the category bar.
-  ImageEditorStickers({
+  EditorStickers({
     super.key,
     required this.setLayer,
     required this.scrollController,
@@ -30,7 +25,7 @@ class ImageEditorStickers extends StatelessWidget {
   final Color categoryColor;
 
   /// Titles for the sticker categories.
-  final List<String> demoTitles = [
+  final List<String> titles = [
     'Recent',
     'Favorites',
     'Shapes',
@@ -44,7 +39,7 @@ class ImageEditorStickers extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> slivers = [];
     int offset = 0;
-    for (var element in demoTitles) {
+    for (var element in titles) {
       slivers.addAll([
         SliverPadding(
           padding: const EdgeInsets.only(bottom: 4),
@@ -136,7 +131,7 @@ class ImageEditorStickers extends StatelessWidget {
                         alignment: Alignment.center,
                         children: <Widget>[
                           ...previousChildren,
-                          if (currentChild != null) currentChild,
+                          ?currentChild,
                         ],
                       ),
                     );

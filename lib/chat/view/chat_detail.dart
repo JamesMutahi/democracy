@@ -151,7 +151,7 @@ class _ChatDetailState extends State<_ChatDetail> {
       ],
       child: PopScope(
         canPop: !showMessageActions,
-        onPopInvokedWithResult: (didPop, __) {
+        onPopInvokedWithResult: (didPop, _) {
           if (showMessageActions) {
             context.read<MessageActionsCubit>().closeActionButtons();
           }
@@ -359,6 +359,16 @@ class _ChatDetailState extends State<_ChatDetail> {
                     );
                     _controller.clear();
                   },
+                  onVideoEditingComplete: (video) {
+                    context.read<MessageDetailBloc>().add(
+                      MessageDetailEvent.create(
+                        chat: widget.chat,
+                        text: _controller.text,
+                        videoPath: video.path,
+                      ),
+                    );
+                    _controller.clear();
+                  },
                 ),
         ),
       ),
@@ -453,7 +463,7 @@ class _MessageActions extends StatelessWidget {
                   Navigator.of(context).push(
                     PageRouteBuilder(
                       opaque: false,
-                      pageBuilder: (_, __, ___) =>
+                      pageBuilder: (_, _, _) =>
                           EditMessage(chat: chat, message: messages.first),
                     ),
                   );

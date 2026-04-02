@@ -277,7 +277,9 @@ class _ChatTileState extends State<ChatTile> {
               ? _LastMessageText(text: '${lastMessagePrefix}Shared a file')
               : widget.chat.lastMessage!.location != null
               ? _LastMessageText(text: '${lastMessagePrefix}Shared a location')
-              : Text(''),
+              : widget.chat.lastMessage!.videoUrl != null
+              ? _LastMessageText(text: '${lastMessagePrefix}Shared a video')
+              :Text(''),
         ],
       ),
       trailing: Column(

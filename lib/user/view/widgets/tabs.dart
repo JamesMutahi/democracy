@@ -624,7 +624,7 @@ class _UserPetitionsState extends State<UserPetitions> {
             )
           : PopScope(
               canPop: true,
-              onPopInvokedWithResult: (_, __) {
+              onPopInvokedWithResult: (_, _) {
                 context.read<UserPetitionsBloc>().add(
                   UserPetitionsEvent.unsubscribe(
                     user: widget.user,

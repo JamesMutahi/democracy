@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:democracy/app/utils/bottom_text_form_field.dart';
 import 'package:democracy/app/utils/dialogs.dart';
+import 'package:democracy/app/utils/file_widget.dart';
 import 'package:democracy/app/utils/map_widget.dart';
 import 'package:democracy/app/utils/media_tools.dart';
+import 'package:democracy/app/utils/video_viewer.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
@@ -42,6 +44,7 @@ class _PostUpdateState extends State<PostUpdate> {
   File? _selectedFile;
   File? _insertedContent;
   LatLng? _location;
+  File? _selectedVideo;
 
   @override
   void initState() {
@@ -235,6 +238,19 @@ class _PostUpdateState extends State<PostUpdate> {
                                 });
                               },
                             ),
+                          if (_selectedVideo != null)
+                            Container(
+                              margin: EdgeInsets.only(top: 10),
+                              child: VideoViewer(urls: [_selectedVideo!.path]),
+                            ),
+                          if (_selectedFile != null)
+                            Container(
+                              margin: EdgeInsets.only(top: 10),
+                              child: FileWidget(
+                                url: _selectedFile!.path,
+                                navigateToViewer: false,
+                              ),
+                            ),
                           if (_location != null)
                             MapWidget(mapCenter: _location!),
                           if (widget.post.repostOf != null)
@@ -308,6 +324,11 @@ class _PostUpdateState extends State<PostUpdate> {
             onLocation: (point) {
               setState(() {
                 _location = point;
+              });
+            },
+            onNewVideo: (video) {
+              setState(() {
+                _selectedVideo = video;
               });
             },
           ),

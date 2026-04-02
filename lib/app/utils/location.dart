@@ -196,10 +196,11 @@ class _PermissionDenied extends StatelessWidget {
           SizedBox(height: 20),
           FilledButton.tonal(
             onPressed: () async {
-              await openAppSettings();
-              if (context.mounted) {
-                context.read<LocationCubit>().getLocation();
-              }
+              await openAppSettings().then((_) {
+                if (context.mounted) {
+                  context.read<LocationCubit>().getLocation();
+                }
+              });
             },
             child: Text('Settings'),
           ),

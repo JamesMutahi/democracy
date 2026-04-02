@@ -38,10 +38,10 @@ class _ReportModalState extends State<ReportModal> {
   Issue? _issue;
   bool _disabled = true;
 
-  void setIssue(issue) {
+  void setIssue(Issue? issue) {
     setState(() {
       _issue = issue;
-      _disabled = false;
+      _disabled = issue == null;
     });
   }
 
@@ -81,134 +81,65 @@ class _ReportModalState extends State<ReportModal> {
             ],
           ),
         ),
-        body: ListView(
-          padding: const EdgeInsets.only(left: 20.0, top: 20.0, bottom: 20.0),
-          children: [
-            Text(
-              "What type of issue are you reporting?",
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            // const SizedBox(height: 10.0),
-            ListTile(
-              onTap: () {
-                setIssue(Issue.spam);
-              },
-              title: const Text('Spam'),
-              subtitle: const Text(
-                'Fake engagement, scams, fake accounts, malicious links',
+        body: RadioGroup<Issue>(
+          groupValue: _issue,
+          onChanged: setIssue,
+          child: ListView(
+            padding: const EdgeInsets.only(left: 20.0, top: 20.0, bottom: 20.0),
+            children: [
+              Text(
+                "What type of issue are you reporting?",
+                style: Theme.of(context).textTheme.titleMedium,
               ),
-              trailing: Radio<Issue>(
+              const SizedBox(height: 8),
+              _buildOption(
                 value: Issue.spam,
-                groupValue: _issue,
-                onChanged: (Issue? value) {
-                  setIssue(value);
-                },
+                title: 'Spam',
+                subtitle: 'Fake engagement, scams, fake accounts, malicious links',
               ),
-            ),
-            ListTile(
-              onTap: () {
-                setIssue(Issue.hate);
-              },
-              title: const Text('Hate'),
-              subtitle: const Text(
-                'Slurs, racist or sexist stereotypes, dehumanization, '
-                'incitement of fear or discrimination, hateful symbols '
-                '& logos',
-              ),
-              isThreeLine: true,
-              trailing: Radio<Issue>(
+              _buildOption(
                 value: Issue.hate,
-                groupValue: _issue,
-                onChanged: (Issue? value) {
-                  setIssue(value);
-                },
+                title: 'Hate',
+                subtitle:
+                'Slurs, racist or sexist stereotypes, dehumanization, '
+                    'incitement of fear or discrimination, hateful symbols & logos',
+                isThreeLine: true,
               ),
-            ),
-            ListTile(
-              onTap: () {
-                setIssue(Issue.abuseAndHarassment);
-              },
-              title: const Text('Abuse & Harassment'),
-              subtitle: const Text(
-                'Insults, targeted harassment and inciting harassment, '
-                'violent event denial ',
-              ),
-              trailing: Radio<Issue>(
+              _buildOption(
                 value: Issue.abuseAndHarassment,
-                groupValue: _issue,
-                onChanged: (Issue? value) {
-                  setIssue(value);
-                },
+                title: 'Abuse & Harassment',
+                subtitle:
+                'Insults, targeted harassment and inciting harassment, '
+                    'violent event denial',
               ),
-            ),
-            ListTile(
-              onTap: () {
-                setIssue(Issue.violentSpeech);
-              },
-              title: const Text('Violent Speech'),
-              subtitle: const Text(
-                'Violent threats, wish of harm, glorification of violence, '
-                'incitement of violence, coded incitement of violence',
-              ),
-              trailing: Radio<Issue>(
+              _buildOption(
                 value: Issue.violentSpeech,
-                groupValue: _issue,
-                onChanged: (Issue? value) {
-                  setIssue(value);
-                },
+                title: 'Violent Speech',
+                subtitle:
+                'Violent threats, wish of harm, glorification of violence, '
+                    'incitement of violence, coded incitement of violence',
               ),
-            ),
-            ListTile(
-              onTap: () {
-                setIssue(Issue.childSafety);
-              },
-              title: const Text('Child Safety'),
-              subtitle: const Text(
-                'Child sexual exploitation, grooming, physical child abuse',
-              ),
-              trailing: Radio<Issue>(
+              _buildOption(
                 value: Issue.childSafety,
-                groupValue: _issue,
-                onChanged: (Issue? value) {
-                  setIssue(value);
-                },
+                title: 'Child Safety',
+                subtitle: 'Child sexual exploitation, grooming, physical child abuse',
               ),
-            ),
-            ListTile(
-              onTap: () {
-                setIssue(Issue.privacy);
-              },
-              title: const Text('Privacy'),
-              subtitle: const Text(
-                'Sharing private information, threatening to share/expose '
-                'private information',
-              ),
-              trailing: Radio<Issue>(
+              _buildOption(
                 value: Issue.privacy,
-                groupValue: _issue,
-                onChanged: (Issue? value) {
-                  setIssue(value);
-                },
+                title: 'Privacy',
+                subtitle:
+                'Sharing private information, threatening to share/expose '
+                    'private information',
               ),
-            ),
-            ListTile(
-              onTap: () {
-                setIssue(Issue.suicideOrSelfHarm);
-              },
-              title: const Text('Suicide or self-harm'),
-              subtitle: const Text(
-                'Encouraging, promoting, providing instructions or sharing '
-                'strategies for self-harm',
-              ),
-              trailing: Radio<Issue>(
+              _buildOption(
                 value: Issue.suicideOrSelfHarm,
-                groupValue: _issue,
-                onChanged: (Issue? value) {
-                  setIssue(value);
-                },
+                title: 'Suicide or self-harm',
+                subtitle:
+                'Encouraging, promoting, providing instructions or sharing '
+                    'strategies for self-harm',
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         bottomNavigationBar: Container(
           padding: EdgeInsets.only(
@@ -217,7 +148,7 @@ class _ReportModalState extends State<ReportModal> {
           child: OutlinedButton(
             style: ButtonStyle(
               padding: WidgetStateProperty.all(
-                EdgeInsets.symmetric(vertical: 15),
+                const EdgeInsets.symmetric(vertical: 15),
               ),
               shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
@@ -225,20 +156,38 @@ class _ReportModalState extends State<ReportModal> {
                 ),
               ),
             ),
-            onPressed:
-                _disabled
-                    ? null
-                    : () {
-                      context.read<PostDetailBloc>().add(
-                        PostDetailEvent.report(
-                          issue: issues[_issue]!,
-                          post: widget.post,
-                        ),
-                      );
-                    },
+            onPressed: _disabled
+                ? null
+                : () {
+              context.read<PostDetailBloc>().add(
+                PostDetailEvent.report(
+                  issue: issues[_issue]!,
+                  post: widget.post,
+                ),
+              );
+            },
             child: const Text('Report'),
           ),
         ),
+      ),
+    );
+  }
+
+  // Helper method to avoid code duplication
+  Widget _buildOption({
+    required Issue value,
+    required String title,
+    required String subtitle,
+    bool isThreeLine = false,
+  }) {
+    return ListTile(
+      onTap: () => setIssue(value),
+      title: Text(title),
+      subtitle: Text(subtitle),
+      isThreeLine: isThreeLine,
+      trailing: Radio<Issue>(
+        value: value,
+        // groupValue and onChanged are NO LONGER needed here
       ),
     );
   }

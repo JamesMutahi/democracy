@@ -150,7 +150,7 @@ class _ProfilePageState extends State<ProfilePage> {
             },
             child: PopScope(
               canPop: true,
-              onPopInvokedWithResult: (_, __) {
+              onPopInvokedWithResult: (_, _) {
                 context.read<UserDetailBloc>().add(
                   UserDetailEvent.unsubscribe(user: user),
                 );

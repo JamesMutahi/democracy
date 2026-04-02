@@ -4,8 +4,7 @@ import 'dart:math';
 
 // Flutter imports:
 import 'package:democracy/app/utils/camera/camera.dart';
-import 'package:democracy/app/utils/camera/image_editor_helper.dart';
-import 'package:democracy/app/utils/camera/image_editor_stickers.dart';
+import 'package:democracy/app/utils/camera/utils/stickers.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
@@ -24,28 +23,34 @@ class ImageEditor extends StatefulWidget {
     required this.recipient,
     required this.textEditingController,
     required this.onImageEditingComplete,
+    required this.onVideoEditingComplete,
     required this.path,
   });
 
   final User? recipient;
   final TextEditingController textEditingController;
   final void Function(File) onImageEditingComplete;
+  final void Function(File)? onVideoEditingComplete;
   final String path;
 
   @override
   State<ImageEditor> createState() => _ImageEditorState();
 }
 
-class _ImageEditorState extends State<ImageEditor> with ExampleHelperState {
+class _ImageEditorState extends State<ImageEditor> {
+  final _editorKey = GlobalKey<ProImageEditorState>();
+
   final bool _useMaterialDesign =
       platformDesignMode == ImageEditorDesignMode.material;
+
+  /// When true, the editor will be closed and will not navigate back to camera
   bool canPop = false;
 
   /// Helper class for managing WhatsApp filters.
   final _whatsAppHelper = WhatsAppHelper();
   final _captionFocus = FocusNode();
 
-  ProImageEditorState? get _editor => editorKey.currentState;
+  late final editor = _editorKey.currentState!;
 
   final List<List<double>> _emptyFilter = [
     [
@@ -100,6 +105,16 @@ class _ImageEditorState extends State<ImageEditor> with ExampleHelperState {
 
   late final _mainEditorConfigs = MainEditorConfigs(
     enableZoom: true,
+    tools: [
+      SubEditorMode.paint,
+      SubEditorMode.text,
+      SubEditorMode.cropRotate,
+      SubEditorMode.tune,
+      SubEditorMode.filter,
+      SubEditorMode.blur,
+      SubEditorMode.emoji,
+      SubEditorMode.sticker,
+    ],
     widgets: MainEditorWidgets(
       appBar: (editor, rebuildStream) => null,
       bottomBar: (editor, rebuildStream, key) => null,
@@ -179,7 +194,7 @@ class _ImageEditorState extends State<ImageEditor> with ExampleHelperState {
               isSelected: isSelected,
               onSelectFilter: () {
                 onSelectFilter.call();
-                _editor!.setState(() {});
+                editor.setState(() {});
               },
               editorImage: editorImage,
               filterKey: filterKey,
@@ -242,10 +257,8 @@ class _ImageEditorState extends State<ImageEditor> with ExampleHelperState {
     ),
   );
   late final _stickerEditorConfigs = StickerEditorConfigs(
-    builder: (setLayer, scrollController) => ImageEditorStickers(
-      setLayer: setLayer,
-      scrollController: scrollController,
-    ),
+    builder: (setLayer, scrollController) =>
+        EditorStickers(setLayer: setLayer, scrollController: scrollController),
   );
   late final _layerInteractionConfigs = const LayerInteractionConfigs(
     enableLayerDragSelection: false,
@@ -271,7 +284,7 @@ class _ImageEditorState extends State<ImageEditor> with ExampleHelperState {
     helperLines: _helperLineConfigs,
   );
   late final _callbacks = ProImageEditorCallbacks(
-    onImageEditingStarted: onImageEditingStarted,
+    onImageEditingStarted: null,
     onImageEditingComplete: (imageBytes) async {
       try {
         File savedFile = await saveImageBytesToFile(imageBytes);
@@ -284,29 +297,15 @@ class _ImageEditorState extends State<ImageEditor> with ExampleHelperState {
       }
     },
     onCloseEditor: (editorMode) {
-      if (editorMode != EditorMode.main) return Navigator.pop(context);
-      if (canPop) {
-        Navigator.pop(context);
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CameraPage(
-              recipient: widget.recipient,
-              textEditingController: widget.textEditingController,
-              onImageEditingComplete: widget.onImageEditingComplete,
-            ),
-          ),
-        );
-      }
+      _handleBackToCamera(editorMode);
     },
     mainEditorCallbacks: MainEditorCallbacks(
       helperLines: HelperLinesCallbacks(),
       onScaleStart: _whatsAppHelper.onScaleStart,
       onScaleUpdate: (details) {
-        _whatsAppHelper.onScaleUpdate(details, _editor!);
+        _whatsAppHelper.onScaleUpdate(details, editor);
       },
-      onScaleEnd: (details) => _whatsAppHelper.onScaleEnd(details, _editor!),
+      onScaleEnd: (details) => _whatsAppHelper.onScaleEnd(details, editor),
       onTap: () => FocusScope.of(context).unfocus(),
     ),
     stickerEditorCallbacks: StickerEditorCallbacks(
@@ -316,6 +315,30 @@ class _ImageEditorState extends State<ImageEditor> with ExampleHelperState {
       },
     ),
   );
+
+  /// Unified back navigation (used by system back button and close button)
+  void _handleBackToCamera([EditorMode? editorMode]) {
+    if (editorMode != null && editorMode != EditorMode.main) {
+      Navigator.pop(context); // Close sub-editors normally
+      return;
+    }
+
+    if (canPop) {
+      Navigator.pop(context);
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CameraPage(
+            recipient: widget.recipient,
+            textEditingController: widget.textEditingController,
+            onImageEditingComplete: widget.onImageEditingComplete,
+            onVideoEditingComplete: widget.onVideoEditingComplete,
+          ),
+        ),
+      );
+    }
+  }
 
   /// Opens the WhatsApp sticker editor.
   ///
@@ -402,11 +425,20 @@ class _ImageEditorState extends State<ImageEditor> with ExampleHelperState {
 
   @override
   Widget build(BuildContext context) {
-    return ProImageEditor.file(
-      widget.path,
-      key: editorKey,
-      callbacks: _callbacks,
-      configs: _configs,
+    return PopScope(
+      canPop: canPop,
+      onPopInvokedWithResult: (bool didPop, Object? result) {
+        if (didPop) return;
+
+        // Back button pressed → go back to CameraPage
+        _handleBackToCamera();
+      },
+      child: ProImageEditor.file(
+        widget.path,
+        key: _editorKey,
+        callbacks: _callbacks,
+        configs: _configs,
+      ),
     );
   }
 
@@ -525,7 +557,7 @@ class _ImageEditorState extends State<ImageEditor> with ExampleHelperState {
       WhatsappFilters(
         editor: editor,
         whatsAppHelper: _whatsAppHelper,
-        // emptyFilter: _emptyFilter,
+        emptyFilter: _emptyFilter,
       ),
     ];
   }

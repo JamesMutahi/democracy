@@ -82,7 +82,7 @@ class _DashboardState extends State<Dashboard> {
           body: SafeArea(
             child: PopScope(
               canPop: canPopNow,
-              onPopInvokedWithResult: (didPop, __) {
+              onPopInvokedWithResult: (didPop, _) {
                 onPopInvoked(didPop);
               },
               child: MultiBlocListener(

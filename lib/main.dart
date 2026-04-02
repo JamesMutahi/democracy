@@ -66,6 +66,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env");
@@ -82,12 +83,17 @@ void main() async {
   );
 
   final dio = Dio(options);
-  final webSocketService = WebSocketService();
+  final storage = const FlutterSecureStorage();
+
+  final webSocketService = WebSocketService(storage: storage);
   runApp(
     MultiRepositoryProvider(
       providers: [
         RepositoryProvider.value(
-          value: AuthRepository(authProvider: AuthProvider(dio: dio)),
+          value: AuthRepository(
+            storage: storage,
+            authProvider: AuthProvider(dio: dio),
+          ),
         ),
         RepositoryProvider.value(value: APIRepository(dio: dio)),
       ],

@@ -70,7 +70,7 @@ class _MapWidgetState extends State<_MapWidget> {
               interactionOptions: const InteractionOptions(
                 flags: InteractiveFlag.none,
               ),
-              onTap: (_, __) {
+              onTap: (_, _) {
                 if (widget.onRemove == null) {
                   try {
                     openMap(

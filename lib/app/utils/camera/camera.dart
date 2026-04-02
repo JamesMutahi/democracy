@@ -2,13 +2,22 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
-import 'package:democracy/app/utils/camera/image_editor.dart';
+import 'package:democracy/app/utils/camera/video_editor/video_editor.dart';
+import 'package:democracy/app/utils/camera/video_editor/widgets/video_progress_alert.dart';
+import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:native_device_orientation/native_device_orientation.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pro_video_editor/core/models/video/editor_video_model.dart';
+import 'package:pro_video_editor/core/models/video/video_render_data_model.dart';
+import 'package:pro_video_editor/core/models/video/video_segment_model.dart';
+import 'package:pro_video_editor/core/platform/platform_interface.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:video_player/video_player.dart';
+
+import 'image_editor/image_editor.dart';
 
 List<CameraDescription> get cameras => _cameras;
 List<CameraDescription> _cameras = <CameraDescription>[];
@@ -18,6 +27,7 @@ void openCamera({
   required User? recipient,
   required TextEditingController textEditingController,
   required void Function(File) onImageEditingComplete,
+  void Function(File)? onVideoEditingComplete,
 }) async {
   try {
     _cameras = await availableCameras();
@@ -32,6 +42,7 @@ void openCamera({
           recipient: recipient,
           textEditingController: textEditingController,
           onImageEditingComplete: onImageEditingComplete,
+          onVideoEditingComplete: onVideoEditingComplete,
         ),
       ),
     );
@@ -51,11 +62,15 @@ class CameraPage extends StatefulWidget {
     required this.recipient,
     required this.textEditingController,
     required this.onImageEditingComplete,
+    required this.onVideoEditingComplete,
+    this.tabIndex,
   });
 
   final User? recipient;
   final TextEditingController textEditingController;
   final void Function(File) onImageEditingComplete;
+  final void Function(File)? onVideoEditingComplete;
+  final int? tabIndex;
 
   @override
   State<CameraPage> createState() => _CameraPageState();
@@ -68,10 +83,12 @@ class _CameraPageState extends State<CameraPage>
   late TabController _tabController;
   final StopWatchTimer _stopWatchTimer = StopWatchTimer();
 
-  XFile? imageFile;
-  XFile? videoFile;
+  late bool onVideoTab = widget.tabIndex == 1 ? true : false;
+  List<XFile> videoFiles = [];
+  bool isSwitchingCamera = false;
 
-  bool onVideoTab = false;
+  // For merge progress tracking
+  String? _taskId;
 
   @override
   void initState() {
@@ -80,7 +97,11 @@ class _CameraPageState extends State<CameraPage>
     _initializeCameraController(
       _cameras.firstWhere((c) => c.lensDirection == CameraLensDirection.back),
     );
-    _tabController = TabController(length: 4, initialIndex: 2, vsync: this);
+    _tabController = TabController(
+      length: 4,
+      initialIndex: widget.tabIndex ?? 2,
+      vsync: this,
+    );
     _tabController.addListener(_handleTabSelection);
   }
 
@@ -103,18 +124,6 @@ class _CameraPageState extends State<CameraPage>
         });
       }
     }
-  }
-
-  Future<void> _switchCamera() async {
-    if (_cameras.isEmpty) return;
-
-    final currentDirection = controller.description.lensDirection;
-    final newCamera = _cameras.firstWhere(
-      (c) => c.lensDirection != currentDirection,
-      orElse: () => _cameras.first,
-    );
-
-    await _initializeCameraController(newCamera);
   }
 
   @override
@@ -147,167 +156,191 @@ class _CameraPageState extends State<CameraPage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: NativeDeviceOrientationReader(
-          useSensor: true,
-          builder: (ctx) {
-            final orientation = NativeDeviceOrientationReader.orientation(ctx);
-            int turns = 0;
-            switch (orientation) {
-              case NativeDeviceOrientation.portraitUp:
-                turns = 0;
-                break;
-              case NativeDeviceOrientation.portraitDown:
-                turns = 2;
-                break;
-              case NativeDeviceOrientation.landscapeLeft:
-                turns = 1;
-                break;
-              case NativeDeviceOrientation.landscapeRight:
-                turns = 3;
-                break;
-              case NativeDeviceOrientation.unknown:
-                turns = 0;
-                break;
-            }
-            return Stack(
-              fit: StackFit.expand,
-              children: [
-                _Camera(
-                  controller: controller,
-                  videoController: videoController,
-                ),
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Container(
-                    height: 75,
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Stack(
-                      children: [
-                        if (!controller.value.isRecordingVideo)
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: _CameraButton(
-                              iconData: Icons.close_rounded,
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              turns: turns,
-                              child: null,
-                            ),
-                          ),
-                        if (_tabController.index == 1)
-                          Align(
-                            alignment: Alignment.center,
-                            child: _Timer(
-                              stopWatchTimer: _stopWatchTimer,
-                              turns: turns,
-                            ),
-                          ),
-                        if (!controller.value.isRecordingVideo)
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: _FlashModeButton(
-                              onPressed: onSetFlashModeButtonPressed,
-                              turns: turns,
-                            ),
-                          ),
-                      ],
+    return Stack(
+      children: [
+        Scaffold(
+          body: SafeArea(
+            child: NativeDeviceOrientationReader(
+              useSensor: true,
+              builder: (ctx) {
+                final orientation = NativeDeviceOrientationReader.orientation(
+                  ctx,
+                );
+                int turns = 0;
+                switch (orientation) {
+                  case NativeDeviceOrientation.portraitUp:
+                    turns = 0;
+                    break;
+                  case NativeDeviceOrientation.portraitDown:
+                    turns = 2;
+                    break;
+                  case NativeDeviceOrientation.landscapeLeft:
+                    turns = 1;
+                    break;
+                  case NativeDeviceOrientation.landscapeRight:
+                    turns = 3;
+                    break;
+                  case NativeDeviceOrientation.unknown:
+                    turns = 0;
+                    break;
+                }
+                return Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    _Camera(
+                      controller: controller,
+                      videoController: videoController,
                     ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    height: 100,
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Stack(
-                      children: [
-                        if (!controller.value.isRecordingVideo)
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: _CameraButton(
-                              iconData: Icons.photo_outlined,
-                              onPressed: () {
-                                //   TODO: Open gallery
-                              },
-                              turns: turns,
-                              child: null,
-                            ),
-                          ),
-                        Align(
-                          alignment: Alignment.center,
-                          child: _MainCameraButton(
-                            onVideoTab: onVideoTab,
-                            cameraController: controller,
-                            onVideoRecordButtonPressed:
-                                onVideoRecordButtonPressed,
-                            onStopButtonPressed: onStopButtonPressed,
-                            recipient: widget.recipient,
-                            textEditingController: widget.textEditingController,
-                            onImageEditingComplete:
-                                widget.onImageEditingComplete,
-                          ),
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Container(
+                        height: 75,
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Stack(
+                          children: [
+                            if (!controller.value.isRecordingVideo)
+                              if (!isSwitchingCamera)
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: _CameraButton(
+                                    iconData: Icons.close_rounded,
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    turns: turns,
+                                    child: null,
+                                  ),
+                                ),
+                            if (_tabController.index == 1)
+                              Align(
+                                alignment: Alignment.center,
+                                child: _Timer(
+                                  stopWatchTimer: _stopWatchTimer,
+                                  turns: turns,
+                                ),
+                              ),
+                            if (!controller.value.isRecordingVideo)
+                              if (!isSwitchingCamera)
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: _FlashModeButton(
+                                    onPressed: onSetFlashModeButtonPressed,
+                                    turns: turns,
+                                  ),
+                                ),
+                          ],
                         ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: _SwitchCameraButton(
-                            onPressed: _switchCamera,
-                            turns: turns,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        height: 100,
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Stack(
+                          children: [
+                            if (!controller.value.isRecordingVideo)
+                              if (!isSwitchingCamera)
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: _CameraButton(
+                                    iconData: Icons.photo_outlined,
+                                    onPressed: () {
+                                      //   TODO: Open gallery
+                                    },
+                                    turns: turns,
+                                    child: null,
+                                  ),
+                                ),
+                            Align(
+                              alignment: Alignment.center,
+                              child: _MainCameraButton(
+                                onVideoTab: onVideoTab,
+                                isSwitchingCamera: isSwitchingCamera,
+                                cameraController: controller,
+                                onVideoRecordButtonPressed:
+                                    onVideoRecordButtonPressed,
+                                onStopButtonPressed: onStopButtonPressed,
+                                recipient: widget.recipient,
+                                textEditingController:
+                                    widget.textEditingController,
+                                onImageEditingComplete:
+                                    widget.onImageEditingComplete,
+                                onVideoEditingComplete:
+                                    widget.onVideoEditingComplete,
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: _SwitchCameraButton(
+                                onPressed: _switchCamera,
+                                turns: turns,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+          bottomNavigationBar: BottomAppBar(
+            padding: const EdgeInsets.all(0.0),
+            height: 60.0,
+            elevation: 100.0,
+            color: Colors.black,
+            child:
+                isSwitchingCamera ||
+                    widget.onVideoEditingComplete == null ||
+                    controller.value.isRecordingVideo
+                ? SizedBox.shrink()
+                : TabBar(
+                    controller: _tabController,
+                    isScrollable: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    tabAlignment: TabAlignment.center,
+                    labelStyle: Theme.of(context).textTheme.titleMedium,
+                    splashBorderRadius: BorderRadius.circular(10),
+                    indicator: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white.withAlpha(50),
+                    ),
+                    padding: EdgeInsets.zero,
+                    labelPadding: EdgeInsets.symmetric(horizontal: 10),
+                    labelColor: Colors.white,
+                    unselectedLabelColor: Colors.white,
+                    tabs: [
+                      IgnorePointer(
+                        ignoring: true,
+                        child: SizedBox(width: 200),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10.0,
+                          vertical: 5,
+                        ),
+                        child: Text('Video'),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10.0,
+                          vertical: 5,
+                        ),
+                        child: Text('Photo'),
+                      ),
+                      IgnorePointer(
+                        ignoring: true,
+                        child: SizedBox(width: 200),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            );
-          },
+          ),
         ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        padding: const EdgeInsets.all(0.0),
-        height: 60.0,
-        elevation: 100.0,
-        color: Colors.black,
-        child: controller.value.isRecordingVideo
-            ? SizedBox.shrink()
-            : TabBar(
-                controller: _tabController,
-                isScrollable: true,
-                physics: NeverScrollableScrollPhysics(),
-                tabAlignment: TabAlignment.center,
-                labelStyle: Theme.of(context).textTheme.titleMedium,
-                splashBorderRadius: BorderRadius.circular(10),
-                indicator: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white.withAlpha(50),
-                ),
-                padding: EdgeInsets.zero,
-                labelPadding: EdgeInsets.symmetric(horizontal: 10),
-                labelColor: Colors.white,
-                unselectedLabelColor: Colors.white,
-                tabs: [
-                  IgnorePointer(ignoring: true, child: SizedBox(width: 200)),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0,
-                      vertical: 5,
-                    ),
-                    child: Text('Video'),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0,
-                      vertical: 5,
-                    ),
-                    child: Text('Photo'),
-                  ),
-                  IgnorePointer(ignoring: true, child: SizedBox(width: 200)),
-                ],
-              ),
-      ),
+        if (_taskId != null)
+          SafeArea(child: VideoProgressAlert(taskId: _taskId!)),
+      ],
     );
   }
 
@@ -373,9 +406,42 @@ class _CameraPageState extends State<CameraPage>
     }
   }
 
+  Future<void> _switchCamera() async {
+    if (_cameras.isEmpty) return;
+    final currentDirection = controller.description.lensDirection;
+    final newCamera = _cameras.firstWhere(
+      (c) => c.lensDirection != currentDirection,
+      orElse: () => _cameras.first,
+    );
+
+    if (controller.value.isRecordingVideo) {
+      setState(() {
+        isSwitchingCamera = true;
+      });
+      // Stop recording
+      _stopWatchTimer.onStopTimer();
+      XFile? file = await stopVideoRecording();
+      setState(() {
+        videoFiles.add(file!);
+      });
+      // Initialize with new camera
+      await _initializeCameraController(newCamera);
+      // Start recording again
+      await startVideoRecording();
+      _stopWatchTimer.onStartTimer();
+      setState(() {
+        isSwitchingCamera = false;
+      });
+    } else {
+      await _initializeCameraController(newCamera);
+    }
+  }
+
   void onVideoRecordButtonPressed() {
     startVideoRecording().then((_) {
       if (mounted) {
+        _stopWatchTimer.onStartTimer();
+        videoFiles = [];
         setState(() {});
       }
     });
@@ -384,11 +450,6 @@ class _CameraPageState extends State<CameraPage>
   Future<void> startVideoRecording() async {
     final CameraController cameraController = controller;
 
-    if (!cameraController.value.isInitialized) {
-      showInSnackBar('Error: select a camera first.');
-      return;
-    }
-
     if (cameraController.value.isRecordingVideo) {
       // A recording is already started, do nothing.
       return;
@@ -396,7 +457,6 @@ class _CameraPageState extends State<CameraPage>
 
     try {
       await cameraController.startVideoRecording();
-      _stopWatchTimer.onStartTimer();
     } on CameraException catch (e) {
       _showCameraException(e);
       return;
@@ -404,14 +464,78 @@ class _CameraPageState extends State<CameraPage>
   }
 
   void onStopButtonPressed() {
-    stopVideoRecording().then((XFile? file) {
+    if (videoFiles.isNotEmpty) {
+      setState(() {
+        _taskId = "merge_${DateTime.now().millisecondsSinceEpoch}";
+      });
+    }
+    stopVideoRecording().then((XFile? file) async {
       if (mounted) {
-        setState(() {});
+        _stopWatchTimer.onResetTimer();
+        setState(() {
+          videoFiles.add(file!);
+        });
       }
-      if (file != null) {
-        showInSnackBar('Video recorded to ${file.path}');
+
+      String path = file!.path;
+      if (videoFiles.length == 1) {
+        _navigateToVideoEditor(path: path);
+      } else {
+        try {
+          path = await mergeFiles(files: videoFiles);
+          _navigateToVideoEditor(path: path);
+        } catch (e) {
+          // TODO: Log error
+          if (mounted) {
+            final snackBar = getSnackBar(
+              context: context,
+              message: e.toString(),
+              status: SnackBarStatus.failure,
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+          setState(() {
+            _taskId = null;
+          });
+        }
       }
     });
+  }
+
+  void _navigateToVideoEditor({required String path}) {
+    if (mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => VideoEditor(
+            recipient: widget.recipient,
+            textEditingController: widget.textEditingController,
+            onImageEditingComplete: widget.onImageEditingComplete,
+            onVideoEditingComplete: widget.onVideoEditingComplete!,
+            path: path,
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<String> mergeFiles({required List<XFile> files}) async {
+    final directory = await getApplicationCacheDirectory();
+    final mergedPath =
+        '${directory.path}/merged_${DateTime.now().millisecondsSinceEpoch}.mp4';
+    final List<VideoSegment> segments = files.map((xFile) {
+      return VideoSegment(video: EditorVideo.file(File(xFile.path)));
+    }).toList();
+
+    await ProVideoEditor.instance.renderVideoToFile(
+      mergedPath,
+      VideoRenderData(
+        id: _taskId,
+        videoSegments: segments,
+        outputFormat: VideoOutputFormat.mp4,
+        enableAudio: true,
+      ),
+    );
+    return mergedPath;
   }
 
   Future<XFile?> stopVideoRecording() async {
@@ -423,8 +547,6 @@ class _CameraPageState extends State<CameraPage>
 
     try {
       var file = await cameraController.stopVideoRecording();
-      _stopWatchTimer.onStopTimer();
-      _stopWatchTimer.onResetTimer();
       return file;
     } on CameraException catch (e) {
       _showCameraException(e);
@@ -785,21 +907,25 @@ class _Timer extends StatelessWidget {
 class _MainCameraButton extends StatefulWidget {
   const _MainCameraButton({
     required this.onVideoTab,
+    required this.isSwitchingCamera,
     required this.cameraController,
     required this.onVideoRecordButtonPressed,
     required this.onStopButtonPressed,
     required this.recipient,
     required this.textEditingController,
     required this.onImageEditingComplete,
+    required this.onVideoEditingComplete,
   });
 
   final bool onVideoTab;
+  final bool isSwitchingCamera;
   final CameraController cameraController;
   final VoidCallback onVideoRecordButtonPressed;
   final VoidCallback onStopButtonPressed;
   final User? recipient;
   final TextEditingController textEditingController;
   final void Function(File) onImageEditingComplete;
+  final void Function(File)? onVideoEditingComplete;
 
   @override
   State<_MainCameraButton> createState() => _MainCameraButtonState();
@@ -809,6 +935,10 @@ class _MainCameraButtonState extends State<_MainCameraButton>
     with TickerProviderStateMixin {
   late final AnimationController _animationController;
   late final Animation<double> _animation;
+
+  late bool isRecording =
+      widget.cameraController.value.isRecordingVideo ||
+      widget.isSwitchingCamera;
 
   @override
   void initState() {
@@ -829,44 +959,26 @@ class _MainCameraButtonState extends State<_MainCameraButton>
     super.dispose();
   }
 
-  Future<void> _takePhotoWithAnimation() async {
-    if (!widget.cameraController.value.isInitialized) return;
-    await _animationController.forward();
-    try {
-      XFile file = await widget.cameraController.takePicture();
-      await _animationController.reverse();
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ImageEditor(
-              recipient: widget.recipient,
-              textEditingController: widget.textEditingController,
-              onImageEditingComplete: widget.onImageEditingComplete,
-              path: file.path,
-            ),
-          ),
-        );
-      }
-    } on CameraException catch (e) {
-      //   TODO: Log error
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final bool isRecording = widget.cameraController.value.isRecordingVideo;
     final bool isVideoMode = widget.onVideoTab;
-
-    final double outerSize = isVideoMode ? (isRecording ? 80 : 70) : 70;
+    final double outerSize = isVideoMode ? (isRecording ? 80 : 70) : 80;
     return GestureDetector(
       onTap: () async {
         if (widget.cameraController.value.isInitialized) {
           if (widget.onVideoTab) {
             if (widget.onVideoTab) {
-              if (widget.cameraController.value.isRecordingVideo) {
+              if (isRecording) {
+                setState(() {
+                  isRecording = false;
+                });
+                await Future.delayed(Duration(milliseconds: 300));
                 widget.onStopButtonPressed();
               } else {
+                setState(() {
+                  isRecording = true;
+                });
+                await Future.delayed(Duration(milliseconds: 300));
                 widget.onVideoRecordButtonPressed();
               }
             }
@@ -885,16 +997,44 @@ class _MainCameraButtonState extends State<_MainCameraButton>
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(color: Colors.white, width: 5),
+            color: isRecording ? Colors.black.withAlpha(50) : null,
           ),
-          padding: EdgeInsets.all(isVideoMode ? (isRecording ? 17 : 13) : 7.5),
-          child: Container(
+          padding: EdgeInsets.all(isVideoMode ? (isRecording ? 20 : 13) : 7.5),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
             decoration: BoxDecoration(
               color: isRecording ? Colors.red : Colors.white,
-              borderRadius: BorderRadius.circular(isRecording ? 5 : 50),
+              borderRadius: BorderRadius.circular(isRecording ? 5 : 999),
             ),
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _takePhotoWithAnimation() async {
+    if (!widget.cameraController.value.isInitialized) return;
+    await _animationController.forward();
+    try {
+      XFile file = await widget.cameraController.takePicture();
+      await _animationController.reverse();
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ImageEditor(
+              recipient: widget.recipient,
+              textEditingController: widget.textEditingController,
+              onImageEditingComplete: widget.onImageEditingComplete,
+              onVideoEditingComplete: widget.onVideoEditingComplete,
+              path: file.path,
+            ),
+          ),
+        );
+      }
+    } on CameraException catch (e) {
+      _logError(e.code, e.description);
+    }
   }
 }

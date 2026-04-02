@@ -1,12 +1,10 @@
 part of 'auth_bloc.dart';
 
 class AuthRepository {
-  AuthRepository({required this.authProvider});
+  AuthRepository({required this.authProvider, required this.storage});
 
+  final FlutterSecureStorage storage;
   final AuthProvider authProvider;
-  final _storage = const FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-  );
 
   Future<String> login({
     required String email,
@@ -16,16 +14,16 @@ class AuthRepository {
   }
 
   Future<String?> saveToken({required String token}) async {
-    await _storage.write(key: 'token', value: token);
+    await storage.write(key: 'token', value: token);
     return token;
   }
 
   Future<String?> getToken() async {
     try {
-      String? token = await _storage.read(key: 'token');
+      String? token = await storage.read(key: 'token');
       return token;
     } catch (e) {
-      await _storage.deleteAll();
+      await storage.deleteAll();
       return null;
     }
   }
@@ -35,7 +33,7 @@ class AuthRepository {
   }
 
   Future<void> deleteToken() async {
-    await _storage.delete(key: 'token');
+    await storage.delete(key: 'token');
   }
 
   Future<User> getUserFromAPI({required String token}) async {
