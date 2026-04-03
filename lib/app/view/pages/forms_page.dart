@@ -48,6 +48,8 @@ class _FormsPageState extends State<FormsPage>
 
   @override
   void dispose() {
+    _surveyController.dispose();
+    _petitionController.dispose();
     _tabController.removeListener(_handleTabSelection);
     _tabController.dispose();
     super.dispose();
@@ -158,11 +160,10 @@ class _SurveysSearchBar extends StatelessWidget {
               context: context,
               transitionDuration: const Duration(milliseconds: 300),
               pageBuilder: (context, animation, secondaryAnimation) {
-                return _FiltersModal(
+                return _SurveyFiltersModal(
                   isActive: state.isActive,
                   filterByRegion: state.filterByRegion,
                   sortBy: state.sortBy,
-                  formsTabBarStatus: FormsTabBarStatus.onSurveys,
                   startDate: state.startDate,
                   endDate: state.endDate,
                 );
@@ -210,11 +211,10 @@ class _PetitionsSearchBar extends StatelessWidget {
               context: context,
               transitionDuration: const Duration(milliseconds: 300),
               pageBuilder: (context, animation, secondaryAnimation) {
-                return _FiltersModal(
+                return _PetitionFiltersModal(
                   isActive: state.isOpen,
                   filterByRegion: state.filterByRegion,
                   sortBy: state.sortBy,
-                  formsTabBarStatus: FormsTabBarStatus.onPetitions,
                   startDate: state.startDate,
                   endDate: state.endDate,
                 );
@@ -256,9 +256,8 @@ class PetitionsTab extends StatelessWidget {
   }
 }
 
-class _FiltersModal extends StatefulWidget {
-  const _FiltersModal({
-    required this.formsTabBarStatus,
+class _SurveyFiltersModal extends StatefulWidget {
+  const _SurveyFiltersModal({
     required this.isActive,
     required this.filterByRegion,
     required this.sortBy,
@@ -266,7 +265,6 @@ class _FiltersModal extends StatefulWidget {
     required this.endDate,
   });
 
-  final FormsTabBarStatus formsTabBarStatus;
   final bool? isActive;
   final bool filterByRegion;
   final String sortBy;
@@ -274,120 +272,62 @@ class _FiltersModal extends StatefulWidget {
   final DateTime? endDate;
 
   @override
-  State<_FiltersModal> createState() => _FiltersModalState();
+  State<_SurveyFiltersModal> createState() => _SurveyFiltersModalState();
 }
 
-class _FiltersModalState extends State<_FiltersModal> {
+class _SurveyFiltersModalState extends State<_SurveyFiltersModal> {
   late bool? isActive = widget.isActive;
   late bool filterByRegion = widget.filterByRegion;
   late String sortBy = widget.sortBy;
   late DateTime? startDate = widget.startDate;
   late DateTime? endDate = widget.endDate;
 
+  bool get _isUnchanged =>
+      isActive == widget.isActive &&
+      filterByRegion == widget.filterByRegion &&
+      sortBy == widget.sortBy &&
+      startDate == widget.startDate &&
+      endDate == widget.endDate;
+
+  bool get _isDefaultState =>
+      isActive == true &&
+      sortBy == 'recent' &&
+      filterByRegion == true &&
+      startDate == null &&
+      endDate == null;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<FormsTabBarCubit, FormsTabBarState>(
       builder: (context, state) {
         return FiltersModal(
-          applyButtonIsDisabled:
-              isActive == widget.isActive &&
-              filterByRegion == widget.filterByRegion &&
-              sortBy == widget.sortBy &&
-              startDate == widget.startDate &&
-              endDate == widget.endDate,
-          clearButtonIsDisabled: switch (widget.formsTabBarStatus) {
-            FormsTabBarStatus.onSurveys =>
-              isActive == true &&
-                  sortBy == 'recent' &&
-                  filterByRegion == true &&
-                  startDate == null &&
-                  endDate == null,
-            FormsTabBarStatus.onPetitions =>
-              isActive == true &&
-                  sortBy == 'popular' &&
-                  filterByRegion == true &&
-                  startDate == null &&
-                  endDate == null,
-          },
-          onApply: () {
-            switch (widget.formsTabBarStatus) {
-              case FormsTabBarStatus.onSurveys:
-                context.read<SurveyFilterCubit>().filtersChanged(
-                  isActive: isActive,
-                  filterByRegion: filterByRegion,
-                  sortBy: sortBy,
-                  startDate: startDate,
-                  endDate: endDate,
-                );
-              case FormsTabBarStatus.onPetitions:
-                context.read<PetitionFilterCubit>().filtersChanged(
-                  isOpen: isActive,
-                  filterByRegion: filterByRegion,
-                  sortBy: sortBy,
-                  startDate: startDate,
-                  endDate: endDate,
-                );
-            }
-          },
-          onClear: () {
-            switch (widget.formsTabBarStatus) {
-              case FormsTabBarStatus.onSurveys:
-                context.read<SurveyFilterCubit>().clearFilters();
-              case FormsTabBarStatus.onPetitions:
-                context.read<PetitionFilterCubit>().clearFilters();
-            }
-            Navigator.pop(context);
-          },
+          applyButtonIsDisabled: _isUnchanged,
+          clearButtonIsDisabled: _isDefaultState,
+          onApply: _applyFilters,
+          onClear: _clearFilters,
           widgets: [
             FilterHeader(text: 'Sort by'),
-            if (state.status == FormsTabBarStatus.onPetitions)
-              FormBuilderRadioGroup<String>(
-                name: 'sort by',
-                initialValue: sortBy,
-                orientation: OptionsOrientation.vertical,
-                decoration: InputDecoration(border: InputBorder.none),
-                options: [
-                  FormBuilderFieldOption<String>(
-                    value: 'popular',
-                    child: Text('Most supporters (default)'),
-                  ),
-                  FormBuilderFieldOption<String>(
-                    value: 'recent',
-                    child: Text('Newest first'),
-                  ),
-                  FormBuilderFieldOption<String>(
-                    value: 'oldest',
-                    child: Text('Oldest first'),
-                  ),
-                ],
-                onChanged: (value) {
-                  setState(() {
-                    sortBy = value!;
-                  });
-                },
-              ),
-            if (state.status == FormsTabBarStatus.onSurveys)
-              FormBuilderRadioGroup<String>(
-                name: 'sort by',
-                initialValue: sortBy,
-                orientation: OptionsOrientation.vertical,
-                decoration: InputDecoration(border: InputBorder.none),
-                options: [
-                  FormBuilderFieldOption<String>(
-                    value: 'recent',
-                    child: Text('Newest first (default)'),
-                  ),
-                  FormBuilderFieldOption<String>(
-                    value: 'oldest',
-                    child: Text('Oldest first'),
-                  ),
-                ],
-                onChanged: (value) {
-                  setState(() {
-                    sortBy = value!;
-                  });
-                },
-              ),
+            FormBuilderRadioGroup<String>(
+              name: 'sort by',
+              initialValue: sortBy,
+              orientation: OptionsOrientation.vertical,
+              decoration: InputDecoration(border: InputBorder.none),
+              options: [
+                FormBuilderFieldOption<String>(
+                  value: 'recent',
+                  child: Text('Newest first (default)'),
+                ),
+                FormBuilderFieldOption<String>(
+                  value: 'oldest',
+                  child: Text('Oldest first'),
+                ),
+              ],
+              onChanged: (value) {
+                setState(() {
+                  sortBy = value!;
+                });
+              },
+            ),
             FilterHeader(text: 'Status'),
             FormBuilderRadioGroup<bool?>(
               name: 'active',
@@ -443,5 +383,180 @@ class _FiltersModalState extends State<_FiltersModal> {
         );
       },
     );
+  }
+
+  void _applyFilters() {
+    context.read<SurveyFilterCubit>().filtersChanged(
+      isActive: isActive,
+      filterByRegion: filterByRegion,
+      sortBy: sortBy,
+      startDate: startDate,
+      endDate: endDate,
+    );
+  }
+
+  void _clearFilters() {
+    setState(() {
+      isActive = true;
+      sortBy = 'recent';
+      filterByRegion = true;
+      startDate = null;
+      endDate = null;
+    });
+  }
+}
+
+class _PetitionFiltersModal extends StatefulWidget {
+  const _PetitionFiltersModal({
+    required this.isActive,
+    required this.filterByRegion,
+    required this.sortBy,
+    required this.startDate,
+    required this.endDate,
+  });
+
+  final bool? isActive;
+  final bool filterByRegion;
+  final String sortBy;
+  final DateTime? startDate;
+  final DateTime? endDate;
+
+  @override
+  State<_PetitionFiltersModal> createState() => _PetitionFiltersModalState();
+}
+
+class _PetitionFiltersModalState extends State<_PetitionFiltersModal> {
+  late bool? isActive = widget.isActive;
+  late bool filterByRegion = widget.filterByRegion;
+  late String sortBy = widget.sortBy;
+  late DateTime? startDate = widget.startDate;
+  late DateTime? endDate = widget.endDate;
+
+  bool get _isUnchanged =>
+      isActive == widget.isActive &&
+      filterByRegion == widget.filterByRegion &&
+      sortBy == widget.sortBy &&
+      startDate == widget.startDate &&
+      endDate == widget.endDate;
+
+  bool get _isDefaultState =>
+      isActive == true &&
+      sortBy == 'popular' &&
+      filterByRegion == true &&
+      startDate == null &&
+      endDate == null;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<FormsTabBarCubit, FormsTabBarState>(
+      builder: (context, state) {
+        return FiltersModal(
+          applyButtonIsDisabled: _isUnchanged,
+          clearButtonIsDisabled: _isDefaultState,
+          onApply: _applyFilters,
+          onClear: _clearFilters,
+          widgets: [
+            FilterHeader(text: 'Sort by'),
+            FormBuilderRadioGroup<String>(
+              name: 'sort by',
+              initialValue: sortBy,
+              orientation: OptionsOrientation.vertical,
+              decoration: InputDecoration(border: InputBorder.none),
+              options: [
+                FormBuilderFieldOption<String>(
+                  value: 'popular',
+                  child: Text('Most supporters (default)'),
+                ),
+                FormBuilderFieldOption<String>(
+                  value: 'recent',
+                  child: Text('Newest first'),
+                ),
+                FormBuilderFieldOption<String>(
+                  value: 'oldest',
+                  child: Text('Oldest first'),
+                ),
+              ],
+              onChanged: (value) {
+                setState(() {
+                  sortBy = value!;
+                });
+              },
+            ),
+
+            FilterHeader(text: 'Status'),
+            FormBuilderRadioGroup<bool?>(
+              name: 'active',
+              initialValue: isActive,
+              orientation: OptionsOrientation.vertical,
+              decoration: InputDecoration(border: InputBorder.none),
+              options: [
+                FormBuilderFieldOption<bool?>(
+                  value: true,
+                  child: Text('Open (default)'),
+                ),
+                FormBuilderFieldOption<bool?>(
+                  value: false,
+                  child: Text('Closed'),
+                ),
+                FormBuilderFieldOption<bool?>(
+                  value: null,
+                  child: Text('Show all'),
+                ),
+              ],
+              onChanged: (value) {
+                setState(() {
+                  isActive = value;
+                });
+              },
+            ),
+            FilterHeader(text: 'Filter by region'),
+            FormBuilderRadioGroup<bool>(
+              name: 'region',
+              initialValue: filterByRegion,
+              orientation: OptionsOrientation.vertical,
+              decoration: InputDecoration(border: InputBorder.none),
+              options: [
+                FormBuilderFieldOption<bool>(value: true, child: Text('Yes')),
+                FormBuilderFieldOption<bool>(value: false, child: Text('No')),
+              ],
+              onChanged: (value) {
+                setState(() {
+                  filterByRegion = value!;
+                });
+              },
+            ),
+            DateRangeFilter(
+              value: [startDate, endDate],
+              onValueChanged: (dates) {
+                setState(() {
+                  startDate = dates.isNotEmpty ? dates[0] : null;
+                  endDate = dates.length == 2 ? dates[1] : null;
+                });
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _applyFilters() {
+    context.read<PetitionFilterCubit>().filtersChanged(
+      isOpen: isActive,
+      filterByRegion: filterByRegion,
+      sortBy: sortBy,
+      startDate: startDate,
+      endDate: endDate,
+    );
+  }
+
+  void _clearFilters() {
+    setState(() {
+      isActive = true;
+      sortBy = 'popular';
+      filterByRegion = true;
+      startDate = null;
+      endDate = null;
+    });
   }
 }

@@ -7,7 +7,6 @@ import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
-import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,156 +18,141 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  final GlobalKey<ScaffoldState> _key = GlobalKey();
-  final pageController = PageController();
-  DateTime? currentBackPressTime;
-  bool canPopNow = false;
-  int requiredSeconds = 2;
-  List<n_.Notification> unreadNotifications = [];
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final PageController _pageController = PageController();
+
+  DateTime? _lastBackPressTime;
+  bool _canPopNow = false;
+  final int _backPressTimeout = 2; // seconds
+
+  List<n_.Notification> _unreadNotifications = [];
 
   @override
   void initState() {
-    context.read<NotificationsBloc>().add(NotificationsEvent.get());
     super.initState();
+    context.read<NotificationsBloc>().add(NotificationsEvent.get());
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  // Handle double back press to exit
+  void _onPopInvoked(bool didPop) {
+    if (_scaffoldKey.currentState?.isDrawerOpen ?? false) {
+      _scaffoldKey.currentState?.closeDrawer();
+      return;
+    }
+
+    final now = DateTime.now();
+    final isDoublePress =
+        _lastBackPressTime != null &&
+        now.difference(_lastBackPressTime!) <
+            Duration(seconds: _backPressTimeout);
+
+    if (isDoublePress) {
+      // Allow app to exit
+      setState(() => _canPopNow = true);
+    } else {
+      _lastBackPressTime = now;
+      setState(() => _canPopNow = true);
+
+      final snackBar = getSnackBar(
+        context: context,
+        message: 'Press back again to close',
+        status: SnackBarStatus.info,
+      );
+
+      final controller = ScaffoldMessenger.of(context)
+        ..clearSnackBars()
+        ..showSnackBar(snackBar);
+
+      // Auto-dismiss snackbar and reset after timeout
+      Future.delayed(Duration(seconds: _backPressTimeout), () {
+        if (mounted) {
+          controller.clearSnackBars();
+          setState(() => _canPopNow = false);
+        }
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    ScaffoldFeatureController showSnackBar({required SnackBar snackBar}) {
-      ScaffoldMessenger.of(context).clearSnackBars();
-      return ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }
-
-    void onPopInvoked(bool didPop) {
-      if (_key.currentState!.isDrawerOpen) {
-        _key.currentState!.closeDrawer();
-        return;
-      }
-      DateTime now = DateTime.now();
-      if (currentBackPressTime == null ||
-          now.difference(currentBackPressTime!) >
-              Duration(seconds: requiredSeconds)) {
-        currentBackPressTime = now;
-        final snackBar = getSnackBar(
-          context: context,
-          message: 'Press back again to close',
-          status: SnackBarStatus.info,
-        );
-        ScaffoldFeatureController controller = showSnackBar(snackBar: snackBar);
-        Future.delayed(Duration(seconds: requiredSeconds), () {
-          // Disable pop invoke and close the snack bar after 2s timeout
-          setState(() {
-            canPopNow = false;
-          });
-          controller.close();
-        });
-        // Ok, let user exit app on the next back press
-        setState(() {
-          canPopNow = true;
-        });
-      }
-    }
-
     return BlocBuilder<AuthBloc, AuthState>(
-      builder: (context, state) {
-        late User user;
-        if (state is Authenticated) {
-          user = state.user;
-        }
+      builder: (context, authState) {
+        final user = authState is Authenticated ? authState.user : null;
+
         return Scaffold(
-          key: _key,
+          key: _scaffoldKey,
           resizeToAvoidBottomInset: false,
-          drawer: AppDrawer(user: user),
+          drawer: AppDrawer(user: user!),
           body: SafeArea(
             child: PopScope(
-              canPop: canPopNow,
-              onPopInvokedWithResult: (didPop, _) {
-                onPopInvoked(didPop);
-              },
+              canPop: _canPopNow,
+              onPopInvokedWithResult: (didPop, _) => _onPopInvoked(didPop),
               child: MultiBlocListener(
                 listeners: [
+                  // Bottom Navigation
                   BlocListener<BottomNavBarCubit, BottomNavBarState>(
                     listener: (context, state) {
-                      switch (state) {
-                        case BottomNavBarPageChanged(:final page):
-                          pageController.jumpToPage(page);
+                      if (state is BottomNavBarPageChanged) {
+                        _pageController.jumpToPage(state.page);
                       }
                     },
                   ),
+
+                  // Notifications list updates
                   BlocListener<NotificationsBloc, NotificationsState>(
                     listener: (context, state) {
                       if (state is NotificationsLoaded) {
                         setState(() {
-                          unreadNotifications =
-                              state.notifications
-                                  .where((n) => n.isRead == false)
-                                  .toList();
+                          _unreadNotifications = state.notifications
+                              .where((n) => !n.isRead)
+                              .toList();
                         });
-                      }
-                    },
-                  ),
-                  BlocListener<NotificationDetailBloc, NotificationDetailState>(
-                    listener: (context, state) {
-                      if (state is NotificationCreated) {
-                        setState(() {
-                          unreadNotifications.add(state.notification);
-                        });
-                      }
-                      if (state is NotificationUpdated) {
-                        if (unreadNotifications.any(
-                          (n) => n.id == state.notification.id,
-                        )) {
-                          if (state.notification.isRead) {
-                            setState(() {
-                              unreadNotifications.removeWhere(
-                                (n) => n.id == state.notification.id,
-                              );
-                            });
-                          }
-                        }
-                      }
-                      if (state is NotificationDeleted) {
-                        if (unreadNotifications.any(
-                          (n) => n.id == state.notificationId,
-                        )) {
-                          setState(() {
-                            unreadNotifications.removeWhere(
-                              (n) => n.id == state.notificationId,
-                            );
-                          });
-                        }
                       }
                     },
                   ),
 
+                  // Real-time notification changes
+                  BlocListener<NotificationDetailBloc, NotificationDetailState>(
+                    listener: (context, state) {
+                      setState(() {
+                        _handleNotificationUpdate(state);
+                      });
+                    },
+                  ),
                 ],
                 child: PageView(
                   physics: const NeverScrollableScrollPhysics(),
-                  controller: pageController,
+                  controller: _pageController,
                   children: [
                     HomePage(
                       user: user,
-                      notifications: unreadNotifications.length,
+                      notifications: _unreadNotifications.length,
                     ),
                     ExplorePage(
                       user: user,
-                      notifications: unreadNotifications.length,
+                      notifications: _unreadNotifications.length,
                     ),
                     MeetingsPage(
                       user: user,
-                      notifications: unreadNotifications.length,
+                      notifications: _unreadNotifications.length,
                     ),
                     BallotPage(
                       user: user,
-                      notifications: unreadNotifications.length,
+                      notifications: _unreadNotifications.length,
                     ),
                     FormsPage(
                       user: user,
-                      notifications: unreadNotifications.length,
+                      notifications: _unreadNotifications.length,
                     ),
                     MessagePage(
                       user: user,
-                      notifications: unreadNotifications.length,
+                      notifications: _unreadNotifications.length,
                     ),
                   ],
                 ),
@@ -179,5 +163,25 @@ class _DashboardState extends State<Dashboard> {
         );
       },
     );
+  }
+
+  void _handleNotificationUpdate(NotificationDetailState state) {
+    if (state is NotificationCreated) {
+      _unreadNotifications.add(state.notification);
+    } else if (state is NotificationUpdated) {
+      final index = _unreadNotifications.indexWhere(
+        (n) => n.id == state.notification.id,
+      );
+
+      if (index != -1) {
+        if (state.notification.isRead) {
+          _unreadNotifications.removeAt(index);
+        } else {
+          _unreadNotifications[index] = state.notification;
+        }
+      }
+    } else if (state is NotificationDeleted) {
+      _unreadNotifications.removeWhere((n) => n.id == state.notificationId);
+    }
   }
 }

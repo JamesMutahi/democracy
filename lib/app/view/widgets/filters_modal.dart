@@ -73,6 +73,22 @@ class FiltersModal extends StatelessWidget {
   }
 }
 
+class FilterHeader extends StatelessWidget {
+  const FilterHeader({super.key, required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+        color: Theme.of(context).colorScheme.outline,
+      ),
+    );
+  }
+}
+
 class DateRangeFilter extends StatelessWidget {
   const DateRangeFilter({
     super.key,
@@ -98,22 +114,6 @@ class DateRangeFilter extends StatelessWidget {
           onValueChanged: onValueChanged,
         ),
       ],
-    );
-  }
-}
-
-class FilterHeader extends StatelessWidget {
-  const FilterHeader({super.key, required this.text});
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-        color: Theme.of(context).colorScheme.outline,
-      ),
     );
   }
 }

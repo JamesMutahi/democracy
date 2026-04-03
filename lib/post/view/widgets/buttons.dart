@@ -1,3 +1,4 @@
+import 'package:animated_digit/animated_digit.dart';
 import 'package:democracy/app/utils/custom_bottom_sheet.dart';
 import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/app/utils/more_pop_up.dart';
@@ -46,95 +47,113 @@ class PostPopUp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> buttons = [];
-    if (post.communityNoteOf == null) {
-      buttons.add('Community notes');
-    }
-    buttons.add('Share');
-    post.author.isMuted ? buttons.add('Unmute') : buttons.add('Mute');
-    post.author.isMuted ? buttons.add('Unblock') : buttons.add('Block');
-    if (post.author.isMuted) {}
-    if (post.author.isBlocked) {}
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
-        late User user;
-        if (state is Authenticated) {
-          user = state.user;
-        }
+        final currentUser = state is Authenticated ? state.user : null;
+
+        final List<String> menuItems = _buildMenuItems(currentUser, post);
+
         return MorePopUp(
-          onSelected: (selected) {
-            switch (selected) {
-              case 'Share':
-                showModalBottomSheet<void>(
-                  context: context,
-                  shape: const BeveledRectangleBorder(),
-                  builder: (BuildContext context) {
-                    return ShareBottomSheet(post: post);
-                  },
-                );
-              case 'Delete':
-                showDialog(
-                  context: context,
-                  builder: (context) => CustomDialog(
-                    title: 'Delete',
-                    content: 'Are you sure you want to delete this post?',
-                    button1Text: 'Yes',
-                    onButton1Pressed: () {
-                      Navigator.pop(context);
-                      context.read<PostDetailBloc>().add(
-                        PostDetailEvent.delete(post: post),
-                      );
-                    },
-                    button2Text: 'No',
-                    onButton2Pressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                );
-              case 'Mute':
-                showDialog(
-                  context: context,
-                  builder: (context) => MuteDialog(user: post.author),
-                );
-              case 'Unmute':
-                context.read<UserDetailBloc>().add(
-                  UserDetailEvent.mute(user: post.author),
-                );
-              case 'Block':
-                showDialog(
-                  context: context,
-                  builder: (context) => BlockDialog(user: post.author),
-                );
-              case 'Unblock':
-                context.read<UserDetailBloc>().add(
-                  UserDetailEvent.block(user: post.author),
-                );
-              case 'Report':
-                showModalBottomSheet(
-                  context: context,
-                  showDragHandle: true,
-                  isScrollControlled: true,
-                  useSafeArea: true,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  shape: const BeveledRectangleBorder(),
-                  builder: (context) => ReportModal(post: post),
-                );
-              case 'Community notes':
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CommunityNotes(post: post),
-                  ),
-                );
-            }
-          },
-          texts: user.id == post.author.id
-              ? post.communityNoteOf == null
-                    ? ['Community notes', 'Share', 'Delete']
-                    : ['Share', 'Delete']
-              : buttons,
+          onSelected: (selected) =>
+              _handleMenuSelection(context, selected, post),
+          texts: menuItems,
         );
       },
+    );
+  }
+
+  List<String> _buildMenuItems(User? currentUser, Post post) {
+    if (currentUser?.id == post.author.id) {
+      return post.communityNoteOf == null
+          ? ['Community notes', 'Share', 'Delete']
+          : ['Share', 'Delete'];
+    }
+
+    final List<String> items = ['Community notes', 'Share'];
+
+    items.add(post.author.isMuted ? 'Unmute' : 'Mute');
+    items.add(post.author.isBlocked ? 'Unblock' : 'Block');
+
+    return items;
+  }
+
+  void _handleMenuSelection(BuildContext context, String selected, Post post) {
+    switch (selected) {
+      case 'Share':
+        showModalBottomSheet<void>(
+          context: context,
+          shape: const BeveledRectangleBorder(),
+          builder: (_) => ShareBottomSheet(post: post),
+        );
+        break;
+
+      case 'Delete':
+        _showDeleteDialog(context, post);
+        break;
+
+      case 'Mute':
+        showDialog(
+          context: context,
+          builder: (_) => MuteDialog(user: post.author),
+        );
+        break;
+
+      case 'Unmute':
+        context.read<UserDetailBloc>().add(
+          UserDetailEvent.mute(user: post.author),
+        );
+        break;
+
+      case 'Block':
+        showDialog(
+          context: context,
+          builder: (_) => BlockDialog(user: post.author),
+        );
+        break;
+
+      case 'Unblock':
+        context.read<UserDetailBloc>().add(
+          UserDetailEvent.block(user: post.author),
+        );
+        break;
+
+      case 'Report':
+        showModalBottomSheet(
+          context: context,
+          showDragHandle: true,
+          isScrollControlled: true,
+          useSafeArea: true,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          shape: const BeveledRectangleBorder(),
+          builder: (_) => ReportModal(post: post),
+        );
+        break;
+
+      case 'Community notes':
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => CommunityNotes(post: post)),
+        );
+        break;
+    }
+  }
+
+  void _showDeleteDialog(BuildContext context, Post post) {
+    showDialog(
+      context: context,
+      builder: (context) => CustomDialog(
+        title: 'Delete',
+        content: 'Are you sure you want to delete this post?',
+        button1Text: 'Yes',
+        onButton1Pressed: () {
+          Navigator.pop(context);
+          context.read<PostDetailBloc>().add(
+            PostDetailEvent.delete(post: post),
+          );
+        },
+        button2Text: 'No',
+        onButton2Pressed: () => Navigator.pop(context),
+      ),
     );
   }
 }
@@ -147,10 +166,9 @@ class LikeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PostTileButton(
-      onTap: () {
-        context.read<PostDetailBloc>().add(PostDetailEvent.like(post: post));
-      },
+    return _PostTileButton(
+      onTap: () =>
+          context.read<PostDetailBloc>().add(PostDetailEvent.like(post: post)),
       number: post.likes,
       icon: Icon(
         Symbols.favorite_rounded,
@@ -176,83 +194,85 @@ class RepostButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PostTileButton(
-      onTap: post.author.hasBlocked
-          ? () {
-              final snackBar = getSnackBar(
-                context: context,
-                message: 'Blocked',
-                status: SnackBarStatus.failure,
-              );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            }
-          : () {
-              showModalBottomSheet<void>(
-                context: context,
-                isScrollControlled: true,
-                shape: const BeveledRectangleBorder(),
-                useSafeArea: true,
-                builder: (BuildContext context) {
-                  return CustomBottomSheet(
-                    title: 'Repost',
-                    children: [
-                      PostWidgetSelector(post: post, isDependency: true),
-                      CustomBottomSheetContainer(
-                        text: 'Quote',
-                        iconData: Icons.format_quote_rounded,
-                        onTap: () {
-                          Navigator.pop(context);
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => PostCreate(repostOf: post),
-                            ),
-                          );
-                        },
-                      ),
-                      post.isReposted
-                          ? CustomBottomSheetContainer(
-                              text: 'Undo repost',
-                              iconData: Icons.repeat_rounded,
-                              onTap: () {
-                                Navigator.pop(context);
-                                context.read<PostDetailBloc>().add(
-                                  PostDetailEvent.deleteRepost(post: post),
-                                );
-                              },
-                            )
-                          : CustomBottomSheetContainer(
-                              text: 'Repost',
-                              iconData: Icons.repeat_rounded,
-                              onTap: () {
-                                Navigator.pop(context);
-                                context.read<PostDetailBloc>().add(
-                                  PostDetailEvent.create(
-                                    body: '',
-                                    status: PostStatus.published,
-                                    repostOf:
-                                        post.body.isEmpty &&
-                                            post.repostOf != null
-                                        ? post.repostOf
-                                        : post,
-                                    tags: [],
-                                  ),
-                                );
-                              },
-                            ),
-                    ],
-                  );
-                },
-              );
-            },
+    final isBlocked = post.author.hasBlocked;
+
+    return _PostTileButton(
+      onTap: isBlocked
+          ? () => _showBlockedSnackBar(context)
+          : () => _showRepostBottomSheet(context, post),
       number: post.reposts,
       icon: Icon(
         Symbols.repeat_rounded,
-        color: post.author.hasBlocked
+        color: isBlocked
             ? Theme.of(context).disabledColor
-            : post.isReposted || post.isQuoted
+            : (post.isReposted || post.isQuoted)
             ? Colors.green
             : Theme.of(context).colorScheme.outline,
         size: 20,
+      ),
+    );
+  }
+
+  void _showBlockedSnackBar(BuildContext context) {
+    final snackBar = getSnackBar(
+      context: context,
+      message: 'Blocked',
+      status: SnackBarStatus.failure,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  void _showRepostBottomSheet(BuildContext context, Post post) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      shape: const BeveledRectangleBorder(),
+      useSafeArea: true,
+      builder: (context) => CustomBottomSheet(
+        title: 'Repost',
+        children: [
+          PostWidgetSelector(post: post, isDependency: true),
+          CustomBottomSheetContainer(
+            text: 'Quote',
+            iconData: Icons.format_quote_rounded,
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => PostCreate(repostOf: post)),
+              );
+            },
+          ),
+          if (post.isReposted)
+            CustomBottomSheetContainer(
+              text: 'Undo repost',
+              iconData: Icons.repeat_rounded,
+              onTap: () {
+                Navigator.pop(context);
+                context.read<PostDetailBloc>().add(
+                  PostDetailEvent.deleteRepost(post: post),
+                );
+              },
+            )
+          else
+            CustomBottomSheetContainer(
+              text: 'Repost',
+              iconData: Icons.repeat_rounded,
+              onTap: () {
+                Navigator.pop(context);
+                context.read<PostDetailBloc>().add(
+                  PostDetailEvent.create(
+                    body: '',
+                    status: PostStatus.published,
+                    repostOf: post.body.isEmpty && post.repostOf != null
+                        ? post.repostOf
+                        : post,
+                    tags: [],
+                  ),
+                );
+              },
+            ),
+        ],
       ),
     );
   }
@@ -270,32 +290,36 @@ class ReplyButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PostTileButton(
-      onTap: post.author.hasBlocked
-          ? () {
-              final snackBar = getSnackBar(
-                context: context,
-                message: 'Blocked',
-                status: SnackBarStatus.failure,
-              );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            }
-          : () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => PostCreate(replyTo: post),
-                ),
-              );
-            },
+    final isBlocked = post.author.hasBlocked;
+
+    return _PostTileButton(
+      onTap: isBlocked
+          ? () => _showBlockedSnackBar(context)
+          : () => _navigateToReply(context, post),
       number: post.replies,
       icon: Icon(
         Symbols.message_rounded,
-        color: post.author.hasBlocked
+        color: isBlocked
             ? Theme.of(context).disabledColor
             : Theme.of(context).colorScheme.outline,
         size: 20,
       ),
+    );
+  }
+
+  void _showBlockedSnackBar(BuildContext context) {
+    final snackBar = getSnackBar(
+      context: context,
+      message: 'Blocked',
+      status: SnackBarStatus.failure,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  void _navigateToReply(BuildContext context, Post post) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => PostCreate(replyTo: post)),
     );
   }
 }
@@ -312,12 +336,12 @@ class ViewsButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PostTileButton(
+    return _PostTileButton(
       onTap: () {},
       number: post.views,
       icon: Icon(
-        Symbols.visibility,
-        color: Theme.of(context).colorScheme.outline,
+        Symbols.people_rounded,
+        color: Theme.of(context).colorScheme.outlineVariant,
         size: 20,
       ),
     );
@@ -338,12 +362,10 @@ class BookmarkButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PostTileButton(
-      onTap: () {
-        context.read<PostDetailBloc>().add(
-          PostDetailEvent.bookmark(post: post),
-        );
-      },
+    return _PostTileButton(
+      onTap: () => context.read<PostDetailBloc>().add(
+        PostDetailEvent.bookmark(post: post),
+      ),
       number: showTrailing ? post.bookmarks : 0,
       icon: Icon(
         Symbols.bookmark_rounded,
@@ -357,9 +379,8 @@ class BookmarkButton extends StatelessWidget {
   }
 }
 
-class PostTileButton extends StatelessWidget {
-  const PostTileButton({
-    super.key,
+class _PostTileButton extends StatelessWidget {
+  const _PostTileButton({
     required this.icon,
     required this.number,
     required this.onTap,
@@ -372,6 +393,7 @@ class PostTileButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         InkWell(
           onTap: onTap,
@@ -380,12 +402,13 @@ class PostTileButton extends StatelessWidget {
           ),
           child: Padding(padding: const EdgeInsets.all(7.5), child: icon),
         ),
-        number > 0
-            ? Text(
-                number.toString(),
-                style: TextStyle(color: Theme.of(context).colorScheme.outline),
-              )
-            : SizedBox.shrink(),
+        if (number > 0)
+          AnimatedDigitWidget(
+            value: number,
+            textStyle: TextStyle(color: Theme.of(context).colorScheme.outline),
+            enableSeparator: true,
+            firstScrollAnimate: false,
+          ),
       ],
     );
   }

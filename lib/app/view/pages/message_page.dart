@@ -29,6 +29,12 @@ class _MessagePageState extends State<MessagePage>
   final TextEditingController _controller = TextEditingController();
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return NestedScrollView(

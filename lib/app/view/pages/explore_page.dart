@@ -36,6 +36,12 @@ class _ExplorePageState extends State<ExplorePage> {
   int filterCount = 0;
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return NestedScrollView(
       headerSliverBuilder: (context, bool innerBoxIsScrolled) {
@@ -113,85 +119,97 @@ class _ExplorePageState extends State<ExplorePage> {
           ),
         ];
       },
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.only(top: 20, left: 10, bottom: 10),
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: Theme.of(context).disabledColor.withAlpha(30),
-                ),
+      body: _TrendingSection(),
+    );
+  }
+}
+
+class _TrendingSection extends StatelessWidget {
+  const _TrendingSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: double.infinity,
+          padding: EdgeInsets.only(top: 20, left: 10, bottom: 10),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: Theme.of(context).disabledColor.withAlpha(30),
               ),
-            ),
-            child: Text(
-              'Trending now',
-              style: TextStyle(color: Theme.of(context).colorScheme.outline),
             ),
           ),
-          // Divider(),
-          Stack(
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Theme.of(context).disabledColor.withAlpha(30),
-                    ),
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'AI - Cognitive decline',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 5),
-                    Row(
-                      children: [
-                        Stack(
-                          children: [
-                            CircleAvatar(
-                              radius: 10,
-                              backgroundColor: Colors.red,
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10),
-                              child: CircleAvatar(
-                                radius: 10,
-                                backgroundColor: Colors.blue,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(width: 10),
-                        Text('4000 posts'),
-                      ],
-                    ),
-                    SizedBox(height: 5),
-                    Text(
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.outline,
-                      ),
-                    ),
-                  ],
-                ),
+          child: Text(
+            'Trending now',
+            style: TextStyle(color: Theme.of(context).colorScheme.outline),
+          ),
+        ),
+        _TrendingTile(),
+      ],
+    );
+  }
+}
+
+class _TrendingTile extends StatelessWidget {
+  const _TrendingTile();
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: Theme.of(context).disabledColor.withAlpha(30),
               ),
-              Align(
-                alignment: Alignment.topRight,
-                child: MorePopUp(texts: []),
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'AI - Cognitive decline',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 5),
+              Row(
+                children: [
+                  Stack(
+                    children: [
+                      CircleAvatar(radius: 10, backgroundColor: Colors.red),
+                      Container(
+                        margin: EdgeInsets.only(left: 10),
+                        child: CircleAvatar(
+                          radius: 10,
+                          backgroundColor: Colors.blue,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(width: 10),
+                  Text('4000 posts'),
+                ],
+              ),
+              SizedBox(height: 5),
+              Text(
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                style: TextStyle(color: Theme.of(context).colorScheme.outline),
               ),
             ],
           ),
-        ],
-      ),
+        ),
+        Align(
+          alignment: Alignment.topRight,
+          child: MorePopUp(texts: []),
+        ),
+      ],
     );
   }
 }
@@ -230,6 +248,12 @@ class _ResultsPageState extends State<_ResultsPage>
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return DefaultTabController(
@@ -259,42 +283,7 @@ class _ResultsPageState extends State<_ResultsPage>
                         return SizedBox(
                           height: 50,
                           child: Row(
-                            children: [
-                              BackButton(),
-                              ResultsSearchBar(
-                                controller: _controller,
-                                filterCount: filterCount,
-                                filterModal: _FiltersModal(
-                                  onExplorePage: false,
-                                  startDate: startDate,
-                                  endDate: endDate,
-                                ),
-                                onSubmitted: (value) {
-                                  if (_controller.text.isNotEmpty &&
-                                      widget.searchTerm != _controller.text) {
-                                    context
-                                        .read<PostFilterCubit>()
-                                        .searchTermChanged(
-                                          onExplorePage: false,
-                                          searchTerm: _controller.text,
-                                        );
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => _ResultsPage(
-                                          searchTerm: _controller.text,
-                                          startDate: startDate,
-                                          endDate: endDate,
-                                          filterCount: filterCount,
-                                        ),
-                                      ),
-                                    ).whenComplete(() {
-                                      _controller.text = widget.searchTerm;
-                                    });
-                                  }
-                                },
-                              ),
-                            ],
+                            children: [BackButton(), _buildSearchBar()],
                           ),
                         );
                       },
@@ -316,12 +305,12 @@ class _ResultsPageState extends State<_ResultsPage>
               body: TabBarView(
                 physics: NeverScrollableScrollPhysics(),
                 children: [
-                  _TopPosts(
+                  _TopPostsTab(
                     searchTerm: widget.searchTerm,
                     startDate: startDate,
                     endDate: endDate,
                   ),
-                  _RecentPosts(
+                  _RecentPostsTab(
                     searchTerm: widget.searchTerm,
                     startDate: startDate,
                     endDate: endDate,
@@ -335,10 +324,44 @@ class _ResultsPageState extends State<_ResultsPage>
       ),
     );
   }
+
+  Widget _buildSearchBar() {
+    return ResultsSearchBar(
+      controller: _controller,
+      filterCount: filterCount,
+      filterModal: _FiltersModal(
+        onExplorePage: false,
+        startDate: startDate,
+        endDate: endDate,
+      ),
+      onSubmitted: (value) {
+        if (_controller.text.isNotEmpty &&
+            widget.searchTerm != _controller.text) {
+          context.read<PostFilterCubit>().searchTermChanged(
+            onExplorePage: false,
+            searchTerm: _controller.text,
+          );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => _ResultsPage(
+                searchTerm: _controller.text,
+                startDate: startDate,
+                endDate: endDate,
+                filterCount: filterCount,
+              ),
+            ),
+          ).whenComplete(() {
+            _controller.text = widget.searchTerm;
+          });
+        }
+      },
+    );
+  }
 }
 
-class _TopPosts extends StatefulWidget {
-  const _TopPosts({
+class _TopPostsTab extends StatefulWidget {
+  const _TopPostsTab({
     required this.searchTerm,
     required this.startDate,
     required this.endDate,
@@ -349,10 +372,10 @@ class _TopPosts extends StatefulWidget {
   final DateTime? endDate;
 
   @override
-  State<_TopPosts> createState() => _TopPostsState();
+  State<_TopPostsTab> createState() => _TopPostsState();
 }
 
-class _TopPostsState extends State<_TopPosts>
+class _TopPostsState extends State<_TopPostsTab>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
@@ -459,18 +482,22 @@ class _TopPostsState extends State<_TopPosts>
   }
 }
 
-class _RecentPosts extends StatefulWidget {
-  const _RecentPosts({required this.searchTerm, this.startDate, this.endDate});
+class _RecentPostsTab extends StatefulWidget {
+  const _RecentPostsTab({
+    required this.searchTerm,
+    this.startDate,
+    this.endDate,
+  });
 
   final String searchTerm;
   final DateTime? startDate;
   final DateTime? endDate;
 
   @override
-  State<_RecentPosts> createState() => _RecentPostsState();
+  State<_RecentPostsTab> createState() => _RecentPostsState();
 }
 
-class _RecentPostsState extends State<_RecentPosts>
+class _RecentPostsState extends State<_RecentPostsTab>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
@@ -699,40 +726,48 @@ class _FiltersModal extends StatefulWidget {
 }
 
 class _FiltersModalState extends State<_FiltersModal> {
-  late DateTime? startDate = widget.startDate;
-  late DateTime? endDate = widget.endDate;
+  late DateTime? _startDate = widget.startDate;
+  late DateTime? _endDate = widget.endDate;
+
+  bool get _isUnchanged =>
+      _startDate == widget.startDate && _endDate == widget.endDate;
+
+  bool get _isDefaultState => _startDate == null && _endDate == null;
 
   @override
   Widget build(BuildContext context) {
     return FiltersModal(
-      applyButtonIsDisabled:
-          (startDate == widget.startDate && endDate == widget.startDate),
-      clearButtonIsDisabled: startDate == null && endDate == null,
-      onApply: () {
-        context.read<PostFilterCubit>().datesChanged(
-          onExplorePage: widget.onExplorePage,
-          startDate: startDate,
-          endDate: endDate,
-        );
-      },
-      onClear: () {
-        context.read<PostFilterCubit>().clearFilters(
-          onExplorePage: widget.onExplorePage,
-        );
-        Navigator.pop(context);
-      },
+      applyButtonIsDisabled: _isUnchanged,
+      clearButtonIsDisabled: _isDefaultState,
+      onApply: _applyFilters,
+      onClear: _clearFilters,
       widgets: [
         DateRangeFilter(
-          value: [startDate, endDate],
+          value: [_startDate, _endDate],
           onValueChanged: (dates) {
             setState(() {
-              startDate = dates.isNotEmpty ? dates[0] : null;
-              endDate = dates.length == 2 ? dates[1] : null;
+              _startDate = dates.isNotEmpty ? dates[0] : null;
+              _endDate = dates.length == 2 ? dates[1] : null;
             });
           },
         ),
         const Divider(),
       ],
     );
+  }
+
+  void _applyFilters() {
+    context.read<PostFilterCubit>().datesChanged(
+      onExplorePage: widget.onExplorePage,
+      startDate: _startDate,
+      endDate: _endDate,
+    );
+  }
+
+  void _clearFilters() {
+    setState(() {
+      _startDate = null;
+      _endDate = null;
+    });
   }
 }

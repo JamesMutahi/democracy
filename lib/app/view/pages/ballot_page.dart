@@ -30,6 +30,12 @@ class _BallotPageState extends State<BallotPage>
   final TextEditingController _controller = TextEditingController();
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return NestedScrollView(
@@ -120,34 +126,27 @@ class _FiltersModalState extends State<_FiltersModal> {
   late DateTime? startDate = widget.startDate;
   late DateTime? endDate = widget.endDate;
 
+  bool get _isUnchanged =>
+      isActive == widget.isActive &&
+      filterByRegion == widget.filterByRegion &&
+      sortBy == widget.sortBy &&
+      startDate == widget.startDate &&
+      endDate == widget.endDate;
+
+  bool get _isDefaultState =>
+      isActive == true &&
+      sortBy == 'recent' &&
+      filterByRegion == true &&
+      startDate == null &&
+      endDate == null;
+
   @override
   Widget build(BuildContext context) {
     return FiltersModal(
-      applyButtonIsDisabled:
-          isActive == widget.isActive &&
-          filterByRegion == widget.filterByRegion &&
-          sortBy == widget.sortBy &&
-          startDate == widget.startDate &&
-          endDate == widget.endDate,
-      clearButtonIsDisabled:
-          isActive == true &&
-          sortBy == 'recent' &&
-          filterByRegion == true &&
-          startDate == null &&
-          endDate == null,
-      onApply: () {
-        context.read<BallotFilterCubit>().filtersChanged(
-          isActive: isActive,
-          filterByRegion: filterByRegion,
-          sortBy: sortBy,
-          startDate: startDate,
-          endDate: endDate,
-        );
-      },
-      onClear: () {
-        context.read<BallotFilterCubit>().clearFilters();
-        Navigator.pop(context);
-      },
+      applyButtonIsDisabled: _isUnchanged,
+      clearButtonIsDisabled: _isDefaultState,
+      onApply: _applyFilters,
+      onClear: _clearFilters,
       widgets: [
         FilterHeader(text: 'Sort by'),
         FormBuilderRadioGroup<String>(
@@ -218,5 +217,25 @@ class _FiltersModalState extends State<_FiltersModal> {
         ),
       ],
     );
+  }
+
+  void _applyFilters() {
+    context.read<BallotFilterCubit>().filtersChanged(
+      isActive: isActive,
+      filterByRegion: filterByRegion,
+      sortBy: sortBy,
+      startDate: startDate,
+      endDate: endDate,
+    );
+  }
+
+  void _clearFilters() {
+    setState(() {
+      isActive = true;
+      sortBy = 'recent';
+      filterByRegion = true;
+      startDate = null;
+      endDate = null;
+    });
   }
 }
