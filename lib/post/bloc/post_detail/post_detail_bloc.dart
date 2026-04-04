@@ -6,6 +6,7 @@ import 'package:democracy/app/bloc/repository/api_repository.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
+import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/meet/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
@@ -305,6 +306,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
         survey: event.survey,
         petition: event.petition,
         meeting: event.meeting,
+        section: event.section,
         tags: event.tags,
         imagePath1: event.imagePath1,
         imagePath2: event.imagePath2,

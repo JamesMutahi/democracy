@@ -8,6 +8,7 @@ import 'package:democracy/app/utils/map_widget.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
+import 'package:democracy/constitution/view/section_tile.dart';
 import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
@@ -54,13 +55,13 @@ class PostDetail extends StatefulWidget {
 class _PostDetailState extends State<PostDetail> {
   late Post _post = widget.post;
   final RefreshController _refreshController = RefreshController();
-  ValueKey centerKey = ValueKey('Center');
-  bool isDeleted = false;
-  bool loading = true;
-  bool failure = false;
+  final ValueKey _centerKey = ValueKey('Center');
+  bool _isDeleted = false;
+  bool _loading = true;
+  bool _failure = false;
   List<Post> _replies = [];
   List<Post> _replyTos = [];
-  bool hasNextPage = false;
+  bool _hasNextPage = false;
 
   @override
   void initState() {
@@ -171,7 +172,7 @@ class _PostDetailState extends State<PostDetail> {
                 case PostDeleted(:final postId):
                   if (_post.id == postId || widget.repost.id == postId) {
                     setState(() {
-                      isDeleted = true;
+                      _isDeleted = true;
                     });
                   }
               }
@@ -244,9 +245,9 @@ class _PostDetailState extends State<PostDetail> {
                 if (widget.post.id == state.postId) {
                   setState(() {
                     _replies = state.posts.toList();
-                    loading = false;
-                    failure = false;
-                    hasNextPage = state.hasNext;
+                    _loading = false;
+                    _failure = false;
+                    _hasNextPage = state.hasNext;
                     if (_refreshController.headerStatus ==
                         RefreshStatus.refreshing) {
                       _refreshController.refreshCompleted();
@@ -259,10 +260,10 @@ class _PostDetailState extends State<PostDetail> {
               }
               if (state.status == RepliesStatus.failure) {
                 if (widget.post.id == state.postId) {
-                  if (loading) {
+                  if (_loading) {
                     setState(() {
-                      loading = false;
-                      failure = true;
+                      _loading = false;
+                      _failure = true;
                     });
                   }
                   if (_refreshController.headerStatus ==
@@ -292,7 +293,7 @@ class _PostDetailState extends State<PostDetail> {
           appBar: AppBar(title: Text('Post')),
           body: SmartRefresher(
             enablePullDown: false,
-            enablePullUp: hasNextPage,
+            enablePullUp: _hasNextPage,
             header: ClassicHeader(),
             footer: ClassicFooter(),
             controller: _refreshController,
@@ -302,7 +303,7 @@ class _PostDetailState extends State<PostDetail> {
               );
             },
             child: CustomScrollView(
-              center: centerKey,
+              center: _centerKey,
               slivers: <Widget>[
                 PostListener(
                   posts: _replyTos,
@@ -314,14 +315,14 @@ class _PostDetailState extends State<PostDetail> {
                   child: ReplyTos(replyTos: _replyTos),
                 ),
                 SliverToBoxAdapter(
-                  key: centerKey,
+                  key: _centerKey,
                   child: Column(
                     children: [
                       if (_post.replyTo == null)
                         Column(
                           children: [
                             if (widget.showAsRepost) _repostBanner(),
-                            _PostContainer(post: _post),
+                            _PostContainer(post: _post, isDeleted: _isDeleted),
                           ],
                         )
                       else
@@ -346,7 +347,10 @@ class _PostDetailState extends State<PostDetail> {
                                   showBottomThread: false,
                                   showTopThread: true,
                                 ),
-                                _PostContainer(post: _post),
+                                _PostContainer(
+                                  post: _post,
+                                  isDeleted: _isDeleted,
+                                ),
                               ],
                             ),
                           ],
@@ -354,14 +358,14 @@ class _PostDetailState extends State<PostDetail> {
                     ],
                   ),
                 ),
-                if (loading)
+                if (_loading)
                   SliverToBoxAdapter(
                     child: Container(
                       margin: EdgeInsets.only(top: 50),
                       child: BottomLoader(),
                     ),
                   )
-                else if (failure)
+                else if (_failure)
                   SliverToBoxAdapter(
                     child: FailureRetryButton(onPressed: _getData),
                   )
@@ -428,9 +432,10 @@ class _PostDetailState extends State<PostDetail> {
 }
 
 class _PostContainer extends StatelessWidget {
-  const _PostContainer({required this.post});
+  const _PostContainer({required this.post, required this.isDeleted});
 
   final Post post;
+  final bool isDeleted;
 
   @override
   Widget build(BuildContext context) {
@@ -455,7 +460,7 @@ class _PostContainer extends StatelessWidget {
               ),
             ),
           ),
-          child: post.isDeleted
+          child: isDeleted
               ? PostDeletedWidget()
               : Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -542,6 +547,13 @@ class _PostContainer extends StatelessWidget {
                       DependencyContainer(
                         child: MeetingTile(
                           meeting: post.meeting!,
+                          isDependency: true,
+                        ),
+                      ),
+                    if (post.section != null)
+                      DependencyContainer(
+                        child: SectionTile(
+                          section: post.section!,
                           isDependency: true,
                         ),
                       ),

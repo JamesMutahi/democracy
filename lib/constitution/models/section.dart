@@ -12,8 +12,7 @@ sealed class Section with _$Section {
     required final String numeral,
     required final String text,
     @JsonKey(name: 'is_title') required final bool isTitle,
-    required final List<Section> subsections,
-    @JsonKey(name: 'is_bookmarked') required final bool isBookmarked,
+    @JsonKey(name: 'parent_count') required final int parentCount,
   }) = _Section;
 
   factory Section.fromJson(Map<String, Object?> json) =>

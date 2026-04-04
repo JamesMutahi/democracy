@@ -5,6 +5,7 @@ import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
+import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/meet/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
@@ -101,6 +102,7 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
         survey: event.survey,
         petition: event.petition,
         meeting: event.meeting,
+        section: event.section,
         imagePath1: event.imagePath1,
         imagePath2: event.imagePath2,
         imagePath3: event.imagePath3,

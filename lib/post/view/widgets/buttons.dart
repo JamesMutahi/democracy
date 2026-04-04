@@ -74,6 +74,8 @@ class PostPopUp extends StatelessWidget {
     items.add(post.author.isMuted ? 'Unmute' : 'Mute');
     items.add(post.author.isBlocked ? 'Unblock' : 'Block');
 
+    items.add('Report');
+
     return items;
   }
 

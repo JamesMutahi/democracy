@@ -4,6 +4,7 @@ import 'package:democracy/app/utils/map_widget.dart';
 import 'package:democracy/app/utils/video_viewer.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
+import 'package:democracy/constitution/view/section_tile.dart';
 import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
@@ -292,6 +293,13 @@ class _PostContainer extends StatelessWidget {
                             DependencyContainer(
                               child: MeetingTile(
                                 meeting: post.meeting!,
+                                isDependency: true,
+                              ),
+                            ),
+                          if (post.section != null)
+                            DependencyContainer(
+                              child: SectionTile(
+                                section: post.section!,
                                 isDependency: true,
                               ),
                             ),

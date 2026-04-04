@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
+import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/meet/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
@@ -26,6 +27,7 @@ class APIRepository {
     Survey? survey,
     Petition? petition,
     Meeting? meeting,
+    Section? section,
     required List<Map> tags,
     String? imagePath1,
     String? imagePath2,
@@ -50,6 +52,7 @@ class APIRepository {
         'survey_id': survey?.id,
         'petition_id': petition?.id,
         'meeting_id': meeting?.id,
+        'section_id': section?.id,
         'status': status == PostStatus.published ? 'published' : 'draft',
         'tags': tags,
         if (imagePath1 != null)
@@ -93,6 +96,7 @@ class APIRepository {
     Survey? survey,
     Petition? petition,
     Meeting? meeting,
+    Section? section,
     String? imagePath1,
     String? imagePath2,
     String? imagePath3,
@@ -115,6 +119,7 @@ class APIRepository {
         'survey_id': survey?.id,
         'petition_id': petition?.id,
         'meeting_id': meeting?.id,
+        'section_id': section?.id,
         if (imagePath1 != null)
           'image1': await MultipartFile.fromFile(imagePath1),
         if (imagePath2 != null)

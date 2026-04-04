@@ -59,6 +59,7 @@ sealed class PostDetailEvent with _$PostDetailEvent {
     Survey? survey,
     Petition? petition,
     Meeting? meeting,
+    Section? section,
     required List<Map> tags,
     String? imagePath1,
     String? imagePath2,

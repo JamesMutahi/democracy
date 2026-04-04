@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:democracy/app/utils/camera/camera.dart';
+import 'package:democracy/app/utils/extras_row.dart';
 import 'package:democracy/app/utils/location.dart';
 import 'package:democracy/app/utils/media_tools.dart';
 import 'package:democracy/app/utils/tagging.dart';
 import 'package:democracy/app/utils/video_viewer.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/constitution/view/constitution.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
@@ -307,110 +309,64 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  PostExtraButton(
-                    onTap: () async {
-                      openCamera(
-                        context: context,
-                        recipient: widget.reply?.author,
-                        textEditingController: widget.controller,
-                        onImageEditingComplete: (newImage) {
-                          widget.onNewImages([newImage]);
-                        },
-                        onVideoEditingComplete: (video) {
-                          widget.onNewVideo(video);
-                        }
+              child: ExtrasRow(
+                onCameraTap: () async {
+                  openCamera(
+                    context: context,
+                    recipient: widget.reply?.author,
+                    textEditingController: widget.controller,
+                    onImageEditingComplete: (newImage) {
+                      widget.onNewImages([newImage]);
+                    },
+                    onVideoEditingComplete: (video) {
+                      widget.onNewVideo(video);
+                    },
+                  );
+                },
+                onGalleryTap: () async {
+                  List<File>? newImages = await ImagePickerUtil.pickMultiImage(
+                    limit: 4,
+                  );
+                  if (newImages.isNotEmpty) {
+                    widget.onNewImages(newImages);
+                  }
+                },
+                onLocationTap: () async {
+                  var status = await Permission.storage.status;
+                  if (!status.isGranted) {
+                    await Permission.storage.request();
+                  }
+                  if (context.mounted) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            Location(onLocation: widget.onLocation),
+                      ),
+                    );
+                  }
+                },
+                onDocumentTap: () async {
+                  FilePickerResult? result = await FilePicker.platform
+                      .pickFiles(
+                        type: FileType.custom,
+                        allowedExtensions: ['pdf', 'doc', 'docx'],
                       );
-                    },
-                    iconData: Icons.photo_camera_outlined,
-                    text: 'Camera',
-                  ),
-                  PostExtraButton(
-                    onTap: () async {
-                      List<File>? newImages =
-                          await ImagePickerUtil.pickMultiImage(limit: 4);
-                      if (newImages.isNotEmpty) {
-                        widget.onNewImages(newImages);
-                      }
-                    },
-                    iconData: Icons.photo_library_outlined,
-                    text: 'Gallery',
-                  ),
-                  PostExtraButton(
-                    onTap: () async {
-                      var status = await Permission.storage.status;
-                      if (!status.isGranted) {
-                        await Permission.storage.request();
-                      }
-                      if (context.mounted) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                Location(onLocation: widget.onLocation),
-                          ),
-                        );
-                      }
-                    },
-                    iconData: Icons.location_on_outlined,
-                    text: 'Location',
-                  ),
-                  PostExtraButton(
-                    onTap: () async {
-                      FilePickerResult? result = await FilePicker.platform
-                          .pickFiles(
-                            type: FileType.custom,
-                            allowedExtensions: ['pdf', 'doc', 'docx'],
-                          );
-                      if (result != null) {
-                        File file = File(result.files.single.path!);
-                        widget.onNewFile(file);
-                      }
-                    },
-                    iconData: Icons.edit_document,
-                    text: 'Document',
-                  ),
-                ],
+                  if (result != null) {
+                    File file = File(result.files.single.path!);
+                    widget.onNewFile(file);
+                  }
+                },
+                onConstitutionTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Constitution()),
+                  );
+                },
               ),
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class PostExtraButton extends StatelessWidget {
-  const PostExtraButton({
-    super.key,
-    required this.iconData,
-    required this.text,
-    required this.onTap,
-  });
-
-  final IconData iconData;
-  final String text;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      splashColor: Colors.transparent,
-      highlightColor: Colors.transparent,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Icon(iconData, size: 30),
-            ),
-          ),
-          Text(text),
-        ],
       ),
     );
   }

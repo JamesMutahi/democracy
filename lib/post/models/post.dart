@@ -1,4 +1,5 @@
 import 'package:democracy/ballot/models/ballot.dart';
+import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/meet/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/survey/models/survey.dart';
@@ -45,6 +46,7 @@ sealed class Post with _$Post {
     required Survey? survey,
     required Petition? petition,
     required Meeting? meeting,
+    required Section? section,
     @JsonKey(name: 'tagged_users') required List<User> taggedUsers,
     @JsonKey(name: 'is_upvoted') required bool isUpvoted,
     @JsonKey(name: 'is_downvoted') required bool isDownvoted,

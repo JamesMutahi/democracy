@@ -22,6 +22,7 @@ sealed class MessageDetailEvent with _$MessageDetailEvent {
     Survey? survey,
     Petition? petition,
     Meeting? meeting,
+    Section? section,
     String? imagePath1,
     String? imagePath2,
     String? imagePath3,

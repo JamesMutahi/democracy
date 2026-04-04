@@ -1,46 +1,110 @@
 import 'package:democracy/app/utils/bottom_loader.dart';
+import 'package:democracy/app/utils/copy.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/constitution/bloc/constitution/constitution_bloc.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 class Constitution extends StatefulWidget {
-  const Constitution({super.key});
+  const Constitution({super.key, this.centeredSection});
+
+  final Section? centeredSection;
 
   @override
   State<Constitution> createState() => _ConstitutionState();
 }
 
 class _ConstitutionState extends State<Constitution> {
+  final GlobalKey _centerKey = GlobalKey();
+  Section? _selectedSection;
+
   @override
   void initState() {
     context.read<ConstitutionBloc>().add(ConstitutionEvent.get());
     super.initState();
   }
 
+  void onSelection(Section section) {
+    setState(() {
+      _selectedSection = section;
+    });
+  }
+
+  void onRemoveSelection(Section section) {
+    setState(() {
+      _selectedSection = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Constitution')),
+      appBar: AppBar(
+        title: Text('Constitution'),
+        actions: [
+          if (_selectedSection != null)
+            IconButton(
+              onPressed: () {
+                copyLink('section', _selectedSection!.id);
+                setState(() {
+                  _selectedSection = null;
+                });
+              },
+              icon: Icon(Symbols.content_copy),
+            ),
+        ],
+        actionsPadding: EdgeInsets.only(right: 10),
+      ),
       body: BlocBuilder<ConstitutionBloc, ConstitutionState>(
         builder: (context, state) {
           switch (state) {
             case ConstitutionLoaded(:final sections):
-              return ListView.builder(
-                padding: EdgeInsets.all(15),
-                itemBuilder: (BuildContext context, int index) {
-                  Section section = sections[index];
-                  return Container(
-                    margin: EdgeInsets.only(top: 10),
-                    child: SectionTile(
-                      key: ValueKey(section.id),
-                      section: section,
+
+              // Get Index of centered section
+              int index = 0;
+              List<Section> topSections = [];
+              List<Section> bottomSections = [];
+              if (widget.centeredSection != null) {
+                index = sections.indexWhere(
+                  (section) => section.id == widget.centeredSection!.id,
+                );
+                topSections = sections.take(index).toList();
+                bottomSections = sections.skip(index + 1).toList();
+              }
+
+              return CustomScrollView(
+                center: widget.centeredSection != null ? _centerKey : null,
+                slivers: [
+                  _Sections(
+                    sections: widget.centeredSection == null
+                        ? sections
+                        : topSections.reversed.toList(),
+                    selectedSection: _selectedSection,
+                    onSelection: onSelection,
+                    onRemoveSelection: onRemoveSelection,
+                  ),
+                  if (widget.centeredSection != null)
+                    SliverToBoxAdapter(
+                      key: _centerKey,
+                      child: SectionTile(
+                        section: widget.centeredSection!,
+                        selectedSection: _selectedSection,
+                        onSelection: onSelection,
+                        onRemoveSelection: onRemoveSelection,
+                        isHighlighted: true,
+                      ),
                     ),
-                  );
-                },
-                itemCount: sections.length,
+                  if (widget.centeredSection != null)
+                    _Sections(
+                      sections: bottomSections,
+                      selectedSection: _selectedSection,
+                      onSelection: onSelection,
+                      onRemoveSelection: onRemoveSelection,
+                    ),
+                ],
               );
             case ConstitutionFailure():
               return FailureRetryButton(
@@ -53,6 +117,35 @@ class _ConstitutionState extends State<Constitution> {
           }
         },
       ),
+    );
+  }
+}
+
+class _Sections extends StatelessWidget {
+  const _Sections({
+    required this.sections,
+    required this.selectedSection,
+    required this.onSelection,
+    required this.onRemoveSelection,
+  });
+
+  final List<Section> sections;
+  final Section? selectedSection;
+  final void Function(Section)? onSelection;
+  final void Function(Section)? onRemoveSelection;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+        Section section = sections[index];
+        return SectionTile(
+          section: section,
+          selectedSection: selectedSection,
+          onSelection: onSelection,
+          onRemoveSelection: onRemoveSelection,
+        );
+      }, childCount: sections.length),
     );
   }
 }

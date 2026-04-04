@@ -26,6 +26,9 @@ _Message _$MessageFromJson(Map<String, dynamic> json) => _Message(
   meeting: json['meeting'] == null
       ? null
       : Meeting.fromJson(json['meeting'] as Map<String, dynamic>),
+  section: json['section'] == null
+      ? null
+      : Section.fromJson(json['section'] as Map<String, dynamic>),
   image1Url: json['image1'] as String?,
   image2Url: json['image2'] as String?,
   image3Url: json['image3'] as String?,
@@ -52,6 +55,7 @@ Map<String, dynamic> _$MessageToJson(_Message instance) => <String, dynamic>{
   'survey': instance.survey,
   'petition': instance.petition,
   'meeting': instance.meeting,
+  'section': instance.section,
   'image1': instance.image1Url,
   'image2': instance.image2Url,
   'image3': instance.image3Url,

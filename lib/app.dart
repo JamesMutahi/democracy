@@ -12,7 +12,10 @@ import 'package:democracy/auth/view/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -27,7 +30,7 @@ class MyApp extends StatelessWidget {
         }
         return MaterialApp(
           builder: (context, child) => ResponsiveBreakpoints.builder(
-            child: child!,
+            child: FToastBuilder()(context, child),
             breakpoints: [
               const Breakpoint(start: 0, end: 450, name: MOBILE),
               const Breakpoint(start: 451, end: 800, name: TABLET),
@@ -39,6 +42,7 @@ class MyApp extends StatelessWidget {
           theme: AppTheme.light,
           darkTheme: AppTheme.dark,
           themeMode: themeMode,
+          navigatorKey: navigatorKey,
           home: _Listeners(
             child: ThemeMod(
               child: BlocBuilder<AuthBloc, AuthState>(

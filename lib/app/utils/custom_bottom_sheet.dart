@@ -1,3 +1,4 @@
+import 'package:democracy/app/utils/copy.dart';
 import 'package:democracy/app/utils/direct_message.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/meet/models/meeting.dart';
@@ -5,8 +6,6 @@ import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class CustomBottomSheet extends StatelessWidget {
@@ -101,30 +100,30 @@ class ShareBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    late String object;
+    late String className;
     late int objectId;
     if (post != null) {
-      object = 'post';
+      className = 'post';
       objectId = post!.id;
     }
     if (ballot != null) {
-      object = 'ballot';
+      className = 'ballot';
       objectId = ballot!.id;
     }
     if (survey != null) {
-      object = 'survey';
+      className = 'survey';
       objectId = survey!.id;
     }
     if (meeting != null) {
-      object = 'meeting';
+      className = 'meeting';
       objectId = meeting!.id;
     }
     if (petition != null) {
-      object = 'petition';
+      className = 'petition';
       objectId = petition!.id;
     }
     return CustomBottomSheet(
-      title: 'Share $object',
+      title: 'Share $className',
       children: [
         CustomBottomSheetContainer(
           text: 'Send via Direct Message',
@@ -154,9 +153,7 @@ class ShareBottomSheet extends StatelessWidget {
           splashColor: Colors.transparent,
           onTap: () async {
             Navigator.pop(context);
-            String baseUrl = dotenv.env['BASE_URL']!;
-            String text = '$baseUrl$object/$objectId/';
-            await Clipboard.setData(ClipboardData(text: text));
+            copyLink(className, objectId);
           },
           child: Column(
             children: [

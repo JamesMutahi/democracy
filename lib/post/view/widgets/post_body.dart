@@ -158,6 +158,17 @@ String extractLink(Post post) {
         }
       }
     }
+    if (post.section != null) {
+      for (String url in matchingLinks) {
+        Uri uri = Uri.parse(url);
+        if (uri.path.contains('section')) {
+          String intString = uri.path.replaceAll(RegExp(r'[^0-9]'), '');
+          if (post.section!.id == int.parse(intString)) {
+            text = post.body.replaceAll(url, '');
+          }
+        }
+      }
+    }
   }
   return text;
 }

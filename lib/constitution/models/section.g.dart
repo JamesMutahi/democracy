@@ -13,10 +13,7 @@ _Section _$SectionFromJson(Map<String, dynamic> json) => _Section(
   numeral: json['numeral'] as String,
   text: json['text'] as String,
   isTitle: json['is_title'] as bool,
-  subsections: (json['subsections'] as List<dynamic>)
-      .map((e) => Section.fromJson(e as Map<String, dynamic>))
-      .toList(),
-  isBookmarked: json['is_bookmarked'] as bool,
+  parentCount: (json['parent_count'] as num).toInt(),
 );
 
 Map<String, dynamic> _$SectionToJson(_Section instance) => <String, dynamic>{
@@ -26,6 +23,5 @@ Map<String, dynamic> _$SectionToJson(_Section instance) => <String, dynamic>{
   'numeral': instance.numeral,
   'text': instance.text,
   'is_title': instance.isTitle,
-  'subsections': instance.subsections,
-  'is_bookmarked': instance.isBookmarked,
+  'parent_count': instance.parentCount,
 };

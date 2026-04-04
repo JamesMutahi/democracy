@@ -757,6 +757,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
+  fluttertoast:
+    dependency: "direct main"
+    description:
+      name: fluttertoast
+      sha256: "144ddd74d49c865eba47abe31cbc746c7b311c82d6c32e571fd73c4264b740e2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.0.0"
   form_builder_validators:
     dependency: "direct main"
     description:
@@ -937,10 +945,10 @@ packages:
     dependency: transitive
     description:
       name: image_picker_android
-      sha256: "9eae0cbd672549dacc18df855c2a23782afe4854ada5190b7d63b30ee0b0d3fd"
+      sha256: "66810af8e99b2657ee98e5c6f02064f69bb63f7a70e343937f70946c5f8c6622"
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.13+15"
+    version: "0.8.13+16"
   image_picker_for_web:
     dependency: transitive
     description:
@@ -1481,10 +1489,10 @@ packages:
     dependency: "direct main"
     description:
       name: pro_video_editor
-      sha256: "86089e58cf61c8940ab87877565c3bdb9060a579e7fdc14e272db06b06a56315"
+      sha256: cfed1424b3ca3d5981cc81efdd20b844c995c0ad2818e185eb5bc06a8674f728
       url: "https://pub.dev"
     source: hosted
-    version: "1.14.0"
+    version: "1.14.2"
   proj4dart:
     dependency: transitive
     description:

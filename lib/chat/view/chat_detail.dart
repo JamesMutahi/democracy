@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_text_form_field.dart';
+import 'package:democracy/app/utils/copy.dart';
 import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
@@ -376,20 +377,6 @@ class _ChatDetailState extends State<_ChatDetail> {
   }
 }
 
-String copyMultiple({required Set<Message> forCopy}) {
-  List<Message> messages = forCopy.toList();
-  messages.sort((a, b) => a.id.compareTo(b.id));
-  var dateFormat = DateFormat('dd/MM/yyyy hh:mm');
-  String copiedText = '';
-  for (var message in messages) {
-    copiedText +=
-        '[${dateFormat.format(message.createdAt)}] '
-        '${message.user.name}: '
-        '${message.text} ${(messages.last == message) ? '' : '\n'}';
-  }
-  return copiedText;
-}
-
 class ChatPopUpMenu extends StatelessWidget {
   const ChatPopUpMenu({
     super.key,
@@ -473,13 +460,7 @@ class _MessageActions extends StatelessWidget {
         IconButton(
           onPressed: () async {
             context.read<MessageActionsCubit>().closeActionButtons();
-            await Clipboard.setData(
-              ClipboardData(
-                text: (messages.length == 1)
-                    ? messages.first.text
-                    : copyMultiple(forCopy: messages),
-              ),
-            );
+            _copy(messages: messages);
           },
           icon: Icon(Symbols.content_copy),
         ),
@@ -518,4 +499,33 @@ class _MessageActions extends StatelessWidget {
       ],
     );
   }
+}
+
+void _copy({required Set<Message> messages}) async {
+  try {
+    await Clipboard.setData(
+      ClipboardData(
+        text: (messages.length == 1)
+            ? messages.first.text
+            : copyMultiple(forCopy: messages),
+      ),
+    );
+    showSuccessToast('Copied');
+  } catch (e) {
+    showFailureToast('Failed to copy');
+  }
+}
+
+String copyMultiple({required Set<Message> forCopy}) {
+  List<Message> messages = forCopy.toList();
+  messages.sort((a, b) => a.id.compareTo(b.id));
+  var dateFormat = DateFormat('dd/MM/yyyy hh:mm');
+  String copiedText = '';
+  for (var message in messages) {
+    copiedText +=
+        '[${dateFormat.format(message.createdAt)}] '
+        '${message.user.name}: '
+        '${message.text} ${(messages.last == message) ? '' : '\n'}';
+  }
+  return copiedText;
 }

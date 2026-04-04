@@ -14,6 +14,7 @@ import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
 import 'package:democracy/chat/bloc/messages/messages_bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
+import 'package:democracy/constitution/view/section_tile.dart';
 import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:democracy/post/view/widgets/post_widget_selector.dart';
@@ -204,6 +205,21 @@ class _MessagesState extends State<Messages> {
                 alignedRight: alignedRight,
                 child: MeetingTile(
                   meeting: message.meeting!,
+                  isDependency: true,
+                ),
+              ),
+            );
+          }
+          if (message.section != null) {
+            if (message.text.isNotEmpty) {
+              widgets.add(SizedBox(height: messageMargin));
+            }
+            widgets.add(
+              AlignmentContainer(
+                message: message,
+                alignedRight: alignedRight,
+                child: SectionTile(
+                  section: message.section!,
                   isDependency: true,
                 ),
               ),
@@ -600,6 +616,17 @@ String extractLink(Message message) {
         if (uri.path.contains('petition')) {
           String intString = uri.path.replaceAll(RegExp(r'[^0-9]'), '');
           if (message.petition!.id == int.parse(intString)) {
+            text = message.text.replaceAll(url, '');
+          }
+        }
+      }
+    }
+    if (message.section != null) {
+      for (String url in matchingLinks) {
+        Uri uri = Uri.parse(url);
+        if (uri.path.contains('section')) {
+          String intString = uri.path.replaceAll(RegExp(r'[^0-9]'), '');
+          if (message.section!.id == int.parse(intString)) {
             text = message.text.replaceAll(url, '');
           }
         }

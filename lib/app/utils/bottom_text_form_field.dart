@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import 'package:democracy/app/utils/camera/camera.dart';
+import 'package:democracy/app/utils/extras_row.dart';
 import 'package:democracy/app/utils/file_widget.dart';
 import 'package:democracy/app/utils/location.dart';
 import 'package:democracy/app/utils/map_widget.dart';
 import 'package:democracy/app/utils/media_tools.dart';
+import 'package:democracy/constitution/view/constitution.dart';
 import 'package:democracy/post/view/widgets/post_form_widgets.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:file_picker/file_picker.dart';
@@ -289,106 +291,61 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
       child: ClipRect(
         child: Container(
           margin: EdgeInsets.only(top: 5),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              _FileCard(
-                onTap: () async {
-                  onExtrasButtonPressed();
-                  openCamera(
-                    context: context,
-                    recipient: widget.recipient!,
-                    textEditingController: widget.controller,
-                    onImageEditingComplete: widget.onImageEditingComplete!,
-                    onVideoEditingComplete: widget.onVideoEditingComplete,
-                  );
-                },
-                iconData: Icons.photo_camera_outlined,
-                text: 'Camera',
-              ),
-              _FileCard(
-                onTap: () async {
-                  onExtrasButtonPressed();
-                  List<File>? newImages = await ImagePickerUtil.pickMultiImage(
-                    limit: 4,
-                  );
-                  if (newImages.isNotEmpty) {
-                    widget.onNewImages(newImages);
-                  }
-                },
-                iconData: Icons.photo_library_outlined,
-                text: 'Gallery',
-              ),
-              _FileCard(
-                onTap: () async {
-                  onExtrasButtonPressed();
-                  var status = await Permission.storage.status;
-                  if (!status.isGranted) {
-                    await Permission.storage.request();
-                  }
-                  if (mounted) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            Location(onLocation: widget.onLocation),
-                      ),
-                    );
-                  }
-                },
-                iconData: Icons.location_on_outlined,
-                text: 'Location',
-              ),
-              _FileCard(
-                onTap: () async {
-                  onExtrasButtonPressed();
-                  FilePickerResult? result = await FilePicker.platform.pickFiles(
-                    type: FileType.custom,
-                    allowedExtensions: ['pdf', 'doc', 'docx'],
-                  );
-                  if (result != null) {
-                    File file = File(result.files.single.path!);
-                    widget.onNewFile(file);
-                  }
-                },
-                iconData: Icons.edit_document,
-                text: 'Document',
-              ),
-            ],
+          child: ExtrasRow(
+            onCameraTap: () async {
+              onExtrasButtonPressed();
+              openCamera(
+                context: context,
+                recipient: widget.recipient!,
+                textEditingController: widget.controller,
+                onImageEditingComplete: widget.onImageEditingComplete!,
+                onVideoEditingComplete: widget.onVideoEditingComplete,
+              );
+            },
+            onGalleryTap: () async {
+              onExtrasButtonPressed();
+              List<File>? newImages = await ImagePickerUtil.pickMultiImage(
+                limit: 4,
+              );
+              if (newImages.isNotEmpty) {
+                widget.onNewImages(newImages);
+              }
+            },
+            onLocationTap: () async {
+              onExtrasButtonPressed();
+              var status = await Permission.storage.status;
+              if (!status.isGranted) {
+                await Permission.storage.request();
+              }
+              if (mounted) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        Location(onLocation: widget.onLocation),
+                  ),
+                );
+              }
+            },
+            onDocumentTap: () async {
+              onExtrasButtonPressed();
+              FilePickerResult? result = await FilePicker.platform.pickFiles(
+                type: FileType.custom,
+                allowedExtensions: ['pdf', 'doc', 'docx'],
+              );
+              if (result != null) {
+                File file = File(result.files.single.path!);
+                widget.onNewFile(file);
+              }
+            },
+            onConstitutionTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Constitution()),
+              );
+            },
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _FileCard extends StatelessWidget {
-  const _FileCard({
-    required this.onTap,
-    required this.iconData,
-    required this.text,
-  });
-
-  final VoidCallback onTap;
-  final IconData iconData;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      splashColor: Colors.transparent,
-      highlightColor: Colors.transparent,
-      child: Column(
-        children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Icon(iconData, size: 30),
-            ),
-          ),
-          Text(text),
-        ],
       ),
     );
   }

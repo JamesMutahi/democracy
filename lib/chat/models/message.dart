@@ -1,4 +1,5 @@
 import 'package:democracy/ballot/models/ballot.dart';
+import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/meet/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
@@ -22,6 +23,7 @@ sealed class Message with _$Message {
     required final Survey? survey,
     required final Petition? petition,
     required final Meeting? meeting,
+    required final Section? section,
     @JsonKey(name: 'image1') required String? image1Url,
     @JsonKey(name: 'image2') required String? image2Url,
     @JsonKey(name: 'image3') required String? image3Url,

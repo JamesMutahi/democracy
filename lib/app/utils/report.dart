@@ -109,8 +109,7 @@ class _ReportModalState extends State<ReportModal> {
                 value: Issue.abuseAndHarassment,
                 title: 'Abuse & Harassment',
                 subtitle:
-                'Insults, targeted harassment and inciting harassment, '
-                    'violent event denial',
+                'Insults, targeted harassment and inciting harassment',
               ),
               _buildOption(
                 value: Issue.violentSpeech,
