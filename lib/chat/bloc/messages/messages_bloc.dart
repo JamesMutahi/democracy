@@ -14,12 +14,17 @@ const String requestId = 'messages';
 const String action = 'messages';
 
 class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
-  MessagesBloc({required this.webSocketService}) : super(MessagesState()) {
+  MessagesBloc({required this.webSocketService})
+    : super(const MessagesState()) {
     webSocketService.messages.listen((message) {
       if (message['stream'] == stream &&
           message['payload']['action'] == action) {
         add(_Received(payload: message['payload']));
       }
+    });
+    on<_Initialize>((event, emit) {
+      emit(MessagesState());
+      add(_Get(chat: event.chat));
     });
     on<_Get>((event, emit) {
       _onGet(event, emit);
@@ -27,6 +32,9 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
     on<_Received>((event, emit) {
       _onReceived(event, emit);
     });
+    on<_Add>(_onAdd);
+    on<_Update>(_onUpdate);
+    on<_Remove>(_onRemove);
   }
 
   Future _onGet(_Get event, Emitter<MessagesState> emit) async {
@@ -46,25 +54,59 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
   Future _onReceived(_Received event, Emitter<MessagesState> emit) async {
     emit(state.copyWith(status: MessagesStatus.loading));
     if (event.payload['response_status'] == 200) {
-      final List<Message> messages = List.from(
+      final List<Message> newMessages = List.from(
         event.payload['data']['results'].map((e) => Message.fromJson(e)),
       );
-      int? oldestMessage = event.payload['data']['oldest_message'];
-      int? newestMessage = event.payload['data']['newest_message'];
+      final bool isInitialOrNewest =
+          event.payload['data']['oldest_message'] == null;
       emit(
         state.copyWith(
           status: MessagesStatus.success,
-          messages: oldestMessage != null
-              ? [...state.messages, ...messages]
-              : newestMessage != null
-              ? [...messages, ...state.messages]
-              : messages,
-          hasNext: event.payload['data']['has_next'],
+          messages: isInitialOrNewest
+              ? [...newMessages, ...state.messages] // prepend (newest on top)
+              : [...state.messages, ...newMessages], // append (older messages)
+          hasNext: event.payload['data']['has_next'] ?? false,
         ),
       );
     } else {
       emit(state.copyWith(status: MessagesStatus.failure));
     }
+  }
+
+  void _onAdd(_Add event, Emitter<MessagesState> emit) {
+    final message = event.message;
+
+    // Avoid duplicates
+    if (state.messages.any((m) => m.id == message.id)) return;
+
+    emit(
+      state.copyWith(
+        messages: [message, ...state.messages], // newest on top
+        status: MessagesStatus.success,
+      ),
+    );
+  }
+
+  void _onUpdate(_Update event, Emitter<MessagesState> emit) {
+    final index = state.messages.indexWhere((m) => m.id == event.message.id);
+    if (index == -1) return;
+
+    final updatedMessages = List<Message>.from(state.messages);
+    updatedMessages[index] = event.message;
+
+    emit(
+      state.copyWith(messages: updatedMessages, status: MessagesStatus.success),
+    );
+  }
+
+  void _onRemove(_Remove event, Emitter<MessagesState> emit) {
+    final updatedMessages = state.messages
+        .where((m) => m.id != event.messageId)
+        .toList();
+
+    emit(
+      state.copyWith(messages: updatedMessages, status: MessagesStatus.success),
+    );
   }
 
   final WebSocketService webSocketService;

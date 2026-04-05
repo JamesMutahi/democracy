@@ -19,7 +19,7 @@ class EditMessage extends StatefulWidget {
 
 class _EditMessageState extends State<EditMessage> {
   final _focusNode = FocusNode();
-  bool _disableSendButton = false;
+  bool _disableSendButton = true;
   final _controller = TextEditingController();
 
   @override
@@ -63,14 +63,20 @@ class _EditMessageState extends State<EditMessage> {
         controller: _controller,
         onTap: () {},
         onChanged: (value) {
-          if (value == '') {
+          if (value.isEmpty) {
             setState(() {
               _disableSendButton = true;
             });
           } else {
-            setState(() {
-              _disableSendButton = false;
-            });
+            if (value == widget.message.text) {
+              setState(() {
+                _disableSendButton = true;
+              });
+            } else {
+              setState(() {
+                _disableSendButton = false;
+              });
+            }
           }
         },
         hintText: 'Edit message',

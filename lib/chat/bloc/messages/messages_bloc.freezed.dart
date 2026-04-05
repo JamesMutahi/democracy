@@ -55,12 +55,16 @@ extension MessagesEventPatterns on MessagesEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initialize value)?  initialize,TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Add value)?  add,TResult Function( _Update value)?  update,TResult Function( _Remove value)?  remove,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _Get() when get != null:
+case _Initialize() when initialize != null:
+return initialize(_that);case _Get() when get != null:
 return get(_that);case _Received() when received != null:
-return received(_that);case _:
+return received(_that);case _Add() when add != null:
+return add(_that);case _Update() when update != null:
+return update(_that);case _Remove() when remove != null:
+return remove(_that);case _:
   return orElse();
 
 }
@@ -78,12 +82,16 @@ return received(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initialize value)  initialize,required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Add value)  add,required TResult Function( _Update value)  update,required TResult Function( _Remove value)  remove,}){
 final _that = this;
 switch (_that) {
-case _Get():
+case _Initialize():
+return initialize(_that);case _Get():
 return get(_that);case _Received():
-return received(_that);}
+return received(_that);case _Add():
+return add(_that);case _Update():
+return update(_that);case _Remove():
+return remove(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -97,12 +105,16 @@ return received(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initialize value)?  initialize,TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Add value)?  add,TResult? Function( _Update value)?  update,TResult? Function( _Remove value)?  remove,}){
 final _that = this;
 switch (_that) {
-case _Get() when get != null:
+case _Initialize() when initialize != null:
+return initialize(_that);case _Get() when get != null:
 return get(_that);case _Received() when received != null:
-return received(_that);case _:
+return received(_that);case _Add() when add != null:
+return add(_that);case _Update() when update != null:
+return update(_that);case _Remove() when remove != null:
+return remove(_that);case _:
   return null;
 
 }
@@ -119,11 +131,15 @@ return received(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)?  get,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Chat chat)?  initialize,TResult Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Message message)?  add,TResult Function( Message message)?  update,TResult Function( int messageId)?  remove,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _Get() when get != null:
+case _Initialize() when initialize != null:
+return initialize(_that.chat);case _Get() when get != null:
 return get(_that.chat,_that.oldestMessage,_that.newestMessage);case _Received() when received != null:
-return received(_that.payload);case _:
+return received(_that.payload);case _Add() when add != null:
+return add(_that.message);case _Update() when update != null:
+return update(_that.message);case _Remove() when remove != null:
+return remove(_that.messageId);case _:
   return orElse();
 
 }
@@ -141,11 +157,15 @@ return received(_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)  get,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Chat chat)  initialize,required TResult Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Message message)  add,required TResult Function( Message message)  update,required TResult Function( int messageId)  remove,}) {final _that = this;
 switch (_that) {
-case _Get():
+case _Initialize():
+return initialize(_that.chat);case _Get():
 return get(_that.chat,_that.oldestMessage,_that.newestMessage);case _Received():
-return received(_that.payload);}
+return received(_that.payload);case _Add():
+return add(_that.message);case _Update():
+return update(_that.message);case _Remove():
+return remove(_that.messageId);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -159,16 +179,95 @@ return received(_that.payload);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)?  get,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Chat chat)?  initialize,TResult? Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Message message)?  add,TResult? Function( Message message)?  update,TResult? Function( int messageId)?  remove,}) {final _that = this;
 switch (_that) {
-case _Get() when get != null:
+case _Initialize() when initialize != null:
+return initialize(_that.chat);case _Get() when get != null:
 return get(_that.chat,_that.oldestMessage,_that.newestMessage);case _Received() when received != null:
-return received(_that.payload);case _:
+return received(_that.payload);case _Add() when add != null:
+return add(_that.message);case _Update() when update != null:
+return update(_that.message);case _Remove() when remove != null:
+return remove(_that.messageId);case _:
   return null;
 
 }
 }
 
+}
+
+/// @nodoc
+
+
+class _Initialize implements MessagesEvent {
+  const _Initialize({required this.chat});
+  
+
+ final  Chat chat;
+
+/// Create a copy of MessagesEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$InitializeCopyWith<_Initialize> get copyWith => __$InitializeCopyWithImpl<_Initialize>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initialize&&(identical(other.chat, chat) || other.chat == chat));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,chat);
+
+@override
+String toString() {
+  return 'MessagesEvent.initialize(chat: $chat)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$InitializeCopyWith<$Res> implements $MessagesEventCopyWith<$Res> {
+  factory _$InitializeCopyWith(_Initialize value, $Res Function(_Initialize) _then) = __$InitializeCopyWithImpl;
+@useResult
+$Res call({
+ Chat chat
+});
+
+
+$ChatCopyWith<$Res> get chat;
+
+}
+/// @nodoc
+class __$InitializeCopyWithImpl<$Res>
+    implements _$InitializeCopyWith<$Res> {
+  __$InitializeCopyWithImpl(this._self, this._then);
+
+  final _Initialize _self;
+  final $Res Function(_Initialize) _then;
+
+/// Create a copy of MessagesEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? chat = null,}) {
+  return _then(_Initialize(
+chat: null == chat ? _self.chat : chat // ignore: cast_nullable_to_non_nullable
+as Chat,
+  ));
+}
+
+/// Create a copy of MessagesEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ChatCopyWith<$Res> get chat {
+  
+  return $ChatCopyWith<$Res>(_self.chat, (value) {
+    return _then(_self.copyWith(chat: value));
+  });
+}
 }
 
 /// @nodoc
@@ -340,6 +439,222 @@ class __$ReceivedCopyWithImpl<$Res>
   return _then(_Received(
 payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _Add implements MessagesEvent {
+  const _Add({required this.message});
+  
+
+ final  Message message;
+
+/// Create a copy of MessagesEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AddCopyWith<_Add> get copyWith => __$AddCopyWithImpl<_Add>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Add&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'MessagesEvent.add(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AddCopyWith<$Res> implements $MessagesEventCopyWith<$Res> {
+  factory _$AddCopyWith(_Add value, $Res Function(_Add) _then) = __$AddCopyWithImpl;
+@useResult
+$Res call({
+ Message message
+});
+
+
+$MessageCopyWith<$Res> get message;
+
+}
+/// @nodoc
+class __$AddCopyWithImpl<$Res>
+    implements _$AddCopyWith<$Res> {
+  __$AddCopyWithImpl(this._self, this._then);
+
+  final _Add _self;
+  final $Res Function(_Add) _then;
+
+/// Create a copy of MessagesEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(_Add(
+message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as Message,
+  ));
+}
+
+/// Create a copy of MessagesEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MessageCopyWith<$Res> get message {
+  
+  return $MessageCopyWith<$Res>(_self.message, (value) {
+    return _then(_self.copyWith(message: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _Update implements MessagesEvent {
+  const _Update({required this.message});
+  
+
+ final  Message message;
+
+/// Create a copy of MessagesEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$UpdateCopyWith<_Update> get copyWith => __$UpdateCopyWithImpl<_Update>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Update&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'MessagesEvent.update(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$UpdateCopyWith<$Res> implements $MessagesEventCopyWith<$Res> {
+  factory _$UpdateCopyWith(_Update value, $Res Function(_Update) _then) = __$UpdateCopyWithImpl;
+@useResult
+$Res call({
+ Message message
+});
+
+
+$MessageCopyWith<$Res> get message;
+
+}
+/// @nodoc
+class __$UpdateCopyWithImpl<$Res>
+    implements _$UpdateCopyWith<$Res> {
+  __$UpdateCopyWithImpl(this._self, this._then);
+
+  final _Update _self;
+  final $Res Function(_Update) _then;
+
+/// Create a copy of MessagesEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(_Update(
+message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as Message,
+  ));
+}
+
+/// Create a copy of MessagesEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MessageCopyWith<$Res> get message {
+  
+  return $MessageCopyWith<$Res>(_self.message, (value) {
+    return _then(_self.copyWith(message: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _Remove implements MessagesEvent {
+  const _Remove({required this.messageId});
+  
+
+ final  int messageId;
+
+/// Create a copy of MessagesEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$RemoveCopyWith<_Remove> get copyWith => __$RemoveCopyWithImpl<_Remove>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Remove&&(identical(other.messageId, messageId) || other.messageId == messageId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,messageId);
+
+@override
+String toString() {
+  return 'MessagesEvent.remove(messageId: $messageId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$RemoveCopyWith<$Res> implements $MessagesEventCopyWith<$Res> {
+  factory _$RemoveCopyWith(_Remove value, $Res Function(_Remove) _then) = __$RemoveCopyWithImpl;
+@useResult
+$Res call({
+ int messageId
+});
+
+
+
+
+}
+/// @nodoc
+class __$RemoveCopyWithImpl<$Res>
+    implements _$RemoveCopyWith<$Res> {
+  __$RemoveCopyWithImpl(this._self, this._then);
+
+  final _Remove _self;
+  final $Res Function(_Remove) _then;
+
+/// Create a copy of MessagesEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? messageId = null,}) {
+  return _then(_Remove(
+messageId: null == messageId ? _self.messageId : messageId // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

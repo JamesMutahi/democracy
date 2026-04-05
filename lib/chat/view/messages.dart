@@ -37,10 +37,6 @@ class Messages extends StatefulWidget {
 }
 
 class _MessagesState extends State<Messages> {
-  bool loading = true;
-  bool failure = false;
-  List<Message> _messages = [];
-  bool hasNextPage = false;
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
   );
@@ -48,309 +44,299 @@ class _MessagesState extends State<Messages> {
 
   @override
   void initState() {
-    context.read<MessagesBloc>().add(MessagesEvent.get(chat: widget.chat));
+    context.read<MessagesBloc>().add(
+      MessagesEvent.initialize(chat: widget.chat),
+    );
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    _messages.sort((a, b) => b.id.compareTo(a.id));
-
-    var groupByDate = groupBy(
-      _messages,
-      (obj) => DateFormat.yMMMMd().format(obj.createdAt),
-    );
-
-    List<Widget> widgets = [];
-    groupByDate.forEach((date, list) {
-      // ListView is in reverse so objects are set in reverse order as well
-      for (Message message in list) {
-        bool alignedRight = widget.currentUser.id == message.user.id;
-        widgets.add(SizedBox(height: messageMargin));
-        if (message.isDeleted) {
-          widgets.add(
-            AlignmentContainer(
-              message: message,
-              alignedRight: alignedRight,
-              child: Text(
-                'Message was deleted',
-                style: TextStyle(color: Theme.of(context).disabledColor),
-              ),
-            ),
+    return BlocListener<MessageDetailBloc, MessageDetailState>(
+      listener: (context, state) {
+        if (state is MessageCreated) {
+          context.read<MessagesBloc>().add(
+            MessagesEvent.add(message: state.message),
           );
-        } else {
-          widgets.add(
-            MessageTime(message: message, alignedRight: alignedRight),
-          );
-          String text = extractLinkFromMessage(message);
-          if (text.isNotEmpty) {
-            widgets.add(
-              AlignmentContainer(
-                key: ValueKey(message.id),
-                message: message,
-                alignedRight: alignedRight,
-                child: MessageCard(text: text),
-              ),
-            );
-          }
-          if (message.image1Url != null) {
-            if (message.text.isNotEmpty) {
-              widgets.add(SizedBox(height: messageMargin));
-            }
-            widgets.add(
-              AlignmentContainer(
-                message: message,
-                alignedRight: alignedRight,
-                child: ImageViewer(message: message),
-              ),
-            );
-          }
-          if (message.videoUrl != null) {
-            if (message.text.isNotEmpty) {
-              widgets.add(SizedBox(height: messageMargin));
-            }
-            widgets.add(
-              AlignmentContainer(
-                message: message,
-                alignedRight: alignedRight,
-                child: VideoViewer(urls: [message.videoUrl!]),
-              ),
-            );
-          }
-          if (message.fileUrl != null) {
-            if (message.text.isNotEmpty) {
-              widgets.add(SizedBox(height: messageMargin));
-            }
-            widgets.add(
-              AlignmentContainer(
-                message: message,
-                alignedRight: alignedRight,
-                child: FileWidget(url: message.fileUrl!),
-              ),
-            );
-          }
-          if (message.location != null) {
-            if (message.text.isNotEmpty) {
-              widgets.add(SizedBox(height: messageMargin));
-            }
-            widgets.add(
-              AlignmentContainer(
-                message: message,
-                alignedRight: alignedRight,
-                child: MapWidget(mapCenter: message.location!),
-              ),
-            );
-          }
-          if (message.post != null) {
-            if (message.text.isNotEmpty) {
-              widgets.add(SizedBox(height: messageMargin));
-            }
-            widgets.add(
-              AlignmentContainer(
-                message: message,
-                alignedRight: alignedRight,
-                child: PostWidgetSelector(
-                  post: message.post!,
-                  isDependency: true,
-                ),
-              ),
-            );
-          }
-          if (message.ballot != null) {
-            if (message.text.isNotEmpty) {
-              widgets.add(SizedBox(height: messageMargin));
-            }
-            widgets.add(
-              AlignmentContainer(
-                message: message,
-                alignedRight: alignedRight,
-                child: BallotTile(ballot: message.ballot!, isDependency: true),
-              ),
-            );
-          }
-          if (message.survey != null) {
-            if (message.text.isNotEmpty) {
-              widgets.add(SizedBox(height: messageMargin));
-            }
-            widgets.add(
-              AlignmentContainer(
-                message: message,
-                alignedRight: alignedRight,
-                child: SurveyTile(survey: message.survey!, isDependency: true),
-              ),
-            );
-          }
-          if (message.petition != null) {
-            if (message.text.isNotEmpty) {
-              widgets.add(SizedBox(height: messageMargin));
-            }
-            widgets.add(
-              AlignmentContainer(
-                message: message,
-                alignedRight: alignedRight,
-                child: PetitionTile(
-                  petition: message.petition!,
-                  isDependency: true,
-                ),
-              ),
-            );
-          }
-          if (message.meeting != null) {
-            if (message.text.isNotEmpty) {
-              widgets.add(SizedBox(height: messageMargin));
-            }
-            widgets.add(
-              AlignmentContainer(
-                message: message,
-                alignedRight: alignedRight,
-                child: MeetingTile(
-                  meeting: message.meeting!,
-                  isDependency: true,
-                ),
-              ),
-            );
-          }
-          if (message.section != null) {
-            if (message.text.isNotEmpty) {
-              widgets.add(SizedBox(height: messageMargin));
-            }
-            widgets.add(
-              AlignmentContainer(
-                message: message,
-                alignedRight: alignedRight,
-                child: SectionTile(
-                  section: message.section!,
-                  isDependency: true,
-                ),
-              ),
-            );
-          }
         }
-      }
-      widgets.add(SizedBox(height: messageMargin));
-      if (DateFormat.yMMMMd().format(DateTime.now()) == date) {
-        widgets.add(Center(child: Text('Today')));
-      } else if (DateFormat.yMMMMd().format(
-            DateTime.now().subtract(Duration(days: 1)),
-          ) ==
-          date) {
-        widgets.add(Center(child: Text('Yesterday')));
-      } else {
-        widgets.add(Center(child: Text(date)));
-      }
-      widgets.add(SizedBox(height: messageMargin));
-    });
 
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state.status == WebsocketStatus.connected) {
-              context.read<MessagesBloc>().add(
-                MessagesEvent.get(
-                  chat: widget.chat,
-                  newestMessage: _messages.first,
-                ),
-              );
+        if (state is MessageUpdated) {
+          context.read<MessagesBloc>().add(
+            MessagesEvent.update(message: state.message),
+          );
+        }
+
+        if (state is MessageDeleted) {
+          context.read<MessagesBloc>().add(
+            MessagesEvent.remove(messageId: state.messageId),
+          );
+        }
+
+        if (state is MessageDetailFailure) {
+          final snackBar = getSnackBar(
+            context: context,
+            message: state.error,
+            status: SnackBarStatus.failure,
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+      },
+
+      child: BlocBuilder<MessagesBloc, MessagesState>(
+        builder: (context, state) {
+          if (state.status == MessagesStatus.loading) {
+            return const BottomLoader();
+          }
+
+          if (state.status == MessagesStatus.success) {
+            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+              _refreshController.refreshCompleted();
             }
-          },
-        ),
-        BlocListener<MessagesBloc, MessagesState>(
-          listener: (context, state) {
-            if (state.status == MessagesStatus.success) {
-              setState(() {
-                loading = false;
-                failure = false;
-                _messages = state.messages;
-                hasNextPage = state.hasNext;
-                if (_refreshController.headerStatus ==
-                    RefreshStatus.refreshing) {
-                  _refreshController.refreshCompleted();
-                }
-                if (_refreshController.footerStatus == LoadStatus.loading) {
-                  _refreshController.loadComplete();
-                }
-              });
+            if (_refreshController.footerStatus == LoadStatus.loading) {
+              _refreshController.loadComplete();
             }
-            if (state.status == MessagesStatus.failure) {
-              if (loading) {
-                setState(() {
-                  loading = false;
-                  failure = true;
-                });
-              }
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshFailed();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadFailed();
-              }
+          }
+
+          if (state.status == MessagesStatus.failure) {
+            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+              _refreshController.refreshFailed();
             }
-          },
-        ),
-        BlocListener<MessageDetailBloc, MessageDetailState>(
-          listener: (context, state) {
-            if (state is MessageCreated) {
-              setState(() {
-                _messages.add(state.message);
-              });
+            if (_refreshController.footerStatus == LoadStatus.loading) {
+              _refreshController.loadFailed();
             }
-            if (state is MessageUpdated) {
-              if (_messages.any((element) => element.id == state.message.id)) {
-                setState(() {
-                  _messages[_messages.indexWhere(
-                        (message) => message.id == state.message.id,
-                      )] =
-                      state.message;
-                });
-              }
-            }
-            if (state is MessageDeleted) {
-              if (_messages.any((element) => element.id == state.messageId)) {
-                setState(() {
-                  _messages.removeWhere(
-                    (element) => element.id == state.messageId,
-                  );
-                });
-              }
-            }
-            if (state is MessageDetailFailure) {
-              final snackBar = getSnackBar(
-                context: context,
-                message: state.error,
-                status: SnackBarStatus.failure,
-              );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            }
-          },
-        ),
-      ],
-      child: loading
-          ? BottomLoader()
-          : failure
-          ? FailureRetryButton(
-              onPressed: () {
-                context.read<MessagesBloc>().add(
-                  MessagesEvent.get(chat: widget.chat),
+            return FailureRetryButton(
+              onPressed: () => context.read<MessagesBloc>().add(
+                MessagesEvent.get(chat: widget.chat),
+              ),
+            );
+          }
+
+          List<Message> messages = state.messages.toList();
+          messages.sort((a, b) => b.id.compareTo(a.id));
+
+          var groupByDate = groupBy(
+            messages,
+            (obj) => DateFormat.yMMMMd().format(obj.createdAt),
+          );
+
+          List<Widget> widgets = [];
+          groupByDate.forEach((date, list) {
+            // ListView is in reverse so objects are set in reverse order as well
+            for (Message message in list) {
+              bool alignedRight = widget.currentUser.id == message.user.id;
+              widgets.add(SizedBox(height: messageMargin));
+              if (message.isDeleted) {
+                widgets.add(
+                  AlignmentContainer(
+                    message: message,
+                    alignedRight: alignedRight,
+                    child: Text(
+                      'Message was deleted',
+                      style: TextStyle(color: Theme.of(context).disabledColor),
+                    ),
+                  ),
                 );
-              },
-            )
-          : SmartRefresher(
-              // Messages are listed in reverse, down is up and up is down...lol
-              enablePullDown: false,
-              enablePullUp: hasNextPage,
-              controller: _refreshController,
-              onLoading: () {
+              } else {
+                widgets.add(
+                  MessageTime(message: message, alignedRight: alignedRight),
+                );
+                String text = extractLinkFromMessage(message);
+                if (text.isNotEmpty) {
+                  widgets.add(
+                    AlignmentContainer(
+                      key: ValueKey(message.id),
+                      message: message,
+                      alignedRight: alignedRight,
+                      child: MessageCard(text: text),
+                    ),
+                  );
+                }
+                if (message.image1Url != null) {
+                  if (message.text.isNotEmpty) {
+                    widgets.add(SizedBox(height: messageMargin));
+                  }
+                  widgets.add(
+                    AlignmentContainer(
+                      message: message,
+                      alignedRight: alignedRight,
+                      child: ImageViewer(message: message),
+                    ),
+                  );
+                }
+                if (message.videoUrl != null) {
+                  if (message.text.isNotEmpty) {
+                    widgets.add(SizedBox(height: messageMargin));
+                  }
+                  widgets.add(
+                    AlignmentContainer(
+                      message: message,
+                      alignedRight: alignedRight,
+                      child: VideoViewer(urls: [message.videoUrl!]),
+                    ),
+                  );
+                }
+                if (message.fileUrl != null) {
+                  if (message.text.isNotEmpty) {
+                    widgets.add(SizedBox(height: messageMargin));
+                  }
+                  widgets.add(
+                    AlignmentContainer(
+                      message: message,
+                      alignedRight: alignedRight,
+                      child: FileWidget(url: message.fileUrl!),
+                    ),
+                  );
+                }
+                if (message.location != null) {
+                  if (message.text.isNotEmpty) {
+                    widgets.add(SizedBox(height: messageMargin));
+                  }
+                  widgets.add(
+                    AlignmentContainer(
+                      message: message,
+                      alignedRight: alignedRight,
+                      child: MapWidget(mapCenter: message.location!),
+                    ),
+                  );
+                }
+                if (message.post != null) {
+                  if (message.text.isNotEmpty) {
+                    widgets.add(SizedBox(height: messageMargin));
+                  }
+                  widgets.add(
+                    AlignmentContainer(
+                      message: message,
+                      alignedRight: alignedRight,
+                      child: PostWidgetSelector(
+                        post: message.post!,
+                        isDependency: true,
+                      ),
+                    ),
+                  );
+                }
+                if (message.ballot != null) {
+                  if (message.text.isNotEmpty) {
+                    widgets.add(SizedBox(height: messageMargin));
+                  }
+                  widgets.add(
+                    AlignmentContainer(
+                      message: message,
+                      alignedRight: alignedRight,
+                      child: BallotTile(
+                        ballot: message.ballot!,
+                        isDependency: true,
+                      ),
+                    ),
+                  );
+                }
+                if (message.survey != null) {
+                  if (message.text.isNotEmpty) {
+                    widgets.add(SizedBox(height: messageMargin));
+                  }
+                  widgets.add(
+                    AlignmentContainer(
+                      message: message,
+                      alignedRight: alignedRight,
+                      child: SurveyTile(
+                        survey: message.survey!,
+                        isDependency: true,
+                      ),
+                    ),
+                  );
+                }
+                if (message.petition != null) {
+                  if (message.text.isNotEmpty) {
+                    widgets.add(SizedBox(height: messageMargin));
+                  }
+                  widgets.add(
+                    AlignmentContainer(
+                      message: message,
+                      alignedRight: alignedRight,
+                      child: PetitionTile(
+                        petition: message.petition!,
+                        isDependency: true,
+                      ),
+                    ),
+                  );
+                }
+                if (message.meeting != null) {
+                  if (message.text.isNotEmpty) {
+                    widgets.add(SizedBox(height: messageMargin));
+                  }
+                  widgets.add(
+                    AlignmentContainer(
+                      message: message,
+                      alignedRight: alignedRight,
+                      child: MeetingTile(
+                        meeting: message.meeting!,
+                        isDependency: true,
+                      ),
+                    ),
+                  );
+                }
+                if (message.section != null) {
+                  if (message.text.isNotEmpty) {
+                    widgets.add(SizedBox(height: messageMargin));
+                  }
+                  widgets.add(
+                    AlignmentContainer(
+                      message: message,
+                      alignedRight: alignedRight,
+                      child: SectionTile(
+                        section: message.section!,
+                        isDependency: true,
+                      ),
+                    ),
+                  );
+                }
+              }
+            }
+            widgets.add(SizedBox(height: messageMargin));
+            if (DateFormat.yMMMMd().format(DateTime.now()) == date) {
+              widgets.add(Center(child: Text('Today')));
+            } else if (DateFormat.yMMMMd().format(
+                  DateTime.now().subtract(Duration(days: 1)),
+                ) ==
+                date) {
+              widgets.add(Center(child: Text('Yesterday')));
+            } else {
+              widgets.add(Center(child: Text(date)));
+            }
+            widgets.add(SizedBox(height: messageMargin));
+          });
+
+          return BlocListener<WebsocketBloc, WebsocketState>(
+            listener: (context, websocketState) {
+              if (websocketState.status == WebsocketStatus.connected) {
                 context.read<MessagesBloc>().add(
                   MessagesEvent.get(
                     chat: widget.chat,
-                    oldestMessage: _messages.last,
+                    newestMessage: messages.first,
                   ),
                 );
+              }
+            },
+            child: SmartRefresher(
+              // Messages are listed in reverse, down is up and up is down...lol
+              enablePullDown: false,
+              enablePullUp: state.hasNext,
+              controller: _refreshController,
+              onLoading: () {
+                if (messages.isNotEmpty) {
+                  context.read<MessagesBloc>().add(
+                    MessagesEvent.get(
+                      chat: widget.chat,
+                      oldestMessage: messages.last,
+                    ),
+                  );
+                }
               },
               footer: ClassicFooter(),
               child: ListView(reverse: true, children: widgets),
             ),
+          );
+        },
+      ),
     );
   }
 }
