@@ -14,6 +14,7 @@ import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
 import 'package:democracy/chat/bloc/messages/messages_bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
+import 'package:democracy/chat/view/utils/link_extractor.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
 import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
@@ -22,7 +23,6 @@ import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
@@ -82,7 +82,7 @@ class _MessagesState extends State<Messages> {
           widgets.add(
             MessageTime(message: message, alignedRight: alignedRight),
           );
-          String text = extractLink(message);
+          String text = extractLinkFromMessage(message);
           if (text.isNotEmpty) {
             widgets.add(
               AlignmentContainer(
@@ -538,100 +538,4 @@ class _AlignmentContainerState extends State<AlignmentContainer> {
       ),
     );
   }
-}
-
-String extractLink(Message message) {
-  String text = message.text;
-  // The regular expression to match URLs (supporting http, https, and www.)
-  final RegExp linkRegExp = RegExp(
-    r'(http|https)://[\w-]+(\.[\w-]+)+([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?',
-  );
-
-  // Find all matches in the text
-  final Iterable<RegExpMatch> urlMatches = linkRegExp.allMatches(text);
-
-  // Extract the actual URL strings from the matches
-  List<String> urls = urlMatches
-      .map((urlMatch) => text.substring(urlMatch.start, urlMatch.end))
-      .toList();
-
-  // Get all links using base url
-  String baseUrl = dotenv.env['BASE_URL']!;
-  List<String> matchingLinks = [];
-  for (String url in urls) {
-    if (url.contains(baseUrl)) {
-      matchingLinks.add(url);
-    }
-  }
-
-  // Extract link from text and return text if related object is present
-  if (matchingLinks.isNotEmpty) {
-    if (message.post != null) {
-      for (String url in matchingLinks) {
-        Uri uri = Uri.parse(url);
-        if (uri.path.contains('post')) {
-          String intString = uri.path.replaceAll(RegExp(r'[^0-9]'), '');
-          if (message.post!.id == int.parse(intString)) {
-            text = message.text.replaceAll(url, '');
-          }
-        }
-      }
-    }
-    if (message.meeting != null) {
-      for (String url in matchingLinks) {
-        Uri uri = Uri.parse(url);
-        if (uri.path.contains('meeting')) {
-          String intString = uri.path.replaceAll(RegExp(r'[^0-9]'), '');
-          if (message.meeting!.id == int.parse(intString)) {
-            text = message.text.replaceAll(url, '');
-          }
-        }
-      }
-    }
-    if (message.ballot != null) {
-      for (String url in matchingLinks) {
-        Uri uri = Uri.parse(url);
-        if (uri.path.contains('ballot')) {
-          String intString = uri.path.replaceAll(RegExp(r'[^0-9]'), '');
-          if (message.ballot!.id == int.parse(intString)) {
-            text = message.text.replaceAll(url, '');
-          }
-        }
-      }
-    }
-    if (message.survey != null) {
-      for (String url in matchingLinks) {
-        Uri uri = Uri.parse(url);
-        if (uri.path.contains('survey')) {
-          String intString = uri.path.replaceAll(RegExp(r'[^0-9]'), '');
-          if (message.survey!.id == int.parse(intString)) {
-            text = message.text.replaceAll(url, '');
-          }
-        }
-      }
-    }
-    if (message.petition != null) {
-      for (String url in matchingLinks) {
-        Uri uri = Uri.parse(url);
-        if (uri.path.contains('petition')) {
-          String intString = uri.path.replaceAll(RegExp(r'[^0-9]'), '');
-          if (message.petition!.id == int.parse(intString)) {
-            text = message.text.replaceAll(url, '');
-          }
-        }
-      }
-    }
-    if (message.section != null) {
-      for (String url in matchingLinks) {
-        Uri uri = Uri.parse(url);
-        if (uri.path.contains('section')) {
-          String intString = uri.path.replaceAll(RegExp(r'[^0-9]'), '');
-          if (message.section!.id == int.parse(intString)) {
-            text = message.text.replaceAll(url, '');
-          }
-        }
-      }
-    }
-  }
-  return text;
 }

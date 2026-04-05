@@ -29,6 +29,9 @@ class SectionTile extends StatelessWidget {
       ),
       child: InkWell(
         splashFactory: NoSplash.splashFactory,
+        customBorder: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
         onTap: () {
           if (isDependency) {
             Navigator.push(
@@ -46,11 +49,16 @@ class SectionTile extends StatelessWidget {
             onSelection!(section);
           }
         },
-        child: Container(
+        child: AnimatedContainer(
+          curve: Curves.easeInOut,
+          duration: Duration(milliseconds: 300),
           padding: EdgeInsets.only(left: 8.0, top: 8.0, bottom: 8.0),
-          color: isHighlighted || section.id == selectedSection?.id
-              ? Theme.of(context).highlightColor
-              : null,
+          decoration: BoxDecoration(
+            color: isHighlighted || section.id == selectedSection?.id
+                ? Theme.of(context).colorScheme.primaryContainer
+                : null,
+            borderRadius: BorderRadius.circular(10),
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,

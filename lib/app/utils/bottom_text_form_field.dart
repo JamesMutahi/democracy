@@ -339,6 +339,7 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
               }
             },
             onConstitutionTap: () {
+              onExtrasButtonPressed();
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => Constitution()),

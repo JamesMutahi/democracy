@@ -9,6 +9,7 @@ import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/view/chat_detail.dart' show ChatDetail;
+import 'package:democracy/chat/view/utils/link_extractor.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
@@ -249,6 +250,10 @@ class _ChatTileState extends State<ChatTile> {
         widget.chat.lastMessage?.user.id == widget.currentUser.id
         ? 'You: '
         : '';
+    String text = '';
+    if (widget.chat.lastMessage != null ) {
+      text = extractLinkFromMessage(widget.chat.lastMessage!);
+    }
     return ListTile(
       leading: ProfileImage(user: widget.otherUser, navigateToProfile: true),
       title: ProfileName(user: widget.otherUser),
@@ -259,7 +264,7 @@ class _ChatTileState extends State<ChatTile> {
             _ReadIcon(),
           widget.chat.lastMessage == null
               ? Text('')
-              : widget.chat.lastMessage!.text.isNotEmpty
+              : text.isNotEmpty
               ? _LastMessageText(
                   text: '$lastMessagePrefix${widget.chat.lastMessage!.text}',
                 )
@@ -271,6 +276,10 @@ class _ChatTileState extends State<ChatTile> {
               ? _LastMessageText(text: '${lastMessagePrefix}Shared a survey')
               : widget.chat.lastMessage!.petition != null
               ? _LastMessageText(text: '${lastMessagePrefix}Shared a petition')
+              : widget.chat.lastMessage!.section != null
+              ? _LastMessageText(
+                  text: '${lastMessagePrefix}Shared the constitution',
+                )
               : widget.chat.lastMessage!.image1Url != null
               ? _LastMessageText(text: '${lastMessagePrefix}Shared an image')
               : widget.chat.lastMessage!.fileUrl != null
@@ -279,7 +288,7 @@ class _ChatTileState extends State<ChatTile> {
               ? _LastMessageText(text: '${lastMessagePrefix}Shared a location')
               : widget.chat.lastMessage!.videoUrl != null
               ? _LastMessageText(text: '${lastMessagePrefix}Shared a video')
-              :Text(''),
+              : Text(''),
         ],
       ),
       trailing: Column(
