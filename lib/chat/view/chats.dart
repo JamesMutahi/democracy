@@ -1,4 +1,3 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
@@ -10,7 +9,6 @@ import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/view/chat_detail.dart' show ChatDetail;
 import 'package:democracy/chat/view/utils/link_extractor.dart';
-import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
@@ -28,10 +26,6 @@ class Chats extends StatefulWidget {
 }
 
 class _ChatsState extends State<Chats> {
-  bool loading = true;
-  bool failure = false;
-  List<Chat> _chats = [];
-  bool hasNextPage = false;
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
   );
@@ -46,114 +40,21 @@ class _ChatsState extends State<Chats> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state.status == WebsocketStatus.connected) {
-              context.read<ChatsBloc>().add(
-                ChatsEvent.resubscribe(chats: _chats),
-              );
-            }
-          },
-        ),
-        BlocListener<ChatsBloc, ChatsState>(
-          listener: (context, state) {
-            if (state.status == ChatsStatus.success) {
-              setState(() {
-                loading = false;
-                failure = false;
-                _chats = state.chats;
-                hasNextPage = state.hasNext;
-                if (_refreshController.headerStatus ==
-                    RefreshStatus.refreshing) {
-                  _refreshController.refreshCompleted();
-                }
-                if (_refreshController.footerStatus == LoadStatus.loading) {
-                  _refreshController.loadComplete();
-                }
-              });
-            }
-            if (state.status == ChatsStatus.failure) {
-              if (loading) {
-                setState(() {
-                  loading = false;
-                  failure = true;
-                });
-              }
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshFailed();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadFailed();
-              }
-            }
-          },
-        ),
-        BlocListener<NotificationDetailBloc, NotificationDetailState>(
-          listener: (context, state) {
-            if (state is NotificationCreated) {
-              if (state.notification.chat != null &&
-                  !_chats.any(
-                    (chat) => chat.id == state.notification.chat?.id,
-                  )) {
-                setState(() {
-                  _chats.insert(0, state.notification.chat!);
-                });
-                context.read<ChatDetailBloc>().add(
-                  ChatDetailEvent.subscribe(chat: state.notification.chat!),
-                );
-              }
-            }
-          },
-        ),
         BlocListener<ChatDetailBloc, ChatDetailState>(
           listener: (context, state) {
+            final chatsBloc = context.read<ChatsBloc>();
+
             if (state is ChatCreated) {
-              if (!_chats.any((chat) => chat.id == state.chat.id)) {
-                setState(() {
-                  _chats.insert(0, state.chat);
-                });
-              }
-            }
-            if (state is ChatLoaded) {
-              if (_chats.any((chat) => chat.id == state.chat.id)) {
-                setState(() {
-                  int index = _chats.indexWhere(
-                    (chat) => chat.id == state.chat.id,
-                  );
-                  _chats[index] = state.chat;
-                });
-              }
-            }
-            if (state is ChatUpdated) {
-              if (_chats.any((chat) => chat.id == state.chat.id)) {
-                setState(() {
-                  int index = _chats.indexWhere(
-                    (chat) => chat.id == state.chat.id,
-                  );
-                  _chats[index] = state.chat;
-                });
-              }
-            }
-            if (state is ChatDeleted) {
-              if (_chats.any((element) => element.id == state.chatId)) {
-                setState(() {
-                  _chats.removeWhere((element) => element.id == state.chatId);
-                });
-              }
-            }
-            if (state is DirectMessageSent) {
-              setState(() {
-                for (Chat chat in state.chats) {
-                  if (_chats.any((c) => c.id == chat.id)) {
-                    int index = _chats.indexWhere((c) => c.id == chat.id);
-                    _chats[index] = chat;
-                  } else {
-                    _chats.insert(0, chat);
-                  }
-                }
-              });
-            }
-            if (state is ChatDetailFailure) {
+              chatsBloc.add(ChatsEvent.add(chat: state.chat));
+            } else if (state is ChatLoaded) {
+              chatsBloc.add(ChatsEvent.update(chat: state.chat));
+            } else if (state is ChatUpdated) {
+              chatsBloc.add(ChatsEvent.update(chat: state.chat));
+            } else if (state is ChatDeleted) {
+              chatsBloc.add(ChatsEvent.remove(chatId: state.chatId));
+            } else if (state is DirectMessageSent) {
+              chatsBloc.add(ChatsEvent.updateMultiple(chats: state.chats));
+            } else if (state is ChatDetailFailure) {
               final snackBar = getSnackBar(
                 context: context,
                 message: state.error,
@@ -171,54 +72,89 @@ class _ChatsState extends State<Chats> {
             currentUser = state.user;
           }
           return BlocBuilder<ChatFilterCubit, ChatFilterState>(
-            builder: (context, state) {
-              void getChats({Chat? lastChat}) {
-                context.read<ChatsBloc>().add(
-                  ChatsEvent.get(
-                    lastChat: lastChat,
-                    searchTerm: state.searchTerm,
-                  ),
-                );
-              }
+            builder: (context, filterState) {
+              return BlocBuilder<ChatsBloc, ChatsState>(
+                builder: (context, chatsState) {
+                  final chats = chatsState.chats;
 
-              return loading
-                  ? BottomLoader()
-                  : failure
-                  ? FailureRetryButton(onPressed: getChats)
-                  : SmartRefresher(
-                      enablePullDown: true,
-                      enablePullUp: hasNextPage,
-                      header: ClassicHeader(),
-                      controller: _refreshController,
-                      onRefresh: getChats,
-                      onLoading: () {
-                        getChats(lastChat: _chats.last);
-                      },
-                      footer: ClassicFooter(),
-                      child: ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        itemBuilder: (BuildContext context, int index) {
-                          Chat chat = _chats[index];
-                          User otherUser = currentUser;
-                          if (chat.users.length > 1) {
-                            otherUser = chat.users.firstWhere(
-                              (u) => u.id != currentUser.id,
-                            );
-                          }
-                          return Visibility(
-                            visible: chat.lastMessage != null,
-                            child: ChatTile(
-                              key: ValueKey(chat.id),
-                              chat: chat,
-                              currentUser: currentUser,
-                              otherUser: otherUser,
-                            ),
-                          );
-                        },
-                        itemCount: _chats.length,
+                  if (chatsState.status == ChatsStatus.loading) {
+                    return const BottomLoader();
+                  }
+
+                  if (chatsState.status == ChatsStatus.failure) {
+                    if (_refreshController.headerStatus ==
+                        RefreshStatus.refreshing) {
+                      _refreshController.refreshFailed();
+                    }
+                    if (_refreshController.footerStatus == LoadStatus.loading) {
+                      _refreshController.loadFailed();
+                    }
+                    return FailureRetryButton(
+                      onPressed: () => context.read<ChatsBloc>().add(
+                        ChatsEvent.get(searchTerm: filterState.searchTerm),
                       ),
                     );
+                  }
+                  if (chatsState.status == ChatsStatus.success) {
+                    if (_refreshController.headerStatus ==
+                        RefreshStatus.refreshing) {
+                      _refreshController.refreshCompleted();
+                    }
+                    if (_refreshController.footerStatus == LoadStatus.loading) {
+                      _refreshController.loadComplete();
+                    }
+                  }
+
+                  return SmartRefresher(
+                    enablePullDown: true,
+                    enablePullUp: chatsState.hasNext,
+                    header: ClassicHeader(),
+                    controller: _refreshController,
+                    onRefresh: () {
+                      context.read<ChatsBloc>().add(
+                        ChatsEvent.get(searchTerm: filterState.searchTerm),
+                      );
+                    },
+                    onLoading: () {
+                      if (chats.isNotEmpty) {
+                        context.read<ChatsBloc>().add(
+                          ChatsEvent.get(
+                            lastChat: chats.last,
+                            searchTerm: filterState.searchTerm,
+                          ),
+                        );
+                      }
+                    },
+                    footer: ClassicFooter(),
+                    child: chats.isEmpty
+                        ? const Center(
+                            child: Text(
+                              'No chats yet',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          )
+                        : ListView.builder(
+                            itemCount: chats.length,
+                            itemBuilder: (context, index) {
+                              final chat = chats[index];
+                              final otherUser = chat.users.length > 1
+                                  ? chat.users.firstWhere(
+                                      (u) => u.id != currentUser.id,
+                                      orElse: () => currentUser,
+                                    )
+                                  : currentUser;
+
+                              return ChatTile(
+                                key: ValueKey(chat.id),
+                                chat: chat,
+                                currentUser: currentUser,
+                                otherUser: otherUser,
+                              );
+                            },
+                          ),
+                  );
+                },
+              );
             },
           );
         },
@@ -227,7 +163,7 @@ class _ChatsState extends State<Chats> {
   }
 }
 
-class ChatTile extends StatefulWidget {
+class ChatTile extends StatelessWidget {
   const ChatTile({
     super.key,
     required this.chat,
@@ -240,67 +176,34 @@ class ChatTile extends StatefulWidget {
   final User otherUser;
 
   @override
-  State<ChatTile> createState() => _ChatTileState();
-}
-
-class _ChatTileState extends State<ChatTile> {
-  @override
   Widget build(BuildContext context) {
-    String lastMessagePrefix =
-        widget.chat.lastMessage?.user.id == widget.currentUser.id
-        ? 'You: '
-        : '';
-    String text = '';
-    if (widget.chat.lastMessage != null ) {
-      text = extractLinkFromMessage(widget.chat.lastMessage!);
+    final lastMessage = chat.lastMessage;
+    if (lastMessage == null) {
+      return const SizedBox.shrink(); // Hide chats without last message
     }
+
+    final isFromMe = lastMessage.user.id == currentUser.id;
+    final lastMessagePrefix = isFromMe ? 'You: ' : '';
+
+    final subtitleText = _getLastMessageText(lastMessage, lastMessagePrefix);
+
     return ListTile(
-      leading: ProfileImage(user: widget.otherUser, navigateToProfile: true),
-      title: ProfileName(user: widget.otherUser),
+      leading: ProfileImage(user: otherUser, navigateToProfile: true),
+      title: ProfileName(user: otherUser),
       subtitle: Row(
         children: [
-          if (widget.chat.lastMessage!.isRead &&
-              widget.chat.lastMessage!.user.id == widget.currentUser.id)
-            _ReadIcon(),
-          widget.chat.lastMessage == null
-              ? Text('')
-              : text.isNotEmpty
-              ? _LastMessageText(
-                  text: '$lastMessagePrefix${widget.chat.lastMessage!.text}',
-                )
-              : widget.chat.lastMessage!.post != null
-              ? _LastMessageText(text: '${lastMessagePrefix}Shared a post')
-              : widget.chat.lastMessage!.ballot != null
-              ? _LastMessageText(text: '${lastMessagePrefix}Shared a ballot')
-              : widget.chat.lastMessage!.survey != null
-              ? _LastMessageText(text: '${lastMessagePrefix}Shared a survey')
-              : widget.chat.lastMessage!.petition != null
-              ? _LastMessageText(text: '${lastMessagePrefix}Shared a petition')
-              : widget.chat.lastMessage!.section != null
-              ? _LastMessageText(
-                  text: '${lastMessagePrefix}Shared the constitution',
-                )
-              : widget.chat.lastMessage!.image1Url != null
-              ? _LastMessageText(text: '${lastMessagePrefix}Shared an image')
-              : widget.chat.lastMessage!.fileUrl != null
-              ? _LastMessageText(text: '${lastMessagePrefix}Shared a file')
-              : widget.chat.lastMessage!.location != null
-              ? _LastMessageText(text: '${lastMessagePrefix}Shared a location')
-              : widget.chat.lastMessage!.videoUrl != null
-              ? _LastMessageText(text: '${lastMessagePrefix}Shared a video')
-              : Text(''),
+          if (isFromMe && lastMessage.isRead) const _ReadIcon(),
+          Expanded(child: _LastMessageText(text: subtitleText)),
         ],
       ),
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          if (widget.chat.lastMessage != null)
-            _ChatTime(widget.chat.lastMessage!),
-          if (widget.chat.unreadMessages > 0)
+          _ChatTime(lastMessage),
+          if (chat.unreadMessages > 0)
             Badge(
               label: Text(
-                widget.chat.unreadMessages.toString(),
+                chat.unreadMessages.toString(),
                 style: Theme.of(context).textTheme.labelSmall,
               ),
               backgroundColor: Colors.green,
@@ -308,22 +211,41 @@ class _ChatTileState extends State<ChatTile> {
         ],
       ),
       onTap: () {
-        if (widget.chat.unreadMessages > 0) {
+        if (chat.unreadMessages > 0) {
           context.read<ChatDetailBloc>().add(
-            ChatDetailEvent.markAsRead(chat: widget.chat),
+            ChatDetailEvent.markAsRead(chat: chat),
           );
         }
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) =>
-                ChatDetail(key: ValueKey(widget.chat.id), chat: widget.chat),
+            builder: (_) => ChatDetail(key: ValueKey(chat.id), chat: chat),
           ),
         );
       },
       onLongPress: () {
-        //   TODO: Show dialog for chat actions - block/delete
+        // TODO: Implement long press actions (delete, mute, block, etc.)
       },
     );
+  }
+
+  String _getLastMessageText(Message message, String prefix) {
+    final text = extractLinkFromMessage(message);
+
+    if (text.isNotEmpty) {
+      return '$prefix${message.text}';
+    }
+
+    if (message.post != null) return '${prefix}Shared a post';
+    if (message.ballot != null) return '${prefix}Shared a ballot';
+    if (message.survey != null) return '${prefix}Shared a survey';
+    if (message.petition != null) return '${prefix}Shared a petition';
+    if (message.section != null) return '${prefix}Shared the constitution';
+    if (message.image1Url != null) return '${prefix}Shared an image';
+    if (message.fileUrl != null) return '${prefix}Shared a file';
+    if (message.location != null) return '${prefix}Shared a location';
+    if (message.videoUrl != null) return '${prefix}Shared a video';
+
+    return '${prefix}Shared something';
   }
 }
 
@@ -334,12 +256,11 @@ class _LastMessageText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      child: Text(
-        text,
-        maxLines: 1,
-        style: TextStyle(overflow: TextOverflow.ellipsis),
-      ),
+    return Text(
+      text,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: Theme.of(context).textTheme.bodyMedium,
     );
   }
 }
@@ -349,33 +270,41 @@ class _ReadIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Icon(
-      Symbols.done_all,
-      size: Theme.of(context).textTheme.bodyMedium?.fontSize,
-      color: Colors.lightBlueAccent,
+    return Padding(
+      padding: const EdgeInsets.only(right: 4),
+      child: Icon(
+        Symbols.done_all,
+        size: Theme.of(context).textTheme.bodyMedium?.fontSize ?? 16,
+        color: Colors.lightBlueAccent,
+      ),
     );
   }
 }
 
 class _ChatTime extends StatelessWidget {
-  const _ChatTime(this.lastMessage);
+  const _ChatTime(this.message);
 
-  final Message lastMessage;
+  final Message message;
 
   @override
   Widget build(BuildContext context) {
-    var dateFormat = DateFormat('dd/MM/yyyy');
-    String date = dateFormat.format(lastMessage.createdAt);
-    String text = date;
-    if (dateFormat.format(DateTime.now()) == date) {
-      text = 'Today';
+    final dateFormat = DateFormat('dd/MM/yyyy');
+    final dateStr = dateFormat.format(message.createdAt);
+
+    String displayText = dateStr;
+
+    if (dateFormat.format(DateTime.now()) == dateStr) {
+      displayText = 'Today';
+    } else if (dateFormat.format(
+          DateTime.now().subtract(const Duration(days: 1)),
+        ) ==
+        dateStr) {
+      displayText = 'Yesterday';
     }
-    if (dateFormat.format(DateTime.now().subtract(Duration(days: 1))) == date) {
-      text = 'Yesterday';
-    }
-    return Container(
-      margin: EdgeInsets.only(bottom: 5),
-      child: Text(text, style: TextStyle(color: Theme.of(context).hintColor)),
+
+    return Text(
+      displayText,
+      style: TextStyle(color: Theme.of(context).hintColor, fontSize: 12),
     );
   }
 }

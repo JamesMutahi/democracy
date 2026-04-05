@@ -27,9 +27,10 @@ class ChatsBloc extends Bloc<ChatsEvent, ChatsState> {
     on<_Received>((event, emit) {
       _onReceived(event, emit);
     });
-    on<_Resubscribe>((event, emit) {
-      _onResubscribe(event, emit);
-    });
+    on<_Add>((event, emit) => _onAdd(event, emit));
+    on<_Update>((event, emit) => _onUpdate(event, emit));
+    on<_Remove>((event, emit) => _onRemove(event, emit));
+    on<_UpdateMultiple>((event, emit) => _onUpdateMultiple(event, emit));
   }
 
   Future _onGet(_Get event, Emitter<ChatsState> emit) async {
@@ -64,17 +65,52 @@ class ChatsBloc extends Bloc<ChatsEvent, ChatsState> {
     }
   }
 
-  Future _onResubscribe(_Resubscribe event, Emitter<ChatsState> emit) async {
-    List<int> chatIds = event.chats.map((chat) => chat.id).toList();
-    Map<String, dynamic> message = {
-      'stream': stream,
-      'payload': {
-        "action": 'resubscribe',
-        'request_id': requestId,
-        'pks': chatIds,
-      },
-    };
-    webSocketService.send(message);
+  void _onAdd(_Add event, Emitter<ChatsState> emit) {
+    final exists = state.chats.any((c) => c.id == event.chat.id);
+
+    if (!exists) {
+      emit(
+        state.copyWith(
+          chats: [event.chat, ...state.chats],
+          status: ChatsStatus.success,
+        ),
+      );
+    }
+  }
+
+  void _onUpdate(_Update event, Emitter<ChatsState> emit) {
+    final index = state.chats.indexWhere((c) => c.id == event.chat.id);
+    if (index == -1) return;
+
+    final updatedChats = List<Chat>.from(state.chats);
+    updatedChats[index] = event.chat;
+
+    emit(state.copyWith(chats: updatedChats, status: ChatsStatus.success));
+  }
+
+  void _onRemove(_Remove event, Emitter<ChatsState> emit) {
+    final updatedChats = state.chats
+        .where((c) => c.id != event.chatId)
+        .toList();
+
+    emit(state.copyWith(chats: updatedChats, status: ChatsStatus.success));
+  }
+
+  void _onUpdateMultiple(_UpdateMultiple event, Emitter<ChatsState> emit) {
+    if (event.chats.isEmpty) return;
+
+    var currentChats = List<Chat>.from(state.chats);
+
+    for (final newChat in event.chats) {
+      final index = currentChats.indexWhere((c) => c.id == newChat.id);
+      if (index != -1) {
+        currentChats[index] = newChat;
+      } else {
+        currentChats.insert(0, newChat);
+      }
+    }
+
+    emit(state.copyWith(chats: currentChats, status: ChatsStatus.success));
   }
 
   final WebSocketService webSocketService;
