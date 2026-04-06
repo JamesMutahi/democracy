@@ -23,7 +23,7 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
       }
     });
     on<_Initialize>((event, emit) {
-      emit(MessagesState());
+      emit(MessagesState(chatId: event.chat.id));
       add(_Get(chat: event.chat));
     });
     on<_Get>((event, emit) {
@@ -43,7 +43,7 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
       'payload': {
         'action': action,
         'request_id': requestId,
-        'chat': event.chat.id,
+        'chat_id': event.chat.id,
         'last_message': event.oldestMessage?.id,
         'first_message': event.newestMessage?.id,
       },
@@ -52,7 +52,6 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
   }
 
   Future _onReceived(_Received event, Emitter<MessagesState> emit) async {
-    emit(state.copyWith(status: MessagesStatus.loading));
     if (event.payload['response_status'] == 200) {
       final List<Message> newMessages = List.from(
         event.payload['data']['results'].map((e) => Message.fromJson(e)),
@@ -66,6 +65,7 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
               ? [...newMessages, ...state.messages] // prepend (newest on top)
               : [...state.messages, ...newMessages], // append (older messages)
           hasNext: event.payload['data']['has_next'] ?? false,
+          chatId: event.payload['data']['chat_id']
         ),
       );
     } else {

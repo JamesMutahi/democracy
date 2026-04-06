@@ -63,7 +63,7 @@ class _EditMessageState extends State<EditMessage> {
         controller: _controller,
         onTap: () {},
         onChanged: (value) {
-          if (value.isEmpty) {
+          if (value.trim().isEmpty) {
             setState(() {
               _disableSendButton = true;
             });

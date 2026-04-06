@@ -260,7 +260,7 @@ class _ChatDetailState extends State<_ChatDetail> {
                   controller: _controller,
                   onTap: () {},
                   onChanged: (value) {
-                    if (value == '') {
+                    if (value.trim().isEmpty) {
                       setState(() {
                         _disableSendButton = true;
                       });

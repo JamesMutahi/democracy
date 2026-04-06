@@ -38,33 +38,29 @@ class _ChatsState extends State<Chats> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<ChatDetailBloc, ChatDetailState>(
-          listener: (context, state) {
-            final chatsBloc = context.read<ChatsBloc>();
+    return BlocListener<ChatDetailBloc, ChatDetailState>(
+      listener: (context, state) {
+        final chatsBloc = context.read<ChatsBloc>();
 
-            if (state is ChatCreated) {
-              chatsBloc.add(ChatsEvent.add(chat: state.chat));
-            } else if (state is ChatLoaded) {
-              chatsBloc.add(ChatsEvent.update(chat: state.chat));
-            } else if (state is ChatUpdated) {
-              chatsBloc.add(ChatsEvent.update(chat: state.chat));
-            } else if (state is ChatDeleted) {
-              chatsBloc.add(ChatsEvent.remove(chatId: state.chatId));
-            } else if (state is DirectMessageSent) {
-              chatsBloc.add(ChatsEvent.updateMultiple(chats: state.chats));
-            } else if (state is ChatDetailFailure) {
-              final snackBar = getSnackBar(
-                context: context,
-                message: state.error,
-                status: SnackBarStatus.failure,
-              );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            }
-          },
-        ),
-      ],
+        if (state is ChatCreated) {
+          chatsBloc.add(ChatsEvent.add(chat: state.chat));
+        } else if (state is ChatLoaded) {
+          chatsBloc.add(ChatsEvent.update(chat: state.chat));
+        } else if (state is ChatUpdated) {
+          chatsBloc.add(ChatsEvent.update(chat: state.chat));
+        } else if (state is ChatDeleted) {
+          chatsBloc.add(ChatsEvent.remove(chatId: state.chatId));
+        } else if (state is DirectMessageSent) {
+          chatsBloc.add(ChatsEvent.updateMultiple(chats: state.chats));
+        } else if (state is ChatDetailFailure) {
+          final snackBar = getSnackBar(
+            context: context,
+            message: state.error,
+            status: SnackBarStatus.failure,
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+      },
       child: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
           late User currentUser;

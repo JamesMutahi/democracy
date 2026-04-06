@@ -52,30 +52,31 @@ class PostCreate extends StatefulWidget {
 
 class _PostCreateState extends State<PostCreate> {
   final _controller = FlutterTaggerController();
-  ValueKey centerKey = ValueKey('Center');
-  bool _disablePostButton = true;
-  List<File> files = [];
-  int fileLimit = 4;
+  final ValueKey _centerKey = const ValueKey('center');
+
+  bool _canPost = false;
   List<Post> _replyTos = [];
+
+  // Media state
+  File? _insertedImage;
   List<File> _selectedImages = [];
-  File? _selectedFile;
-  File? _insertedContent;
-  LatLng? _location;
   File? _selectedVideo;
+  File? _selectedFile;
+  LatLng? _selectedLocation;
 
   @override
   void initState() {
+    super.initState();
     if (widget.replyTo != null) {
       context.read<ReplyToBloc>().add(ReplyToEvent.get(post: widget.replyTo!));
     }
-    super.initState();
   }
 
   void _createPost({PostStatus status = PostStatus.published}) {
-    List<Map> tags = [];
-    for (var tag in _controller.tags) {
-      tags.add({'id': tag.id, 'text': tag.text});
-    }
+    final tags = _controller.tags
+        .map((tag) => {'id': tag.id, 'text': tag.text})
+        .toList();
+
     context.read<PostDetailBloc>().add(
       PostDetailEvent.create(
         body: _controller.formattedText,
@@ -87,19 +88,32 @@ class _PostCreateState extends State<PostCreate> {
         petition: widget.petition,
         meeting: widget.meeting,
         tags: tags,
-        imagePath1: _insertedContent != null
-            ? _insertedContent!.path
-            : _selectedImages.isNotEmpty
-            ? _selectedImages[0].path
-            : null,
+        imagePath1:
+            _insertedImage?.path ??
+            (_selectedImages.isNotEmpty ? _selectedImages[0].path : null),
         imagePath2: _selectedImages.length > 1 ? _selectedImages[1].path : null,
         imagePath3: _selectedImages.length > 2 ? _selectedImages[2].path : null,
         imagePath4: _selectedImages.length > 3 ? _selectedImages[3].path : null,
         videoPath: _selectedVideo?.path,
         filePath: _selectedFile?.path,
-        location: _location,
+        location: _selectedLocation,
       ),
     );
+  }
+
+  void _updatePostButtonState(String text) {
+    bool canPost = text.trim().isNotEmpty;
+    if (widget.replyTo != null) {
+      canPost =
+          _insertedImage != null ||
+          _selectedImages.isNotEmpty ||
+          _selectedVideo != null ||
+          _selectedFile != null ||
+          _selectedLocation != null;
+    }
+    if (canPost != _canPost) {
+      setState(() => _canPost = canPost);
+    }
   }
 
   @override
@@ -109,9 +123,7 @@ class _PostCreateState extends State<PostCreate> {
         BlocListener<PostDetailBloc, PostDetailState>(
           listener: (context, state) {
             if (state is PostCreated) {
-              if (!_replyTos.any(
-                (element) => element.id == state.post.repostOf?.id,
-              )) {
+              if (!_replyTos.any((p) => p.id == state.post.repostOf?.id)) {
                 Navigator.pop(context);
               }
             }
@@ -119,256 +131,225 @@ class _PostCreateState extends State<PostCreate> {
         ),
         BlocListener<ReplyToBloc, ReplyToState>(
           listener: (context, state) {
-            if (state.status == ReplyToStatus.success) {
-              if (widget.replyTo?.id == state.postId) {
-                setState(() {
-                  _replyTos.add(widget.replyTo!);
-                  _replyTos.addAll(state.posts.toList());
-                });
-              }
+            if (state.status == ReplyToStatus.success &&
+                widget.replyTo?.id == state.postId) {
+              setState(() {
+                _replyTos = [widget.replyTo!, ...state.posts];
+              });
             }
           },
         ),
       ],
       child: PopScope(
         canPop: false,
-        onPopInvokedWithResult: (didPop, result) {
-          if (didPop) {
-            return;
+        onPopInvokedWithResult: (didPop, _) {
+          if (didPop) return;
+
+          if (widget.replyTo != null || _canPost == false) {
+            Navigator.pop(context);
+          } else {
+            showDialog(
+              context: context,
+              builder: (context) => _SaveDraftDialog(
+                onYesPressed: () => _createPost(status: PostStatus.draft),
+              ),
+            );
           }
-          widget.replyTo != null
-              ? Navigator.pop(context)
-              : _disablePostButton
-              ? Navigator.pop(context)
-              : showDialog(
-                  context: context,
-                  builder: (context) => _SaveDraftDialog(
-                    onYesPressed: () => _createPost(status: PostStatus.draft),
-                  ),
-                );
         },
         child: Scaffold(
           appBar: AppBar(
             leading: IconButton(
+              icon: const Icon(Symbols.close),
               onPressed: () {
-                _disablePostButton
-                    ? Navigator.pop(context)
-                    : showDialog(
-                        context: context,
-                        builder: (context) => _SaveDraftDialog(
-                          onYesPressed: () =>
-                              _createPost(status: PostStatus.draft),
-                        ),
-                      );
+                if (widget.replyTo != null || !_canPost) {
+                  Navigator.pop(context);
+                } else {
+                  showDialog(
+                    context: context,
+                    builder: (context) => _SaveDraftDialog(
+                      onYesPressed: () => _createPost(status: PostStatus.draft),
+                    ),
+                  );
+                }
               },
-              icon: Icon(Symbols.close),
             ),
             actions: [
-              OutlinedButton(
-                onPressed: _disablePostButton
-                    ? null
-                    : () {
-                        showDialog(
+              Padding(
+                padding: const EdgeInsets.only(right: 15),
+                child: OutlinedButton(
+                  onPressed: _canPost
+                      ? () => showDialog(
                           context: context,
                           builder: (context) =>
                               PostCreateDialog(onYesPressed: _createPost),
-                        );
-                      },
-                child: Text(widget.replyTo != null ? 'Reply' : 'Post'),
-              ),
-            ],
-            actionsPadding: EdgeInsets.only(right: 15),
-          ),
-          body: CustomScrollView(
-            center: centerKey,
-            slivers: <Widget>[
-              PostListener(
-                posts: _replyTos,
-                onPostsUpdated: (posts) {
-                  setState(() {
-                    _replyTos = posts;
-                  });
-                },
-                child: ReplyTos(replyTos: _replyTos),
-              ),
-              SliverToBoxAdapter(
-                key: centerKey,
-                child: Stack(
-                  children: [
-                    if (widget.replyTo != null)
-                      ThreadLine(showBottomThread: false, showTopThread: true),
-                    Container(
-                      padding: EdgeInsets.only(
-                        left: 10,
-                        right: 15,
-                        top: 10,
-                        bottom: 5,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              PostAuthor(),
-                              PostTextField(
-                                controller: _controller,
-                                hintText: widget.replyTo != null
-                                    ? 'Reply'
-                                    : "What's new?",
-                                onChanged: (value) {
-                                  if (value == '') {
-                                    setState(() {
-                                      _disablePostButton = true;
-                                    });
-                                  } else {
-                                    setState(() {
-                                      _disablePostButton = false;
-                                    });
-                                  }
-                                },
-                                onContentInsertion: (imageFile) {
-                                  setState(() {
-                                    _insertedContent = imageFile;
-                                    _selectedImages = [];
-                                    _selectedFile = null;
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-                          if (_insertedContent != null)
-                            SingleImageView(
-                              image: _insertedContent!,
-                              onRemove: () {
-                                setState(() {
-                                  _insertedContent = null;
-                                });
-                              },
-                            ),
-                          if (_selectedImages.isNotEmpty)
-                            MultiImageView(
-                              recipient: widget.replyTo?.author,
-                              textEditingController: _controller,
-                              images: _selectedImages,
-                              onAdd: (images) {
-                                setState(() {
-                                  _selectedImages.addAll(images);
-                                });
-                              },
-                              onRemove: (index) {
-                                setState(() {
-                                  _selectedImages.removeAt(index);
-                                });
-                              },
-                            ),
-                          if (_selectedVideo != null)
-                            PostVideoViewer(video: _selectedVideo!),
-                          if (_selectedFile != null)
-                            Container(
-                              margin: EdgeInsets.only(top: 10),
-                              child: FileWidget(
-                                url: _selectedFile!.path,
-                                navigateToViewer: false,
-                              ),
-                            ),
-                          if (_location != null)
-                            Container(
-                              margin: EdgeInsets.only(top: 10),
-                              child: MapWidget(
-                                mapCenter: _location!,
-                                onRemove: () {
-                                  setState(() {
-                                    _location = null;
-                                  });
-                                },
-                              ),
-                            ),
-                          if (widget.repostOf != null)
-                            DependencyContainer(
-                              child: PostTile(
-                                post: widget.repostOf!,
-                                isDependency: true,
-                              ),
-                            ),
-                          if (widget.ballot != null)
-                            DependencyContainer(
-                              child: BallotTile(
-                                ballot: widget.ballot!,
-                                isDependency: true,
-                              ),
-                            ),
-                          if (widget.survey != null)
-                            DependencyContainer(
-                              child: SurveyTile(
-                                survey: widget.survey!,
-                                isDependency: true,
-                              ),
-                            ),
-                          if (widget.petition != null)
-                            DependencyContainer(
-                              child: PetitionTile(
-                                petition: widget.petition!,
-                                isDependency: true,
-                              ),
-                            ),
-                          if (widget.meeting != null)
-                            DependencyContainer(
-                              child: MeetingTile(
-                                meeting: widget.meeting!,
-                                isDependency: true,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ],
+                        )
+                      : null,
+                  child: Text(widget.replyTo != null ? 'Reply' : 'Post'),
                 ),
               ),
+            ],
+          ),
+          body: CustomScrollView(
+            center: _centerKey,
+            slivers: [
+              PostListener(
+                posts: _replyTos,
+                onPostsUpdated: (posts) => setState(() => _replyTos = posts),
+                child: ReplyTos(replyTos: _replyTos),
+              ),
+              SliverToBoxAdapter(key: _centerKey, child: _buildPostForm()),
             ],
           ),
           bottomNavigationBar: PostBottomNavBar(
             controller: _controller,
             reply: widget.replyTo,
-            onPickMedia: () async {
-              List<File> newFiles = await ImagePickerUtil.pickMultiImage(
-                limit: files.isEmpty ? fileLimit : fileLimit - files.length,
-              );
-              if (newFiles.isNotEmpty) {
-                setState(() {
-                  files.addAll(newFiles);
-                });
-              }
-            },
-            files: files,
-            fileLimit: fileLimit,
+            onPickMedia: _pickImages,
+            files: _selectedImages, // if needed by the bar
+            fileLimit: 4,
             onNewImages: (images) {
               setState(() {
                 _selectedImages = images;
-                _insertedContent = null;
+                _insertedImage = null;
               });
+              _updatePostButtonState(_controller.formattedText);
             },
             onNewFile: (file) {
-              setState(() {
-                _selectedFile = file;
-              });
+              setState(() => _selectedFile = file);
+              _updatePostButtonState(_controller.formattedText);
             },
             onLocation: (point) {
-              setState(() {
-                _location = point;
-              });
+              setState(() => _selectedLocation = point);
+              _updatePostButtonState(_controller.formattedText);
             },
             onNewVideo: (video) {
-              setState(() {
-                _selectedVideo = video;
-              });
+              setState(() => _selectedVideo = video);
+              _updatePostButtonState(_controller.formattedText);
             },
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildPostForm() {
+    return Stack(
+      children: [
+        if (widget.replyTo != null)
+          const ThreadLine(showBottomThread: false, showTopThread: true),
+
+        Container(
+          padding: const EdgeInsets.only(
+            left: 10,
+            right: 15,
+            top: 10,
+            bottom: 5,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const PostAuthor(),
+                  PostTextField(
+                    controller: _controller,
+                    hintText: widget.replyTo != null ? 'Reply' : "What's new?",
+                    onChanged: _updatePostButtonState,
+                    onContentInsertion: (imageFile) {
+                      setState(() {
+                        _insertedImage = imageFile;
+                        _selectedImages.clear();
+                        _selectedFile = null;
+                      });
+                    },
+                  ),
+                ],
+              ),
+
+              // Media Previews
+              if (_insertedImage != null)
+                SingleImageView(
+                  image: _insertedImage!,
+                  onRemove: () => setState(() => _insertedImage = null),
+                ),
+
+              if (_selectedImages.isNotEmpty)
+                MultiImageView(
+                  recipient: widget.replyTo?.author,
+                  textEditingController: _controller,
+                  images: _selectedImages,
+                  onAdd: (images) =>
+                      setState(() => _selectedImages.addAll(images)),
+                  onRemove: (index) =>
+                      setState(() => _selectedImages.removeAt(index)),
+                ),
+
+              if (_selectedVideo != null)
+                PostVideoViewer(video: _selectedVideo!),
+
+              if (_selectedFile != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: FileWidget(
+                    url: _selectedFile!.path,
+                    navigateToViewer: false,
+                  ),
+                ),
+
+              if (_selectedLocation != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: MapWidget(
+                    mapCenter: _selectedLocation!,
+                    onRemove: () => setState(() => _selectedLocation = null),
+                  ),
+                ),
+
+              // Dependencies (repost, ballot, survey, etc.)
+              if (widget.repostOf != null)
+                DependencyContainer(
+                  child: PostTile(post: widget.repostOf!, isDependency: true),
+                ),
+
+              if (widget.ballot != null)
+                DependencyContainer(
+                  child: BallotTile(ballot: widget.ballot!, isDependency: true),
+                ),
+
+              if (widget.survey != null)
+                DependencyContainer(
+                  child: SurveyTile(survey: widget.survey!, isDependency: true),
+                ),
+
+              if (widget.petition != null)
+                DependencyContainer(
+                  child: PetitionTile(
+                    petition: widget.petition!,
+                    isDependency: true,
+                  ),
+                ),
+
+              if (widget.meeting != null)
+                DependencyContainer(
+                  child: MeetingTile(
+                    meeting: widget.meeting!,
+                    isDependency: true,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _pickImages() async {
+    final newImages = await ImagePickerUtil.pickMultiImage(
+      limit: 4 - _selectedImages.length,
+    );
+    if (newImages.isNotEmpty) {
+      setState(() => _selectedImages.addAll(newImages));
+    }
   }
 }
 
@@ -388,9 +369,7 @@ class PostCreateDialog extends StatelessWidget {
         onYesPressed();
       },
       button2Text: 'No',
-      onButton2Pressed: () {
-        Navigator.pop(context);
-      },
+      onButton2Pressed: () => Navigator.pop(context),
     );
   }
 }
@@ -405,8 +384,7 @@ class _SaveDraftDialog extends StatelessWidget {
     return CustomDialog(
       title: 'Save as draft',
       content:
-          'Do you want to save this post as a draft? \n'
-          'You can post it at a later time.',
+          'Do you want to save this post as a draft?\nYou can post it later.',
       button1Text: 'Delete',
       onButton1Pressed: () {
         Navigator.pop(context);

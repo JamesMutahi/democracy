@@ -40,7 +40,6 @@ class _MessagesState extends State<Messages> {
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
   );
-  double messageMargin = 10;
 
   @override
   void initState() {
@@ -55,15 +54,19 @@ class _MessagesState extends State<Messages> {
     return BlocListener<MessageDetailBloc, MessageDetailState>(
       listener: (context, state) {
         if (state is MessageCreated) {
-          context.read<MessagesBloc>().add(
-            MessagesEvent.add(message: state.message),
-          );
+          if (state.message.chatId == widget.chat.id) {
+            context.read<MessagesBloc>().add(
+              MessagesEvent.add(message: state.message),
+            );
+          }
         }
 
         if (state is MessageUpdated) {
-          context.read<MessagesBloc>().add(
-            MessagesEvent.update(message: state.message),
-          );
+          if (state.message.chatId == widget.chat.id) {
+            context.read<MessagesBloc>().add(
+              MessagesEvent.update(message: state.message),
+            );
+          }
         }
 
         if (state is MessageDeleted) {
@@ -83,8 +86,11 @@ class _MessagesState extends State<Messages> {
       },
 
       child: BlocBuilder<MessagesBloc, MessagesState>(
+        buildWhen: (previous, current) {
+          return current.chatId == widget.chat.id;
+        },
         builder: (context, state) {
-          if (state.status == MessagesStatus.loading) {
+          if (state.status == MessagesStatus.initial) {
             return const BottomLoader();
           }
 
@@ -104,15 +110,20 @@ class _MessagesState extends State<Messages> {
             if (_refreshController.footerStatus == LoadStatus.loading) {
               _refreshController.loadFailed();
             }
-            return FailureRetryButton(
-              onPressed: () => context.read<MessagesBloc>().add(
-                MessagesEvent.get(chat: widget.chat),
-              ),
-            );
+
+            if (state.messages.isEmpty) {
+              return FailureRetryButton(
+                onPressed: () => context.read<MessagesBloc>().add(
+                  MessagesEvent.get(chat: widget.chat),
+                ),
+              );
+            }
           }
 
           List<Message> messages = state.messages.toList();
           messages.sort((a, b) => b.id.compareTo(a.id));
+
+          double messageMargin = 10;
 
           var groupByDate = groupBy(
             messages,
@@ -124,6 +135,7 @@ class _MessagesState extends State<Messages> {
             // ListView is in reverse so objects are set in reverse order as well
             for (Message message in list) {
               bool alignedRight = widget.currentUser.id == message.user.id;
+              String text = extractLinkFromMessage(message);
               widgets.add(SizedBox(height: messageMargin));
               if (message.isDeleted) {
                 widgets.add(
@@ -140,7 +152,6 @@ class _MessagesState extends State<Messages> {
                 widgets.add(
                   MessageTime(message: message, alignedRight: alignedRight),
                 );
-                String text = extractLinkFromMessage(message);
                 if (text.isNotEmpty) {
                   widgets.add(
                     AlignmentContainer(
@@ -152,7 +163,7 @@ class _MessagesState extends State<Messages> {
                   );
                 }
                 if (message.image1Url != null) {
-                  if (message.text.isNotEmpty) {
+                  if (text.isNotEmpty) {
                     widgets.add(SizedBox(height: messageMargin));
                   }
                   widgets.add(
@@ -164,7 +175,7 @@ class _MessagesState extends State<Messages> {
                   );
                 }
                 if (message.videoUrl != null) {
-                  if (message.text.isNotEmpty) {
+                  if (text.isNotEmpty) {
                     widgets.add(SizedBox(height: messageMargin));
                   }
                   widgets.add(
@@ -176,7 +187,7 @@ class _MessagesState extends State<Messages> {
                   );
                 }
                 if (message.fileUrl != null) {
-                  if (message.text.isNotEmpty) {
+                  if (text.isNotEmpty) {
                     widgets.add(SizedBox(height: messageMargin));
                   }
                   widgets.add(
@@ -188,7 +199,7 @@ class _MessagesState extends State<Messages> {
                   );
                 }
                 if (message.location != null) {
-                  if (message.text.isNotEmpty) {
+                  if (text.isNotEmpty) {
                     widgets.add(SizedBox(height: messageMargin));
                   }
                   widgets.add(
@@ -200,7 +211,7 @@ class _MessagesState extends State<Messages> {
                   );
                 }
                 if (message.post != null) {
-                  if (message.text.isNotEmpty) {
+                  if (text.isNotEmpty) {
                     widgets.add(SizedBox(height: messageMargin));
                   }
                   widgets.add(
@@ -215,7 +226,7 @@ class _MessagesState extends State<Messages> {
                   );
                 }
                 if (message.ballot != null) {
-                  if (message.text.isNotEmpty) {
+                  if (text.isNotEmpty) {
                     widgets.add(SizedBox(height: messageMargin));
                   }
                   widgets.add(
@@ -230,7 +241,7 @@ class _MessagesState extends State<Messages> {
                   );
                 }
                 if (message.survey != null) {
-                  if (message.text.isNotEmpty) {
+                  if (text.isNotEmpty) {
                     widgets.add(SizedBox(height: messageMargin));
                   }
                   widgets.add(
@@ -245,7 +256,7 @@ class _MessagesState extends State<Messages> {
                   );
                 }
                 if (message.petition != null) {
-                  if (message.text.isNotEmpty) {
+                  if (text.isNotEmpty) {
                     widgets.add(SizedBox(height: messageMargin));
                   }
                   widgets.add(
@@ -260,7 +271,7 @@ class _MessagesState extends State<Messages> {
                   );
                 }
                 if (message.meeting != null) {
-                  if (message.text.isNotEmpty) {
+                  if (text.isNotEmpty) {
                     widgets.add(SizedBox(height: messageMargin));
                   }
                   widgets.add(
@@ -275,7 +286,7 @@ class _MessagesState extends State<Messages> {
                   );
                 }
                 if (message.section != null) {
-                  if (message.text.isNotEmpty) {
+                  if (text.isNotEmpty) {
                     widgets.add(SizedBox(height: messageMargin));
                   }
                   widgets.add(
@@ -493,7 +504,10 @@ class _AlignmentContainerState extends State<AlignmentContainer> {
                   ? Alignment.topRight
                   : Alignment.topLeft,
               child: Container(
-                constraints: BoxConstraints(maxWidth: messageWidth),
+                constraints: BoxConstraints(
+                  maxWidth: messageWidth,
+                  minWidth: 60,
+                ),
                 margin: EdgeInsets.only(
                   left: widget.alignedRight ? 0 : messageMargin,
                   right: widget.alignedRight ? messageMargin : 0,
@@ -511,10 +525,8 @@ class _AlignmentContainerState extends State<AlignmentContainer> {
                         : Radius.circular(15),
                   ),
                   color: widget.alignedRight
-                      ? Theme.of(
-                          context,
-                        ).colorScheme.primaryContainer.withValues(alpha: 0.6)
-                      : Theme.of(context).colorScheme.tertiaryContainer,
+                      ? Theme.of(context).colorScheme.primaryContainer
+                      : Theme.of(context).colorScheme.secondaryContainer,
                 ),
                 child: widget.child,
               ),

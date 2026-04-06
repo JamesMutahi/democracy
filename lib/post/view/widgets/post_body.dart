@@ -1,4 +1,5 @@
 import 'package:democracy/app/utils/custom_text.dart';
+import 'package:democracy/app/utils/regex.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/community_note_detail.dart';
 import 'package:democracy/post/view/post_detail.dart';
@@ -28,7 +29,7 @@ class _PostBodyState extends State<PostBody> {
 
   @override
   Widget build(BuildContext context) {
-    String text = extractLink(widget.post);
+    String text = extractLinkFromPost(widget.post);
     return text.isEmpty
         ? SizedBox.shrink()
         : CustomText(
@@ -77,12 +78,8 @@ class _PostBodyState extends State<PostBody> {
   }
 }
 
-String extractLink(Post post) {
+String extractLinkFromPost(Post post) {
   String text = post.body;
-  // The regular expression to match URLs (supporting http, https, and www.)
-  final RegExp linkRegExp = RegExp(
-    r'(http|https)://[\w-]+(\.[\w-]+)+([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?',
-  );
 
   // Find all matches in the text
   final Iterable<RegExpMatch> urlMatches = linkRegExp.allMatches(text);
