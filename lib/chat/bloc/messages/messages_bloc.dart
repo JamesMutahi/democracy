@@ -44,8 +44,8 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
         'action': action,
         'request_id': requestId,
         'chat_id': event.chat.id,
-        'last_message': event.oldestMessage?.id,
-        'first_message': event.newestMessage?.id,
+        'oldest_message': event.oldestMessage?.id,
+        'newest_message': event.newestMessage?.id,
       },
     };
     webSocketService.send(message);
@@ -53,19 +53,21 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
 
   Future _onReceived(_Received event, Emitter<MessagesState> emit) async {
     if (event.payload['response_status'] == 200) {
-      final List<Message> newMessages = List.from(
+      final List<Message> messages = List.from(
         event.payload['data']['results'].map((e) => Message.fromJson(e)),
       );
-      final bool isInitialOrNewest =
-          event.payload['data']['oldest_message'] == null;
+      int? oldestMessage = event.payload['data']['oldest_message'];
+      int? newestMessage = event.payload['data']['newest_message'];
       emit(
         state.copyWith(
           status: MessagesStatus.success,
-          messages: isInitialOrNewest
-              ? [...newMessages, ...state.messages] // prepend (newest on top)
-              : [...state.messages, ...newMessages], // append (older messages)
-          hasNext: event.payload['data']['has_next'] ?? false,
-          chatId: event.payload['data']['chat_id']
+          messages: oldestMessage != null
+              ? [...state.messages, ...messages]
+              : newestMessage != null
+              ? [...messages, ...state.messages]
+              : messages,
+          hasNext: event.payload['data']['has_next'],
+          chatId: event.payload['data']['chat_id'],
         ),
       );
     } else {
@@ -81,6 +83,7 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
 
     emit(
       state.copyWith(
+        chatId: message.chatId,
         messages: [message, ...state.messages], // newest on top
         status: MessagesStatus.success,
       ),

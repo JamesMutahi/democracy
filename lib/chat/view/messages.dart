@@ -333,14 +333,12 @@ class _MessagesState extends State<Messages> {
               enablePullUp: state.hasNext,
               controller: _refreshController,
               onLoading: () {
-                if (messages.isNotEmpty) {
-                  context.read<MessagesBloc>().add(
-                    MessagesEvent.get(
-                      chat: widget.chat,
-                      oldestMessage: messages.last,
-                    ),
-                  );
-                }
+                context.read<MessagesBloc>().add(
+                  MessagesEvent.get(
+                    chat: widget.chat,
+                    oldestMessage: messages.last,
+                  ),
+                );
               },
               footer: ClassicFooter(),
               child: ListView(reverse: true, children: widgets),

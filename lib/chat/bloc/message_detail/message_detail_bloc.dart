@@ -83,7 +83,12 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
   Future _onDeleted(_Deleted event, Emitter<MessageDetailState> emit) async {
     emit(MessageDetailLoading());
     if (event.payload['response_status'] == 204) {
-      emit(MessageDeleted(messageId: event.payload['pk']));
+      emit(
+        MessageDeleted(
+          messageId: event.payload['pk'],
+          chatId: event.payload['chat_id'],
+        ),
+      );
     } else {
       emit(MessageDetailFailure(error: event.payload['errors'].toString()));
     }
