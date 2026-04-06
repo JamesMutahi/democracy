@@ -1,4 +1,3 @@
-import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/expandable_fab.dart';
@@ -137,9 +136,7 @@ class _ForYouTabState extends State<ForYouTab>
   @override
   bool get wantKeepAlive => true;
 
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
+  final RefreshController _refreshController = RefreshController();
 
   @override
   void initState() {
@@ -152,11 +149,7 @@ class _ForYouTabState extends State<ForYouTab>
     super.build(context);
     return BlocBuilder<ForYouBloc, ForYouState>(
       builder: (context, state) {
-        final posts = state.posts;
-
-        if (state.status == ForYouStatus.initial) {
-          return const BottomLoader();
-        }
+        final posts = state.posts.toList();
 
         if (state.status == ForYouStatus.success) {
           if (_refreshController.headerStatus == RefreshStatus.refreshing) {
@@ -178,9 +171,7 @@ class _ForYouTabState extends State<ForYouTab>
 
         return PostListView(
           posts: posts,
-          loading: state.posts.isNotEmpty
-              ? false
-              : state.status == ForYouStatus.initial,
+          loading: state.status == ForYouStatus.initial,
           failure: state.posts.isNotEmpty
               ? false
               : state.status == ForYouStatus.failure,
@@ -230,11 +221,7 @@ class _FollowingTabState extends State<FollowingTab> {
   Widget build(BuildContext context) {
     return BlocBuilder<FollowingPostsBloc, FollowingPostsState>(
       builder: (context, state) {
-        final posts = state.posts;
-
-        if (state.status == FollowingPostsStatus.initial) {
-          return const BottomLoader();
-        }
+        final posts = state.posts.toList();
 
         if (state.status == FollowingPostsStatus.success) {
           if (_refreshController.headerStatus == RefreshStatus.refreshing) {
@@ -256,9 +243,7 @@ class _FollowingTabState extends State<FollowingTab> {
 
         return PostListView(
           posts: posts,
-          loading: state.posts.isNotEmpty
-              ? false
-              : state.status == FollowingPostsStatus.initial,
+          loading: state.status == FollowingPostsStatus.initial,
           failure: state.posts.isNotEmpty
               ? false
               : state.status == FollowingPostsStatus.failure,

@@ -5,4 +5,5 @@ sealed class MutedEvent with _$MutedEvent {
   const factory MutedEvent.get({User? lastUser}) = _Get;
   const factory MutedEvent.received({required Map<String, dynamic> payload}) =
       _Received;
+  const factory MutedEvent.update({required List<User> users}) = _Update;
 }

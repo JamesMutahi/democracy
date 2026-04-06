@@ -21,18 +21,11 @@ class UserPetitionsBloc extends Bloc<UserPetitionsEvent, UserPetitionsState> {
         add(_Received(payload: message['payload']));
       }
     });
-    on<_Get>((event, emit) {
-      _onGet(event, emit);
-    });
-    on<_Received>((event, emit) {
-      _onReceived(event, emit);
-    });
-    on<_Resubscribe>((event, emit) {
-      _onResubscribe(event, emit);
-    });
-    on<_Unsubscribe>((event, emit) {
-      _onUnsubscribe(event, emit);
-    });
+    on<_Get>((event, emit) => _onGet(event, emit));
+    on<_Received>((event, emit) => _onReceived(event, emit));
+    on<_Add>((event, emit) => _onAdd(event, emit));
+    on<_Update>((event, emit) => _onUpdate(event, emit));
+    on<_Remove>((event, emit) => _onRemove(event, emit));
   }
 
   Future _onGet(_Get event, Emitter<UserPetitionsState> emit) async {
@@ -73,40 +66,49 @@ class UserPetitionsBloc extends Bloc<UserPetitionsEvent, UserPetitionsState> {
     }
   }
 
-  Future _onResubscribe(
-    _Resubscribe event,
-    Emitter<UserPetitionsState> emit,
-  ) async {
-    List<int> petitionIds = event.petitions
-        .map((petition) => petition.id)
-        .toList();
-    Map<String, dynamic> message = {
-      'stream': stream,
-      'payload': {
-        "action": 'resubscribe_user_petitions',
-        'request_id': event.user.id,
-        'pks': petitionIds,
-      },
-    };
-    webSocketService.send(message);
+  void _onAdd(_Add event, Emitter<UserPetitionsState> emit) {
+    final exists = state.petitions.any(
+      (element) => element.id == event.petition.id,
+    );
+
+    if (!exists) {
+      emit(
+        state.copyWith(
+          petitions: [event.petition, ...state.petitions],
+          status: UserPetitionsStatus.success,
+        ),
+      );
+    }
   }
 
-  Future _onUnsubscribe(
-    _Unsubscribe event,
-    Emitter<UserPetitionsState> emit,
-  ) async {
-    List<int> petitionIds = event.petitions
-        .map((petition) => petition.id)
+  void _onUpdate(_Update event, Emitter<UserPetitionsState> emit) {
+    final index = state.petitions.indexWhere(
+      (element) => element.id == event.petition.id,
+    );
+    if (index == -1) return;
+
+    final updatedPetitions = List<Petition>.from(state.petitions);
+    updatedPetitions[index] = event.petition;
+
+    emit(
+      state.copyWith(
+        petitions: updatedPetitions,
+        status: UserPetitionsStatus.success,
+      ),
+    );
+  }
+
+  void _onRemove(_Remove event, Emitter<UserPetitionsState> emit) {
+    final updatedPetitions = state.petitions
+        .where((element) => element.id != event.petitionId)
         .toList();
-    Map<String, dynamic> message = {
-      'stream': stream,
-      'payload': {
-        "action": 'unsubscribe_user_petitions',
-        'request_id': event.user.id,
-        'pks': petitionIds,
-      },
-    };
-    webSocketService.send(message);
+
+    emit(
+      state.copyWith(
+        petitions: updatedPetitions,
+        status: UserPetitionsStatus.success,
+      ),
+    );
   }
 
   final WebSocketService webSocketService;

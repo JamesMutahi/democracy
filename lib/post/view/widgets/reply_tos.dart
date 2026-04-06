@@ -1,25 +1,65 @@
+import 'package:democracy/app/utils/failure_retry_button.dart';
+import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
 import 'package:democracy/post/models/post.dart';
+import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_widget_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ReplyTos extends StatelessWidget {
-  const ReplyTos({super.key, required this.replyTos});
+class ReplyTos extends StatefulWidget {
+  const ReplyTos({super.key, required this.post});
 
-  final List<Post> replyTos;
+  final Post post;
 
   @override
+  State<ReplyTos> createState() => _ReplyTosState();
+}
+
+class _ReplyTosState extends State<ReplyTos> {
+  @override
   Widget build(BuildContext context) {
-    return SliverList(
-      delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-        Post post = replyTos[index];
-        return PostWidgetSelector(
-          key: ValueKey(post.id),
-          post: post,
-          showTopThread: post.replyTo != null || post.communityNoteOf != null,
-          showBottomThread: true,
-          hideBorder: true,
+    return BlocBuilder<ReplyToBloc, ReplyToState>(
+      buildWhen: (previous, current) {
+        return widget.post.id == current.postId;
+      },
+      builder: (context, state) {
+        final replyTos = state.posts.toList();
+
+        if (state.status == ReplyToStatus.failure) {
+          if (replyTos.isEmpty) {
+            return SliverToBoxAdapter(
+              child: FailureRetryButton(
+                onPressed: () => context.read<ReplyToBloc>().add(
+                  ReplyToEvent.get(post: widget.post),
+                ),
+              ),
+            );
+          }
+        }
+
+        return PostListener(
+          posts: replyTos,
+          onPostsUpdated: (posts) {
+            context.read<ReplyToBloc>().add(ReplyToEvent.update(posts: posts));
+          },
+          child: SliverList(
+            delegate: SliverChildBuilderDelegate((
+              BuildContext context,
+              int index,
+            ) {
+              Post post = replyTos[index];
+              return PostWidgetSelector(
+                key: ValueKey(post.id),
+                post: post,
+                showTopThread:
+                    post.replyTo != null || post.communityNoteOf != null,
+                showBottomThread: true,
+                hideBorder: true,
+              );
+            }, childCount: replyTos.length),
+          ),
         );
-      }, childCount: replyTos.length),
+      },
     );
   }
 }

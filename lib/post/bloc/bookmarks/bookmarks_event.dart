@@ -6,4 +6,5 @@ sealed class BookmarksEvent with _$BookmarksEvent {
   const factory BookmarksEvent.received({
     required Map<String, dynamic> payload,
   }) = _Received;
+  const factory BookmarksEvent.update({required List<Post> posts}) = _Update;
 }

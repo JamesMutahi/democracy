@@ -224,155 +224,157 @@ class _ChatDetailState extends State<_ChatDetail> {
                 )
               : Messages(chat: widget.chat, currentUser: widget.currentUser),
           bottomNavigationBar: otherUser.isBlocked && hideChat
-              ? SizedBox.shrink()
+              ? SizedBox.shrink() // Hide the bottom navigation
               : otherUser.isBlocked && !hideChat
-              ? otherUser.hasBlocked
-                    ? Container(
-                        margin: const EdgeInsets.only(bottom: 8.0),
-                        child: Text(
-                          'You have been blocked',
-                          textAlign: TextAlign.center,
-                        ),
-                      )
-                    : OutlinedButton(
-                        style: ButtonStyle(
-                          padding: WidgetStateProperty.all(
-                            EdgeInsets.symmetric(vertical: 15),
-                          ),
-                          shape:
-                              WidgetStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                              ),
-                        ),
-                        onPressed: () {
-                          context.read<UserDetailBloc>().add(
-                            UserDetailEvent.block(user: otherUser),
-                          );
-                        },
-                        child: Text('Unblock'),
-                      )
-              : BottomTextFormField(
-                  focusNode: _focusNode,
-                  showCursor: true,
-                  readOnly: false,
-                  controller: _controller,
-                  onTap: () {},
-                  onChanged: (value) {
-                    if (value.trim().isEmpty) {
-                      setState(() {
-                        _disableSendButton = true;
-                      });
-                    } else {
-                      setState(() {
-                        _disableSendButton = false;
-                      });
-                    }
-                  },
-                  hintText: 'Message',
-                  prefixIcon: null,
-                  onNewImages: (images) {
-                    setState(() {
-                      _selectedImages = images;
-                    });
-                  },
-                  selectedImages: _selectedImages,
-                  onAddImages: (images) {
-                    setState(() {
-                      _selectedImages.addAll(images);
-                    });
-                  },
-                  onRemoveImage: (index) {
-                    setState(() {
-                      _selectedImages.removeAt(index);
-                    });
-                  },
-                  onNewFile: (file) {
-                    setState(() {
-                      _selectedFile = file;
-                    });
-                  },
-                  selectedFile: _selectedFile,
-                  onContentInsertion: (imageFile) {
-                    context.read<MessageDetailBloc>().add(
-                      MessageDetailEvent.create(
-                        chat: widget.chat,
-                        text: _controller.text,
-                        imagePath1: imageFile.path,
-                      ),
-                    );
-                  },
-                  insertedContent: null,
-                  onRemoveInsertedContent: null,
-                  allowedMimeTypes: const <String>['image/png', 'image/gif'],
-                  onLocation: (point) {
-                    context.read<MessageDetailBloc>().add(
-                      MessageDetailEvent.create(
-                        chat: widget.chat,
-                        text: _controller.text,
-                        location: point,
-                      ),
-                    );
-                  },
-                  location: null,
-                  onRemoveLocation: null,
-                  onSend:
-                      _disableSendButton &&
-                          _selectedImages.isEmpty &&
-                          _selectedFile == null
-                      ? null
-                      : () {
-                          context.read<MessageDetailBloc>().add(
-                            MessageDetailEvent.create(
-                              chat: widget.chat,
-                              text: _controller.text,
-                              imagePath1: _selectedImages.isNotEmpty
-                                  ? _selectedImages[0].path
-                                  : null,
-                              imagePath2: _selectedImages.length > 1
-                                  ? _selectedImages[1].path
-                                  : null,
-                              imagePath3: _selectedImages.length > 2
-                                  ? _selectedImages[2].path
-                                  : null,
-                              imagePath4: _selectedImages.length > 3
-                                  ? _selectedImages[3].path
-                                  : null,
-                              filePath: _selectedFile?.path,
-                            ),
-                          );
-                          _controller.clear();
-                          setState(() {
-                            _selectedFile = null;
-                            _selectedImages = [];
-                            _disableSendButton = true;
-                          });
-                        },
-                  recipient: widget.otherUser,
-                  onImageEditingComplete: (image) {
-                    context.read<MessageDetailBloc>().add(
-                      MessageDetailEvent.create(
-                        chat: widget.chat,
-                        text: _controller.text,
-                        imagePath1: image.path,
-                      ),
-                    );
-                    _controller.clear();
-                  },
-                  onVideoEditingComplete: (video) {
-                    context.read<MessageDetailBloc>().add(
-                      MessageDetailEvent.create(
-                        chat: widget.chat,
-                        text: _controller.text,
-                        videoPath: video.path,
-                      ),
-                    );
-                    _controller.clear();
-                  },
-                ),
+              ? _buildBlockedWidget() // Show button to indicate block status
+              : _buildBottomNavigationBar(),
         ),
       ),
+    );
+  }
+
+  Widget _buildBlockedWidget() {
+    return otherUser.hasBlocked
+        ? Container(
+            margin: const EdgeInsets.only(bottom: 8.0),
+            child: Text('You have been blocked', textAlign: TextAlign.center),
+          )
+        : OutlinedButton(
+            style: ButtonStyle(
+              padding: WidgetStateProperty.all(
+                EdgeInsets.symmetric(vertical: 15),
+              ),
+              shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+            ),
+            onPressed: () {
+              context.read<UserDetailBloc>().add(
+                UserDetailEvent.block(user: otherUser),
+              );
+            },
+            child: Text('Unblock'),
+          );
+  }
+
+  Widget _buildBottomNavigationBar() {
+    return BottomTextFormField(
+      focusNode: _focusNode,
+      showCursor: true,
+      readOnly: false,
+      controller: _controller,
+      onTap: () {},
+      onChanged: (value) {
+        if (value.trim().isEmpty) {
+          setState(() {
+            _disableSendButton = true;
+          });
+        } else {
+          setState(() {
+            _disableSendButton = false;
+          });
+        }
+      },
+      hintText: 'Message',
+      prefixIcon: null,
+      onNewImages: (images) {
+        setState(() {
+          _selectedImages = images;
+        });
+      },
+      selectedImages: _selectedImages,
+      onAddImages: (images) {
+        setState(() {
+          _selectedImages.addAll(images);
+        });
+      },
+      onRemoveImage: (index) {
+        setState(() {
+          _selectedImages.removeAt(index);
+        });
+      },
+      onNewFile: (file) {
+        setState(() {
+          _selectedFile = file;
+        });
+      },
+      selectedFile: _selectedFile,
+      onContentInsertion: (imageFile) {
+        context.read<MessageDetailBloc>().add(
+          MessageDetailEvent.create(
+            chat: widget.chat,
+            text: _controller.text,
+            imagePath1: imageFile.path,
+          ),
+        );
+      },
+      insertedContent: null,
+      onRemoveInsertedContent: null,
+      allowedMimeTypes: const <String>['image/png', 'image/gif'],
+      onLocation: (point) {
+        context.read<MessageDetailBloc>().add(
+          MessageDetailEvent.create(
+            chat: widget.chat,
+            text: _controller.text,
+            location: point,
+          ),
+        );
+      },
+      location: null,
+      onRemoveLocation: null,
+      onSend:
+          _disableSendButton && _selectedImages.isEmpty && _selectedFile == null
+          ? null
+          : () {
+              context.read<MessageDetailBloc>().add(
+                MessageDetailEvent.create(
+                  chat: widget.chat,
+                  text: _controller.text,
+                  imagePath1: _selectedImages.isNotEmpty
+                      ? _selectedImages[0].path
+                      : null,
+                  imagePath2: _selectedImages.length > 1
+                      ? _selectedImages[1].path
+                      : null,
+                  imagePath3: _selectedImages.length > 2
+                      ? _selectedImages[2].path
+                      : null,
+                  imagePath4: _selectedImages.length > 3
+                      ? _selectedImages[3].path
+                      : null,
+                  filePath: _selectedFile?.path,
+                ),
+              );
+              _controller.clear();
+              setState(() {
+                _selectedFile = null;
+                _selectedImages = [];
+                _disableSendButton = true;
+              });
+            },
+      recipient: widget.otherUser,
+      onImageEditingComplete: (image) {
+        context.read<MessageDetailBloc>().add(
+          MessageDetailEvent.create(
+            chat: widget.chat,
+            text: _controller.text,
+            imagePath1: image.path,
+          ),
+        );
+        _controller.clear();
+      },
+      onVideoEditingComplete: (video) {
+        context.read<MessageDetailBloc>().add(
+          MessageDetailEvent.create(
+            chat: widget.chat,
+            text: _controller.text,
+            videoPath: video.path,
+          ),
+        );
+        _controller.clear();
+      },
     );
   }
 }

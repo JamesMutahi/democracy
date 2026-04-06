@@ -380,13 +380,7 @@ class _TopPostsState extends State<_TopPostsTab>
   @override
   bool get wantKeepAlive => true;
 
-  bool loading = true;
-  bool failure = false;
-  List<Post> _posts = [];
-  bool hasNextPage = false;
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
+  final RefreshController _refreshController = RefreshController();
 
   @override
   void initState() {
@@ -408,75 +402,63 @@ class _TopPostsState extends State<_TopPostsTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<PostFilterCubit, PostFilterState>(
-          listener: (context, state) {
-            if (state.searchTerm == widget.searchTerm) {
-              context.read<PostsBloc>().add(
-                PostsEvent.get(
-                  searchTerm: widget.searchTerm,
-                  startDate: state.startDate,
-                  endDate: state.endDate,
-                ),
-              );
-            }
-          },
-        ),
-        BlocListener<PostsBloc, PostsState>(
-          listener: (context, state) {
-            if (state.status == PostsStatus.success) {
-              if (state.searchTerm == widget.searchTerm) {
-                setState(() {
-                  _posts = state.posts.toList();
-                  loading = false;
-                  failure = false;
-                  hasNextPage = state.hasNext;
-                  if (_refreshController.headerStatus ==
-                      RefreshStatus.refreshing) {
-                    _refreshController.refreshCompleted();
-                  }
-                  if (_refreshController.footerStatus == LoadStatus.loading) {
-                    _refreshController.loadComplete();
-                  }
-                });
-              }
-            }
-            if (state.status == PostsStatus.failure) {
-              if (loading) {
-                setState(() {
-                  loading = false;
-                  failure = true;
-                });
-              }
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshFailed();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadFailed();
-              }
-            }
-          },
-        ),
-      ],
-      child: PostListView(
-        posts: _posts,
-        loading: loading,
-        failure: failure,
-        onPostsUpdated: (posts) {
-          setState(() {
-            _posts = posts;
-          });
+    return BlocListener<PostFilterCubit, PostFilterState>(
+      listener: (context, state) {
+        if (state.searchTerm == widget.searchTerm) {
+          context.read<PostsBloc>().add(
+            PostsEvent.get(
+              searchTerm: widget.searchTerm,
+              startDate: state.startDate,
+              endDate: state.endDate,
+            ),
+          );
+        }
+      },
+      child: BlocBuilder<PostsBloc, PostsState>(
+        buildWhen: (previous, current) {
+          return widget.searchTerm == current.searchTerm;
         },
-        refreshController: _refreshController,
-        enablePullDown: true,
-        enablePullUp: hasNextPage,
-        checkVisibility: true,
-        onRefresh: _getPosts,
-        onLoading: () {
-          _getPosts(previousPosts: _posts);
+        builder: (context, state) {
+          final posts = state.posts.toList();
+
+          if (state.status == PostsStatus.success) {
+            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+              _refreshController.refreshCompleted();
+            }
+            if (_refreshController.footerStatus == LoadStatus.loading) {
+              _refreshController.loadComplete();
+            }
+          }
+
+          if (state.status == PostsStatus.failure) {
+            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+              _refreshController.refreshFailed();
+            }
+            if (_refreshController.footerStatus == LoadStatus.loading) {
+              _refreshController.loadFailed();
+            }
+          }
+
+          return PostListView(
+            posts: posts,
+            loading: state.status == PostsStatus.initial,
+            failure: state.posts.isNotEmpty
+                ? false
+                : state.status == PostsStatus.failure,
+            onPostsUpdated: (posts) {
+              context.read<PostsBloc>().add(PostsEvent.update(posts: posts));
+            },
+            refreshController: _refreshController,
+            enablePullDown: true,
+            enablePullUp: state.hasNext,
+            checkVisibility: true,
+            onRefresh: _getPosts,
+            onLoading: () {
+              _getPosts(previousPosts: posts);
+            },
+            onFailure: _getPosts,
+          );
         },
-        onFailure: _getPosts,
       ),
     );
   }
@@ -502,13 +484,7 @@ class _RecentPostsState extends State<_RecentPostsTab>
   @override
   bool get wantKeepAlive => true;
 
-  bool loading = true;
-  bool failure = false;
-  List<Post> _posts = [];
-  bool hasNextPage = false;
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
+  final RefreshController _refreshController = RefreshController();
   String sortBy = 'recent';
 
   @override
@@ -531,75 +507,65 @@ class _RecentPostsState extends State<_RecentPostsTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<PostFilterCubit, PostFilterState>(
-          listener: (context, state) {
-            if (state.searchTerm == widget.searchTerm) {
+    return BlocListener<PostFilterCubit, PostFilterState>(
+      listener: (context, state) {
+        if (state.searchTerm == widget.searchTerm) {
+          context.read<RecentPostsBloc>().add(
+            RecentPostsEvent.get(
+              searchTerm: widget.searchTerm,
+              startDate: state.startDate,
+              endDate: state.endDate,
+            ),
+          );
+        }
+      },
+      child: BlocBuilder<RecentPostsBloc, RecentPostsState>(
+        buildWhen: (previous, current) {
+          return widget.searchTerm == current.searchTerm;
+        },
+        builder: (context, state) {
+          final posts = state.posts.toList();
+
+          if (state.status == RecentPostsStatus.success) {
+            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+              _refreshController.refreshCompleted();
+            }
+            if (_refreshController.footerStatus == LoadStatus.loading) {
+              _refreshController.loadComplete();
+            }
+          }
+
+          if (state.status == RecentPostsStatus.failure) {
+            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+              _refreshController.refreshFailed();
+            }
+            if (_refreshController.footerStatus == LoadStatus.loading) {
+              _refreshController.loadFailed();
+            }
+          }
+
+          return PostListView(
+            posts: posts,
+            loading: state.status == RecentPostsStatus.initial,
+            failure: state.posts.isNotEmpty
+                ? false
+                : state.status == RecentPostsStatus.failure,
+            onPostsUpdated: (posts) {
               context.read<RecentPostsBloc>().add(
-                RecentPostsEvent.get(
-                  searchTerm: widget.searchTerm,
-                  startDate: state.startDate,
-                  endDate: state.endDate,
-                ),
+                RecentPostsEvent.update(posts: posts),
               );
-            }
-          },
-        ),
-        BlocListener<RecentPostsBloc, RecentPostsState>(
-          listener: (context, state) {
-            if (state.status == RecentPostsStatus.success) {
-              if (state.searchTerm == widget.searchTerm) {
-                setState(() {
-                  _posts = state.posts.toList();
-                  loading = false;
-                  failure = false;
-                  hasNextPage = state.hasNext;
-                  if (_refreshController.headerStatus ==
-                      RefreshStatus.refreshing) {
-                    _refreshController.refreshCompleted();
-                  }
-                  if (_refreshController.footerStatus == LoadStatus.loading) {
-                    _refreshController.loadComplete();
-                  }
-                });
-              }
-            }
-            if (state.status == RecentPostsStatus.failure) {
-              if (loading) {
-                setState(() {
-                  loading = false;
-                  failure = true;
-                });
-              }
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshFailed();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadFailed();
-              }
-            }
-          },
-        ),
-      ],
-      child: PostListView(
-        posts: _posts,
-        loading: loading,
-        failure: failure,
-        onPostsUpdated: (posts) {
-          setState(() {
-            _posts = posts;
-          });
+            },
+            refreshController: _refreshController,
+            enablePullDown: true,
+            enablePullUp: state.hasNext,
+            checkVisibility: true,
+            onRefresh: _getPosts,
+            onLoading: () {
+              _getPosts(previousPosts: posts);
+            },
+            onFailure: _getPosts,
+          );
         },
-        refreshController: _refreshController,
-        enablePullDown: true,
-        enablePullUp: hasNextPage,
-        checkVisibility: true,
-        onRefresh: _getPosts,
-        onLoading: () {
-          _getPosts(previousPosts: _posts);
-        },
-        onFailure: _getPosts,
       ),
     );
   }
@@ -619,50 +585,42 @@ class _ProfilesTabState extends State<_ProfilesTab>
   @override
   bool get wantKeepAlive => true;
 
-  bool loading = true;
-  bool failure = false;
-  List<User> _users = [];
-  bool hasNextPage = false;
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
+  final RefreshController _refreshController = RefreshController();
 
   @override
   void initState() {
-    super.initState();
     context.read<UsersBloc>().add(
-      UsersEvent.get(searchTerm: widget.searchTerm),
+      UsersEvent.initialize(searchTerm: widget.searchTerm),
+    );
+    super.initState();
+  }
+
+  void _getUsers({User? lastUser}) {
+    context.read<UsersBloc>().add(
+      UsersEvent.get(searchTerm: widget.searchTerm, lastUser: lastUser),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocListener<UsersBloc, UsersState>(
-      listener: (context, state) {
+    return BlocBuilder<UsersBloc, UsersState>(
+      buildWhen: (previous, current) {
+        return widget.searchTerm == current.searchTerm;
+      },
+      builder: (context, state) {
+        final users = state.users.toList();
+
         if (state.status == UsersStatus.success) {
-          if (state.searchTerm == widget.searchTerm) {
-            setState(() {
-              _users = state.users;
-              loading = false;
-              failure = false;
-              hasNextPage = state.hasNext;
-            });
-            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-              _refreshController.refreshCompleted();
-            }
-            if (_refreshController.footerStatus == LoadStatus.loading) {
-              _refreshController.loadComplete();
-            }
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshCompleted();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadComplete();
           }
         }
+
         if (state.status == UsersStatus.failure) {
-          if (loading) {
-            setState(() {
-              loading = false;
-              failure = true;
-            });
-          }
           if (_refreshController.headerStatus == RefreshStatus.refreshing) {
             _refreshController.refreshFailed();
           }
@@ -670,42 +628,31 @@ class _ProfilesTabState extends State<_ProfilesTab>
             _refreshController.loadFailed();
           }
         }
-      },
-      child: BlocBuilder<PostFilterCubit, PostFilterState>(
-        builder: (context, state) {
-          void getUsers({User? lastUser}) {
-            context.read<UsersBloc>().add(
-              UsersEvent.get(lastUser: lastUser, searchTerm: state.searchTerm),
-            );
-          }
 
-          return UsersListView(
-            users: _users,
-            loading: loading,
-            failure: failure,
-            refreshController: _refreshController,
-            enablePullUp: hasNextPage,
-            showProfileButtons: true,
-            onUserTap: (user) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProfilePage(user: user),
-                ),
-              );
-            },
-            onLoading: () {
-              getUsers(lastUser: _users.last);
-            },
-            onFailure: getUsers,
-            onUsersUpdated: (users) {
-              setState(() {
-                _users = users;
-              });
-            },
-          );
-        },
-      ),
+        return UsersListView(
+          users: users,
+          loading: state.status == UsersStatus.initial,
+          failure: state.users.isNotEmpty
+              ? false
+              : state.status == UsersStatus.failure,
+          refreshController: _refreshController,
+          enablePullUp: state.hasNext,
+          showProfileButtons: true,
+          onUserTap: (user) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ProfilePage(user: user)),
+            );
+          },
+          onLoading: () {
+            _getUsers(lastUser: users.last);
+          },
+          onFailure: _getUsers,
+          onUsersUpdated: (users) {
+            context.read<UsersBloc>().add(UsersEvent.update(users: users));
+          },
+        );
+      },
     );
   }
 }

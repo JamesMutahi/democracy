@@ -55,12 +55,13 @@ extension FollowersEventPatterns on FollowersEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Update value)?  update,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
-return received(_that);case _:
+return received(_that);case _Update() when update != null:
+return update(_that);case _:
   return orElse();
 
 }
@@ -78,12 +79,13 @@ return received(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Update value)  update,}){
 final _that = this;
 switch (_that) {
 case _Get():
 return get(_that);case _Received():
-return received(_that);}
+return received(_that);case _Update():
+return update(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -97,12 +99,13 @@ return received(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Update value)?  update,}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
-return received(_that);case _:
+return received(_that);case _Update() when update != null:
+return update(_that);case _:
   return null;
 
 }
@@ -119,11 +122,12 @@ return received(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( User user,  User? lastUser)?  get,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( User user,  User? lastUser)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( List<User> users)?  update,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.user,_that.lastUser);case _Received() when received != null:
-return received(_that.payload);case _:
+return received(_that.payload);case _Update() when update != null:
+return update(_that.users);case _:
   return orElse();
 
 }
@@ -141,11 +145,12 @@ return received(_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( User user,  User? lastUser)  get,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( User user,  User? lastUser)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( List<User> users)  update,}) {final _that = this;
 switch (_that) {
 case _Get():
 return get(_that.user,_that.lastUser);case _Received():
-return received(_that.payload);}
+return received(_that.payload);case _Update():
+return update(_that.users);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -159,11 +164,12 @@ return received(_that.payload);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( User user,  User? lastUser)?  get,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( User user,  User? lastUser)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( List<User> users)?  update,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.user,_that.lastUser);case _Received() when received != null:
-return received(_that.payload);case _:
+return received(_that.payload);case _Update() when update != null:
+return update(_that.users);case _:
   return null;
 
 }
@@ -326,6 +332,78 @@ class __$ReceivedCopyWithImpl<$Res>
   return _then(_Received(
 payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _Update implements FollowersEvent {
+  const _Update({required final  List<User> users}): _users = users;
+  
+
+ final  List<User> _users;
+ List<User> get users {
+  if (_users is EqualUnmodifiableListView) return _users;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_users);
+}
+
+
+/// Create a copy of FollowersEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$UpdateCopyWith<_Update> get copyWith => __$UpdateCopyWithImpl<_Update>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Update&&const DeepCollectionEquality().equals(other._users, _users));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_users));
+
+@override
+String toString() {
+  return 'FollowersEvent.update(users: $users)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$UpdateCopyWith<$Res> implements $FollowersEventCopyWith<$Res> {
+  factory _$UpdateCopyWith(_Update value, $Res Function(_Update) _then) = __$UpdateCopyWithImpl;
+@useResult
+$Res call({
+ List<User> users
+});
+
+
+
+
+}
+/// @nodoc
+class __$UpdateCopyWithImpl<$Res>
+    implements _$UpdateCopyWith<$Res> {
+  __$UpdateCopyWithImpl(this._self, this._then);
+
+  final _Update _self;
+  final $Res Function(_Update) _then;
+
+/// Create a copy of FollowersEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? users = null,}) {
+  return _then(_Update(
+users: null == users ? _self._users : users // ignore: cast_nullable_to_non_nullable
+as List<User>,
   ));
 }
 

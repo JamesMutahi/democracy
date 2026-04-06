@@ -21,12 +21,8 @@ class ChatsBloc extends Bloc<ChatsEvent, ChatsState> {
         add(_Received(payload: message['payload']));
       }
     });
-    on<_Get>((event, emit) {
-      _onGet(event, emit);
-    }, transformer: debounce());
-    on<_Received>((event, emit) {
-      _onReceived(event, emit);
-    });
+    on<_Get>((event, emit) => _onGet(event, emit), transformer: debounce());
+    on<_Received>((event, emit) => _onReceived(event, emit));
     on<_Add>((event, emit) => _onAdd(event, emit));
     on<_Update>((event, emit) => _onUpdate(event, emit));
     on<_Remove>((event, emit) => _onRemove(event, emit));

@@ -51,14 +51,8 @@ class _MutedTab extends StatefulWidget {
 }
 
 class _MutedTabState extends State<_MutedTab> {
-  bool loading = true;
-  bool failure = false;
-  List<User> _users = [];
   List<User> selectedUsers = [];
-  bool hasNextPage = false;
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
+  final RefreshController _refreshController = RefreshController();
 
   @override
   void initState() {
@@ -68,73 +62,58 @@ class _MutedTabState extends State<_MutedTab> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<MutedBloc, MutedState>(
-          listener: (context, state) {
-            if (state.status == MutedStatus.success) {
-              setState(() {
-                _users = state.users;
-                loading = false;
-                failure = false;
-                hasNextPage = state.hasNext;
-              });
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshCompleted();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadComplete();
-              }
-            }
-            if (state.status == MutedStatus.failure) {
-              if (loading) {
-                setState(() {
-                  loading = false;
-                  failure = true;
-                });
-              }
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshFailed();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadFailed();
-              }
-            }
+    return BlocBuilder<MutedBloc, MutedState>(
+      builder: (context, state) {
+        final users = state.users.toList();
+
+        if (state.status == MutedStatus.success) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshCompleted();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadComplete();
+          }
+        }
+
+        if (state.status == MutedStatus.failure) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshFailed();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadFailed();
+          }
+        }
+        return UsersListView(
+          users: users,
+          selectedUsers: selectedUsers,
+          loading:
+              state.status == MutedStatus.initial ||
+              state.status == MutedStatus.loading,
+          failure: state.status == MutedStatus.failure,
+          refreshController: _refreshController,
+          enablePullDown: true,
+          enablePullUp: state.hasNext,
+          showProfileButtons: true,
+          onUsersUpdated: (users) {
+            context.read<MutedBloc>().add(MutedEvent.update(users: users));
           },
-        ),
-      ],
-      child: UsersListView(
-        users: _users,
-        selectedUsers: selectedUsers,
-        loading: loading,
-        failure: failure,
-        refreshController: _refreshController,
-        enablePullDown: true,
-        enablePullUp: hasNextPage,
-        showProfileButtons: true,
-        onUsersUpdated: (users) {
-          setState(() {
-            _users = users;
-          });
-        },
-        onUserTap: (user) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ProfilePage(user: user)),
-          );
-        },
-        onRefresh: () {
-          context.read<MutedBloc>().add(MutedEvent.get());
-        },
-        onLoading: () {
-          context.read<MutedBloc>().add(
-            MutedEvent.get(lastUser: _users.last),
-          );
-        },
-        onFailure: () {
-          context.read<MutedBloc>().add(MutedEvent.get());
-        },
-      ),
+          onUserTap: (user) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ProfilePage(user: user)),
+            );
+          },
+          onRefresh: () {
+            context.read<MutedBloc>().add(MutedEvent.get());
+          },
+          onLoading: () {
+            context.read<MutedBloc>().add(MutedEvent.get(lastUser: users.last));
+          },
+          onFailure: () {
+            context.read<MutedBloc>().add(MutedEvent.get());
+          },
+        );
+      },
     );
   }
 }
@@ -147,15 +126,8 @@ class _BlockedTab extends StatefulWidget {
 }
 
 class _BlockedTabState extends State<_BlockedTab> {
-  bool loading = true;
-  bool failure = false;
-  List<User> _users = [];
   List<User> selectedUsers = [];
-  int currentPage = 1;
-  bool hasNextPage = false;
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
+  final RefreshController _refreshController = RefreshController();
 
   @override
   void initState() {
@@ -165,74 +137,61 @@ class _BlockedTabState extends State<_BlockedTab> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<BlockedBloc, BlockedState>(
-          listener: (context, state) {
-            if (state.status == BlockedStatus.success) {
-              setState(() {
-                _users = state.users;
-                loading = false;
-                failure = false;
-                currentPage = currentPage;
-                hasNextPage = state.hasNext;
-              });
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshCompleted();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadComplete();
-              }
-            }
-            if (state.status == BlockedStatus.failure) {
-              if (loading) {
-                setState(() {
-                  loading = false;
-                  failure = true;
-                });
-              }
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshFailed();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadFailed();
-              }
-            }
+    return BlocBuilder<BlockedBloc, BlockedState>(
+      builder: (context, state) {
+        final users = state.users.toList();
+
+        if (state.status == BlockedStatus.success) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshCompleted();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadComplete();
+          }
+        }
+
+        if (state.status == BlockedStatus.failure) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshFailed();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadFailed();
+          }
+        }
+
+        return UsersListView(
+          users: users,
+          selectedUsers: selectedUsers,
+          loading:
+              state.status == BlockedStatus.initial ||
+              state.status == BlockedStatus.loading,
+          failure: state.status == BlockedStatus.failure,
+          refreshController: _refreshController,
+          enablePullDown: true,
+          enablePullUp: state.hasNext,
+          showProfileButtons: true,
+          onUsersUpdated: (users) {
+            context.read<BlockedBloc>().add(BlockedEvent.update(users: users));
           },
-        ),
-      ],
-      child: UsersListView(
-        users: _users,
-        selectedUsers: selectedUsers,
-        loading: loading,
-        failure: failure,
-        refreshController: _refreshController,
-        enablePullDown: true,
-        enablePullUp: hasNextPage,
-        showProfileButtons: true,
-        onUsersUpdated: (users) {
-          setState(() {
-            _users = users;
-          });
-        },
-        onUserTap: (user) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ProfilePage(user: user)),
-          );
-        },
-        onRefresh: () {
-          context.read<BlockedBloc>().add(BlockedEvent.get());
-        },
-        onLoading: () {
-          context.read<BlockedBloc>().add(
-            BlockedEvent.get(lastUser: _users.last),
-          );
-        },
-        onFailure: () {
-          context.read<BlockedBloc>().add(BlockedEvent.get());
-        },
-      ),
+          onUserTap: (user) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ProfilePage(user: user)),
+            );
+          },
+          onRefresh: () {
+            context.read<BlockedBloc>().add(BlockedEvent.get());
+          },
+          onLoading: () {
+            context.read<BlockedBloc>().add(
+              BlockedEvent.get(lastUser: users.last),
+            );
+          },
+          onFailure: () {
+            context.read<BlockedBloc>().add(BlockedEvent.get());
+          },
+        );
+      },
     );
   }
 }

@@ -21,15 +21,12 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
         add(_Received(payload: message['payload']));
       }
     });
-    on<_Get>((event, emit) {
-      _onGet(event, emit);
-    });
-    on<_Received>((event, emit) {
-      _onReceived(event, emit);
-    });
+    on<_Get>((event, emit) => _onGet(event, emit));
+    on<_Received>((event, emit) => _onReceived(event, emit));
+    on<_Update>((event, emit) => _onUpdate(event, emit));
   }
 
-  Future _onGet(_Get event, Emitter<BookmarksState> emit) async {
+  void _onGet(_Get event, Emitter<BookmarksState> emit) async {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -40,7 +37,7 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
     webSocketService.send(message);
   }
 
-  Future _onReceived(_Received event, Emitter<BookmarksState> emit) async {
+  void _onReceived(_Received event, Emitter<BookmarksState> emit) async {
     emit(state.copyWith(status: BookmarksStatus.loading));
     if (event.payload['response_status'] == 200) {
       final List<Post> posts = List.from(
@@ -57,6 +54,11 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
     } else {
       emit(state.copyWith(status: BookmarksStatus.failure));
     }
+  }
+
+  void _onUpdate(_Update event, Emitter<BookmarksState> emit) {
+    emit(state.copyWith(status: BookmarksStatus.loading));
+    emit(state.copyWith(posts: event.posts, status: BookmarksStatus.success));
   }
 
   final WebSocketService webSocketService;

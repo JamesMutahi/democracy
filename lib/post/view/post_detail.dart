@@ -20,7 +20,6 @@ import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/app/utils/image_viewer.dart';
 import 'package:democracy/post/view/widgets/post_body.dart';
 import 'package:democracy/post/view/widgets/post_form_widgets.dart';
-import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/post/view/widgets/replies.dart';
 import 'package:democracy/post/view/widgets/reply_tos.dart';
@@ -57,21 +56,27 @@ class _PostDetailState extends State<PostDetail> {
   final RefreshController _refreshController = RefreshController();
   final ValueKey _centerKey = ValueKey('Center');
   bool _isDeleted = false;
-  bool _loading = true;
-  bool _failure = false;
-  List<Post> _replies = [];
-  List<Post> _replyTos = [];
-  bool _hasNextPage = false;
 
   @override
   void initState() {
-    _getData();
+    context.read<PostDetailBloc>().add(PostDetailEvent.get(post: widget.post));
+    context.read<RepliesBloc>().add(RepliesEvent.initialize(post: widget.post));
+    if (widget.post.replyTo != null) {
+      context.read<ReplyToBloc>().add(
+        ReplyToEvent.initialize(post: widget.post),
+      );
+    }
+    if (!widget.post.isViewed) {
+      context.read<PostDetailBloc>().add(
+        PostDetailEvent.addView(post: widget.post),
+      );
+    }
     super.initState();
   }
 
-  void _getData() {
-    context.read<PostDetailBloc>().add(PostDetailEvent.get(post: widget.post));
+  void _onFailure() {
     context.read<RepliesBloc>().add(RepliesEvent.get(post: widget.post));
+    context.read<PostDetailBloc>().add(PostDetailEvent.get(post: widget.post));
     if (widget.post.replyTo != null) {
       context.read<ReplyToBloc>().add(ReplyToEvent.get(post: widget.post));
     }
@@ -87,11 +92,9 @@ class _PostDetailState extends State<PostDetail> {
     return PopScope(
       canPop: true,
       onPopInvokedWithResult: (_, _) {
-        if (_replies.isNotEmpty) {
-          context.read<PostDetailBloc>().add(
-            PostDetailEvent.unsubscribe(post: widget.post),
-          );
-        }
+        context.read<PostDetailBloc>().add(
+          PostDetailEvent.unsubscribe(post: widget.post),
+        );
       },
       child: MultiBlocListener(
         listeners: [
@@ -108,11 +111,7 @@ class _PostDetailState extends State<PostDetail> {
             listener: (context, state) {
               switch (state) {
                 case PostCreated(post: final post):
-                  if (widget.post.id == post.replyTo?.id) {
-                    setState(() {
-                      _replies.insert(0, post);
-                    });
-                  }
+                  context.read<RepliesBloc>().add(RepliesEvent.add(post: post));
                 case PostLoaded(:final post):
                   if (_post.id == post.id) {
                     setState(() {
@@ -239,148 +238,117 @@ class _PostDetailState extends State<PostDetail> {
               }
             },
           ),
-          BlocListener<RepliesBloc, RepliesState>(
-            listener: (context, state) {
-              if (state.status == RepliesStatus.success) {
-                if (widget.post.id == state.postId) {
-                  setState(() {
-                    _replies = state.posts.toList();
-                    _loading = false;
-                    _failure = false;
-                    _hasNextPage = state.hasNext;
-                    if (_refreshController.headerStatus ==
-                        RefreshStatus.refreshing) {
-                      _refreshController.refreshCompleted();
-                    }
-                    if (_refreshController.footerStatus == LoadStatus.loading) {
-                      _refreshController.loadComplete();
-                    }
-                  });
-                }
-              }
-              if (state.status == RepliesStatus.failure) {
-                if (widget.post.id == state.postId) {
-                  if (_loading) {
-                    setState(() {
-                      _loading = false;
-                      _failure = true;
-                    });
-                  }
-                  if (_refreshController.headerStatus ==
-                      RefreshStatus.refreshing) {
-                    _refreshController.refreshFailed();
-                  }
-                  if (_refreshController.footerStatus == LoadStatus.loading) {
-                    _refreshController.loadFailed();
-                  }
-                }
-              }
-            },
-          ),
-          BlocListener<ReplyToBloc, ReplyToState>(
-            listener: (context, state) {
-              if (state.status == ReplyToStatus.success) {
-                if (widget.post.id == state.postId) {
-                  setState(() {
-                    _replyTos = state.posts.toList();
-                  });
-                }
-              }
-            },
-          ),
         ],
         child: Scaffold(
           appBar: AppBar(title: Text('Post')),
-          body: SmartRefresher(
-            enablePullDown: false,
-            enablePullUp: _hasNextPage,
-            header: ClassicHeader(),
-            footer: ClassicFooter(),
-            controller: _refreshController,
-            onLoading: () {
-              context.read<RepliesBloc>().add(
-                RepliesEvent.get(post: _post, previousPosts: _replies),
-              );
+          body: BlocBuilder<RepliesBloc, RepliesState>(
+            buildWhen: (previous, current) {
+              return widget.post.id == current.postId;
             },
-            child: CustomScrollView(
-              center: _centerKey,
-              slivers: <Widget>[
-                PostListener(
-                  posts: _replyTos,
-                  onPostsUpdated: (posts) {
-                    setState(() {
-                      _replyTos = posts;
-                    });
-                  },
-                  child: ReplyTos(replyTos: _replyTos),
-                ),
-                SliverToBoxAdapter(
-                  key: _centerKey,
-                  child: Column(
-                    children: [
-                      if (_post.replyTo == null)
-                        Column(
-                          children: [
-                            if (widget.showAsRepost) _repostBanner(),
-                            _PostContainer(post: _post, isDeleted: _isDeleted),
-                          ],
-                        )
-                      else
-                        Column(
-                          children: [
-                            if (widget.showAsRepost)
-                              Stack(
-                                children: [
-                                  ThreadLine(
-                                    showBottomThread: true,
-                                    showTopThread: true,
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 30),
-                                    child: _repostBanner(),
-                                  ),
-                                ],
-                              ),
-                            Stack(
+            builder: (context, state) {
+              final replies = state.posts.toList();
+
+              if (state.status == RepliesStatus.success) {
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshCompleted();
+                }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadComplete();
+                }
+              }
+
+              if (state.status == RepliesStatus.failure) {
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshFailed();
+                }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadFailed();
+                }
+              }
+
+              return SmartRefresher(
+                enablePullDown: false,
+                enablePullUp: state.hasNext,
+                header: ClassicHeader(),
+                footer: ClassicFooter(),
+                controller: _refreshController,
+                onLoading: () {
+                  context.read<RepliesBloc>().add(
+                    RepliesEvent.get(post: _post, previousPosts: replies),
+                  );
+                },
+                child: CustomScrollView(
+                  center: _centerKey,
+                  slivers: <Widget>[
+                    if (widget.post.replyTo != null)
+                      ReplyTos(post: widget.post),
+                    SliverToBoxAdapter(
+                      key: _centerKey,
+                      child: Column(
+                        children: [
+                          if (_post.replyTo == null)
+                            Column(
                               children: [
-                                ThreadLine(
-                                  showBottomThread: false,
-                                  showTopThread: true,
-                                ),
+                                if (widget.showAsRepost) _repostBanner(),
                                 _PostContainer(
                                   post: _post,
                                   isDeleted: _isDeleted,
                                 ),
                               ],
+                            )
+                          else
+                            Column(
+                              children: [
+                                if (widget.showAsRepost)
+                                  Stack(
+                                    children: [
+                                      ThreadLine(
+                                        showBottomThread: true,
+                                        showTopThread: true,
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.only(left: 30),
+                                        child: _repostBanner(),
+                                      ),
+                                    ],
+                                  ),
+                                Stack(
+                                  children: [
+                                    ThreadLine(
+                                      showBottomThread: false,
+                                      showTopThread: true,
+                                    ),
+                                    _PostContainer(
+                                      post: _post,
+                                      isDeleted: _isDeleted,
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                    ],
-                  ),
-                ),
-                if (_loading)
-                  SliverToBoxAdapter(
-                    child: Container(
-                      margin: EdgeInsets.only(top: 50),
-                      child: BottomLoader(),
+                        ],
+                      ),
                     ),
-                  )
-                else if (_failure)
-                  SliverToBoxAdapter(
-                    child: FailureRetryButton(onPressed: _getData),
-                  )
-                else
-                  PostListener(
-                    posts: _replies,
-                    onPostsUpdated: (List<Post> posts) {
-                      setState(() {
-                        _replies = posts;
-                      });
-                    },
-                    child: Replies(replies: _replies),
-                  ),
-              ],
-            ),
+                    if (state.status == RepliesStatus.initial)
+                      SliverToBoxAdapter(
+                        child: Container(
+                          margin: EdgeInsets.only(top: 50),
+                          child: BottomLoader(),
+                        ),
+                      )
+                    else if (state.status == RepliesStatus.failure &&
+                        replies.isEmpty)
+                      SliverToBoxAdapter(
+                        child: FailureRetryButton(onPressed: _onFailure),
+                      )
+                    else
+                      Replies(replies: replies),
+                  ],
+                ),
+              );
+            },
           ),
           bottomNavigationBar: _post.isDeleted
               ? SizedBox.shrink()

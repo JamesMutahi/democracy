@@ -25,12 +25,11 @@ class CommunityNotesBloc
     on<_Get>((event, emit) {
       _onGet(event, emit);
     }, transformer: debounce());
-    on<_Received>((event, emit) {
-      _onReceived(event, emit);
-    });
+    on<_Received>((event, emit) => _onReceived(event, emit));
+    on<_Update>((event, emit) => _onUpdate(event, emit));
   }
 
-  Future _onGet(_Get event, Emitter<CommunityNotesState> emit) async {
+  void _onGet(_Get event, Emitter<CommunityNotesState> emit) async {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -45,7 +44,7 @@ class CommunityNotesBloc
     webSocketService.send(message);
   }
 
-  Future _onReceived(_Received event, Emitter<CommunityNotesState> emit) async {
+  void _onReceived(_Received event, Emitter<CommunityNotesState> emit) async {
     emit(state.copyWith(status: CommunityNotesStatus.loading));
     if (event.payload['response_status'] == 200) {
       final List<Post> communityNotes = List.from(
@@ -65,6 +64,16 @@ class CommunityNotesBloc
     } else {
       emit(state.copyWith(status: CommunityNotesStatus.failure));
     }
+  }
+
+  void _onUpdate(_Update event, Emitter<CommunityNotesState> emit) {
+    emit(state.copyWith(status: CommunityNotesStatus.loading));
+    emit(
+      state.copyWith(
+        communityNotes: event.posts,
+        status: CommunityNotesStatus.success,
+      ),
+    );
   }
 
   final WebSocketService webSocketService;

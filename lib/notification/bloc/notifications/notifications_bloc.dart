@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/notification/models/notification.dart';
+import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'notifications_bloc.freezed.dart';
@@ -13,7 +14,7 @@ const String action = 'list';
 
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   NotificationsBloc({required this.webSocketService})
-    : super(const NotificationsState.initial()) {
+    : super(const NotificationsState()) {
     webSocketService.messages.listen((message) {
       if (message['stream'] == stream &&
           message['payload']['action'] == action) {
@@ -26,9 +27,12 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     on<_Received>((event, emit) {
       _onReceived(event, emit);
     });
+    on<_Add>((event, emit) => _onAdd(event, emit));
+    on<_Update>((event, emit) => _onUpdate(event, emit));
+    on<_Remove>((event, emit) => _onRemove(event, emit));
   }
 
-  Future _onGet(_Get event, Emitter<NotificationsState> emit) async {
+  void _onGet(_Get event, Emitter<NotificationsState> emit) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {'action': 'list', 'request_id': requestId},
@@ -36,16 +40,66 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     webSocketService.send(message);
   }
 
-  Future _onReceived(_Received event, Emitter<NotificationsState> emit) async {
-    emit(NotificationsLoading());
+  void _onReceived(_Received event, Emitter<NotificationsState> emit) {
+    emit(state.copyWith(status: NotificationsStatus.loading));
     if (event.payload['response_status'] == 200) {
       List<Notification> notifications = List.from(
         event.payload['data'].map((e) => Notification.fromJson(e)),
       );
-      emit(NotificationsLoaded(notifications: notifications));
+      emit(
+        state.copyWith(
+          status: NotificationsStatus.success,
+          notifications: notifications,
+        ),
+      );
     } else {
-      emit(NotificationsFailure(error: event.payload['errors'].toString()));
+      emit(state.copyWith(status: NotificationsStatus.failure));
     }
+  }
+
+  void _onAdd(_Add event, Emitter<NotificationsState> emit) {
+    final exists = state.notifications.any(
+      (element) => element.id == event.notification.id,
+    );
+
+    if (!exists) {
+      emit(
+        state.copyWith(
+          notifications: [event.notification, ...state.notifications],
+          status: NotificationsStatus.success,
+        ),
+      );
+    }
+  }
+
+  void _onUpdate(_Update event, Emitter<NotificationsState> emit) {
+    final index = state.notifications.indexWhere(
+      (element) => element.id == event.notification.id,
+    );
+    if (index == -1) return;
+
+    final updatedNotifications = List<Notification>.from(state.notifications);
+    updatedNotifications[index] = event.notification;
+
+    emit(
+      state.copyWith(
+        notifications: updatedNotifications,
+        status: NotificationsStatus.success,
+      ),
+    );
+  }
+
+  void _onRemove(_Remove event, Emitter<NotificationsState> emit) {
+    final updatedNotifications = state.notifications
+        .where((element) => element.id != event.notificationId)
+        .toList();
+
+    emit(
+      state.copyWith(
+        notifications: updatedNotifications,
+        status: NotificationsStatus.success,
+      ),
+    );
   }
 
   final WebSocketService webSocketService;

@@ -104,27 +104,22 @@ class _PostTileState extends State<PostTile> {
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        if (showAsRepost) {
-                          return widget.post.repostOf!.communityNoteOf == null
-                              ? PostDetail(
-                                  key: ValueKey(widget.post.id),
-                                  post: widget.post.repostOf!,
-                                  showAsRepost: true,
-                                  repost: widget.post,
-                                )
-                              : CommunityNoteDetail(
-                                  communityNote: widget.post.repostOf!,
-                                  showAsRepost: true,
-                                  repost: widget.post,
-                                );
-                        } else {
-                          return PostDetail(
-                            key: ValueKey(widget.post.id),
-                            post: widget.post,
-                            showAsRepost: false,
-                            repost: widget.post,
-                          );
-                        }
+                        return widget.post.repostOf?.communityNoteOf == null
+                            ? PostDetail(
+                                key: ValueKey(widget.post.id),
+                                post: showAsRepost
+                                    ? widget.post.repostOf!
+                                    : widget.post,
+                                showAsRepost: showAsRepost,
+                                repost: widget.post,
+                              )
+                            : CommunityNoteDetail(
+                                communityNote: showAsRepost
+                                    ? widget.post.repostOf!
+                                    : widget.post,
+                                showAsRepost: showAsRepost,
+                                repost: widget.post,
+                              );
                       },
                     ),
                   );

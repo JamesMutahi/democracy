@@ -7,27 +7,31 @@ final class FollowingState extends Equatable {
     this.status = FollowingStatus.initial,
     this.users = const [],
     this.hasNext = false,
+    this.userId,
   });
 
   final FollowingStatus status;
   final List<User> users;
   final bool hasNext;
+  final int? userId;
 
   FollowingState copyWith({
     FollowingStatus? status,
     List<User>? users,
     bool? hasNext,
+    int? userId,
   }) {
     return FollowingState(
       status: status ?? this.status,
       users: users ?? this.users,
       hasNext: hasNext ?? this.hasNext,
+      userId: userId ?? this.userId,
     );
   }
 
   @override
   String toString() {
-    return '''FollowingState { status: $status, users: ${users.length}, hasNext: $hasNext }''';
+    return '''FollowingState { status: $status, users: ${users.length}, hasNext: $hasNext, userId: $userId }''';
   }
 
   @override

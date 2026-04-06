@@ -17,12 +17,7 @@ class Notifications extends StatefulWidget {
 }
 
 class _NotificationsState extends State<Notifications> {
-  bool loading = true;
-  bool failure = false;
-  List<n_.Notification> _notifications = [];
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
+  final RefreshController _refreshController = RefreshController();
 
   @override
   void initState() {
@@ -50,83 +45,34 @@ class _NotificationsState extends State<Notifications> {
       ),
       body: MultiBlocListener(
         listeners: [
-          BlocListener<NotificationsBloc, NotificationsState>(
-            listener: (context, state) {
-              if (state is NotificationsLoaded) {
-                setState(() {
-                  _notifications = state.notifications.toList();
-                  loading = false;
-                  failure = false;
-                });
-                if (_refreshController.headerStatus ==
-                    RefreshStatus.refreshing) {
-                  _refreshController.refreshCompleted();
-                }
-              }
-              if (state is NotificationsLoaded) {
-                if (loading) {
-                  setState(() {
-                    loading = false;
-                    failure = true;
-                  });
-                }
-                if (_refreshController.headerStatus ==
-                    RefreshStatus.refreshing) {
-                  _refreshController.refreshFailed();
-                }
-              }
-            },
-          ),
           BlocListener<NotificationDetailBloc, NotificationDetailState>(
             listener: (context, state) {
+              final bloc = context.read<NotificationsBloc>();
+
               if (state is NotificationCreated) {
-                if (!_notifications.any(
-                  (notification) => notification.id == state.notification.id,
-                )) {
-                  setState(() {
-                    _notifications.add(state.notification);
-                  });
-                }
-              }
-              if (state is NotificationUpdated) {
-                if (_notifications.any(
-                  (notification) => notification.id == state.notification.id,
-                )) {
-                  setState(() {
-                    int index = _notifications.indexWhere(
-                      (notification) =>
-                          notification.id == state.notification.id,
-                    );
-                    _notifications[index] = state.notification;
-                  });
-                }
-              }
-              if (state is NotificationDeleted) {
-                if (_notifications.any(
-                  (notification) => notification.id == state.notificationId,
-                )) {
-                  setState(() {
-                    _notifications.removeWhere(
-                      (notification) => notification.id == state.notificationId,
-                    );
-                  });
-                }
+                bloc.add(
+                  NotificationsEvent.add(notification: state.notification),
+                );
+              } else if (state is NotificationUpdated) {
+                bloc.add(
+                  NotificationsEvent.update(notification: state.notification),
+                );
+              } else if (state is NotificationDeleted) {
+                bloc.add(
+                  NotificationsEvent.remove(
+                    notificationId: state.notificationId,
+                  ),
+                );
               }
             },
           ),
         ],
-        child:
-            loading
-                ? BottomLoader()
-                : failure
-                ? FailureRetryButton(
-                  onPressed: () {
-                    context.read<NotificationsBloc>().add(
-                      NotificationsEvent.get(),
-                    );
-                  },
-                )
-                : SmartRefresher(
+        child: BlocBuilder<NotificationsBloc, NotificationsState>(
+          builder: (context, state) {
+            switch (state.status) {
+              case NotificationsStatus.success:
+                final notifications = state.notifications;
+                return SmartRefresher(
                   enablePullDown: true,
                   enablePullUp: false,
                   header: ClassicHeader(),
@@ -140,12 +86,25 @@ class _NotificationsState extends State<Notifications> {
                   child: ListView.builder(
                     padding: EdgeInsets.symmetric(horizontal: 15),
                     itemBuilder: (BuildContext context, int index) {
-                      n_.Notification notification = _notifications[index];
+                      n_.Notification notification = notifications[index];
                       return NotificationTile(notification: notification);
                     },
-                    itemCount: _notifications.length,
+                    itemCount: notifications.length,
                   ),
-                ),
+                );
+              case NotificationsStatus.failure:
+                return FailureRetryButton(
+                  onPressed: () {
+                    context.read<NotificationsBloc>().add(
+                      NotificationsEvent.get(),
+                    );
+                  },
+                );
+              default:
+                return BottomLoader();
+            }
+          },
+        ),
       ),
     );
   }

@@ -56,7 +56,7 @@ class _PetitionsState extends State<Petitions>
         builder: (context, filterState) {
           return BlocBuilder<PetitionsBloc, PetitionsState>(
             builder: (context, petitionsState) {
-              final petitions = petitionsState.petitions;
+              final petitions = petitionsState.petitions.toList();
 
               if (petitionsState.status == PetitionsStatus.initial) {
                 return const BottomLoader();

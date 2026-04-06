@@ -9,4 +9,5 @@ sealed class SupportersEvent with _$SupportersEvent {
   const factory SupportersEvent.received({
     required Map<String, dynamic> payload,
   }) = _Received;
+  const factory SupportersEvent.update({required List<User> users}) = _Update;
 }

@@ -9,4 +9,5 @@ sealed class UserRepliesEvent with _$UserRepliesEvent {
   const factory UserRepliesEvent.received({
     required Map<String, dynamic> payload,
   }) = _Received;
+  const factory UserRepliesEvent.update({required List<Post> posts}) = _Update;
 }

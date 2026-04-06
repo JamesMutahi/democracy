@@ -107,7 +107,7 @@ class _DashboardState extends State<Dashboard> {
                   // Notifications list updates
                   BlocListener<NotificationsBloc, NotificationsState>(
                     listener: (context, state) {
-                      if (state is NotificationsLoaded) {
+                      if (state.status == NotificationsStatus.success) {
                         setState(() {
                           _unreadNotifications = state.notifications
                               .where((n) => !n.isRead)

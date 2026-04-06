@@ -9,4 +9,5 @@ sealed class UserPostsEvent with _$UserPostsEvent {
   const factory UserPostsEvent.received({
     required Map<String, dynamic> payload,
   }) = _Received;
+  const factory UserPostsEvent.update({required List<Post> posts}) = _Update;
 }

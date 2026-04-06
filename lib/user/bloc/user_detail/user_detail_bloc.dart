@@ -54,7 +54,7 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
     });
   }
 
-  Future _onRetrieved(_Retrieved event, Emitter<UserDetailState> emit) async {
+  void _onRetrieved(_Retrieved event, Emitter<UserDetailState> emit) async {
     emit(_Loading());
     if (event.payload['response_status'] == 200) {
       User user = User.fromJson(event.payload['data']);
@@ -64,7 +64,7 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
     }
   }
 
-  Future _onUpdated(_Updated event, Emitter<UserDetailState> emit) async {
+  void _onUpdated(_Updated event, Emitter<UserDetailState> emit) async {
     emit(_Loading());
     if (event.payload['response_status'] == 200) {
       User user = User.fromJson(event.payload['data']);
@@ -74,7 +74,7 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
     }
   }
 
-  Future _onGet(_Get event, Emitter<UserDetailState> emit) async {
+  void _onGet(_Get event, Emitter<UserDetailState> emit) async {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -86,7 +86,7 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
     webSocketService.send(message);
   }
 
-  Future _onUpdate(_Update event, Emitter<UserDetailState> emit) async {
+  void _onUpdate(_Update event, Emitter<UserDetailState> emit) async {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -110,7 +110,7 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
     webSocketService.send(message);
   }
 
-  Future _onFollow(_Follow event, Emitter<UserDetailState> emit) async {
+  void _onFollow(_Follow event, Emitter<UserDetailState> emit) async {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -122,7 +122,7 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
     webSocketService.send(message);
   }
 
-  Future _onMute(_Mute event, Emitter<UserDetailState> emit) async {
+  void _onMute(_Mute event, Emitter<UserDetailState> emit) async {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -134,7 +134,7 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
     webSocketService.send(message);
   }
 
-  Future _onBlock(_Block event, Emitter<UserDetailState> emit) async {
+  void _onBlock(_Block event, Emitter<UserDetailState> emit) async {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -146,10 +146,7 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
     webSocketService.send(message);
   }
 
-  Future _onUnsubscribe(
-    _Unsubscribe event,
-    Emitter<UserDetailState> emit,
-  ) async {
+  void _onUnsubscribe(_Unsubscribe event, Emitter<UserDetailState> emit) async {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

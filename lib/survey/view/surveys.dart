@@ -65,7 +65,7 @@ class _SurveysState extends State<Surveys> with AutomaticKeepAliveClientMixin {
         builder: (context, filterState) {
           return BlocBuilder<SurveysBloc, SurveysState>(
             builder: (context, surveysState) {
-              final surveys = surveysState.surveys;
+              final surveys = surveysState.surveys.toList();
 
               if (surveysState.status == SurveysStatus.initial) {
                 return const BottomLoader();

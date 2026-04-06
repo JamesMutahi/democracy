@@ -2,7 +2,10 @@ part of 'users_bloc.dart';
 
 @freezed
 sealed class UsersEvent with _$UsersEvent {
+  const factory UsersEvent.initialize({required String searchTerm}) =
+      _Initialize;
   const factory UsersEvent.get({String? searchTerm, User? lastUser}) = _Get;
   const factory UsersEvent.received({required Map<String, dynamic> payload}) =
       _Received;
+  const factory UsersEvent.update({required List<User> users}) = _Update;
 }

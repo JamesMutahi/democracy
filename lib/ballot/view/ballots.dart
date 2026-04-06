@@ -49,7 +49,7 @@ class _BallotsState extends State<Ballots> {
         builder: (context, filterState) {
           return BlocBuilder<BallotsBloc, BallotsState>(
             builder: (context, ballotsState) {
-              final ballots = ballotsState.ballots;
+              final ballots = ballotsState.ballots.toList();
 
               if (ballotsState.status == BallotsStatus.initial) {
                 return const BottomLoader();

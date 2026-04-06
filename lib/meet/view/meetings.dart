@@ -49,7 +49,7 @@ class _MeetingsState extends State<Meetings> {
         builder: (context, filterState) {
           return BlocBuilder<MeetingsBloc, MeetingsState>(
             builder: (context, meetingsState) {
-              final meetings = meetingsState.meetings;
+              final meetings = meetingsState.meetings.toList();
 
               if (meetingsState.status == MeetingsStatus.initial) {
                 return const BottomLoader();

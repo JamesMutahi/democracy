@@ -24,15 +24,12 @@ class RecentPostsBloc extends Bloc<RecentPostsEvent, RecentPostsState> {
         }
       }
     });
-    on<_Get>((event, emit) {
-      _onGet(event, emit);
-    }, transformer: debounce());
-    on<_Received>((event, emit) {
-      _onReceived(event, emit);
-    });
+    on<_Get>((event, emit) => _onGet(event, emit), transformer: debounce());
+    on<_Received>((event, emit) => _onReceived(event, emit));
+    on<_Update>((event, emit) => _onUpdate(event, emit));
   }
 
-  Future _onGet(_Get event, Emitter<RecentPostsState> emit) async {
+  void _onGet(_Get event, Emitter<RecentPostsState> emit) async {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -47,7 +44,7 @@ class RecentPostsBloc extends Bloc<RecentPostsEvent, RecentPostsState> {
     webSocketService.send(message);
   }
 
-  Future _onReceived(_Received event, Emitter<RecentPostsState> emit) async {
+  void _onReceived(_Received event, Emitter<RecentPostsState> emit) async {
     emit(state.copyWith(status: RecentPostsStatus.loading));
     if (event.payload['response_status'] == 200) {
       final List<Post> posts = List.from(
@@ -65,6 +62,11 @@ class RecentPostsBloc extends Bloc<RecentPostsEvent, RecentPostsState> {
     } else {
       emit(state.copyWith(status: RecentPostsStatus.failure));
     }
+  }
+
+  void _onUpdate(_Update event, Emitter<RecentPostsState> emit) {
+    emit(state.copyWith(status: RecentPostsStatus.loading));
+    emit(state.copyWith(posts: event.posts, status: RecentPostsStatus.success));
   }
 
   final WebSocketService webSocketService;

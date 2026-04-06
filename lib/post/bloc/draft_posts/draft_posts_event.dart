@@ -6,4 +6,5 @@ sealed class DraftPostsEvent with _$DraftPostsEvent {
   const factory DraftPostsEvent.received({
     required Map<String, dynamic> payload,
   }) = _Received;
+  const factory DraftPostsEvent.update({required List<Post> posts}) = _Update;
 }

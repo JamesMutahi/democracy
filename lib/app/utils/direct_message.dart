@@ -40,14 +40,8 @@ class DirectMessage extends StatefulWidget {
 class _DirectMessageState extends State<DirectMessage> {
   TextEditingController controller = TextEditingController();
   FocusNode focusNode = FocusNode();
-  bool loading = true;
-  bool failure = false;
-  List<User> _users = [];
   List<User> selectedUsers = [];
-  bool hasNextPage = false;
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
+  final RefreshController _refreshController = RefreshController();
   List<File> _selectedImages = [];
   File? _selectedFile;
   File? _insertedContent;
@@ -67,54 +61,18 @@ class _DirectMessageState extends State<DirectMessage> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<ChatDetailBloc, ChatDetailState>(
-          listener: (context, state) {
-            if (state is DirectMessageSent) {
-              Navigator.pop(context);
-              final snackBar = getSnackBar(
-                context: context,
-                message: 'Direct message sent',
-                status: SnackBarStatus.success,
-              );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            }
-          },
-        ),
-        BlocListener<UsersBloc, UsersState>(
-          listener: (context, state) {
-            if (state.status == UsersStatus.success) {
-              setState(() {
-                _users = state.users;
-                loading = false;
-                failure = false;
-                hasNextPage = state.hasNext;
-              });
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshCompleted();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadComplete();
-              }
-            }
-            if (state.status == UsersStatus.failure) {
-              if (loading) {
-                setState(() {
-                  loading = false;
-                  failure = true;
-                });
-              }
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshFailed();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadFailed();
-              }
-            }
-          },
-        ),
-      ],
+    return BlocListener<ChatDetailBloc, ChatDetailState>(
+      listener: (context, state) {
+        if (state is DirectMessageSent) {
+          Navigator.pop(context);
+          final snackBar = getSnackBar(
+            context: context,
+            message: 'Direct message sent',
+            status: SnackBarStatus.success,
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+      },
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -195,33 +153,60 @@ class _DirectMessageState extends State<DirectMessage> {
               ),
             ),
             Expanded(
-              child: UsersListView(
-                users: _users,
-                loading: loading,
-                failure: failure,
-                refreshController: _refreshController,
-                enablePullUp: hasNextPage,
-                selectedUsers: selectedUsers,
-                onUserTap: (user) {
-                  setState(() {
-                    if (selectedUsers.contains(user)) {
-                      selectedUsers.remove(user);
-                    } else {
-                      selectedUsers.add(user);
+              child: BlocBuilder<UsersBloc, UsersState>(
+                builder: (context, state) {
+                  final users = state.users.toList();
+
+                  if (state.status == UsersStatus.success) {
+                    if (_refreshController.headerStatus ==
+                        RefreshStatus.refreshing) {
+                      _refreshController.refreshCompleted();
                     }
-                  });
-                },
-                onLoading: () {
-                  context.read<UsersBloc>().add(
-                    UsersEvent.get(
-                      searchTerm: controller.text,
-                      lastUser: _users.last,
-                    ),
-                  );
-                },
-                onFailure: () {
-                  context.read<UsersBloc>().add(
-                    UsersEvent.get(lastUser: _users.last),
+                    if (_refreshController.footerStatus == LoadStatus.loading) {
+                      _refreshController.loadComplete();
+                    }
+                  }
+
+                  if (state.status == UsersStatus.failure) {
+                    if (_refreshController.headerStatus ==
+                        RefreshStatus.refreshing) {
+                      _refreshController.refreshFailed();
+                    }
+                    if (_refreshController.footerStatus == LoadStatus.loading) {
+                      _refreshController.loadFailed();
+                    }
+                  }
+                  return UsersListView(
+                    users: users,
+                    selectedUsers: selectedUsers,
+                    loading: state.status == UsersStatus.initial,
+                    failure: state.users.isNotEmpty
+                        ? false
+                        : state.status == UsersStatus.failure,
+                    refreshController: _refreshController,
+                    enablePullUp: state.hasNext,
+                    onUserTap: (user) {
+                      setState(() {
+                        if (selectedUsers.contains(user)) {
+                          selectedUsers.remove(user);
+                        } else {
+                          selectedUsers.add(user);
+                        }
+                      });
+                    },
+                    onLoading: () {
+                      context.read<UsersBloc>().add(
+                        UsersEvent.get(
+                          searchTerm: controller.text,
+                          lastUser: users.last,
+                        ),
+                      );
+                    },
+                    onFailure: () {
+                      context.read<UsersBloc>().add(
+                        UsersEvent.get(lastUser: users.last),
+                      );
+                    },
                   );
                 },
               ),

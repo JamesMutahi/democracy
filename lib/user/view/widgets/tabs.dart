@@ -1,4 +1,3 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
@@ -30,13 +29,7 @@ class UserPosts extends StatefulWidget {
 }
 
 class _UserPostsState extends State<UserPosts> {
-  bool loading = true;
-  bool failure = false;
-  List<Post> _posts = [];
-  bool hasNextPage = false;
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
+  final RefreshController _refreshController = RefreshController();
 
   @override
   void initState() {
@@ -46,99 +39,63 @@ class _UserPostsState extends State<UserPosts> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<UserPostsBloc, UserPostsState>(
-          listener: (context, state) {
-            if (state.status == UserPostsStatus.success) {
-              if (widget.user.id == state.userId) {
-                setState(() {
-                  _posts = state.posts.toList();
-                  loading = false;
-                  failure = false;
-                  hasNextPage = state.hasNext;
-                  if (_refreshController.headerStatus ==
-                      RefreshStatus.refreshing) {
-                    _refreshController.refreshCompleted();
-                  }
-                  if (_refreshController.footerStatus == LoadStatus.loading) {
-                    _refreshController.loadComplete();
-                  }
-                });
-              }
-            }
-            if (state.status == UserPostsStatus.failure) {
-              if (loading) {
-                setState(() {
-                  loading = false;
-                  failure = true;
-                });
-              }
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshFailed();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadFailed();
-              }
-            }
+    return BlocBuilder<UserPostsBloc, UserPostsState>(
+      buildWhen: (previous, current) {
+        return widget.user.id == current.userId;
+      },
+      builder: (context, state) {
+        final posts = state.posts.toList();
+
+        if (state.status == UserPostsStatus.success) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshCompleted();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadComplete();
+          }
+        }
+
+        if (state.status == UserPostsStatus.failure) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshFailed();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadFailed();
+          }
+        }
+
+        return PostListView(
+          posts: posts,
+          loading: state.status == UserPostsStatus.initial,
+          failure: state.posts.isNotEmpty
+              ? false
+              : state.status == UserPostsStatus.failure,
+          onPostsUpdated: (posts) {
+            context.read<UserPostsBloc>().add(
+              UserPostsEvent.update(posts: posts),
+            );
           },
-        ),
-      ],
-      child: loading
-          ? Container(margin: EdgeInsets.only(top: 20), child: BottomLoader())
-          : failure
-          ? FailureRetryButton(
-              onPressed: () {
-                context.read<UserPostsBloc>().add(
-                  UserPostsEvent.get(user: widget.user),
-                );
-              },
-            )
-          : PostListener(
-              posts: _posts,
-              onPostsUpdated: (posts) {
-                setState(() {
-                  _posts = posts;
-                });
-              },
-              child: SmartRefresher(
-                enablePullDown: true,
-                enablePullUp: hasNextPage,
-                header: ClassicHeader(),
-                footer: ClassicFooter(),
-                controller: _refreshController,
-
-                onRefresh: () {
-                  context.read<UserPostsBloc>().add(
-                    UserPostsEvent.get(user: widget.user),
-                  );
-                },
-                onLoading: () {
-                  context.read<UserPostsBloc>().add(
-                    UserPostsEvent.get(
-                      user: widget.user,
-                      previousPosts: _posts,
-                    ),
-                  );
-                },
-
-                child: ListView.builder(
-                  padding: EdgeInsets.only(bottom: 20),
-                  itemBuilder: (BuildContext context, int index) {
-                    Post post = _posts[index];
-                    return PostTile(
-                      key: ValueKey(post.id),
-                      post: post,
-                      checkVisibility: true,
-                      showThreadedReplies: post.thread.isNotEmpty,
-                      showBottomThread: post.thread.isNotEmpty,
-                      showWholeThread: true,
-                    );
-                  },
-                  itemCount: _posts.length,
-                ),
-              ),
-            ),
+          refreshController: _refreshController,
+          enablePullDown: posts.isNotEmpty,
+          enablePullUp: state.hasNext,
+          checkVisibility: true,
+          onRefresh: () {
+            context.read<UserPostsBloc>().add(
+              UserPostsEvent.get(user: widget.user),
+            );
+          },
+          onLoading: () {
+            context.read<UserPostsBloc>().add(
+              UserPostsEvent.get(previousPosts: posts, user: widget.user),
+            );
+          },
+          onFailure: () {
+            context.read<UserPostsBloc>().add(
+              UserPostsEvent.get(user: widget.user),
+            );
+          },
+        );
+      },
     );
   }
 }
@@ -153,13 +110,7 @@ class UserReplies extends StatefulWidget {
 }
 
 class _UserRepliesState extends State<UserReplies> {
-  bool loading = true;
-  bool failure = false;
-  List<Post> _posts = [];
-  bool hasNextPage = false;
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
+  final RefreshController _refreshController = RefreshController();
 
   @override
   void initState() {
@@ -171,106 +122,92 @@ class _UserRepliesState extends State<UserReplies> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<UserRepliesBloc, UserRepliesState>(
-          listener: (context, state) {
-            if (state.status == UserRepliesStatus.success) {
-              if (widget.user.id == state.userId) {
-                setState(() {
-                  _posts = state.posts.toList();
-                  loading = false;
-                  failure = false;
-                  hasNextPage = state.hasNext;
-                  if (_refreshController.headerStatus ==
-                      RefreshStatus.refreshing) {
-                    _refreshController.refreshCompleted();
-                  }
-                  if (_refreshController.footerStatus == LoadStatus.loading) {
-                    _refreshController.loadComplete();
-                  }
-                });
-              }
-            }
-            if (state.status == UserRepliesStatus.failure) {
-              if (loading) {
-                setState(() {
-                  loading = false;
-                  failure = true;
-                });
-              }
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshFailed();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadFailed();
-              }
-            }
+    return BlocBuilder<UserRepliesBloc, UserRepliesState>(
+      buildWhen: (previous, current) {
+        return widget.user.id == current.userId;
+      },
+      builder: (context, state) {
+        final posts = state.posts.toList();
+
+        if (state.status == UserRepliesStatus.initial) {
+          return const BottomLoader();
+        }
+
+        if (state.status == UserRepliesStatus.success) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshCompleted();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadComplete();
+          }
+        }
+
+        if (state.status == UserRepliesStatus.failure) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshFailed();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadFailed();
+          }
+
+          if (posts.isEmpty) {
+            return FailureRetryButton(
+              onPressed: () => context.read<UserRepliesBloc>().add(
+                UserRepliesEvent.get(user: widget.user),
+              ),
+            );
+          }
+        }
+        return PostListener(
+          posts: posts,
+          onPostsUpdated: (posts) {
+            context.read<UserRepliesBloc>().add(
+              UserRepliesEvent.update(posts: posts),
+            );
           },
-        ),
-      ],
-      child: loading
-          ? Container(margin: EdgeInsets.only(top: 20), child: BottomLoader())
-          : failure
-          ? FailureRetryButton(
-              onPressed: () {
-                context.read<UserRepliesBloc>().add(
-                  UserRepliesEvent.get(user: widget.user),
+          child: SmartRefresher(
+            enablePullDown: true,
+            enablePullUp: state.hasNext,
+            header: ClassicHeader(),
+            footer: ClassicFooter(),
+            controller: _refreshController,
+            onRefresh: () {
+              context.read<UserRepliesBloc>().add(
+                UserRepliesEvent.get(user: widget.user),
+              );
+            },
+            onLoading: () {
+              context.read<UserRepliesBloc>().add(
+                UserRepliesEvent.get(user: widget.user, previousPosts: posts),
+              );
+            },
+            child: ListView.builder(
+              padding: EdgeInsets.only(bottom: 20),
+              itemBuilder: (BuildContext context, int index) {
+                Post post = posts[index];
+                return Column(
+                  children: [
+                    PostWidgetSelector(
+                      key: ValueKey(post.replyTo!.id),
+                      post: post.replyTo!,
+                      checkVisibility: true,
+                      showBottomThread: true,
+                      hideBorder: true,
+                    ),
+                    PostTile(
+                      key: ValueKey(post.id),
+                      post: post,
+                      checkVisibility: true,
+                      showTopThread: true,
+                    ),
+                  ],
                 );
               },
-            )
-          : PostListener(
-              posts: _posts,
-              onPostsUpdated: (posts) {
-                setState(() {
-                  _posts = posts;
-                });
-              },
-              child: SmartRefresher(
-                enablePullDown: true,
-                enablePullUp: hasNextPage,
-                header: ClassicHeader(),
-                footer: ClassicFooter(),
-                controller: _refreshController,
-                onRefresh: () {
-                  context.read<UserRepliesBloc>().add(
-                    UserRepliesEvent.get(user: widget.user),
-                  );
-                },
-                onLoading: () {
-                  context.read<UserRepliesBloc>().add(
-                    UserRepliesEvent.get(
-                      user: widget.user,
-                      previousPosts: _posts,
-                    ),
-                  );
-                },
-                child: ListView.builder(
-                  padding: EdgeInsets.only(bottom: 20),
-                  itemBuilder: (BuildContext context, int index) {
-                    Post post = _posts[index];
-                    return Column(
-                      children: [
-                        PostWidgetSelector(
-                          key: ValueKey(post.replyTo!.id),
-                          post: post.replyTo!,
-                          checkVisibility: true,
-                          showBottomThread: true,
-                          hideBorder: true,
-                        ),
-                        PostTile(
-                          key: ValueKey(post.id),
-                          post: post,
-                          checkVisibility: true,
-                          showTopThread: true,
-                        ),
-                      ],
-                    );
-                  },
-                  itemCount: _posts.length,
-                ),
-              ),
+              itemCount: posts.length,
             ),
+          ),
+        );
+      },
     );
   }
 }
@@ -285,13 +222,7 @@ class Likes extends StatefulWidget {
 }
 
 class _LikesState extends State<Likes> {
-  bool loading = true;
-  bool failure = false;
-  List<Post> _posts = [];
-  bool hasNextPage = false;
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
+  final RefreshController _refreshController = RefreshController();
 
   @override
   void initState() {
@@ -301,89 +232,57 @@ class _LikesState extends State<Likes> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<LikesBloc, LikesState>(
-          listener: (context, state) {
-            if (state.status == LikesStatus.success) {
-              if (widget.user.id == state.userId) {
-                setState(() {
-                  _posts = state.posts.toList();
-                  loading = false;
-                  failure = false;
-                });
-              }
-            }
-            if (state.status == LikesStatus.failure) {
-              if (widget.user.id == state.userId) {
-                setState(() {
-                  failure = true;
-                  loading = false;
-                });
-              }
-            }
+    return BlocBuilder<LikesBloc, LikesState>(
+      buildWhen: (previous, current) {
+        return widget.user.id == current.userId;
+      },
+      builder: (context, state) {
+        final posts = state.posts.toList();
+
+        if (state.status == LikesStatus.success) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshCompleted();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadComplete();
+          }
+        }
+
+        if (state.status == LikesStatus.failure) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshFailed();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadFailed();
+          }
+        }
+
+        return PostListView(
+          posts: posts,
+          loading: state.status == LikesStatus.initial,
+          failure: state.posts.isNotEmpty
+              ? false
+              : state.status == LikesStatus.failure,
+          onPostsUpdated: (posts) {
+            context.read<LikesBloc>().add(LikesEvent.update(posts: posts));
           },
-        ),
-        BlocListener<LikesBloc, LikesState>(
-          listener: (context, state) {
-            if (state.status == LikesStatus.success) {
-              if (widget.user.id == state.userId) {
-                setState(() {
-                  _posts = state.posts.toList();
-                  loading = false;
-                  failure = false;
-                  hasNextPage = state.hasNext;
-                  if (_refreshController.headerStatus ==
-                      RefreshStatus.refreshing) {
-                    _refreshController.refreshCompleted();
-                  }
-                  if (_refreshController.footerStatus == LoadStatus.loading) {
-                    _refreshController.loadComplete();
-                  }
-                });
-              }
-            }
-            if (state.status == LikesStatus.failure) {
-              if (loading) {
-                setState(() {
-                  loading = false;
-                  failure = true;
-                });
-              }
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshFailed();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadFailed();
-              }
-            }
+          refreshController: _refreshController,
+          enablePullDown: posts.isNotEmpty,
+          enablePullUp: state.hasNext,
+          checkVisibility: true,
+          onRefresh: () {
+            context.read<LikesBloc>().add(LikesEvent.get(user: widget.user));
           },
-        ),
-      ],
-      child: PostListView(
-        posts: _posts,
-        loading: loading,
-        failure: failure,
-        refreshController: _refreshController,
-        enablePullDown: true,
-        enablePullUp: hasNextPage,
-        onPostsUpdated: (posts) {
-          setState(() {
-            _posts = posts;
-          });
-        },
-        onRefresh: () {
-          context.read<LikesBloc>().add(LikesEvent.get(user: widget.user));
-        },
-        onLoading: () {
-          context.read<LikesBloc>().add(
-            LikesEvent.get(user: widget.user, previousPosts: _posts),
-          );
-        },
-        onFailure: () {
-          context.read<LikesBloc>().add(LikesEvent.get(user: widget.user));
-        },
-      ),
+          onLoading: () {
+            context.read<LikesBloc>().add(
+              LikesEvent.get(previousPosts: posts, user: widget.user),
+            );
+          },
+          onFailure: () {
+            context.read<LikesBloc>().add(LikesEvent.get(user: widget.user));
+          },
+        );
+      },
     );
   }
 }
@@ -398,13 +297,7 @@ class UserCommunityNotes extends StatefulWidget {
 }
 
 class _UserCommunityNotesState extends State<UserCommunityNotes> {
-  bool loading = true;
-  bool failure = false;
-  List<Post> _posts = [];
-  bool hasNextPage = false;
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
+  final RefreshController _refreshController = RefreshController();
 
   @override
   void initState() {
@@ -416,93 +309,82 @@ class _UserCommunityNotesState extends State<UserCommunityNotes> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<UserCommunityNotesBloc, UserCommunityNotesState>(
-          listener: (context, state) {
-            if (state.status == UserCommunityNotesStatus.success) {
-              if (widget.user.id == state.userId) {
-                setState(() {
-                  _posts = state.posts.toList();
-                  loading = false;
-                  failure = false;
-                  hasNextPage = state.hasNext;
-                  if (_refreshController.headerStatus ==
-                      RefreshStatus.refreshing) {
-                    _refreshController.refreshCompleted();
-                  }
-                  if (_refreshController.footerStatus == LoadStatus.loading) {
-                    _refreshController.loadComplete();
-                  }
-                });
-              }
-            }
-            if (state.status == UserCommunityNotesStatus.failure) {
-              if (loading) {
-                setState(() {
-                  loading = false;
-                  failure = true;
-                });
-              }
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshFailed();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadFailed();
-              }
-            }
+    return BlocBuilder<UserCommunityNotesBloc, UserCommunityNotesState>(
+      buildWhen: (previous, current) {
+        return widget.user.id == current.userId;
+      },
+      builder: (context, state) {
+        final posts = state.posts.toList();
+
+        if (state.status == UserCommunityNotesStatus.initial) {
+          return const BottomLoader();
+        }
+
+        if (state.status == UserCommunityNotesStatus.success) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshCompleted();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadComplete();
+          }
+        }
+
+        if (state.status == UserCommunityNotesStatus.failure) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshFailed();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadFailed();
+          }
+
+          if (posts.isEmpty) {
+            return FailureRetryButton(
+              onPressed: () => context.read<UserCommunityNotesBloc>().add(
+                UserCommunityNotesEvent.get(user: widget.user),
+              ),
+            );
+          }
+        }
+        return PostListener(
+          posts: posts,
+          onPostsUpdated: (posts) {
+            context.read<UserCommunityNotesBloc>().add(
+              UserCommunityNotesEvent.update(posts: posts),
+            );
           },
-        ),
-      ],
-      child: loading
-          ? Container(margin: EdgeInsets.only(top: 20), child: BottomLoader())
-          : failure
-          ? FailureRetryButton(
-              onPressed: () {
-                context.read<UserCommunityNotesBloc>().add(
-                  UserCommunityNotesEvent.get(user: widget.user),
+          child: SmartRefresher(
+            enablePullDown: true,
+            enablePullUp: state.hasNext,
+            header: ClassicHeader(),
+            footer: ClassicFooter(),
+            controller: _refreshController,
+            onRefresh: () {
+              context.read<UserCommunityNotesBloc>().add(
+                UserCommunityNotesEvent.get(user: widget.user),
+              );
+            },
+            onLoading: () {
+              context.read<UserCommunityNotesBloc>().add(
+                UserCommunityNotesEvent.get(
+                  user: widget.user,
+                  previousPosts: posts,
+                ),
+              );
+            },
+            child: ListView.builder(
+              padding: EdgeInsets.only(bottom: 20),
+              itemBuilder: (BuildContext context, int index) {
+                Post post = posts[index];
+                return CommunityNoteTile(
+                  key: ValueKey(post.id),
+                  communityNote: post,
                 );
               },
-            )
-          : PostListener(
-              posts: _posts,
-              onPostsUpdated: (posts) {
-                setState(() {
-                  _posts = posts;
-                });
-              },
-              child: SmartRefresher(
-                enablePullDown: true,
-                enablePullUp: hasNextPage,
-                header: ClassicHeader(),
-                footer: ClassicFooter(),
-                controller: _refreshController,
-                onRefresh: () {
-                  context.read<UserCommunityNotesBloc>().add(
-                    UserCommunityNotesEvent.get(user: widget.user),
-                  );
-                },
-                onLoading: () {
-                  context.read<UserCommunityNotesBloc>().add(
-                    UserCommunityNotesEvent.get(
-                      user: widget.user,
-                      previousPosts: _posts,
-                    ),
-                  );
-                },
-                child: ListView.builder(
-                  padding: EdgeInsets.only(bottom: 20),
-                  itemBuilder: (BuildContext context, int index) {
-                    Post post = _posts[index];
-                    return CommunityNoteTile(
-                      key: ValueKey(post.id),
-                      communityNote: post,
-                    );
-                  },
-                  itemCount: _posts.length,
-                ),
-              ),
+              itemCount: posts.length,
             ),
+          ),
+        );
+      },
     );
   }
 }
@@ -517,13 +399,7 @@ class UserPetitions extends StatefulWidget {
 }
 
 class _UserPetitionsState extends State<UserPetitions> {
-  bool loading = true;
-  bool failure = false;
-  List<Petition> _petitions = [];
-  bool hasNextPage = false;
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
+  final RefreshController _refreshController = RefreshController();
 
   @override
   void initState() {
@@ -535,143 +411,94 @@ class _UserPetitionsState extends State<UserPetitions> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state.status == WebsocketStatus.connected) {
-              context.read<UserPetitionsBloc>().add(
-                UserPetitionsEvent.resubscribe(
-                  user: widget.user,
-                  petitions: _petitions,
+    return BlocListener<PetitionDetailBloc, PetitionDetailState>(
+      listener: (context, state) {
+        final bloc = context.read<UserPetitionsBloc>();
+
+        if (state is PetitionCreated) {
+          bloc.add(UserPetitionsEvent.add(petition: state.petition));
+        } else if (state is PetitionLoaded) {
+          bloc.add(UserPetitionsEvent.update(petition: state.petition));
+        } else if (state is PetitionUpdated) {
+          bloc.add(UserPetitionsEvent.update(petition: state.petition));
+        } else if (state is PetitionDeleted) {
+          bloc.add(UserPetitionsEvent.remove(petitionId: state.petitionId));
+        }
+      },
+      child: BlocBuilder<UserPetitionsBloc, UserPetitionsState>(
+        buildWhen: (previous, current) {
+          return widget.user.id == current.userId;
+        },
+        builder: (context, state) {
+          final petitions = state.petitions.toList();
+
+          if (state.status == UserPetitionsStatus.initial) {
+            return const BottomLoader();
+          }
+
+          if (state.status == UserPetitionsStatus.success) {
+            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+              _refreshController.refreshCompleted();
+            }
+            if (_refreshController.footerStatus == LoadStatus.loading) {
+              _refreshController.loadComplete();
+            }
+          }
+
+          if (state.status == UserPetitionsStatus.failure) {
+            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+              _refreshController.refreshFailed();
+            }
+            if (_refreshController.footerStatus == LoadStatus.loading) {
+              _refreshController.loadFailed();
+            }
+
+            if (state.petitions.isEmpty) {
+              return FailureRetryButton(
+                onPressed: () => context.read<UserPetitionsBloc>().add(
+                  UserPetitionsEvent.get(user: widget.user),
                 ),
               );
             }
-          },
-        ),
-        BlocListener<UserPetitionsBloc, UserPetitionsState>(
-          listener: (context, state) {
-            if (state.status == UserPetitionsStatus.success) {
-              if (widget.user.id == state.userId) {
-                setState(() {
-                  _petitions = state.petitions.toList();
-                  loading = false;
-                  failure = false;
-                  hasNextPage = state.hasNext;
-                  if (_refreshController.headerStatus ==
-                      RefreshStatus.refreshing) {
-                    _refreshController.refreshCompleted();
-                  }
-                  if (_refreshController.footerStatus == LoadStatus.loading) {
-                    _refreshController.loadComplete();
-                  }
-                });
-              }
-            }
-            if (state.status == UserPetitionsStatus.failure) {
-              if (loading) {
-                setState(() {
-                  loading = false;
-                  failure = true;
-                });
-              }
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshFailed();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadFailed();
-              }
-            }
-          },
-        ),
-        BlocListener<PetitionDetailBloc, PetitionDetailState>(
-          listener: (context, state) {
-            if (state is PetitionUpdated) {
-              if (_petitions.any(
-                (petition) => petition.id == state.petition.id,
-              )) {
-                setState(() {
-                  int index = _petitions.indexWhere(
-                    (petition) => petition.id == state.petition.id,
-                  );
-                  _petitions[index] = state.petition;
-                });
-              }
-            }
-            if (state is PetitionDeleted) {
-              if (_petitions.any(
-                (petition) => petition.id == state.petitionId,
-              )) {
-                setState(() {
-                  _petitions.removeWhere(
-                    (petition) => petition.id == state.petitionId,
-                  );
-                });
-              }
-            }
-          },
-        ),
-      ],
-      child: loading
-          ? BottomLoader()
-          : failure
-          ? FailureRetryButton(
-              onPressed: () {
-                context.read<UserPetitionsBloc>().add(
-                  UserPetitionsEvent.get(user: widget.user),
-                );
-              },
-            )
-          : PopScope(
-              canPop: true,
-              onPopInvokedWithResult: (_, _) {
-                context.read<UserPetitionsBloc>().add(
-                  UserPetitionsEvent.unsubscribe(
-                    user: widget.user,
-                    petitions: _petitions,
+          }
+
+          return SmartRefresher(
+            enablePullDown: true,
+            enablePullUp: state.hasNext,
+            header: ClassicHeader(),
+            controller: _refreshController,
+            onRefresh: () {
+              context.read<UserPetitionsBloc>().add(
+                UserPetitionsEvent.get(user: widget.user),
+              );
+            },
+            onLoading: () {
+              context.read<UserPetitionsBloc>().add(
+                UserPetitionsEvent.get(
+                  user: widget.user,
+                  previousPetitions: petitions,
+                ),
+              );
+            },
+            footer: ClassicFooter(),
+            child: ListView.builder(
+              padding: EdgeInsets.all(15),
+              itemBuilder: (BuildContext context, int index) {
+                Petition petition = petitions[index];
+                return Container(
+                  margin: EdgeInsets.only(bottom: 10),
+                  child: PetitionTile(
+                    key: ValueKey(petition.id),
+                    petition: petition,
+                    isDependency: false,
                   ),
                 );
               },
-              child: SmartRefresher(
-                enablePullDown: true,
-                enablePullUp: hasNextPage,
-                header: ClassicHeader(),
-                controller: _refreshController,
-                onRefresh: () {
-                  context.read<UserPetitionsBloc>().add(
-                    UserPetitionsEvent.get(user: widget.user),
-                  );
-                },
-                onLoading: () {
-                  context.read<UserPetitionsBloc>().add(
-                    UserPetitionsEvent.get(
-                      user: widget.user,
-                      previousPetitions: _petitions,
-                    ),
-                  );
-                },
-                footer: ClassicFooter(),
-                child: ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  itemBuilder: (BuildContext context, int index) {
-                    Petition petition = _petitions[index];
-                    return Column(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(top: 10),
-                          child: PetitionTile(
-                            key: ValueKey(petition.id),
-                            petition: petition,
-                            isDependency: false,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                  itemCount: _petitions.length,
-                ),
-              ),
+              itemCount: petitions.length,
             ),
+          );
+        },
+      ),
     );
   }
 }

@@ -1,6 +1,5 @@
 import 'package:democracy/petition/bloc/supporters/supporters_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
-import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/profile.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
@@ -17,13 +16,7 @@ class Supporters extends StatefulWidget {
 }
 
 class _SupportersState extends State<Supporters> {
-  bool loading = true;
-  bool failure = false;
-  List<User> _users = [];
-  bool hasNextPage = false;
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
+  final RefreshController _refreshController = RefreshController();
 
   @override
   void initState() {
@@ -37,83 +30,70 @@ class _SupportersState extends State<Supporters> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Supporters')),
-      body: MultiBlocListener(
-        listeners: [
-          BlocListener<SupportersBloc, SupportersState>(
-            listener: (context, state) {
-              if (state.status == SupportersStatus.success) {
-                setState(() {
-                  _users = state.users;
-                  loading = false;
-                  failure = false;
-                  hasNextPage = state.hasNext;
-                });
-                if (_refreshController.headerStatus ==
-                    RefreshStatus.refreshing) {
-                  _refreshController.refreshCompleted();
-                }
-                if (_refreshController.footerStatus == LoadStatus.loading) {
-                  _refreshController.loadComplete();
-                }
-              }
-              if (state.status == SupportersStatus.failure) {
-                if (loading) {
-                  setState(() {
-                    loading = false;
-                    failure = true;
-                  });
-                }
-                if (_refreshController.headerStatus ==
-                    RefreshStatus.refreshing) {
-                  _refreshController.refreshFailed();
-                }
-                if (_refreshController.footerStatus == LoadStatus.loading) {
-                  _refreshController.loadFailed();
-                }
-              }
+      body: BlocBuilder<SupportersBloc, SupportersState>(
+        builder: (context, state) {
+          final users = state.users.toList();
+
+          if (state.status == SupportersStatus.success) {
+            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+              _refreshController.refreshCompleted();
+            }
+            if (_refreshController.footerStatus == LoadStatus.loading) {
+              _refreshController.loadComplete();
+            }
+          }
+
+          if (state.status == SupportersStatus.failure) {
+            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+              _refreshController.refreshFailed();
+            }
+            if (_refreshController.footerStatus == LoadStatus.loading) {
+              _refreshController.loadFailed();
+            }
+          }
+          return UsersListView(
+            users: users,
+            loading: state.status == SupportersStatus.initial,
+            failure: state.users.isNotEmpty
+                ? false
+                : state.status == SupportersStatus.failure,
+            refreshController: _refreshController,
+            enablePullDown: true,
+            enablePullUp: state.hasNext,
+            showProfileButtons: true,
+            onUsersUpdated: (users) {
+              context.read<SupportersBloc>().add(
+                SupportersEvent.update(users: users),
+              );
             },
-          ),
-        ],
-        child: UsersListView(
-          users: _users,
-          loading: loading,
-          failure: failure,
-          refreshController: _refreshController,
-          enablePullDown: true,
-          enablePullUp: hasNextPage,
-          showProfileButtons: true,
-          onUsersUpdated: (users) {
-            setState(() {
-              _users = users;
-            });
-          },
-          onUserTap: (user) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ProfilePage(user: user),
-              ),
-            );
-          },
-          onRefresh: () {
-            context.read<SupportersBloc>().add(
-              SupportersEvent.get(petition: widget.petition),
-            );
-          },
-          onLoading: () {
-            context.read<SupportersBloc>().add(
-              SupportersEvent.get(
-                petition: widget.petition,
-                lastUser: _users.last,
-              ),
-            );
-          },
-          onFailure: () {
-            context.read<SupportersBloc>().add(
-              SupportersEvent.get(petition: widget.petition),
-            );
-          },
-        ),
+            onUserTap: (user) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfilePage(user: user),
+                ),
+              );
+            },
+            onRefresh: () {
+              context.read<SupportersBloc>().add(
+                SupportersEvent.get(petition: widget.petition),
+              );
+            },
+            onLoading: () {
+              context.read<SupportersBloc>().add(
+                SupportersEvent.get(
+                  petition: widget.petition,
+                  lastUser: users.last,
+                ),
+              );
+            },
+            onFailure: () {
+              context.read<SupportersBloc>().add(
+                SupportersEvent.get(petition: widget.petition),
+              );
+            },
+          );
+        },
       ),
     );
   }

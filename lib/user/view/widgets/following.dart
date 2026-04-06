@@ -27,7 +27,10 @@ class Following extends StatelessWidget {
                 bottom: TabBar(
                   dividerColor: Theme.of(context).colorScheme.outlineVariant,
                   labelStyle: Theme.of(context).textTheme.titleMedium,
-                  tabs: [Tab(text: 'Followers'), Tab(text: 'Following')],
+                  tabs: [
+                    Tab(text: 'Followers'),
+                    Tab(text: 'Following'),
+                  ],
                 ),
               ),
             ];
@@ -52,14 +55,8 @@ class _FollowersTab extends StatefulWidget {
 }
 
 class _FollowersTabState extends State<_FollowersTab> {
-  bool loading = true;
-  bool failure = false;
-  List<User> _users = [];
   List<User> selectedUsers = [];
-  bool hasNextPage = false;
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
+  final RefreshController _refreshController = RefreshController();
 
   @override
   void initState() {
@@ -69,77 +66,69 @@ class _FollowersTabState extends State<_FollowersTab> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<FollowersBloc, FollowersState>(
-          listener: (context, state) {
-            if (state.status == FollowersStatus.success) {
-              setState(() {
-                _users = state.users;
-                loading = false;
-                failure = false;
-                hasNextPage = state.hasNext;
-              });
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshCompleted();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadComplete();
-              }
-            }
-            if (state.status == FollowersStatus.failure) {
-              if (loading) {
-                setState(() {
-                  loading = false;
-                  failure = true;
-                });
-              }
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshFailed();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadFailed();
-              }
-            }
+    return BlocBuilder<FollowersBloc, FollowersState>(
+      buildWhen: (previous, current) {
+        return widget.user.id == current.userId;
+      },
+      builder: (context, state) {
+        final users = state.users.toList();
+
+        if (state.status == FollowersStatus.success) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshCompleted();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadComplete();
+          }
+        }
+
+        if (state.status == FollowersStatus.failure) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshFailed();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadFailed();
+          }
+        }
+        return UsersListView(
+          users: users,
+          selectedUsers: selectedUsers,
+          loading: state.status == FollowersStatus.initial,
+          failure: state.users.isNotEmpty
+              ? false
+              : state.status == FollowersStatus.failure,
+          refreshController: _refreshController,
+          enablePullDown: true,
+          enablePullUp: state.hasNext,
+          showProfileButtons: true,
+          onUsersUpdated: (users) {
+            context.read<FollowersBloc>().add(
+              FollowersEvent.update(users: users),
+            );
           },
-        ),
-      ],
-      child: UsersListView(
-        users: _users,
-        selectedUsers: selectedUsers,
-        loading: loading,
-        failure: failure,
-        refreshController: _refreshController,
-        enablePullDown: true,
-        enablePullUp: hasNextPage,
-        showProfileButtons: true,
-        onUsersUpdated: (users) {
-          setState(() {
-            _users = users;
-          });
-        },
-        onUserTap: (user) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ProfilePage(user: user)),
-          );
-        },
-        onRefresh: () {
-          context.read<FollowersBloc>().add(
-            FollowersEvent.get(user: widget.user),
-          );
-        },
-        onLoading: () {
-          context.read<FollowersBloc>().add(
-            FollowersEvent.get(user: widget.user, lastUser: _users.last),
-          );
-        },
-        onFailure: () {
-          context.read<FollowersBloc>().add(
-            FollowersEvent.get(user: widget.user),
-          );
-        },
-      ),
+          onUserTap: (user) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ProfilePage(user: user)),
+            );
+          },
+          onRefresh: () {
+            context.read<FollowersBloc>().add(
+              FollowersEvent.get(user: widget.user),
+            );
+          },
+          onLoading: () {
+            context.read<FollowersBloc>().add(
+              FollowersEvent.get(user: widget.user, lastUser: users.last),
+            );
+          },
+          onFailure: () {
+            context.read<FollowersBloc>().add(
+              FollowersEvent.get(user: widget.user),
+            );
+          },
+        );
+      },
     );
   }
 }
@@ -154,15 +143,8 @@ class _FollowingTab extends StatefulWidget {
 }
 
 class _FollowingTabState extends State<_FollowingTab> {
-  bool loading = true;
-  bool failure = false;
-  List<User> _users = [];
   List<User> selectedUsers = [];
-  int currentPage = 1;
-  bool hasNextPage = false;
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
+  final RefreshController _refreshController = RefreshController();
 
   @override
   void initState() {
@@ -172,78 +154,69 @@ class _FollowingTabState extends State<_FollowingTab> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<FollowingBloc, FollowingState>(
-          listener: (context, state) {
-            if (state.status == FollowingStatus.success) {
-              setState(() {
-                _users = state.users;
-                loading = false;
-                failure = false;
-                currentPage = currentPage;
-                hasNextPage = state.hasNext;
-              });
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshCompleted();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadComplete();
-              }
-            }
-            if (state.status == FollowingStatus.failure) {
-              if (loading) {
-                setState(() {
-                  loading = false;
-                  failure = true;
-                });
-              }
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshFailed();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadFailed();
-              }
-            }
+    return BlocBuilder<FollowingBloc, FollowingState>(
+      buildWhen: (previous, current) {
+        return widget.user.id == current.userId;
+      },
+      builder: (context, state) {
+        final users = state.users.toList();
+
+        if (state.status == FollowingStatus.success) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshCompleted();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadComplete();
+          }
+        }
+
+        if (state.status == FollowingStatus.failure) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshFailed();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadFailed();
+          }
+        }
+        return UsersListView(
+          users: users,
+          selectedUsers: selectedUsers,
+          loading: state.status == FollowingStatus.initial,
+          failure: state.users.isNotEmpty
+              ? false
+              : state.status == FollowingStatus.failure,
+          refreshController: _refreshController,
+          enablePullDown: true,
+          enablePullUp: state.hasNext,
+          showProfileButtons: true,
+          onUsersUpdated: (users) {
+            context.read<FollowingBloc>().add(
+              FollowingEvent.update(users: users),
+            );
           },
-        ),
-      ],
-      child: UsersListView(
-        users: _users,
-        selectedUsers: selectedUsers,
-        loading: loading,
-        failure: failure,
-        refreshController: _refreshController,
-        enablePullDown: true,
-        enablePullUp: hasNextPage,
-        showProfileButtons: true,
-        onUsersUpdated: (users) {
-          setState(() {
-            _users = users;
-          });
-        },
-        onUserTap: (user) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ProfilePage(user: user)),
-          );
-        },
-        onRefresh: () {
-          context.read<FollowingBloc>().add(
-            FollowingEvent.get(user: widget.user),
-          );
-        },
-        onLoading: () {
-          context.read<FollowingBloc>().add(
-            FollowingEvent.get(user: widget.user, lastUser: _users.last),
-          );
-        },
-        onFailure: () {
-          context.read<FollowingBloc>().add(
-            FollowingEvent.get(user: widget.user),
-          );
-        },
-      ),
+          onUserTap: (user) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ProfilePage(user: user)),
+            );
+          },
+          onRefresh: () {
+            context.read<FollowingBloc>().add(
+              FollowingEvent.get(user: widget.user),
+            );
+          },
+          onLoading: () {
+            context.read<FollowingBloc>().add(
+              FollowingEvent.get(user: widget.user, lastUser: users.last),
+            );
+          },
+          onFailure: () {
+            context.read<FollowingBloc>().add(
+              FollowingEvent.get(user: widget.user),
+            );
+          },
+        );
+      },
     );
   }
 }

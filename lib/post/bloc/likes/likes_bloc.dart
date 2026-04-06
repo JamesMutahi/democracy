@@ -20,15 +20,12 @@ class LikesBloc extends Bloc<LikesEvent, LikesState> {
         add(_Received(payload: message['payload']));
       }
     });
-    on<_Get>((event, emit) {
-      _onGet(event, emit);
-    });
-    on<_Received>((event, emit) {
-      _onReceived(event, emit);
-    });
+    on<_Get>((event, emit) => _onGet(event, emit));
+    on<_Received>((event, emit) => _onReceived(event, emit));
+    on<_Update>((event, emit) => _onUpdate(event, emit));
   }
 
-  Future _onGet(_Get event, Emitter<LikesState> emit) async {
+  void _onGet(_Get event, Emitter<LikesState> emit) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -41,7 +38,7 @@ class LikesBloc extends Bloc<LikesEvent, LikesState> {
     webSocketService.send(message);
   }
 
-  Future _onReceived(_Received event, Emitter<LikesState> emit) async {
+  void _onReceived(_Received event, Emitter<LikesState> emit) {
     emit(state.copyWith(status: LikesStatus.loading));
     if (event.payload['response_status'] == 200) {
       final List<Post> posts = List.from(
@@ -59,6 +56,11 @@ class LikesBloc extends Bloc<LikesEvent, LikesState> {
     } else {
       emit(state.copyWith(status: LikesStatus.failure));
     }
+  }
+
+  void _onUpdate(_Update event, Emitter<LikesState> emit) {
+    emit(state.copyWith(status: LikesStatus.loading));
+    emit(state.copyWith(posts: event.posts, status: LikesStatus.success));
   }
 
   final WebSocketService webSocketService;

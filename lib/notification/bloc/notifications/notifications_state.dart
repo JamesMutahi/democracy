@@ -1,15 +1,35 @@
 part of 'notifications_bloc.dart';
 
-@freezed
-class NotificationsState with _$NotificationsState {
-  const factory NotificationsState.initial() = NotificationsInitial;
+enum NotificationsStatus { initial, loading, success, failure }
 
-  const factory NotificationsState.loading() = NotificationsLoading;
+final class NotificationsState extends Equatable {
+  const NotificationsState({
+    this.status = NotificationsStatus.initial,
+    this.notifications = const [],
+    this.hasNext = false,
+  });
 
-  const factory NotificationsState.loaded({
-    required List<Notification> notifications,
-  }) = NotificationsLoaded;
+  final NotificationsStatus status;
+  final List<Notification> notifications;
+  final bool hasNext;
 
-  const factory NotificationsState.failure({required String error}) =
-      NotificationsFailure;
+  NotificationsState copyWith({
+    NotificationsStatus? status,
+    List<Notification>? notifications,
+    bool? hasNext,
+  }) {
+    return NotificationsState(
+      status: status ?? this.status,
+      notifications: notifications ?? this.notifications,
+      hasNext: hasNext ?? this.hasNext,
+    );
+  }
+
+  @override
+  String toString() {
+    return '''NotificationsState { status: $status, notifications: ${notifications.length}, hasNext: $hasNext }''';
+  }
+
+  @override
+  List<Object> get props => [status, notifications];
 }

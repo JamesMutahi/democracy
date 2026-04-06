@@ -12,386 +12,6 @@ part of 'notifications_bloc.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$NotificationsState {
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationsState);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'NotificationsState()';
-}
-
-
-}
-
-/// @nodoc
-class $NotificationsStateCopyWith<$Res>  {
-$NotificationsStateCopyWith(NotificationsState _, $Res Function(NotificationsState) __);
-}
-
-
-/// Adds pattern-matching-related methods to [NotificationsState].
-extension NotificationsStatePatterns on NotificationsState {
-/// A variant of `map` that fallback to returning `orElse`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( NotificationsInitial value)?  initial,TResult Function( NotificationsLoading value)?  loading,TResult Function( NotificationsLoaded value)?  loaded,TResult Function( NotificationsFailure value)?  failure,required TResult orElse(),}){
-final _that = this;
-switch (_that) {
-case NotificationsInitial() when initial != null:
-return initial(_that);case NotificationsLoading() when loading != null:
-return loading(_that);case NotificationsLoaded() when loaded != null:
-return loaded(_that);case NotificationsFailure() when failure != null:
-return failure(_that);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// Callbacks receives the raw object, upcasted.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case final Subclass2 value:
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( NotificationsInitial value)  initial,required TResult Function( NotificationsLoading value)  loading,required TResult Function( NotificationsLoaded value)  loaded,required TResult Function( NotificationsFailure value)  failure,}){
-final _that = this;
-switch (_that) {
-case NotificationsInitial():
-return initial(_that);case NotificationsLoading():
-return loading(_that);case NotificationsLoaded():
-return loaded(_that);case NotificationsFailure():
-return failure(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
-}
-/// A variant of `map` that fallback to returning `null`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( NotificationsInitial value)?  initial,TResult? Function( NotificationsLoading value)?  loading,TResult? Function( NotificationsLoaded value)?  loaded,TResult? Function( NotificationsFailure value)?  failure,}){
-final _that = this;
-switch (_that) {
-case NotificationsInitial() when initial != null:
-return initial(_that);case NotificationsLoading() when loading != null:
-return loading(_that);case NotificationsLoaded() when loaded != null:
-return loaded(_that);case NotificationsFailure() when failure != null:
-return failure(_that);case _:
-  return null;
-
-}
-}
-/// A variant of `when` that fallback to an `orElse` callback.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<Notification> notifications)?  loaded,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
-switch (_that) {
-case NotificationsInitial() when initial != null:
-return initial();case NotificationsLoading() when loading != null:
-return loading();case NotificationsLoaded() when loaded != null:
-return loaded(_that.notifications);case NotificationsFailure() when failure != null:
-return failure(_that.error);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// As opposed to `map`, this offers destructuring.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case Subclass2(:final field2):
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<Notification> notifications)  loaded,required TResult Function( String error)  failure,}) {final _that = this;
-switch (_that) {
-case NotificationsInitial():
-return initial();case NotificationsLoading():
-return loading();case NotificationsLoaded():
-return loaded(_that.notifications);case NotificationsFailure():
-return failure(_that.error);case _:
-  throw StateError('Unexpected subclass');
-
-}
-}
-/// A variant of `when` that fallback to returning `null`
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<Notification> notifications)?  loaded,TResult? Function( String error)?  failure,}) {final _that = this;
-switch (_that) {
-case NotificationsInitial() when initial != null:
-return initial();case NotificationsLoading() when loading != null:
-return loading();case NotificationsLoaded() when loaded != null:
-return loaded(_that.notifications);case NotificationsFailure() when failure != null:
-return failure(_that.error);case _:
-  return null;
-
-}
-}
-
-}
-
-/// @nodoc
-
-
-class NotificationsInitial implements NotificationsState {
-  const NotificationsInitial();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationsInitial);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'NotificationsState.initial()';
-}
-
-
-}
-
-
-
-
-/// @nodoc
-
-
-class NotificationsLoading implements NotificationsState {
-  const NotificationsLoading();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationsLoading);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'NotificationsState.loading()';
-}
-
-
-}
-
-
-
-
-/// @nodoc
-
-
-class NotificationsLoaded implements NotificationsState {
-  const NotificationsLoaded({required final  List<Notification> notifications}): _notifications = notifications;
-  
-
- final  List<Notification> _notifications;
- List<Notification> get notifications {
-  if (_notifications is EqualUnmodifiableListView) return _notifications;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_notifications);
-}
-
-
-/// Create a copy of NotificationsState
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$NotificationsLoadedCopyWith<NotificationsLoaded> get copyWith => _$NotificationsLoadedCopyWithImpl<NotificationsLoaded>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationsLoaded&&const DeepCollectionEquality().equals(other._notifications, _notifications));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_notifications));
-
-@override
-String toString() {
-  return 'NotificationsState.loaded(notifications: $notifications)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $NotificationsLoadedCopyWith<$Res> implements $NotificationsStateCopyWith<$Res> {
-  factory $NotificationsLoadedCopyWith(NotificationsLoaded value, $Res Function(NotificationsLoaded) _then) = _$NotificationsLoadedCopyWithImpl;
-@useResult
-$Res call({
- List<Notification> notifications
-});
-
-
-
-
-}
-/// @nodoc
-class _$NotificationsLoadedCopyWithImpl<$Res>
-    implements $NotificationsLoadedCopyWith<$Res> {
-  _$NotificationsLoadedCopyWithImpl(this._self, this._then);
-
-  final NotificationsLoaded _self;
-  final $Res Function(NotificationsLoaded) _then;
-
-/// Create a copy of NotificationsState
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? notifications = null,}) {
-  return _then(NotificationsLoaded(
-notifications: null == notifications ? _self._notifications : notifications // ignore: cast_nullable_to_non_nullable
-as List<Notification>,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class NotificationsFailure implements NotificationsState {
-  const NotificationsFailure({required this.error});
-  
-
- final  String error;
-
-/// Create a copy of NotificationsState
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$NotificationsFailureCopyWith<NotificationsFailure> get copyWith => _$NotificationsFailureCopyWithImpl<NotificationsFailure>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationsFailure&&(identical(other.error, error) || other.error == error));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,error);
-
-@override
-String toString() {
-  return 'NotificationsState.failure(error: $error)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $NotificationsFailureCopyWith<$Res> implements $NotificationsStateCopyWith<$Res> {
-  factory $NotificationsFailureCopyWith(NotificationsFailure value, $Res Function(NotificationsFailure) _then) = _$NotificationsFailureCopyWithImpl;
-@useResult
-$Res call({
- String error
-});
-
-
-
-
-}
-/// @nodoc
-class _$NotificationsFailureCopyWithImpl<$Res>
-    implements $NotificationsFailureCopyWith<$Res> {
-  _$NotificationsFailureCopyWithImpl(this._self, this._then);
-
-  final NotificationsFailure _self;
-  final $Res Function(NotificationsFailure) _then;
-
-/// Create a copy of NotificationsState
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? error = null,}) {
-  return _then(NotificationsFailure(
-error: null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-
-}
-
-/// @nodoc
 mixin _$NotificationsEvent {
 
 
@@ -435,12 +55,15 @@ extension NotificationsEventPatterns on NotificationsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Add value)?  add,TResult Function( _Update value)?  update,TResult Function( _Remove value)?  remove,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
-return received(_that);case _:
+return received(_that);case _Add() when add != null:
+return add(_that);case _Update() when update != null:
+return update(_that);case _Remove() when remove != null:
+return remove(_that);case _:
   return orElse();
 
 }
@@ -458,12 +81,15 @@ return received(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Add value)  add,required TResult Function( _Update value)  update,required TResult Function( _Remove value)  remove,}){
 final _that = this;
 switch (_that) {
 case _Get():
 return get(_that);case _Received():
-return received(_that);}
+return received(_that);case _Add():
+return add(_that);case _Update():
+return update(_that);case _Remove():
+return remove(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -477,12 +103,15 @@ return received(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Add value)?  add,TResult? Function( _Update value)?  update,TResult? Function( _Remove value)?  remove,}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
-return received(_that);case _:
+return received(_that);case _Add() when add != null:
+return add(_that);case _Update() when update != null:
+return update(_that);case _Remove() when remove != null:
+return remove(_that);case _:
   return null;
 
 }
@@ -499,11 +128,14 @@ return received(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  get,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Notification notification)?  add,TResult Function( Notification notification)?  update,TResult Function( int notificationId)?  remove,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get();case _Received() when received != null:
-return received(_that.payload);case _:
+return received(_that.payload);case _Add() when add != null:
+return add(_that.notification);case _Update() when update != null:
+return update(_that.notification);case _Remove() when remove != null:
+return remove(_that.notificationId);case _:
   return orElse();
 
 }
@@ -521,11 +153,14 @@ return received(_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  get,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Notification notification)  add,required TResult Function( Notification notification)  update,required TResult Function( int notificationId)  remove,}) {final _that = this;
 switch (_that) {
 case _Get():
 return get();case _Received():
-return received(_that.payload);}
+return received(_that.payload);case _Add():
+return add(_that.notification);case _Update():
+return update(_that.notification);case _Remove():
+return remove(_that.notificationId);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -539,11 +174,14 @@ return received(_that.payload);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  get,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Notification notification)?  add,TResult? Function( Notification notification)?  update,TResult? Function( int notificationId)?  remove,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get();case _Received() when received != null:
-return received(_that.payload);case _:
+return received(_that.payload);case _Add() when add != null:
+return add(_that.notification);case _Update() when update != null:
+return update(_that.notification);case _Remove() when remove != null:
+return remove(_that.notificationId);case _:
   return null;
 
 }
@@ -649,6 +287,222 @@ class __$ReceivedCopyWithImpl<$Res>
   return _then(_Received(
 payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _Add implements NotificationsEvent {
+  const _Add({required this.notification});
+  
+
+ final  Notification notification;
+
+/// Create a copy of NotificationsEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AddCopyWith<_Add> get copyWith => __$AddCopyWithImpl<_Add>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Add&&(identical(other.notification, notification) || other.notification == notification));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,notification);
+
+@override
+String toString() {
+  return 'NotificationsEvent.add(notification: $notification)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AddCopyWith<$Res> implements $NotificationsEventCopyWith<$Res> {
+  factory _$AddCopyWith(_Add value, $Res Function(_Add) _then) = __$AddCopyWithImpl;
+@useResult
+$Res call({
+ Notification notification
+});
+
+
+$NotificationCopyWith<$Res> get notification;
+
+}
+/// @nodoc
+class __$AddCopyWithImpl<$Res>
+    implements _$AddCopyWith<$Res> {
+  __$AddCopyWithImpl(this._self, this._then);
+
+  final _Add _self;
+  final $Res Function(_Add) _then;
+
+/// Create a copy of NotificationsEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? notification = null,}) {
+  return _then(_Add(
+notification: null == notification ? _self.notification : notification // ignore: cast_nullable_to_non_nullable
+as Notification,
+  ));
+}
+
+/// Create a copy of NotificationsEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$NotificationCopyWith<$Res> get notification {
+  
+  return $NotificationCopyWith<$Res>(_self.notification, (value) {
+    return _then(_self.copyWith(notification: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _Update implements NotificationsEvent {
+  const _Update({required this.notification});
+  
+
+ final  Notification notification;
+
+/// Create a copy of NotificationsEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$UpdateCopyWith<_Update> get copyWith => __$UpdateCopyWithImpl<_Update>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Update&&(identical(other.notification, notification) || other.notification == notification));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,notification);
+
+@override
+String toString() {
+  return 'NotificationsEvent.update(notification: $notification)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$UpdateCopyWith<$Res> implements $NotificationsEventCopyWith<$Res> {
+  factory _$UpdateCopyWith(_Update value, $Res Function(_Update) _then) = __$UpdateCopyWithImpl;
+@useResult
+$Res call({
+ Notification notification
+});
+
+
+$NotificationCopyWith<$Res> get notification;
+
+}
+/// @nodoc
+class __$UpdateCopyWithImpl<$Res>
+    implements _$UpdateCopyWith<$Res> {
+  __$UpdateCopyWithImpl(this._self, this._then);
+
+  final _Update _self;
+  final $Res Function(_Update) _then;
+
+/// Create a copy of NotificationsEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? notification = null,}) {
+  return _then(_Update(
+notification: null == notification ? _self.notification : notification // ignore: cast_nullable_to_non_nullable
+as Notification,
+  ));
+}
+
+/// Create a copy of NotificationsEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$NotificationCopyWith<$Res> get notification {
+  
+  return $NotificationCopyWith<$Res>(_self.notification, (value) {
+    return _then(_self.copyWith(notification: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _Remove implements NotificationsEvent {
+  const _Remove({required this.notificationId});
+  
+
+ final  int notificationId;
+
+/// Create a copy of NotificationsEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$RemoveCopyWith<_Remove> get copyWith => __$RemoveCopyWithImpl<_Remove>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Remove&&(identical(other.notificationId, notificationId) || other.notificationId == notificationId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,notificationId);
+
+@override
+String toString() {
+  return 'NotificationsEvent.remove(notificationId: $notificationId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$RemoveCopyWith<$Res> implements $NotificationsEventCopyWith<$Res> {
+  factory _$RemoveCopyWith(_Remove value, $Res Function(_Remove) _then) = __$RemoveCopyWithImpl;
+@useResult
+$Res call({
+ int notificationId
+});
+
+
+
+
+}
+/// @nodoc
+class __$RemoveCopyWithImpl<$Res>
+    implements _$RemoveCopyWith<$Res> {
+  __$RemoveCopyWithImpl(this._self, this._then);
+
+  final _Remove _self;
+  final $Res Function(_Remove) _then;
+
+/// Create a copy of NotificationsEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? notificationId = null,}) {
+  return _then(_Remove(
+notificationId: null == notificationId ? _self.notificationId : notificationId // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

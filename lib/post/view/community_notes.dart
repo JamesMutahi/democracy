@@ -18,13 +18,7 @@ class CommunityNotes extends StatefulWidget {
 }
 
 class _CommunityNotesState extends State<CommunityNotes> {
-  List<Post> _communityNotes = [];
-  bool loading = true;
-  bool failure = false;
-  bool hasNextPage = false;
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
+  final RefreshController _refreshController = RefreshController();
   final TextEditingController _searchController = TextEditingController();
   String? sortBy;
 
@@ -38,149 +32,142 @@ class _CommunityNotesState extends State<CommunityNotes> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<CommunityNotesBloc, CommunityNotesState>(
-          listener: (context, state) {
-            if (state.status == CommunityNotesStatus.success) {
-              if (widget.post.id == state.postId) {
-                setState(() {
-                  loading = false;
-                  failure = false;
-                  _communityNotes = state.communityNotes;
-                  hasNextPage = state.hasNext;
-                  if (_refreshController.headerStatus ==
-                      RefreshStatus.refreshing) {
-                    _refreshController.refreshCompleted();
-                  }
-                  if (_refreshController.footerStatus == LoadStatus.loading) {
-                    _refreshController.loadComplete();
-                  }
-                });
-              }
-            }
-            if (state.status == CommunityNotesStatus.failure) {
-              if (loading) {
-                setState(() {
-                  loading = false;
-                  failure = true;
-                });
-              }
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshFailed();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadFailed();
-              }
-            }
-          },
-        ),
-      ],
-      child: Scaffold(
-        body: SafeArea(
-          child: NestedScrollView(
-            headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-              return [
-                SliverAppBar(
-                  floating: true,
-                  snap: true,
-                  forceElevated: true,
-                  title: Row(
-                    children: [
-                      Icon(Icons.people_rounded, color: Colors.blueAccent),
-                      SizedBox(width: 10),
-                      Text('Community notes'),
-                    ],
-                  ),
-                  bottom: PreferredSize(
-                    preferredSize: Size.fromHeight(50.0),
-                    child: CustomSearchBar(
-                      controller: _searchController,
-                      hintText: 'Search',
-                      onChanged: (value) {
-                        context.read<CommunityNotesBloc>().add(
-                          CommunityNotesEvent.get(
-                            post: widget.post,
-                            searchTerm: value,
-                          ),
-                        );
-                      },
-                      onFilterTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => _SortByDialog(selected: sortBy),
-                        ).then((value) {
-                          if (value != null) {
-                            setState(() {
-                              sortBy = value;
-                            });
-                            if (context.mounted) {
-                              context.read<CommunityNotesBloc>().add(
-                                CommunityNotesEvent.get(
-                                  post: widget.post,
-                                  searchTerm: _searchController.text,
-                                  sortBy: value,
-                                ),
-                              );
-                            }
-                          }
-                        });
-                      },
-                    ),
-                  ),
+    return Scaffold(
+      body: SafeArea(
+        child: NestedScrollView(
+          headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+            return [
+              SliverAppBar(
+                floating: true,
+                snap: true,
+                forceElevated: true,
+                title: Row(
+                  children: [
+                    Icon(Icons.people_rounded, color: Colors.blueAccent),
+                    SizedBox(width: 10),
+                    Text('Community notes'),
+                  ],
                 ),
-              ];
+                bottom: _buildSearchBar(),
+              ),
+            ];
+          },
+          body: BlocBuilder<CommunityNotesBloc, CommunityNotesState>(
+            buildWhen: (previous, current) {
+              return widget.post.id == current.postId;
             },
-            body: PostListView(
-              posts: _communityNotes,
-              loading: loading,
-              failure: failure,
-              onPostsUpdated: (posts) {
-                setState(() {
-                  _communityNotes = posts;
-                });
-              },
-              refreshController: _refreshController,
-              enablePullDown: true,
-              enablePullUp: hasNextPage,
-              checkVisibility: true,
-              onRefresh: () {
+            builder: (context, state) {
+              final posts = state.communityNotes.toList();
+
+              if (state.status == CommunityNotesStatus.success) {
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshCompleted();
+                }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadComplete();
+                }
+              }
+
+              if (state.status == CommunityNotesStatus.failure) {
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshFailed();
+                }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadFailed();
+                }
+              }
+
+              return PostListView(
+                posts: posts,
+                loading: state.status == CommunityNotesStatus.initial,
+                failure: state.communityNotes.isNotEmpty
+                    ? false
+                    : state.status == CommunityNotesStatus.failure,
+                onPostsUpdated: (posts) {
+                  context.read<CommunityNotesBloc>().add(
+                    CommunityNotesEvent.update(posts: posts),
+                  );
+                },
+                refreshController: _refreshController,
+                enablePullDown: true,
+                enablePullUp: state.hasNext,
+                checkVisibility: true,
+                onRefresh: () {
+                  context.read<CommunityNotesBloc>().add(
+                    CommunityNotesEvent.get(
+                      post: widget.post,
+                      searchTerm: _searchController.text,
+                      sortBy: sortBy,
+                    ),
+                  );
+                },
+                onLoading: () {
+                  context.read<CommunityNotesBloc>().add(
+                    CommunityNotesEvent.get(
+                      post: widget.post,
+                      previousPosts: posts,
+                      sortBy: sortBy,
+                    ),
+                  );
+                },
+                onFailure: () {
+                  context.read<CommunityNotesBloc>().add(
+                    CommunityNotesEvent.get(post: widget.post, sortBy: sortBy),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CommunityNoteCreate(post: widget.post),
+            ),
+          );
+        },
+        child: Icon(Icons.create_outlined),
+      ),
+    );
+  }
+
+  PreferredSize _buildSearchBar() {
+    return PreferredSize(
+      preferredSize: Size.fromHeight(50.0),
+      child: CustomSearchBar(
+        controller: _searchController,
+        hintText: 'Search',
+        onChanged: (value) {
+          context.read<CommunityNotesBloc>().add(
+            CommunityNotesEvent.get(post: widget.post, searchTerm: value),
+          );
+        },
+        onFilterTap: () {
+          showDialog(
+            context: context,
+            builder: (context) => _SortByDialog(selected: sortBy),
+          ).then((value) {
+            if (value != null) {
+              setState(() {
+                sortBy = value;
+              });
+              if (mounted) {
                 context.read<CommunityNotesBloc>().add(
                   CommunityNotesEvent.get(
                     post: widget.post,
                     searchTerm: _searchController.text,
-                    sortBy: sortBy,
+                    sortBy: value,
                   ),
                 );
-              },
-              onLoading: () {
-                context.read<CommunityNotesBloc>().add(
-                  CommunityNotesEvent.get(
-                    post: widget.post,
-                    previousPosts: _communityNotes,
-                    sortBy: sortBy,
-                  ),
-                );
-              },
-              onFailure: () {
-                context.read<CommunityNotesBloc>().add(
-                  CommunityNotesEvent.get(post: widget.post, sortBy: sortBy),
-                );
-              },
-            ),
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CommunityNoteCreate(post: widget.post),
-              ),
-            );
-          },
-          child: Icon(Icons.create_outlined),
-        ),
+              }
+            }
+          });
+        },
       ),
     );
   }

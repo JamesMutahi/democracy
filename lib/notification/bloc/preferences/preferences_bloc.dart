@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/notification/models/preferences.dart';
+import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'preferences_bloc.freezed.dart';
@@ -13,7 +14,7 @@ const String action = 'preferences';
 
 class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
   PreferencesBloc({required this.webSocketService})
-    : super(const PreferencesState.initial()) {
+    : super(const PreferencesState()) {
     webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
         switch (message['payload']['action']) {
@@ -43,12 +44,17 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
   }
 
   Future _onReceived(_Received event, Emitter<PreferencesState> emit) async {
-    emit(PreferencesLoading());
+    emit(state.copyWith(status: PreferencesStatus.loading));
     if (event.payload['response_status'] == 200) {
       Preferences preferences = Preferences.fromJson(event.payload['data']);
-      emit(PreferencesLoaded(preferences: preferences));
+      emit(
+        state.copyWith(
+          status: PreferencesStatus.success,
+          preferences: preferences,
+        ),
+      );
     } else {
-      emit(PreferencesFailure(error: event.payload['errors'].toString()));
+      emit(state.copyWith(status: PreferencesStatus.failure));
     }
   }
 

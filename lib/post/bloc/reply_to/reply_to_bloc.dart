@@ -19,12 +19,14 @@ class ReplyToBloc extends Bloc<ReplyToEvent, ReplyToState> {
         }
       }
     });
-    on<_Get>((event, emit) {
-      _onGet(event, emit);
+    on<_Initialize>((event, emit) {
+      emit(ReplyToState(postId: event.post.id));
+      add(_Get(post: event.post));
     });
-    on<_Received>((event, emit) {
-      _onReceived(event, emit);
-    });
+    on<_Get>((event, emit) => _onGet(event, emit));
+    on<_Received>((event, emit) => _onReceived(event, emit));
+    on<_Add>((event, emit) => _onAdd(event, emit));
+    on<_Update>((event, emit) => _onUpdate(event, emit));
   }
 
   Future _onGet(_Get event, Emitter<ReplyToState> emit) async {
@@ -48,13 +50,33 @@ class ReplyToBloc extends Bloc<ReplyToEvent, ReplyToState> {
       emit(
         state.copyWith(
           status: ReplyToStatus.success,
-          posts: posts,
+          posts: [...state.posts, ...posts],
           postId: event.payload['request_id'],
         ),
       );
     } else {
       emit(state.copyWith(status: ReplyToStatus.failure));
     }
+  }
+
+  void _onAdd(_Add event, Emitter<ReplyToState> emit) {
+    final exists = state.posts.any((post) => post.id == event.post.id);
+
+    if (!exists) {
+      emit(state.copyWith(status: ReplyToStatus.loading));
+      emit(
+        state.copyWith(
+          posts: [event.post, ...state.posts],
+          status: ReplyToStatus.success,
+          postId: event.post.id,
+        ),
+      );
+    }
+  }
+
+  void _onUpdate(_Update event, Emitter<ReplyToState> emit) {
+    emit(state.copyWith(status: ReplyToStatus.loading));
+    emit(state.copyWith(posts: event.posts, status: ReplyToStatus.success));
   }
 
   final WebSocketService webSocketService;

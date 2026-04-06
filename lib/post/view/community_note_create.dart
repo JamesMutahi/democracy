@@ -112,7 +112,7 @@ class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
                     _replyTos = posts;
                   });
                 },
-                child: ReplyTos(replyTos: _replyTos),
+                child: ReplyTos(post: widget.post),
               ),
               SliverToBoxAdapter(
                 key: centerKey,

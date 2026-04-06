@@ -5,4 +5,5 @@ sealed class BlockedEvent with _$BlockedEvent {
   const factory BlockedEvent.get({User? lastUser}) = _Get;
   const factory BlockedEvent.received({required Map<String, dynamic> payload}) =
       _Received;
+  const factory BlockedEvent.update({required List<User> users}) = _Update;
 }

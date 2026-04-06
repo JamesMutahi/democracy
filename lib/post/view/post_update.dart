@@ -13,7 +13,6 @@ import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_form_widgets.dart';
-import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/post/view/widgets/reply_tos.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
@@ -36,7 +35,6 @@ class PostUpdate extends StatefulWidget {
 class _PostUpdateState extends State<PostUpdate> {
   late final _controller = FlutterTaggerController();
   ValueKey centerKey = ValueKey('Center');
-  List<Post> _replyTos = [];
   bool _disablePostButton = false;
   List<File> files = [];
   int fileLimit = 4;
@@ -110,13 +108,12 @@ class _PostUpdateState extends State<PostUpdate> {
               }
             },
           ),
-          BlocListener<ReplyToBloc, ReplyToState>(
+          BlocListener<PostDetailBloc, PostDetailState>(
             listener: (context, state) {
-              if (state.status == ReplyToStatus.success) {
-                if (widget.post.id == state.postId) {
-                  setState(() {
-                    _replyTos = state.posts;
-                  });
+              if (state is PostCreated) {
+                var replyTos = context.read<ReplyToBloc>().state.posts;
+                if (!replyTos.any((p) => p.id == state.post.repostOf?.id)) {
+                  Navigator.pop(context);
                 }
               }
             },
@@ -158,15 +155,7 @@ class _PostUpdateState extends State<PostUpdate> {
           body: CustomScrollView(
             center: centerKey,
             slivers: [
-              PostListener(
-                posts: _replyTos,
-                onPostsUpdated: (posts) {
-                  setState(() {
-                    _replyTos = posts;
-                  });
-                },
-                child: ReplyTos(replyTos: _replyTos),
-              ),
+              ReplyTos(post: widget.post),
               SliverToBoxAdapter(
                 key: centerKey,
                 child: Stack(

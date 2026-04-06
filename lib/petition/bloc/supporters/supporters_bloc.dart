@@ -24,12 +24,11 @@ class SupportersBloc extends Bloc<SupportersEvent, SupportersState> {
     on<_Get>((event, emit) {
       _onGet(event, emit);
     });
-    on<_Received>((event, emit) {
-      _onReceived(event, emit);
-    });
+    on<_Received>((event, emit) => _onReceived(event, emit));
+    on<_Update>((event, emit) => _onUpdate(event, emit));
   }
 
-  Future _onGet(_Get event, Emitter<SupportersState> emit) async {
+  void _onGet(_Get event, Emitter<SupportersState> emit) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -42,7 +41,7 @@ class SupportersBloc extends Bloc<SupportersEvent, SupportersState> {
     webSocketService.send(message);
   }
 
-  Future _onReceived(_Received event, Emitter<SupportersState> emit) async {
+  void _onReceived(_Received event, Emitter<SupportersState> emit) {
     emit(state.copyWith(status: SupportersStatus.loading));
     if (event.payload['response_status'] == 200) {
       final List<User> users = List.from(
@@ -59,6 +58,11 @@ class SupportersBloc extends Bloc<SupportersEvent, SupportersState> {
     } else {
       emit(state.copyWith(status: SupportersStatus.failure));
     }
+  }
+
+  void _onUpdate(_Update event, Emitter<SupportersState> emit) {
+    emit(state.copyWith(status: SupportersStatus.loading));
+    emit(state.copyWith(users: event.users, status: SupportersStatus.success));
   }
 
   final WebSocketService webSocketService;

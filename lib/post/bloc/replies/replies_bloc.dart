@@ -19,15 +19,18 @@ class RepliesBloc extends Bloc<RepliesEvent, RepliesState> {
         }
       }
     });
-    on<_Get>((event, emit) {
-      _onGet(event, emit);
+    on<_Initialize>((event, emit) {
+      emit(RepliesState(postId: event.post.id));
+      add(_Get(post: event.post));
     });
-    on<_Received>((event, emit) {
-      _onReceived(event, emit);
-    });
+    on<_Get>((event, emit) => _onGet(event, emit));
+    on<_Received>((event, emit) => _onReceived(event, emit));
+    on<_Add>((event, emit) => _onAdd(event, emit));
+    on<_Update>((event, emit) => _onUpdate(event, emit));
   }
 
-  Future _onGet(_Get event, Emitter<RepliesState> emit) async {
+  void _onGet(_Get event, Emitter<RepliesState> emit) async {
+    emit(state.copyWith(status: RepliesStatus.loading));
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -40,7 +43,7 @@ class RepliesBloc extends Bloc<RepliesEvent, RepliesState> {
     webSocketService.send(message);
   }
 
-  Future _onReceived(_Received event, Emitter<RepliesState> emit) async {
+  void _onReceived(_Received event, Emitter<RepliesState> emit) async {
     emit(state.copyWith(status: RepliesStatus.loading));
     if (event.payload['response_status'] == 200) {
       final List<Post> posts = List.from(
@@ -58,6 +61,24 @@ class RepliesBloc extends Bloc<RepliesEvent, RepliesState> {
     } else {
       emit(state.copyWith(status: RepliesStatus.failure));
     }
+  }
+
+  void _onAdd(_Add event, Emitter<RepliesState> emit) {
+    final exists = state.posts.any((post) => post.id == event.post.id);
+
+    if (!exists) {
+      emit(
+        state.copyWith(
+          posts: [event.post, ...state.posts],
+          status: RepliesStatus.success,
+        ),
+      );
+    }
+  }
+
+  void _onUpdate(_Update event, Emitter<RepliesState> emit) {
+    emit(state.copyWith(status: RepliesStatus.loading));
+    emit(state.copyWith(posts: event.posts, status: RepliesStatus.success));
   }
 
   final WebSocketService webSocketService;

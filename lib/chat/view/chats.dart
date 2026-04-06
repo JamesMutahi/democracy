@@ -71,7 +71,7 @@ class _ChatsState extends State<Chats> {
             builder: (context, filterState) {
               return BlocBuilder<ChatsBloc, ChatsState>(
                 builder: (context, chatsState) {
-                  final chats = chatsState.chats;
+                  final chats = chatsState.chats.toList();
 
                   if (chatsState.status == ChatsStatus.initial) {
                     return const BottomLoader();

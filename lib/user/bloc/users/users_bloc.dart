@@ -21,15 +21,16 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
         add(_Received(payload: message['payload']));
       }
     });
-    on<_Get>((event, emit) {
-      _onGet(event, emit);
-    }, transformer: debounce());
-    on<_Received>((event, emit) {
-      _onReceived(event, emit);
+    on<_Initialize>((event, emit) {
+      emit(UsersState(searchTerm: event.searchTerm));
+      add(_Get(searchTerm: event.searchTerm));
     });
+    on<_Get>((event, emit) => _onGet(event, emit), transformer: debounce());
+    on<_Received>((event, emit) => _onReceived(event, emit));
+    on<_Update>((event, emit) => _onUpdate(event, emit));
   }
 
-  Future _onGet(_Get event, Emitter<UsersState> emit) async {
+  void _onGet(_Get event, Emitter<UsersState> emit) async {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -42,7 +43,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     webSocketService.send(message);
   }
 
-  Future _onReceived(_Received event, Emitter<UsersState> emit) async {
+  void _onReceived(_Received event, Emitter<UsersState> emit) async {
     emit(state.copyWith(status: UsersStatus.loading));
     if (event.payload['response_status'] == 200) {
       final List<User> users = List.from(
@@ -60,6 +61,11 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     } else {
       emit(state.copyWith(status: UsersStatus.failure));
     }
+  }
+
+  void _onUpdate(_Update event, Emitter<UsersState> emit) {
+    emit(state.copyWith(status: UsersStatus.loading));
+    emit(state.copyWith(users: event.users, status: UsersStatus.success));
   }
 
   final WebSocketService webSocketService;

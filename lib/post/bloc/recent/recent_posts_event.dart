@@ -11,4 +11,5 @@ sealed class RecentPostsEvent with _$RecentPostsEvent {
   const factory RecentPostsEvent.received({
     required Map<String, dynamic> payload,
   }) = _Received;
+  const factory RecentPostsEvent.update({required List<Post> posts}) = _Update;
 }

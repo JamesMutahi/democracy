@@ -24,16 +24,12 @@ class ForYouBloc extends Bloc<ForYouEvent, ForYouState> {
       emit(ForYouState());
       add(_Get());
     });
-    on<_Get>((event, emit) {
-      _onGet(event, emit);
-    });
-    on<_Received>((event, emit) {
-      _onReceived(event, emit);
-    });
+    on<_Get>((event, emit) => _onGet(event, emit));
+    on<_Received>((event, emit) => _onReceived(event, emit));
     on<_Update>((event, emit) => _onUpdate(event, emit));
   }
 
-  Future _onGet(_Get event, Emitter<ForYouState> emit) async {
+  void _onGet(_Get event, Emitter<ForYouState> emit) async {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -45,7 +41,7 @@ class ForYouBloc extends Bloc<ForYouEvent, ForYouState> {
     webSocketService.send(message);
   }
 
-  Future _onReceived(_Received event, Emitter<ForYouState> emit) async {
+  void _onReceived(_Received event, Emitter<ForYouState> emit) async {
     emit(state.copyWith(status: ForYouStatus.loading));
     if (event.payload['response_status'] == 200) {
       final List<Post> posts = List.from(
@@ -65,6 +61,7 @@ class ForYouBloc extends Bloc<ForYouEvent, ForYouState> {
   }
 
   void _onUpdate(_Update event, Emitter<ForYouState> emit) {
+    emit(state.copyWith(status: ForYouStatus.loading));
     emit(state.copyWith(posts: event.posts, status: ForYouStatus.success));
   }
 

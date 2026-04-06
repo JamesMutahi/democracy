@@ -8,4 +8,5 @@ sealed class LikesEvent with _$LikesEvent {
   }) = _Get;
   const factory LikesEvent.received({required Map<String, dynamic> payload}) =
       _Received;
+  const factory LikesEvent.update({required List<Post> posts}) = _Update;
 }

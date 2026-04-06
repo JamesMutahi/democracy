@@ -4,11 +4,9 @@ import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/replies/replies_bloc.dart';
-import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/bottom_reply_text_field.dart';
 import 'package:democracy/post/view/widgets/community_note_tile.dart';
-import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/replies.dart';
 import 'package:democracy/post/view/widgets/reply_tos.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
@@ -41,23 +39,11 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
   late Post _communityNoteOf = widget.communityNote.communityNoteOf!;
   ValueKey centerKey = ValueKey('Center');
   bool isDeleted = false;
-  bool loading = true;
-  bool failure = false;
-  List<Post> _replies = [];
-  List<Post> _replyTos = [];
-  bool hasNextPage = false;
-  List<Widget> widgets = [];
 
   @override
   void initState() {
     context.read<PostDetailBloc>().add(
       PostDetailEvent.get(post: widget.communityNote),
-    );
-    context.read<RepliesBloc>().add(
-      RepliesEvent.get(post: widget.communityNote),
-    );
-    context.read<ReplyToBloc>().add(
-      ReplyToEvent.get(post: widget.communityNote),
     );
     super.initState();
   }
@@ -67,11 +53,9 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
     return PopScope(
       canPop: true,
       onPopInvokedWithResult: (_, _) {
-        if (_replies.isNotEmpty) {
-          context.read<PostDetailBloc>().add(
-            PostDetailEvent.unsubscribe(post: widget.communityNote),
-          );
-        }
+        context.read<PostDetailBloc>().add(
+          PostDetailEvent.unsubscribe(post: widget.communityNote),
+        );
       },
       child: MultiBlocListener(
         listeners: [
@@ -87,16 +71,9 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
               switch (state) {
                 case PostCreated(post: final post):
                   if (widget.communityNote.id == post.replyTo?.id) {
-                    setState(() {
-                      if (_replies.any((e) => e.author.id == post.author.id)) {
-                        int index = _replies.lastIndexWhere(
-                          (element) => element.author.id != post.author.id,
-                        );
-                        _replies.insert(index, post);
-                      } else {
-                        _replies.insert(0, post);
-                      }
-                    });
+                    context.read<RepliesBloc>().add(
+                      RepliesEvent.add(post: post),
+                    );
                   }
                 case PostLoaded(:final post):
                   if (_communityNote.id == post.id) {
@@ -176,55 +153,6 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
               }
             },
           ),
-          BlocListener<RepliesBloc, RepliesState>(
-            listener: (context, state) {
-              if (state.status == RepliesStatus.success) {
-                if (widget.communityNote.id == state.postId) {
-                  setState(() {
-                    _replies = state.posts.toList();
-                    loading = false;
-                    failure = false;
-                    hasNextPage = state.hasNext;
-                    if (_refreshController.headerStatus ==
-                        RefreshStatus.refreshing) {
-                      _refreshController.refreshCompleted();
-                    }
-                    if (_refreshController.footerStatus == LoadStatus.loading) {
-                      _refreshController.loadComplete();
-                    }
-                  });
-                }
-              }
-              if (state.status == RepliesStatus.failure) {
-                if (widget.communityNote.id == state.postId) {
-                  if (loading) {
-                    setState(() {
-                      loading = false;
-                      failure = true;
-                    });
-                  }
-                  if (_refreshController.headerStatus ==
-                      RefreshStatus.refreshing) {
-                    _refreshController.refreshFailed();
-                  }
-                  if (_refreshController.footerStatus == LoadStatus.loading) {
-                    _refreshController.loadFailed();
-                  }
-                }
-              }
-            },
-          ),
-          BlocListener<ReplyToBloc, ReplyToState>(
-            listener: (context, state) {
-              if (state.status == ReplyToStatus.success) {
-                if (widget.communityNote.id == state.postId) {
-                  setState(() {
-                    _replyTos = state.posts.toList();
-                  });
-                }
-              }
-            },
-          ),
         ],
         child: Scaffold(
           appBar: AppBar(title: Text('Note')),
@@ -234,86 +162,103 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
                     'This community note has been deleted by the author',
                   ),
                 )
-              : SmartRefresher(
-                  enablePullDown: false,
-                  enablePullUp: hasNextPage,
-                  header: ClassicHeader(),
-                  footer: ClassicFooter(),
-                  controller: _refreshController,
-                  onLoading: () {
-                    context.read<RepliesBloc>().add(
-                      RepliesEvent.get(
-                        post: _communityNote,
-                        previousPosts: _replies,
+              : BlocBuilder<RepliesBloc, RepliesState>(
+                  buildWhen: (previous, current) {
+                    return widget.communityNote.id == current.postId;
+                  },
+                  builder: (context, state) {
+                    final replies = state.posts.toList();
+
+                    if (state.status == RepliesStatus.success) {
+                      if (_refreshController.headerStatus ==
+                          RefreshStatus.refreshing) {
+                        _refreshController.refreshCompleted();
+                      }
+                      if (_refreshController.footerStatus ==
+                          LoadStatus.loading) {
+                        _refreshController.loadComplete();
+                      }
+                    }
+
+                    if (state.status == RepliesStatus.failure) {
+                      if (_refreshController.headerStatus ==
+                          RefreshStatus.refreshing) {
+                        _refreshController.refreshFailed();
+                      }
+                      if (_refreshController.footerStatus ==
+                          LoadStatus.loading) {
+                        _refreshController.loadFailed();
+                      }
+                    }
+                    return SmartRefresher(
+                      enablePullDown: false,
+                      enablePullUp: state.hasNext,
+                      header: ClassicHeader(),
+                      footer: ClassicFooter(),
+                      controller: _refreshController,
+                      onLoading: () {
+                        context.read<RepliesBloc>().add(
+                          RepliesEvent.get(
+                            post: _communityNote,
+                            previousPosts: replies,
+                          ),
+                        );
+                      },
+                      child: CustomScrollView(
+                        center: centerKey,
+                        slivers: <Widget>[
+                          ReplyTos(post: widget.communityNote),
+                          SliverToBoxAdapter(
+                            key: centerKey,
+                            child: Column(
+                              children: [
+                                if (widget.showAsRepost)
+                                  Stack(
+                                    children: [
+                                      ThreadLine(
+                                        showBottomThread: true,
+                                        showTopThread: true,
+                                      ),
+                                      _repostBanner(),
+                                    ],
+                                  ),
+                                CommunityNoteTile(
+                                  communityNote: _communityNote,
+                                  navigateToDetailPage: false,
+                                  showWholeText: true,
+                                  isDependency: false,
+                                  showTopThread: true,
+                                  showBottomThread: false,
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (state.status == RepliesStatus.initial)
+                            SliverToBoxAdapter(
+                              child: Container(
+                                margin: EdgeInsets.only(top: 50),
+                                child: BottomLoader(),
+                              ),
+                            )
+                          else if (state.status == RepliesStatus.failure &&
+                              replies.isEmpty)
+                            SliverToBoxAdapter(
+                              child: FailureRetryButton(
+                                onPressed: () {
+                                  context.read<RepliesBloc>().add(
+                                    RepliesEvent.get(
+                                      post: widget.communityNote,
+                                    ),
+                                  );
+                                },
+                              ),
+                            )
+                          else
+                            Replies(replies: replies),
+                        ],
                       ),
                     );
                   },
-                  child: CustomScrollView(
-                    center: centerKey,
-                    slivers: <Widget>[
-                      PostListener(
-                        posts: _replyTos,
-                        onPostsUpdated: (posts) {
-                          setState(() {
-                            _replyTos = posts;
-                          });
-                        },
-                        child: ReplyTos(replyTos: _replyTos),
-                      ),
-                      SliverToBoxAdapter(
-                        key: centerKey,
-                        child: Column(
-                          children: [
-                            if (widget.showAsRepost)
-                              Stack(
-                                children: [
-                                  ThreadLine(
-                                    showBottomThread: true,
-                                    showTopThread: true,
-                                  ),
-                                  _repostBanner(),
-                                ],
-                              ),
-                            CommunityNoteTile(
-                              communityNote: _communityNote,
-                              navigateToDetailPage: false,
-                              showWholeText: true,
-                              isDependency: false,
-                              showTopThread: true,
-                              showBottomThread: false,
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (loading)
-                        SliverToBoxAdapter(
-                          child: Container(
-                            margin: EdgeInsets.only(top: 50),
-                            child: BottomLoader(),
-                          ),
-                        )
-                      else if (failure)
-                        SliverToBoxAdapter(
-                          child: FailureRetryButton(
-                            onPressed: () {
-                              context.read<RepliesBloc>().add(
-                                RepliesEvent.get(post: widget.communityNote),
-                              );
-                            },
-                          ),
-                        )
-                      else
-                        PostListener(
-                          posts: _replies,
-                          onPostsUpdated: (List<Post> posts) {
-                            setState(() {
-                              _replies = posts;
-                            });
-                          },
-                          child: Replies(replies: _replies),
-                        ),
-                    ],
-                  ),
                 ),
           bottomNavigationBar: _communityNote.author.hasBlocked
               ? Container(

@@ -23,12 +23,11 @@ class BlockedBloc extends Bloc<BlockedEvent, BlockedState> {
     on<_Get>((event, emit) {
       _onGet(event, emit);
     });
-    on<_Received>((event, emit) {
-      _onReceived(event, emit);
-    });
+    on<_Received>((event, emit) => _onReceived(event, emit));
+    on<_Update>((event, emit) => _onUpdate(event, emit));
   }
 
-  Future _onGet(_Get event, Emitter<BlockedState> emit) async {
+  void _onGet(_Get event, Emitter<BlockedState> emit) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -40,7 +39,7 @@ class BlockedBloc extends Bloc<BlockedEvent, BlockedState> {
     webSocketService.send(message);
   }
 
-  Future _onReceived(_Received event, Emitter<BlockedState> emit) async {
+  void _onReceived(_Received event, Emitter<BlockedState> emit) {
     emit(state.copyWith(status: BlockedStatus.loading));
     if (event.payload['response_status'] == 200) {
       final List<User> users = List.from(
@@ -57,6 +56,11 @@ class BlockedBloc extends Bloc<BlockedEvent, BlockedState> {
     } else {
       emit(state.copyWith(status: BlockedStatus.failure));
     }
+  }
+
+  void _onUpdate(_Update event, Emitter<BlockedState> emit) {
+    emit(state.copyWith(status: BlockedStatus.loading));
+    emit(state.copyWith(users: event.users, status: BlockedStatus.success));
   }
 
   final WebSocketService webSocketService;

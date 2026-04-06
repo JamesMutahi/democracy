@@ -1,14 +1,31 @@
 part of 'preferences_bloc.dart';
 
-@freezed
-class PreferencesState with _$PreferencesState {
-  const factory PreferencesState.initial() = _Initial;
+enum PreferencesStatus { initial, loading, success, failure }
 
-  const factory PreferencesState.loading() = PreferencesLoading;
+final class PreferencesState extends Equatable {
+  const PreferencesState({
+    this.status = PreferencesStatus.initial,
+    this.preferences,
+  });
 
-  const factory PreferencesState.loaded({required Preferences preferences}) =
-      PreferencesLoaded;
+  final PreferencesStatus status;
+  final Preferences? preferences;
 
-  const factory PreferencesState.failure({required String error}) =
-      PreferencesFailure;
+  PreferencesState copyWith({
+    PreferencesStatus? status,
+    Preferences? preferences,
+  }) {
+    return PreferencesState(
+      status: status ?? this.status,
+      preferences: preferences ?? this.preferences,
+    );
+  }
+
+  @override
+  String toString() {
+    return '''PreferencesState { status: $status, preferences: $preferences }''';
+  }
+
+  @override
+  List<Object> get props => [status, ?preferences];
 }

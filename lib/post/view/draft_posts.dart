@@ -16,13 +16,7 @@ class DraftPosts extends StatefulWidget {
 }
 
 class _DraftsPostsState extends State<DraftPosts> {
-  bool loading = true;
-  bool failure = false;
-  List<Post> _posts = [];
-  bool hasNextPage = false;
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
+  final RefreshController _refreshController = RefreshController();
 
   @override
   void initState() {
@@ -34,111 +28,89 @@ class _DraftsPostsState extends State<DraftPosts> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Drafts')),
-      body: MultiBlocListener(
-        listeners: [
-          BlocListener<DraftPostsBloc, DraftPostsState>(
-            listener: (context, state) {
-              if (state.status == DraftPostsStatus.success) {
-                setState(() {
-                  _posts = state.posts.toList();
-                  loading = false;
-                  failure = false;
-                  hasNextPage = state.hasNext;
-                  if (_refreshController.headerStatus ==
-                      RefreshStatus.refreshing) {
-                    _refreshController.refreshCompleted();
-                  }
-                  if (_refreshController.footerStatus ==
-                      LoadStatus.loading) {
-                    _refreshController.loadComplete();
-                  }
-                });
-              }
-              if (state.status == DraftPostsStatus.failure) {
-                if (loading) {
-                  setState(() {
-                    loading = false;
-                    failure = true;
-                  });
-                }
-                if (_refreshController.headerStatus ==
-                    RefreshStatus.refreshing) {
-                  _refreshController.refreshFailed();
-                }
-                if (_refreshController.footerStatus ==
-                    LoadStatus.loading) {
-                  _refreshController.loadFailed();
-                }
-              }
+      body: BlocBuilder<DraftPostsBloc, DraftPostsState>(
+        builder: (context, state) {
+          final posts = state.posts.toList();
+
+          if (state.status == DraftPostsStatus.initial) {
+            return const BottomLoader();
+          }
+
+          if (state.status == DraftPostsStatus.success) {
+            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+              _refreshController.refreshCompleted();
+            }
+            if (_refreshController.footerStatus == LoadStatus.loading) {
+              _refreshController.loadComplete();
+            }
+          }
+
+          if (state.status == DraftPostsStatus.failure) {
+            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+              _refreshController.refreshFailed();
+            }
+            if (_refreshController.footerStatus == LoadStatus.loading) {
+              _refreshController.loadFailed();
+            }
+
+            if (state.posts.isEmpty) {
+              return FailureRetryButton(
+                onPressed: () =>
+                    context.read<DraftPostsBloc>().add(DraftPostsEvent.get()),
+              );
+            }
+          }
+
+          return SmartRefresher(
+            enablePullDown: true,
+            enablePullUp: state.hasNext,
+            header: ClassicHeader(),
+            controller: _refreshController,
+            onRefresh: () {
+              context.read<DraftPostsBloc>().add(DraftPostsEvent.get());
             },
-          ),
-        ],
-        child: SmartRefresher(
-          enablePullDown: true,
-          enablePullUp: hasNextPage,
-          header: ClassicHeader(),
-          controller: _refreshController,
-          onRefresh: () {
-            context.read<DraftPostsBloc>().add(DraftPostsEvent.get());
-          },
-          onLoading: () {
-            context.read<DraftPostsBloc>().add(
-              DraftPostsEvent.get(previousPosts: _posts),
-            );
-          },
-          footer: ClassicFooter(),
-          child: PostListener(
-            posts: _posts,
-            onPostsUpdated: (posts) {
-              setState(() {
-                _posts = posts;
-              });
+            onLoading: () {
+              context.read<DraftPostsBloc>().add(
+                DraftPostsEvent.get(previousPosts: posts),
+              );
             },
-            child:
-            loading
-                ? Container(
-              margin: EdgeInsets.only(top: 50),
-              child: BottomLoader(),
-            )
-                : failure
-                ? FailureRetryButton(
-              onPressed: () {
+            footer: ClassicFooter(),
+            child: PostListener(
+              posts: posts,
+              onPostsUpdated: (posts) {
                 context.read<DraftPostsBloc>().add(
-                  DraftPostsEvent.get(),
+                  DraftPostsEvent.update(posts: posts),
                 );
               },
-            )
-                : ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              itemBuilder: (BuildContext context, int index) {
-                Post post = _posts[index];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) => PostUpdate(post: post),
+              child: ListView.builder(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                itemBuilder: (BuildContext context, int index) {
+                  Post post = posts[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PostUpdate(post: post),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(top: 10),
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).cardColor,
+                        borderRadius: BorderRadius.all(Radius.circular(15)),
                       ),
-                    );
-                  },
-                  child: Container(
-                    margin: EdgeInsets.only(top: 10),
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).cardColor,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(15),
-                      ),
+                      child: Text(post.body),
                     ),
-                    child: Text(post.body),
-                  ),
-                );
-              },
-              itemCount: _posts.length,
+                  );
+                },
+                itemCount: posts.length,
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

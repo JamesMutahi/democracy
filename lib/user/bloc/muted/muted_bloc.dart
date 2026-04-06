@@ -23,12 +23,11 @@ class MutedBloc extends Bloc<MutedEvent, MutedState> {
     on<_Get>((event, emit) {
       _onGet(event, emit);
     });
-    on<_Received>((event, emit) {
-      _onReceived(event, emit);
-    });
+    on<_Received>((event, emit) => _onReceived(event, emit));
+    on<_Update>((event, emit) => _onUpdate(event, emit));
   }
 
-  Future _onGet(_Get event, Emitter<MutedState> emit) async {
+  void _onGet(_Get event, Emitter<MutedState> emit) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -40,7 +39,7 @@ class MutedBloc extends Bloc<MutedEvent, MutedState> {
     webSocketService.send(message);
   }
 
-  Future _onReceived(_Received event, Emitter<MutedState> emit) async {
+  void _onReceived(_Received event, Emitter<MutedState> emit) {
     emit(state.copyWith(status: MutedStatus.loading));
     if (event.payload['response_status'] == 200) {
       final List<User> users = List.from(
@@ -57,6 +56,11 @@ class MutedBloc extends Bloc<MutedEvent, MutedState> {
     } else {
       emit(state.copyWith(status: MutedStatus.failure));
     }
+  }
+
+  void _onUpdate(_Update event, Emitter<MutedState> emit) {
+    emit(state.copyWith(status: MutedStatus.loading));
+    emit(state.copyWith(users: event.users, status: MutedStatus.success));
   }
 
   final WebSocketService webSocketService;

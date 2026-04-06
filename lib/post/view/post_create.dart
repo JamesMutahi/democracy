@@ -16,7 +16,6 @@ import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_form_widgets.dart';
-import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/post/view/widgets/reply_tos.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
@@ -55,7 +54,6 @@ class _PostCreateState extends State<PostCreate> {
   final ValueKey _centerKey = const ValueKey('center');
 
   bool _canPost = false;
-  List<Post> _replyTos = [];
 
   // Media state
   File? _insertedImage;
@@ -68,7 +66,10 @@ class _PostCreateState extends State<PostCreate> {
   void initState() {
     super.initState();
     if (widget.replyTo != null) {
-      context.read<ReplyToBloc>().add(ReplyToEvent.get(post: widget.replyTo!));
+      context.read<ReplyToBloc>().add(
+        ReplyToEvent.initialize(post: widget.replyTo!),
+      );
+      context.read<ReplyToBloc>().add(ReplyToEvent.add(post: widget.replyTo!));
     }
   }
 
@@ -103,7 +104,7 @@ class _PostCreateState extends State<PostCreate> {
 
   void _updatePostButtonState(String text) {
     bool canPost = text.trim().isNotEmpty;
-    if (widget.replyTo != null) {
+    if (!canPost && widget.replyTo != null) {
       canPost =
           _insertedImage != null ||
           _selectedImages.isNotEmpty ||
@@ -123,19 +124,10 @@ class _PostCreateState extends State<PostCreate> {
         BlocListener<PostDetailBloc, PostDetailState>(
           listener: (context, state) {
             if (state is PostCreated) {
-              if (!_replyTos.any((p) => p.id == state.post.repostOf?.id)) {
+              var replyTos = context.read<ReplyToBloc>().state.posts;
+              if (!replyTos.any((p) => p.id == state.post.repostOf?.id)) {
                 Navigator.pop(context);
               }
-            }
-          },
-        ),
-        BlocListener<ReplyToBloc, ReplyToState>(
-          listener: (context, state) {
-            if (state.status == ReplyToStatus.success &&
-                widget.replyTo?.id == state.postId) {
-              setState(() {
-                _replyTos = [widget.replyTo!, ...state.posts];
-              });
             }
           },
         ),
@@ -192,11 +184,7 @@ class _PostCreateState extends State<PostCreate> {
           body: CustomScrollView(
             center: _centerKey,
             slivers: [
-              PostListener(
-                posts: _replyTos,
-                onPostsUpdated: (posts) => setState(() => _replyTos = posts),
-                child: ReplyTos(replyTos: _replyTos),
-              ),
+              if (widget.replyTo != null) ReplyTos(post: widget.replyTo!),
               SliverToBoxAdapter(key: _centerKey, child: _buildPostForm()),
             ],
           ),

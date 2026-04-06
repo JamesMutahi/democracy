@@ -11,4 +11,6 @@ class CommunityNotesEvent with _$CommunityNotesEvent {
   const factory CommunityNotesEvent.received({
     required Map<String, dynamic> payload,
   }) = _Received;
+  const factory CommunityNotesEvent.update({required List<Post> posts}) =
+      _Update;
 }

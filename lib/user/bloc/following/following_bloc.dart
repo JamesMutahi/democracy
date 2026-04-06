@@ -23,17 +23,16 @@ class FollowingBloc extends Bloc<FollowingEvent, FollowingState> {
     on<_Get>((event, emit) {
       _onGet(event, emit);
     });
-    on<_Received>((event, emit) {
-      _onReceived(event, emit);
-    });
+    on<_Received>((event, emit) => _onReceived(event, emit));
+    on<_Update>((event, emit) => _onUpdate(event, emit));
   }
 
-  Future _onGet(_Get event, Emitter<FollowingState> emit) async {
+  void _onGet(_Get event, Emitter<FollowingState> emit) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
         'action': 'following',
-        'request_id': requestId,
+        'request_id': event.user.id,
         'pk': event.user.id,
         'last_user': event.lastUser?.id,
       },
@@ -41,7 +40,7 @@ class FollowingBloc extends Bloc<FollowingEvent, FollowingState> {
     webSocketService.send(message);
   }
 
-  Future _onReceived(_Received event, Emitter<FollowingState> emit) async {
+  void _onReceived(_Received event, Emitter<FollowingState> emit) {
     emit(state.copyWith(status: FollowingStatus.loading));
     if (event.payload['response_status'] == 200) {
       final List<User> users = List.from(
@@ -53,11 +52,17 @@ class FollowingBloc extends Bloc<FollowingEvent, FollowingState> {
           status: FollowingStatus.success,
           users: lastUser == null ? users : [...state.users, ...users],
           hasNext: event.payload['data']['has_next'],
+          userId: event.payload['request_id'],
         ),
       );
     } else {
       emit(state.copyWith(status: FollowingStatus.failure));
     }
+  }
+
+  void _onUpdate(_Update event, Emitter<FollowingState> emit) {
+    emit(state.copyWith(status: FollowingStatus.loading));
+    emit(state.copyWith(users: event.users, status: FollowingStatus.success));
   }
 
   final WebSocketService webSocketService;
