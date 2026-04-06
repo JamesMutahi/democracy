@@ -67,7 +67,7 @@ class _SurveysState extends State<Surveys> with AutomaticKeepAliveClientMixin {
             builder: (context, surveysState) {
               final surveys = surveysState.surveys;
 
-              if (surveysState.status == SurveysStatus.loading) {
+              if (surveysState.status == SurveysStatus.initial) {
                 return const BottomLoader();
               }
 
@@ -89,11 +89,14 @@ class _SurveysState extends State<Surveys> with AutomaticKeepAliveClientMixin {
                 if (_refreshController.footerStatus == LoadStatus.loading) {
                   _refreshController.loadFailed();
                 }
-                return FailureRetryButton(
-                  onPressed: () => context.read<SurveysBloc>().add(
-                    SurveysEvent.get(searchTerm: filterState.searchTerm),
-                  ),
-                );
+
+                if (surveysState.surveys.isEmpty) {
+                  return FailureRetryButton(
+                    onPressed: () => context.read<SurveysBloc>().add(
+                      SurveysEvent.get(searchTerm: filterState.searchTerm),
+                    ),
+                  );
+                }
               }
 
               void getSurveys({List<Survey>? previousSurveys}) {

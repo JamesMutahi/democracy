@@ -58,7 +58,7 @@ class _PetitionsState extends State<Petitions>
             builder: (context, petitionsState) {
               final petitions = petitionsState.petitions;
 
-              if (petitionsState.status == PetitionsStatus.loading) {
+              if (petitionsState.status == PetitionsStatus.initial) {
                 return const BottomLoader();
               }
 
@@ -80,11 +80,14 @@ class _PetitionsState extends State<Petitions>
                 if (_refreshController.footerStatus == LoadStatus.loading) {
                   _refreshController.loadFailed();
                 }
-                return FailureRetryButton(
-                  onPressed: () => context.read<PetitionsBloc>().add(
-                    PetitionsEvent.get(searchTerm: filterState.searchTerm),
-                  ),
-                );
+
+                if (petitionsState.petitions.isEmpty) {
+                  return FailureRetryButton(
+                    onPressed: () => context.read<PetitionsBloc>().add(
+                      PetitionsEvent.get(searchTerm: filterState.searchTerm),
+                    ),
+                  );
+                }
               }
 
               void getPetitions({List<Petition>? previousPetitions}) {

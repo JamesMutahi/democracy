@@ -51,7 +51,7 @@ class _MeetingsState extends State<Meetings> {
             builder: (context, meetingsState) {
               final meetings = meetingsState.meetings;
 
-              if (meetingsState.status == MeetingsStatus.loading) {
+              if (meetingsState.status == MeetingsStatus.initial) {
                 return const BottomLoader();
               }
 
@@ -73,11 +73,14 @@ class _MeetingsState extends State<Meetings> {
                 if (_refreshController.footerStatus == LoadStatus.loading) {
                   _refreshController.loadFailed();
                 }
-                return FailureRetryButton(
-                  onPressed: () => context.read<MeetingsBloc>().add(
-                    MeetingsEvent.get(searchTerm: filterState.searchTerm),
-                  ),
-                );
+
+                if (meetingsState.meetings.isEmpty) {
+                  return FailureRetryButton(
+                    onPressed: () => context.read<MeetingsBloc>().add(
+                      MeetingsEvent.get(searchTerm: filterState.searchTerm),
+                    ),
+                  );
+                }
               }
 
               void getMeetings({List<Meeting>? previousMeetings}) {

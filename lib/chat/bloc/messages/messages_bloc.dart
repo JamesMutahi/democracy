@@ -52,6 +52,7 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
   }
 
   Future _onReceived(_Received event, Emitter<MessagesState> emit) async {
+    emit(state.copyWith(status: MessagesStatus.loading));
     if (event.payload['response_status'] == 200) {
       final List<Message> messages = List.from(
         event.payload['data']['results'].map((e) => Message.fromJson(e)),

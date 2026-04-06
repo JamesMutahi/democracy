@@ -51,7 +51,7 @@ class _BallotsState extends State<Ballots> {
             builder: (context, ballotsState) {
               final ballots = ballotsState.ballots;
 
-              if (ballotsState.status == BallotsStatus.loading) {
+              if (ballotsState.status == BallotsStatus.initial) {
                 return const BottomLoader();
               }
 
@@ -73,11 +73,13 @@ class _BallotsState extends State<Ballots> {
                 if (_refreshController.footerStatus == LoadStatus.loading) {
                   _refreshController.loadFailed();
                 }
-                return FailureRetryButton(
-                  onPressed: () => context.read<BallotsBloc>().add(
-                    BallotsEvent.get(searchTerm: filterState.searchTerm),
-                  ),
-                );
+                if (ballotsState.ballots.isEmpty) {
+                  return FailureRetryButton(
+                    onPressed: () => context.read<BallotsBloc>().add(
+                      BallotsEvent.get(searchTerm: filterState.searchTerm),
+                    ),
+                  );
+                }
               }
 
               void getBallots({List<Ballot>? previousBallots}) {

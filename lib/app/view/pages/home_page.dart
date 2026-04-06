@@ -1,3 +1,4 @@
+import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/expandable_fab.dart';
@@ -142,8 +143,8 @@ class _ForYouTabState extends State<ForYouTab>
 
   @override
   void initState() {
+    context.read<ForYouBloc>().add(ForYouEvent.initialize());
     super.initState();
-    context.read<ForYouBloc>().add(ForYouEvent.get());
   }
 
   @override
@@ -152,6 +153,10 @@ class _ForYouTabState extends State<ForYouTab>
     return BlocBuilder<ForYouBloc, ForYouState>(
       builder: (context, state) {
         final posts = state.posts;
+
+        if (state.status == ForYouStatus.initial) {
+          return const BottomLoader();
+        }
 
         if (state.status == ForYouStatus.success) {
           if (_refreshController.headerStatus == RefreshStatus.refreshing) {
@@ -173,10 +178,12 @@ class _ForYouTabState extends State<ForYouTab>
 
         return PostListView(
           posts: posts,
-          loading:
-              state.status == ForYouStatus.initial ||
-              state.status == ForYouStatus.loading,
-          failure: state.status == ForYouStatus.failure,
+          loading: state.posts.isNotEmpty
+              ? false
+              : state.status == ForYouStatus.initial,
+          failure: state.posts.isNotEmpty
+              ? false
+              : state.status == ForYouStatus.failure,
           onPostsUpdated: (posts) {
             context.read<ForYouBloc>().add(ForYouEvent.update(posts: posts));
           },
@@ -225,6 +232,10 @@ class _FollowingTabState extends State<FollowingTab> {
       builder: (context, state) {
         final posts = state.posts;
 
+        if (state.status == FollowingPostsStatus.initial) {
+          return const BottomLoader();
+        }
+
         if (state.status == FollowingPostsStatus.success) {
           if (_refreshController.headerStatus == RefreshStatus.refreshing) {
             _refreshController.refreshCompleted();
@@ -245,10 +256,12 @@ class _FollowingTabState extends State<FollowingTab> {
 
         return PostListView(
           posts: posts,
-          loading:
-              state.status == FollowingPostsStatus.initial ||
-              state.status == FollowingPostsStatus.loading,
-          failure: state.status == FollowingPostsStatus.failure,
+          loading: state.posts.isNotEmpty
+              ? false
+              : state.status == FollowingPostsStatus.initial,
+          failure: state.posts.isNotEmpty
+              ? false
+              : state.status == FollowingPostsStatus.failure,
           onPostsUpdated: (posts) {
             context.read<FollowingPostsBloc>().add(
               FollowingPostsEvent.update(posts: posts),

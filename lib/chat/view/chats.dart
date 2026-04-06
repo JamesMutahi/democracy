@@ -73,8 +73,18 @@ class _ChatsState extends State<Chats> {
                 builder: (context, chatsState) {
                   final chats = chatsState.chats;
 
-                  if (chatsState.status == ChatsStatus.loading) {
+                  if (chatsState.status == ChatsStatus.initial) {
                     return const BottomLoader();
+                  }
+
+                  if (chatsState.status == ChatsStatus.success) {
+                    if (_refreshController.headerStatus ==
+                        RefreshStatus.refreshing) {
+                      _refreshController.refreshCompleted();
+                    }
+                    if (_refreshController.footerStatus == LoadStatus.loading) {
+                      _refreshController.loadComplete();
+                    }
                   }
 
                   if (chatsState.status == ChatsStatus.failure) {
@@ -85,19 +95,12 @@ class _ChatsState extends State<Chats> {
                     if (_refreshController.footerStatus == LoadStatus.loading) {
                       _refreshController.loadFailed();
                     }
-                    return FailureRetryButton(
-                      onPressed: () => context.read<ChatsBloc>().add(
-                        ChatsEvent.get(searchTerm: filterState.searchTerm),
-                      ),
-                    );
-                  }
-                  if (chatsState.status == ChatsStatus.success) {
-                    if (_refreshController.headerStatus ==
-                        RefreshStatus.refreshing) {
-                      _refreshController.refreshCompleted();
-                    }
-                    if (_refreshController.footerStatus == LoadStatus.loading) {
-                      _refreshController.loadComplete();
+                    if (chatsState.chats.isEmpty) {
+                      return FailureRetryButton(
+                        onPressed: () => context.read<ChatsBloc>().add(
+                          ChatsEvent.get(searchTerm: filterState.searchTerm),
+                        ),
+                      );
                     }
                   }
 

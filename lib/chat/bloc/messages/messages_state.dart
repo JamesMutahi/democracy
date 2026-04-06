@@ -1,6 +1,6 @@
 part of 'messages_bloc.dart';
 
-enum MessagesStatus { initial, success, failure }
+enum MessagesStatus { initial, loading, success, failure }
 
 final class MessagesState extends Equatable {
   const MessagesState({

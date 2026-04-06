@@ -15,12 +15,16 @@ const String action = 'following';
 class FollowingPostsBloc
     extends Bloc<FollowingPostsEvent, FollowingPostsState> {
   FollowingPostsBloc({required this.webSocketService})
-    : super(FollowingPostsState()) {
+    : super(const FollowingPostsState()) {
     webSocketService.messages.listen((message) {
       if (message['stream'] == stream &&
           message['payload']['action'] == action) {
         add(_Received(payload: message['payload']));
       }
+    });
+    on<_Initialize>((event, emit) {
+      emit(FollowingPostsState());
+      add(_Get());
     });
     on<_Get>((event, emit) {
       _onGet(event, emit);
