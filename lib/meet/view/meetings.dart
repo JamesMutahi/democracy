@@ -1,4 +1,3 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/meet/bloc/meeting_detail/meeting_detail_bloc.dart';
@@ -18,10 +17,6 @@ class Meetings extends StatefulWidget {
 }
 
 class _MeetingsState extends State<Meetings> {
-  bool loading = true;
-  bool failure = false;
-  List<Meeting> _meetings = [];
-  bool hasNextPage = false;
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
   );
@@ -36,25 +31,31 @@ class _MeetingsState extends State<Meetings> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state.status == WebsocketStatus.connected) {
-              context.read<MeetingsBloc>().add(
-                MeetingsEvent.resubscribe(meetings: _meetings),
-              );
-            }
-          },
-        ),
-        BlocListener<MeetingsBloc, MeetingsState>(
-          listener: (context, state) {
-            if (state.status == MeetingsStatus.success) {
-              setState(() {
-                loading = false;
-                failure = false;
-                _meetings = state.meetings;
-                hasNextPage = state.hasNext;
+    return BlocListener<MeetingDetailBloc, MeetingDetailState>(
+      listener: (context, state) {
+        final meetingsBloc = context.read<MeetingsBloc>();
+
+        if (state is MeetingCreated) {
+          meetingsBloc.add(MeetingsEvent.add(meeting: state.meeting));
+        } else if (state is MeetingLoaded) {
+          meetingsBloc.add(MeetingsEvent.update(meeting: state.meeting));
+        } else if (state is MeetingUpdated) {
+          meetingsBloc.add(MeetingsEvent.update(meeting: state.meeting));
+        } else if (state is MeetingDeleted) {
+          meetingsBloc.add(MeetingsEvent.remove(meetingId: state.meetingId));
+        }
+      },
+      child: BlocBuilder<MeetingFilterCubit, MeetingFilterState>(
+        builder: (context, filterState) {
+          return BlocBuilder<MeetingsBloc, MeetingsState>(
+            builder: (context, meetingsState) {
+              final meetings = meetingsState.meetings;
+
+              if (meetingsState.status == MeetingsStatus.loading) {
+                return const BottomLoader();
+              }
+
+              if (meetingsState.status == MeetingsStatus.success) {
                 if (_refreshController.headerStatus ==
                     RefreshStatus.refreshing) {
                   _refreshController.refreshCompleted();
@@ -62,102 +63,65 @@ class _MeetingsState extends State<Meetings> {
                 if (_refreshController.footerStatus == LoadStatus.loading) {
                   _refreshController.loadComplete();
                 }
-              });
-            }
-            if (state.status == MeetingsStatus.failure) {
-              if (loading) {
-                setState(() {
-                  loading = false;
-                  failure = true;
-                });
               }
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshFailed();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadFailed();
-              }
-            }
-          },
-        ),
-        BlocListener<MeetingDetailBloc, MeetingDetailState>(
-          listener: (context, state) {
-            if (state is MeetingCreated) {
-              if (!_meetings.any((meeting) => meeting.id == state.meeting.id)) {
-                setState(() {
-                  _meetings.add(state.meeting);
-                  _meetings.sort((a, b) => a.startTime.compareTo(b.endTime));
-                });
-              }
-            }
-            if (state is MeetingUpdated) {
-              if (_meetings.any((meeting) => meeting.id == state.meeting.id)) {
-                setState(() {
-                  int index = _meetings.indexWhere(
-                    (meeting) => meeting.id == state.meeting.id,
-                  );
-                  _meetings[index] = state.meeting;
-                });
-              }
-            }
-            if (state is MeetingDeleted) {
-              if (_meetings.any((meeting) => meeting.id == state.meetingId)) {
-                setState(() {
-                  _meetings.removeWhere(
-                    (meeting) => meeting.id == state.meetingId,
-                  );
-                });
-              }
-            }
-          },
-        ),
-      ],
-      child: BlocBuilder<MeetingFilterCubit, MeetingFilterState>(
-        builder: (context, state) {
-          void getMeetings({List<Meeting>? previousMeetings}) {
-            context.read<MeetingsBloc>().add(
-              MeetingsEvent.get(
-                previousMeetings: previousMeetings,
-                searchTerm: state.searchTerm,
-                isActive: state.isActive,
-                sortBy: state.sortBy,
-                filterByRegion: state.filterByRegion,
-                startDate: state.startDate,
-                endDate: state.endDate,
-              ),
-            );
-          }
 
-          return loading
-              ? BottomLoader()
-              : failure
-              ? FailureRetryButton(onPressed: getMeetings)
-              : SmartRefresher(
-                  enablePullDown: true,
-                  enablePullUp: hasNextPage,
-                  header: ClassicHeader(),
-                  controller: _refreshController,
-                  onRefresh: getMeetings,
-                  onLoading: () {
-                    getMeetings(previousMeetings: _meetings);
-                  },
-                  footer: ClassicFooter(),
-                  child: ListView.builder(
-                    padding: EdgeInsets.all(15),
-                    itemBuilder: (BuildContext context, int index) {
-                      Meeting meeting = _meetings[index];
-                      return Container(
-                        margin: EdgeInsets.only(bottom: 10),
-                        child: MeetingTile(
-                          key: ValueKey(meeting.id),
-                          meeting: meeting,
-                          isDependency: false,
-                        ),
-                      );
-                    },
-                    itemCount: _meetings.length,
+              if (meetingsState.status == MeetingsStatus.failure) {
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshFailed();
+                }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadFailed();
+                }
+                return FailureRetryButton(
+                  onPressed: () => context.read<MeetingsBloc>().add(
+                    MeetingsEvent.get(searchTerm: filterState.searchTerm),
                   ),
                 );
+              }
+
+              void getMeetings({List<Meeting>? previousMeetings}) {
+                context.read<MeetingsBloc>().add(
+                  MeetingsEvent.get(
+                    previousMeetings: previousMeetings,
+                    searchTerm: filterState.searchTerm,
+                    isActive: filterState.isActive,
+                    sortBy: filterState.sortBy,
+                    filterByRegion: filterState.filterByRegion,
+                    startDate: filterState.startDate,
+                    endDate: filterState.endDate,
+                  ),
+                );
+              }
+
+              return SmartRefresher(
+                enablePullDown: true,
+                enablePullUp: meetingsState.hasNext,
+                header: ClassicHeader(),
+                controller: _refreshController,
+                onRefresh: getMeetings,
+                onLoading: () {
+                  getMeetings(previousMeetings: meetings);
+                },
+                footer: ClassicFooter(),
+                child: ListView.builder(
+                  padding: EdgeInsets.all(15),
+                  itemBuilder: (BuildContext context, int index) {
+                    Meeting meeting = meetings[index];
+                    return Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      child: MeetingTile(
+                        key: ValueKey(meeting.id),
+                        meeting: meeting,
+                        isDependency: false,
+                      ),
+                    );
+                  },
+                  itemCount: meetings.length,
+                ),
+              );
+            },
+          );
         },
       ),
     );

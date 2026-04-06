@@ -14,7 +14,7 @@ sealed class PetitionsEvent with _$PetitionsEvent {
   const factory PetitionsEvent.received({
     required Map<String, dynamic> payload,
   }) = _Received;
-  const factory PetitionsEvent.resubscribe({
-    required List<Petition> petitions,
-  }) = _Resubscribe;
+  const factory PetitionsEvent.add({required Petition petition}) = _Add;
+  const factory PetitionsEvent.update({required Petition petition}) = _Update;
+  const factory PetitionsEvent.remove({required int petitionId}) = _Remove;
 }

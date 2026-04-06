@@ -30,3 +30,10 @@ WEBSOCKET_URL='ws://100.100.100.100:8000/ws/'
 FAKE_EMAIL='FAKE_EMAIL'
 FAKE_PASSWORD='FAKE_PASSWORD'
 ```
+
+
+```
+flutter build appbundle --no-tree-shake-icons
+flutter build apk --no-tree-shake-icons
+flutter install
+```

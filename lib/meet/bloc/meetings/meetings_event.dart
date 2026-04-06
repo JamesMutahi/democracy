@@ -14,6 +14,7 @@ sealed class MeetingsEvent with _$MeetingsEvent {
   const factory MeetingsEvent.received({
     required Map<String, dynamic> payload,
   }) = _Received;
-  const factory MeetingsEvent.resubscribe({required List<Meeting> meetings}) =
-      _Resubscribe;
+  const factory MeetingsEvent.add({required Meeting meeting}) = _Add;
+  const factory MeetingsEvent.update({required Meeting meeting}) = _Update;
+  const factory MeetingsEvent.remove({required int meetingId}) = _Remove;
 }

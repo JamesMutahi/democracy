@@ -136,10 +136,6 @@ class _ForYouTabState extends State<ForYouTab>
   @override
   bool get wantKeepAlive => true;
 
-  bool loading = true;
-  bool failure = false;
-  List<Post> _posts = [];
-  bool hasNextPage = false;
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
   );
@@ -153,67 +149,54 @@ class _ForYouTabState extends State<ForYouTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<ForYouBloc, ForYouState>(
-          listener: (context, state) {
-            if (state.status == ForYouStatus.success) {
-              setState(() {
-                _posts = state.posts.toList();
-                loading = false;
-                failure = false;
-                hasNextPage = state.hasNext;
-                if (_refreshController.headerStatus ==
-                    RefreshStatus.refreshing) {
-                  _refreshController.refreshCompleted();
-                }
-                if (_refreshController.footerStatus == LoadStatus.loading) {
-                  _refreshController.loadComplete();
-                }
-              });
-            }
-            if (state.status == ForYouStatus.failure) {
-              if (loading) {
-                setState(() {
-                  loading = false;
-                  failure = true;
-                });
-              }
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshFailed();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadFailed();
-              }
-            }
+    return BlocBuilder<ForYouBloc, ForYouState>(
+      builder: (context, state) {
+        final posts = state.posts;
+
+        if (state.status == ForYouStatus.success) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshCompleted();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadComplete();
+          }
+        }
+
+        if (state.status == ForYouStatus.failure) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshFailed();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadFailed();
+          }
+        }
+
+        return PostListView(
+          posts: posts,
+          loading:
+              state.status == ForYouStatus.initial ||
+              state.status == ForYouStatus.loading,
+          failure: state.status == ForYouStatus.failure,
+          onPostsUpdated: (posts) {
+            context.read<ForYouBloc>().add(ForYouEvent.update(posts: posts));
           },
-        ),
-      ],
-      child: PostListView(
-        posts: _posts,
-        loading: loading,
-        failure: failure,
-        onPostsUpdated: (posts) {
-          setState(() {
-            _posts = posts;
-          });
-        },
-        refreshController: _refreshController,
-        enablePullDown: _posts.isNotEmpty,
-        enablePullUp: hasNextPage,
-        checkVisibility: true,
-        onRefresh: () {
-          context.read<ForYouBloc>().add(ForYouEvent.get());
-        },
-        onLoading: () {
-          context.read<ForYouBloc>().add(
-            ForYouEvent.get(previousPosts: _posts),
-          );
-        },
-        onFailure: () {
-          context.read<ForYouBloc>().add(ForYouEvent.get());
-        },
-      ),
+          refreshController: _refreshController,
+          enablePullDown: posts.isNotEmpty,
+          enablePullUp: state.hasNext,
+          checkVisibility: true,
+          onRefresh: () {
+            context.read<ForYouBloc>().add(ForYouEvent.get());
+          },
+          onLoading: () {
+            context.read<ForYouBloc>().add(
+              ForYouEvent.get(previousPosts: posts),
+            );
+          },
+          onFailure: () {
+            context.read<ForYouBloc>().add(ForYouEvent.get());
+          },
+        );
+      },
     );
   }
 }
@@ -226,10 +209,6 @@ class FollowingTab extends StatefulWidget {
 }
 
 class _FollowingTabState extends State<FollowingTab> {
-  bool loading = true;
-  bool failure = false;
-  List<Post> _posts = [];
-  bool hasNextPage = false;
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
   );
@@ -242,67 +221,56 @@ class _FollowingTabState extends State<FollowingTab> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<FollowingPostsBloc, FollowingPostsState>(
-          listener: (context, state) {
-            if (state.status == FollowingPostsStatus.success) {
-              setState(() {
-                loading = false;
-                failure = false;
-                _posts = state.posts;
-                hasNextPage = state.hasNext;
-                if (_refreshController.headerStatus ==
-                    RefreshStatus.refreshing) {
-                  _refreshController.refreshCompleted();
-                }
-                if (_refreshController.footerStatus == LoadStatus.loading) {
-                  _refreshController.loadComplete();
-                }
-              });
-            }
-            if (state.status == FollowingPostsStatus.failure) {
-              if (loading) {
-                setState(() {
-                  loading = false;
-                  failure = true;
-                });
-              }
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshFailed();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadFailed();
-              }
-            }
+    return BlocBuilder<FollowingPostsBloc, FollowingPostsState>(
+      builder: (context, state) {
+        final posts = state.posts;
+
+        if (state.status == FollowingPostsStatus.success) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshCompleted();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadComplete();
+          }
+        }
+
+        if (state.status == FollowingPostsStatus.failure) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshFailed();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadFailed();
+          }
+        }
+
+        return PostListView(
+          posts: posts,
+          loading:
+              state.status == FollowingPostsStatus.initial ||
+              state.status == FollowingPostsStatus.loading,
+          failure: state.status == FollowingPostsStatus.failure,
+          onPostsUpdated: (posts) {
+            context.read<FollowingPostsBloc>().add(
+              FollowingPostsEvent.update(posts: posts),
+            );
           },
-        ),
-      ],
-      child: PostListView(
-        posts: _posts,
-        loading: loading,
-        failure: failure,
-        onPostsUpdated: (posts) {
-          setState(() {
-            _posts = posts;
-          });
-        },
-        refreshController: _refreshController,
-        enablePullDown: _posts.isNotEmpty,
-        enablePullUp: hasNextPage,
-        checkVisibility: true,
-        onRefresh: () {
-          context.read<FollowingPostsBloc>().add(FollowingPostsEvent.get());
-        },
-        onLoading: () {
-          context.read<FollowingPostsBloc>().add(
-            FollowingPostsEvent.get(previousPosts: _posts),
-          );
-        },
-        onFailure: () {
-          context.read<FollowingPostsBloc>().add(FollowingPostsEvent.get());
-        },
-      ),
+          refreshController: _refreshController,
+          enablePullDown: posts.isNotEmpty,
+          enablePullUp: state.hasNext,
+          checkVisibility: true,
+          onRefresh: () {
+            context.read<FollowingPostsBloc>().add(FollowingPostsEvent.get());
+          },
+          onLoading: () {
+            context.read<FollowingPostsBloc>().add(
+              FollowingPostsEvent.get(previousPosts: posts),
+            );
+          },
+          onFailure: () {
+            context.read<FollowingPostsBloc>().add(FollowingPostsEvent.get());
+          },
+        );
+      },
     );
   }
 }

@@ -27,9 +27,9 @@ class PetitionsBloc extends Bloc<PetitionsEvent, PetitionsState> {
     on<_Received>((event, emit) {
       _onReceived(event, emit);
     });
-    on<_Resubscribe>((event, emit) {
-      _onResubscribe(event, emit);
-    });
+    on<_Add>((event, emit) => _onAdd(event, emit));
+    on<_Update>((event, emit) => _onUpdate(event, emit));
+    on<_Remove>((event, emit) => _onRemove(event, emit));
   }
 
   Future _onGet(_Get event, Emitter<PetitionsState> emit) async {
@@ -74,22 +74,49 @@ class PetitionsBloc extends Bloc<PetitionsEvent, PetitionsState> {
     }
   }
 
-  Future _onResubscribe(
-    _Resubscribe event,
-    Emitter<PetitionsState> emit,
-  ) async {
-    List<int> petitionIds = event.petitions
-        .map((petition) => petition.id)
+  void _onAdd(_Add event, Emitter<PetitionsState> emit) {
+    final exists = state.petitions.any(
+      (element) => element.id == event.petition.id,
+    );
+
+    if (!exists) {
+      emit(
+        state.copyWith(
+          petitions: [event.petition, ...state.petitions],
+          status: PetitionsStatus.success,
+        ),
+      );
+    }
+  }
+
+  void _onUpdate(_Update event, Emitter<PetitionsState> emit) {
+    final index = state.petitions.indexWhere(
+      (element) => element.id == event.petition.id,
+    );
+    if (index == -1) return;
+
+    final updatedPetitions = List<Petition>.from(state.petitions);
+    updatedPetitions[index] = event.petition;
+
+    emit(
+      state.copyWith(
+        petitions: updatedPetitions,
+        status: PetitionsStatus.success,
+      ),
+    );
+  }
+
+  void _onRemove(_Remove event, Emitter<PetitionsState> emit) {
+    final updatedPetitions = state.petitions
+        .where((element) => element.id != event.petitionId)
         .toList();
-    Map<String, dynamic> message = {
-      'stream': stream,
-      'payload': {
-        "action": 'resubscribe',
-        'request_id': requestId,
-        'pks': petitionIds,
-      },
-    };
-    webSocketService.send(message);
+
+    emit(
+      state.copyWith(
+        petitions: updatedPetitions,
+        status: PetitionsStatus.success,
+      ),
+    );
   }
 
   final WebSocketService webSocketService;

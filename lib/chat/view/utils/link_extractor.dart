@@ -1,13 +1,9 @@
+import 'package:democracy/app/utils/regex.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 String extractLinkFromMessage(Message message) {
   String text = message.text;
-  // The regular expression to match URLs (supporting http, https, and www.)
-  final RegExp linkRegExp = RegExp(
-    r'(http|https)://[\w-]+(\.[\w-]+)+([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?',
-  );
-
   // Find all matches in the text
   final Iterable<RegExpMatch> urlMatches = linkRegExp.allMatches(text);
 

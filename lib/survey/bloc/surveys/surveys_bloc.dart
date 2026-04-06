@@ -27,6 +27,9 @@ class SurveysBloc extends Bloc<SurveysEvent, SurveysState> {
     on<_Received>((event, emit) {
       _onReceived(event, emit);
     });
+    on<_Add>((event, emit) => _onAdd(event, emit));
+    on<_Update>((event, emit) => _onUpdate(event, emit));
+    on<_Remove>((event, emit) => _onRemove(event, emit));
   }
 
   Future _onGet(_Get event, Emitter<SurveysState> emit) async {
@@ -68,6 +71,45 @@ class SurveysBloc extends Bloc<SurveysEvent, SurveysState> {
     } else {
       emit(state.copyWith(status: SurveysStatus.failure));
     }
+  }
+
+  void _onAdd(_Add event, Emitter<SurveysState> emit) {
+    final exists = state.surveys.any(
+      (element) => element.id == event.survey.id,
+    );
+
+    if (!exists) {
+      emit(
+        state.copyWith(
+          surveys: [event.survey, ...state.surveys],
+          status: SurveysStatus.success,
+        ),
+      );
+    }
+  }
+
+  void _onUpdate(_Update event, Emitter<SurveysState> emit) {
+    final index = state.surveys.indexWhere(
+      (element) => element.id == event.survey.id,
+    );
+    if (index == -1) return;
+
+    final updatedSurveys = List<Survey>.from(state.surveys);
+    updatedSurveys[index] = event.survey;
+
+    emit(
+      state.copyWith(surveys: updatedSurveys, status: SurveysStatus.success),
+    );
+  }
+
+  void _onRemove(_Remove event, Emitter<SurveysState> emit) {
+    final updatedSurveys = state.surveys
+        .where((element) => element.id != event.surveyId)
+        .toList();
+
+    emit(
+      state.copyWith(surveys: updatedSurveys, status: SurveysStatus.success),
+    );
   }
 
   final WebSocketService webSocketService;

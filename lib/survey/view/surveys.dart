@@ -21,10 +21,6 @@ class _SurveysState extends State<Surveys> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
-  bool loading = true;
-  bool failure = false;
-  List<Survey> _surveys = [];
-  bool hasNextPage = false;
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
   );
@@ -42,14 +38,40 @@ class _SurveysState extends State<Surveys> with AutomaticKeepAliveClientMixin {
     super.build(context);
     return MultiBlocListener(
       listeners: [
-        BlocListener<SurveysBloc, SurveysState>(
+        BlocListener<SurveyDetailBloc, SurveyDetailState>(
           listener: (context, state) {
-            if (state.status == SurveysStatus.success) {
-              setState(() {
-                loading = false;
-                failure = false;
-                _surveys = state.surveys;
-                hasNextPage = state.hasNext;
+            final surveysBloc = context.read<SurveysBloc>();
+
+            if (state is SurveyCreated) {
+              surveysBloc.add(SurveysEvent.add(survey: state.survey));
+            } else if (state is SurveyUpdated) {
+              surveysBloc.add(SurveysEvent.update(survey: state.survey));
+            } else if (state is SurveyDeleted) {
+              surveysBloc.add(SurveysEvent.remove(surveyId: state.surveyId));
+            }
+          },
+        ),
+        BlocListener<AnswerBloc, AnswerState>(
+          listener: (context, state) {
+            if (state.status == AnswerStatus.submitted) {
+              context.read<SurveysBloc>().add(
+                SurveysEvent.update(survey: state.survey!),
+              );
+            }
+          },
+        ),
+      ],
+      child: BlocBuilder<SurveyFilterCubit, SurveyFilterState>(
+        builder: (context, filterState) {
+          return BlocBuilder<SurveysBloc, SurveysState>(
+            builder: (context, surveysState) {
+              final surveys = surveysState.surveys;
+
+              if (surveysState.status == SurveysStatus.loading) {
+                return const BottomLoader();
+              }
+
+              if (surveysState.status == SurveysStatus.success) {
                 if (_refreshController.headerStatus ==
                     RefreshStatus.refreshing) {
                   _refreshController.refreshCompleted();
@@ -57,113 +79,65 @@ class _SurveysState extends State<Surveys> with AutomaticKeepAliveClientMixin {
                 if (_refreshController.footerStatus == LoadStatus.loading) {
                   _refreshController.loadComplete();
                 }
-              });
-            }
-            if (state.status == SurveysStatus.failure) {
-              if (loading) {
-                setState(() {
-                  loading = false;
-                  failure = true;
-                });
               }
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshFailed();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadFailed();
-              }
-            }
-          },
-        ),
-        BlocListener<AnswerBloc, AnswerState>(
-          listener: (context, state) {
-            if (state.status == AnswerStatus.submitted) {
-              if (_surveys.any((survey) => survey.id == state.survey!.id)) {
-                setState(() {
-                  int index = _surveys.indexWhere(
-                    (survey) => survey.id == state.survey!.id,
-                  );
-                  _surveys[index] = state.survey!;
-                });
-              }
-            }
-          },
-        ),
-        BlocListener<SurveyDetailBloc, SurveyDetailState>(
-          listener: (context, state) {
-            if (state is SurveyCreated) {
-              if (!_surveys.any((survey) => survey.id == state.survey.id)) {
-                setState(() {
-                  _surveys.add(state.survey);
-                });
-              }
-            }
-            if (state is SurveyUpdated) {
-              if (_surveys.any((survey) => survey.id == state.survey.id)) {
-                setState(() {
-                  int index = _surveys.indexWhere(
-                    (survey) => survey.id == state.survey.id,
-                  );
-                  _surveys[index] = state.survey;
-                });
-              }
-            }
-            if (state is SurveyDeleted) {
-              if (_surveys.any((survey) => survey.id == state.surveyId)) {
-                setState(() {
-                  _surveys.removeWhere((survey) => survey.id == state.surveyId);
-                });
-              }
-            }
-          },
-        ),
-      ],
-      child: BlocBuilder<SurveyFilterCubit, SurveyFilterState>(
-        builder: (context, state) {
-          void getSurveys({List<Survey>? previousSurveys}) {
-            context.read<SurveysBloc>().add(
-              SurveysEvent.get(
-                previousSurveys: previousSurveys,
-                searchTerm: state.searchTerm,
-                isActive: state.isActive,
-                sortBy: state.sortBy,
-                filterByRegion: state.filterByRegion,
-                startDate: state.startDate,
-                endDate: state.endDate,
-              ),
-            );
-          }
 
-          return loading
-              ? BottomLoader()
-              : failure
-              ? FailureRetryButton(onPressed: getSurveys)
-              : SmartRefresher(
-                  enablePullDown: true,
-                  enablePullUp: hasNextPage,
-                  header: ClassicHeader(),
-                  controller: _refreshController,
-                  onRefresh: getSurveys,
-                  onLoading: () {
-                    getSurveys(previousSurveys: _surveys);
-                  },
-                  footer: ClassicFooter(),
-                  child: ListView.builder(
-                    padding: EdgeInsets.all(15),
-                    itemBuilder: (BuildContext context, int index) {
-                      Survey survey = _surveys[index];
-                      return Container(
-                        margin: EdgeInsets.only(bottom: 10),
-                        child: SurveyTile(
-                          key: ValueKey(survey.id),
-                          survey: survey,
-                          isDependency: false,
-                        ),
-                      );
-                    },
-                    itemCount: _surveys.length,
+              if (surveysState.status == SurveysStatus.failure) {
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshFailed();
+                }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadFailed();
+                }
+                return FailureRetryButton(
+                  onPressed: () => context.read<SurveysBloc>().add(
+                    SurveysEvent.get(searchTerm: filterState.searchTerm),
                   ),
                 );
+              }
+
+              void getSurveys({List<Survey>? previousSurveys}) {
+                context.read<SurveysBloc>().add(
+                  SurveysEvent.get(
+                    previousSurveys: previousSurveys,
+                    searchTerm: filterState.searchTerm,
+                    isActive: filterState.isActive,
+                    sortBy: filterState.sortBy,
+                    filterByRegion: filterState.filterByRegion,
+                    startDate: filterState.startDate,
+                    endDate: filterState.endDate,
+                  ),
+                );
+              }
+
+              return SmartRefresher(
+                enablePullDown: true,
+                enablePullUp: surveysState.hasNext,
+                header: ClassicHeader(),
+                controller: _refreshController,
+                onRefresh: getSurveys,
+                onLoading: () {
+                  getSurveys(previousSurveys: surveys);
+                },
+                footer: ClassicFooter(),
+                child: ListView.builder(
+                  padding: EdgeInsets.all(15),
+                  itemBuilder: (BuildContext context, int index) {
+                    Survey survey = surveys[index];
+                    return Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      child: SurveyTile(
+                        key: ValueKey(survey.id),
+                        survey: survey,
+                        isDependency: false,
+                      ),
+                    );
+                  },
+                  itemCount: surveys.length,
+                ),
+              );
+            },
+          );
         },
       ),
     );

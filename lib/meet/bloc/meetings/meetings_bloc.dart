@@ -28,9 +28,9 @@ class MeetingsBloc extends Bloc<MeetingsEvent, MeetingsState> {
     on<_Received>((event, emit) {
       _onReceived(event, emit);
     });
-    on<_Resubscribe>((event, emit) {
-      _onResubscribe(event, emit);
-    });
+    on<_Add>((event, emit) => _onAdd(event, emit));
+    on<_Update>((event, emit) => _onUpdate(event, emit));
+    on<_Remove>((event, emit) => _onRemove(event, emit));
   }
 
   Future _onGet(_Get event, Emitter<MeetingsState> emit) async {
@@ -74,17 +74,43 @@ class MeetingsBloc extends Bloc<MeetingsEvent, MeetingsState> {
     }
   }
 
-  Future _onResubscribe(_Resubscribe event, Emitter<MeetingsState> emit) async {
-    List<int> meetingIds = event.meetings.map((meeting) => meeting.id).toList();
-    Map<String, dynamic> message = {
-      'stream': stream,
-      'payload': {
-        "action": 'resubscribe',
-        'request_id': requestId,
-        'pks': meetingIds,
-      },
-    };
-    webSocketService.send(message);
+  void _onAdd(_Add event, Emitter<MeetingsState> emit) {
+    final exists = state.meetings.any(
+      (element) => element.id == event.meeting.id,
+    );
+
+    if (!exists) {
+      emit(
+        state.copyWith(
+          meetings: [event.meeting, ...state.meetings],
+          status: MeetingsStatus.success,
+        ),
+      );
+    }
+  }
+
+  void _onUpdate(_Update event, Emitter<MeetingsState> emit) {
+    final index = state.meetings.indexWhere(
+      (element) => element.id == event.meeting.id,
+    );
+    if (index == -1) return;
+
+    final updatedMeetings = List<Meeting>.from(state.meetings);
+    updatedMeetings[index] = event.meeting;
+
+    emit(
+      state.copyWith(meetings: updatedMeetings, status: MeetingsStatus.success),
+    );
+  }
+
+  void _onRemove(_Remove event, Emitter<MeetingsState> emit) {
+    final updatedMeetings = state.meetings
+        .where((element) => element.id != event.meetingId)
+        .toList();
+
+    emit(
+      state.copyWith(meetings: updatedMeetings, status: MeetingsStatus.success),
+    );
   }
 
   final WebSocketService webSocketService;

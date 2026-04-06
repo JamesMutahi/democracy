@@ -6,4 +6,6 @@ sealed class FollowingPostsEvent with _$FollowingPostsEvent {
   const factory FollowingPostsEvent.received({
     required Map<String, dynamic> payload,
   }) = _Received;
+  const factory FollowingPostsEvent.update({required List<Post> posts}) =
+      _Update;
 }

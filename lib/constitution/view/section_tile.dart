@@ -24,7 +24,7 @@ class SectionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(
-        top: 5,
+        top: isDependency ? 0 : 5,
         left: isDependency ? 0 : 12 * section.parentCount.toDouble(),
       ),
       child: InkWell(
@@ -52,7 +52,7 @@ class SectionTile extends StatelessWidget {
         child: AnimatedContainer(
           curve: Curves.easeInOut,
           duration: Duration(milliseconds: 300),
-          padding: EdgeInsets.only(left: 8.0, top: 8.0, bottom: 8.0),
+          padding: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(
             color: isHighlighted || section.id == selectedSection?.id
                 ? Theme.of(context).colorScheme.primaryContainer

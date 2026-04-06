@@ -1,4 +1,3 @@
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
@@ -22,10 +21,6 @@ class _PetitionsState extends State<Petitions>
   @override
   bool get wantKeepAlive => true;
 
-  bool loading = true;
-  bool failure = false;
-  List<Petition> _petitions = [];
-  bool hasNextPage = false;
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
   );
@@ -41,25 +36,33 @@ class _PetitionsState extends State<Petitions>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state.status == WebsocketStatus.connected) {
-              context.read<PetitionsBloc>().add(
-                PetitionsEvent.resubscribe(petitions: _petitions),
-              );
-            }
-          },
-        ),
-        BlocListener<PetitionsBloc, PetitionsState>(
-          listener: (context, state) {
-            if (state.status == PetitionsStatus.success) {
-              setState(() {
-                loading = false;
-                failure = false;
-                _petitions = state.petitions;
-                hasNextPage = state.hasNext;
+    return BlocListener<PetitionDetailBloc, PetitionDetailState>(
+      listener: (context, state) {
+        final petitionsBloc = context.read<PetitionsBloc>();
+
+        if (state is PetitionCreated) {
+          petitionsBloc.add(PetitionsEvent.add(petition: state.petition));
+        } else if (state is PetitionLoaded) {
+          petitionsBloc.add(PetitionsEvent.update(petition: state.petition));
+        } else if (state is PetitionUpdated) {
+          petitionsBloc.add(PetitionsEvent.update(petition: state.petition));
+        } else if (state is PetitionDeleted) {
+          petitionsBloc.add(
+            PetitionsEvent.remove(petitionId: state.petitionId),
+          );
+        }
+      },
+      child: BlocBuilder<PetitionFilterCubit, PetitionFilterState>(
+        builder: (context, filterState) {
+          return BlocBuilder<PetitionsBloc, PetitionsState>(
+            builder: (context, petitionsState) {
+              final petitions = petitionsState.petitions;
+
+              if (petitionsState.status == PetitionsStatus.loading) {
+                return const BottomLoader();
+              }
+
+              if (petitionsState.status == PetitionsStatus.success) {
                 if (_refreshController.headerStatus ==
                     RefreshStatus.refreshing) {
                   _refreshController.refreshCompleted();
@@ -67,98 +70,65 @@ class _PetitionsState extends State<Petitions>
                 if (_refreshController.footerStatus == LoadStatus.loading) {
                   _refreshController.loadComplete();
                 }
-              });
-            }
-            if (state.status == PetitionsStatus.failure) {
-              if (loading) {
-                setState(() {
-                  loading = false;
-                  failure = true;
-                });
               }
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshFailed();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadFailed();
-              }
-            }
-          },
-        ),
-        BlocListener<PetitionDetailBloc, PetitionDetailState>(
-          listener: (context, state) {
-            if (state is PetitionUpdated) {
-              if (_petitions.any(
-                (petition) => petition.id == state.petition.id,
-              )) {
-                setState(() {
-                  int index = _petitions.indexWhere(
-                    (petition) => petition.id == state.petition.id,
-                  );
-                  _petitions[index] = state.petition;
-                });
-              }
-            }
-            if (state is PetitionDeleted) {
-              if (_petitions.any(
-                (petition) => petition.id == state.petitionId,
-              )) {
-                setState(() {
-                  _petitions.removeWhere(
-                    (petition) => petition.id == state.petitionId,
-                  );
-                });
-              }
-            }
-          },
-        ),
-      ],
-      child: BlocBuilder<PetitionFilterCubit, PetitionFilterState>(
-        builder: (context, state) {
-          void getPetitions({List<Petition>? previousPetitions}) {
-            context.read<PetitionsBloc>().add(
-              PetitionsEvent.get(
-                previousPetitions: previousPetitions,
-                searchTerm: state.searchTerm,
-                isOpen: state.isOpen,
-                sortBy: state.sortBy,
-                filterByRegion: state.filterByRegion,
-                startDate: state.startDate,
-                endDate: state.endDate,
-              ),
-            );
-          }
 
-          return loading
-              ? BottomLoader()
-              : failure
-              ? FailureRetryButton(onPressed: getPetitions)
-              : SmartRefresher(
-                  enablePullDown: true,
-                  enablePullUp: hasNextPage,
-                  header: ClassicHeader(),
-                  controller: _refreshController,
-                  onRefresh: getPetitions,
-                  onLoading: () {
-                    getPetitions(previousPetitions: _petitions);
-                  },
-                  footer: ClassicFooter(),
-                  child: ListView.builder(
-                    padding: EdgeInsets.all(15),
-                    itemBuilder: (BuildContext context, int index) {
-                      Petition petition = _petitions[index];
-                      return Container(
-                        margin: EdgeInsets.only(bottom: 10),
-                        child: PetitionTile(
-                          key: ValueKey(petition.id),
-                          petition: petition,
-                          isDependency: false,
-                        ),
-                      );
-                    },
-                    itemCount: _petitions.length,
+              if (petitionsState.status == PetitionsStatus.failure) {
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshFailed();
+                }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadFailed();
+                }
+                return FailureRetryButton(
+                  onPressed: () => context.read<PetitionsBloc>().add(
+                    PetitionsEvent.get(searchTerm: filterState.searchTerm),
                   ),
                 );
+              }
+
+              void getPetitions({List<Petition>? previousPetitions}) {
+                context.read<PetitionsBloc>().add(
+                  PetitionsEvent.get(
+                    previousPetitions: previousPetitions,
+                    searchTerm: filterState.searchTerm,
+                    isOpen: filterState.isOpen,
+                    sortBy: filterState.sortBy,
+                    filterByRegion: filterState.filterByRegion,
+                    startDate: filterState.startDate,
+                    endDate: filterState.endDate,
+                  ),
+                );
+              }
+
+              return SmartRefresher(
+                enablePullDown: true,
+                enablePullUp: petitionsState.hasNext,
+                header: ClassicHeader(),
+                controller: _refreshController,
+                onRefresh: getPetitions,
+                onLoading: () {
+                  getPetitions(previousPetitions: petitions);
+                },
+                footer: ClassicFooter(),
+                child: ListView.builder(
+                  padding: EdgeInsets.all(15),
+                  itemBuilder: (BuildContext context, int index) {
+                    Petition petition = petitions[index];
+                    return Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      child: PetitionTile(
+                        key: ValueKey(petition.id),
+                        petition: petition,
+                        isDependency: false,
+                      ),
+                    );
+                  },
+                  itemCount: petitions.length,
+                ),
+              );
+            },
+          );
         },
       ),
     );

@@ -63,69 +63,74 @@ class _MapWidgetState extends State<_MapWidget> {
         Container(
           height: 150,
           constraints: BoxConstraints(maxWidth: 500),
-          child: FlutterMap(
-            options: MapOptions(
-              initialZoom: 18,
-              initialCenter: widget.mapCenter,
-              interactionOptions: const InteractionOptions(
-                flags: InteractiveFlag.none,
-              ),
-              onTap: (_, _) {
-                if (widget.onRemove == null) {
-                  try {
-                    openMap(
-                      widget.mapCenter.latitude,
-                      widget.mapCenter.longitude,
-                    );
-                  } catch (error) {
-                    final snackBar = getSnackBar(
-                      context: context,
-                      message: error.toString(),
-                      status: SnackBarStatus.failure,
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }
-                }
-              },
-            ),
-            children: [
-              _darkModeContainerIfEnabled(
-                TileLayer(
-                  // Display map tiles from any source
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  // OSMF's Tile Server
-                  // TODO: Change package name
-                  userAgentPackageName: 'com.democracy.app',
-                  // And many more recommended properties!
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: FlutterMap(
+              options: MapOptions(
+                initialZoom: 18,
+                initialCenter: widget.mapCenter,
+                interactionOptions: const InteractionOptions(
+                  flags: InteractiveFlag.none,
                 ),
+                onTap: (_, _) {
+                  if (widget.onRemove == null) {
+                    try {
+                      openMap(
+                        widget.mapCenter.latitude,
+                        widget.mapCenter.longitude,
+                      );
+                    } catch (error) {
+                      final snackBar = getSnackBar(
+                        context: context,
+                        message: error.toString(),
+                        status: SnackBarStatus.failure,
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }
+                  }
+                },
               ),
-              MarkerLayer(
-                markers: [
-                  Marker(
-                    point: widget.mapCenter,
-                    width: 50,
-                    height: 50,
-                    child: Icon(
-                      Icons.location_on,
-                      color: Colors.blue,
-                      size: 30,
+              children: [
+                _darkModeContainerIfEnabled(
+                  TileLayer(
+                    // Display map tiles from any source
+                    urlTemplate:
+                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    // OSMF's Tile Server
+                    // TODO: Change package name
+                    userAgentPackageName: 'com.democracy.app',
+                    // And many more recommended properties!
+                  ),
+                ),
+                MarkerLayer(
+                  markers: [
+                    Marker(
+                      point: widget.mapCenter,
+                      width: 50,
+                      height: 50,
+                      child: Icon(
+                        Icons.location_on,
+                        color: Colors.blue,
+                        size: 30,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              RichAttributionWidget(
-                // Include a stylish prebuilt attribution widget that meets all requirements
-                attributions: [
-                  TextSourceAttribution(
-                    'OpenStreetMap contributors',
-                    onTap: () => launchUrl(
-                      Uri.parse('https://openstreetmap.org/copyright'),
-                    ), // (external)
-                  ),
-                  // Also add images...
-                ],
-              ),
-            ],
+                  ],
+                ),
+                RichAttributionWidget(
+                  // Include a stylish prebuilt attribution widget that meets all requirements
+                  attributions: [
+                    TextSourceAttribution(
+                      'OpenStreetMap contributors',
+                      onTap: () => launchUrl(
+                        // TODO: Change
+                        Uri.parse('https://openstreetmap.org/copyright'),
+                      ), // (external)
+                    ),
+                    // Also add images...
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
         if (widget.onRemove != null)

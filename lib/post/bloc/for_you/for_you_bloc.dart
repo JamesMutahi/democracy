@@ -26,6 +26,7 @@ class ForYouBloc extends Bloc<ForYouEvent, ForYouState> {
     on<_Received>((event, emit) {
       _onReceived(event, emit);
     });
+    on<_Update>((event, emit) => _onUpdate(event, emit));
   }
 
   Future _onGet(_Get event, Emitter<ForYouState> emit) async {
@@ -57,6 +58,10 @@ class ForYouBloc extends Bloc<ForYouEvent, ForYouState> {
     } else {
       emit(state.copyWith(status: ForYouStatus.failure));
     }
+  }
+
+  void _onUpdate(_Update event, Emitter<ForYouState> emit) {
+    emit(state.copyWith(posts: event.posts, status: ForYouStatus.success));
   }
 
   final WebSocketService webSocketService;

@@ -17,10 +17,6 @@ class Ballots extends StatefulWidget {
 }
 
 class _BallotsState extends State<Ballots> {
-  bool loading = true;
-  bool failure = false;
-  List<Ballot> _ballots = [];
-  bool hasNextPage = false;
   final RefreshController _refreshController = RefreshController(
     initialRefresh: false,
   );
@@ -35,16 +31,31 @@ class _BallotsState extends State<Ballots> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<BallotsBloc, BallotsState>(
-          listener: (context, state) {
-            if (state.status == BallotsStatus.success) {
-              setState(() {
-                loading = false;
-                failure = false;
-                _ballots = state.ballots;
-                hasNextPage = state.hasNext;
+    return BlocListener<BallotDetailBloc, BallotDetailState>(
+      listener: (context, state) {
+        final ballotsBloc = context.read<BallotsBloc>();
+
+        if (state is BallotCreated) {
+          ballotsBloc.add(BallotsEvent.add(ballot: state.ballot));
+        } else if (state is BallotLoaded) {
+          ballotsBloc.add(BallotsEvent.update(ballot: state.ballot));
+        } else if (state is BallotUpdated) {
+          ballotsBloc.add(BallotsEvent.update(ballot: state.ballot));
+        } else if (state is BallotDeleted) {
+          ballotsBloc.add(BallotsEvent.remove(ballotId: state.ballotId));
+        }
+      },
+      child: BlocBuilder<BallotFilterCubit, BallotFilterState>(
+        builder: (context, filterState) {
+          return BlocBuilder<BallotsBloc, BallotsState>(
+            builder: (context, ballotsState) {
+              final ballots = ballotsState.ballots;
+
+              if (ballotsState.status == BallotsStatus.loading) {
+                return const BottomLoader();
+              }
+
+              if (ballotsState.status == BallotsStatus.success) {
                 if (_refreshController.headerStatus ==
                     RefreshStatus.refreshing) {
                   _refreshController.refreshCompleted();
@@ -52,100 +63,65 @@ class _BallotsState extends State<Ballots> {
                 if (_refreshController.footerStatus == LoadStatus.loading) {
                   _refreshController.loadComplete();
                 }
-              });
-            }
-            if (state.status == BallotsStatus.failure) {
-              if (loading) {
-                setState(() {
-                  loading = false;
-                  failure = true;
-                });
               }
-              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-                _refreshController.refreshFailed();
-              }
-              if (_refreshController.footerStatus == LoadStatus.loading) {
-                _refreshController.loadFailed();
-              }
-            }
-          },
-        ),
-        BlocListener<BallotDetailBloc, BallotDetailState>(
-          listener: (context, state) {
-            if (state is BallotCreated) {
-              if (!_ballots.any((ballot) => ballot.id == state.ballot.id)) {
-                setState(() {
-                  _ballots.add(state.ballot);
-                  _ballots.sort((a, b) => a.startTime.compareTo(b.endTime));
-                });
-              }
-            }
-            if (state is BallotUpdated) {
-              if (_ballots.any((ballot) => ballot.id == state.ballot.id)) {
-                setState(() {
-                  int index = _ballots.indexWhere(
-                    (ballot) => ballot.id == state.ballot.id,
-                  );
-                  _ballots[index] = state.ballot;
-                });
-              }
-            }
-            if (state is BallotDeleted) {
-              if (_ballots.any((ballot) => ballot.id == state.ballotId)) {
-                setState(() {
-                  _ballots.removeWhere((ballot) => ballot.id == state.ballotId);
-                });
-              }
-            }
-          },
-        ),
-      ],
-      child: BlocBuilder<BallotFilterCubit, BallotFilterState>(
-        builder: (context, state) {
-          void getBallots({List<Ballot>? previousBallots}) {
-            context.read<BallotsBloc>().add(
-              BallotsEvent.get(
-                previousBallots: previousBallots,
-                searchTerm: state.searchTerm,
-                isActive: state.isActive,
-                sortBy: state.sortBy,
-                filterByRegion: state.filterByRegion,
-                startDate: state.startDate,
-                endDate: state.endDate,
-              ),
-            );
-          }
 
-          return loading
-              ? BottomLoader()
-              : failure
-              ? FailureRetryButton(onPressed: getBallots)
-              : SmartRefresher(
-                  enablePullDown: true,
-                  enablePullUp: hasNextPage,
-                  header: ClassicHeader(),
-                  controller: _refreshController,
-                  onRefresh: getBallots,
-                  onLoading: () {
-                    getBallots(previousBallots: _ballots);
-                  },
-                  footer: ClassicFooter(),
-                  child: ListView.builder(
-                    padding: EdgeInsets.all(15),
-                    itemBuilder: (BuildContext context, int index) {
-                      Ballot ballot = _ballots[index];
-                      return Container(
-                        margin: EdgeInsets.only(bottom: 10),
-                        child: BallotTile(
-                          key: ValueKey(ballot.id),
-                          ballot: ballot,
-                          isDependency: false,
-                        ),
-                      );
-                    },
-                    itemCount: _ballots.length,
+              if (ballotsState.status == BallotsStatus.failure) {
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshFailed();
+                }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadFailed();
+                }
+                return FailureRetryButton(
+                  onPressed: () => context.read<BallotsBloc>().add(
+                    BallotsEvent.get(searchTerm: filterState.searchTerm),
                   ),
                 );
+              }
+
+              void getBallots({List<Ballot>? previousBallots}) {
+                context.read<BallotsBloc>().add(
+                  BallotsEvent.get(
+                    previousBallots: previousBallots,
+                    searchTerm: filterState.searchTerm,
+                    isActive: filterState.isActive,
+                    sortBy: filterState.sortBy,
+                    filterByRegion: filterState.filterByRegion,
+                    startDate: filterState.startDate,
+                    endDate: filterState.endDate,
+                  ),
+                );
+              }
+
+              return SmartRefresher(
+                enablePullDown: true,
+                enablePullUp: ballotsState.hasNext,
+                header: ClassicHeader(),
+                controller: _refreshController,
+                onRefresh: getBallots,
+                onLoading: () {
+                  getBallots(previousBallots: ballots);
+                },
+                footer: ClassicFooter(),
+                child: ListView.builder(
+                  padding: EdgeInsets.all(15),
+                  itemBuilder: (BuildContext context, int index) {
+                    Ballot ballot = ballots[index];
+                    return Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      child: BallotTile(
+                        key: ValueKey(ballot.id),
+                        ballot: ballot,
+                        isDependency: false,
+                      ),
+                    );
+                  },
+                  itemCount: ballots.length,
+                ),
+              );
+            },
+          );
         },
       ),
     );

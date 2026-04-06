@@ -28,6 +28,7 @@ class FollowingPostsBloc
     on<_Received>((event, emit) {
       _onReceived(event, emit);
     });
+    on<_Update>((event, emit) => _onUpdate(event, emit));
   }
 
   Future _onGet(_Get event, Emitter<FollowingPostsState> emit) async {
@@ -59,6 +60,12 @@ class FollowingPostsBloc
     } else {
       emit(state.copyWith(status: FollowingPostsStatus.failure));
     }
+  }
+
+  void _onUpdate(_Update event, Emitter<FollowingPostsState> emit) {
+    emit(
+      state.copyWith(posts: event.posts, status: FollowingPostsStatus.success),
+    );
   }
 
   final WebSocketService webSocketService;

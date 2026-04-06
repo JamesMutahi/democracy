@@ -55,12 +55,15 @@ extension SurveysEventPatterns on SurveysEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Add value)?  add,TResult Function( _Update value)?  update,TResult Function( _Remove value)?  remove,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
-return received(_that);case _:
+return received(_that);case _Add() when add != null:
+return add(_that);case _Update() when update != null:
+return update(_that);case _Remove() when remove != null:
+return remove(_that);case _:
   return orElse();
 
 }
@@ -78,12 +81,15 @@ return received(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Add value)  add,required TResult Function( _Update value)  update,required TResult Function( _Remove value)  remove,}){
 final _that = this;
 switch (_that) {
 case _Get():
 return get(_that);case _Received():
-return received(_that);}
+return received(_that);case _Add():
+return add(_that);case _Update():
+return update(_that);case _Remove():
+return remove(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -97,12 +103,15 @@ return received(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Add value)?  add,TResult? Function( _Update value)?  update,TResult? Function( _Remove value)?  remove,}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
-return received(_that);case _:
+return received(_that);case _Add() when add != null:
+return add(_that);case _Update() when update != null:
+return update(_that);case _Remove() when remove != null:
+return remove(_that);case _:
   return null;
 
 }
@@ -119,11 +128,14 @@ return received(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  List<Survey>? previousSurveys,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  List<Survey>? previousSurveys,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Survey survey)?  add,TResult Function( Survey survey)?  update,TResult Function( int surveyId)?  remove,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.searchTerm,_that.previousSurveys,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
-return received(_that.payload);case _:
+return received(_that.payload);case _Add() when add != null:
+return add(_that.survey);case _Update() when update != null:
+return update(_that.survey);case _Remove() when remove != null:
+return remove(_that.surveyId);case _:
   return orElse();
 
 }
@@ -141,11 +153,14 @@ return received(_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  List<Survey>? previousSurveys,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  List<Survey>? previousSurveys,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Survey survey)  add,required TResult Function( Survey survey)  update,required TResult Function( int surveyId)  remove,}) {final _that = this;
 switch (_that) {
 case _Get():
 return get(_that.searchTerm,_that.previousSurveys,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received():
-return received(_that.payload);}
+return received(_that.payload);case _Add():
+return add(_that.survey);case _Update():
+return update(_that.survey);case _Remove():
+return remove(_that.surveyId);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -159,11 +174,14 @@ return received(_that.payload);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  List<Survey>? previousSurveys,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  List<Survey>? previousSurveys,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Survey survey)?  add,TResult? Function( Survey survey)?  update,TResult? Function( int surveyId)?  remove,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.searchTerm,_that.previousSurveys,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
-return received(_that.payload);case _:
+return received(_that.payload);case _Add() when add != null:
+return add(_that.survey);case _Update() when update != null:
+return update(_that.survey);case _Remove() when remove != null:
+return remove(_that.surveyId);case _:
   return null;
 
 }
@@ -323,6 +341,222 @@ class __$ReceivedCopyWithImpl<$Res>
   return _then(_Received(
 payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _Add implements SurveysEvent {
+  const _Add({required this.survey});
+  
+
+ final  Survey survey;
+
+/// Create a copy of SurveysEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AddCopyWith<_Add> get copyWith => __$AddCopyWithImpl<_Add>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Add&&(identical(other.survey, survey) || other.survey == survey));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,survey);
+
+@override
+String toString() {
+  return 'SurveysEvent.add(survey: $survey)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AddCopyWith<$Res> implements $SurveysEventCopyWith<$Res> {
+  factory _$AddCopyWith(_Add value, $Res Function(_Add) _then) = __$AddCopyWithImpl;
+@useResult
+$Res call({
+ Survey survey
+});
+
+
+$SurveyCopyWith<$Res> get survey;
+
+}
+/// @nodoc
+class __$AddCopyWithImpl<$Res>
+    implements _$AddCopyWith<$Res> {
+  __$AddCopyWithImpl(this._self, this._then);
+
+  final _Add _self;
+  final $Res Function(_Add) _then;
+
+/// Create a copy of SurveysEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? survey = null,}) {
+  return _then(_Add(
+survey: null == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
+as Survey,
+  ));
+}
+
+/// Create a copy of SurveysEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SurveyCopyWith<$Res> get survey {
+  
+  return $SurveyCopyWith<$Res>(_self.survey, (value) {
+    return _then(_self.copyWith(survey: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _Update implements SurveysEvent {
+  const _Update({required this.survey});
+  
+
+ final  Survey survey;
+
+/// Create a copy of SurveysEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$UpdateCopyWith<_Update> get copyWith => __$UpdateCopyWithImpl<_Update>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Update&&(identical(other.survey, survey) || other.survey == survey));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,survey);
+
+@override
+String toString() {
+  return 'SurveysEvent.update(survey: $survey)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$UpdateCopyWith<$Res> implements $SurveysEventCopyWith<$Res> {
+  factory _$UpdateCopyWith(_Update value, $Res Function(_Update) _then) = __$UpdateCopyWithImpl;
+@useResult
+$Res call({
+ Survey survey
+});
+
+
+$SurveyCopyWith<$Res> get survey;
+
+}
+/// @nodoc
+class __$UpdateCopyWithImpl<$Res>
+    implements _$UpdateCopyWith<$Res> {
+  __$UpdateCopyWithImpl(this._self, this._then);
+
+  final _Update _self;
+  final $Res Function(_Update) _then;
+
+/// Create a copy of SurveysEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? survey = null,}) {
+  return _then(_Update(
+survey: null == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
+as Survey,
+  ));
+}
+
+/// Create a copy of SurveysEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SurveyCopyWith<$Res> get survey {
+  
+  return $SurveyCopyWith<$Res>(_self.survey, (value) {
+    return _then(_self.copyWith(survey: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _Remove implements SurveysEvent {
+  const _Remove({required this.surveyId});
+  
+
+ final  int surveyId;
+
+/// Create a copy of SurveysEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$RemoveCopyWith<_Remove> get copyWith => __$RemoveCopyWithImpl<_Remove>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Remove&&(identical(other.surveyId, surveyId) || other.surveyId == surveyId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,surveyId);
+
+@override
+String toString() {
+  return 'SurveysEvent.remove(surveyId: $surveyId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$RemoveCopyWith<$Res> implements $SurveysEventCopyWith<$Res> {
+  factory _$RemoveCopyWith(_Remove value, $Res Function(_Remove) _then) = __$RemoveCopyWithImpl;
+@useResult
+$Res call({
+ int surveyId
+});
+
+
+
+
+}
+/// @nodoc
+class __$RemoveCopyWithImpl<$Res>
+    implements _$RemoveCopyWith<$Res> {
+  __$RemoveCopyWithImpl(this._self, this._then);
+
+  final _Remove _self;
+  final $Res Function(_Remove) _then;
+
+/// Create a copy of SurveysEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? surveyId = null,}) {
+  return _then(_Remove(
+surveyId: null == surveyId ? _self.surveyId : surveyId // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

@@ -55,13 +55,15 @@ extension MeetingsEventPatterns on MeetingsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Resubscribe value)?  resubscribe,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Add value)?  add,TResult Function( _Update value)?  update,TResult Function( _Remove value)?  remove,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
-return received(_that);case _Resubscribe() when resubscribe != null:
-return resubscribe(_that);case _:
+return received(_that);case _Add() when add != null:
+return add(_that);case _Update() when update != null:
+return update(_that);case _Remove() when remove != null:
+return remove(_that);case _:
   return orElse();
 
 }
@@ -79,13 +81,15 @@ return resubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Resubscribe value)  resubscribe,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Add value)  add,required TResult Function( _Update value)  update,required TResult Function( _Remove value)  remove,}){
 final _that = this;
 switch (_that) {
 case _Get():
 return get(_that);case _Received():
-return received(_that);case _Resubscribe():
-return resubscribe(_that);}
+return received(_that);case _Add():
+return add(_that);case _Update():
+return update(_that);case _Remove():
+return remove(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -99,13 +103,15 @@ return resubscribe(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Resubscribe value)?  resubscribe,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Add value)?  add,TResult? Function( _Update value)?  update,TResult? Function( _Remove value)?  remove,}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
-return received(_that);case _Resubscribe() when resubscribe != null:
-return resubscribe(_that);case _:
+return received(_that);case _Add() when add != null:
+return add(_that);case _Update() when update != null:
+return update(_that);case _Remove() when remove != null:
+return remove(_that);case _:
   return null;
 
 }
@@ -122,12 +128,14 @@ return resubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  List<Meeting>? previousMeetings,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( List<Meeting> meetings)?  resubscribe,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  List<Meeting>? previousMeetings,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Meeting meeting)?  add,TResult Function( Meeting meeting)?  update,TResult Function( int meetingId)?  remove,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.searchTerm,_that.previousMeetings,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
-return received(_that.payload);case _Resubscribe() when resubscribe != null:
-return resubscribe(_that.meetings);case _:
+return received(_that.payload);case _Add() when add != null:
+return add(_that.meeting);case _Update() when update != null:
+return update(_that.meeting);case _Remove() when remove != null:
+return remove(_that.meetingId);case _:
   return orElse();
 
 }
@@ -145,12 +153,14 @@ return resubscribe(_that.meetings);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  List<Meeting>? previousMeetings,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( List<Meeting> meetings)  resubscribe,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  List<Meeting>? previousMeetings,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Meeting meeting)  add,required TResult Function( Meeting meeting)  update,required TResult Function( int meetingId)  remove,}) {final _that = this;
 switch (_that) {
 case _Get():
 return get(_that.searchTerm,_that.previousMeetings,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received():
-return received(_that.payload);case _Resubscribe():
-return resubscribe(_that.meetings);}
+return received(_that.payload);case _Add():
+return add(_that.meeting);case _Update():
+return update(_that.meeting);case _Remove():
+return remove(_that.meetingId);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -164,12 +174,14 @@ return resubscribe(_that.meetings);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  List<Meeting>? previousMeetings,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( List<Meeting> meetings)?  resubscribe,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  List<Meeting>? previousMeetings,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Meeting meeting)?  add,TResult? Function( Meeting meeting)?  update,TResult? Function( int meetingId)?  remove,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.searchTerm,_that.previousMeetings,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
-return received(_that.payload);case _Resubscribe() when resubscribe != null:
-return resubscribe(_that.meetings);case _:
+return received(_that.payload);case _Add() when add != null:
+return add(_that.meeting);case _Update() when update != null:
+return update(_that.meeting);case _Remove() when remove != null:
+return remove(_that.meetingId);case _:
   return null;
 
 }
@@ -338,49 +350,193 @@ as Map<String, dynamic>,
 /// @nodoc
 
 
-class _Resubscribe implements MeetingsEvent {
-  const _Resubscribe({required final  List<Meeting> meetings}): _meetings = meetings;
+class _Add implements MeetingsEvent {
+  const _Add({required this.meeting});
   
 
- final  List<Meeting> _meetings;
- List<Meeting> get meetings {
-  if (_meetings is EqualUnmodifiableListView) return _meetings;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_meetings);
-}
-
+ final  Meeting meeting;
 
 /// Create a copy of MeetingsEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$ResubscribeCopyWith<_Resubscribe> get copyWith => __$ResubscribeCopyWithImpl<_Resubscribe>(this, _$identity);
+_$AddCopyWith<_Add> get copyWith => __$AddCopyWithImpl<_Add>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Resubscribe&&const DeepCollectionEquality().equals(other._meetings, _meetings));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Add&&(identical(other.meeting, meeting) || other.meeting == meeting));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_meetings));
+int get hashCode => Object.hash(runtimeType,meeting);
 
 @override
 String toString() {
-  return 'MeetingsEvent.resubscribe(meetings: $meetings)';
+  return 'MeetingsEvent.add(meeting: $meeting)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$ResubscribeCopyWith<$Res> implements $MeetingsEventCopyWith<$Res> {
-  factory _$ResubscribeCopyWith(_Resubscribe value, $Res Function(_Resubscribe) _then) = __$ResubscribeCopyWithImpl;
+abstract mixin class _$AddCopyWith<$Res> implements $MeetingsEventCopyWith<$Res> {
+  factory _$AddCopyWith(_Add value, $Res Function(_Add) _then) = __$AddCopyWithImpl;
 @useResult
 $Res call({
- List<Meeting> meetings
+ Meeting meeting
+});
+
+
+$MeetingCopyWith<$Res> get meeting;
+
+}
+/// @nodoc
+class __$AddCopyWithImpl<$Res>
+    implements _$AddCopyWith<$Res> {
+  __$AddCopyWithImpl(this._self, this._then);
+
+  final _Add _self;
+  final $Res Function(_Add) _then;
+
+/// Create a copy of MeetingsEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? meeting = null,}) {
+  return _then(_Add(
+meeting: null == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
+as Meeting,
+  ));
+}
+
+/// Create a copy of MeetingsEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MeetingCopyWith<$Res> get meeting {
+  
+  return $MeetingCopyWith<$Res>(_self.meeting, (value) {
+    return _then(_self.copyWith(meeting: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _Update implements MeetingsEvent {
+  const _Update({required this.meeting});
+  
+
+ final  Meeting meeting;
+
+/// Create a copy of MeetingsEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$UpdateCopyWith<_Update> get copyWith => __$UpdateCopyWithImpl<_Update>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Update&&(identical(other.meeting, meeting) || other.meeting == meeting));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,meeting);
+
+@override
+String toString() {
+  return 'MeetingsEvent.update(meeting: $meeting)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$UpdateCopyWith<$Res> implements $MeetingsEventCopyWith<$Res> {
+  factory _$UpdateCopyWith(_Update value, $Res Function(_Update) _then) = __$UpdateCopyWithImpl;
+@useResult
+$Res call({
+ Meeting meeting
+});
+
+
+$MeetingCopyWith<$Res> get meeting;
+
+}
+/// @nodoc
+class __$UpdateCopyWithImpl<$Res>
+    implements _$UpdateCopyWith<$Res> {
+  __$UpdateCopyWithImpl(this._self, this._then);
+
+  final _Update _self;
+  final $Res Function(_Update) _then;
+
+/// Create a copy of MeetingsEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? meeting = null,}) {
+  return _then(_Update(
+meeting: null == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
+as Meeting,
+  ));
+}
+
+/// Create a copy of MeetingsEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MeetingCopyWith<$Res> get meeting {
+  
+  return $MeetingCopyWith<$Res>(_self.meeting, (value) {
+    return _then(_self.copyWith(meeting: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _Remove implements MeetingsEvent {
+  const _Remove({required this.meetingId});
+  
+
+ final  int meetingId;
+
+/// Create a copy of MeetingsEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$RemoveCopyWith<_Remove> get copyWith => __$RemoveCopyWithImpl<_Remove>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Remove&&(identical(other.meetingId, meetingId) || other.meetingId == meetingId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,meetingId);
+
+@override
+String toString() {
+  return 'MeetingsEvent.remove(meetingId: $meetingId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$RemoveCopyWith<$Res> implements $MeetingsEventCopyWith<$Res> {
+  factory _$RemoveCopyWith(_Remove value, $Res Function(_Remove) _then) = __$RemoveCopyWithImpl;
+@useResult
+$Res call({
+ int meetingId
 });
 
 
@@ -388,19 +544,19 @@ $Res call({
 
 }
 /// @nodoc
-class __$ResubscribeCopyWithImpl<$Res>
-    implements _$ResubscribeCopyWith<$Res> {
-  __$ResubscribeCopyWithImpl(this._self, this._then);
+class __$RemoveCopyWithImpl<$Res>
+    implements _$RemoveCopyWith<$Res> {
+  __$RemoveCopyWithImpl(this._self, this._then);
 
-  final _Resubscribe _self;
-  final $Res Function(_Resubscribe) _then;
+  final _Remove _self;
+  final $Res Function(_Remove) _then;
 
 /// Create a copy of MeetingsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? meetings = null,}) {
-  return _then(_Resubscribe(
-meetings: null == meetings ? _self._meetings : meetings // ignore: cast_nullable_to_non_nullable
-as List<Meeting>,
+@pragma('vm:prefer-inline') $Res call({Object? meetingId = null,}) {
+  return _then(_Remove(
+meetingId: null == meetingId ? _self.meetingId : meetingId // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

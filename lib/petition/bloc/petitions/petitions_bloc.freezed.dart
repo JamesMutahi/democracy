@@ -55,13 +55,15 @@ extension PetitionsEventPatterns on PetitionsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Resubscribe value)?  resubscribe,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Add value)?  add,TResult Function( _Update value)?  update,TResult Function( _Remove value)?  remove,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
-return received(_that);case _Resubscribe() when resubscribe != null:
-return resubscribe(_that);case _:
+return received(_that);case _Add() when add != null:
+return add(_that);case _Update() when update != null:
+return update(_that);case _Remove() when remove != null:
+return remove(_that);case _:
   return orElse();
 
 }
@@ -79,13 +81,15 @@ return resubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Resubscribe value)  resubscribe,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Add value)  add,required TResult Function( _Update value)  update,required TResult Function( _Remove value)  remove,}){
 final _that = this;
 switch (_that) {
 case _Get():
 return get(_that);case _Received():
-return received(_that);case _Resubscribe():
-return resubscribe(_that);}
+return received(_that);case _Add():
+return add(_that);case _Update():
+return update(_that);case _Remove():
+return remove(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -99,13 +103,15 @@ return resubscribe(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Resubscribe value)?  resubscribe,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Add value)?  add,TResult? Function( _Update value)?  update,TResult? Function( _Remove value)?  remove,}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
-return received(_that);case _Resubscribe() when resubscribe != null:
-return resubscribe(_that);case _:
+return received(_that);case _Add() when add != null:
+return add(_that);case _Update() when update != null:
+return update(_that);case _Remove() when remove != null:
+return remove(_that);case _:
   return null;
 
 }
@@ -122,12 +128,14 @@ return resubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  List<Petition>? previousPetitions,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( List<Petition> petitions)?  resubscribe,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  List<Petition>? previousPetitions,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Petition petition)?  add,TResult Function( Petition petition)?  update,TResult Function( int petitionId)?  remove,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.searchTerm,_that.previousPetitions,_that.isOpen,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
-return received(_that.payload);case _Resubscribe() when resubscribe != null:
-return resubscribe(_that.petitions);case _:
+return received(_that.payload);case _Add() when add != null:
+return add(_that.petition);case _Update() when update != null:
+return update(_that.petition);case _Remove() when remove != null:
+return remove(_that.petitionId);case _:
   return orElse();
 
 }
@@ -145,12 +153,14 @@ return resubscribe(_that.petitions);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  List<Petition>? previousPetitions,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( List<Petition> petitions)  resubscribe,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  List<Petition>? previousPetitions,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Petition petition)  add,required TResult Function( Petition petition)  update,required TResult Function( int petitionId)  remove,}) {final _that = this;
 switch (_that) {
 case _Get():
 return get(_that.searchTerm,_that.previousPetitions,_that.isOpen,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received():
-return received(_that.payload);case _Resubscribe():
-return resubscribe(_that.petitions);}
+return received(_that.payload);case _Add():
+return add(_that.petition);case _Update():
+return update(_that.petition);case _Remove():
+return remove(_that.petitionId);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -164,12 +174,14 @@ return resubscribe(_that.petitions);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  List<Petition>? previousPetitions,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( List<Petition> petitions)?  resubscribe,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  List<Petition>? previousPetitions,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Petition petition)?  add,TResult? Function( Petition petition)?  update,TResult? Function( int petitionId)?  remove,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.searchTerm,_that.previousPetitions,_that.isOpen,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
-return received(_that.payload);case _Resubscribe() when resubscribe != null:
-return resubscribe(_that.petitions);case _:
+return received(_that.payload);case _Add() when add != null:
+return add(_that.petition);case _Update() when update != null:
+return update(_that.petition);case _Remove() when remove != null:
+return remove(_that.petitionId);case _:
   return null;
 
 }
@@ -338,49 +350,193 @@ as Map<String, dynamic>,
 /// @nodoc
 
 
-class _Resubscribe implements PetitionsEvent {
-  const _Resubscribe({required final  List<Petition> petitions}): _petitions = petitions;
+class _Add implements PetitionsEvent {
+  const _Add({required this.petition});
   
 
- final  List<Petition> _petitions;
- List<Petition> get petitions {
-  if (_petitions is EqualUnmodifiableListView) return _petitions;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_petitions);
-}
-
+ final  Petition petition;
 
 /// Create a copy of PetitionsEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$ResubscribeCopyWith<_Resubscribe> get copyWith => __$ResubscribeCopyWithImpl<_Resubscribe>(this, _$identity);
+_$AddCopyWith<_Add> get copyWith => __$AddCopyWithImpl<_Add>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Resubscribe&&const DeepCollectionEquality().equals(other._petitions, _petitions));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Add&&(identical(other.petition, petition) || other.petition == petition));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_petitions));
+int get hashCode => Object.hash(runtimeType,petition);
 
 @override
 String toString() {
-  return 'PetitionsEvent.resubscribe(petitions: $petitions)';
+  return 'PetitionsEvent.add(petition: $petition)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$ResubscribeCopyWith<$Res> implements $PetitionsEventCopyWith<$Res> {
-  factory _$ResubscribeCopyWith(_Resubscribe value, $Res Function(_Resubscribe) _then) = __$ResubscribeCopyWithImpl;
+abstract mixin class _$AddCopyWith<$Res> implements $PetitionsEventCopyWith<$Res> {
+  factory _$AddCopyWith(_Add value, $Res Function(_Add) _then) = __$AddCopyWithImpl;
 @useResult
 $Res call({
- List<Petition> petitions
+ Petition petition
+});
+
+
+$PetitionCopyWith<$Res> get petition;
+
+}
+/// @nodoc
+class __$AddCopyWithImpl<$Res>
+    implements _$AddCopyWith<$Res> {
+  __$AddCopyWithImpl(this._self, this._then);
+
+  final _Add _self;
+  final $Res Function(_Add) _then;
+
+/// Create a copy of PetitionsEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? petition = null,}) {
+  return _then(_Add(
+petition: null == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
+as Petition,
+  ));
+}
+
+/// Create a copy of PetitionsEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PetitionCopyWith<$Res> get petition {
+  
+  return $PetitionCopyWith<$Res>(_self.petition, (value) {
+    return _then(_self.copyWith(petition: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _Update implements PetitionsEvent {
+  const _Update({required this.petition});
+  
+
+ final  Petition petition;
+
+/// Create a copy of PetitionsEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$UpdateCopyWith<_Update> get copyWith => __$UpdateCopyWithImpl<_Update>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Update&&(identical(other.petition, petition) || other.petition == petition));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,petition);
+
+@override
+String toString() {
+  return 'PetitionsEvent.update(petition: $petition)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$UpdateCopyWith<$Res> implements $PetitionsEventCopyWith<$Res> {
+  factory _$UpdateCopyWith(_Update value, $Res Function(_Update) _then) = __$UpdateCopyWithImpl;
+@useResult
+$Res call({
+ Petition petition
+});
+
+
+$PetitionCopyWith<$Res> get petition;
+
+}
+/// @nodoc
+class __$UpdateCopyWithImpl<$Res>
+    implements _$UpdateCopyWith<$Res> {
+  __$UpdateCopyWithImpl(this._self, this._then);
+
+  final _Update _self;
+  final $Res Function(_Update) _then;
+
+/// Create a copy of PetitionsEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? petition = null,}) {
+  return _then(_Update(
+petition: null == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
+as Petition,
+  ));
+}
+
+/// Create a copy of PetitionsEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PetitionCopyWith<$Res> get petition {
+  
+  return $PetitionCopyWith<$Res>(_self.petition, (value) {
+    return _then(_self.copyWith(petition: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _Remove implements PetitionsEvent {
+  const _Remove({required this.petitionId});
+  
+
+ final  int petitionId;
+
+/// Create a copy of PetitionsEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$RemoveCopyWith<_Remove> get copyWith => __$RemoveCopyWithImpl<_Remove>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Remove&&(identical(other.petitionId, petitionId) || other.petitionId == petitionId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,petitionId);
+
+@override
+String toString() {
+  return 'PetitionsEvent.remove(petitionId: $petitionId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$RemoveCopyWith<$Res> implements $PetitionsEventCopyWith<$Res> {
+  factory _$RemoveCopyWith(_Remove value, $Res Function(_Remove) _then) = __$RemoveCopyWithImpl;
+@useResult
+$Res call({
+ int petitionId
 });
 
 
@@ -388,19 +544,19 @@ $Res call({
 
 }
 /// @nodoc
-class __$ResubscribeCopyWithImpl<$Res>
-    implements _$ResubscribeCopyWith<$Res> {
-  __$ResubscribeCopyWithImpl(this._self, this._then);
+class __$RemoveCopyWithImpl<$Res>
+    implements _$RemoveCopyWith<$Res> {
+  __$RemoveCopyWithImpl(this._self, this._then);
 
-  final _Resubscribe _self;
-  final $Res Function(_Resubscribe) _then;
+  final _Remove _self;
+  final $Res Function(_Remove) _then;
 
 /// Create a copy of PetitionsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? petitions = null,}) {
-  return _then(_Resubscribe(
-petitions: null == petitions ? _self._petitions : petitions // ignore: cast_nullable_to_non_nullable
-as List<Petition>,
+@pragma('vm:prefer-inline') $Res call({Object? petitionId = null,}) {
+  return _then(_Remove(
+petitionId: null == petitionId ? _self.petitionId : petitionId // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
