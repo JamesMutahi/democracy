@@ -1,3 +1,4 @@
+import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/app/utils/more_pop_up.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/filters_modal.dart';
@@ -302,21 +303,40 @@ class _ResultsPageState extends State<_ResultsPage>
                   ),
                 ];
               },
-              body: TabBarView(
-                physics: NeverScrollableScrollPhysics(),
-                children: [
-                  _TopPostsTab(
-                    searchTerm: widget.searchTerm,
-                    startDate: startDate,
-                    endDate: endDate,
+              body: MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                    create: (context) => PostsBloc(
+                      webSocketService: context.read<WebSocketService>(),
+                    ),
                   ),
-                  _RecentPostsTab(
-                    searchTerm: widget.searchTerm,
-                    startDate: startDate,
-                    endDate: endDate,
+                  BlocProvider(
+                    create: (context) => RecentPostsBloc(
+                      webSocketService: context.read<WebSocketService>(),
+                    ),
                   ),
-                  _ProfilesTab(searchTerm: widget.searchTerm),
+                  BlocProvider(
+                    create: (context) => UsersBloc(
+                      webSocketService: context.read<WebSocketService>(),
+                    ),
+                  ),
                 ],
+                child: TabBarView(
+                  physics: NeverScrollableScrollPhysics(),
+                  children: [
+                    _TopPostsTab(
+                      searchTerm: widget.searchTerm,
+                      startDate: startDate,
+                      endDate: endDate,
+                    ),
+                    _RecentPostsTab(
+                      searchTerm: widget.searchTerm,
+                      startDate: startDate,
+                      endDate: endDate,
+                    ),
+                    _ProfilesTab(searchTerm: widget.searchTerm),
+                  ],
+                ),
               ),
             ),
           ),
