@@ -1,9 +1,11 @@
 import 'package:democracy/app/utils/copy.dart';
 import 'package:democracy/app/utils/direct_message.dart';
 import 'package:democracy/ballot/models/ballot.dart';
+import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/meet/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
+import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -90,6 +92,7 @@ class ShareBottomSheet extends StatelessWidget {
     this.survey,
     this.petition,
     this.meeting,
+    this.section,
   });
 
   final Post? post;
@@ -97,6 +100,7 @@ class ShareBottomSheet extends StatelessWidget {
   final Survey? survey;
   final Petition? petition;
   final Meeting? meeting;
+  final Section? section;
 
   @override
   Widget build(BuildContext context) {
@@ -122,6 +126,10 @@ class ShareBottomSheet extends StatelessWidget {
       className = 'petition';
       objectId = petition!.id;
     }
+    if (section != null) {
+      className = 'section';
+      objectId = section!.id;
+    }
     return CustomBottomSheet(
       title: 'Share $className',
       children: [
@@ -143,29 +151,62 @@ class ShareBottomSheet extends StatelessWidget {
                 survey: survey,
                 petition: petition,
                 meeting: meeting,
+                section: section,
               ),
             );
           },
         ),
         SizedBox(height: 5),
-        InkWell(
-          highlightColor: Colors.transparent,
-          splashColor: Colors.transparent,
-          onTap: () async {
-            Navigator.pop(context);
-            copyLink(className, objectId);
-          },
-          child: Column(
-            children: [
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Icon(Icons.link_rounded),
-                ),
+        Row(
+          children: [
+            InkWell(
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              onTap: () async {
+                Navigator.pop(context);
+                copyLink(className, objectId);
+              },
+              child: Column(
+                children: [
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Icon(Icons.link_rounded),
+                    ),
+                  ),
+                  Text('Copy link'),
+                ],
               ),
-              Text('Copy link'),
-            ],
-          ),
+            ),
+            SizedBox(width: 20),
+            InkWell(
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              onTap: () async {
+                Navigator.pop(context);
+                navigateToPostCreate(
+                  context: context,
+                  repostOf: post,
+                  ballot: ballot,
+                  survey: survey,
+                  petition: petition,
+                  meeting: meeting,
+                  section: section,
+                );
+              },
+              child: Column(
+                children: [
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Icon(Icons.post_add),
+                    ),
+                  ),
+                  Text('Post'),
+                ],
+              ),
+            ),
+          ],
         ),
       ],
     );

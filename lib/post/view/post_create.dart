@@ -8,6 +8,8 @@ import 'package:democracy/app/utils/map_widget.dart';
 import 'package:democracy/app/utils/media_tools.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
+import 'package:democracy/constitution/models/section.dart';
+import 'package:democracy/constitution/view/section_tile.dart';
 import 'package:democracy/meet/models/meeting.dart';
 import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/petition/models/petition.dart';
@@ -36,6 +38,7 @@ class PostCreatePage extends StatefulWidget {
     this.survey,
     this.petition,
     this.meeting,
+    this.section,
   });
 
   final Post? replyTo;
@@ -44,6 +47,7 @@ class PostCreatePage extends StatefulWidget {
   final Survey? survey;
   final Petition? petition;
   final Meeting? meeting;
+  final Section? section;
 
   @override
   State<PostCreatePage> createState() => _PostCreatePageState();
@@ -86,6 +90,7 @@ class _PostCreatePageState extends State<PostCreatePage> {
         survey: widget.survey,
         petition: widget.petition,
         meeting: widget.meeting,
+        section: widget.section,
         tags: tags,
         imagePath1:
             _insertedImage?.path ??
@@ -338,6 +343,14 @@ class _PostCreatePageState extends State<PostCreatePage> {
                 DependencyContainer(
                   child: MeetingTile(
                     meeting: widget.meeting!,
+                    isDependency: true,
+                  ),
+                ),
+
+              if (widget.section != null)
+                DependencyContainer(
+                  child: SectionTile(
+                    section: widget.section!,
                     isDependency: true,
                   ),
                 ),

@@ -36,6 +36,7 @@ sealed class ChatDetailEvent with _$ChatDetailEvent {
     Survey? survey,
     Petition? petition,
     Meeting? meeting,
+    Section? section,
     String? imagePath1,
     String? imagePath2,
     String? imagePath3,

@@ -1,12 +1,11 @@
 import 'package:democracy/app/utils/bottom_loader.dart';
-import 'package:democracy/app/utils/copy.dart';
+import 'package:democracy/app/utils/custom_bottom_sheet.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/constitution/bloc/constitution/constitution_bloc.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 class Constitution extends StatefulWidget {
   const Constitution({super.key, this.centeredSection});
@@ -51,12 +50,19 @@ class _ConstitutionState extends State<Constitution> {
             curve: Curves.easeInOut,
             child: IconButton(
               onPressed: () {
-                copyLink('section', _selectedSection!.id);
-                setState(() {
-                  _selectedSection = null;
+                showModalBottomSheet<void>(
+                  context: context,
+                  shape: const BeveledRectangleBorder(),
+                  builder: (BuildContext context) {
+                    return ShareBottomSheet(section: _selectedSection);
+                  },
+                ).then((_) {
+                  setState(() {
+                    _selectedSection = null;
+                  });
                 });
               },
-              icon: Icon(Symbols.content_copy),
+              icon: Icon(Icons.share_outlined),
             ),
           ),
         ],

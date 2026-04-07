@@ -18,8 +18,10 @@ class ExtrasRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Wrap(
+      alignment: WrapAlignment.spaceEvenly,
+      spacing: 10.0,
+      runSpacing: 5.0,
       children: <Widget>[
         _ExtraCard(
           onTap: onCameraTap,

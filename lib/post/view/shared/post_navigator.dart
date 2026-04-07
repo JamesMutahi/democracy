@@ -1,5 +1,6 @@
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/ballot/models/ballot.dart';
+import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/meet/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/bloc/community_notes/community_notes_bloc.dart';
@@ -99,6 +100,7 @@ void navigateToPostCreate({
   Survey? survey,
   Petition? petition,
   Meeting? meeting,
+  Section? section,
 }) {
   Navigator.push(
     context,
@@ -121,6 +123,7 @@ void navigateToPostCreate({
           survey: survey,
           petition: petition,
           meeting: meeting,
+          section: section,
         ),
       ),
     ),

@@ -4,6 +4,7 @@ import 'package:democracy/app/utils/bottom_text_form_field.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
+import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/meet/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
@@ -25,6 +26,7 @@ class DirectMessage extends StatefulWidget {
     required this.survey,
     required this.petition,
     this.meeting,
+    this.section,
   });
 
   final Post? post;
@@ -32,6 +34,7 @@ class DirectMessage extends StatefulWidget {
   final Survey? survey;
   final Petition? petition;
   final Meeting? meeting;
+  final Section? section;
 
   @override
   State<DirectMessage> createState() => _DirectMessageState();
@@ -281,6 +284,7 @@ class _DirectMessageState extends State<DirectMessage> {
                       survey: widget.survey,
                       petition: widget.petition,
                       meeting: widget.meeting,
+                      section: widget.section,
                       imagePath1: _insertedContent != null
                           ? _insertedContent!.path
                           : _selectedImages.isNotEmpty
