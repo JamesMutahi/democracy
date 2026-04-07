@@ -6,7 +6,7 @@ import 'package:democracy/meet/bloc/meeting_detail/meeting_detail_bloc.dart';
 import 'package:democracy/meet/models/meeting.dart';
 import 'package:democracy/meet/view/meeting_detail.dart';
 import 'package:democracy/post/view/shared/post_navigator.dart';
-import 'package:democracy/user/view/profile.dart';
+import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
@@ -232,12 +232,7 @@ class MeetingBottomSheet extends StatelessWidget {
           SizedBox(height: 5),
           GestureDetector(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProfilePage(user: meeting.host),
-                ),
-              );
+              navigateToProfilePage(context: context, user: meeting.host);
             },
             child: _HostInfo(meeting: meeting),
           ),

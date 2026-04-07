@@ -1,6 +1,6 @@
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:democracy/post/view/community_note_detail.dart';
+import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/post/view/widgets/post_body.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
@@ -41,12 +41,9 @@ class CommunityNoteTile extends StatelessWidget {
       onTap: !navigateToDetailPage
           ? null
           : () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      CommunityNoteDetail(communityNote: communityNote),
-                ),
+              navigateToCommunityNoteDetail(
+                context: context,
+                post: communityNote,
               );
             },
       child: VisibilityDetector(

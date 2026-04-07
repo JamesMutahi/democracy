@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/user/view/profile.dart';
+import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:flutter/material.dart';
 
 class ProfileImage extends StatelessWidget {
@@ -19,12 +19,7 @@ class ProfileImage extends StatelessWidget {
       borderRadius: BorderRadius.all(Radius.circular(20)),
       onTap:
           navigateToProfile
-              ? () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProfilePage(user: user),
-                ),
-              )
+              ? () => navigateToProfilePage(context: context, user: user)
               : null,
       child: CircleAvatar(
         radius: 20,

@@ -3,12 +3,12 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/utils/dialogs.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
-import 'package:democracy/chat/view/chat_detail.dart';
+import 'package:democracy/chat/view/utils/chat_navigator.dart';
 import 'package:democracy/post/view/draft_posts.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/edit_profile.dart';
-import 'package:democracy/user/view/widgets/following.dart';
+import 'package:democracy/user/view/utils/following_navigator.dart';
 import 'package:democracy/user/view/widgets/profile_buttons.dart';
 import 'package:democracy/user/view/widgets/tabs.dart';
 import 'package:flutter/material.dart';
@@ -131,14 +131,7 @@ class _ProfilePageState extends State<ProfilePage> {
             listener: (context, state) {
               if (state is ChatCreated) {
                 if (state.userId == user.id) {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => ChatDetail(
-                        key: ValueKey(state.chat.id),
-                        chat: state.chat,
-                      ),
-                    ),
-                  );
+                  navigateToChatDetail(context: context, chat: state.chat);
                 }
               }
             },
@@ -573,10 +566,7 @@ class _UserDetails extends StatelessWidget {
           SizedBox(height: 5),
           GestureDetector(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Following(user: user)),
-              );
+              navigateToFollowingPage(context: context, user: user);
             },
             child: Row(
               children: [

@@ -1,6 +1,6 @@
 import 'package:democracy/petition/bloc/supporters/supporters_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
-import 'package:democracy/user/view/profile.dart';
+import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -67,12 +67,7 @@ class _SupportersState extends State<Supporters> {
               );
             },
             onUserTap: (user) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProfilePage(user: user),
-                ),
-              );
+              navigateToProfilePage(context: context, user: user);
             },
             onRefresh: () {
               context.read<SupportersBloc>().add(

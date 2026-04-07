@@ -1,4 +1,3 @@
-import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/post/bloc/community_notes/community_notes_bloc.dart';
@@ -41,113 +40,108 @@ class _CommunityNotesState extends State<CommunityNotes> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => CommunityNotesBloc(
-        webSocketService: context.read<WebSocketService>(),
-      ),
-      child: Scaffold(
-        body: SafeArea(
-          child: NestedScrollView(
-            headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-              return [
-                SliverAppBar(
-                  floating: true,
-                  snap: true,
-                  forceElevated: true,
-                  title: Row(
-                    children: [
-                      Icon(Icons.people_rounded, color: Colors.blueAccent),
-                      SizedBox(width: 10),
-                      Text('Community notes'),
-                    ],
-                  ),
-                  bottom: _buildSearchBar(),
+    return Scaffold(
+      body: SafeArea(
+        child: NestedScrollView(
+          headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+            return [
+              SliverAppBar(
+                floating: true,
+                snap: true,
+                forceElevated: true,
+                title: Row(
+                  children: [
+                    Icon(Icons.people_rounded, color: Colors.blueAccent),
+                    SizedBox(width: 10),
+                    Text('Community notes'),
+                  ],
                 ),
-              ];
+                bottom: _buildSearchBar(),
+              ),
+            ];
+          },
+          body: BlocBuilder<CommunityNotesBloc, CommunityNotesState>(
+            buildWhen: (previous, current) {
+              return widget.post.id == current.postId;
             },
-            body: BlocBuilder<CommunityNotesBloc, CommunityNotesState>(
-              buildWhen: (previous, current) {
-                return widget.post.id == current.postId;
-              },
-              builder: (context, state) {
-                final posts = state.communityNotes.toList();
+            builder: (context, state) {
+              final posts = state.communityNotes.toList();
 
-                if (state.status == CommunityNotesStatus.initial) {
-                  return BottomLoader();
+              if (state.status == CommunityNotesStatus.initial) {
+                return BottomLoader();
+              }
+
+              if (state.status == CommunityNotesStatus.success) {
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshCompleted();
                 }
-
-                if (state.status == CommunityNotesStatus.success) {
-                  if (_refreshController.headerStatus ==
-                      RefreshStatus.refreshing) {
-                    _refreshController.refreshCompleted();
-                  }
-                  if (_refreshController.footerStatus == LoadStatus.loading) {
-                    _refreshController.loadComplete();
-                  }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadComplete();
                 }
+              }
 
-                if (state.status == CommunityNotesStatus.failure) {
-                  if (_refreshController.headerStatus ==
-                      RefreshStatus.refreshing) {
-                    _refreshController.refreshFailed();
-                  }
-                  if (_refreshController.footerStatus == LoadStatus.loading) {
-                    _refreshController.loadFailed();
-                  }
+              if (state.status == CommunityNotesStatus.failure) {
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshFailed();
                 }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadFailed();
+                }
+              }
 
-                return PostListView(
-                  posts: posts,
-                  loading: state.status == CommunityNotesStatus.initial,
-                  failure: state.communityNotes.isNotEmpty
-                      ? false
-                      : state.status == CommunityNotesStatus.failure,
-                  onPostsUpdated: (posts) {
-                    context.read<CommunityNotesBloc>().add(
-                      CommunityNotesEvent.update(posts: posts),
-                    );
-                  },
-                  refreshController: _refreshController,
-                  enablePullDown: true,
-                  enablePullUp: state.hasNext,
-                  checkVisibility: true,
-                  onRefresh: () {
-                    context.read<CommunityNotesBloc>().add(
-                      CommunityNotesEvent.get(
-                        post: widget.post,
-                        searchTerm: _searchController.text,
-                      ),
-                    );
-                  },
-                  onLoading: () {
-                    context.read<CommunityNotesBloc>().add(
-                      CommunityNotesEvent.get(
-                        post: widget.post,
-                        previousPosts: posts,
-                      ),
-                    );
-                  },
-                  onFailure: () {
-                    context.read<CommunityNotesBloc>().add(
-                      CommunityNotesEvent.get(post: widget.post),
-                    );
-                  },
-                );
-              },
-            ),
+              return PostListView(
+                posts: posts,
+                loading: state.status == CommunityNotesStatus.initial,
+                failure: state.communityNotes.isNotEmpty
+                    ? false
+                    : state.status == CommunityNotesStatus.failure,
+                onPostsUpdated: (posts) {
+                  context.read<CommunityNotesBloc>().add(
+                    CommunityNotesEvent.update(posts: posts),
+                  );
+                },
+                refreshController: _refreshController,
+                enablePullDown: true,
+                enablePullUp: state.hasNext,
+                checkVisibility: true,
+                onRefresh: () {
+                  context.read<CommunityNotesBloc>().add(
+                    CommunityNotesEvent.get(
+                      post: widget.post,
+                      searchTerm: _searchController.text,
+                    ),
+                  );
+                },
+                onLoading: () {
+                  context.read<CommunityNotesBloc>().add(
+                    CommunityNotesEvent.get(
+                      post: widget.post,
+                      previousPosts: posts,
+                    ),
+                  );
+                },
+                onFailure: () {
+                  context.read<CommunityNotesBloc>().add(
+                    CommunityNotesEvent.get(post: widget.post),
+                  );
+                },
+              );
+            },
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CommunityNoteCreate(post: widget.post),
-              ),
-            );
-          },
-          child: Icon(Icons.create_outlined),
-        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CommunityNoteCreate(post: widget.post),
+            ),
+          );
+        },
+        child: Icon(Icons.create_outlined),
       ),
     );
   }

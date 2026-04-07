@@ -9,7 +9,7 @@ import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/user/view/profile.dart';
+import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -590,7 +590,7 @@ class _ProfilesTabState extends State<_ProfilesTab>
   @override
   void initState() {
     context.read<UsersBloc>().add(
-      UsersEvent.initialize(searchTerm: widget.searchTerm),
+      UsersEvent.get(searchTerm: widget.searchTerm),
     );
     super.initState();
   }
@@ -639,10 +639,7 @@ class _ProfilesTabState extends State<_ProfilesTab>
           enablePullUp: state.hasNext,
           showProfileButtons: true,
           onUserTap: (user) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ProfilePage(user: user)),
-            );
+            navigateToProfilePage(context: context, user: user);
           },
           onLoading: () {
             _getUsers(lastUser: users.last);

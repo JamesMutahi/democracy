@@ -140,7 +140,7 @@ class _ForYouTabState extends State<ForYouTab>
 
   @override
   void initState() {
-    context.read<ForYouBloc>().add(ForYouEvent.initialize());
+    context.read<ForYouBloc>().add(ForYouEvent.get());
     super.initState();
   }
 

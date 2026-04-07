@@ -22,10 +22,6 @@ class ForYouBloc extends Bloc<ForYouEvent, ForYouState> {
         add(_Received(payload: message['payload']));
       }
     });
-    on<_Initialize>((event, emit) {
-      emit(ForYouState());
-      add(_Get());
-    });
     on<_Get>((event, emit) => _onGet(event, emit));
     on<_Received>((event, emit) => _onReceived(event, emit));
     on<_Update>((event, emit) => _onUpdate(event, emit));

@@ -37,16 +37,12 @@ class Messages extends StatefulWidget {
 }
 
 class _MessagesState extends State<Messages> {
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
+  final RefreshController _refreshController = RefreshController();
 
   @override
   void initState() {
-    context.read<MessagesBloc>().add(
-      MessagesEvent.initialize(chat: widget.chat),
-    );
     super.initState();
+    context.read<MessagesBloc>().add(MessagesEvent.get(chat: widget.chat));
   }
 
   @override

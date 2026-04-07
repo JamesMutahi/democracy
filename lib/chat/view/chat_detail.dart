@@ -20,8 +20,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-class ChatDetail extends StatelessWidget {
-  const ChatDetail({super.key, required this.chat});
+class ChatDetailPage extends StatelessWidget {
+  const ChatDetailPage({super.key, required this.chat});
 
   final Chat chat;
 

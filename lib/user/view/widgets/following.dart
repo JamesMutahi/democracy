@@ -1,14 +1,14 @@
 import 'package:democracy/user/bloc/followers/followers_bloc.dart';
 import 'package:democracy/user/bloc/following/following_bloc.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/user/view/profile.dart';
+import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
-class Following extends StatelessWidget {
-  const Following({super.key, required this.user});
+class FollowingPage extends StatelessWidget {
+  const FollowingPage({super.key, required this.user});
 
   final User user;
 
@@ -107,10 +107,7 @@ class _FollowersTabState extends State<_FollowersTab> {
             );
           },
           onUserTap: (user) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ProfilePage(user: user)),
-            );
+            navigateToProfilePage(context: context, user: user);
           },
           onRefresh: () {
             context.read<FollowersBloc>().add(
@@ -195,10 +192,7 @@ class _FollowingTabState extends State<_FollowingTab> {
             );
           },
           onUserTap: (user) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ProfilePage(user: user)),
-            );
+            navigateToProfilePage(context: context, user: user);
           },
           onRefresh: () {
             context.read<FollowingBloc>().add(

@@ -1,5 +1,5 @@
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
-import 'package:democracy/chat/view/chat_detail.dart';
+import 'package:democracy/chat/view/utils/chat_navigator.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
@@ -30,12 +30,7 @@ class _CreateMessageState extends State<CreateMessage> {
       listener: (context, state) {
         if (state is ChatCreated) {
           Navigator.pop(context);
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) =>
-                  ChatDetail(key: ValueKey(state.chat.id), chat: state.chat),
-            ),
-          );
+          navigateToChatDetail(context: context, chat: state.chat);
         }
       },
       child: Scaffold(

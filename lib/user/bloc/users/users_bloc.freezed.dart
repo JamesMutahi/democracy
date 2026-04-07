@@ -55,11 +55,10 @@ extension UsersEventPatterns on UsersEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initialize value)?  initialize,TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Update value)?  update,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Update value)?  update,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _Initialize() when initialize != null:
-return initialize(_that);case _Get() when get != null:
+case _Get() when get != null:
 return get(_that);case _Received() when received != null:
 return received(_that);case _Update() when update != null:
 return update(_that);case _:
@@ -80,11 +79,10 @@ return update(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initialize value)  initialize,required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Update value)  update,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Update value)  update,}){
 final _that = this;
 switch (_that) {
-case _Initialize():
-return initialize(_that);case _Get():
+case _Get():
 return get(_that);case _Received():
 return received(_that);case _Update():
 return update(_that);}
@@ -101,11 +99,10 @@ return update(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initialize value)?  initialize,TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Update value)?  update,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Update value)?  update,}){
 final _that = this;
 switch (_that) {
-case _Initialize() when initialize != null:
-return initialize(_that);case _Get() when get != null:
+case _Get() when get != null:
 return get(_that);case _Received() when received != null:
 return received(_that);case _Update() when update != null:
 return update(_that);case _:
@@ -125,10 +122,9 @@ return update(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String searchTerm)?  initialize,TResult Function( String? searchTerm,  User? lastUser)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( List<User> users)?  update,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  User? lastUser)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( List<User> users)?  update,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _Initialize() when initialize != null:
-return initialize(_that.searchTerm);case _Get() when get != null:
+case _Get() when get != null:
 return get(_that.searchTerm,_that.lastUser);case _Received() when received != null:
 return received(_that.payload);case _Update() when update != null:
 return update(_that.users);case _:
@@ -149,10 +145,9 @@ return update(_that.users);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String searchTerm)  initialize,required TResult Function( String? searchTerm,  User? lastUser)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( List<User> users)  update,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  User? lastUser)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( List<User> users)  update,}) {final _that = this;
 switch (_that) {
-case _Initialize():
-return initialize(_that.searchTerm);case _Get():
+case _Get():
 return get(_that.searchTerm,_that.lastUser);case _Received():
 return received(_that.payload);case _Update():
 return update(_that.users);}
@@ -169,10 +164,9 @@ return update(_that.users);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String searchTerm)?  initialize,TResult? Function( String? searchTerm,  User? lastUser)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( List<User> users)?  update,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  User? lastUser)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( List<User> users)?  update,}) {final _that = this;
 switch (_that) {
-case _Initialize() when initialize != null:
-return initialize(_that.searchTerm);case _Get() when get != null:
+case _Get() when get != null:
 return get(_that.searchTerm,_that.lastUser);case _Received() when received != null:
 return received(_that.payload);case _Update() when update != null:
 return update(_that.users);case _:
@@ -180,72 +174,6 @@ return update(_that.users);case _:
 
 }
 }
-
-}
-
-/// @nodoc
-
-
-class _Initialize implements UsersEvent {
-  const _Initialize({required this.searchTerm});
-  
-
- final  String searchTerm;
-
-/// Create a copy of UsersEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$InitializeCopyWith<_Initialize> get copyWith => __$InitializeCopyWithImpl<_Initialize>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initialize&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,searchTerm);
-
-@override
-String toString() {
-  return 'UsersEvent.initialize(searchTerm: $searchTerm)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$InitializeCopyWith<$Res> implements $UsersEventCopyWith<$Res> {
-  factory _$InitializeCopyWith(_Initialize value, $Res Function(_Initialize) _then) = __$InitializeCopyWithImpl;
-@useResult
-$Res call({
- String searchTerm
-});
-
-
-
-
-}
-/// @nodoc
-class __$InitializeCopyWithImpl<$Res>
-    implements _$InitializeCopyWith<$Res> {
-  __$InitializeCopyWithImpl(this._self, this._then);
-
-  final _Initialize _self;
-  final $Res Function(_Initialize) _then;
-
-/// Create a copy of UsersEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? searchTerm = null,}) {
-  return _then(_Initialize(
-searchTerm: null == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
 
 }
 

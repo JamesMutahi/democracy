@@ -24,10 +24,6 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
         add(_Received(payload: message['payload']));
       }
     });
-    on<_Initialize>((event, emit) {
-      emit(MessagesState(chatId: event.chat.id));
-      add(_Get(chat: event.chat));
-    });
     on<_Get>((event, emit) {
       _onGet(event, emit);
     });

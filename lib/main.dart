@@ -14,47 +14,32 @@ import 'package:democracy/ballot/bloc/ballot_filter/ballot_filter_cubit.dart';
 import 'package:democracy/ballot/bloc/ballots/ballots_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/bloc/chat_filter/chat_filter_cubit.dart';
-import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
-import 'package:democracy/chat/bloc/messages/messages_bloc.dart';
 import 'package:democracy/constitution/bloc/constitution/constitution_bloc.dart';
 import 'package:democracy/constitution/bloc/section_detail/section_detail_bloc.dart';
 import 'package:democracy/constitution/bloc/sections/sections_bloc.dart';
 import 'package:democracy/geo/bloc/geo/geo_bloc.dart';
 import 'package:democracy/meet/bloc/meeting_detail/meeting_detail_bloc.dart';
 import 'package:democracy/meet/bloc/meeting_filter/meeting_filter_cubit.dart';
-import 'package:democracy/meet/bloc/meetings/meetings_bloc.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/notification/bloc/preferences/preferences_bloc.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
 import 'package:democracy/petition/bloc/petition_filter/petition_filter_cubit.dart';
-import 'package:democracy/petition/bloc/petitions/petitions_bloc.dart';
 import 'package:democracy/petition/bloc/supporters/supporters_bloc.dart';
-import 'package:democracy/petition/bloc/user_petitions/user_petitions_bloc.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_bloc.dart';
-import 'package:democracy/post/bloc/community_notes/community_notes_bloc.dart';
 import 'package:democracy/post/bloc/draft_posts/draft_posts_bloc.dart';
-import 'package:democracy/post/bloc/following_posts/following_posts_bloc.dart';
-import 'package:democracy/post/bloc/for_you/for_you_bloc.dart';
-import 'package:democracy/post/bloc/likes/likes_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/post_filter/post_filter_cubit.dart';
 import 'package:democracy/post/bloc/posts/posts_bloc.dart';
 import 'package:democracy/post/bloc/recent/recent_posts_bloc.dart';
-import 'package:democracy/post/bloc/user_community_notes/user_community_notes_bloc.dart';
-import 'package:democracy/post/bloc/user_posts/user_posts_bloc.dart';
-import 'package:democracy/post/bloc/user_replies/user_replies_bloc.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
 import 'package:democracy/survey/bloc/survey_filter/survey_filter_cubit.dart';
 import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/page/page_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
-import 'package:democracy/survey/bloc/surveys/surveys_bloc.dart';
 import 'package:democracy/user/bloc/blocked/blocked_bloc.dart';
-import 'package:democracy/user/bloc/followers/followers_bloc.dart';
-import 'package:democracy/user/bloc/following/following_bloc.dart';
 import 'package:democracy/user/bloc/muted/muted_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
@@ -137,10 +122,6 @@ void main() async {
           ),
           BlocProvider(
             create: (context) =>
-                ForYouBloc(webSocketService: context.read<WebSocketService>()),
-          ),
-          BlocProvider(
-            create: (context) =>
                 PostsBloc(webSocketService: context.read<WebSocketService>()),
           ),
           BlocProvider(create: (context) => PostFilterCubit()),
@@ -157,31 +138,9 @@ void main() async {
             ),
           ),
           BlocProvider(
-            create: (context) => FollowingPostsBloc(
-              webSocketService: context.read<WebSocketService>(),
-            ),
-          ),
-          // BlocProvider(
-          //   create: (context) =>
-          //       ReplyToBloc(webSocketService: context.read<WebSocketService>()),
-          // ),
-          // BlocProvider(
-          //   create: (context) =>
-          //       RepliesBloc(webSocketService: context.read<WebSocketService>()),
-          // ),
-          BlocProvider(
-            create: (context) => UserPostsBloc(
-              webSocketService: context.read<WebSocketService>(),
-            ),
-          ),
-          BlocProvider(
             create: (context) => BookmarksBloc(
               webSocketService: context.read<WebSocketService>(),
             ),
-          ),
-          BlocProvider(
-            create: (context) =>
-                LikesBloc(webSocketService: context.read<WebSocketService>()),
           ),
           BlocProvider(
             create: (context) => DraftPostsBloc(
@@ -189,21 +148,7 @@ void main() async {
             ),
           ),
           BlocProvider(
-            create: (context) => UserRepliesBloc(
-              webSocketService: context.read<WebSocketService>(),
-            ),
-          ),
-          BlocProvider(
-            create: (context) =>
-                ChatsBloc(webSocketService: context.read<WebSocketService>()),
-          ),
-          BlocProvider(
             create: (context) => ChatDetailBloc(
-              webSocketService: context.read<WebSocketService>(),
-            ),
-          ),
-          BlocProvider(
-            create: (context) => MessagesBloc(
               webSocketService: context.read<WebSocketService>(),
             ),
           ),
@@ -216,10 +161,6 @@ void main() async {
             ),
           ),
           BlocProvider(create: (context) => MessageActionsCubit()),
-          BlocProvider(
-            create: (context) =>
-                SurveysBloc(webSocketService: context.read<WebSocketService>()),
-          ),
           BlocProvider(create: (context) => SurveyFilterCubit()),
           BlocProvider(
             create: (context) => SurveyDetailBloc(
@@ -259,22 +200,7 @@ void main() async {
                 BlockedBloc(webSocketService: context.read<WebSocketService>()),
           ),
           BlocProvider(
-            create: (context) => FollowingBloc(
-              webSocketService: context.read<WebSocketService>(),
-            ),
-          ),
-          BlocProvider(
-            create: (context) => FollowersBloc(
-              webSocketService: context.read<WebSocketService>(),
-            ),
-          ),
-          BlocProvider(
             create: (context) => PreferencesBloc(
-              webSocketService: context.read<WebSocketService>(),
-            ),
-          ),
-          BlocProvider(
-            create: (context) => PetitionsBloc(
               webSocketService: context.read<WebSocketService>(),
             ),
           ),
@@ -286,11 +212,6 @@ void main() async {
           ),
           BlocProvider(
             create: (context) => SupportersBloc(
-              webSocketService: context.read<WebSocketService>(),
-            ),
-          ),
-          BlocProvider(
-            create: (context) => UserPetitionsBloc(
               webSocketService: context.read<WebSocketService>(),
             ),
           ),
@@ -310,24 +231,9 @@ void main() async {
             ),
           ),
           BlocProvider(create: (context) => FormsTabBarCubit()),
-          BlocProvider(
-            create: (context) => MeetingsBloc(
-              webSocketService: context.read<WebSocketService>(),
-            ),
-          ),
           BlocProvider(create: (context) => MeetingFilterCubit()),
           BlocProvider(
             create: (context) => MeetingDetailBloc(
-              webSocketService: context.read<WebSocketService>(),
-            ),
-          ),
-          BlocProvider(
-            create: (context) => CommunityNotesBloc(
-              webSocketService: context.read<WebSocketService>(),
-            ),
-          ),
-          BlocProvider(
-            create: (context) => UserCommunityNotesBloc(
               webSocketService: context.read<WebSocketService>(),
             ),
           ),

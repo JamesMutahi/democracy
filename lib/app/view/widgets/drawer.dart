@@ -6,7 +6,7 @@ import 'package:democracy/app/view/widgets/settings.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/user/view/profile.dart';
+import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -48,11 +48,7 @@ class AppDrawer extends StatelessWidget {
               ListTile(
                 onTap: () {
                   Navigator.pop(context);
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => ProfilePage(user: user),
-                    ),
-                  );
+                  navigateToProfilePage(context: context, user: user);
                 },
                 title: Text('Profile'),
                 leading: Icon(Symbols.person_2_rounded),

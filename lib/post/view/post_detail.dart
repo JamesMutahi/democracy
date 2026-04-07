@@ -28,7 +28,7 @@ import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/user/view/profile.dart';
+import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -392,12 +392,6 @@ class _PostContainer extends StatelessWidget {
     var dateFormat = DateFormat('dd/MM/yyyy');
     var numberFormat = NumberFormat.compact(locale: "en_UK");
 
-    void navigateToProfilePage(User user) {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => ProfilePage(user: post.author)),
-      );
-    }
-
     return Stack(
       children: [
         Container(
@@ -417,7 +411,10 @@ class _PostContainer extends StatelessWidget {
                   children: [
                     InkWell(
                       onTap: () {
-                        navigateToProfilePage(post.author);
+                        navigateToProfilePage(
+                          context: context,
+                          user: post.author,
+                        );
                       },
                       child: Container(
                         margin: const EdgeInsets.only(right: 30.0),

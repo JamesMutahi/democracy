@@ -1,5 +1,5 @@
 import 'package:democracy/ballot/view/ballot_detail.dart';
-import 'package:democracy/chat/view/chat_detail.dart';
+import 'package:democracy/chat/view/utils/chat_navigator.dart';
 import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
@@ -101,11 +101,7 @@ class NotificationTile extends StatelessWidget {
           );
         }
         if (notification.chat != null) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => ChatDetail(chat: notification.chat!),
-            ),
-          );
+          navigateToChatDetail(context: context, chat: notification.chat!);
         }
       },
     );

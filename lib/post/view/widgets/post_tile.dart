@@ -11,7 +11,6 @@ import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
-import 'package:democracy/post/view/community_notes.dart';
 import 'package:democracy/app/utils/image_viewer.dart';
 import 'package:democracy/post/view/widgets/post_body.dart';
 import 'package:democracy/post/view/widgets/post_widget_selector.dart';
@@ -20,7 +19,7 @@ import 'package:democracy/post/view/widgets/thread.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/user/view/profile.dart';
+import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -417,12 +416,7 @@ class _CommunityNoteState extends State<CommunityNote> {
       ),
       child: InkWell(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CommunityNotes(post: widget.post),
-            ),
-          );
+          navigateToCommunityNotes(context: context, post: widget.post);
         },
         child: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -458,13 +452,10 @@ class _CommunityNoteState extends State<CommunityNote> {
                   });
                 },
                 onUserTagPressed: (userId) {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => ProfilePage(
-                        user: widget.post.taggedUsers.firstWhere(
-                          (user) => user.id == int.parse(userId),
-                        ),
-                      ),
+                  navigateToProfilePage(
+                    context: context,
+                    user: widget.post.taggedUsers.firstWhere(
+                      (user) => user.id == int.parse(userId),
                     ),
                   );
                 },

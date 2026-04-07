@@ -7,7 +7,6 @@ import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:democracy/post/view/community_notes.dart';
 import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/post/view/widgets/post_widget_selector.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
@@ -132,10 +131,7 @@ class PostPopUp extends StatelessWidget {
         break;
 
       case 'Community notes':
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => CommunityNotes(post: post)),
-        );
+        navigateToCommunityNotes(context: context, post: post);
         break;
     }
   }

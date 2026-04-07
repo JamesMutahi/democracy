@@ -43,6 +43,11 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
 
   @override
   void initState() {
+    super.initState();
+    _getData();
+  }
+
+  void _getData() {
     context.read<RepliesBloc>().add(
       RepliesEvent.get(post: widget.communityNote),
     );
@@ -52,7 +57,6 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
     context.read<ReplyToBloc>().add(
       ReplyToEvent.get(post: widget.communityNote),
     );
-    super.initState();
   }
 
   @override
@@ -252,11 +256,7 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
                             SliverToBoxAdapter(
                               child: FailureRetryButton(
                                 onPressed: () {
-                                  context.read<RepliesBloc>().add(
-                                    RepliesEvent.get(
-                                      post: widget.communityNote,
-                                    ),
-                                  );
+                                  _getData();
                                 },
                               ),
                             )

@@ -2,6 +2,7 @@ import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
 import 'package:democracy/app/bloc/theme/theme_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/app/utils/app_theme.dart';
 import 'package:democracy/app/utils/snack_bar_content.dart';
 import 'package:democracy/app/utils/splash_page.dart';
@@ -9,6 +10,13 @@ import 'package:democracy/app/view/dashboard.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/auth/view/login.dart';
+import 'package:democracy/ballot/bloc/ballots/ballots_bloc.dart';
+import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
+import 'package:democracy/meet/bloc/meetings/meetings_bloc.dart';
+import 'package:democracy/petition/bloc/petitions/petitions_bloc.dart';
+import 'package:democracy/post/bloc/following_posts/following_posts_bloc.dart';
+import 'package:democracy/post/bloc/for_you/for_you_bloc.dart';
+import 'package:democracy/survey/bloc/surveys/surveys_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -51,13 +59,7 @@ class MyApp extends StatelessWidget {
                     case Unauthenticated():
                       return LoginPage();
                     case Authenticated():
-                      return BlocBuilder<WebsocketBloc, WebsocketState>(
-                        builder: (context, socketState) {
-                          return socketState.initialConnectionAchieved
-                              ? Dashboard()
-                              : SplashPage();
-                        },
-                      );
+                      return _buildDashboard();
                     default:
                       return SplashPage();
                   }
@@ -66,6 +68,55 @@ class MyApp extends StatelessWidget {
             ),
           ),
         );
+      },
+    );
+  }
+
+  Widget _buildDashboard() {
+    return BlocBuilder<WebsocketBloc, WebsocketState>(
+      builder: (context, socketState) {
+        return !socketState.initialConnectionAchieved
+            ? SplashPage()
+            : MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                    create: (context) => ForYouBloc(
+                      webSocketService: context.read<WebSocketService>(),
+                    ),
+                  ),
+                  BlocProvider(
+                    create: (context) => FollowingPostsBloc(
+                      webSocketService: context.read<WebSocketService>(),
+                    ),
+                  ),
+                  BlocProvider(
+                    create: (context) => MeetingsBloc(
+                      webSocketService: context.read<WebSocketService>(),
+                    ),
+                  ),
+                  BlocProvider(
+                    create: (context) => BallotsBloc(
+                      webSocketService: context.read<WebSocketService>(),
+                    ),
+                  ),
+                  BlocProvider(
+                    create: (context) => SurveysBloc(
+                      webSocketService: context.read<WebSocketService>(),
+                    ),
+                  ),
+                  BlocProvider(
+                    create: (context) => PetitionsBloc(
+                      webSocketService: context.read<WebSocketService>(),
+                    ),
+                  ),
+                  BlocProvider(
+                    create: (context) => ChatsBloc(
+                      webSocketService: context.read<WebSocketService>(),
+                    ),
+                  ),
+                ],
+                child: Dashboard(),
+              );
       },
     );
   }

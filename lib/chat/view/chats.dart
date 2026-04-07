@@ -7,7 +7,7 @@ import 'package:democracy/chat/bloc/chat_filter/chat_filter_cubit.dart';
 import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
-import 'package:democracy/chat/view/chat_detail.dart' show ChatDetail;
+import 'package:democracy/chat/view/utils/chat_navigator.dart';
 import 'package:democracy/chat/view/utils/link_extractor.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
@@ -215,11 +215,7 @@ class ChatTile extends StatelessWidget {
             ChatDetailEvent.markAsRead(chat: chat),
           );
         }
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => ChatDetail(key: ValueKey(chat.id), chat: chat),
-          ),
-        );
+        navigateToChatDetail(context: context, chat: chat);
       },
       onLongPress: () {
         // TODO: Implement long press actions (delete, mute, block, etc.)

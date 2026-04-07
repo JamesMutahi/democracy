@@ -2,7 +2,6 @@ part of 'messages_bloc.dart';
 
 @freezed
 sealed class MessagesEvent with _$MessagesEvent {
-  const factory MessagesEvent.initialize({required Chat chat}) = _Initialize;
   const factory MessagesEvent.get({
     required Chat chat,
     Message? oldestMessage,

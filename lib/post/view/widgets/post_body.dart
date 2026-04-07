@@ -2,7 +2,7 @@ import 'package:democracy/app/utils/custom_text.dart';
 import 'package:democracy/app/utils/regex.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/shared/post_navigator.dart';
-import 'package:democracy/user/view/profile.dart';
+import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -64,13 +64,10 @@ class _PostBodyState extends State<PostBody> {
               }
             },
             onUserTagPressed: (userId) {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => ProfilePage(
-                    user: widget.post.taggedUsers.firstWhere(
-                      (user) => user.id == int.parse(userId),
-                    ),
-                  ),
+              navigateToProfilePage(
+                context: context,
+                user: widget.post.taggedUsers.firstWhere(
+                  (user) => user.id == int.parse(userId),
                 ),
               );
             },

@@ -1,7 +1,7 @@
 import 'package:democracy/user/bloc/blocked/blocked_bloc.dart';
 import 'package:democracy/user/bloc/muted/muted_bloc.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/user/view/profile.dart';
+import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -98,10 +98,7 @@ class _MutedTabState extends State<_MutedTab> {
             context.read<MutedBloc>().add(MutedEvent.update(users: users));
           },
           onUserTap: (user) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ProfilePage(user: user)),
-            );
+            navigateToProfilePage(context: context, user: user);
           },
           onRefresh: () {
             context.read<MutedBloc>().add(MutedEvent.get());
@@ -174,10 +171,7 @@ class _BlockedTabState extends State<_BlockedTab> {
             context.read<BlockedBloc>().add(BlockedEvent.update(users: users));
           },
           onUserTap: (user) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ProfilePage(user: user)),
-            );
+            navigateToProfilePage(context: context, user: user);
           },
           onRefresh: () {
             context.read<BlockedBloc>().add(BlockedEvent.get());
