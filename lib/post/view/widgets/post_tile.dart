@@ -9,8 +9,7 @@ import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:democracy/post/view/community_note_detail.dart';
-import 'package:democracy/post/view/post_detail.dart';
+import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/post/view/community_notes.dart';
 import 'package:democracy/app/utils/image_viewer.dart';
@@ -100,29 +99,23 @@ class _PostTileState extends State<PostTile> {
             children: [
               InkWell(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return widget.post.repostOf?.communityNoteOf == null
-                            ? PostDetail(
-                                key: ValueKey(widget.post.id),
-                                post: showAsRepost
-                                    ? widget.post.repostOf!
-                                    : widget.post,
-                                showAsRepost: showAsRepost,
-                                repost: widget.post,
-                              )
-                            : CommunityNoteDetail(
-                                communityNote: showAsRepost
-                                    ? widget.post.repostOf!
-                                    : widget.post,
-                                showAsRepost: showAsRepost,
-                                repost: widget.post,
-                              );
-                      },
-                    ),
-                  );
+                  widget.post.repostOf?.communityNoteOf == null
+                      ? navigateToPostDetail(
+                          context: context,
+                          post: showAsRepost
+                              ? widget.post.repostOf!
+                              : widget.post,
+                          showAsRepost: showAsRepost,
+                          repost: widget.post,
+                        )
+                      : navigateToCommunityNoteDetail(
+                          context: context,
+                          post: showAsRepost
+                              ? widget.post.repostOf!
+                              : widget.post,
+                          showAsRepost: showAsRepost,
+                          repost: widget.post,
+                        );
                 },
                 child: showAsRepost
                     ? Column(

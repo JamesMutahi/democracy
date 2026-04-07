@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/notification/models/notification.dart';
@@ -15,7 +17,7 @@ class NotificationDetailBloc
     extends Bloc<NotificationDetailEvent, NotificationDetailState> {
   NotificationDetailBloc({required this.webSocketService})
     : super(const NotificationDetailState.initial()) {
-    webSocketService.messages.listen((message) {
+    _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
         switch (message['payload']['action']) {
           case 'create':
@@ -112,5 +114,12 @@ class NotificationDetailBloc
     webSocketService.send(message);
   }
 
+  @override
+  Future<void> close() async {
+    await _subscription.cancel();
+    await super.close();
+  }
+
+  late StreamSubscription _subscription;
   final WebSocketService webSocketService;
 }

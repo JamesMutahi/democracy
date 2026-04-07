@@ -6,7 +6,7 @@ import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/models/option.dart';
 import 'package:democracy/ballot/view/ballot_detail.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
-import 'package:democracy/post/view/post_create.dart';
+import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -114,12 +114,7 @@ class BallotPopUp extends StatelessWidget {
       onSelected: (selected) {
         switch (selected) {
           case 'Post':
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => PostCreate(ballot: ballot),
-              ),
-            );
+            navigateToPostCreate(context: context, ballot: ballot);
           case 'Share':
             showModalBottomSheet<void>(
               context: context,

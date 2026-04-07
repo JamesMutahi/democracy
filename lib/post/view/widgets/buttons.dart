@@ -8,7 +8,7 @@ import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/community_notes.dart';
-import 'package:democracy/post/view/post_create.dart';
+import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/post/view/widgets/post_widget_selector.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
@@ -239,10 +239,7 @@ class RepostButton extends StatelessWidget {
             iconData: Icons.format_quote_rounded,
             onTap: () {
               Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => PostCreate(repostOf: post)),
-              );
+              navigateToPostCreate(context: context, repostOf: post);
             },
           ),
           if (post.isReposted)
@@ -319,10 +316,7 @@ class ReplyButton extends StatelessWidget {
   }
 
   void _navigateToReply(BuildContext context, Post post) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => PostCreate(replyTo: post)),
-    );
+    navigateToPostCreate(context: context, replyTo: post);
   }
 }
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/survey/models/choice.dart';
@@ -17,7 +19,7 @@ const String requestId = 'responses';
 
 class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
   AnswerBloc({required this.webSocketService}) : super(const AnswerState()) {
-    webSocketService.messages.listen((message) {
+    _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
         switch (message['payload']['action']) {
           case 'submit':
@@ -189,6 +191,12 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
       );
     }
   }
+  @override
+  Future<void> close() async {
+    await _subscription.cancel();
+    await super.close();
+  }
 
+  late StreamSubscription _subscription;
   final WebSocketService webSocketService;
 }

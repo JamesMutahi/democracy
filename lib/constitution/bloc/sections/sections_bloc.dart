@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/constitution/models/section.dart';
@@ -14,7 +16,7 @@ const String action = 'tags';
 class SectionsBloc extends Bloc<SectionsEvent, SectionsState> {
   SectionsBloc({required this.webSocketService})
     : super(const SectionsState.initial()) {
-    webSocketService.messages.listen((message) {
+    _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream &&
           message['payload']['action'] == action) {
         add(_Received(payload: message['payload']));
@@ -52,5 +54,12 @@ class SectionsBloc extends Bloc<SectionsEvent, SectionsState> {
     }
   }
 
+  @override
+  Future<void> close() async {
+    await _subscription.cancel();
+    await super.close();
+  }
+
+  late StreamSubscription _subscription;
   final WebSocketService webSocketService;
 }

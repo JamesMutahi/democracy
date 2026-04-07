@@ -2,7 +2,6 @@ part of 'replies_bloc.dart';
 
 @freezed
 sealed class RepliesEvent with _$RepliesEvent {
-  const factory RepliesEvent.initialize({required Post post}) = _Initialize;
   const factory RepliesEvent.get({
     required Post post,
     List<Post>? previousPosts,

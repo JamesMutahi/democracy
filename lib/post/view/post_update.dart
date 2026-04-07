@@ -47,7 +47,12 @@ class _PostUpdateState extends State<PostUpdate> {
   @override
   void initState() {
     if (widget.post.replyTo != null) {
-      context.read<ReplyToBloc>().add(ReplyToEvent.get(post: widget.post));
+      context.read<ReplyToBloc>().add(
+        ReplyToEvent.get(post: widget.post.replyTo!),
+      );
+      context.read<ReplyToBloc>().add(
+        ReplyToEvent.add(post: widget.post.replyTo!),
+      );
     }
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -160,8 +165,7 @@ class _PostUpdateState extends State<PostUpdate> {
                 key: centerKey,
                 child: Stack(
                   children: [
-                    if (widget.post.replyTo != null)
-                      ThreadLine(showBottomThread: false, showTopThread: true),
+                    ThreadLine(showBottomThread: false, showTopThread: true),
                     Container(
                       padding: EdgeInsets.only(
                         left: 10,

@@ -14,7 +14,7 @@ part 'websocket_bloc.freezed.dart';
 class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   WebsocketBloc({required this.authRepository, required this.webSocketService})
     : super(const WebsocketState()) {
-    webSocketService.messages.listen((message) {
+    _subscription = webSocketService.messages.listen((message) {
       String key = 'websocket';
       if (message.containsKey(key)) {
         switch (message[key]) {
@@ -68,6 +68,13 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     }
   }
 
+  @override
+  Future<void> close() async {
+    await _subscription.cancel();
+    await super.close();
+  }
+
+  late StreamSubscription _subscription;
   final AuthRepository authRepository;
   final WebSocketService webSocketService;
 }

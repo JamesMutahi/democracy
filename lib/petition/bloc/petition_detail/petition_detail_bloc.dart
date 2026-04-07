@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -20,7 +21,7 @@ class PetitionDetailBloc
     extends Bloc<PetitionDetailEvent, PetitionDetailState> {
   PetitionDetailBloc({required this.webSocketService})
     : super(const PetitionDetailState.initial()) {
-    webSocketService.messages.listen((message) {
+    _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
         switch (message['payload']['action']) {
           case 'create':
@@ -186,5 +187,12 @@ class PetitionDetailBloc
     webSocketService.send(message);
   }
 
+  @override
+  Future<void> close() async {
+    await _subscription.cancel();
+    await super.close();
+  }
+
+  late StreamSubscription _subscription;
   final WebSocketService webSocketService;
 }

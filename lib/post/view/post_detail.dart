@@ -35,8 +35,8 @@ import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
-class PostDetail extends StatefulWidget {
-  const PostDetail({
+class PostDetailPage extends StatefulWidget {
+  const PostDetailPage({
     super.key,
     required this.post,
     required this.showAsRepost,
@@ -48,10 +48,10 @@ class PostDetail extends StatefulWidget {
   final Post repost;
 
   @override
-  State<PostDetail> createState() => _PostDetailState();
+  State<PostDetailPage> createState() => _PostDetailPageState();
 }
 
-class _PostDetailState extends State<PostDetail> {
+class _PostDetailPageState extends State<PostDetailPage> {
   late Post _post = widget.post;
   final RefreshController _refreshController = RefreshController();
   final ValueKey _centerKey = ValueKey('Center');
@@ -59,24 +59,13 @@ class _PostDetailState extends State<PostDetail> {
 
   @override
   void initState() {
-    context.read<PostDetailBloc>().add(PostDetailEvent.get(post: widget.post));
-    context.read<RepliesBloc>().add(RepliesEvent.initialize(post: widget.post));
-    if (widget.post.replyTo != null) {
-      context.read<ReplyToBloc>().add(
-        ReplyToEvent.initialize(post: widget.post),
-      );
-    }
-    if (!widget.post.isViewed) {
-      context.read<PostDetailBloc>().add(
-        PostDetailEvent.addView(post: widget.post),
-      );
-    }
     super.initState();
+    _getData();
   }
 
-  void _onFailure() {
-    context.read<RepliesBloc>().add(RepliesEvent.get(post: widget.post));
+  void _getData() {
     context.read<PostDetailBloc>().add(PostDetailEvent.get(post: widget.post));
+    context.read<RepliesBloc>().add(RepliesEvent.get(post: widget.post));
     if (widget.post.replyTo != null) {
       context.read<ReplyToBloc>().add(ReplyToEvent.get(post: widget.post));
     }
@@ -284,53 +273,7 @@ class _PostDetailState extends State<PostDetail> {
                   slivers: <Widget>[
                     if (widget.post.replyTo != null)
                       ReplyTos(post: widget.post),
-                    SliverToBoxAdapter(
-                      key: _centerKey,
-                      child: Column(
-                        children: [
-                          if (_post.replyTo == null)
-                            Column(
-                              children: [
-                                if (widget.showAsRepost) _repostBanner(),
-                                _PostContainer(
-                                  post: _post,
-                                  isDeleted: _isDeleted,
-                                ),
-                              ],
-                            )
-                          else
-                            Column(
-                              children: [
-                                if (widget.showAsRepost)
-                                  Stack(
-                                    children: [
-                                      ThreadLine(
-                                        showBottomThread: true,
-                                        showTopThread: true,
-                                      ),
-                                      Container(
-                                        margin: EdgeInsets.only(left: 30),
-                                        child: _repostBanner(),
-                                      ),
-                                    ],
-                                  ),
-                                Stack(
-                                  children: [
-                                    ThreadLine(
-                                      showBottomThread: false,
-                                      showTopThread: true,
-                                    ),
-                                    _PostContainer(
-                                      post: _post,
-                                      isDeleted: _isDeleted,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                        ],
-                      ),
-                    ),
+                    _buildMainPost(),
                     if (state.status == RepliesStatus.initial)
                       SliverToBoxAdapter(
                         child: Container(
@@ -341,7 +284,7 @@ class _PostDetailState extends State<PostDetail> {
                     else if (state.status == RepliesStatus.failure &&
                         replies.isEmpty)
                       SliverToBoxAdapter(
-                        child: FailureRetryButton(onPressed: _onFailure),
+                        child: FailureRetryButton(onPressed: _getData),
                       )
                     else
                       Replies(replies: replies),
@@ -362,6 +305,44 @@ class _PostDetailState extends State<PostDetail> {
                 )
               : BottomReplyTextField(post: _post),
         ),
+      ),
+    );
+  }
+
+  Widget _buildMainPost() {
+    return SliverToBoxAdapter(
+      key: _centerKey,
+      child: Column(
+        children: [
+          if (_post.replyTo == null)
+            Column(
+              children: [
+                if (widget.showAsRepost) _repostBanner(),
+                _PostContainer(post: _post, isDeleted: _isDeleted),
+              ],
+            )
+          else
+            Column(
+              children: [
+                if (widget.showAsRepost)
+                  Stack(
+                    children: [
+                      ThreadLine(showBottomThread: true, showTopThread: true),
+                      Container(
+                        margin: EdgeInsets.only(left: 30),
+                        child: _repostBanner(),
+                      ),
+                    ],
+                  ),
+                Stack(
+                  children: [
+                    ThreadLine(showBottomThread: false, showTopThread: true),
+                    _PostContainer(post: _post, isDeleted: _isDeleted),
+                  ],
+                ),
+              ],
+            ),
+        ],
       ),
     );
   }

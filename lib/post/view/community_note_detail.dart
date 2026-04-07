@@ -4,6 +4,7 @@ import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/replies/replies_bloc.dart';
+import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/bottom_reply_text_field.dart';
 import 'package:democracy/post/view/widgets/community_note_tile.dart';
@@ -42,8 +43,14 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
 
   @override
   void initState() {
+    context.read<RepliesBloc>().add(
+      RepliesEvent.get(post: widget.communityNote),
+    );
     context.read<PostDetailBloc>().add(
       PostDetailEvent.get(post: widget.communityNote),
+    );
+    context.read<ReplyToBloc>().add(
+      ReplyToEvent.get(post: widget.communityNote),
     );
     super.initState();
   }

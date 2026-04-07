@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/ballot/models/ballot.dart';
@@ -14,7 +16,7 @@ const String requestId = 'ballots';
 class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
   BallotDetailBloc({required this.webSocketService})
     : super(const BallotDetailState.initial()) {
-    webSocketService.messages.listen((message) {
+    _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
         switch (message['payload']['action']) {
           case 'create':
@@ -162,5 +164,12 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
     webSocketService.send(message);
   }
 
+  @override
+  Future<void> close() async {
+    await _subscription.cancel();
+    await super.close();
+  }
+
+  late StreamSubscription _subscription;
   final WebSocketService webSocketService;
 }

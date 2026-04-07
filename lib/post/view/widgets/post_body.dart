@@ -1,8 +1,7 @@
 import 'package:democracy/app/utils/custom_text.dart';
 import 'package:democracy/app/utils/regex.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:democracy/post/view/community_note_detail.dart';
-import 'package:democracy/post/view/post_detail.dart';
+import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/user/view/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -39,18 +38,19 @@ class _PostBodyState extends State<PostBody> {
             showAllText: widget.showWholeText ? true : readMore,
             onSuffixPressed: () {
               if (widget.isDependency) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => widget.post.communityNoteOf == null
-                        ? PostDetail(
-                            post: widget.post,
-                            showAsRepost: false,
-                            repost: widget.post,
-                          )
-                        : CommunityNoteDetail(communityNote: widget.post),
-                  ),
-                );
+                widget.post.communityNoteOf == null
+                    ? navigateToPostDetail(
+                        context: context,
+                        post: widget.post,
+                        showAsRepost: false,
+                        repost: widget.post,
+                      )
+                    : navigateToCommunityNoteDetail(
+                        context: context,
+                        post: widget.post,
+                        showAsRepost: false,
+                        repost: widget.post,
+                      );
               } else {
                 setState(() {
                   if (readMore) {

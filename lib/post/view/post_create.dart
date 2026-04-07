@@ -27,8 +27,8 @@ import 'package:fluttertagger/fluttertagger.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-class PostCreate extends StatefulWidget {
-  const PostCreate({
+class PostCreatePage extends StatefulWidget {
+  const PostCreatePage({
     super.key,
     this.replyTo,
     this.repostOf,
@@ -46,10 +46,10 @@ class PostCreate extends StatefulWidget {
   final Meeting? meeting;
 
   @override
-  State<PostCreate> createState() => _PostCreateState();
+  State<PostCreatePage> createState() => _PostCreatePageState();
 }
 
-class _PostCreateState extends State<PostCreate> {
+class _PostCreatePageState extends State<PostCreatePage> {
   final _controller = FlutterTaggerController();
   final ValueKey _centerKey = const ValueKey('center');
 
@@ -66,9 +66,7 @@ class _PostCreateState extends State<PostCreate> {
   void initState() {
     super.initState();
     if (widget.replyTo != null) {
-      context.read<ReplyToBloc>().add(
-        ReplyToEvent.initialize(post: widget.replyTo!),
-      );
+      context.read<ReplyToBloc>().add(ReplyToEvent.get(post: widget.replyTo!));
       context.read<ReplyToBloc>().add(ReplyToEvent.add(post: widget.replyTo!));
     }
   }
@@ -124,8 +122,27 @@ class _PostCreateState extends State<PostCreate> {
         BlocListener<PostDetailBloc, PostDetailState>(
           listener: (context, state) {
             if (state is PostCreated) {
-              var replyTos = context.read<ReplyToBloc>().state.posts;
-              if (!replyTos.any((p) => p.id == state.post.repostOf?.id)) {
+              final post = state.post;
+
+              // Handle repost case
+              if (widget.repostOf != null) {
+                Navigator.pop(context);
+                return;
+              }
+
+              // Handle normal post (not a reply)
+              if (widget.replyTo == null) {
+                Navigator.pop(context);
+                return;
+              }
+
+              // Handle reply case - only pop if the replied-to post is NOT in the ReplyToBloc
+              final replyTos = context.read<ReplyToBloc>().state.posts;
+              final isReplyingToPostInReplyTos = replyTos.any(
+                (p) => p.id == post.repostOf?.id,
+              );
+
+              if (!isReplyingToPostInReplyTos) {
                 Navigator.pop(context);
               }
             }
@@ -137,7 +154,7 @@ class _PostCreateState extends State<PostCreate> {
         onPopInvokedWithResult: (didPop, _) {
           if (didPop) return;
 
-          if (widget.replyTo != null || _canPost == false) {
+          if (!_canPost) {
             Navigator.pop(context);
           } else {
             showDialog(
@@ -153,7 +170,7 @@ class _PostCreateState extends State<PostCreate> {
             leading: IconButton(
               icon: const Icon(Symbols.close),
               onPressed: () {
-                if (widget.replyTo != null || !_canPost) {
+                if (!_canPost) {
                   Navigator.pop(context);
                 } else {
                   showDialog(

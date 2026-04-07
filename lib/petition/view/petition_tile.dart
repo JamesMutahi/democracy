@@ -7,7 +7,7 @@ import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_detail.dart';
-import 'package:democracy/post/view/post_create.dart';
+import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
@@ -162,12 +162,7 @@ class PetitionPopUpMenu extends StatelessWidget {
           onSelected: (selected) {
             switch (selected) {
               case 'Post':
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PostCreate(petition: petition),
-                  ),
-                );
+                navigateToPostCreate(context: context, petition: petition);
               case 'Share':
                 showModalBottomSheet<void>(
                   context: context,

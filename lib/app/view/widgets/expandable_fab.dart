@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:democracy/post/view/draft_posts.dart';
-import 'package:democracy/post/view/post_create.dart';
+import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:flutter/material.dart';
 
 @immutable
@@ -111,10 +111,7 @@ class _ExpandableFabState extends State<ExpandableFab>
       ActionButton(
         onPressed: () {
           _toggle();
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => PostCreate()),
-          );
+          navigateToPostCreate(context: context);
         },
         text: 'Post',
         icon: const Icon(Icons.add_rounded),

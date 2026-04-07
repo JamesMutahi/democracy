@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -27,7 +28,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     required this.authRepository,
     required this.apiRepository,
   }) : super(const PostDetailState.initial()) {
-    webSocketService.messages.listen((message) {
+    _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
         switch (message['payload']['action']) {
           case 'create':
@@ -484,6 +485,13 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     webSocketService.send(message);
   }
 
+  @override
+  Future<void> close() async {
+    await _subscription.cancel();
+    await super.close();
+  }
+
+  late StreamSubscription _subscription;
   final WebSocketService webSocketService;
   final AuthRepository authRepository;
   final APIRepository apiRepository;

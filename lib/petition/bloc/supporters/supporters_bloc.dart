@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/petition/models/petition.dart';
@@ -15,7 +17,7 @@ const String action = 'petition_supporters';
 
 class SupportersBloc extends Bloc<SupportersEvent, SupportersState> {
   SupportersBloc({required this.webSocketService}) : super(SupportersState()) {
-    webSocketService.messages.listen((message) {
+    _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream &&
           message['payload']['action'] == action) {
         add(_Received(payload: message['payload']));
@@ -65,5 +67,12 @@ class SupportersBloc extends Bloc<SupportersEvent, SupportersState> {
     emit(state.copyWith(users: event.users, status: SupportersStatus.success));
   }
 
+  @override
+  Future<void> close() async {
+    await _subscription.cancel();
+    await super.close();
+  }
+
+  late StreamSubscription _subscription;
   final WebSocketService webSocketService;
 }

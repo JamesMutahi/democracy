@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/post/models/post.dart';
@@ -14,7 +16,7 @@ const String stream = 'posts';
 class UserPostsBloc extends Bloc<UserPostsEvent, UserPostsState> {
   UserPostsBloc({required this.webSocketService})
     : super(const UserPostsState()) {
-    webSocketService.messages.listen((message) {
+    _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
         if (message['payload']['action'] == 'user_posts') {
           add(_Received(payload: message['payload']));
@@ -64,5 +66,12 @@ class UserPostsBloc extends Bloc<UserPostsEvent, UserPostsState> {
     emit(state.copyWith(posts: event.posts, status: UserPostsStatus.success));
   }
 
+  @override
+  Future<void> close() async {
+    await _subscription.cancel();
+    await super.close();
+  }
+
+  late StreamSubscription _subscription;
   final WebSocketService webSocketService;
 }

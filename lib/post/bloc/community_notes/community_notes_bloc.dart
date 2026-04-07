@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/app/utils/transformers.dart';
@@ -15,7 +17,7 @@ class CommunityNotesBloc
     extends Bloc<CommunityNotesEvent, CommunityNotesState> {
   CommunityNotesBloc({required this.webSocketService})
     : super(const CommunityNotesState()) {
-    webSocketService.messages.listen((message) {
+    _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
         if (message['payload']['action'] == 'community_notes') {
           add(_Received(payload: message['payload']));
@@ -76,5 +78,12 @@ class CommunityNotesBloc
     );
   }
 
+  @override
+  Future<void> close() async {
+    await _subscription.cancel();
+    await super.close();
+  }
+
+  late StreamSubscription _subscription;
   final WebSocketService webSocketService;
 }

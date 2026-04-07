@@ -4,7 +4,7 @@ import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/petition/view/petition_detail.dart';
-import 'package:democracy/post/view/post_detail.dart';
+import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -58,16 +58,13 @@ class NotificationTile extends StatelessWidget {
           bool showAsRepost =
               notification.post!.body.isEmpty &&
               notification.post!.repostOf != null;
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => PostDetail(
-                post: showAsRepost
-                    ? notification.post!.repostOf!
-                    : notification.post!,
-                showAsRepost: showAsRepost,
-                repost: notification.post!,
-              ),
-            ),
+          navigateToPostDetail(
+            context: context,
+            post: showAsRepost
+                ? notification.post!.repostOf!
+                : notification.post!,
+            showAsRepost: showAsRepost,
+            repost: notification.post!,
           );
         }
         if (notification.meeting != null) {

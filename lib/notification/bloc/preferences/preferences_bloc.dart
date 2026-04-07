@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/notification/models/preferences.dart';
@@ -15,7 +17,7 @@ const String action = 'preferences';
 class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
   PreferencesBloc({required this.webSocketService})
     : super(const PreferencesState()) {
-    webSocketService.messages.listen((message) {
+    _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
         switch (message['payload']['action']) {
           case 'preferences':
@@ -78,5 +80,12 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
     webSocketService.send(message);
   }
 
+  @override
+  Future<void> close() async {
+    await _subscription.cancel();
+    await super.close();
+  }
+
+  late StreamSubscription _subscription;
   final WebSocketService webSocketService;
 }

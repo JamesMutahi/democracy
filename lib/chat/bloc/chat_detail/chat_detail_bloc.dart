@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -23,7 +24,7 @@ const String requestId = 'chats';
 class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
   ChatDetailBloc({required this.webSocketService})
     : super(const ChatDetailState.initial()) {
-    webSocketService.messages.listen((message) {
+    _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
         if (message['payload']['request_id'] != 'messages') {
           switch (message['payload']['action']) {
@@ -219,5 +220,12 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
     webSocketService.send(message);
   }
 
+  @override
+  Future<void> close() async {
+    await _subscription.cancel();
+    await super.close();
+  }
+
+  late StreamSubscription _subscription;
   final WebSocketService webSocketService;
 }

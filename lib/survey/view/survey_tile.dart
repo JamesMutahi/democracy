@@ -2,7 +2,7 @@ import 'package:democracy/app/utils/custom_bottom_sheet.dart';
 import 'package:democracy/app/utils/more_pop_up.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart' show TimeLeft;
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
-import 'package:democracy/post/view/post_create.dart';
+import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/survey_process/page.dart';
 import 'package:democracy/survey/view/survey_process/response_page.dart';
@@ -103,12 +103,7 @@ class SurveyPopUpMenu extends StatelessWidget {
       onSelected: (selected) {
         switch (selected) {
           case 'Post':
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => PostCreate(survey: survey),
-              ),
-            );
+            navigateToPostCreate(context: context, survey: survey);
           case 'Share':
             showModalBottomSheet<void>(
               context: context,

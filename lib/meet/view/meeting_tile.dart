@@ -5,7 +5,7 @@ import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/meet/bloc/meeting_detail/meeting_detail_bloc.dart';
 import 'package:democracy/meet/models/meeting.dart';
 import 'package:democracy/meet/view/meeting_detail.dart';
-import 'package:democracy/post/view/post_create.dart';
+import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/user/view/profile.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
@@ -131,12 +131,7 @@ class MeetingPopUp extends StatelessWidget {
       onSelected: (selected) {
         switch (selected) {
           case 'Post':
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => PostCreate(meeting: meeting),
-              ),
-            );
+            navigateToPostCreate(context: context, meeting: meeting);
           case 'Share':
             showModalBottomSheet<void>(
               context: context,

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/geo/models/constituency.dart';
@@ -14,7 +16,7 @@ const String stream = 'geo';
 
 class GeoBloc extends Bloc<GeoEvent, GeoState> {
   GeoBloc({required this.webSocketService}) : super(GeoState()) {
-    webSocketService.messages.listen((message) {
+    _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
         if (message['payload']['action'] == 'counties') {
           add(_ReceivedCounties(payload: message['payload']));
@@ -125,5 +127,12 @@ class GeoBloc extends Bloc<GeoEvent, GeoState> {
     }
   }
 
+  @override
+  Future<void> close() async {
+    await _subscription.cancel();
+    await super.close();
+  }
+
+  late StreamSubscription _subscription;
   final WebSocketService webSocketService;
 }

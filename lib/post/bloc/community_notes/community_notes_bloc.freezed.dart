@@ -55,10 +55,11 @@ extension CommunityNotesEventPatterns on CommunityNotesEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Update value)?  update,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initialize value)?  initialize,TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Update value)?  update,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _Get() when get != null:
+case _Initialize() when initialize != null:
+return initialize(_that);case _Get() when get != null:
 return get(_that);case _Received() when received != null:
 return received(_that);case _Update() when update != null:
 return update(_that);case _:
@@ -79,10 +80,11 @@ return update(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Update value)  update,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initialize value)  initialize,required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Update value)  update,}){
 final _that = this;
 switch (_that) {
-case _Get():
+case _Initialize():
+return initialize(_that);case _Get():
 return get(_that);case _Received():
 return received(_that);case _Update():
 return update(_that);case _:
@@ -102,10 +104,11 @@ return update(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Update value)?  update,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initialize value)?  initialize,TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Update value)?  update,}){
 final _that = this;
 switch (_that) {
-case _Get() when get != null:
+case _Initialize() when initialize != null:
+return initialize(_that);case _Get() when get != null:
 return get(_that);case _Received() when received != null:
 return received(_that);case _Update() when update != null:
 return update(_that);case _:
@@ -125,9 +128,10 @@ return update(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Post post,  String? searchTerm,  String? sortBy,  List<Post>? previousPosts)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( List<Post> posts)?  update,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Post post)?  initialize,TResult Function( Post post,  String? searchTerm,  String? sortBy,  List<Post>? previousPosts)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( List<Post> posts)?  update,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _Get() when get != null:
+case _Initialize() when initialize != null:
+return initialize(_that.post);case _Get() when get != null:
 return get(_that.post,_that.searchTerm,_that.sortBy,_that.previousPosts);case _Received() when received != null:
 return received(_that.payload);case _Update() when update != null:
 return update(_that.posts);case _:
@@ -148,9 +152,10 @@ return update(_that.posts);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Post post,  String? searchTerm,  String? sortBy,  List<Post>? previousPosts)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( List<Post> posts)  update,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Post post)  initialize,required TResult Function( Post post,  String? searchTerm,  String? sortBy,  List<Post>? previousPosts)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( List<Post> posts)  update,}) {final _that = this;
 switch (_that) {
-case _Get():
+case _Initialize():
+return initialize(_that.post);case _Get():
 return get(_that.post,_that.searchTerm,_that.sortBy,_that.previousPosts);case _Received():
 return received(_that.payload);case _Update():
 return update(_that.posts);case _:
@@ -170,9 +175,10 @@ return update(_that.posts);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Post post,  String? searchTerm,  String? sortBy,  List<Post>? previousPosts)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( List<Post> posts)?  update,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Post post)?  initialize,TResult? Function( Post post,  String? searchTerm,  String? sortBy,  List<Post>? previousPosts)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( List<Post> posts)?  update,}) {final _that = this;
 switch (_that) {
-case _Get() when get != null:
+case _Initialize() when initialize != null:
+return initialize(_that.post);case _Get() when get != null:
 return get(_that.post,_that.searchTerm,_that.sortBy,_that.previousPosts);case _Received() when received != null:
 return received(_that.payload);case _Update() when update != null:
 return update(_that.posts);case _:
@@ -181,6 +187,81 @@ return update(_that.posts);case _:
 }
 }
 
+}
+
+/// @nodoc
+
+
+class _Initialize implements CommunityNotesEvent {
+  const _Initialize({required this.post});
+  
+
+ final  Post post;
+
+/// Create a copy of CommunityNotesEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$InitializeCopyWith<_Initialize> get copyWith => __$InitializeCopyWithImpl<_Initialize>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initialize&&(identical(other.post, post) || other.post == post));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,post);
+
+@override
+String toString() {
+  return 'CommunityNotesEvent.initialize(post: $post)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$InitializeCopyWith<$Res> implements $CommunityNotesEventCopyWith<$Res> {
+  factory _$InitializeCopyWith(_Initialize value, $Res Function(_Initialize) _then) = __$InitializeCopyWithImpl;
+@useResult
+$Res call({
+ Post post
+});
+
+
+$PostCopyWith<$Res> get post;
+
+}
+/// @nodoc
+class __$InitializeCopyWithImpl<$Res>
+    implements _$InitializeCopyWith<$Res> {
+  __$InitializeCopyWithImpl(this._self, this._then);
+
+  final _Initialize _self;
+  final $Res Function(_Initialize) _then;
+
+/// Create a copy of CommunityNotesEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? post = null,}) {
+  return _then(_Initialize(
+post: null == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
+as Post,
+  ));
+}
+
+/// Create a copy of CommunityNotesEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PostCopyWith<$Res> get post {
+  
+  return $PostCopyWith<$Res>(_self.post, (value) {
+    return _then(_self.copyWith(post: value));
+  });
+}
 }
 
 /// @nodoc

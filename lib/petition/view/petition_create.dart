@@ -8,7 +8,7 @@ import 'package:democracy/geo/models/constituency.dart';
 import 'package:democracy/geo/models/county.dart';
 import 'package:democracy/geo/models/ward.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
-import 'package:democracy/post/view/post_create.dart';
+import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -57,11 +57,9 @@ class _CreatePetitionState extends State<CreatePetition> {
             context: context,
             builder: (context) => PostPetitionDialog(
               onYesPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PostCreate(petition: state.petition),
-                  ),
+                navigateToPostCreate(
+                  context: context,
+                  petition: state.petition,
                 );
               },
             ),

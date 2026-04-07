@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -15,7 +16,7 @@ const String requestId = 'users';
 
 class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
   UserDetailBloc({required this.webSocketService}) : super(const _Initial()) {
-    webSocketService.messages.listen((message) {
+    _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
         switch (message['payload']['action']) {
           case 'retrieve':
@@ -158,5 +159,12 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
     webSocketService.send(message);
   }
 
+  @override
+  Future<void> close() async {
+    await _subscription.cancel();
+    await super.close();
+  }
+
+  late StreamSubscription _subscription;
   final WebSocketService webSocketService;
 }

@@ -2,6 +2,8 @@ part of 'community_notes_bloc.dart';
 
 @freezed
 class CommunityNotesEvent with _$CommunityNotesEvent {
+  const factory CommunityNotesEvent.initialize({required Post post}) =
+      _Initialize;
   const factory CommunityNotesEvent.get({
     required Post post,
     String? searchTerm,

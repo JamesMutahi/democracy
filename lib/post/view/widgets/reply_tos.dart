@@ -6,21 +6,16 @@ import 'package:democracy/post/view/widgets/post_widget_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ReplyTos extends StatefulWidget {
+class ReplyTos extends StatelessWidget {
   const ReplyTos({super.key, required this.post});
 
   final Post post;
 
   @override
-  State<ReplyTos> createState() => _ReplyTosState();
-}
-
-class _ReplyTosState extends State<ReplyTos> {
-  @override
   Widget build(BuildContext context) {
     return BlocBuilder<ReplyToBloc, ReplyToState>(
       buildWhen: (previous, current) {
-        return widget.post.id == current.postId;
+        return post.id == current.postId;
       },
       builder: (context, state) {
         final replyTos = state.posts.toList();
@@ -30,7 +25,7 @@ class _ReplyTosState extends State<ReplyTos> {
             return SliverToBoxAdapter(
               child: FailureRetryButton(
                 onPressed: () => context.read<ReplyToBloc>().add(
-                  ReplyToEvent.get(post: widget.post),
+                  ReplyToEvent.get(post: post),
                 ),
               ),
             );

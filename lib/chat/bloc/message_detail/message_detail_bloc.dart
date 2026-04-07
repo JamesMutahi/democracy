@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/repository/api_repository.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
@@ -26,7 +28,7 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
     required this.authRepository,
     required this.apiRepository,
   }) : super(const MessageDetailState.initial()) {
-    webSocketService.messages.listen((message) {
+    _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
         if (message['payload']['request_id'] == requestId) {
           switch (message['payload']['action']) {
@@ -148,6 +150,13 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
     }
   }
 
+  @override
+  Future<void> close() async {
+    await _subscription.cancel();
+    await super.close();
+  }
+
+  late StreamSubscription _subscription;
   final WebSocketService webSocketService;
   final AuthRepository authRepository;
   final APIRepository apiRepository;
