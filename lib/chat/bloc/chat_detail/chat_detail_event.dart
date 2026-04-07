@@ -18,10 +18,6 @@ sealed class ChatDetailEvent with _$ChatDetailEvent {
     required Map<String, dynamic> payload,
   }) = _Deleted;
 
-  const factory ChatDetailEvent.directMessageSent({
-    required Map<String, dynamic> payload,
-  }) = _DirectMessageSent;
-
   const factory ChatDetailEvent.create({required User user}) = _Create;
 
   const factory ChatDetailEvent.get({required Chat chat}) = _Get;
@@ -41,6 +37,7 @@ sealed class ChatDetailEvent with _$ChatDetailEvent {
     String? imagePath2,
     String? imagePath3,
     String? imagePath4,
+    String? videoPath,
     String? filePath,
     LatLng? location,
   }) = _SendDirectMessage;

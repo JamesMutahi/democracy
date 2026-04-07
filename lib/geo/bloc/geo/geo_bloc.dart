@@ -52,7 +52,7 @@ class GeoBloc extends Bloc<GeoEvent, GeoState> {
     });
   }
 
-  Future _onGetCounties(_GetCounties event, Emitter<GeoState> emit) async {
+  void _onGetCounties(_GetCounties event, Emitter<GeoState> emit) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {'action': 'counties'},
@@ -60,10 +60,10 @@ class GeoBloc extends Bloc<GeoEvent, GeoState> {
     webSocketService.send(message);
   }
 
-  Future _onGetConstituencies(
+  void _onGetConstituencies(
     _GetConstituencies event,
     Emitter<GeoState> emit,
-  ) async {
+  ) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {'action': 'constituencies', 'county': event.county.id},
@@ -71,7 +71,7 @@ class GeoBloc extends Bloc<GeoEvent, GeoState> {
     webSocketService.send(message);
   }
 
-  Future _onGetWards(_GetWards event, Emitter<GeoState> emit) async {
+  void _onGetWards(_GetWards event, Emitter<GeoState> emit) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {'action': 'wards', 'constituency': event.constituency.id},
@@ -79,10 +79,10 @@ class GeoBloc extends Bloc<GeoEvent, GeoState> {
     webSocketService.send(message);
   }
 
-  Future _onReceivedCounties(
+  void _onReceivedCounties(
     _ReceivedCounties event,
     Emitter<GeoState> emit,
-  ) async {
+  ) {
     emit(GeoState(status: GeoStatus.loading));
     if (event.payload['response_status'] == 200) {
       final List<County> counties = List.from(
@@ -94,10 +94,10 @@ class GeoBloc extends Bloc<GeoEvent, GeoState> {
     }
   }
 
-  Future _onReceivedConstituencies(
+  void _onReceivedConstituencies(
     _ReceivedConstituencies event,
     Emitter<GeoState> emit,
-  ) async {
+  ) {
     emit(state.copyWith(status: GeoStatus.loading));
     if (event.payload['response_status'] == 200) {
       final List<Constituency> constituencies = List.from(
@@ -115,7 +115,7 @@ class GeoBloc extends Bloc<GeoEvent, GeoState> {
     }
   }
 
-  Future _onReceivedWards(_ReceivedWards event, Emitter<GeoState> emit) async {
+  void _onReceivedWards(_ReceivedWards event, Emitter<GeoState> emit) {
     emit(state.copyWith(status: GeoStatus.loading));
     if (event.payload['response_status'] == 200) {
       final List<Ward> wards = List.from(

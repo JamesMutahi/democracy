@@ -27,7 +27,7 @@ class ReplyToBloc extends Bloc<ReplyToEvent, ReplyToState> {
     on<_Update>((event, emit) => _onUpdate(event, emit));
   }
 
-  Future _onGet(_Get event, Emitter<ReplyToState> emit) async {
+  void _onGet(_Get event, Emitter<ReplyToState> emit) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -39,7 +39,7 @@ class ReplyToBloc extends Bloc<ReplyToEvent, ReplyToState> {
     webSocketService.send(message);
   }
 
-  Future _onReceived(_Received event, Emitter<ReplyToState> emit) async {
+  void _onReceived(_Received event, Emitter<ReplyToState> emit) {
     emit(state.copyWith(status: ReplyToStatus.loading));
     if (event.payload['response_status'] == 200) {
       final List<Post> posts = List.from(

@@ -54,7 +54,7 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
     });
   }
 
-  Future _onCreated(_Created event, Emitter<MeetingDetailState> emit) async {
+  void _onCreated(_Created event, Emitter<MeetingDetailState> emit) {
     emit(MeetingDetailLoading());
     if (event.payload['response_status'] == 201) {
       Meeting meeting = Meeting.fromJson(event.payload['data']);
@@ -64,7 +64,7 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
     }
   }
 
-  Future _onLoaded(_Loaded event, Emitter<MeetingDetailState> emit) async {
+  void _onLoaded(_Loaded event, Emitter<MeetingDetailState> emit) {
     emit(MeetingDetailLoading());
     if (event.payload['response_status'] == 200) {
       Meeting meeting = Meeting.fromJson(event.payload['data']);
@@ -74,7 +74,7 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
     }
   }
 
-  Future _onUpdated(_Updated event, Emitter<MeetingDetailState> emit) async {
+  void _onUpdated(_Updated event, Emitter<MeetingDetailState> emit) {
     emit(MeetingDetailLoading());
     if (event.payload['response_status'] == 200) {
       final Meeting meeting = Meeting.fromJson(event.payload['data']);
@@ -84,7 +84,7 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
     }
   }
 
-  Future _onDeleted(_Deleted event, Emitter<MeetingDetailState> emit) async {
+  void _onDeleted(_Deleted event, Emitter<MeetingDetailState> emit) {
     emit(MeetingDetailLoading());
     if (event.payload['response_status'] == 204) {
       emit(MeetingDeleted(meetingId: event.payload['pk']));
@@ -93,7 +93,7 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
     }
   }
 
-  Future _onJoin(_Join event, Emitter<MeetingDetailState> emit) async {
+  void _onJoin(_Join event, Emitter<MeetingDetailState> emit) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -105,7 +105,7 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
     webSocketService.send(message);
   }
 
-  Future _onLeave(_Leave event, Emitter<MeetingDetailState> emit) async {
+  void _onLeave(_Leave event, Emitter<MeetingDetailState> emit) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -117,7 +117,7 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
     webSocketService.send(message);
   }
 
-  Future _onLeft(_Left event, Emitter<MeetingDetailState> emit) async {
+  void _onLeft(_Left event, Emitter<MeetingDetailState> emit) {
     emit(MeetingDetailLoading());
     if (event.payload['response_status'] == 200) {
       emit(MeetingLeft(meetingId: event.payload['data']['pk']));

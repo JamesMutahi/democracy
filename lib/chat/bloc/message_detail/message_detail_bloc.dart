@@ -62,7 +62,7 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
     });
   }
 
-  Future _onCreated(_Created event, Emitter<MessageDetailState> emit) async {
+  void _onCreated(_Created event, Emitter<MessageDetailState> emit) {
     emit(MessageDetailLoading());
     if (event.payload['response_status'] == 201) {
       Message message = Message.fromJson(event.payload['data']);
@@ -72,7 +72,7 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
     }
   }
 
-  Future _onUpdated(_Updated event, Emitter<MessageDetailState> emit) async {
+  void _onUpdated(_Updated event, Emitter<MessageDetailState> emit) {
     emit(MessageDetailLoading());
     if (event.payload['response_status'] == 200) {
       Message message = Message.fromJson(event.payload['data']);
@@ -82,7 +82,7 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
     }
   }
 
-  Future _onDeleted(_Deleted event, Emitter<MessageDetailState> emit) async {
+  void _onDeleted(_Deleted event, Emitter<MessageDetailState> emit) {
     emit(MessageDetailLoading());
     if (event.payload['response_status'] == 204) {
       emit(
@@ -123,7 +123,7 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
     }
   }
 
-  Future _onEdit(_Edit event, Emitter<MessageDetailState> emit) async {
+  void _onEdit(_Edit event, Emitter<MessageDetailState> emit) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -136,7 +136,7 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
     webSocketService.send(message);
   }
 
-  Future _onDelete(_Delete event, Emitter<MessageDetailState> emit) async {
+  void _onDelete(_Delete event, Emitter<MessageDetailState> emit) {
     for (Message msg in event.messages) {
       Map<String, dynamic> message = {
         'stream': stream,

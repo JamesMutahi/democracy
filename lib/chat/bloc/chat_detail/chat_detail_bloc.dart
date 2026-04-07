@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:democracy/app/bloc/repository/api_repository.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/constitution/models/section.dart';
@@ -23,8 +23,11 @@ const String stream = 'chats';
 const String requestId = 'chats';
 
 class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
-  ChatDetailBloc({required this.webSocketService})
-    : super(const ChatDetailState.initial()) {
+  ChatDetailBloc({
+    required this.webSocketService,
+    required this.authRepository,
+    required this.apiRepository,
+  }) : super(const ChatDetailState.initial()) {
     _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
         if (message['payload']['request_id'] != 'messages') {
@@ -37,8 +40,6 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
               add(_Updated(payload: message['payload']));
             case 'delete':
               add(_Deleted(payload: message['payload']));
-            case 'direct_message':
-              add(_DirectMessageSent(payload: message['payload']));
           }
         }
       }
@@ -55,9 +56,6 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
     on<_Deleted>((event, emit) {
       _onDeleted(event, emit);
     });
-    on<_DirectMessageSent>((event, emit) {
-      _onDirectMessageSent(event, emit);
-    });
     on<_Create>((event, emit) {
       _onCreate(event, emit);
     });
@@ -67,15 +65,15 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
     on<_Subscribe>((event, emit) {
       _onSubscribe(event, emit);
     });
-    on<_SendDirectMessage>((event, emit) {
-      _onSendDirectMessage(event, emit);
+    on<_SendDirectMessage>((event, emit) async {
+      await _onSendDirectMessage(event, emit);
     });
     on<_MarkAsRead>((event, emit) {
       _onMarkAsRead(event, emit);
     });
   }
 
-  Future _onCreated(_Created event, Emitter<ChatDetailState> emit) async {
+  void _onCreated(_Created event, Emitter<ChatDetailState> emit) {
     emit(ChatDetailLoading());
     if (event.payload['response_status'] == 201) {
       final Chat chat = Chat.fromJson(event.payload['data']);
@@ -85,7 +83,7 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
     }
   }
 
-  Future _onLoaded(_Loaded event, Emitter<ChatDetailState> emit) async {
+  void _onLoaded(_Loaded event, Emitter<ChatDetailState> emit) {
     emit(ChatDetailLoading());
     if (event.payload['response_status'] == 200) {
       final Chat chat = Chat.fromJson(event.payload['data']);
@@ -95,7 +93,7 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
     }
   }
 
-  Future _onUpdated(_Updated event, Emitter<ChatDetailState> emit) async {
+  void _onUpdated(_Updated event, Emitter<ChatDetailState> emit) {
     emit(ChatDetailLoading());
     if (event.payload['response_status'] == 200) {
       final Chat chat = Chat.fromJson(event.payload['data']);
@@ -105,7 +103,7 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
     }
   }
 
-  Future _onDeleted(_Deleted event, Emitter<ChatDetailState> emit) async {
+  void _onDeleted(_Deleted event, Emitter<ChatDetailState> emit) {
     emit(ChatDetailLoading());
     if (event.payload['response_status'] == 204) {
       emit(ChatDeleted(chatId: event.payload['pk']));
@@ -114,22 +112,7 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
     }
   }
 
-  Future _onDirectMessageSent(
-    _DirectMessageSent event,
-    Emitter<ChatDetailState> emit,
-  ) async {
-    emit(ChatDetailLoading());
-    if (event.payload['response_status'] == 200) {
-      final List<Chat> chats = List.from(
-        event.payload['data'].map((e) => Chat.fromJson(e)),
-      );
-      emit(DirectMessageSent(chats: chats));
-    } else {
-      emit(ChatDetailFailure(error: event.payload['errors'].toString()));
-    }
-  }
-
-  Future _onCreate(_Create event, Emitter<ChatDetailState> emit) async {
+  void _onCreate(_Create event, Emitter<ChatDetailState> emit) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -141,7 +124,7 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
     webSocketService.send(message);
   }
 
-  Future _onGet(_Get event, Emitter<ChatDetailState> emit) async {
+  void _onGet(_Get event, Emitter<ChatDetailState> emit) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -153,7 +136,7 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
     webSocketService.send(message);
   }
 
-  Future _onSubscribe(_Subscribe event, Emitter<ChatDetailState> emit) async {
+  void _onSubscribe(_Subscribe event, Emitter<ChatDetailState> emit) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -169,47 +152,34 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
     _SendDirectMessage event,
     Emitter<ChatDetailState> emit,
   ) async {
-    List<int> userPks = event.users.map((user) => user.id).toList();
-    Map<String, dynamic> message = {
-      'stream': stream,
-      'payload': {
-        'action': 'direct_message',
-        'request_id': requestId,
-        'user_pks': userPks,
-        'data': {
-          'text': event.text,
-          'post_id': event.post?.id,
-          'ballot_id': event.ballot?.id,
-          'survey_id': event.survey?.id,
-          'petition_id': event.petition?.id,
-          'meeting_id': event.meeting?.id,
-          if (event.imagePath1 != null)
-            'image1_base64': base64Encode(
-              File(event.imagePath1!).readAsBytesSync(),
-            ),
-          if (event.imagePath2 != null)
-            'image2_base64': base64Encode(
-              File(event.imagePath2!).readAsBytesSync(),
-            ),
-          if (event.imagePath3 != null)
-            'image3_base64': base64Encode(
-              File(event.imagePath3!).readAsBytesSync(),
-            ),
-          if (event.imagePath4 != null)
-            'image4_base64': base64Encode(
-              File(event.imagePath4!).readAsBytesSync(),
-            ),
-          'file': event.filePath,
-          if (event.location != null)
-            'location':
-                'POINT (${event.location!.longitude} ${event.location!.latitude})',
-        },
-      },
-    };
-    webSocketService.send(message);
+    emit(ChatDetailLoading());
+    try {
+      String? token = await authRepository.getToken();
+      final chats = await apiRepository.createDirectMessage(
+        token: token!,
+        users: event.users,
+        text: event.text,
+        post: event.post,
+        ballot: event.ballot,
+        survey: event.survey,
+        petition: event.petition,
+        meeting: event.meeting,
+        section: event.section,
+        imagePath1: event.imagePath1,
+        imagePath2: event.imagePath2,
+        imagePath3: event.imagePath3,
+        imagePath4: event.imagePath4,
+        videoPath: event.videoPath,
+        filePath: event.filePath,
+        location: event.location,
+      );
+      emit(DirectMessageSent(chats: chats));
+    } catch (e) {
+      emit(ChatDetailFailure(error: e.toString()));
+    }
   }
 
-  Future _onMarkAsRead(_MarkAsRead event, Emitter<ChatDetailState> emit) async {
+  void _onMarkAsRead(_MarkAsRead event, Emitter<ChatDetailState> emit) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -229,4 +199,6 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
 
   late StreamSubscription _subscription;
   final WebSocketService webSocketService;
+  final AuthRepository authRepository;
+  final APIRepository apiRepository;
 }

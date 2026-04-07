@@ -34,7 +34,7 @@ class BallotsBloc extends Bloc<BallotsEvent, BallotsState> {
     on<_Remove>((event, emit) => _onRemove(event, emit));
   }
 
-  Future _onGet(_Get event, Emitter<BallotsState> emit) async {
+  void _onGet(_Get event, Emitter<BallotsState> emit) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -54,7 +54,7 @@ class BallotsBloc extends Bloc<BallotsEvent, BallotsState> {
     webSocketService.send(message);
   }
 
-  Future _onReceived(_Received event, Emitter<BallotsState> emit) async {
+  void _onReceived(_Received event, Emitter<BallotsState> emit) {
     emit(state.copyWith(status: BallotsStatus.loading));
     if (event.payload['response_status'] == 200) {
       final List<Ballot> ballots = List.from(

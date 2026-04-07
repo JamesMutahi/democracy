@@ -33,7 +33,7 @@ class FollowingPostsBloc
     on<_Update>((event, emit) => _onUpdate(event, emit));
   }
 
-  Future _onGet(_Get event, Emitter<FollowingPostsState> emit) async {
+  void _onGet(_Get event, Emitter<FollowingPostsState> emit) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -45,7 +45,7 @@ class FollowingPostsBloc
     webSocketService.send(message);
   }
 
-  Future _onReceived(_Received event, Emitter<FollowingPostsState> emit) async {
+  void _onReceived(_Received event, Emitter<FollowingPostsState> emit) {
     emit(state.copyWith(status: FollowingPostsStatus.loading));
     if (event.payload['response_status'] == 200) {
       final List<Post> posts = List.from(

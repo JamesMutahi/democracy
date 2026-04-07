@@ -31,7 +31,7 @@ class ChatsBloc extends Bloc<ChatsEvent, ChatsState> {
     on<_UpdateMultiple>((event, emit) => _onUpdateMultiple(event, emit));
   }
 
-  Future _onGet(_Get event, Emitter<ChatsState> emit) async {
+  void _onGet(_Get event, Emitter<ChatsState> emit) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -44,7 +44,7 @@ class ChatsBloc extends Bloc<ChatsEvent, ChatsState> {
     webSocketService.send(message);
   }
 
-  Future _onReceived(_Received event, Emitter<ChatsState> emit) async {
+  void _onReceived(_Received event, Emitter<ChatsState> emit) {
     emit(state.copyWith(status: ChatsStatus.loading));
     if (event.payload['response_status'] == 200) {
       final List<Chat> chats = List.from(

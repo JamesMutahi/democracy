@@ -139,6 +139,8 @@ void main() async {
           BlocProvider(
             create: (context) => ChatDetailBloc(
               webSocketService: context.read<WebSocketService>(),
+              authRepository: context.read<AuthRepository>(),
+              apiRepository: context.read<APIRepository>(),
             ),
           ),
           BlocProvider(create: (context) => ChatFilterCubit()),
@@ -197,6 +199,8 @@ void main() async {
           BlocProvider(
             create: (context) => PetitionDetailBloc(
               webSocketService: context.read<WebSocketService>(),
+              authRepository: context.read<AuthRepository>(),
+              apiRepository: context.read<APIRepository>(),
             ),
           ),
           BlocProvider(

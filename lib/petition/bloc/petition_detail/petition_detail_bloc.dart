@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:democracy/app/bloc/repository/api_repository.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/geo/models/constituency.dart';
 import 'package:democracy/geo/models/county.dart';
 import 'package:democracy/geo/models/ward.dart';
@@ -19,8 +19,11 @@ const String requestId = 'petitions';
 
 class PetitionDetailBloc
     extends Bloc<PetitionDetailEvent, PetitionDetailState> {
-  PetitionDetailBloc({required this.webSocketService})
-    : super(const PetitionDetailState.initial()) {
+  PetitionDetailBloc({
+    required this.webSocketService,
+    required this.authRepository,
+    required this.apiRepository,
+  }) : super(const PetitionDetailState.initial()) {
     _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
         switch (message['payload']['action']) {
@@ -49,8 +52,8 @@ class PetitionDetailBloc
     on<_Deleted>((event, emit) {
       _onDeleted(event, emit);
     });
-    on<_Create>((event, emit) {
-      _onCreate(event, emit);
+    on<_Create>((event, emit) async {
+      await _onCreate(event, emit);
     });
     on<_Retrieve>((event, emit) {
       _onRetrieve(event, emit);
@@ -69,7 +72,7 @@ class PetitionDetailBloc
     });
   }
 
-  Future _onCreated(_Created event, Emitter<PetitionDetailState> emit) async {
+  void _onCreated(_Created event, Emitter<PetitionDetailState> emit) {
     emit(PetitionDetailLoading());
     if (event.payload['response_status'] == 201) {
       Petition petition = Petition.fromJson(event.payload['data']);
@@ -79,7 +82,7 @@ class PetitionDetailBloc
     }
   }
 
-  Future _onLoaded(_Loaded event, Emitter<PetitionDetailState> emit) async {
+  void _onLoaded(_Loaded event, Emitter<PetitionDetailState> emit) {
     emit(PetitionDetailLoading());
     if (event.payload['response_status'] == 200) {
       Petition petition = Petition.fromJson(event.payload['data']);
@@ -89,7 +92,7 @@ class PetitionDetailBloc
     }
   }
 
-  Future _onUpdated(_Updated event, Emitter<PetitionDetailState> emit) async {
+  void _onUpdated(_Updated event, Emitter<PetitionDetailState> emit) {
     emit(PetitionDetailLoading());
     if (event.payload['response_status'] == 200) {
       final Petition petition = Petition.fromJson(event.payload['data']);
@@ -99,7 +102,7 @@ class PetitionDetailBloc
     }
   }
 
-  Future _onDeleted(_Deleted event, Emitter<PetitionDetailState> emit) async {
+  void _onDeleted(_Deleted event, Emitter<PetitionDetailState> emit) {
     emit(PetitionDetailLoading());
     if (event.payload['response_status'] == 204) {
       emit(PetitionDeleted(petitionId: event.payload['pk']));
@@ -109,25 +112,25 @@ class PetitionDetailBloc
   }
 
   Future _onCreate(_Create event, Emitter<PetitionDetailState> emit) async {
-    Map<String, dynamic> message = {
-      'stream': stream,
-      'payload': {
-        'action': 'create',
-        'request_id': requestId,
-        'data': {
-          'title': event.title,
-          'image_base64': base64Encode(File(event.imagePath).readAsBytesSync()),
-          'description': event.description,
-          'county_id': event.county?.id,
-          'constituency_id': event.constituency?.id,
-          'ward_id': event.ward?.id,
-        },
-      },
-    };
-    webSocketService.send(message);
+    emit(PetitionDetailLoading());
+    try {
+      String? token = await authRepository.getToken();
+      Petition petition = await apiRepository.createPetition(
+        token: token!,
+        title: event.title,
+        description: event.description,
+        imagePath: event.imagePath,
+        county: event.county,
+        constituency: event.constituency,
+        ward: event.ward,
+      );
+      emit(PetitionCreated(petition: petition));
+    } catch (e) {
+      emit(PetitionDetailFailure(error: e.toString()));
+    }
   }
 
-  Future _onRetrieve(_Retrieve event, Emitter<PetitionDetailState> emit) async {
+  void _onRetrieve(_Retrieve event, Emitter<PetitionDetailState> emit) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -139,7 +142,7 @@ class PetitionDetailBloc
     webSocketService.send(message);
   }
 
-  Future _onSupport(_Support event, Emitter<PetitionDetailState> emit) async {
+  void _onSupport(_Support event, Emitter<PetitionDetailState> emit) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -151,7 +154,7 @@ class PetitionDetailBloc
     webSocketService.send(message);
   }
 
-  Future _onChangeStatus(_ChangeStatus event, Emitter<PetitionDetailState> emit) async {
+  void _onChangeStatus(_ChangeStatus event, Emitter<PetitionDetailState> emit) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -163,7 +166,7 @@ class PetitionDetailBloc
     webSocketService.send(message);
   }
 
-  Future _onReceived(_Received event, Emitter<PetitionDetailState> emit) async {
+  void _onReceived(_Received event, Emitter<PetitionDetailState> emit) {
     emit(PetitionDetailLoading());
     if (event.payload['response_status'] == 200) {
       //
@@ -172,10 +175,7 @@ class PetitionDetailBloc
     }
   }
 
-  Future _onUnsubscribe(
-    _Unsubscribe event,
-    Emitter<PetitionDetailState> emit,
-  ) async {
+  void _onUnsubscribe(_Unsubscribe event, Emitter<PetitionDetailState> emit) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -195,4 +195,6 @@ class PetitionDetailBloc
 
   late StreamSubscription _subscription;
   final WebSocketService webSocketService;
+  final AuthRepository authRepository;
+  final APIRepository apiRepository;
 }
