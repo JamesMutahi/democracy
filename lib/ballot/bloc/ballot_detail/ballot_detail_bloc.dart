@@ -24,6 +24,7 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
           case 'retrieve':
             add(_Loaded(payload: message['payload']));
           case 'update':
+          case 'add_reason':
             add(_Updated(payload: message['payload']));
           case 'delete':
             add(_Deleted(payload: message['payload']));
