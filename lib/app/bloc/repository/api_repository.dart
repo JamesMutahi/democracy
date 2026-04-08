@@ -47,7 +47,9 @@ class APIRepository {
         File file = File(filePath);
         fileName = file.path.split('/').last;
       }
-      FormData data = FormData.fromMap({
+
+      final data = {
+        'status': status == PostStatus.published ? 'published' : 'draft',
         'body': body,
         'reply_to_id': replyTo?.id,
         'repost_of_id': repostOf?.id,
@@ -57,8 +59,88 @@ class APIRepository {
         'petition_id': petition?.id,
         'meeting_id': meeting?.id,
         'section_id': section?.id,
+        if (imagePath1 != null)
+          'image1': await MultipartFile.fromFile(imagePath1),
+        if (imagePath2 != null)
+          'image2': await MultipartFile.fromFile(imagePath2),
+        if (imagePath3 != null)
+          'image3': await MultipartFile.fromFile(imagePath3),
+        if (imagePath4 != null)
+          'image4': await MultipartFile.fromFile(imagePath4),
+        if (videoPath != null) 'video': await MultipartFile.fromFile(videoPath),
+        if (filePath != null) 'file': await MultipartFile.fromFile(filePath),
+        'file_name': fileName,
+        if (location != null)
+          'location': 'POINT (${location.longitude} ${location.latitude})',
+      };
+
+      // Flatten keys: Manually add tags in a format Django Rest Framework understands
+      for (int i = 0; i < tags.length; i++) {
+        data["tags[$i]id"] = tags[i]['id'];
+        data["tags[$i]text"] = tags[i]['text'];
+      }
+
+      Response response = await dio.post(
+        '/post/create/',
+        data: FormData.fromMap(data),
+        options: Options(
+          headers: <String, String>{'Authorization': 'Token $token'},
+        ),
+      );
+
+      if (response.statusCode == 201) {
+        final Post post = Post.fromJson(response.data);
+        return post;
+      } else {
+        return Future.error('Failed to create post: ${response.data}');
+      }
+    } on DioException catch (e) {
+      return Future.error(e.response?.data ?? e.message ?? 'Unknown error');
+    } catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
+  Future<Post> patchPost({
+    required String token,
+    required int id,
+    String? body,
+    required PostStatus status,
+    Post? repostOf,
+    Post? replyTo,
+    Post? communityNoteOf,
+    Ballot? ballot,
+    Survey? survey,
+    Petition? petition,
+    Meeting? meeting,
+    Section? section,
+    required List<Map<String, dynamic>> tags,
+    String? imagePath1,
+    String? imagePath2,
+    String? imagePath3,
+    String? imagePath4,
+    String? videoPath,
+    String? filePath,
+    LatLng? location,
+  }) async {
+    try {
+      String? fileName;
+      if (filePath != null) {
+        File file = File(filePath);
+        fileName = file.path.split('/').last;
+      }
+
+      final data = {
         'status': status == PostStatus.published ? 'published' : 'draft',
-        'tags': tags,
+        'body': ?body,
+        'reply_to_id': ?replyTo?.id,
+        'repost_of_id': ?repostOf?.id,
+        'community_note_of_id': ?communityNoteOf?.id,
+        'ballot_id': ?ballot?.id,
+        'survey_id': ?survey?.id,
+        'petition_id': ?petition?.id,
+        'meeting_id': ?meeting?.id,
+        'section_id': ?section?.id,
         if (imagePath1 != null)
           'image1': await MultipartFile.fromFile(imagePath1),
         if (imagePath2 != null)
@@ -72,15 +154,22 @@ class APIRepository {
         'file_name': ?fileName,
         if (location != null)
           'location': 'POINT (${location.longitude} ${location.latitude})',
-      });
-      Response response = await dio.post(
-        '/posts/create/',
-        data: data,
+      };
+
+      // Flatten keys: Manually add tags in a format Django Rest Framework understands
+      for (int i = 0; i < tags.length; i++) {
+        data["tags[$i]id"] = tags[i]['id'];
+        data["tags[$i]text"] = tags[i]['text'];
+      }
+
+      Response response = await dio.patch(
+        '/post/$id/update/',
+        data: FormData.fromMap(data),
         options: Options(
           headers: <String, String>{'Authorization': 'Token $token'},
         ),
       );
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         final Post post = Post.fromJson(response.data);
         return post;
       } else {

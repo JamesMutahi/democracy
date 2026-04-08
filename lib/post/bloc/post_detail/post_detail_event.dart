@@ -10,13 +10,13 @@ sealed class PostDetailEvent with _$PostDetailEvent {
     required Map<String, dynamic> payload,
   }) = _Loaded;
 
-  const factory PostDetailEvent.patched({
-    required Map<String, dynamic> payload,
-  }) = _Patched;
-
   const factory PostDetailEvent.updated({
     required Map<String, dynamic> payload,
   }) = _Updated;
+
+  const factory PostDetailEvent.patched({
+    required Map<String, dynamic> payload,
+  }) = _Patched;
 
   const factory PostDetailEvent.deleted({
     required Map<String, dynamic> payload,
@@ -60,7 +60,7 @@ sealed class PostDetailEvent with _$PostDetailEvent {
     Petition? petition,
     Meeting? meeting,
     Section? section,
-    required List<Map> tags,
+    required List<Map<String, dynamic>> tags,
     String? imagePath1,
     String? imagePath2,
     String? imagePath3,
@@ -76,11 +76,20 @@ sealed class PostDetailEvent with _$PostDetailEvent {
     required int id,
     required String body,
     required PostStatus status,
-    required List<Map> tags,
+    Post? repostOf,
+    Post? replyTo,
+    Post? communityNoteOf,
+    Ballot? ballot,
+    Survey? survey,
+    Petition? petition,
+    Meeting? meeting,
+    Section? section,
+    required List<Map<String, dynamic>> tags,
     String? imagePath1,
     String? imagePath2,
     String? imagePath3,
     String? imagePath4,
+    String? videoPath,
     String? filePath,
     LatLng? location,
   }) = _Patch;

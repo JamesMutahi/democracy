@@ -240,7 +240,7 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
   }
 
   void _createPost() {
-    List<Map> tags = [];
+    List<Map<String, dynamic>> tags = [];
     for (var tag in _controller.tags) {
       tags.add({'id': tag.id, 'text': tag.text});
     }

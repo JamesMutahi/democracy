@@ -23,45 +23,45 @@ import 'package:fluttertagger/fluttertagger.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-class PostUpdate extends StatefulWidget {
-  const PostUpdate({super.key, required this.post});
+class PostUpdatePage extends StatefulWidget {
+  const PostUpdatePage({super.key, required this.post});
 
   final Post post;
 
   @override
-  State<PostUpdate> createState() => _PostUpdateState();
+  State<PostUpdatePage> createState() => _PostUpdatePageState();
 }
 
-class _PostUpdateState extends State<PostUpdate> {
+class _PostUpdatePageState extends State<PostUpdatePage> {
   late final _controller = FlutterTaggerController();
   ValueKey centerKey = ValueKey('Center');
-  bool _disablePostButton = false;
-  List<File> files = [];
-  int fileLimit = 4;
+
+  bool _canPost = false;
+
+  // Media state
+  File? _insertedImage;
   List<File> _selectedImages = [];
-  File? _selectedFile;
-  File? _insertedContent;
-  LatLng? _location;
   File? _selectedVideo;
+  File? _selectedFile;
+  LatLng? _selectedLocation;
 
   @override
   void initState() {
-    if (widget.post.replyTo != null) {
-      context.read<ReplyToBloc>().add(
-        ReplyToEvent.get(post: widget.post.replyTo!),
-      );
-      context.read<ReplyToBloc>().add(
-        ReplyToEvent.add(post: widget.post.replyTo!),
-      );
-    }
+    _getData();
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _controller.text = widget.post.body;
     });
   }
 
+  void _getData() {
+    if (widget.post.replyTo != null) {
+      context.read<ReplyToBloc>().add(ReplyToEvent.get(post: widget.post));
+    }
+  }
+
   void _updatePost({PostStatus status = PostStatus.published}) {
-    List<Map> tags = [];
+    List<Map<String, dynamic>> tags = [];
     for (var tag in _controller.tags) {
       tags.add({'id': tag.id, 'text': tag.text});
     }
@@ -70,37 +70,59 @@ class _PostUpdateState extends State<PostUpdate> {
         id: widget.post.id,
         body: _controller.formattedText,
         status: status,
+        replyTo: widget.post.replyTo,
+        repostOf: widget.post.repostOf,
+        ballot: widget.post.ballot,
+        survey: widget.post.survey,
+        petition: widget.post.petition,
+        meeting: widget.post.meeting,
+        section: widget.post.section,
         tags: tags,
-        imagePath1: _insertedContent != null
-            ? _insertedContent!.path
-            : _selectedImages.isNotEmpty
-            ? _selectedImages[0].path
-            : null,
+        imagePath1:
+            _insertedImage?.path ??
+            (_selectedImages.isNotEmpty ? _selectedImages[0].path : null),
         imagePath2: _selectedImages.length > 1 ? _selectedImages[1].path : null,
         imagePath3: _selectedImages.length > 2 ? _selectedImages[2].path : null,
         imagePath4: _selectedImages.length > 3 ? _selectedImages[3].path : null,
+        videoPath: _selectedVideo?.path,
         filePath: _selectedFile?.path,
-        location: _location,
+        location: _selectedLocation,
       ),
     );
+  }
+
+  void _updatePostButtonState(String text) {
+    bool canPost = text.trim().isNotEmpty;
+    if (!canPost && widget.post.replyTo != null) {
+      canPost =
+          _insertedImage != null ||
+          _selectedImages.isNotEmpty ||
+          _selectedVideo != null ||
+          _selectedFile != null ||
+          _selectedLocation != null;
+    }
+    if (canPost != _canPost) {
+      setState(() => _canPost = canPost);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        if (didPop) {
-          return;
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+
+        if (!_canPost) {
+          Navigator.pop(context);
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => _SaveDraftDialog(
+              onYesPressed: () => _updatePost(status: PostStatus.draft),
+            ),
+          );
         }
-        _disablePostButton
-            ? Navigator.pop(context)
-            : showDialog(
-                context: context,
-                builder: (context) => _SaveDraftDialog(
-                  onYesPressed: () => _updatePost(status: PostStatus.draft),
-                ),
-              );
       },
       child: MultiBlocListener(
         listeners: [
@@ -128,30 +150,30 @@ class _PostUpdateState extends State<PostUpdate> {
           appBar: AppBar(
             leading: IconButton(
               onPressed: () {
-                _disablePostButton
-                    ? Navigator.pop(context)
-                    : showDialog(
+                _canPost
+                    ? showDialog(
                         context: context,
                         builder: (context) => _SaveDraftDialog(
                           onYesPressed: () =>
                               _updatePost(status: PostStatus.draft),
                         ),
-                      );
+                      )
+                    : null;
               },
               icon: Icon(Symbols.close),
             ),
             title: Text('Edit post'),
             actions: [
               OutlinedButton(
-                onPressed: _disablePostButton
-                    ? null
-                    : () {
+                onPressed: _canPost
+                    ? () {
                         showDialog(
                           context: context,
                           builder: (context) =>
                               PostUpdateDialog(onYesPressed: _updatePost),
                         );
-                      },
+                      }
+                    : null,
                 child: Text('Post'),
               ),
             ],
@@ -160,174 +182,162 @@ class _PostUpdateState extends State<PostUpdate> {
           body: CustomScrollView(
             center: centerKey,
             slivers: [
-              ReplyTos(post: widget.post),
-              SliverToBoxAdapter(
-                key: centerKey,
-                child: Stack(
-                  children: [
-                    ThreadLine(showBottomThread: false, showTopThread: true),
-                    Container(
-                      padding: EdgeInsets.only(
-                        left: 10,
-                        right: 15,
-                        top: 10,
-                        bottom: 5,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              PostAuthor(),
-                              PostTextField(
-                                controller: _controller,
-                                hintText: "What's new?",
-                                onChanged: (value) {
-                                  if (value == '') {
-                                    setState(() {
-                                      _disablePostButton = true;
-                                    });
-                                  } else {
-                                    setState(() {
-                                      _disablePostButton = false;
-                                    });
-                                  }
-                                },
-                                onContentInsertion: (imageFile) {
-                                  setState(() {
-                                    _insertedContent = imageFile;
-                                    _selectedImages = [];
-                                    _selectedFile = null;
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-                          if (_insertedContent != null)
-                            SingleImageView(
-                              image: _insertedContent!,
-                              onRemove: () {
-                                setState(() {
-                                  _insertedContent = null;
-                                });
-                              },
-                            ),
-                          if (_selectedImages.isNotEmpty)
-                            MultiImageView(
-                              recipient: widget.post.replyTo?.author,
-                              textEditingController: _controller,
-                              images: _selectedImages,
-                              onAdd: (images) {
-                                setState(() {
-                                  _selectedImages.addAll(images);
-                                });
-                              },
-                              onRemove: (index) {
-                                setState(() {
-                                  _selectedImages.removeAt(index);
-                                });
-                              },
-                            ),
-                          if (_selectedVideo != null)
-                            Container(
-                              margin: EdgeInsets.only(top: 10),
-                              child: VideoViewer(urls: [_selectedVideo!.path]),
-                            ),
-                          if (_selectedFile != null)
-                            Container(
-                              margin: EdgeInsets.only(top: 10),
-                              child: FileWidget(
-                                url: _selectedFile!.path,
-                                navigateToViewer: false,
-                              ),
-                            ),
-                          if (_location != null)
-                            MapWidget(mapCenter: _location!),
-                          if (widget.post.repostOf != null)
-                            DependencyContainer(
-                              child: PostTile(
-                                post: widget.post.repostOf!,
-                                isDependency: true,
-                              ),
-                            ),
-                          if (widget.post.ballot != null)
-                            DependencyContainer(
-                              child: BallotTile(
-                                ballot: widget.post.ballot!,
-                                isDependency: true,
-                              ),
-                            ),
-                          if (widget.post.survey != null)
-                            DependencyContainer(
-                              child: SurveyTile(
-                                survey: widget.post.survey!,
-                                isDependency: true,
-                              ),
-                            ),
-                          if (widget.post.petition != null)
-                            DependencyContainer(
-                              child: PetitionTile(
-                                petition: widget.post.petition!,
-                                isDependency: true,
-                              ),
-                            ),
-                          if (widget.post.meeting != null)
-                            DependencyContainer(
-                              child: MeetingTile(
-                                meeting: widget.post.meeting!,
-                                isDependency: true,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              if (widget.post.replyTo != null) ReplyTos(post: widget.post),
+              SliverToBoxAdapter(key: centerKey, child: _buildPostForm()),
             ],
           ),
           bottomNavigationBar: PostBottomNavBar(
             controller: _controller,
             reply: widget.post.replyTo,
-            onPickMedia: () async {
-              List<File> newFiles = await ImagePickerUtil.pickMultiImage(
-                limit: files.isEmpty ? fileLimit : fileLimit - files.length,
-              );
-              if (newFiles.isNotEmpty) {
-                setState(() {
-                  files.addAll(newFiles);
-                });
-              }
-            },
-            files: files,
-            fileLimit: fileLimit,
+            onPickMedia: _pickImages,
+            files: _selectedImages, // if needed by the bar
+            fileLimit: 4,
             onNewImages: (images) {
               setState(() {
                 _selectedImages = images;
+                _insertedImage = null;
               });
+              _updatePostButtonState(_controller.formattedText);
             },
             onNewFile: (file) {
-              setState(() {
-                _selectedFile = file;
-              });
+              setState(() => _selectedFile = file);
+              _updatePostButtonState(_controller.formattedText);
             },
             onLocation: (point) {
-              setState(() {
-                _location = point;
-              });
+              setState(() => _selectedLocation = point);
+              _updatePostButtonState(_controller.formattedText);
             },
             onNewVideo: (video) {
-              setState(() {
-                _selectedVideo = video;
-              });
+              setState(() => _selectedVideo = video);
+              _updatePostButtonState(_controller.formattedText);
             },
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildPostForm() {
+    return Stack(
+      children: [
+        if (widget.post.replyTo != null)
+          ThreadLine(showBottomThread: false, showTopThread: true),
+        Container(
+          padding: EdgeInsets.only(left: 10, right: 15, top: 10, bottom: 5),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  PostAuthor(),
+                  PostTextField(
+                    controller: _controller,
+                    hintText: widget.post.replyTo != null
+                        ? 'Reply'
+                        : "What's new?",
+                    onChanged: _updatePostButtonState,
+                    onContentInsertion: (imageFile) {
+                      setState(() {
+                        _insertedImage = imageFile;
+                        _selectedImages.clear();
+                        _selectedFile = null;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              if (_insertedImage != null)
+                SingleImageView(
+                  image: _insertedImage!,
+                  onRemove: () {
+                    setState(() {
+                      _insertedImage = null;
+                    });
+                  },
+                ),
+              if (_selectedImages.isNotEmpty)
+                MultiImageView(
+                  recipient: widget.post.replyTo?.author,
+                  textEditingController: _controller,
+                  images: _selectedImages,
+                  onAdd: (images) {
+                    setState(() {
+                      _selectedImages.addAll(images);
+                    });
+                  },
+                  onRemove: (index) {
+                    setState(() {
+                      _selectedImages.removeAt(index);
+                    });
+                  },
+                ),
+              if (_selectedVideo != null)
+                Container(
+                  margin: EdgeInsets.only(top: 10),
+                  child: VideoViewer(urls: [_selectedVideo!.path]),
+                ),
+              if (_selectedFile != null)
+                Container(
+                  margin: EdgeInsets.only(top: 10),
+                  child: FileWidget(
+                    url: _selectedFile!.path,
+                    navigateToViewer: false,
+                  ),
+                ),
+              if (_selectedLocation != null)
+                MapWidget(mapCenter: _selectedLocation!),
+              if (widget.post.repostOf != null)
+                DependencyContainer(
+                  child: PostTile(
+                    post: widget.post.repostOf!,
+                    isDependency: true,
+                  ),
+                ),
+              if (widget.post.ballot != null)
+                DependencyContainer(
+                  child: BallotTile(
+                    ballot: widget.post.ballot!,
+                    isDependency: true,
+                  ),
+                ),
+              if (widget.post.survey != null)
+                DependencyContainer(
+                  child: SurveyTile(
+                    survey: widget.post.survey!,
+                    isDependency: true,
+                  ),
+                ),
+              if (widget.post.petition != null)
+                DependencyContainer(
+                  child: PetitionTile(
+                    petition: widget.post.petition!,
+                    isDependency: true,
+                  ),
+                ),
+              if (widget.post.meeting != null)
+                DependencyContainer(
+                  child: MeetingTile(
+                    meeting: widget.post.meeting!,
+                    isDependency: true,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _pickImages() async {
+    final newImages = await ImagePickerUtil.pickMultiImage(
+      limit: 4 - _selectedImages.length,
+    );
+    if (newImages.isNotEmpty) {
+      setState(() => _selectedImages.addAll(newImages));
+    }
   }
 }
 

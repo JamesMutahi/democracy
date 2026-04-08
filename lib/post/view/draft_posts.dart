@@ -2,7 +2,7 @@ import 'package:democracy/app/utils/bottom_loader.dart';
 import 'package:democracy/app/utils/failure_retry_button.dart';
 import 'package:democracy/post/bloc/draft_posts/draft_posts_bloc.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:democracy/post/view/post_update.dart';
+import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -88,12 +88,7 @@ class _DraftsPostsState extends State<DraftPosts> {
                   Post post = posts[index];
                   return GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PostUpdate(post: post),
-                        ),
-                      );
+                      navigateToPostUpdate(context: context, post: post);
                     },
                     child: Container(
                       margin: EdgeInsets.only(top: 10),

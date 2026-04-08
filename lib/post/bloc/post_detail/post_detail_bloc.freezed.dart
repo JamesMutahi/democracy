@@ -1270,14 +1270,14 @@ extension PostDetailEventPatterns on PostDetailEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Loaded value)?  loaded,TResult Function( _Patched value)?  patched,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _RepostDeleted value)?  repostDeleted,TResult Function( _Reported value)?  reported,TResult Function( _Liked value)?  liked,TResult Function( _Bookmarked value)?  bookmarked,TResult Function( _Upvoted value)?  upvoted,TResult Function( _Downvoted value)?  downvoted,TResult Function( _ViewAdded value)?  viewAdded,TResult Function( _Create value)?  create,TResult Function( _Get value)?  get,TResult Function( _Patch value)?  patch,TResult Function( _AddView value)?  addView,TResult Function( _Like value)?  like,TResult Function( _Bookmark value)?  bookmark,TResult Function( _Upvote value)?  upvote,TResult Function( _Downvote value)?  downvote,TResult Function( _Delete value)?  delete,TResult Function( _DeleteRepost value)?  deleteRepost,TResult Function( _Report value)?  report,TResult Function( _Unsubscribe value)?  unsubscribe,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Loaded value)?  loaded,TResult Function( _Updated value)?  updated,TResult Function( _Patched value)?  patched,TResult Function( _Deleted value)?  deleted,TResult Function( _RepostDeleted value)?  repostDeleted,TResult Function( _Reported value)?  reported,TResult Function( _Liked value)?  liked,TResult Function( _Bookmarked value)?  bookmarked,TResult Function( _Upvoted value)?  upvoted,TResult Function( _Downvoted value)?  downvoted,TResult Function( _ViewAdded value)?  viewAdded,TResult Function( _Create value)?  create,TResult Function( _Get value)?  get,TResult Function( _Patch value)?  patch,TResult Function( _AddView value)?  addView,TResult Function( _Like value)?  like,TResult Function( _Bookmark value)?  bookmark,TResult Function( _Upvote value)?  upvote,TResult Function( _Downvote value)?  downvote,TResult Function( _Delete value)?  delete,TResult Function( _DeleteRepost value)?  deleteRepost,TResult Function( _Report value)?  report,TResult Function( _Unsubscribe value)?  unsubscribe,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that);case _Loaded() when loaded != null:
-return loaded(_that);case _Patched() when patched != null:
-return patched(_that);case _Updated() when updated != null:
-return updated(_that);case _Deleted() when deleted != null:
+return loaded(_that);case _Updated() when updated != null:
+return updated(_that);case _Patched() when patched != null:
+return patched(_that);case _Deleted() when deleted != null:
 return deleted(_that);case _RepostDeleted() when repostDeleted != null:
 return repostDeleted(_that);case _Reported() when reported != null:
 return reported(_that);case _Liked() when liked != null:
@@ -1315,14 +1315,14 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Loaded value)  loaded,required TResult Function( _Patched value)  patched,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _RepostDeleted value)  repostDeleted,required TResult Function( _Reported value)  reported,required TResult Function( _Liked value)  liked,required TResult Function( _Bookmarked value)  bookmarked,required TResult Function( _Upvoted value)  upvoted,required TResult Function( _Downvoted value)  downvoted,required TResult Function( _ViewAdded value)  viewAdded,required TResult Function( _Create value)  create,required TResult Function( _Get value)  get,required TResult Function( _Patch value)  patch,required TResult Function( _AddView value)  addView,required TResult Function( _Like value)  like,required TResult Function( _Bookmark value)  bookmark,required TResult Function( _Upvote value)  upvote,required TResult Function( _Downvote value)  downvote,required TResult Function( _Delete value)  delete,required TResult Function( _DeleteRepost value)  deleteRepost,required TResult Function( _Report value)  report,required TResult Function( _Unsubscribe value)  unsubscribe,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Loaded value)  loaded,required TResult Function( _Updated value)  updated,required TResult Function( _Patched value)  patched,required TResult Function( _Deleted value)  deleted,required TResult Function( _RepostDeleted value)  repostDeleted,required TResult Function( _Reported value)  reported,required TResult Function( _Liked value)  liked,required TResult Function( _Bookmarked value)  bookmarked,required TResult Function( _Upvoted value)  upvoted,required TResult Function( _Downvoted value)  downvoted,required TResult Function( _ViewAdded value)  viewAdded,required TResult Function( _Create value)  create,required TResult Function( _Get value)  get,required TResult Function( _Patch value)  patch,required TResult Function( _AddView value)  addView,required TResult Function( _Like value)  like,required TResult Function( _Bookmark value)  bookmark,required TResult Function( _Upvote value)  upvote,required TResult Function( _Downvote value)  downvote,required TResult Function( _Delete value)  delete,required TResult Function( _DeleteRepost value)  deleteRepost,required TResult Function( _Report value)  report,required TResult Function( _Unsubscribe value)  unsubscribe,}){
 final _that = this;
 switch (_that) {
 case _Created():
 return created(_that);case _Loaded():
-return loaded(_that);case _Patched():
-return patched(_that);case _Updated():
-return updated(_that);case _Deleted():
+return loaded(_that);case _Updated():
+return updated(_that);case _Patched():
+return patched(_that);case _Deleted():
 return deleted(_that);case _RepostDeleted():
 return repostDeleted(_that);case _Reported():
 return reported(_that);case _Liked():
@@ -1356,14 +1356,14 @@ return unsubscribe(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Patched value)?  patched,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _RepostDeleted value)?  repostDeleted,TResult? Function( _Reported value)?  reported,TResult? Function( _Liked value)?  liked,TResult? Function( _Bookmarked value)?  bookmarked,TResult? Function( _Upvoted value)?  upvoted,TResult? Function( _Downvoted value)?  downvoted,TResult? Function( _ViewAdded value)?  viewAdded,TResult? Function( _Create value)?  create,TResult? Function( _Get value)?  get,TResult? Function( _Patch value)?  patch,TResult? Function( _AddView value)?  addView,TResult? Function( _Like value)?  like,TResult? Function( _Bookmark value)?  bookmark,TResult? Function( _Upvote value)?  upvote,TResult? Function( _Downvote value)?  downvote,TResult? Function( _Delete value)?  delete,TResult? Function( _DeleteRepost value)?  deleteRepost,TResult? Function( _Report value)?  report,TResult? Function( _Unsubscribe value)?  unsubscribe,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Updated value)?  updated,TResult? Function( _Patched value)?  patched,TResult? Function( _Deleted value)?  deleted,TResult? Function( _RepostDeleted value)?  repostDeleted,TResult? Function( _Reported value)?  reported,TResult? Function( _Liked value)?  liked,TResult? Function( _Bookmarked value)?  bookmarked,TResult? Function( _Upvoted value)?  upvoted,TResult? Function( _Downvoted value)?  downvoted,TResult? Function( _ViewAdded value)?  viewAdded,TResult? Function( _Create value)?  create,TResult? Function( _Get value)?  get,TResult? Function( _Patch value)?  patch,TResult? Function( _AddView value)?  addView,TResult? Function( _Like value)?  like,TResult? Function( _Bookmark value)?  bookmark,TResult? Function( _Upvote value)?  upvote,TResult? Function( _Downvote value)?  downvote,TResult? Function( _Delete value)?  delete,TResult? Function( _DeleteRepost value)?  deleteRepost,TResult? Function( _Report value)?  report,TResult? Function( _Unsubscribe value)?  unsubscribe,}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that);case _Loaded() when loaded != null:
-return loaded(_that);case _Patched() when patched != null:
-return patched(_that);case _Updated() when updated != null:
-return updated(_that);case _Deleted() when deleted != null:
+return loaded(_that);case _Updated() when updated != null:
+return updated(_that);case _Patched() when patched != null:
+return patched(_that);case _Deleted() when deleted != null:
 return deleted(_that);case _RepostDeleted() when repostDeleted != null:
 return repostDeleted(_that);case _Reported() when reported != null:
 return reported(_that);case _Liked() when liked != null:
@@ -1400,13 +1400,13 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  patched,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Map<String, dynamic> payload)?  repostDeleted,TResult Function( Map<String, dynamic> payload)?  reported,TResult Function( Map<String, dynamic> payload)?  liked,TResult Function( Map<String, dynamic> payload)?  bookmarked,TResult Function( Map<String, dynamic> payload)?  upvoted,TResult Function( Map<String, dynamic> payload)?  downvoted,TResult Function( Map<String, dynamic> payload)?  viewAdded,TResult Function( String body,  PostStatus status,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map> tags,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? videoPath,  String? filePath,  LatLng? location)?  create,TResult Function( Post post)?  get,TResult Function( int id,  String body,  PostStatus status,  List<Map> tags,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? filePath,  LatLng? location)?  patch,TResult Function( Post post)?  addView,TResult Function( Post post)?  like,TResult Function( Post post)?  bookmark,TResult Function( Post post)?  upvote,TResult Function( Post post)?  downvote,TResult Function( Post post)?  delete,TResult Function( Post post)?  deleteRepost,TResult Function( String issue,  Post post)?  report,TResult Function( Post post)?  unsubscribe,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  patched,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Map<String, dynamic> payload)?  repostDeleted,TResult Function( Map<String, dynamic> payload)?  reported,TResult Function( Map<String, dynamic> payload)?  liked,TResult Function( Map<String, dynamic> payload)?  bookmarked,TResult Function( Map<String, dynamic> payload)?  upvoted,TResult Function( Map<String, dynamic> payload)?  downvoted,TResult Function( Map<String, dynamic> payload)?  viewAdded,TResult Function( String body,  PostStatus status,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, dynamic>> tags,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? videoPath,  String? filePath,  LatLng? location)?  create,TResult Function( Post post)?  get,TResult Function( int id,  String body,  PostStatus status,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, dynamic>> tags,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? videoPath,  String? filePath,  LatLng? location)?  patch,TResult Function( Post post)?  addView,TResult Function( Post post)?  like,TResult Function( Post post)?  bookmark,TResult Function( Post post)?  upvote,TResult Function( Post post)?  downvote,TResult Function( Post post)?  delete,TResult Function( Post post)?  deleteRepost,TResult Function( String issue,  Post post)?  report,TResult Function( Post post)?  unsubscribe,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
-return loaded(_that.payload);case _Patched() when patched != null:
-return patched(_that.payload);case _Updated() when updated != null:
-return updated(_that.payload);case _Deleted() when deleted != null:
+return loaded(_that.payload);case _Updated() when updated != null:
+return updated(_that.payload);case _Patched() when patched != null:
+return patched(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _RepostDeleted() when repostDeleted != null:
 return repostDeleted(_that.payload);case _Reported() when reported != null:
 return reported(_that.payload);case _Liked() when liked != null:
@@ -1417,7 +1417,7 @@ return downvoted(_that.payload);case _ViewAdded() when viewAdded != null:
 return viewAdded(_that.payload);case _Create() when create != null:
 return create(_that.body,_that.status,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.imagePath1,_that.imagePath2,_that.imagePath3,_that.imagePath4,_that.videoPath,_that.filePath,_that.location);case _Get() when get != null:
 return get(_that.post);case _Patch() when patch != null:
-return patch(_that.id,_that.body,_that.status,_that.tags,_that.imagePath1,_that.imagePath2,_that.imagePath3,_that.imagePath4,_that.filePath,_that.location);case _AddView() when addView != null:
+return patch(_that.id,_that.body,_that.status,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.imagePath1,_that.imagePath2,_that.imagePath3,_that.imagePath4,_that.videoPath,_that.filePath,_that.location);case _AddView() when addView != null:
 return addView(_that.post);case _Like() when like != null:
 return like(_that.post);case _Bookmark() when bookmark != null:
 return bookmark(_that.post);case _Upvote() when upvote != null:
@@ -1444,13 +1444,13 @@ return unsubscribe(_that.post);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  patched,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Map<String, dynamic> payload)  repostDeleted,required TResult Function( Map<String, dynamic> payload)  reported,required TResult Function( Map<String, dynamic> payload)  liked,required TResult Function( Map<String, dynamic> payload)  bookmarked,required TResult Function( Map<String, dynamic> payload)  upvoted,required TResult Function( Map<String, dynamic> payload)  downvoted,required TResult Function( Map<String, dynamic> payload)  viewAdded,required TResult Function( String body,  PostStatus status,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map> tags,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? videoPath,  String? filePath,  LatLng? location)  create,required TResult Function( Post post)  get,required TResult Function( int id,  String body,  PostStatus status,  List<Map> tags,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? filePath,  LatLng? location)  patch,required TResult Function( Post post)  addView,required TResult Function( Post post)  like,required TResult Function( Post post)  bookmark,required TResult Function( Post post)  upvote,required TResult Function( Post post)  downvote,required TResult Function( Post post)  delete,required TResult Function( Post post)  deleteRepost,required TResult Function( String issue,  Post post)  report,required TResult Function( Post post)  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  patched,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Map<String, dynamic> payload)  repostDeleted,required TResult Function( Map<String, dynamic> payload)  reported,required TResult Function( Map<String, dynamic> payload)  liked,required TResult Function( Map<String, dynamic> payload)  bookmarked,required TResult Function( Map<String, dynamic> payload)  upvoted,required TResult Function( Map<String, dynamic> payload)  downvoted,required TResult Function( Map<String, dynamic> payload)  viewAdded,required TResult Function( String body,  PostStatus status,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, dynamic>> tags,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? videoPath,  String? filePath,  LatLng? location)  create,required TResult Function( Post post)  get,required TResult Function( int id,  String body,  PostStatus status,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, dynamic>> tags,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? videoPath,  String? filePath,  LatLng? location)  patch,required TResult Function( Post post)  addView,required TResult Function( Post post)  like,required TResult Function( Post post)  bookmark,required TResult Function( Post post)  upvote,required TResult Function( Post post)  downvote,required TResult Function( Post post)  delete,required TResult Function( Post post)  deleteRepost,required TResult Function( String issue,  Post post)  report,required TResult Function( Post post)  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Loaded():
-return loaded(_that.payload);case _Patched():
-return patched(_that.payload);case _Updated():
-return updated(_that.payload);case _Deleted():
+return loaded(_that.payload);case _Updated():
+return updated(_that.payload);case _Patched():
+return patched(_that.payload);case _Deleted():
 return deleted(_that.payload);case _RepostDeleted():
 return repostDeleted(_that.payload);case _Reported():
 return reported(_that.payload);case _Liked():
@@ -1461,7 +1461,7 @@ return downvoted(_that.payload);case _ViewAdded():
 return viewAdded(_that.payload);case _Create():
 return create(_that.body,_that.status,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.imagePath1,_that.imagePath2,_that.imagePath3,_that.imagePath4,_that.videoPath,_that.filePath,_that.location);case _Get():
 return get(_that.post);case _Patch():
-return patch(_that.id,_that.body,_that.status,_that.tags,_that.imagePath1,_that.imagePath2,_that.imagePath3,_that.imagePath4,_that.filePath,_that.location);case _AddView():
+return patch(_that.id,_that.body,_that.status,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.imagePath1,_that.imagePath2,_that.imagePath3,_that.imagePath4,_that.videoPath,_that.filePath,_that.location);case _AddView():
 return addView(_that.post);case _Like():
 return like(_that.post);case _Bookmark():
 return bookmark(_that.post);case _Upvote():
@@ -1484,13 +1484,13 @@ return unsubscribe(_that.post);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  patched,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Map<String, dynamic> payload)?  repostDeleted,TResult? Function( Map<String, dynamic> payload)?  reported,TResult? Function( Map<String, dynamic> payload)?  liked,TResult? Function( Map<String, dynamic> payload)?  bookmarked,TResult? Function( Map<String, dynamic> payload)?  upvoted,TResult? Function( Map<String, dynamic> payload)?  downvoted,TResult? Function( Map<String, dynamic> payload)?  viewAdded,TResult? Function( String body,  PostStatus status,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map> tags,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? videoPath,  String? filePath,  LatLng? location)?  create,TResult? Function( Post post)?  get,TResult? Function( int id,  String body,  PostStatus status,  List<Map> tags,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? filePath,  LatLng? location)?  patch,TResult? Function( Post post)?  addView,TResult? Function( Post post)?  like,TResult? Function( Post post)?  bookmark,TResult? Function( Post post)?  upvote,TResult? Function( Post post)?  downvote,TResult? Function( Post post)?  delete,TResult? Function( Post post)?  deleteRepost,TResult? Function( String issue,  Post post)?  report,TResult? Function( Post post)?  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  patched,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Map<String, dynamic> payload)?  repostDeleted,TResult? Function( Map<String, dynamic> payload)?  reported,TResult? Function( Map<String, dynamic> payload)?  liked,TResult? Function( Map<String, dynamic> payload)?  bookmarked,TResult? Function( Map<String, dynamic> payload)?  upvoted,TResult? Function( Map<String, dynamic> payload)?  downvoted,TResult? Function( Map<String, dynamic> payload)?  viewAdded,TResult? Function( String body,  PostStatus status,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, dynamic>> tags,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? videoPath,  String? filePath,  LatLng? location)?  create,TResult? Function( Post post)?  get,TResult? Function( int id,  String body,  PostStatus status,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, dynamic>> tags,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? videoPath,  String? filePath,  LatLng? location)?  patch,TResult? Function( Post post)?  addView,TResult? Function( Post post)?  like,TResult? Function( Post post)?  bookmark,TResult? Function( Post post)?  upvote,TResult? Function( Post post)?  downvote,TResult? Function( Post post)?  delete,TResult? Function( Post post)?  deleteRepost,TResult? Function( String issue,  Post post)?  report,TResult? Function( Post post)?  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
-return loaded(_that.payload);case _Patched() when patched != null:
-return patched(_that.payload);case _Updated() when updated != null:
-return updated(_that.payload);case _Deleted() when deleted != null:
+return loaded(_that.payload);case _Updated() when updated != null:
+return updated(_that.payload);case _Patched() when patched != null:
+return patched(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _RepostDeleted() when repostDeleted != null:
 return repostDeleted(_that.payload);case _Reported() when reported != null:
 return reported(_that.payload);case _Liked() when liked != null:
@@ -1501,7 +1501,7 @@ return downvoted(_that.payload);case _ViewAdded() when viewAdded != null:
 return viewAdded(_that.payload);case _Create() when create != null:
 return create(_that.body,_that.status,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.imagePath1,_that.imagePath2,_that.imagePath3,_that.imagePath4,_that.videoPath,_that.filePath,_that.location);case _Get() when get != null:
 return get(_that.post);case _Patch() when patch != null:
-return patch(_that.id,_that.body,_that.status,_that.tags,_that.imagePath1,_that.imagePath2,_that.imagePath3,_that.imagePath4,_that.filePath,_that.location);case _AddView() when addView != null:
+return patch(_that.id,_that.body,_that.status,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.imagePath1,_that.imagePath2,_that.imagePath3,_that.imagePath4,_that.videoPath,_that.filePath,_that.location);case _AddView() when addView != null:
 return addView(_that.post);case _Like() when like != null:
 return like(_that.post);case _Bookmark() when bookmark != null:
 return bookmark(_that.post);case _Upvote() when upvote != null:
@@ -1665,78 +1665,6 @@ as Map<String, dynamic>,
 /// @nodoc
 
 
-class _Patched implements PostDetailEvent {
-  const _Patched({required final  Map<String, dynamic> payload}): _payload = payload;
-  
-
- final  Map<String, dynamic> _payload;
- Map<String, dynamic> get payload {
-  if (_payload is EqualUnmodifiableMapView) return _payload;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_payload);
-}
-
-
-/// Create a copy of PostDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$PatchedCopyWith<_Patched> get copyWith => __$PatchedCopyWithImpl<_Patched>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Patched&&const DeepCollectionEquality().equals(other._payload, _payload));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
-
-@override
-String toString() {
-  return 'PostDetailEvent.patched(payload: $payload)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$PatchedCopyWith<$Res> implements $PostDetailEventCopyWith<$Res> {
-  factory _$PatchedCopyWith(_Patched value, $Res Function(_Patched) _then) = __$PatchedCopyWithImpl;
-@useResult
-$Res call({
- Map<String, dynamic> payload
-});
-
-
-
-
-}
-/// @nodoc
-class __$PatchedCopyWithImpl<$Res>
-    implements _$PatchedCopyWith<$Res> {
-  __$PatchedCopyWithImpl(this._self, this._then);
-
-  final _Patched _self;
-  final $Res Function(_Patched) _then;
-
-/// Create a copy of PostDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
-  return _then(_Patched(
-payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
 class _Updated implements PostDetailEvent {
   const _Updated({required final  Map<String, dynamic> payload}): _payload = payload;
   
@@ -1798,6 +1726,78 @@ class __$UpdatedCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
   return _then(_Updated(
+payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _Patched implements PostDetailEvent {
+  const _Patched({required final  Map<String, dynamic> payload}): _payload = payload;
+  
+
+ final  Map<String, dynamic> _payload;
+ Map<String, dynamic> get payload {
+  if (_payload is EqualUnmodifiableMapView) return _payload;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_payload);
+}
+
+
+/// Create a copy of PostDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$PatchedCopyWith<_Patched> get copyWith => __$PatchedCopyWithImpl<_Patched>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Patched&&const DeepCollectionEquality().equals(other._payload, _payload));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
+
+@override
+String toString() {
+  return 'PostDetailEvent.patched(payload: $payload)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$PatchedCopyWith<$Res> implements $PostDetailEventCopyWith<$Res> {
+  factory _$PatchedCopyWith(_Patched value, $Res Function(_Patched) _then) = __$PatchedCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, dynamic> payload
+});
+
+
+
+
+}
+/// @nodoc
+class __$PatchedCopyWithImpl<$Res>
+    implements _$PatchedCopyWith<$Res> {
+  __$PatchedCopyWithImpl(this._self, this._then);
+
+  final _Patched _self;
+  final $Res Function(_Patched) _then;
+
+/// Create a copy of PostDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
+  return _then(_Patched(
 payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>,
   ));
@@ -2386,7 +2386,7 @@ as Map<String, dynamic>,
 
 
 class _Create implements PostDetailEvent {
-  const _Create({required this.body, required this.status, this.repostOf, this.replyTo, this.communityNoteOf, this.ballot, this.survey, this.petition, this.meeting, this.section, required final  List<Map> tags, this.imagePath1, this.imagePath2, this.imagePath3, this.imagePath4, this.videoPath, this.filePath, this.location}): _tags = tags;
+  const _Create({required this.body, required this.status, this.repostOf, this.replyTo, this.communityNoteOf, this.ballot, this.survey, this.petition, this.meeting, this.section, required final  List<Map<String, dynamic>> tags, this.imagePath1, this.imagePath2, this.imagePath3, this.imagePath4, this.videoPath, this.filePath, this.location}): _tags = tags;
   
 
  final  String body;
@@ -2399,8 +2399,8 @@ class _Create implements PostDetailEvent {
  final  Petition? petition;
  final  Meeting? meeting;
  final  Section? section;
- final  List<Map> _tags;
- List<Map> get tags {
+ final  List<Map<String, dynamic>> _tags;
+ List<Map<String, dynamic>> get tags {
   if (_tags is EqualUnmodifiableListView) return _tags;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_tags);
@@ -2444,7 +2444,7 @@ abstract mixin class _$CreateCopyWith<$Res> implements $PostDetailEventCopyWith<
   factory _$CreateCopyWith(_Create value, $Res Function(_Create) _then) = __$CreateCopyWithImpl;
 @useResult
 $Res call({
- String body, PostStatus status, Post? repostOf, Post? replyTo, Post? communityNoteOf, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting, Section? section, List<Map> tags, String? imagePath1, String? imagePath2, String? imagePath3, String? imagePath4, String? videoPath, String? filePath, LatLng? location
+ String body, PostStatus status, Post? repostOf, Post? replyTo, Post? communityNoteOf, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting, Section? section, List<Map<String, dynamic>> tags, String? imagePath1, String? imagePath2, String? imagePath3, String? imagePath4, String? videoPath, String? filePath, LatLng? location
 });
 
 
@@ -2474,7 +2474,7 @@ as Survey?,petition: freezed == petition ? _self.petition : petition // ignore: 
 as Petition?,meeting: freezed == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
 as Meeting?,section: freezed == section ? _self.section : section // ignore: cast_nullable_to_non_nullable
 as Section?,tags: null == tags ? _self._tags : tags // ignore: cast_nullable_to_non_nullable
-as List<Map>,imagePath1: freezed == imagePath1 ? _self.imagePath1 : imagePath1 // ignore: cast_nullable_to_non_nullable
+as List<Map<String, dynamic>>,imagePath1: freezed == imagePath1 ? _self.imagePath1 : imagePath1 // ignore: cast_nullable_to_non_nullable
 as String?,imagePath2: freezed == imagePath2 ? _self.imagePath2 : imagePath2 // ignore: cast_nullable_to_non_nullable
 as String?,imagePath3: freezed == imagePath3 ? _self.imagePath3 : imagePath3 // ignore: cast_nullable_to_non_nullable
 as String?,imagePath4: freezed == imagePath4 ? _self.imagePath4 : imagePath4 // ignore: cast_nullable_to_non_nullable
@@ -2663,14 +2663,22 @@ $PostCopyWith<$Res> get post {
 
 
 class _Patch implements PostDetailEvent {
-  const _Patch({required this.id, required this.body, required this.status, required final  List<Map> tags, this.imagePath1, this.imagePath2, this.imagePath3, this.imagePath4, this.filePath, this.location}): _tags = tags;
+  const _Patch({required this.id, required this.body, required this.status, this.repostOf, this.replyTo, this.communityNoteOf, this.ballot, this.survey, this.petition, this.meeting, this.section, required final  List<Map<String, dynamic>> tags, this.imagePath1, this.imagePath2, this.imagePath3, this.imagePath4, this.videoPath, this.filePath, this.location}): _tags = tags;
   
 
  final  int id;
  final  String body;
  final  PostStatus status;
- final  List<Map> _tags;
- List<Map> get tags {
+ final  Post? repostOf;
+ final  Post? replyTo;
+ final  Post? communityNoteOf;
+ final  Ballot? ballot;
+ final  Survey? survey;
+ final  Petition? petition;
+ final  Meeting? meeting;
+ final  Section? section;
+ final  List<Map<String, dynamic>> _tags;
+ List<Map<String, dynamic>> get tags {
   if (_tags is EqualUnmodifiableListView) return _tags;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_tags);
@@ -2680,6 +2688,7 @@ class _Patch implements PostDetailEvent {
  final  String? imagePath2;
  final  String? imagePath3;
  final  String? imagePath4;
+ final  String? videoPath;
  final  String? filePath;
  final  LatLng? location;
 
@@ -2693,16 +2702,16 @@ _$PatchCopyWith<_Patch> get copyWith => __$PatchCopyWithImpl<_Patch>(this, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Patch&&(identical(other.id, id) || other.id == id)&&(identical(other.body, body) || other.body == body)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other._tags, _tags)&&(identical(other.imagePath1, imagePath1) || other.imagePath1 == imagePath1)&&(identical(other.imagePath2, imagePath2) || other.imagePath2 == imagePath2)&&(identical(other.imagePath3, imagePath3) || other.imagePath3 == imagePath3)&&(identical(other.imagePath4, imagePath4) || other.imagePath4 == imagePath4)&&(identical(other.filePath, filePath) || other.filePath == filePath)&&(identical(other.location, location) || other.location == location));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Patch&&(identical(other.id, id) || other.id == id)&&(identical(other.body, body) || other.body == body)&&(identical(other.status, status) || other.status == status)&&(identical(other.repostOf, repostOf) || other.repostOf == repostOf)&&(identical(other.replyTo, replyTo) || other.replyTo == replyTo)&&(identical(other.communityNoteOf, communityNoteOf) || other.communityNoteOf == communityNoteOf)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.section, section) || other.section == section)&&const DeepCollectionEquality().equals(other._tags, _tags)&&(identical(other.imagePath1, imagePath1) || other.imagePath1 == imagePath1)&&(identical(other.imagePath2, imagePath2) || other.imagePath2 == imagePath2)&&(identical(other.imagePath3, imagePath3) || other.imagePath3 == imagePath3)&&(identical(other.imagePath4, imagePath4) || other.imagePath4 == imagePath4)&&(identical(other.videoPath, videoPath) || other.videoPath == videoPath)&&(identical(other.filePath, filePath) || other.filePath == filePath)&&(identical(other.location, location) || other.location == location));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,body,status,const DeepCollectionEquality().hash(_tags),imagePath1,imagePath2,imagePath3,imagePath4,filePath,location);
+int get hashCode => Object.hashAll([runtimeType,id,body,status,repostOf,replyTo,communityNoteOf,ballot,survey,petition,meeting,section,const DeepCollectionEquality().hash(_tags),imagePath1,imagePath2,imagePath3,imagePath4,videoPath,filePath,location]);
 
 @override
 String toString() {
-  return 'PostDetailEvent.patch(id: $id, body: $body, status: $status, tags: $tags, imagePath1: $imagePath1, imagePath2: $imagePath2, imagePath3: $imagePath3, imagePath4: $imagePath4, filePath: $filePath, location: $location)';
+  return 'PostDetailEvent.patch(id: $id, body: $body, status: $status, repostOf: $repostOf, replyTo: $replyTo, communityNoteOf: $communityNoteOf, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, section: $section, tags: $tags, imagePath1: $imagePath1, imagePath2: $imagePath2, imagePath3: $imagePath3, imagePath4: $imagePath4, videoPath: $videoPath, filePath: $filePath, location: $location)';
 }
 
 
@@ -2713,11 +2722,11 @@ abstract mixin class _$PatchCopyWith<$Res> implements $PostDetailEventCopyWith<$
   factory _$PatchCopyWith(_Patch value, $Res Function(_Patch) _then) = __$PatchCopyWithImpl;
 @useResult
 $Res call({
- int id, String body, PostStatus status, List<Map> tags, String? imagePath1, String? imagePath2, String? imagePath3, String? imagePath4, String? filePath, LatLng? location
+ int id, String body, PostStatus status, Post? repostOf, Post? replyTo, Post? communityNoteOf, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting, Section? section, List<Map<String, dynamic>> tags, String? imagePath1, String? imagePath2, String? imagePath3, String? imagePath4, String? videoPath, String? filePath, LatLng? location
 });
 
 
-
+$PostCopyWith<$Res>? get repostOf;$PostCopyWith<$Res>? get replyTo;$PostCopyWith<$Res>? get communityNoteOf;$BallotCopyWith<$Res>? get ballot;$SurveyCopyWith<$Res>? get survey;$PetitionCopyWith<$Res>? get petition;$MeetingCopyWith<$Res>? get meeting;$SectionCopyWith<$Res>? get section;
 
 }
 /// @nodoc
@@ -2730,23 +2739,128 @@ class __$PatchCopyWithImpl<$Res>
 
 /// Create a copy of PostDetailEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? id = null,Object? body = null,Object? status = null,Object? tags = null,Object? imagePath1 = freezed,Object? imagePath2 = freezed,Object? imagePath3 = freezed,Object? imagePath4 = freezed,Object? filePath = freezed,Object? location = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? id = null,Object? body = null,Object? status = null,Object? repostOf = freezed,Object? replyTo = freezed,Object? communityNoteOf = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? meeting = freezed,Object? section = freezed,Object? tags = null,Object? imagePath1 = freezed,Object? imagePath2 = freezed,Object? imagePath3 = freezed,Object? imagePath4 = freezed,Object? videoPath = freezed,Object? filePath = freezed,Object? location = freezed,}) {
   return _then(_Patch(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,body: null == body ? _self.body : body // ignore: cast_nullable_to_non_nullable
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as PostStatus,tags: null == tags ? _self._tags : tags // ignore: cast_nullable_to_non_nullable
-as List<Map>,imagePath1: freezed == imagePath1 ? _self.imagePath1 : imagePath1 // ignore: cast_nullable_to_non_nullable
+as PostStatus,repostOf: freezed == repostOf ? _self.repostOf : repostOf // ignore: cast_nullable_to_non_nullable
+as Post?,replyTo: freezed == replyTo ? _self.replyTo : replyTo // ignore: cast_nullable_to_non_nullable
+as Post?,communityNoteOf: freezed == communityNoteOf ? _self.communityNoteOf : communityNoteOf // ignore: cast_nullable_to_non_nullable
+as Post?,ballot: freezed == ballot ? _self.ballot : ballot // ignore: cast_nullable_to_non_nullable
+as Ballot?,survey: freezed == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
+as Survey?,petition: freezed == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
+as Petition?,meeting: freezed == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
+as Meeting?,section: freezed == section ? _self.section : section // ignore: cast_nullable_to_non_nullable
+as Section?,tags: null == tags ? _self._tags : tags // ignore: cast_nullable_to_non_nullable
+as List<Map<String, dynamic>>,imagePath1: freezed == imagePath1 ? _self.imagePath1 : imagePath1 // ignore: cast_nullable_to_non_nullable
 as String?,imagePath2: freezed == imagePath2 ? _self.imagePath2 : imagePath2 // ignore: cast_nullable_to_non_nullable
 as String?,imagePath3: freezed == imagePath3 ? _self.imagePath3 : imagePath3 // ignore: cast_nullable_to_non_nullable
 as String?,imagePath4: freezed == imagePath4 ? _self.imagePath4 : imagePath4 // ignore: cast_nullable_to_non_nullable
+as String?,videoPath: freezed == videoPath ? _self.videoPath : videoPath // ignore: cast_nullable_to_non_nullable
 as String?,filePath: freezed == filePath ? _self.filePath : filePath // ignore: cast_nullable_to_non_nullable
 as String?,location: freezed == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
 as LatLng?,
   ));
 }
 
+/// Create a copy of PostDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PostCopyWith<$Res>? get repostOf {
+    if (_self.repostOf == null) {
+    return null;
+  }
 
+  return $PostCopyWith<$Res>(_self.repostOf!, (value) {
+    return _then(_self.copyWith(repostOf: value));
+  });
+}/// Create a copy of PostDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PostCopyWith<$Res>? get replyTo {
+    if (_self.replyTo == null) {
+    return null;
+  }
+
+  return $PostCopyWith<$Res>(_self.replyTo!, (value) {
+    return _then(_self.copyWith(replyTo: value));
+  });
+}/// Create a copy of PostDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PostCopyWith<$Res>? get communityNoteOf {
+    if (_self.communityNoteOf == null) {
+    return null;
+  }
+
+  return $PostCopyWith<$Res>(_self.communityNoteOf!, (value) {
+    return _then(_self.copyWith(communityNoteOf: value));
+  });
+}/// Create a copy of PostDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$BallotCopyWith<$Res>? get ballot {
+    if (_self.ballot == null) {
+    return null;
+  }
+
+  return $BallotCopyWith<$Res>(_self.ballot!, (value) {
+    return _then(_self.copyWith(ballot: value));
+  });
+}/// Create a copy of PostDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SurveyCopyWith<$Res>? get survey {
+    if (_self.survey == null) {
+    return null;
+  }
+
+  return $SurveyCopyWith<$Res>(_self.survey!, (value) {
+    return _then(_self.copyWith(survey: value));
+  });
+}/// Create a copy of PostDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PetitionCopyWith<$Res>? get petition {
+    if (_self.petition == null) {
+    return null;
+  }
+
+  return $PetitionCopyWith<$Res>(_self.petition!, (value) {
+    return _then(_self.copyWith(petition: value));
+  });
+}/// Create a copy of PostDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MeetingCopyWith<$Res>? get meeting {
+    if (_self.meeting == null) {
+    return null;
+  }
+
+  return $MeetingCopyWith<$Res>(_self.meeting!, (value) {
+    return _then(_self.copyWith(meeting: value));
+  });
+}/// Create a copy of PostDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SectionCopyWith<$Res>? get section {
+    if (_self.section == null) {
+    return null;
+  }
+
+  return $SectionCopyWith<$Res>(_self.section!, (value) {
+    return _then(_self.copyWith(section: value));
+  });
+}
 }
 
 /// @nodoc

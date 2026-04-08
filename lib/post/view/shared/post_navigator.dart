@@ -11,6 +11,7 @@ import 'package:democracy/post/view/community_note_detail.dart';
 import 'package:democracy/post/view/community_notes.dart';
 import 'package:democracy/post/view/post_create.dart';
 import 'package:democracy/post/view/post_detail.dart';
+import 'package:democracy/post/view/post_update.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -125,6 +126,19 @@ void navigateToPostCreate({
           meeting: meeting,
           section: section,
         ),
+      ),
+    ),
+  );
+}
+
+void navigateToPostUpdate({required BuildContext context, required Post post}) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => BlocProvider(
+        create: (context) =>
+            ReplyToBloc(webSocketService: context.read<WebSocketService>()),
+        child: PostUpdatePage(post: post),
       ),
     ),
   );

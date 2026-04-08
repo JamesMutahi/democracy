@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/repository/api_repository.dart';
@@ -35,10 +33,10 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
             add(_Created(payload: message['payload']));
           case 'retrieve':
             add(_Loaded(payload: message['payload']));
-          case 'patch':
-            add(_Patched(payload: message['payload']));
           case 'update':
             add(_Updated(payload: message['payload']));
+          case 'patch':
+            add(_Patched(payload: message['payload']));
           case 'delete':
             add(_Deleted(payload: message['payload']));
           case 'delete_repost':
@@ -58,78 +56,30 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
         }
       }
     });
-    on<_Created>((event, emit) {
-      _onCreated(event, emit);
-    });
-    on<_Loaded>((event, emit) {
-      _onLoaded(event, emit);
-    });
-    on<_Patched>((event, emit) {
-      _onPatched(event, emit);
-    });
-    on<_Updated>((event, emit) {
-      _onUpdated(event, emit);
-    });
-    on<_Deleted>((event, emit) {
-      _onDeleted(event, emit);
-    });
-    on<_RepostDeleted>((event, emit) {
-      _onRepostDeleted(event, emit);
-    });
-    on<_Reported>((event, emit) {
-      _onReported(event, emit);
-    });
-    on<_Create>((event, emit) async {
-      await _onCreate(event, emit);
-    });
-    on<_Get>((event, emit) {
-      _onGet(event, emit);
-    });
-    on<_Patch>((event, emit) {
-      _onPatch(event, emit);
-    });
-    on<_AddView>((event, emit) {
-      _onAddView(event, emit);
-    });
-    on<_Like>((event, emit) {
-      _onLike(event, emit);
-    });
-    on<_Bookmark>((event, emit) {
-      _onBookmark(event, emit);
-    });
-    on<_Upvote>((event, emit) {
-      _onUpvote(event, emit);
-    });
-    on<_Downvote>((event, emit) {
-      _onDownvote(event, emit);
-    });
-    on<_Delete>((event, emit) {
-      _onDelete(event, emit);
-    });
-    on<_DeleteRepost>((event, emit) {
-      _onDeleteRepost(event, emit);
-    });
-    on<_Liked>((event, emit) {
-      _onLiked(event, emit);
-    });
-    on<_Bookmarked>((event, emit) {
-      _onBookmarked(event, emit);
-    });
-    on<_Upvoted>((event, emit) {
-      _onUpvoted(event, emit);
-    });
-    on<_Downvoted>((event, emit) {
-      _onDownvoted(event, emit);
-    });
-    on<_ViewAdded>((event, emit) {
-      _onViewAdded(event, emit);
-    });
-    on<_Report>((event, emit) {
-      _onReport(event, emit);
-    });
-    on<_Unsubscribe>((event, emit) {
-      _onUnsubscribe(event);
-    });
+    on<_Created>((event, emit) => _onCreated(event, emit));
+    on<_Loaded>((event, emit) => _onLoaded(event, emit));
+    on<_Updated>((event, emit) => _onUpdated(event, emit));
+    on<_Patched>((event, emit) => _onPatched(event, emit));
+    on<_Deleted>((event, emit) => _onDeleted(event, emit));
+    on<_RepostDeleted>((event, emit) => _onRepostDeleted(event, emit));
+    on<_Reported>((event, emit) => _onReported(event, emit));
+    on<_Create>((event, emit) async => await _onCreate(event, emit));
+    on<_Get>((event, emit) => _onGet(event, emit));
+    on<_Patch>((event, emit) async => await _onPatch(event, emit));
+    on<_AddView>((event, emit) => _onAddView(event, emit));
+    on<_Like>((event, emit) => _onLike(event, emit));
+    on<_Bookmark>((event, emit) => _onBookmark(event, emit));
+    on<_Upvote>((event, emit) => _onUpvote(event, emit));
+    on<_Downvote>((event, emit) => _onDownvote(event, emit));
+    on<_Delete>((event, emit) => _onDelete(event, emit));
+    on<_DeleteRepost>((event, emit) => _onDeleteRepost(event, emit));
+    on<_Liked>((event, emit) => _onLiked(event, emit));
+    on<_Bookmarked>((event, emit) => _onBookmarked(event, emit));
+    on<_Upvoted>((event, emit) => _onUpvoted(event, emit));
+    on<_Downvoted>((event, emit) => _onDownvoted(event, emit));
+    on<_ViewAdded>((event, emit) => _onViewAdded(event, emit));
+    on<_Report>((event, emit) => _onReport(event, emit));
+    on<_Unsubscribe>((event, emit) => _onUnsubscribe(event));
   }
 
   void _onCreated(_Created event, Emitter<PostDetailState> emit) {
@@ -146,16 +96,6 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     if (event.payload['response_status'] == 200) {
       final Post post = Post.fromJson(event.payload['data']);
       emit(PostLoaded(post: post));
-    } else {
-      emit(PostDetailFailure(error: event.payload['errors'].toString()));
-    }
-  }
-
-  void _onPatched(_Patched event, Emitter<PostDetailState> emit) {
-    emit(PostDetailLoading());
-    if (event.payload['response_status'] == 200) {
-      final Post post = Post.fromJson(event.payload['data']);
-      emit(PostPatched(post: post));
     } else {
       emit(PostDetailFailure(error: event.payload['errors'].toString()));
     }
@@ -192,6 +132,16 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     }
   }
 
+  void _onPatched(_Patched event, Emitter<PostDetailState> emit) {
+    emit(PostDetailLoading());
+    if (event.payload['response_status'] == 200) {
+      final Post post = Post.fromJson(event.payload['data']);
+      emit(PostPatched(post: post));
+    } else {
+      emit(PostDetailFailure(error: event.payload['errors'].toString()));
+    }
+  }
+
   void _onDeleted(_Deleted event, Emitter<PostDetailState> emit) {
     emit(PostDetailLoading());
     if (event.payload['response_status'] == 204) {
@@ -201,10 +151,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     }
   }
 
-  void _onRepostDeleted(
-    _RepostDeleted event,
-    Emitter<PostDetailState> emit,
-  ) {
+  void _onRepostDeleted(_RepostDeleted event, Emitter<PostDetailState> emit) {
     emit(PostDetailLoading());
     if (event.payload['response_status'] == 204) {
       emit(
@@ -336,43 +283,35 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   Future _onPatch(_Patch event, Emitter<PostDetailState> emit) async {
-    Map<String, dynamic> message = {
-      'stream': stream,
-      'payload': {
-        'action': 'patch',
-        'request_id': requestId,
-        'pk': event.id,
-        'data': {
-          'body': event.body,
-          'status': event.status == PostStatus.published
-              ? 'published'
-              : 'draft',
-          'tags': event.tags,
-          if (event.imagePath1 != null)
-            'image1_base64': base64Encode(
-              File(event.imagePath1!).readAsBytesSync(),
-            ),
-          if (event.imagePath2 != null)
-            'image2_base64': base64Encode(
-              File(event.imagePath2!).readAsBytesSync(),
-            ),
-          if (event.imagePath3 != null)
-            'image3_base64': base64Encode(
-              File(event.imagePath3!).readAsBytesSync(),
-            ),
-          if (event.imagePath4 != null)
-            'image4_base64': base64Encode(
-              File(event.imagePath4!).readAsBytesSync(),
-            ),
-          if (event.imagePath4 != null)
-            'file_base64': base64Encode(
-              File(event.filePath!).readAsBytesSync(),
-            ),
-          'location': event.location,
-        },
-      },
-    };
-    webSocketService.send(message);
+    emit(PostDetailLoading());
+    try {
+      String? token = await authRepository.getToken();
+      Post post = await apiRepository.patchPost(
+        token: token!,
+        id: event.id,
+        body: event.body,
+        status: event.status,
+        repostOf: event.repostOf,
+        replyTo: event.replyTo,
+        communityNoteOf: event.communityNoteOf,
+        ballot: event.ballot,
+        survey: event.survey,
+        petition: event.petition,
+        meeting: event.meeting,
+        section: event.section,
+        tags: event.tags,
+        imagePath1: event.imagePath1,
+        imagePath2: event.imagePath2,
+        imagePath3: event.imagePath3,
+        imagePath4: event.imagePath4,
+        videoPath: event.videoPath,
+        filePath: event.filePath,
+        location: event.location,
+      );
+      emit(PostPatched(post: post));
+    } catch (e) {
+      emit(PostDetailFailure(error: e.toString()));
+    }
   }
 
   void _onAddView(_AddView event, Emitter<PostDetailState> emit) {
@@ -447,10 +386,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     webSocketService.send(message);
   }
 
-  void _onDeleteRepost(
-    _DeleteRepost event,
-    Emitter<PostDetailState> emit,
-  ) {
+  void _onDeleteRepost(_DeleteRepost event, Emitter<PostDetailState> emit) {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
