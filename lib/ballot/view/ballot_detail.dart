@@ -21,7 +21,9 @@ class BallotDetail extends StatefulWidget {
 class _BallotDetailState extends State<BallotDetail> {
   late Ballot _ballot = widget.ballot;
   bool changingVote = false;
-  final TextEditingController _textEditingController = TextEditingController();
+  late final TextEditingController _textEditingController = TextEditingController(
+    text: widget.ballot.reason == null ? '' : widget.ballot.reason!.text,
+  );
 
   @override
   void initState() {
@@ -271,93 +273,104 @@ class _ReasonWidgetState extends State<ReasonWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Divider(),
-        const SizedBox(height: 10),
-        const Text(
-          'Your reason for the decision is greatly appreciated '
-          'and will help in better understanding what people want.',
-        ),
-        const SizedBox(height: 10),
-        SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          reverse: true,
-          child: TextFormField(
-            controller: widget.controller,
-            onChanged: (value) {
-              setState(() {
-                if (widget.controller.text.isEmpty &&
-                        widget.ballot.reason == null ||
-                    widget.controller.text == widget.ballot.reason?.text) {
-                  canSubmit = false;
-                } else {
-                  canSubmit = true;
-                }
-              });
-            },
-            readOnly: !widget.ballot.isActive,
-            minLines: 1,
-            maxLines: 10,
-            maxLength: widget.ballot.isActive ? 300 : null,
-            keyboardType: TextInputType.multiline,
-            onTapOutside: (event) {
-              FocusManager.instance.primaryFocus?.unfocus();
-            },
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Theme.of(context).scaffoldBackgroundColor,
-              hintText: widget.ballot.isActive ? 'Enter reason' : '',
-              hintStyle: TextStyle(color: Theme.of(context).hintColor),
-              prefixIconConstraints: const BoxConstraints(
-                minWidth: 0,
-                minHeight: 0,
-              ),
-              border: InputBorder.none,
-              focusedBorder: UnderlineInputBorder(
-                borderRadius: BorderRadius.circular(0),
-                borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.primary,
+    return BlocListener<BallotDetailBloc, BallotDetailState>(
+      listener: (context, state) {
+        if (state is BallotUpdated) {
+          if (widget.ballot.id == state.ballot.id) {
+            setState(() {
+              canSubmit = false;
+            });
+          }
+        }
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Divider(),
+          const SizedBox(height: 10),
+          const Text(
+            'Your reason for the decision is greatly appreciated '
+            'and will help in better understanding what people want.',
+          ),
+          const SizedBox(height: 10),
+          SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            reverse: true,
+            child: TextFormField(
+              controller: widget.controller,
+              onChanged: (value) {
+                setState(() {
+                  if (widget.controller.text.isEmpty &&
+                          widget.ballot.reason == null ||
+                      widget.controller.text == widget.ballot.reason?.text) {
+                    canSubmit = false;
+                  } else {
+                    canSubmit = true;
+                  }
+                });
+              },
+              readOnly: !widget.ballot.isActive,
+              minLines: 1,
+              maxLines: 10,
+              maxLength: widget.ballot.isActive ? 300 : null,
+              keyboardType: TextInputType.multiline,
+              onTapOutside: (event) {
+                FocusManager.instance.primaryFocus?.unfocus();
+              },
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Theme.of(context).scaffoldBackgroundColor,
+                hintText: widget.ballot.isActive ? 'Enter reason' : '',
+                hintStyle: TextStyle(color: Theme.of(context).hintColor),
+                prefixIconConstraints: const BoxConstraints(
+                  minWidth: 0,
+                  minHeight: 0,
                 ),
-              ),
-              enabledBorder: UnderlineInputBorder(
-                borderRadius: BorderRadius.circular(0),
-                borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.outline,
+                border: InputBorder.none,
+                focusedBorder: UnderlineInputBorder(
+                  borderRadius: BorderRadius.circular(0),
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                enabledBorder: UnderlineInputBorder(
+                  borderRadius: BorderRadius.circular(0),
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        SizedBox(height: 10),
-        Visibility(
-          visible: widget.ballot.isActive,
-          child: Align(
-            alignment: Alignment.topRight,
-            child: OutlinedButton(
-              onPressed: canSubmit
-                  ? () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => SubmissionDialog(
-                          onYesPressed: () {
-                            context.read<BallotDetailBloc>().add(
-                              BallotDetailEvent.submitReason(
-                                ballot: widget.ballot,
-                                text: widget.controller.text,
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    }
-                  : null,
-              child: Text('Submit'),
+          SizedBox(height: 10),
+          Visibility(
+            visible: widget.ballot.isActive,
+            child: Align(
+              alignment: Alignment.topRight,
+              child: OutlinedButton(
+                onPressed: canSubmit
+                    ? () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => SubmissionDialog(
+                            onYesPressed: () {
+                              context.read<BallotDetailBloc>().add(
+                                BallotDetailEvent.submitReason(
+                                  ballot: widget.ballot,
+                                  text: widget.controller.text,
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      }
+                    : null,
+                child: Text('Submit'),
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
