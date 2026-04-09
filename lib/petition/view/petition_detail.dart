@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/utils/custom_text.dart';
-import 'package:democracy/app/utils/snack_bar_content.dart';
+import 'package:democracy/app/shared/widgets/custom_text.dart';
+import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';

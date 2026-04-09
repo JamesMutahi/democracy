@@ -29,6 +29,11 @@ class UserRepliesBloc extends Bloc<UserRepliesEvent, UserRepliesState> {
   }
 
   void _onGet(_Get event, Emitter<UserRepliesState> emit) async {
+    if (!webSocketService.isConnected) {
+      emit(state.copyWith(status: UserRepliesStatus.failure));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

@@ -26,18 +26,17 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
         }
       }
     });
-    on<_Get>((event, emit) {
-      _onGet(event, emit);
-    });
-    on<_Received>((event, emit) {
-      _onReceived(event, emit);
-    });
-    on<_Update>((event, emit) {
-      _onUpdate(event, emit);
-    });
+    on<_Get>((event, emit) => _onGet(event, emit));
+    on<_Received>((event, emit) => _onReceived(event, emit));
+    on<_Update>((event, emit) => _onUpdate(event, emit));
   }
 
   Future _onGet(_Get event, Emitter<PreferencesState> emit) async {
+    if (!webSocketService.isConnected) {
+      emit(state.copyWith(status: PreferencesStatus.failure));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {'action': 'preferences', 'request_id': requestId},
@@ -61,6 +60,11 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
   }
 
   Future _onUpdate(_Update event, Emitter<PreferencesState> emit) async {
+    if (!webSocketService.isConnected) {
+      emit(state.copyWith(status: PreferencesStatus.failure));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

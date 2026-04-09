@@ -1,5 +1,5 @@
 import 'package:democracy/app/bloc/theme/theme_cubit.dart';
-import 'package:democracy/app/utils/snack_bar_content.dart';
+import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';

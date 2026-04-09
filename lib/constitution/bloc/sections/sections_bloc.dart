@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/app/shared/constants/strings.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -22,15 +23,16 @@ class SectionsBloc extends Bloc<SectionsEvent, SectionsState> {
         add(_Received(payload: message['payload']));
       }
     });
-    on<_Get>((event, emit) {
-      _onGet(event, emit);
-    });
-    on<_Received>((event, emit) {
-      _onReceived(event, emit);
-    });
+    on<_Get>((event, emit) => _onGet(event, emit));
+    on<_Received>((event, emit) => _onReceived(event, emit));
   }
 
   Future _onGet(_Get event, Emitter<SectionsState> emit) async {
+    if (!webSocketService.isConnected) {
+      emit(SectionsState.failure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -50,7 +52,7 @@ class SectionsBloc extends Bloc<SectionsEvent, SectionsState> {
       );
       emit(SectionsState.loaded(sections: sections));
     } else {
-      emit(SectionsState.failure());
+      emit(SectionsState.failure(error: event.payload['errors'].toString()));
     }
   }
 

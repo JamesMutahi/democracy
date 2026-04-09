@@ -1,4 +1,4 @@
-import 'package:democracy/app/utils/snack_bar_content.dart';
+import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:flutter/material.dart';

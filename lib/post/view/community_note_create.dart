@@ -1,4 +1,4 @@
-import 'package:democracy/app/utils/dialogs.dart';
+import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
 import 'package:democracy/post/models/post.dart';

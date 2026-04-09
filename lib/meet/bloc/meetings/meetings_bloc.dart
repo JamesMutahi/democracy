@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
-import 'package:democracy/app/utils/transformers.dart';
+import 'package:democracy/app/shared/utils/transformers.dart';
 import 'package:democracy/meet/models/meeting.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -24,18 +24,19 @@ class MeetingsBloc extends Bloc<MeetingsEvent, MeetingsState> {
         add(_Received(payload: message['payload']));
       }
     });
-    on<_Get>((event, emit) {
-      _onGet(event, emit);
-    }, transformer: debounce());
-    on<_Received>((event, emit) {
-      _onReceived(event, emit);
-    });
+    on<_Get>((event, emit) => _onGet(event, emit), transformer: debounce());
+    on<_Received>((event, emit) => _onReceived(event, emit));
     on<_Add>((event, emit) => _onAdd(event, emit));
     on<_Update>((event, emit) => _onUpdate(event, emit));
     on<_Remove>((event, emit) => _onRemove(event, emit));
   }
 
   void _onGet(_Get event, Emitter<MeetingsState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(state.copyWith(status: MeetingsStatus.failure));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

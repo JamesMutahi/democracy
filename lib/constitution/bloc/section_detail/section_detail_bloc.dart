@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/app/shared/constants/strings.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -25,21 +26,18 @@ class SectionDetailBloc extends Bloc<SectionDetailEvent, SectionDetailState> {
         }
       }
     });
-    on<_Load>((event, emit) {
-      _onLoad(event, emit);
-    });
-    on<_Loaded>((event, emit) {
-      _onLoaded(event, emit);
-    });
-    on<_Bookmark>((event, emit) {
-      _onBookmark(event, emit);
-    });
-    on<_Bookmarked>((event, emit) {
-      _onBookmarked(event, emit);
-    });
+    on<_Load>((event, emit) => _onLoad(event, emit));
+    on<_Loaded>((event, emit) => _onLoaded(event, emit));
+    on<_Bookmark>((event, emit) => _onBookmark(event, emit));
+    on<_Bookmarked>((event, emit) => _onBookmarked(event, emit));
   }
 
   Future _onLoad(_Load event, Emitter<SectionDetailState> emit) async {
+    if (!webSocketService.isConnected) {
+      emit(SectionDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -62,6 +60,11 @@ class SectionDetailBloc extends Bloc<SectionDetailEvent, SectionDetailState> {
   }
 
   Future _onBookmark(_Bookmark event, Emitter<SectionDetailState> emit) async {
+    if (!webSocketService.isConnected) {
+      emit(SectionDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:democracy/app/utils/bottom_text_form_field.dart';
-import 'package:democracy/app/utils/snack_bar_content.dart';
+import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart';
+import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/constitution/models/section.dart';

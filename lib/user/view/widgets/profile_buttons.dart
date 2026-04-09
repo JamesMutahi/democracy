@@ -1,4 +1,4 @@
-import 'package:democracy/app/utils/snack_bar_content.dart';
+import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';

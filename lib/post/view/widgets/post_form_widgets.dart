@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:democracy/app/utils/camera/camera.dart';
-import 'package:democracy/app/utils/extras_row.dart';
-import 'package:democracy/app/utils/location.dart';
-import 'package:democracy/app/utils/media_tools.dart';
-import 'package:democracy/app/utils/tagging.dart';
-import 'package:democracy/app/utils/video_viewer.dart';
+import 'package:democracy/app/shared/camera/camera.dart';
+import 'package:democracy/app/shared/widgets/extras_row.dart';
+import 'package:democracy/app/shared/pages/location.dart';
+import 'package:democracy/app/shared/utils/media_tools.dart';
+import 'package:democracy/app/shared/widgets/tagging.dart';
+import 'package:democracy/app/shared/widgets/video_viewer.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/constitution/view/constitution.dart';
 import 'package:democracy/post/models/post.dart';

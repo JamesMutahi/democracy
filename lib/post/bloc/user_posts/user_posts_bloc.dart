@@ -29,6 +29,11 @@ class UserPostsBloc extends Bloc<UserPostsEvent, UserPostsState> {
   }
 
   void _onGet(_Get event, Emitter<UserPostsState> emit) async {
+    if (!webSocketService.isConnected) {
+      emit(state.copyWith(status: UserPostsStatus.failure));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

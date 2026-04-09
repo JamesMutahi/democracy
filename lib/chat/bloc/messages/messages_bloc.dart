@@ -24,18 +24,19 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
         add(_Received(payload: message['payload']));
       }
     });
-    on<_Get>((event, emit) {
-      _onGet(event, emit);
-    });
-    on<_Received>((event, emit) {
-      _onReceived(event, emit);
-    });
+    on<_Get>((event, emit) => _onGet(event, emit));
+    on<_Received>((event, emit) => _onReceived(event, emit));
     on<_Add>(_onAdd);
     on<_Update>(_onUpdate);
     on<_Remove>(_onRemove);
   }
 
   void _onGet(_Get event, Emitter<MessagesState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(state.copyWith(status: MessagesStatus.failure));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

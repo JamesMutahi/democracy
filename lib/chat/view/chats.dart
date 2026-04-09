@@ -1,6 +1,6 @@
-import 'package:democracy/app/utils/bottom_loader.dart';
-import 'package:democracy/app/utils/failure_retry_button.dart';
-import 'package:democracy/app/utils/snack_bar_content.dart';
+import 'package:democracy/app/shared/widgets/bottom_loader.dart';
+import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
+import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/bloc/chat_filter/chat_filter_cubit.dart';

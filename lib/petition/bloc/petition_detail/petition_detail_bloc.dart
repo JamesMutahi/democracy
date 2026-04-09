@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/repository/api_repository.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/app/shared/constants/strings.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/geo/models/constituency.dart';
 import 'package:democracy/geo/models/county.dart';
@@ -40,36 +41,16 @@ class PetitionDetailBloc
         }
       }
     });
-    on<_Created>((event, emit) {
-      _onCreated(event, emit);
-    });
-    on<_Loaded>((event, emit) {
-      _onLoaded(event, emit);
-    });
-    on<_Updated>((event, emit) {
-      _onUpdated(event, emit);
-    });
-    on<_Deleted>((event, emit) {
-      _onDeleted(event, emit);
-    });
-    on<_Create>((event, emit) async {
-      await _onCreate(event, emit);
-    });
-    on<_Retrieve>((event, emit) {
-      _onRetrieve(event, emit);
-    });
-    on<_Support>((event, emit) {
-      _onSupport(event, emit);
-    });
-    on<_ChangeStatus>((event, emit) {
-      _onChangeStatus(event, emit);
-    });
-    on<_Received>((event, emit) {
-      _onReceived(event, emit);
-    });
-    on<_Unsubscribe>((event, emit) {
-      _onUnsubscribe(event, emit);
-    });
+    on<_Created>((event, emit) => _onCreated(event, emit));
+    on<_Loaded>((event, emit) => _onLoaded(event, emit));
+    on<_Updated>((event, emit) => _onUpdated(event, emit));
+    on<_Deleted>((event, emit) => _onDeleted(event, emit));
+    on<_Create>((event, emit) async => await _onCreate(event, emit));
+    on<_Retrieve>((event, emit) => _onRetrieve(event, emit));
+    on<_Support>((event, emit) => _onSupport(event, emit));
+    on<_ChangeStatus>((event, emit) => _onChangeStatus(event, emit));
+    on<_Received>((event, emit) => _onReceived(event, emit));
+    on<_Unsubscribe>((event, emit) => _onUnsubscribe(event, emit));
   }
 
   void _onCreated(_Created event, Emitter<PetitionDetailState> emit) {
@@ -131,6 +112,11 @@ class PetitionDetailBloc
   }
 
   void _onRetrieve(_Retrieve event, Emitter<PetitionDetailState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(PetitionDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -143,6 +129,11 @@ class PetitionDetailBloc
   }
 
   void _onSupport(_Support event, Emitter<PetitionDetailState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(PetitionDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -155,6 +146,11 @@ class PetitionDetailBloc
   }
 
   void _onChangeStatus(_ChangeStatus event, Emitter<PetitionDetailState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(PetitionDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -176,6 +172,11 @@ class PetitionDetailBloc
   }
 
   void _onUnsubscribe(_Unsubscribe event, Emitter<PetitionDetailState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(PetitionDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

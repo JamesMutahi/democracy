@@ -1,5 +1,5 @@
-import 'package:democracy/app/utils/custom_text.dart';
-import 'package:democracy/app/utils/regex.dart';
+import 'package:democracy/app/shared/widgets/custom_text.dart';
+import 'package:democracy/app/shared/constants/regex.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/user/view/utils/profile_navigator.dart';

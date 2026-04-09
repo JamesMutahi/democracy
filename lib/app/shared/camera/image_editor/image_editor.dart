@@ -3,8 +3,8 @@ import 'dart:io';
 import 'dart:math';
 
 // Flutter imports:
-import 'package:democracy/app/utils/camera/camera.dart';
-import 'package:democracy/app/utils/camera/utils/stickers.dart';
+import 'package:democracy/app/shared/camera/camera.dart';
+import 'package:democracy/app/shared/camera/utils/stickers.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';

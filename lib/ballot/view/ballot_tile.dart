@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:democracy/app/utils/custom_bottom_sheet.dart';
-import 'package:democracy/app/utils/more_pop_up.dart';
+import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
+import 'package:democracy/app/shared/widgets/more_pop_up.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/models/option.dart';
 import 'package:democracy/ballot/view/ballot_detail.dart';

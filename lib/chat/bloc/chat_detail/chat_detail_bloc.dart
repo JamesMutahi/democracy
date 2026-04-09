@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/repository/api_repository.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/app/shared/constants/strings.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/models/chat.dart';
@@ -44,33 +45,17 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
         }
       }
     });
-    on<_Created>((event, emit) {
-      _onCreated(event, emit);
-    });
-    on<_Loaded>((event, emit) {
-      _onLoaded(event, emit);
-    });
-    on<_Updated>((event, emit) {
-      _onUpdated(event, emit);
-    });
-    on<_Deleted>((event, emit) {
-      _onDeleted(event, emit);
-    });
-    on<_Create>((event, emit) {
-      _onCreate(event, emit);
-    });
-    on<_Get>((event, emit) {
-      _onGet(event, emit);
-    });
-    on<_Subscribe>((event, emit) {
-      _onSubscribe(event, emit);
-    });
-    on<_SendDirectMessage>((event, emit) async {
-      await _onSendDirectMessage(event, emit);
-    });
-    on<_MarkAsRead>((event, emit) {
-      _onMarkAsRead(event, emit);
-    });
+    on<_Created>((event, emit) => _onCreated(event, emit));
+    on<_Loaded>((event, emit) => _onLoaded(event, emit));
+    on<_Updated>((event, emit) => _onUpdated(event, emit));
+    on<_Deleted>((event, emit) => _onDeleted(event, emit));
+    on<_Create>((event, emit) => _onCreate(event, emit));
+    on<_Get>((event, emit) => _onGet(event, emit));
+    on<_Subscribe>((event, emit) => _onSubscribe(event, emit));
+    on<_SendDirectMessage>(
+      (event, emit) async => await _onSendDirectMessage(event, emit),
+    );
+    on<_MarkAsRead>((event, emit) => _onMarkAsRead(event, emit));
   }
 
   void _onCreated(_Created event, Emitter<ChatDetailState> emit) {
@@ -113,6 +98,11 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
   }
 
   void _onCreate(_Create event, Emitter<ChatDetailState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(ChatDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -125,6 +115,11 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
   }
 
   void _onGet(_Get event, Emitter<ChatDetailState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(ChatDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -137,6 +132,11 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
   }
 
   void _onSubscribe(_Subscribe event, Emitter<ChatDetailState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(ChatDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -180,6 +180,11 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
   }
 
   void _onMarkAsRead(_MarkAsRead event, Emitter<ChatDetailState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(ChatDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

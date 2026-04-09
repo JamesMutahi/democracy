@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:democracy/app/utils/camera/camera.dart';
-import 'package:democracy/app/utils/extras_row.dart';
-import 'package:democracy/app/utils/file_widget.dart';
-import 'package:democracy/app/utils/location.dart';
-import 'package:democracy/app/utils/map_widget.dart';
-import 'package:democracy/app/utils/media_tools.dart';
+import 'package:democracy/app/shared/camera/camera.dart';
+import 'package:democracy/app/shared/widgets/extras_row.dart';
+import 'package:democracy/app/shared/widgets/file_widget.dart';
+import 'package:democracy/app/shared/pages/location.dart';
+import 'package:democracy/app/shared/widgets/map_widget.dart';
+import 'package:democracy/app/shared/utils/media_tools.dart';
 import 'package:democracy/constitution/view/constitution.dart';
 import 'package:democracy/post/view/widgets/post_form_widgets.dart';
 import 'package:democracy/user/models/user.dart';

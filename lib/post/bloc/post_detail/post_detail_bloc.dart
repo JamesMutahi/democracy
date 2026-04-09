@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/repository/api_repository.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/app/shared/constants/strings.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/constitution/models/section.dart';
@@ -79,7 +80,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     on<_Downvoted>((event, emit) => _onDownvoted(event, emit));
     on<_ViewAdded>((event, emit) => _onViewAdded(event, emit));
     on<_Report>((event, emit) => _onReport(event, emit));
-    on<_Unsubscribe>((event, emit) => _onUnsubscribe(event));
+    on<_Unsubscribe>((event, emit) => _onUnsubscribe(event, emit));
   }
 
   void _onCreated(_Created event, Emitter<PostDetailState> emit) {
@@ -271,6 +272,11 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   void _onGet(_Get event, Emitter<PostDetailState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(PostDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -315,6 +321,11 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   void _onAddView(_AddView event, Emitter<PostDetailState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(PostDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -327,6 +338,11 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   void _onLike(_Like event, Emitter<PostDetailState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(PostDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -339,6 +355,11 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   void _onBookmark(_Bookmark event, Emitter<PostDetailState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(PostDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -351,6 +372,11 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   void _onUpvote(_Upvote event, Emitter<PostDetailState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(PostDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -363,6 +389,11 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   void _onDownvote(_Downvote event, Emitter<PostDetailState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(PostDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -375,6 +406,11 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   void _onDelete(_Delete event, Emitter<PostDetailState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(PostDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -387,6 +423,11 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   void _onDeleteRepost(_DeleteRepost event, Emitter<PostDetailState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(PostDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -399,6 +440,11 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   void _onReport(_Report event, Emitter<PostDetailState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(PostDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -409,7 +455,12 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     webSocketService.send(message);
   }
 
-  void _onUnsubscribe(_Unsubscribe event) {
+  void _onUnsubscribe(_Unsubscribe event, Emitter<PostDetailState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(PostDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

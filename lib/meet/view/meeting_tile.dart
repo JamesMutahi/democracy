@@ -1,6 +1,6 @@
-import 'package:democracy/app/utils/custom_bottom_sheet.dart';
-import 'package:democracy/app/utils/more_pop_up.dart';
-import 'package:democracy/app/utils/snack_bar_content.dart';
+import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
+import 'package:democracy/app/shared/widgets/more_pop_up.dart';
+import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/meet/bloc/meeting_detail/meeting_detail_bloc.dart';
 import 'package:democracy/meet/models/meeting.dart';

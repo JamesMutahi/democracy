@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
-import 'package:democracy/app/utils/camera/video_editor/video_editor.dart';
-import 'package:democracy/app/utils/camera/video_editor/widgets/video_progress_alert.dart';
-import 'package:democracy/app/utils/snack_bar_content.dart';
+import 'package:democracy/app/shared/camera/video_editor/video_editor.dart';
+import 'package:democracy/app/shared/camera/video_editor/widgets/video_progress_alert.dart';
+import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

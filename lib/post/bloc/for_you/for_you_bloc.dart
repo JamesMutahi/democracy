@@ -28,6 +28,11 @@ class ForYouBloc extends Bloc<ForYouEvent, ForYouState> {
   }
 
   void _onGet(_Get event, Emitter<ForYouState> emit) async {
+    if (!webSocketService.isConnected) {
+      emit(state.copyWith(status: ForYouStatus.failure));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

@@ -28,6 +28,11 @@ class LikesBloc extends Bloc<LikesEvent, LikesState> {
   }
 
   void _onGet(_Get event, Emitter<LikesState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(state.copyWith(status: LikesStatus.failure));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

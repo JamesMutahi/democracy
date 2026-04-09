@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:democracy/app/utils/snack_bar_content.dart';
+import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:dio/dio.dart';
 import 'package:docx_viewer/docx_viewer.dart';
 import 'package:flutter/material.dart';

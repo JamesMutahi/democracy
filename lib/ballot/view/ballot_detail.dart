@@ -1,6 +1,6 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/utils/dialogs.dart';
-import 'package:democracy/app/utils/snack_bar_content.dart';
+import 'package:democracy/app/shared/widgets/dialogs.dart';
+import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/models/option.dart';

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/app/shared/constants/strings.dart';
 import 'package:democracy/survey/models/choice.dart';
 import 'package:democracy/survey/models/choice_answer.dart';
 import 'package:democracy/survey/models/question.dart';
@@ -27,30 +28,20 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
         }
       }
     });
-    on<_Started>((event, emit) {
-      _onStarted(event, emit);
-    });
-    on<_TextAnswerAdded>((event, emit) {
-      _onTextAnswerAdded(event, emit);
-    });
-    on<_SingleChoiceAnswerAdded>((event, emit) {
-      _onSingleChoiceAnswerAdded(event, emit);
-    });
-    on<_MultipleChoiceAnswerAdded>((event, emit) {
-      _onMultipleChoiceAnswerAdded(event, emit);
-    });
-    on<_Validate>((event, emit) {
-      _onValidate(event, emit);
-    });
-    on<_Submit>((event, emit) {
-      _onSubmit(event, emit);
-    });
-    on<_Submitted>((event, emit) {
-      _onSubmitted(event, emit);
-    });
+    on<_Started>((event, emit) => _onStarted(event, emit));
+    on<_TextAnswerAdded>((event, emit) => _onTextAnswerAdded(event, emit));
+    on<_SingleChoiceAnswerAdded>(
+      (event, emit) => _onSingleChoiceAnswerAdded(event, emit),
+    );
+    on<_MultipleChoiceAnswerAdded>(
+      (event, emit) => _onMultipleChoiceAnswerAdded(event, emit),
+    );
+    on<_Validate>((event, emit) => _onValidate(event, emit));
+    on<_Submit>((event, emit) => _onSubmit(event, emit));
+    on<_Submitted>((event, emit) => _onSubmitted(event, emit));
   }
 
-  Future _onStarted(_Started event, Emitter<AnswerState> emit) async {
+  void _onStarted(_Started event, Emitter<AnswerState> emit) {
     emit(state.copyWith(status: AnswerStatus.loading));
     emit(
       state.copyWith(
@@ -63,10 +54,7 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
     );
   }
 
-  Future _onTextAnswerAdded(
-    _TextAnswerAdded event,
-    Emitter<AnswerState> emit,
-  ) async {
+  void _onTextAnswerAdded(_TextAnswerAdded event, Emitter<AnswerState> emit) {
     emit(state.copyWith(status: AnswerStatus.loading));
     state.textAnswers!.removeWhere(
       (textAnswer) => textAnswer.question.id == event.question.id,
@@ -81,10 +69,10 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
     emit(state.copyWith(status: AnswerStatus.loaded));
   }
 
-  Future _onSingleChoiceAnswerAdded(
+  void _onSingleChoiceAnswerAdded(
     _SingleChoiceAnswerAdded event,
     Emitter<AnswerState> emit,
-  ) async {
+  ) {
     emit(state.copyWith(status: AnswerStatus.loading));
     ChoiceAnswer choiceAnswer = ChoiceAnswer(
       question: event.question,
@@ -95,10 +83,10 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
     emit(state.copyWith(status: AnswerStatus.loaded));
   }
 
-  Future _onMultipleChoiceAnswerAdded(
+  void _onMultipleChoiceAnswerAdded(
     _MultipleChoiceAnswerAdded event,
     Emitter<AnswerState> emit,
-  ) async {
+  ) {
     emit(state.copyWith(status: AnswerStatus.loading));
     state.choiceAnswers!.removeWhere((e) => e.question.id == event.question.id);
     for (Choice choice in event.choices) {
@@ -111,7 +99,7 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
     emit(state.copyWith(status: AnswerStatus.loaded));
   }
 
-  Future _onValidate(_Validate event, Emitter<AnswerState> emit) async {
+  void _onValidate(_Validate event, Emitter<AnswerState> emit) {
     emit(state.copyWith(status: AnswerStatus.loading));
     List<Question> required = [];
     for (Question question
@@ -145,7 +133,17 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
     }
   }
 
-  Future _onSubmit(_Submit event, Emitter<AnswerState> emit) async {
+  void _onSubmit(_Submit event, Emitter<AnswerState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(
+        state.copyWith(
+          status: AnswerStatus.submissionFailure,
+          submissionError: serverError,
+        ),
+      );
+      return;
+    }
+
     List<Map<String, dynamic>> textAnswers = [];
     List<Map<String, dynamic>> choiceAnswers = [];
     for (TextAnswer textAnswer in event.textAnswers) {
@@ -177,7 +175,7 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
     webSocketService.send(message);
   }
 
-  Future _onSubmitted(_Submitted event, Emitter<AnswerState> emit) async {
+  void _onSubmitted(_Submitted event, Emitter<AnswerState> emit) {
     emit(state.copyWith(status: AnswerStatus.loading));
     if (event.payload['response_status'] == 201) {
       final Survey survey = Survey.fromJson(event.payload['data']);
@@ -191,6 +189,7 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
       );
     }
   }
+
   @override
   Future<void> close() async {
     await _subscription.cancel();

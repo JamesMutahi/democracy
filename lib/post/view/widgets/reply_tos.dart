@@ -1,4 +1,4 @@
-import 'package:democracy/app/utils/failure_retry_button.dart';
+import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';

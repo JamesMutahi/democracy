@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:democracy/app/utils/dialogs.dart';
-import 'package:democracy/app/utils/media_tools.dart';
-import 'package:democracy/app/utils/snack_bar_content.dart';
+import 'package:democracy/app/shared/widgets/dialogs.dart';
+import 'package:democracy/app/shared/utils/media_tools.dart';
+import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';

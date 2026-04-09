@@ -1,9 +1,9 @@
 import 'package:animated_digit/animated_digit.dart';
-import 'package:democracy/app/utils/custom_bottom_sheet.dart';
-import 'package:democracy/app/utils/dialogs.dart';
-import 'package:democracy/app/utils/more_pop_up.dart';
-import 'package:democracy/app/utils/report.dart';
-import 'package:democracy/app/utils/snack_bar_content.dart';
+import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
+import 'package:democracy/app/shared/widgets/dialogs.dart';
+import 'package:democracy/app/shared/widgets/more_pop_up.dart';
+import 'package:democracy/app/shared/pages/report.dart';
+import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';

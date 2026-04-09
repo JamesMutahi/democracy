@@ -128,13 +128,13 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<Section> sections)?  loaded,TResult Function()?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<Section> sections)?  loaded,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case SectionsInitial() when initial != null:
 return initial();case SectionsLoading() when loading != null:
 return loading();case SectionsLoaded() when loaded != null:
 return loaded(_that.sections);case SectionsFailure() when failure != null:
-return failure();case _:
+return failure(_that.error);case _:
   return orElse();
 
 }
@@ -152,13 +152,13 @@ return failure();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<Section> sections)  loaded,required TResult Function()  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<Section> sections)  loaded,required TResult Function( String error)  failure,}) {final _that = this;
 switch (_that) {
 case SectionsInitial():
 return initial();case SectionsLoading():
 return loading();case SectionsLoaded():
 return loaded(_that.sections);case SectionsFailure():
-return failure();case _:
+return failure(_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -175,13 +175,13 @@ return failure();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<Section> sections)?  loaded,TResult? Function()?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<Section> sections)?  loaded,TResult? Function( String error)?  failure,}) {final _that = this;
 switch (_that) {
 case SectionsInitial() when initial != null:
 return initial();case SectionsLoading() when loading != null:
 return loading();case SectionsLoaded() when loaded != null:
 return loaded(_that.sections);case SectionsFailure() when failure != null:
-return failure();case _:
+return failure(_that.error);case _:
   return null;
 
 }
@@ -329,33 +329,67 @@ as List<Section>,
 
 
 class SectionsFailure implements SectionsState {
-  const SectionsFailure();
+  const SectionsFailure({required this.error});
   
 
+ final  String error;
 
-
+/// Create a copy of SectionsState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SectionsFailureCopyWith<SectionsFailure> get copyWith => _$SectionsFailureCopyWithImpl<SectionsFailure>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SectionsFailure);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SectionsFailure&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,error);
 
 @override
 String toString() {
-  return 'SectionsState.failure()';
+  return 'SectionsState.failure(error: $error)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $SectionsFailureCopyWith<$Res> implements $SectionsStateCopyWith<$Res> {
+  factory $SectionsFailureCopyWith(SectionsFailure value, $Res Function(SectionsFailure) _then) = _$SectionsFailureCopyWithImpl;
+@useResult
+$Res call({
+ String error
+});
 
 
+
+
+}
+/// @nodoc
+class _$SectionsFailureCopyWithImpl<$Res>
+    implements $SectionsFailureCopyWith<$Res> {
+  _$SectionsFailureCopyWithImpl(this._self, this._then);
+
+  final SectionsFailure _self;
+  final $Res Function(SectionsFailure) _then;
+
+/// Create a copy of SectionsState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? error = null,}) {
+  return _then(SectionsFailure(
+error: null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
 
 /// @nodoc
 mixin _$SectionsEvent {

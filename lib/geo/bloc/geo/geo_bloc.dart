@@ -29,30 +29,23 @@ class GeoBloc extends Bloc<GeoEvent, GeoState> {
         }
       }
     });
-    on<_Started>((event, emit) {
-      emit(GeoState());
-    });
-    on<_GetCounties>((event, emit) {
-      _onGetCounties(event, emit);
-    });
-    on<_GetConstituencies>((event, emit) {
-      _onGetConstituencies(event, emit);
-    });
-    on<_GetWards>((event, emit) {
-      _onGetWards(event, emit);
-    });
-    on<_ReceivedCounties>((event, emit) {
-      _onReceivedCounties(event, emit);
-    });
-    on<_ReceivedConstituencies>((event, emit) {
-      _onReceivedConstituencies(event, emit);
-    });
-    on<_ReceivedWards>((event, emit) {
-      _onReceivedWards(event, emit);
-    });
+    on<_Started>((event, emit) => emit(GeoState()));
+    on<_GetCounties>((event, emit) => _onGetCounties(event, emit));
+    on<_GetConstituencies>((event, emit) => _onGetConstituencies(event, emit));
+    on<_GetWards>((event, emit) => _onGetWards(event, emit));
+    on<_ReceivedCounties>((event, emit) => _onReceivedCounties(event, emit));
+    on<_ReceivedConstituencies>(
+      (event, emit) => _onReceivedConstituencies(event, emit),
+    );
+    on<_ReceivedWards>((event, emit) => _onReceivedWards(event, emit));
   }
 
   void _onGetCounties(_GetCounties event, Emitter<GeoState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(state.copyWith(status: GeoStatus.failure));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {'action': 'counties'},
@@ -60,10 +53,12 @@ class GeoBloc extends Bloc<GeoEvent, GeoState> {
     webSocketService.send(message);
   }
 
-  void _onGetConstituencies(
-    _GetConstituencies event,
-    Emitter<GeoState> emit,
-  ) {
+  void _onGetConstituencies(_GetConstituencies event, Emitter<GeoState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(state.copyWith(status: GeoStatus.failure));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {'action': 'constituencies', 'county': event.county.id},
@@ -72,6 +67,11 @@ class GeoBloc extends Bloc<GeoEvent, GeoState> {
   }
 
   void _onGetWards(_GetWards event, Emitter<GeoState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(state.copyWith(status: GeoStatus.failure));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {'action': 'wards', 'constituency': event.constituency.id},
@@ -79,10 +79,7 @@ class GeoBloc extends Bloc<GeoEvent, GeoState> {
     webSocketService.send(message);
   }
 
-  void _onReceivedCounties(
-    _ReceivedCounties event,
-    Emitter<GeoState> emit,
-  ) {
+  void _onReceivedCounties(_ReceivedCounties event, Emitter<GeoState> emit) {
     emit(GeoState(status: GeoStatus.loading));
     if (event.payload['response_status'] == 200) {
       final List<County> counties = List.from(

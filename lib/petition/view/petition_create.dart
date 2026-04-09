@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:democracy/app/utils/dialogs.dart';
-import 'package:democracy/app/utils/media_tools.dart';
-import 'package:democracy/app/utils/snack_bar_content.dart';
+import 'package:democracy/app/shared/widgets/dialogs.dart';
+import 'package:democracy/app/shared/utils/media_tools.dart';
+import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/geo/bloc/geo/geo_bloc.dart';
 import 'package:democracy/geo/models/constituency.dart';
 import 'package:democracy/geo/models/county.dart';

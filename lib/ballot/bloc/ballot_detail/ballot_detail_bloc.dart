@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/app/shared/constants/strings.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/models/option.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -33,33 +34,15 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
         }
       }
     });
-    on<_Created>((event, emit) {
-      _onCreated(event, emit);
-    });
-    on<_Loaded>((event, emit) {
-      _onLoaded(event, emit);
-    });
-    on<_Updated>((event, emit) {
-      _onUpdated(event, emit);
-    });
-    on<_Deleted>((event, emit) {
-      _onDeleted(event, emit);
-    });
-    on<_Retrieve>((event, emit) {
-      _onRetrieve(event, emit);
-    });
-    on<_Vote>((event, emit) {
-      _onVote(event, emit);
-    });
-    on<_Voted>((event, emit) {
-      _onVoted(event, emit);
-    });
-    on<_SubmitReason>((event, emit) {
-      _onSubmitReason(event, emit);
-    });
-    on<_Unsubscribe>((event, emit) {
-      _onUnsubscribe(event, emit);
-    });
+    on<_Created>((event, emit) => _onCreated(event, emit));
+    on<_Loaded>((event, emit) => _onLoaded(event, emit));
+    on<_Updated>((event, emit) => _onUpdated(event, emit));
+    on<_Deleted>((event, emit) => _onDeleted(event, emit));
+    on<_Retrieve>((event, emit) => _onRetrieve(event, emit));
+    on<_Vote>((event, emit) => _onVote(event, emit));
+    on<_Voted>((event, emit) => _onVoted(event, emit));
+    on<_SubmitReason>((event, emit) => _onSubmitReason(event, emit));
+    on<_Unsubscribe>((event, emit) => _onUnsubscribe(event, emit));
   }
 
   Future _onCreated(_Created event, Emitter<BallotDetailState> emit) async {
@@ -102,6 +85,11 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
   }
 
   Future _onRetrieve(_Retrieve event, Emitter<BallotDetailState> emit) async {
+    if (!webSocketService.isConnected) {
+      emit(BallotDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -114,6 +102,11 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
   }
 
   Future _onVote(_Vote event, Emitter<BallotDetailState> emit) async {
+    if (!webSocketService.isConnected) {
+      emit(BallotDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -126,6 +119,11 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
   }
 
   Future _onVoted(_Voted event, Emitter<BallotDetailState> emit) async {
+    if (!webSocketService.isConnected) {
+      emit(BallotDetailFailure(error: serverError));
+      return;
+    }
+
     emit(BallotDetailLoading());
     if (event.payload['response_status'] == 200) {
       //
@@ -138,6 +136,11 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
     _SubmitReason event,
     Emitter<BallotDetailState> emit,
   ) async {
+    if (!webSocketService.isConnected) {
+      emit(BallotDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -154,6 +157,11 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
     _Unsubscribe event,
     Emitter<BallotDetailState> emit,
   ) async {
+    if (!webSocketService.isConnected) {
+      emit(BallotDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

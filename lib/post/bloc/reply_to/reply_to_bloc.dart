@@ -28,6 +28,11 @@ class ReplyToBloc extends Bloc<ReplyToEvent, ReplyToState> {
   }
 
   void _onGet(_Get event, Emitter<ReplyToState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(state.copyWith(status: ReplyToStatus.failure));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

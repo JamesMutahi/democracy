@@ -9,7 +9,7 @@ final class WebsocketState extends Equatable {
   });
 
   final WebsocketStatus status;
-  final bool initialConnectionAchieved;
+  final bool initialConnectionAchieved; /// if false, splash page will be shown
 
   WebsocketState copyWith({
     WebsocketStatus? status,

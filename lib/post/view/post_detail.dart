@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/utils/bottom_loader.dart';
-import 'package:democracy/app/utils/failure_retry_button.dart';
-import 'package:democracy/app/utils/file_widget.dart';
-import 'package:democracy/app/utils/map_widget.dart';
+import 'package:democracy/app/shared/widgets/bottom_loader.dart';
+import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
+import 'package:democracy/app/shared/widgets/file_widget.dart';
+import 'package:democracy/app/shared/widgets/map_widget.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
@@ -17,7 +17,7 @@ import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/bottom_reply_text_field.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
-import 'package:democracy/app/utils/image_viewer.dart';
+import 'package:democracy/app/shared/widgets/image_viewer.dart';
 import 'package:democracy/post/view/widgets/post_body.dart';
 import 'package:democracy/post/view/widgets/post_form_widgets.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';

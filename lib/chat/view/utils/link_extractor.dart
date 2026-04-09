@@ -1,4 +1,4 @@
-import 'package:democracy/app/utils/regex.dart';
+import 'package:democracy/app/shared/constants/regex.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 

@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:democracy/app/utils/dialogs.dart';
+import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/view/widgets/bookmarks.dart';
 import 'package:democracy/constitution/view/constitution.dart';
 import 'package:democracy/app/view/widgets/settings.dart';

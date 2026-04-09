@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:democracy/app/utils/bottom_text_form_field.dart'
+import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart'
     show MultiImageView;
-import 'package:democracy/app/utils/dialogs.dart';
-import 'package:democracy/app/utils/file_widget.dart';
-import 'package:democracy/app/utils/map_widget.dart';
-import 'package:democracy/app/utils/media_tools.dart';
+import 'package:democracy/app/shared/widgets/dialogs.dart';
+import 'package:democracy/app/shared/widgets/file_widget.dart';
+import 'package:democracy/app/shared/widgets/map_widget.dart';
+import 'package:democracy/app/shared/utils/media_tools.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/constitution/models/section.dart';

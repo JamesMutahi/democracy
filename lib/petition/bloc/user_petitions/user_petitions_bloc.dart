@@ -31,6 +31,11 @@ class UserPetitionsBloc extends Bloc<UserPetitionsEvent, UserPetitionsState> {
   }
 
   Future _onGet(_Get event, Emitter<UserPetitionsState> emit) async {
+    if (!webSocketService.isConnected) {
+      emit(state.copyWith(status: UserPetitionsStatus.failure));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

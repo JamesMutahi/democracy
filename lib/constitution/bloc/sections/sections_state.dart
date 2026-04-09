@@ -6,5 +6,6 @@ class SectionsState with _$SectionsState {
   const factory SectionsState.loading() = SectionsLoading;
   const factory SectionsState.loaded({required List<Section> sections}) =
       SectionsLoaded;
-  const factory SectionsState.failure() = SectionsFailure;
+  const factory SectionsState.failure({required String error}) =
+      SectionsFailure;
 }

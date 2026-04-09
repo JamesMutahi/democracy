@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/app/shared/constants/strings.dart';
 import 'package:democracy/notification/models/notification.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -29,21 +30,11 @@ class NotificationDetailBloc
         }
       }
     });
-    on<_Created>((event, emit) {
-      _onCreated(event, emit);
-    });
-    on<_Updated>((event, emit) {
-      _onUpdated(event, emit);
-    });
-    on<_Deleted>((event, emit) {
-      _onDeleted(event, emit);
-    });
-    on<_MarkAsRead>((event, emit) {
-      _onMarkAsRead(event, emit);
-    });
-    on<_ChangeStatus>((event, emit) {
-      _onChangeStatus(event, emit);
-    });
+    on<_Created>((event, emit) => _onCreated(event, emit));
+    on<_Updated>((event, emit) => _onUpdated(event, emit));
+    on<_Deleted>((event, emit) => _onDeleted(event, emit));
+    on<_MarkAsRead>((event, emit) => _onMarkAsRead(event, emit));
+    on<_ChangeStatus>((event, emit) => _onChangeStatus(event, emit));
   }
 
   Future _onCreated(
@@ -55,7 +46,9 @@ class NotificationDetailBloc
       Notification notification = Notification.fromJson(event.payload['data']);
       emit(NotificationCreated(notification: notification));
     } else {
-      emit(NotificationDetailFailure(error: event.payload['errors'].toString()));
+      emit(
+        NotificationDetailFailure(error: event.payload['errors'].toString()),
+      );
     }
   }
 
@@ -68,7 +61,9 @@ class NotificationDetailBloc
       Notification notification = Notification.fromJson(event.payload['data']);
       emit(NotificationUpdated(notification: notification));
     } else {
-      emit(NotificationDetailFailure(error: event.payload['errors'].toString()));
+      emit(
+        NotificationDetailFailure(error: event.payload['errors'].toString()),
+      );
     }
   }
 
@@ -80,7 +75,9 @@ class NotificationDetailBloc
     if (event.payload['response_status'] == 204) {
       emit(NotificationDeleted(notificationId: event.payload['pk']));
     } else {
-      emit(NotificationDetailFailure(error: event.payload['errors'].toString()));
+      emit(
+        NotificationDetailFailure(error: event.payload['errors'].toString()),
+      );
     }
   }
 
@@ -88,6 +85,11 @@ class NotificationDetailBloc
     _MarkAsRead event,
     Emitter<NotificationDetailState> emit,
   ) async {
+    if (!webSocketService.isConnected) {
+      emit(NotificationDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -103,6 +105,11 @@ class NotificationDetailBloc
     _ChangeStatus event,
     Emitter<NotificationDetailState> emit,
   ) async {
+    if (!webSocketService.isConnected) {
+      emit(NotificationDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

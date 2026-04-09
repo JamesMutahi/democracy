@@ -23,18 +23,19 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
         add(_Received(payload: message['payload']));
       }
     });
-    on<_Get>((event, emit) {
-      _onGet(event, emit);
-    });
-    on<_Received>((event, emit) {
-      _onReceived(event, emit);
-    });
+    on<_Get>((event, emit) => _onGet(event, emit));
+    on<_Received>((event, emit) => _onReceived(event, emit));
     on<_Add>((event, emit) => _onAdd(event, emit));
     on<_Update>((event, emit) => _onUpdate(event, emit));
     on<_Remove>((event, emit) => _onRemove(event, emit));
   }
 
   void _onGet(_Get event, Emitter<NotificationsState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(state.copyWith(status: NotificationsStatus.failure));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {'action': 'list', 'request_id': requestId},

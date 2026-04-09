@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/repository/api_repository.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/app/shared/constants/strings.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/models/chat.dart';
@@ -42,24 +43,12 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
         }
       }
     });
-    on<_Created>((event, emit) {
-      _onCreated(event, emit);
-    });
-    on<_Updated>((event, emit) {
-      _onUpdated(event, emit);
-    });
-    on<_Deleted>((event, emit) {
-      _onDeleted(event, emit);
-    });
-    on<_Create>((event, emit) async {
-      await _onCreate(event, emit);
-    });
-    on<_Edit>((event, emit) {
-      _onEdit(event, emit);
-    });
-    on<_Delete>((event, emit) {
-      _onDelete(event, emit);
-    });
+    on<_Created>((event, emit) => _onCreated(event, emit));
+    on<_Updated>((event, emit) => _onUpdated(event, emit));
+    on<_Deleted>((event, emit) => _onDeleted(event, emit));
+    on<_Create>((event, emit) async => await _onCreate(event, emit));
+    on<_Edit>((event, emit) => _onEdit(event, emit));
+    on<_Delete>((event, emit) => _onDelete(event, emit));
   }
 
   void _onCreated(_Created event, Emitter<MessageDetailState> emit) {
@@ -124,6 +113,11 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
   }
 
   void _onEdit(_Edit event, Emitter<MessageDetailState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(MessageDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -137,6 +131,11 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
   }
 
   void _onDelete(_Delete event, Emitter<MessageDetailState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(MessageDetailFailure(error: serverError));
+      return;
+    }
+
     for (Message msg in event.messages) {
       Map<String, dynamic> message = {
         'stream': stream,

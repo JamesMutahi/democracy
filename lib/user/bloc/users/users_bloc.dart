@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
-import 'package:democracy/app/utils/transformers.dart';
+import 'package:democracy/app/shared/utils/transformers.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -29,6 +29,11 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
   }
 
   void _onGet(_Get event, Emitter<UsersState> emit) async {
+    if (!webSocketService.isConnected) {
+      emit(state.copyWith(status: UsersStatus.failure));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

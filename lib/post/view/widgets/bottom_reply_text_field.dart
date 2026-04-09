@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:democracy/app/utils/bottom_text_form_field.dart';
-import 'package:democracy/app/utils/tagging.dart';
+import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart';
+import 'package:democracy/app/shared/widgets/tagging.dart';
 import 'package:democracy/constitution/bloc/sections/sections_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';

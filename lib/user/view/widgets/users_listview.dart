@@ -1,6 +1,6 @@
-import 'package:democracy/app/utils/bottom_loader.dart';
-import 'package:democracy/app/utils/failure_retry_button.dart';
-import 'package:democracy/app/utils/no_results.dart';
+import 'package:democracy/app/shared/widgets/bottom_loader.dart';
+import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
+import 'package:democracy/app/shared/widgets/no_results.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';

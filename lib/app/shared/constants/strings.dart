@@ -1,0 +1,1 @@
+const String serverError = 'Server connection lost';

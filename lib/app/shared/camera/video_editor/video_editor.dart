@@ -3,12 +3,12 @@ import 'dart:io' as io;
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:democracy/app/utils/camera/camera.dart';
-import 'package:democracy/app/utils/camera/utils/stickers.dart';
-import 'package:democracy/app/utils/camera/video_editor/utils/audio_helper_service.dart';
-import 'package:democracy/app/utils/camera/video_editor/widgets/clips_previewer.dart';
-import 'package:democracy/app/utils/camera/video_editor/widgets/video_initializing_widget.dart';
-import 'package:democracy/app/utils/camera/video_editor/widgets/video_progress_alert.dart';
+import 'package:democracy/app/shared/camera/camera.dart';
+import 'package:democracy/app/shared/camera/utils/stickers.dart';
+import 'package:democracy/app/shared/camera/video_editor/utils/audio_helper_service.dart';
+import 'package:democracy/app/shared/camera/video_editor/widgets/clips_previewer.dart';
+import 'package:democracy/app/shared/camera/video_editor/widgets/video_initializing_widget.dart';
+import 'package:democracy/app/shared/camera/video_editor/widgets/video_progress_alert.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';

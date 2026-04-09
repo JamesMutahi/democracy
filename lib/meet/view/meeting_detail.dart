@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/utils/dialogs.dart';
+import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/meet/bloc/meeting_detail/meeting_detail_bloc.dart';
 import 'package:democracy/meet/models/meeting.dart';
 import 'package:flutter/material.dart';

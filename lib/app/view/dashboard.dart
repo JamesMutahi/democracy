@@ -1,5 +1,5 @@
 import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
-import 'package:democracy/app/utils/snack_bar_content.dart';
+import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/view/pages/index.dart';
 import 'package:democracy/app/view/widgets/bottom_nav_bar.dart';
 import 'package:democracy/app/view/widgets/drawer.dart';

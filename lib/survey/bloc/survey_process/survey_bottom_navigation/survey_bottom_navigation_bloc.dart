@@ -10,24 +10,13 @@ part 'survey_bottom_navigation_state.dart';
 class SurveyBottomNavigationBloc
     extends Bloc<SurveyBottomNavigationEvent, SurveyBottomNavigationState> {
   SurveyBottomNavigationBloc() : super(const SurveyBottomNavigationState()) {
-    on<_Started>((event, emit) async {
-      await _onStarted(event, emit);
-    });
-    on<_LoadNextPage>((event, emit) async {
-      await _onLoadNextPage(event, emit);
-    });
-    on<_LoadPrevPage>((event, emit) async {
-      await _onLoadPrevPage(event, emit);
-    });
-    on<_ReturnToSurvey>((event, emit) async {
-      await _onReturnToSurvey(emit);
-    });
+    on<_Started>((event, emit) => _onStarted(event, emit));
+    on<_LoadNextPage>((event, emit) => _onLoadNextPage(event, emit));
+    on<_LoadPrevPage>((event, emit) => _onLoadPrevPage(event, emit));
+    on<_ReturnToSurvey>((event, emit) => _onReturnToSurvey(emit));
   }
 
-  Future _onStarted(
-    _Started event,
-    Emitter<SurveyBottomNavigationState> emit,
-  ) async {
+  void _onStarted(_Started event, Emitter<SurveyBottomNavigationState> emit) {
     emit(state.copyWith(status: SurveyBottomNavigationStatus.loading));
     int page = 0;
     emit(
@@ -41,10 +30,10 @@ class SurveyBottomNavigationBloc
     );
   }
 
-  Future _onLoadNextPage(
+  void _onLoadNextPage(
     _LoadNextPage event,
     Emitter<SurveyBottomNavigationState> emit,
-  ) async {
+  ) {
     emit(state.copyWith(status: SurveyBottomNavigationStatus.loading));
     if (state.isLast) {
       emit(state.copyWith(status: SurveyBottomNavigationStatus.completed));
@@ -62,10 +51,10 @@ class SurveyBottomNavigationBloc
     }
   }
 
-  Future _onLoadPrevPage(
+  void _onLoadPrevPage(
     _LoadPrevPage event,
     Emitter<SurveyBottomNavigationState> emit,
-  ) async {
+  ) {
     emit(state.copyWith(status: SurveyBottomNavigationStatus.loading));
     int prevPage = state.page - 1;
     emit(
@@ -79,7 +68,7 @@ class SurveyBottomNavigationBloc
     );
   }
 
-  Future _onReturnToSurvey(Emitter<SurveyBottomNavigationState> emit) async {
+  void _onReturnToSurvey(Emitter<SurveyBottomNavigationState> emit) {
     emit(state.copyWith(status: SurveyBottomNavigationStatus.loading));
     emit(state.copyWith(status: SurveyBottomNavigationStatus.loaded));
   }

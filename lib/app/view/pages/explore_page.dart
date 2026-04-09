@@ -1,5 +1,5 @@
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
-import 'package:democracy/app/utils/more_pop_up.dart';
+import 'package:democracy/app/shared/widgets/more_pop_up.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/filters_modal.dart';
 import 'package:democracy/app/view/widgets/results_search_bar.dart';

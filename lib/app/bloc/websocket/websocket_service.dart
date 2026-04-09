@@ -8,14 +8,14 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 class WebSocketService {
   WebSocketService({required this.storage});
-
   final FlutterSecureStorage storage;
-
   late WebSocketChannel _channel;
   final StreamController<Map<String, dynamic>> _messageController =
       StreamController.broadcast();
 
   Stream<Map<String, dynamic>> get messages => _messageController.stream;
+
+  bool isConnected = false;
 
   Future<void> connect({required String url, required String token}) async {
     _channel = IOWebSocketChannel.connect(
@@ -23,10 +23,12 @@ class WebSocketService {
       headers: {'Authorization': 'Token $token', 'Origin': url},
     );
     await _channel.ready;
+    isConnected = true;
     _setStatus(WebsocketStatus.connected);
     _channel.stream.listen(
       (message) => _messageController.add(jsonDecode(message)),
       onDone: () async {
+        isConnected = false;
         String? token = await storage.read(key: 'token');
         if (token != null) {
           _setStatus(WebsocketStatus.disconnected);
@@ -36,6 +38,7 @@ class WebSocketService {
         }
       },
       onError: (error) {
+        isConnected = false;
         _setStatus(WebsocketStatus.failure);
         _reconnect(url, token);
       },

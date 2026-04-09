@@ -30,6 +30,11 @@ class UserCommunityNotesBloc
   }
 
   Future _onGet(_Get event, Emitter<UserCommunityNotesState> emit) async {
+    if (!webSocketService.isConnected) {
+      emit(state.copyWith(status: UserCommunityNotesStatus.failure));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

@@ -1,5 +1,5 @@
-import 'package:democracy/app/utils/camera/video_editor/utils/render_cancel_capability.dart';
-import 'package:democracy/app/utils/camera/video_editor/widgets/video_renderer_progress.dart';
+import 'package:democracy/app/shared/camera/video_editor/utils/render_cancel_capability.dart';
+import 'package:democracy/app/shared/camera/video_editor/widgets/video_renderer_progress.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pro_image_editor/pro_image_editor.dart';

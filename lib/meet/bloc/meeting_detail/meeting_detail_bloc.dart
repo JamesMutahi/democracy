@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/app/shared/constants/strings.dart';
 import 'package:democracy/meet/models/meeting.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -31,27 +32,13 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
         }
       }
     });
-    on<_Created>((event, emit) {
-      _onCreated(event, emit);
-    });
-    on<_Loaded>((event, emit) {
-      _onLoaded(event, emit);
-    });
-    on<_Updated>((event, emit) {
-      _onUpdated(event, emit);
-    });
-    on<_Deleted>((event, emit) {
-      _onDeleted(event, emit);
-    });
-    on<_Join>((event, emit) {
-      _onJoin(event, emit);
-    });
-    on<_Leave>((event, emit) {
-      _onLeave(event, emit);
-    });
-    on<_Left>((event, emit) {
-      _onLeft(event, emit);
-    });
+    on<_Created>((event, emit) => _onCreated(event, emit));
+    on<_Loaded>((event, emit) => _onLoaded(event, emit));
+    on<_Updated>((event, emit) => _onUpdated(event, emit));
+    on<_Deleted>((event, emit) => _onDeleted(event, emit));
+    on<_Join>((event, emit) => _onJoin(event, emit));
+    on<_Leave>((event, emit) => _onLeave(event, emit));
+    on<_Left>((event, emit) => _onLeft(event, emit));
   }
 
   void _onCreated(_Created event, Emitter<MeetingDetailState> emit) {
@@ -94,6 +81,11 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
   }
 
   void _onJoin(_Join event, Emitter<MeetingDetailState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(MeetingDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -106,6 +98,11 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
   }
 
   void _onLeave(_Leave event, Emitter<MeetingDetailState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(MeetingDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

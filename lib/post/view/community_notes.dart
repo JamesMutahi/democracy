@@ -1,4 +1,4 @@
-import 'package:democracy/app/utils/bottom_loader.dart';
+import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/post/bloc/community_notes/community_notes_bloc.dart';
 import 'package:democracy/post/models/post.dart';

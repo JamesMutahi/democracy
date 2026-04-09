@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/utils/bottom_text_form_field.dart';
-import 'package:democracy/app/utils/copy.dart';
-import 'package:democracy/app/utils/dialogs.dart';
+import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart';
+import 'package:democracy/app/shared/utils/copy.dart';
+import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';

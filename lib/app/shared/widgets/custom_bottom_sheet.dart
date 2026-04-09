@@ -1,5 +1,5 @@
-import 'package:democracy/app/utils/copy.dart';
-import 'package:democracy/app/utils/direct_message.dart';
+import 'package:democracy/app/shared/utils/copy.dart';
+import 'package:democracy/app/shared/pages/direct_message.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/meet/models/meeting.dart';

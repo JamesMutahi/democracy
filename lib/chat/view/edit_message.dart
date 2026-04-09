@@ -1,4 +1,4 @@
-import 'package:democracy/app/utils/bottom_text_form_field.dart';
+import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
 import 'package:democracy/chat/models/chat.dart';

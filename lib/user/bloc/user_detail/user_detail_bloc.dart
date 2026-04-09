@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/app/shared/constants/strings.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -29,30 +30,14 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
         }
       }
     });
-    on<_Retrieved>((event, emit) {
-      _onRetrieved(event, emit);
-    });
-    on<_Updated>((event, emit) {
-      _onUpdated(event, emit);
-    });
-    on<_Get>((event, emit) {
-      _onGet(event, emit);
-    });
-    on<_Update>((event, emit) {
-      _onUpdate(event, emit);
-    });
-    on<_Follow>((event, emit) {
-      _onFollow(event, emit);
-    });
-    on<_Mute>((event, emit) {
-      _onMute(event, emit);
-    });
-    on<_Block>((event, emit) {
-      _onBlock(event, emit);
-    });
-    on<_Unsubscribe>((event, emit) {
-      _onUnsubscribe(event, emit);
-    });
+    on<_Retrieved>((event, emit) => _onRetrieved(event, emit));
+    on<_Updated>((event, emit) => _onUpdated(event, emit));
+    on<_Get>((event, emit) => _onGet(event, emit));
+    on<_Update>((event, emit) => _onUpdate(event, emit));
+    on<_Follow>((event, emit) => _onFollow(event, emit));
+    on<_Mute>((event, emit) => _onMute(event, emit));
+    on<_Block>((event, emit) => _onBlock(event, emit));
+    on<_Unsubscribe>((event, emit) => _onUnsubscribe(event, emit));
   }
 
   void _onRetrieved(_Retrieved event, Emitter<UserDetailState> emit) async {
@@ -76,6 +61,11 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
   }
 
   void _onGet(_Get event, Emitter<UserDetailState> emit) async {
+    if (!webSocketService.isConnected) {
+      emit(UserDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -88,6 +78,11 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
   }
 
   void _onUpdate(_Update event, Emitter<UserDetailState> emit) async {
+    if (!webSocketService.isConnected) {
+      emit(UserDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -112,6 +107,11 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
   }
 
   void _onFollow(_Follow event, Emitter<UserDetailState> emit) async {
+    if (!webSocketService.isConnected) {
+      emit(UserDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -124,6 +124,11 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
   }
 
   void _onMute(_Mute event, Emitter<UserDetailState> emit) async {
+    if (!webSocketService.isConnected) {
+      emit(UserDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -136,6 +141,11 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
   }
 
   void _onBlock(_Block event, Emitter<UserDetailState> emit) async {
+    if (!webSocketService.isConnected) {
+      emit(UserDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
@@ -148,6 +158,11 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
   }
 
   void _onUnsubscribe(_Unsubscribe event, Emitter<UserDetailState> emit) async {
+    if (!webSocketService.isConnected) {
+      emit(UserDetailFailure(error: serverError));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

@@ -1,5 +1,5 @@
-import 'package:democracy/app/utils/custom_bottom_sheet.dart';
-import 'package:democracy/app/utils/more_pop_up.dart';
+import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
+import 'package:democracy/app/shared/widgets/more_pop_up.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart' show TimeLeft;
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/post/view/shared/post_navigator.dart';

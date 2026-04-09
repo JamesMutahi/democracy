@@ -1,6 +1,6 @@
-import 'package:democracy/app/utils/bottom_loader.dart';
-import 'package:democracy/app/utils/custom_bottom_sheet.dart';
-import 'package:democracy/app/utils/failure_retry_button.dart';
+import 'package:democracy/app/shared/widgets/bottom_loader.dart';
+import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
+import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/constitution/bloc/constitution/constitution_bloc.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/constitution/view/section_tile.dart';

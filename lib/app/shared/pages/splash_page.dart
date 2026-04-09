@@ -1,4 +1,4 @@
-import 'package:democracy/app/utils/loading_indicator.dart';
+import 'package:democracy/app/shared/widgets/loading_indicator.dart';
 import 'package:flutter/material.dart';
 
 class SplashPage extends StatelessWidget {

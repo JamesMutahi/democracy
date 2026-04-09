@@ -29,18 +29,12 @@ class SurveyDetailBloc extends Bloc<SurveyDetailEvent, SurveyDetailState> {
         }
       }
     });
-    on<_Created>((event, emit) {
-      _onCreated(event, emit);
-    });
-    on<_Updated>((event, emit) {
-      _onUpdated(event, emit);
-    });
-    on<_Deleted>((event, emit) {
-      _onDeleted(event, emit);
-    });
+    on<_Created>((event, emit) => _onCreated(event, emit));
+    on<_Updated>((event, emit) => _onUpdated(event, emit));
+    on<_Deleted>((event, emit) => _onDeleted(event, emit));
   }
 
-  Future _onCreated(_Created event, Emitter<SurveyDetailState> emit) async {
+  void _onCreated(_Created event, Emitter<SurveyDetailState> emit) {
     emit(SurveyDetailLoading());
     if (event.payload['response_status'] == 201) {
       Survey survey = Survey.fromJson(event.payload['data']);
@@ -50,7 +44,7 @@ class SurveyDetailBloc extends Bloc<SurveyDetailEvent, SurveyDetailState> {
     }
   }
 
-  Future _onUpdated(_Updated event, Emitter<SurveyDetailState> emit) async {
+  void _onUpdated(_Updated event, Emitter<SurveyDetailState> emit) {
     emit(SurveyDetailLoading());
     if (event.payload['response_status'] == 200) {
       final Survey survey = Survey.fromJson(event.payload['data']);
@@ -60,7 +54,7 @@ class SurveyDetailBloc extends Bloc<SurveyDetailEvent, SurveyDetailState> {
     }
   }
 
-  Future _onDeleted(_Deleted event, Emitter<SurveyDetailState> emit) async {
+  void _onDeleted(_Deleted event, Emitter<SurveyDetailState> emit) {
     emit(SurveyDetailLoading());
     if (event.payload['response_status'] == 204) {
       emit(SurveyDeleted(surveyId: event.payload['pk']));

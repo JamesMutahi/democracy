@@ -24,16 +24,17 @@ class FollowingPostsBloc
         add(_Received(payload: message['payload']));
       }
     });
-    on<_Get>((event, emit) {
-      _onGet(event, emit);
-    });
-    on<_Received>((event, emit) {
-      _onReceived(event, emit);
-    });
+    on<_Get>((event, emit) => _onGet(event, emit));
+    on<_Received>((event, emit) => _onReceived(event, emit));
     on<_Update>((event, emit) => _onUpdate(event, emit));
   }
 
   void _onGet(_Get event, Emitter<FollowingPostsState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(state.copyWith(status: FollowingPostsStatus.failure));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

@@ -30,6 +30,11 @@ class FollowingBloc extends Bloc<FollowingEvent, FollowingState> {
   }
 
   void _onGet(_Get event, Emitter<FollowingState> emit) {
+    if (!webSocketService.isConnected) {
+      emit(state.copyWith(status: FollowingStatus.failure));
+      return;
+    }
+
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {

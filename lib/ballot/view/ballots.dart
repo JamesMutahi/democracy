@@ -1,5 +1,5 @@
-import 'package:democracy/app/utils/bottom_loader.dart';
-import 'package:democracy/app/utils/failure_retry_button.dart';
+import 'package:democracy/app/shared/widgets/bottom_loader.dart';
+import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/ballot/bloc/ballot_filter/ballot_filter_cubit.dart';
 import 'package:democracy/ballot/bloc/ballots/ballots_bloc.dart';
