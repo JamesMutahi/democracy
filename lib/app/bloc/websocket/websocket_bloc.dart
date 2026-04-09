@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/app/shared/constants/strings.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -17,6 +18,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     on<_Connect>((event, emit) async => _onConnect(emit));
     on<_ChangeState>((event, emit) => emit(event.state));
     on<_Disconnect>((event, emit) async {
+      emit(state.copyWith(status: WebsocketStatus.loading));
       await _subscription?.cancel();
       _subscription = null;
       await webSocketService.disconnect();
@@ -30,9 +32,8 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
       String? token = await authRepository.getToken();
       String url = dotenv.env['WEBSOCKET_URL']!;
       _subscription = webSocketService.messages.listen((message) {
-        String key = 'websocket';
-        if (message.containsKey(key)) {
-          switch (message[key]) {
+        if (message.containsKey(websocket)) {
+          switch (message[websocket]) {
             case WebsocketStatus.initial:
               add(
                 _ChangeState(

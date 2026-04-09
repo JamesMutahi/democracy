@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/shared/constants/strings.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -29,12 +30,7 @@ class WebSocketService {
       (message) => _messageController.add(jsonDecode(message)),
       onDone: () async {
         isConnected = false;
-        String? token = await storage.read(key: 'token');
-        if (token != null) {
-          _setStatus(WebsocketStatus.disconnected);
-        } else {
-          _setStatus(WebsocketStatus.initial);
-        }
+        _setStatus(WebsocketStatus.disconnected);
       },
       onError: (error) {
         isConnected = false;
@@ -44,7 +40,7 @@ class WebSocketService {
   }
 
   void _setStatus(WebsocketStatus status) {
-    _messageController.add({'websocket': status});
+    _messageController.add({websocket: status});
   }
 
   void send(Map<String, dynamic> message) {
