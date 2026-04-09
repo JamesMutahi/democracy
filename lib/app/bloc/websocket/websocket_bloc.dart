@@ -1,22 +1,36 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/app/shared/constants/strings.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:stream_transform/stream_transform.dart';
 
 part 'websocket_event.dart';
 part 'websocket_state.dart';
 part 'websocket_bloc.freezed.dart';
 
+EventTransformer<E> droppableThrottled<E>(Duration duration) {
+  return (events, mapper) {
+    return droppable<E>().call(events.throttle(duration), mapper);
+  };
+}
+
 class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   WebsocketBloc({required this.authRepository, required this.webSocketService})
     : super(const WebsocketState()) {
-    on<_Connect>((event, emit) async => _onConnect(emit));
-    on<_ChangeState>((event, emit) => emit(event.state));
+    on<_Connect>(
+      (event, emit) async => _onConnect(emit),
+      transformer: droppableThrottled(Duration(seconds: 5)),
+    );
+    on<_ChangeState>(
+      (event, emit) => emit(event.state),
+      transformer: restartable(),
+    );
     on<_Disconnect>((event, emit) async {
       emit(state.copyWith(status: WebsocketStatus.loading));
       await _subscription?.cancel();
@@ -58,34 +72,30 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
                   state: state.copyWith(status: WebsocketStatus.disconnected),
                 ),
               );
-              Future.delayed(Duration(seconds: 10), () {
-                if (_subscription != null) {
-                  add(_Connect());
-                }
-              });
+              _reconnect();
             case WebsocketStatus.failure:
               add(
                 _ChangeState(
                   state: state.copyWith(status: WebsocketStatus.failure),
                 ),
               );
-              Future.delayed(Duration(seconds: 10), () {
-                if (_subscription != null) {
-                  add(_Connect());
-                }
-              });
+              _reconnect();
           }
         }
       });
       await webSocketService.connect(url: url, token: token!);
     } catch (e) {
       emit(state.copyWith(status: WebsocketStatus.failure));
-      Future.delayed(Duration(seconds: 10), () {
-        if (_subscription != null) {
-          add(_Connect());
-        }
-      });
+      _reconnect();
     }
+  }
+
+  void _reconnect() {
+    Future.delayed(Duration(seconds: 10), () {
+      if (_subscription != null) {
+        add(_Connect());
+      }
+    });
   }
 
   @override
