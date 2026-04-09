@@ -461,8 +461,10 @@ class _TopPostsState extends State<_TopPostsTab>
 
           return PostListView(
             posts: posts,
-            loading: state.status == PostsStatus.initial,
-            failure: state.posts.isNotEmpty
+            loading:
+                state.status == PostsStatus.initial ||
+                (state.status == PostsStatus.loading && posts.isEmpty),
+            failure: posts.isNotEmpty
                 ? false
                 : state.status == PostsStatus.failure,
             onPostsUpdated: (posts) {
@@ -566,7 +568,9 @@ class _RecentPostsState extends State<_RecentPostsTab>
 
           return PostListView(
             posts: posts,
-            loading: state.status == RecentPostsStatus.initial,
+            loading:
+                state.status == RecentPostsStatus.initial ||
+                (state.status == RecentPostsStatus.loading && posts.isEmpty),
             failure: state.posts.isNotEmpty
                 ? false
                 : state.status == RecentPostsStatus.failure,
@@ -651,7 +655,9 @@ class _ProfilesTabState extends State<_ProfilesTab>
 
         return UsersListView(
           users: users,
-          loading: state.status == UsersStatus.initial,
+          loading:
+              state.status == UsersStatus.initial ||
+              (state.status == UsersStatus.loading && users.isEmpty),
           failure: state.users.isNotEmpty
               ? false
               : state.status == UsersStatus.failure,

@@ -66,7 +66,9 @@ class _UserPostsState extends State<UserPosts> {
 
         return PostListView(
           posts: posts,
-          loading: state.status == UserPostsStatus.initial,
+          loading:
+              state.status == UserPostsStatus.initial ||
+              (state.status == UserPostsStatus.loading && posts.isEmpty),
           failure: state.posts.isNotEmpty
               ? false
               : state.status == UserPostsStatus.failure,
@@ -129,7 +131,8 @@ class _UserRepliesState extends State<UserReplies> {
       builder: (context, state) {
         final posts = state.posts.toList();
 
-        if (state.status == UserRepliesStatus.initial) {
+        if (state.status == UserRepliesStatus.initial ||
+            (state.status == UserRepliesStatus.loading && posts.isEmpty)) {
           return const BottomLoader();
         }
 
@@ -259,7 +262,9 @@ class _LikesState extends State<Likes> {
 
         return PostListView(
           posts: posts,
-          loading: state.status == LikesStatus.initial,
+          loading:
+              state.status == LikesStatus.initial ||
+              (state.status == LikesStatus.initial && posts.isEmpty),
           failure: state.posts.isNotEmpty
               ? false
               : state.status == LikesStatus.failure,
@@ -316,7 +321,9 @@ class _UserCommunityNotesState extends State<UserCommunityNotes> {
       builder: (context, state) {
         final posts = state.posts.toList();
 
-        if (state.status == UserCommunityNotesStatus.initial) {
+        if (state.status == UserCommunityNotesStatus.initial ||
+            (state.status == UserCommunityNotesStatus.loading &&
+                posts.isEmpty)) {
           return const BottomLoader();
         }
 
@@ -432,7 +439,9 @@ class _UserPetitionsState extends State<UserPetitions> {
         builder: (context, state) {
           final petitions = state.petitions.toList();
 
-          if (state.status == UserPetitionsStatus.initial) {
+          if (state.status == UserPetitionsStatus.initial ||
+              (state.status == UserPetitionsStatus.initial &&
+                  petitions.isEmpty)) {
             return const BottomLoader();
           }
 

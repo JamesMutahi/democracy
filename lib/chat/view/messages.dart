@@ -86,7 +86,9 @@ class _MessagesState extends State<Messages> {
           return current.chatId == widget.chat.id;
         },
         builder: (context, state) {
-          if (state.status == MessagesStatus.initial) {
+          if (state.status == MessagesStatus.initial ||
+              state.status == MessagesStatus.loading &&
+                  state.messages.isEmpty) {
             return const BottomLoader();
           }
 

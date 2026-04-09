@@ -29,6 +29,7 @@ class SupportersBloc extends Bloc<SupportersEvent, SupportersState> {
   }
 
   void _onGet(_Get event, Emitter<SupportersState> emit) {
+    emit(state.copyWith(status: SupportersStatus.loading));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: SupportersStatus.failure));
       return;

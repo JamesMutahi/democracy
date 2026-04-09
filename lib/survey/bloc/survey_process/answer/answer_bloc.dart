@@ -134,6 +134,7 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
   }
 
   void _onSubmit(_Submit event, Emitter<AnswerState> emit) {
+    emit(state.copyWith(status: AnswerStatus.loading));
     if (!webSocketService.isConnected) {
       emit(
         state.copyWith(

@@ -32,6 +32,7 @@ class MeetingsBloc extends Bloc<MeetingsEvent, MeetingsState> {
   }
 
   void _onGet(_Get event, Emitter<MeetingsState> emit) {
+    emit(state.copyWith(status: MeetingsStatus.loading));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: MeetingsStatus.failure));
       return;

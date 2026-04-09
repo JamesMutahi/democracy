@@ -32,7 +32,8 @@ class _DraftsPostsState extends State<DraftPosts> {
         builder: (context, state) {
           final posts = state.posts.toList();
 
-          if (state.status == DraftPostsStatus.initial) {
+          if (state.status == DraftPostsStatus.initial ||
+              state.status == DraftPostsStatus.loading && posts.isEmpty) {
             return const BottomLoader();
           }
 

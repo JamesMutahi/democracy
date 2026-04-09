@@ -28,6 +28,7 @@ class MutedBloc extends Bloc<MutedEvent, MutedState> {
   }
 
   void _onGet(_Get event, Emitter<MutedState> emit) {
+    emit(state.copyWith(status: MutedStatus.loading));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: MutedStatus.failure));
       return;

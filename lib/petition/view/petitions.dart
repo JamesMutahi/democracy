@@ -58,7 +58,9 @@ class _PetitionsState extends State<Petitions>
             builder: (context, petitionsState) {
               final petitions = petitionsState.petitions.toList();
 
-              if (petitionsState.status == PetitionsStatus.initial) {
+              if (petitionsState.status == PetitionsStatus.initial ||
+                  (petitionsState.status == PetitionsStatus.loading &&
+                      petitions.isEmpty)) {
                 return const BottomLoader();
               }
 

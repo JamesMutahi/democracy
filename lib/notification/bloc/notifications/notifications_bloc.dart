@@ -31,6 +31,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   }
 
   void _onGet(_Get event, Emitter<NotificationsState> emit) {
+    emit(state.copyWith(status: NotificationsStatus.loading));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: NotificationsStatus.failure));
       return;

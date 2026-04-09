@@ -171,7 +171,9 @@ class _ForYouTabState extends State<ForYouTab>
 
         return PostListView(
           posts: posts,
-          loading: state.status == ForYouStatus.initial,
+          loading:
+              state.status == ForYouStatus.initial ||
+              (state.status == ForYouStatus.loading && posts.isEmpty),
           failure: state.posts.isNotEmpty
               ? false
               : state.status == ForYouStatus.failure,
@@ -243,7 +245,9 @@ class _FollowingTabState extends State<FollowingTab> {
 
         return PostListView(
           posts: posts,
-          loading: state.status == FollowingPostsStatus.initial,
+          loading:
+              state.status == FollowingPostsStatus.initial ||
+              (state.status == FollowingPostsStatus.loading && posts.isEmpty),
           failure: state.posts.isNotEmpty
               ? false
               : state.status == FollowingPostsStatus.failure,

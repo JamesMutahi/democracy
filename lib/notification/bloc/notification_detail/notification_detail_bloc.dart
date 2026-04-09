@@ -37,10 +37,7 @@ class NotificationDetailBloc
     on<_ChangeStatus>((event, emit) => _onChangeStatus(event, emit));
   }
 
-  Future _onCreated(
-    _Created event,
-    Emitter<NotificationDetailState> emit,
-  ) async {
+  void _onCreated(_Created event, Emitter<NotificationDetailState> emit) {
     emit(NotificationDetailLoading());
     if (event.payload['response_status'] == 201) {
       Notification notification = Notification.fromJson(event.payload['data']);
@@ -52,10 +49,7 @@ class NotificationDetailBloc
     }
   }
 
-  Future _onUpdated(
-    _Updated event,
-    Emitter<NotificationDetailState> emit,
-  ) async {
+  void _onUpdated(_Updated event, Emitter<NotificationDetailState> emit) {
     emit(NotificationDetailLoading());
     if (event.payload['response_status'] == 200) {
       Notification notification = Notification.fromJson(event.payload['data']);
@@ -67,10 +61,7 @@ class NotificationDetailBloc
     }
   }
 
-  Future _onDeleted(
-    _Deleted event,
-    Emitter<NotificationDetailState> emit,
-  ) async {
+  void _onDeleted(_Deleted event, Emitter<NotificationDetailState> emit) {
     emit(NotificationDetailLoading());
     if (event.payload['response_status'] == 204) {
       emit(NotificationDeleted(notificationId: event.payload['pk']));
@@ -81,10 +72,8 @@ class NotificationDetailBloc
     }
   }
 
-  Future _onMarkAsRead(
-    _MarkAsRead event,
-    Emitter<NotificationDetailState> emit,
-  ) async {
+  void _onMarkAsRead(_MarkAsRead event, Emitter<NotificationDetailState> emit) {
+    emit(NotificationDetailLoading());
     if (!webSocketService.isConnected) {
       emit(NotificationDetailFailure(error: serverError));
       return;
@@ -101,10 +90,11 @@ class NotificationDetailBloc
     webSocketService.send(message);
   }
 
-  Future _onChangeStatus(
+  void _onChangeStatus(
     _ChangeStatus event,
     Emitter<NotificationDetailState> emit,
-  ) async {
+  ) {
+    emit(NotificationDetailLoading());
     if (!webSocketService.isConnected) {
       emit(NotificationDetailFailure(error: serverError));
       return;

@@ -4,6 +4,7 @@ import 'package:democracy/app/bloc/theme/theme_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/app/shared/utils/app_theme.dart';
+import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/shared/pages/splash_page.dart';
 import 'package:democracy/app/view/dashboard.dart';
@@ -55,14 +56,20 @@ class MyApp extends StatelessWidget {
             child: ThemeMod(
               child: BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, state) {
-                  switch (state) {
-                    case Unauthenticated():
-                      return LoginPage();
-                    case Authenticated():
-                      return _buildDashboard();
-                    default:
-                      return SplashPage();
-                  }
+                  return BlocBuilder<WebsocketBloc, WebsocketState>(
+                    builder: (context, socketState) {
+                      if (state is Unauthenticated) {
+                        return LoginPage();
+                      } else if (state is Authenticated &&
+                          socketState.initialConnectionAchieved) {
+                        return _buildDashboard();
+                      } else if (state is AuthenticationFailure) {
+                        return _buildFailurePage(context, state.error);
+                      } else {
+                        return SplashPage();
+                      }
+                    },
+                  );
                 },
               ),
             ),
@@ -72,52 +79,57 @@ class MyApp extends StatelessWidget {
     );
   }
 
+  Widget _buildFailurePage(BuildContext context, String error) {
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(error),
+          SizedBox(height: 20),
+          FailureRetryButton(
+            onPressed: () {
+              context.read<AuthBloc>().add(AuthEvent.authenticate());
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildDashboard() {
-    return BlocBuilder<WebsocketBloc, WebsocketState>(
-      builder: (context, socketState) {
-        return !socketState.initialConnectionAchieved
-            ? SplashPage()
-            : MultiBlocProvider(
-                providers: [
-                  BlocProvider(
-                    create: (context) => ForYouBloc(
-                      webSocketService: context.read<WebSocketService>(),
-                    ),
-                  ),
-                  BlocProvider(
-                    create: (context) => FollowingPostsBloc(
-                      webSocketService: context.read<WebSocketService>(),
-                    ),
-                  ),
-                  BlocProvider(
-                    create: (context) => MeetingsBloc(
-                      webSocketService: context.read<WebSocketService>(),
-                    ),
-                  ),
-                  BlocProvider(
-                    create: (context) => BallotsBloc(
-                      webSocketService: context.read<WebSocketService>(),
-                    ),
-                  ),
-                  BlocProvider(
-                    create: (context) => SurveysBloc(
-                      webSocketService: context.read<WebSocketService>(),
-                    ),
-                  ),
-                  BlocProvider(
-                    create: (context) => PetitionsBloc(
-                      webSocketService: context.read<WebSocketService>(),
-                    ),
-                  ),
-                  BlocProvider(
-                    create: (context) => ChatsBloc(
-                      webSocketService: context.read<WebSocketService>(),
-                    ),
-                  ),
-                ],
-                child: Dashboard(),
-              );
-      },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              ForYouBloc(webSocketService: context.read<WebSocketService>()),
+        ),
+        BlocProvider(
+          create: (context) => FollowingPostsBloc(
+            webSocketService: context.read<WebSocketService>(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) =>
+              MeetingsBloc(webSocketService: context.read<WebSocketService>()),
+        ),
+        BlocProvider(
+          create: (context) =>
+              BallotsBloc(webSocketService: context.read<WebSocketService>()),
+        ),
+        BlocProvider(
+          create: (context) =>
+              SurveysBloc(webSocketService: context.read<WebSocketService>()),
+        ),
+        BlocProvider(
+          create: (context) =>
+              PetitionsBloc(webSocketService: context.read<WebSocketService>()),
+        ),
+        BlocProvider(
+          create: (context) =>
+              ChatsBloc(webSocketService: context.read<WebSocketService>()),
+        ),
+      ],
+      child: Dashboard(),
     );
   }
 }
@@ -227,8 +239,8 @@ class _Listeners extends StatelessWidget {
             if (state.status == WebsocketStatus.failure) {
               final snackBar = getSnackBar(
                 context: context,
-                message: 'Server error',
-                status: SnackBarStatus.failure,
+                message: 'Reconnecting...',
+                status: SnackBarStatus.info,
               );
               showSnackBar(snackBar: snackBar);
             }

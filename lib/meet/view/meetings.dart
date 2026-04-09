@@ -51,7 +51,9 @@ class _MeetingsState extends State<Meetings> {
             builder: (context, meetingsState) {
               final meetings = meetingsState.meetings.toList();
 
-              if (meetingsState.status == MeetingsStatus.initial) {
+              if (meetingsState.status == MeetingsStatus.initial ||
+                  (meetingsState.status == MeetingsStatus.loading &&
+                      meetings.isEmpty)) {
                 return const BottomLoader();
               }
 
@@ -74,7 +76,7 @@ class _MeetingsState extends State<Meetings> {
                   _refreshController.loadFailed();
                 }
 
-                if (meetingsState.meetings.isEmpty) {
+                if (meetings.isEmpty) {
                   return FailureRetryButton(
                     onPressed: () => context.read<MeetingsBloc>().add(
                       MeetingsEvent.get(searchTerm: filterState.searchTerm),

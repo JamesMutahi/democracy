@@ -32,6 +32,7 @@ class ChatsBloc extends Bloc<ChatsEvent, ChatsState> {
   }
 
   void _onGet(_Get event, Emitter<ChatsState> emit) {
+    emit(state.copyWith(status: ChatsStatus.loading));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: ChatsStatus.failure));
       return;

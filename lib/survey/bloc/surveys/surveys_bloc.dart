@@ -31,6 +31,7 @@ class SurveysBloc extends Bloc<SurveysEvent, SurveysState> {
   }
 
   void _onGet(_Get event, Emitter<SurveysState> emit) {
+    emit(state.copyWith(status: SurveysStatus.loading));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: SurveysStatus.failure));
       return;

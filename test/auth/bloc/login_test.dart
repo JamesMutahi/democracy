@@ -8,59 +8,49 @@ import 'package:bloc_test/bloc_test.dart';
 import '../../objects.dart';
 
 class MockAuthRepository extends Mock implements AuthRepository {}
+
 class MockWebsocketService extends Mock implements WebSocketService {}
 
 void main() {
   group(LoginCubit, () {
     late LoginCubit loginCubit;
     late MockAuthRepository mockAuthRepository;
-    late MockWebsocketService mockWebsocketService;
 
     setUp(() {
       mockAuthRepository = MockAuthRepository();
-      mockWebsocketService = MockWebsocketService();
-      loginCubit = LoginCubit(
-        authRepository: mockAuthRepository,
-        webSocketService: mockWebsocketService,
-      );
+      loginCubit = LoginCubit(authRepository: mockAuthRepository);
     });
 
     test('initial state is _Initial', () {
-      expect(
-        loginCubit.state,
-        equals(const LoginState.initial()),
-      );
+      expect(loginCubit.state, equals(const LoginState.initial()));
     });
 
     blocTest(
       'emits page [_LoggedIn] when login is added',
       build: () {
-        when(() => mockAuthRepository.login(email: 'test', password: 'test'))
-            .thenAnswer((_) async => 'test');
+        when(
+          () => mockAuthRepository.login(email: 'test', password: 'test'),
+        ).thenAnswer((_) async => 'test');
         return loginCubit;
       },
       act: (cubit) => cubit.login(email: 'test', password: 'test'),
-      expect: () => [
-        const LoginState.loading(),
-        const LoginState.loggedIn(),
-      ],
+      expect: () => [const LoginState.loading(), const LoginState.loggedIn()],
     );
 
     blocTest(
       'emits page [_LoggedOut] when logout is added',
       build: () {
-        when(() => mockAuthRepository.getToken())
-            .thenAnswer((_) async => 'test');
-        when(() => mockAuthRepository.logout(token: 'test'))
-            .thenAnswer((_) async => user1);
+        when(
+          () => mockAuthRepository.getToken(),
+        ).thenAnswer((_) async => 'test');
+        when(
+          () => mockAuthRepository.logout(token: 'test'),
+        ).thenAnswer((_) async => user1);
         when(() => mockAuthRepository.deleteToken()).thenAnswer((_) async {});
         return loginCubit;
       },
       act: (cubit) => cubit.logout(),
-      expect: () => [
-        const LoginState.loading(),
-        const LoginState.loggedOut(),
-      ],
+      expect: () => [const LoginState.loading(), const LoginState.loggedOut()],
     );
   });
 }

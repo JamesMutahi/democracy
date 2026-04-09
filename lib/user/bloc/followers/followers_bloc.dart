@@ -28,6 +28,9 @@ class FollowersBloc extends Bloc<FollowersEvent, FollowersState> {
   }
 
   void _onGet(_Get event, Emitter<FollowersState> emit) {
+    emit(
+      state.copyWith(status: FollowersStatus.loading, userId: event.user.id),
+    );
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: FollowersStatus.failure));
       return;

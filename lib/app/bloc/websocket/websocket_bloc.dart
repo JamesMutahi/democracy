@@ -14,47 +14,14 @@ part 'websocket_bloc.freezed.dart';
 class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   WebsocketBloc({required this.authRepository, required this.webSocketService})
     : super(const WebsocketState()) {
-    _subscription = webSocketService.messages.listen((message) {
-      String key = 'websocket';
-      if (message.containsKey(key)) {
-        switch (message[key]) {
-          case WebsocketStatus.initial:
-            add(
-              _ChangeState(
-                state: state.copyWith(
-                  status: WebsocketStatus.initial,
-                  initialConnectionAchieved: false,
-                ),
-              ),
-            );
-          case WebsocketStatus.connected:
-            add(
-              _ChangeState(
-                state: state.copyWith(
-                  status: WebsocketStatus.connected,
-                  initialConnectionAchieved: true,
-                ),
-              ),
-            );
-          case WebsocketStatus.disconnected:
-            add(
-              _ChangeState(
-                state: state.copyWith(status: WebsocketStatus.disconnected),
-              ),
-            );
-          case WebsocketStatus.failure:
-            add(
-              _ChangeState(
-                state: state.copyWith(status: WebsocketStatus.failure),
-              ),
-            );
-        }
-      }
-    });
-    on<_Connect>((event, emit) async {
-      _onConnect(emit);
-    });
+    on<_Connect>((event, emit) async => _onConnect(emit));
     on<_ChangeState>((event, emit) => emit(event.state));
+    on<_Disconnect>((event, emit) async {
+      await _subscription?.cancel();
+      _subscription = null;
+      await webSocketService.disconnect();
+      emit(WebsocketState());
+    });
   }
 
   Future _onConnect(Emitter<WebsocketState> emit) async {
@@ -62,19 +29,71 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     try {
       String? token = await authRepository.getToken();
       String url = dotenv.env['WEBSOCKET_URL']!;
+      _subscription = webSocketService.messages.listen((message) {
+        String key = 'websocket';
+        if (message.containsKey(key)) {
+          switch (message[key]) {
+            case WebsocketStatus.initial:
+              add(
+                _ChangeState(
+                  state: state.copyWith(
+                    status: WebsocketStatus.initial,
+                    initialConnectionAchieved: false,
+                  ),
+                ),
+              );
+            case WebsocketStatus.connected:
+              add(
+                _ChangeState(
+                  state: state.copyWith(
+                    status: WebsocketStatus.connected,
+                    initialConnectionAchieved: true,
+                  ),
+                ),
+              );
+            case WebsocketStatus.disconnected:
+              add(
+                _ChangeState(
+                  state: state.copyWith(status: WebsocketStatus.disconnected),
+                ),
+              );
+              Future.delayed(Duration(seconds: 10), () {
+                if (_subscription != null) {
+                  add(_Connect());
+                }
+              });
+            case WebsocketStatus.failure:
+              add(
+                _ChangeState(
+                  state: state.copyWith(status: WebsocketStatus.failure),
+                ),
+              );
+              Future.delayed(Duration(seconds: 10), () {
+                if (_subscription != null) {
+                  add(_Connect());
+                }
+              });
+          }
+        }
+      });
       await webSocketService.connect(url: url, token: token!);
     } catch (e) {
       emit(state.copyWith(status: WebsocketStatus.failure));
+      Future.delayed(Duration(seconds: 10), () {
+        if (_subscription != null) {
+          add(_Connect());
+        }
+      });
     }
   }
 
   @override
   Future<void> close() async {
-    await _subscription.cancel();
+    await _subscription?.cancel();
     await super.close();
   }
 
-  late StreamSubscription _subscription;
+  StreamSubscription? _subscription;
   final AuthRepository authRepository;
   final WebSocketService webSocketService;
 }

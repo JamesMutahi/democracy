@@ -73,7 +73,9 @@ class _ChatsState extends State<Chats> {
                 builder: (context, chatsState) {
                   final chats = chatsState.chats.toList();
 
-                  if (chatsState.status == ChatsStatus.initial) {
+                  if (chatsState.status == ChatsStatus.initial ||
+                      (chatsState.status == ChatsStatus.loading &&
+                          chats.isEmpty)) {
                     return const BottomLoader();
                   }
 

@@ -29,6 +29,7 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
   }
 
   void _onGet(_Get event, Emitter<BookmarksState> emit) async {
+    emit(state.copyWith(status: BookmarksStatus.loading));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: BookmarksStatus.failure));
     }

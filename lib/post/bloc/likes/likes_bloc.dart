@@ -28,6 +28,7 @@ class LikesBloc extends Bloc<LikesEvent, LikesState> {
   }
 
   void _onGet(_Get event, Emitter<LikesState> emit) {
+    emit(state.copyWith(status: LikesStatus.loading, userId: event.user.id));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: LikesStatus.failure));
       return;

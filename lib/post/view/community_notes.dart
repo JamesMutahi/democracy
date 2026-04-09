@@ -67,7 +67,9 @@ class _CommunityNotesState extends State<CommunityNotes> {
             builder: (context, state) {
               final posts = state.communityNotes.toList();
 
-              if (state.status == CommunityNotesStatus.initial) {
+              if (state.status == CommunityNotesStatus.initial ||
+                  state.status == CommunityNotesStatus.loading &&
+                      posts.isEmpty) {
                 return BottomLoader();
               }
 
@@ -93,7 +95,10 @@ class _CommunityNotesState extends State<CommunityNotes> {
 
               return PostListView(
                 posts: posts,
-                loading: state.status == CommunityNotesStatus.initial,
+                loading:
+                    state.status == CommunityNotesStatus.initial ||
+                    (state.status == CommunityNotesStatus.loading &&
+                        posts.isEmpty),
                 failure: state.communityNotes.isNotEmpty
                     ? false
                     : state.status == CommunityNotesStatus.failure,

@@ -30,6 +30,9 @@ class FollowingBloc extends Bloc<FollowingEvent, FollowingState> {
   }
 
   void _onGet(_Get event, Emitter<FollowingState> emit) {
+    emit(
+      state.copyWith(status: FollowingStatus.loading, userId: event.user.id),
+    );
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: FollowingStatus.failure));
       return;

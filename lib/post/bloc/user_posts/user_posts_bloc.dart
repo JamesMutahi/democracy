@@ -29,6 +29,9 @@ class UserPostsBloc extends Bloc<UserPostsEvent, UserPostsState> {
   }
 
   void _onGet(_Get event, Emitter<UserPostsState> emit) async {
+    emit(
+      state.copyWith(status: UserPostsStatus.loading, userId: event.user.id),
+    );
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: UserPostsStatus.failure));
       return;

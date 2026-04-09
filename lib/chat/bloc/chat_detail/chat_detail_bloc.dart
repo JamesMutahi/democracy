@@ -98,6 +98,7 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
   }
 
   void _onCreate(_Create event, Emitter<ChatDetailState> emit) {
+    emit(ChatDetailLoading());
     if (!webSocketService.isConnected) {
       emit(ChatDetailFailure(error: serverError));
       return;
@@ -115,6 +116,7 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
   }
 
   void _onGet(_Get event, Emitter<ChatDetailState> emit) {
+    emit(ChatDetailLoading());
     if (!webSocketService.isConnected) {
       emit(ChatDetailFailure(error: serverError));
       return;
@@ -132,6 +134,7 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
   }
 
   void _onSubscribe(_Subscribe event, Emitter<ChatDetailState> emit) {
+    emit(ChatDetailLoading());
     if (!webSocketService.isConnected) {
       emit(ChatDetailFailure(error: serverError));
       return;
@@ -180,6 +183,7 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
   }
 
   void _onMarkAsRead(_MarkAsRead event, Emitter<ChatDetailState> emit) {
+    emit(ChatDetailLoading());
     if (!webSocketService.isConnected) {
       emit(ChatDetailFailure(error: serverError));
       return;

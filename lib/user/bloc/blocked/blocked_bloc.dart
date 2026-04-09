@@ -28,6 +28,7 @@ class BlockedBloc extends Bloc<BlockedEvent, BlockedState> {
   }
 
   void _onGet(_Get event, Emitter<BlockedState> emit) {
+    emit(state.copyWith(status: BlockedStatus.loading));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: BlockedStatus.failure));
       return;

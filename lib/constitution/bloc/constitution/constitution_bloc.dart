@@ -27,6 +27,7 @@ class ConstitutionBloc extends Bloc<ConstitutionEvent, ConstitutionState> {
   }
 
   Future _onGet(_Get event, Emitter<ConstitutionState> emit) async {
+    emit(ConstitutionState.loading());
     if (!webSocketService.isConnected) {
       emit(ConstitutionState.failure(error: 'Server connection lost'));
       return;

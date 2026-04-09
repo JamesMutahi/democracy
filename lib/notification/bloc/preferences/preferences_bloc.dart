@@ -32,6 +32,7 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
   }
 
   Future _onGet(_Get event, Emitter<PreferencesState> emit) async {
+    emit(state.copyWith(status: PreferencesStatus.loading));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: PreferencesStatus.failure));
       return;
@@ -60,6 +61,7 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
   }
 
   Future _onUpdate(_Update event, Emitter<PreferencesState> emit) async {
+    emit(state.copyWith(status: PreferencesStatus.loading));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: PreferencesStatus.failure));
       return;

@@ -112,6 +112,7 @@ class PetitionDetailBloc
   }
 
   void _onRetrieve(_Retrieve event, Emitter<PetitionDetailState> emit) {
+    emit(PetitionDetailLoading());
     if (!webSocketService.isConnected) {
       emit(PetitionDetailFailure(error: serverError));
       return;
@@ -129,6 +130,7 @@ class PetitionDetailBloc
   }
 
   void _onSupport(_Support event, Emitter<PetitionDetailState> emit) {
+    emit(PetitionDetailLoading());
     if (!webSocketService.isConnected) {
       emit(PetitionDetailFailure(error: serverError));
       return;
@@ -146,6 +148,7 @@ class PetitionDetailBloc
   }
 
   void _onChangeStatus(_ChangeStatus event, Emitter<PetitionDetailState> emit) {
+    emit(PetitionDetailLoading());
     if (!webSocketService.isConnected) {
       emit(PetitionDetailFailure(error: serverError));
       return;
@@ -172,6 +175,7 @@ class PetitionDetailBloc
   }
 
   void _onUnsubscribe(_Unsubscribe event, Emitter<PetitionDetailState> emit) {
+    emit(PetitionDetailLoading());
     if (!webSocketService.isConnected) {
       emit(PetitionDetailFailure(error: serverError));
       return;

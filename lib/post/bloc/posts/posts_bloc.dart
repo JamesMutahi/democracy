@@ -31,6 +31,9 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
   }
 
   void _onGet(_Get event, Emitter<PostsState> emit) async {
+    emit(
+      state.copyWith(status: PostsStatus.loading, searchTerm: event.searchTerm),
+    );
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: PostsStatus.failure));
       return;

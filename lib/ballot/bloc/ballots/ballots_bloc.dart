@@ -31,6 +31,7 @@ class BallotsBloc extends Bloc<BallotsEvent, BallotsState> {
   }
 
   void _onGet(_Get event, Emitter<BallotsState> emit) {
+    emit(state.copyWith(status: BallotsStatus.loading));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: BallotsStatus.failure));
       return;

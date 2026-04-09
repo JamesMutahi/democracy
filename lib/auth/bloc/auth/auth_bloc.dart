@@ -20,12 +20,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future _authenticate(Emitter<AuthState> emit) async {
     emit(const AuthState.authenticating());
-    String? token = await authRepository.getToken();
-    if (token == null) {
-      emit(const AuthState.unAuthenticated());
-    } else {
-      User user = await authRepository.getUserFromAPI(token: token);
-      emit(AuthState.authenticated(user: user));
+    try {
+      String? token = await authRepository.getToken();
+      if (token == null) {
+        emit(const AuthState.unAuthenticated());
+      } else {
+        User user = await authRepository.getUserFromAPI(token: token);
+        emit(AuthState.authenticated(user: user));
+      }
+    } catch (e) {
+      emit(AuthState.failure(error: e.toString()));
     }
   }
 

@@ -81,6 +81,7 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
   }
 
   void _onJoin(_Join event, Emitter<MeetingDetailState> emit) {
+    emit(MeetingDetailLoading());
     if (!webSocketService.isConnected) {
       emit(MeetingDetailFailure(error: serverError));
       return;
@@ -98,6 +99,7 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
   }
 
   void _onLeave(_Leave event, Emitter<MeetingDetailState> emit) {
+    emit(MeetingDetailLoading());
     if (!webSocketService.isConnected) {
       emit(MeetingDetailFailure(error: serverError));
       return;

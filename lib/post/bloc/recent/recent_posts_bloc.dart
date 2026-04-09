@@ -32,6 +32,12 @@ class RecentPostsBloc extends Bloc<RecentPostsEvent, RecentPostsState> {
   }
 
   void _onGet(_Get event, Emitter<RecentPostsState> emit) async {
+    emit(
+      state.copyWith(
+        status: RecentPostsStatus.loading,
+        searchTerm: event.searchTerm,
+      ),
+    );
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: RecentPostsStatus.failure));
       return;

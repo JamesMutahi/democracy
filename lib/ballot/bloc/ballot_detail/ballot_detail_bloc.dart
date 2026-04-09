@@ -85,6 +85,7 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
   }
 
   Future _onRetrieve(_Retrieve event, Emitter<BallotDetailState> emit) async {
+    emit(BallotDetailLoading());
     if (!webSocketService.isConnected) {
       emit(BallotDetailFailure(error: serverError));
       return;
@@ -102,6 +103,7 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
   }
 
   Future _onVote(_Vote event, Emitter<BallotDetailState> emit) async {
+    emit(BallotDetailLoading());
     if (!webSocketService.isConnected) {
       emit(BallotDetailFailure(error: serverError));
       return;
@@ -119,6 +121,7 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
   }
 
   Future _onVoted(_Voted event, Emitter<BallotDetailState> emit) async {
+    emit(BallotDetailLoading());
     if (!webSocketService.isConnected) {
       emit(BallotDetailFailure(error: serverError));
       return;
@@ -136,6 +139,7 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
     _SubmitReason event,
     Emitter<BallotDetailState> emit,
   ) async {
+    emit(BallotDetailLoading());
     if (!webSocketService.isConnected) {
       emit(BallotDetailFailure(error: serverError));
       return;
@@ -157,6 +161,7 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
     _Unsubscribe event,
     Emitter<BallotDetailState> emit,
   ) async {
+    emit(BallotDetailLoading());
     if (!webSocketService.isConnected) {
       emit(BallotDetailFailure(error: serverError));
       return;

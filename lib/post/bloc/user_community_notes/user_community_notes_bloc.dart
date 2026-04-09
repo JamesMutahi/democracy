@@ -30,6 +30,12 @@ class UserCommunityNotesBloc
   }
 
   Future _onGet(_Get event, Emitter<UserCommunityNotesState> emit) async {
+    emit(
+      state.copyWith(
+        status: UserCommunityNotesStatus.loading,
+        userId: event.user.id,
+      ),
+    );
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: UserCommunityNotesStatus.failure));
       return;

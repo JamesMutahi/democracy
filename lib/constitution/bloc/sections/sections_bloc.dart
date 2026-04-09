@@ -28,6 +28,7 @@ class SectionsBloc extends Bloc<SectionsEvent, SectionsState> {
   }
 
   Future _onGet(_Get event, Emitter<SectionsState> emit) async {
+    emit(SectionsState.loading());
     if (!webSocketService.isConnected) {
       emit(SectionsState.failure(error: serverError));
       return;

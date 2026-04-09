@@ -31,6 +31,12 @@ class UserPetitionsBloc extends Bloc<UserPetitionsEvent, UserPetitionsState> {
   }
 
   Future _onGet(_Get event, Emitter<UserPetitionsState> emit) async {
+    emit(
+      state.copyWith(
+        status: UserPetitionsStatus.loading,
+        userId: event.user.id,
+      ),
+    );
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: UserPetitionsStatus.failure));
       return;

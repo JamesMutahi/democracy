@@ -30,6 +30,7 @@ class FollowingPostsBloc
   }
 
   void _onGet(_Get event, Emitter<FollowingPostsState> emit) {
+    emit(state.copyWith(status: FollowingPostsStatus.loading));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: FollowingPostsStatus.failure));
       return;
@@ -66,6 +67,7 @@ class FollowingPostsBloc
   }
 
   void _onUpdate(_Update event, Emitter<FollowingPostsState> emit) {
+    emit(state.copyWith(status: FollowingPostsStatus.loading));
     emit(
       state.copyWith(posts: event.posts, status: FollowingPostsStatus.success),
     );

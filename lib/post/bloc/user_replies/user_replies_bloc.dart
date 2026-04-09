@@ -29,6 +29,9 @@ class UserRepliesBloc extends Bloc<UserRepliesEvent, UserRepliesState> {
   }
 
   void _onGet(_Get event, Emitter<UserRepliesState> emit) async {
+    emit(
+      state.copyWith(status: UserRepliesStatus.loading, userId: event.user.id),
+    );
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: UserRepliesStatus.failure));
       return;

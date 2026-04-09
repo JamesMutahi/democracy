@@ -32,7 +32,6 @@ class WebSocketService {
         String? token = await storage.read(key: 'token');
         if (token != null) {
           _setStatus(WebsocketStatus.disconnected);
-          _reconnect(url, token);
         } else {
           _setStatus(WebsocketStatus.initial);
         }
@@ -40,7 +39,6 @@ class WebSocketService {
       onError: (error) {
         isConnected = false;
         _setStatus(WebsocketStatus.failure);
-        _reconnect(url, token);
       },
     );
   }
@@ -55,12 +53,5 @@ class WebSocketService {
 
   Future<void> disconnect() async {
     await _channel.sink.close();
-  }
-
-  void _reconnect(String url, String token) {
-    Future.delayed(
-      Duration(seconds: 10),
-      () => connect(url: url, token: token),
-    );
   }
 }

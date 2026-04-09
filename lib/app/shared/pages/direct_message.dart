@@ -179,10 +179,13 @@ class _DirectMessageState extends State<DirectMessage> {
                       _refreshController.loadFailed();
                     }
                   }
+
                   return UsersListView(
                     users: users,
                     selectedUsers: selectedUsers,
-                    loading: state.status == UsersStatus.initial,
+                    loading:
+                        state.status == UsersStatus.initial ||
+                        state.status == UsersStatus.loading,
                     failure: state.users.isNotEmpty
                         ? false
                         : state.status == UsersStatus.failure,

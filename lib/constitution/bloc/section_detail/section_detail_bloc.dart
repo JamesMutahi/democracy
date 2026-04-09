@@ -32,7 +32,8 @@ class SectionDetailBloc extends Bloc<SectionDetailEvent, SectionDetailState> {
     on<_Bookmarked>((event, emit) => _onBookmarked(event, emit));
   }
 
-  Future _onLoad(_Load event, Emitter<SectionDetailState> emit) async {
+  void _onLoad(_Load event, Emitter<SectionDetailState> emit) {
+    emit(_Loading());
     if (!webSocketService.isConnected) {
       emit(SectionDetailFailure(error: serverError));
       return;
@@ -49,7 +50,7 @@ class SectionDetailBloc extends Bloc<SectionDetailEvent, SectionDetailState> {
     webSocketService.send(message);
   }
 
-  Future _onLoaded(_Loaded event, Emitter<SectionDetailState> emit) async {
+  void _onLoaded(_Loaded event, Emitter<SectionDetailState> emit) {
     emit(_Loading());
     if (event.payload['response_status'] == 200) {
       Section section = Section.fromJson(event.payload['data']);
@@ -59,7 +60,8 @@ class SectionDetailBloc extends Bloc<SectionDetailEvent, SectionDetailState> {
     }
   }
 
-  Future _onBookmark(_Bookmark event, Emitter<SectionDetailState> emit) async {
+  void _onBookmark(_Bookmark event, Emitter<SectionDetailState> emit) {
+    emit(_Loading());
     if (!webSocketService.isConnected) {
       emit(SectionDetailFailure(error: serverError));
       return;
@@ -76,10 +78,7 @@ class SectionDetailBloc extends Bloc<SectionDetailEvent, SectionDetailState> {
     webSocketService.send(message);
   }
 
-  Future _onBookmarked(
-    _Bookmarked event,
-    Emitter<SectionDetailState> emit,
-  ) async {
+  void _onBookmarked(_Bookmarked event, Emitter<SectionDetailState> emit) {
     emit(_Loading());
     if (event.payload['response_status'] == 200) {
       Section section = Section.fromJson(event.payload['data']);

@@ -55,12 +55,13 @@ extension WebsocketEventPatterns on WebsocketEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Connect value)?  connect,TResult Function( _ChangeState value)?  changeState,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Connect value)?  connect,TResult Function( _ChangeState value)?  changeState,TResult Function( _Disconnect value)?  disconnect,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Connect() when connect != null:
 return connect(_that);case _ChangeState() when changeState != null:
-return changeState(_that);case _:
+return changeState(_that);case _Disconnect() when disconnect != null:
+return disconnect(_that);case _:
   return orElse();
 
 }
@@ -78,12 +79,13 @@ return changeState(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Connect value)  connect,required TResult Function( _ChangeState value)  changeState,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Connect value)  connect,required TResult Function( _ChangeState value)  changeState,required TResult Function( _Disconnect value)  disconnect,}){
 final _that = this;
 switch (_that) {
 case _Connect():
 return connect(_that);case _ChangeState():
-return changeState(_that);case _:
+return changeState(_that);case _Disconnect():
+return disconnect(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -100,12 +102,13 @@ return changeState(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Connect value)?  connect,TResult? Function( _ChangeState value)?  changeState,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Connect value)?  connect,TResult? Function( _ChangeState value)?  changeState,TResult? Function( _Disconnect value)?  disconnect,}){
 final _that = this;
 switch (_that) {
 case _Connect() when connect != null:
 return connect(_that);case _ChangeState() when changeState != null:
-return changeState(_that);case _:
+return changeState(_that);case _Disconnect() when disconnect != null:
+return disconnect(_that);case _:
   return null;
 
 }
@@ -122,11 +125,12 @@ return changeState(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  connect,TResult Function( WebsocketState state)?  changeState,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  connect,TResult Function( WebsocketState state)?  changeState,TResult Function()?  disconnect,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Connect() when connect != null:
 return connect();case _ChangeState() when changeState != null:
-return changeState(_that.state);case _:
+return changeState(_that.state);case _Disconnect() when disconnect != null:
+return disconnect();case _:
   return orElse();
 
 }
@@ -144,11 +148,12 @@ return changeState(_that.state);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  connect,required TResult Function( WebsocketState state)  changeState,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  connect,required TResult Function( WebsocketState state)  changeState,required TResult Function()  disconnect,}) {final _that = this;
 switch (_that) {
 case _Connect():
 return connect();case _ChangeState():
-return changeState(_that.state);case _:
+return changeState(_that.state);case _Disconnect():
+return disconnect();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -165,11 +170,12 @@ return changeState(_that.state);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  connect,TResult? Function( WebsocketState state)?  changeState,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  connect,TResult? Function( WebsocketState state)?  changeState,TResult? Function()?  disconnect,}) {final _that = this;
 switch (_that) {
 case _Connect() when connect != null:
 return connect();case _ChangeState() when changeState != null:
-return changeState(_that.state);case _:
+return changeState(_that.state);case _Disconnect() when disconnect != null:
+return disconnect();case _:
   return null;
 
 }
@@ -274,5 +280,37 @@ as WebsocketState,
 
 
 }
+
+/// @nodoc
+
+
+class _Disconnect implements WebsocketEvent {
+  const _Disconnect();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Disconnect);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'WebsocketEvent.disconnect()';
+}
+
+
+}
+
+
+
 
 // dart format on

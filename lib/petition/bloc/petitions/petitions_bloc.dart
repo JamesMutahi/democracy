@@ -31,6 +31,7 @@ class PetitionsBloc extends Bloc<PetitionsEvent, PetitionsState> {
   }
 
   void _onGet(_Get event, Emitter<PetitionsState> emit) {
+    emit(state.copyWith(status: PetitionsStatus.loading));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: PetitionsStatus.failure));
       return;

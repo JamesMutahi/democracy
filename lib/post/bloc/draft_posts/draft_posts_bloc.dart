@@ -29,6 +29,7 @@ class DraftPostsBloc extends Bloc<DraftPostsEvent, DraftPostsState> {
   }
 
   void _onGet(_Get event, Emitter<DraftPostsState> emit) {
+    emit(state.copyWith(status: DraftPostsStatus.loading));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: DraftPostsStatus.failure));
       return;

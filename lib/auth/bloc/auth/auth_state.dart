@@ -7,4 +7,7 @@ abstract class AuthState with _$AuthState {
   const factory AuthState.authenticating() = Authenticating;
 
   const factory AuthState.authenticated({required User user}) = Authenticated;
+
+  const factory AuthState.failure({required String error}) =
+      AuthenticationFailure;
 }

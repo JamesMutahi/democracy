@@ -41,6 +41,7 @@ class GeoBloc extends Bloc<GeoEvent, GeoState> {
   }
 
   void _onGetCounties(_GetCounties event, Emitter<GeoState> emit) {
+    emit(state.copyWith(status: GeoStatus.loading));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: GeoStatus.failure));
       return;
@@ -54,6 +55,7 @@ class GeoBloc extends Bloc<GeoEvent, GeoState> {
   }
 
   void _onGetConstituencies(_GetConstituencies event, Emitter<GeoState> emit) {
+    emit(state.copyWith(status: GeoStatus.loading));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: GeoStatus.failure));
       return;
@@ -67,6 +69,7 @@ class GeoBloc extends Bloc<GeoEvent, GeoState> {
   }
 
   void _onGetWards(_GetWards event, Emitter<GeoState> emit) {
+    emit(state.copyWith(status: GeoStatus.loading));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: GeoStatus.failure));
       return;

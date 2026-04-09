@@ -272,6 +272,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   void _onGet(_Get event, Emitter<PostDetailState> emit) {
+    emit(PostDetailLoading());
     if (!webSocketService.isConnected) {
       emit(PostDetailFailure(error: serverError));
       return;
@@ -321,6 +322,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   void _onAddView(_AddView event, Emitter<PostDetailState> emit) {
+    emit(PostDetailLoading());
     if (!webSocketService.isConnected) {
       emit(PostDetailFailure(error: serverError));
       return;
@@ -338,6 +340,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   void _onLike(_Like event, Emitter<PostDetailState> emit) {
+    emit(PostDetailLoading());
     if (!webSocketService.isConnected) {
       emit(PostDetailFailure(error: serverError));
       return;
@@ -355,6 +358,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   void _onBookmark(_Bookmark event, Emitter<PostDetailState> emit) {
+    emit(PostDetailLoading());
     if (!webSocketService.isConnected) {
       emit(PostDetailFailure(error: serverError));
       return;
@@ -372,6 +376,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   void _onUpvote(_Upvote event, Emitter<PostDetailState> emit) {
+    emit(PostDetailLoading());
     if (!webSocketService.isConnected) {
       emit(PostDetailFailure(error: serverError));
       return;
@@ -389,6 +394,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   void _onDownvote(_Downvote event, Emitter<PostDetailState> emit) {
+    emit(PostDetailLoading());
     if (!webSocketService.isConnected) {
       emit(PostDetailFailure(error: serverError));
       return;
@@ -406,6 +412,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   void _onDelete(_Delete event, Emitter<PostDetailState> emit) {
+    emit(PostDetailLoading());
     if (!webSocketService.isConnected) {
       emit(PostDetailFailure(error: serverError));
       return;
@@ -423,6 +430,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   void _onDeleteRepost(_DeleteRepost event, Emitter<PostDetailState> emit) {
+    emit(PostDetailLoading());
     if (!webSocketService.isConnected) {
       emit(PostDetailFailure(error: serverError));
       return;
@@ -440,6 +448,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   void _onReport(_Report event, Emitter<PostDetailState> emit) {
+    emit(PostDetailLoading());
     if (!webSocketService.isConnected) {
       emit(PostDetailFailure(error: serverError));
       return;
@@ -456,6 +465,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   void _onUnsubscribe(_Unsubscribe event, Emitter<PostDetailState> emit) {
+    emit(PostDetailLoading());
     if (!webSocketService.isConnected) {
       emit(PostDetailFailure(error: serverError));
       return;

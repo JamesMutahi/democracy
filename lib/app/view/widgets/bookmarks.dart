@@ -51,7 +51,9 @@ class _BookmarksState extends State<Bookmarks> {
 
           return PostListView(
             posts: posts,
-            loading: state.status == BookmarksStatus.initial,
+            loading:
+                state.status == BookmarksStatus.initial ||
+                (state.status == BookmarksStatus.loading && posts.isEmpty),
             failure: state.posts.isNotEmpty
                 ? false
                 : state.status == BookmarksStatus.failure,

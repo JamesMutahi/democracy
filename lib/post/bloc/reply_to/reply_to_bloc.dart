@@ -28,6 +28,7 @@ class ReplyToBloc extends Bloc<ReplyToEvent, ReplyToState> {
   }
 
   void _onGet(_Get event, Emitter<ReplyToState> emit) {
+    emit(state.copyWith(status: ReplyToStatus.loading, postId: event.post.id));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: ReplyToStatus.failure));
       return;

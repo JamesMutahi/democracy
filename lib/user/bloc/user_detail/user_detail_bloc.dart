@@ -61,6 +61,7 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
   }
 
   void _onGet(_Get event, Emitter<UserDetailState> emit) async {
+    emit(_Loading());
     if (!webSocketService.isConnected) {
       emit(UserDetailFailure(error: serverError));
       return;
@@ -78,6 +79,7 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
   }
 
   void _onUpdate(_Update event, Emitter<UserDetailState> emit) async {
+    emit(_Loading());
     if (!webSocketService.isConnected) {
       emit(UserDetailFailure(error: serverError));
       return;
@@ -107,6 +109,7 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
   }
 
   void _onFollow(_Follow event, Emitter<UserDetailState> emit) async {
+    emit(_Loading());
     if (!webSocketService.isConnected) {
       emit(UserDetailFailure(error: serverError));
       return;
@@ -124,6 +127,7 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
   }
 
   void _onMute(_Mute event, Emitter<UserDetailState> emit) async {
+    emit(_Loading());
     if (!webSocketService.isConnected) {
       emit(UserDetailFailure(error: serverError));
       return;
@@ -141,6 +145,7 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
   }
 
   void _onBlock(_Block event, Emitter<UserDetailState> emit) async {
+    emit(_Loading());
     if (!webSocketService.isConnected) {
       emit(UserDetailFailure(error: serverError));
       return;
@@ -158,6 +163,7 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
   }
 
   void _onUnsubscribe(_Unsubscribe event, Emitter<UserDetailState> emit) async {
+    emit(_Loading());
     if (!webSocketService.isConnected) {
       emit(UserDetailFailure(error: serverError));
       return;

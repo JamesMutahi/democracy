@@ -30,6 +30,12 @@ class CommunityNotesBloc
   }
 
   void _onGet(_Get event, Emitter<CommunityNotesState> emit) async {
+    emit(
+      state.copyWith(
+        status: CommunityNotesStatus.loading,
+        postId: event.post.id,
+      ),
+    );
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: CommunityNotesStatus.failure));
       return;

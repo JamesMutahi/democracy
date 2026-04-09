@@ -51,7 +51,9 @@ class _BallotsState extends State<Ballots> {
             builder: (context, ballotsState) {
               final ballots = ballotsState.ballots.toList();
 
-              if (ballotsState.status == BallotsStatus.initial) {
+              if (ballotsState.status == BallotsStatus.initial ||
+                  (ballots.isEmpty &&
+                      ballotsState.status == BallotsStatus.loading)) {
                 return const BottomLoader();
               }
 

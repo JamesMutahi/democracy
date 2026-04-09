@@ -28,6 +28,7 @@ class ForYouBloc extends Bloc<ForYouEvent, ForYouState> {
   }
 
   void _onGet(_Get event, Emitter<ForYouState> emit) async {
+    emit(state.copyWith(status: ForYouStatus.loading));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: ForYouStatus.failure));
       return;
