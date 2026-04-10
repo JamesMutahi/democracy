@@ -57,6 +57,16 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
     context.read<ReplyToBloc>().add(
       ReplyToEvent.get(post: widget.communityNote),
     );
+    if (!widget.communityNote.isViewed) {
+      context.read<PostDetailBloc>().add(
+        PostDetailEvent.addView(post: widget.communityNote),
+      );
+    }
+    if (!widget.communityNote.isClicked) {
+      context.read<PostDetailBloc>().add(
+        PostDetailEvent.addClick(post: widget.communityNote),
+      );
+    }
   }
 
   @override

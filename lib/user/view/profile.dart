@@ -51,6 +51,11 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     // Retrieve and subscribe to user
     context.read<UserDetailBloc>().add(UserDetailEvent.get(user: widget.user));
+    if (!widget.user.isVisited) {
+      context.read<UserDetailBloc>().add(
+        UserDetailEvent.addVisit(user: widget.user),
+      );
+    }
     super.initState();
     _scrollController.addListener(_handleScrolling);
   }

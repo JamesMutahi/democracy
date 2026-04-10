@@ -3,6 +3,7 @@ import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
 import 'package:democracy/app/bloc/theme/theme_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/app/shared/constants/strings.dart';
 import 'package:democracy/app/shared/utils/app_theme.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
@@ -81,17 +82,22 @@ class MyApp extends StatelessWidget {
 
   Widget _buildFailurePage(BuildContext context, String error) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(error),
-          SizedBox(height: 20),
-          FailureRetryButton(
-            onPressed: () {
-              context.read<AuthBloc>().add(AuthEvent.authenticate());
-            },
-          ),
-        ],
+      body: AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(logo, width: 200, height: 200),
+            SizedBox(height: 50),
+            Text(error, style: Theme.of(context).textTheme.titleMedium),
+            SizedBox(height: 20),
+            FailureRetryButton(
+              onPressed: () {
+                context.read<AuthBloc>().add(AuthEvent.authenticate());
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

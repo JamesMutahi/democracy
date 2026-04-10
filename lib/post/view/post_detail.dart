@@ -74,6 +74,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
         PostDetailEvent.addView(post: widget.post),
       );
     }
+    if (!widget.post.isClicked) {
+      context.read<PostDetailBloc>().add(
+        PostDetailEvent.addClick(post: widget.post),
+      );
+    }
   }
 
   @override
@@ -284,7 +289,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     else if (state.status == RepliesStatus.failure &&
                         replies.isEmpty)
                       SliverToBoxAdapter(
-                        child: FailureRetryButton(onPressed: _getData),
+                        child: Container(
+                          margin: EdgeInsets.only(top: 50),
+                          child: FailureRetryButton(onPressed: _getData),
+                        ),
                       )
                     else
                       Replies(replies: replies),

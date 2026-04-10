@@ -51,6 +51,9 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _controller.text = widget.post.body;
+      for (var user in widget.post.taggedUsers) {
+        _controller.addTag(id: user.id.toString(), name: user.username);
+      }
     });
   }
 

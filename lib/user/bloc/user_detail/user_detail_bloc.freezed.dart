@@ -55,14 +55,15 @@ extension UserDetailStatePatterns on UserDetailState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( UserLoaded value)?  loaded,TResult Function( UserUpdated value)?  updated,TResult Function( UserDetailFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( UserLoaded value)?  loaded,TResult Function( UserUpdated value)?  updated,TResult Function( UserVisited value)?  visited,TResult Function( UserDetailFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
 return loading(_that);case UserLoaded() when loaded != null:
 return loaded(_that);case UserUpdated() when updated != null:
-return updated(_that);case UserDetailFailure() when failure != null:
+return updated(_that);case UserVisited() when visited != null:
+return visited(_that);case UserDetailFailure() when failure != null:
 return failure(_that);case _:
   return orElse();
 
@@ -81,14 +82,15 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( UserLoaded value)  loaded,required TResult Function( UserUpdated value)  updated,required TResult Function( UserDetailFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( UserLoaded value)  loaded,required TResult Function( UserUpdated value)  updated,required TResult Function( UserVisited value)  visited,required TResult Function( UserDetailFailure value)  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial():
 return initial(_that);case _Loading():
 return loading(_that);case UserLoaded():
 return loaded(_that);case UserUpdated():
-return updated(_that);case UserDetailFailure():
+return updated(_that);case UserVisited():
+return visited(_that);case UserDetailFailure():
 return failure(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -106,14 +108,15 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( UserLoaded value)?  loaded,TResult? Function( UserUpdated value)?  updated,TResult? Function( UserDetailFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( UserLoaded value)?  loaded,TResult? Function( UserUpdated value)?  updated,TResult? Function( UserVisited value)?  visited,TResult? Function( UserDetailFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
 return loading(_that);case UserLoaded() when loaded != null:
 return loaded(_that);case UserUpdated() when updated != null:
-return updated(_that);case UserDetailFailure() when failure != null:
+return updated(_that);case UserVisited() when visited != null:
+return visited(_that);case UserDetailFailure() when failure != null:
 return failure(_that);case _:
   return null;
 
@@ -131,13 +134,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( User user)?  loaded,TResult Function( User user)?  updated,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( User user)?  loaded,TResult Function( User user)?  updated,TResult Function( int userId)?  visited,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case UserLoaded() when loaded != null:
 return loaded(_that.user);case UserUpdated() when updated != null:
-return updated(_that.user);case UserDetailFailure() when failure != null:
+return updated(_that.user);case UserVisited() when visited != null:
+return visited(_that.userId);case UserDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return orElse();
 
@@ -156,13 +160,14 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( User user)  loaded,required TResult Function( User user)  updated,required TResult Function( String error)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( User user)  loaded,required TResult Function( User user)  updated,required TResult Function( int userId)  visited,required TResult Function( String error)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case UserLoaded():
 return loaded(_that.user);case UserUpdated():
-return updated(_that.user);case UserDetailFailure():
+return updated(_that.user);case UserVisited():
+return visited(_that.userId);case UserDetailFailure():
 return failure(_that.error);case _:
   throw StateError('Unexpected subclass');
 
@@ -180,13 +185,14 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( User user)?  loaded,TResult? Function( User user)?  updated,TResult? Function( String error)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( User user)?  loaded,TResult? Function( User user)?  updated,TResult? Function( int userId)?  visited,TResult? Function( String error)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case UserLoaded() when loaded != null:
 return loaded(_that.user);case UserUpdated() when updated != null:
-return updated(_that.user);case UserDetailFailure() when failure != null:
+return updated(_that.user);case UserVisited() when visited != null:
+return visited(_that.userId);case UserDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return null;
 
@@ -412,6 +418,72 @@ $UserCopyWith<$Res> get user {
 /// @nodoc
 
 
+class UserVisited implements UserDetailState {
+  const UserVisited({required this.userId});
+  
+
+ final  int userId;
+
+/// Create a copy of UserDetailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$UserVisitedCopyWith<UserVisited> get copyWith => _$UserVisitedCopyWithImpl<UserVisited>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserVisited&&(identical(other.userId, userId) || other.userId == userId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,userId);
+
+@override
+String toString() {
+  return 'UserDetailState.visited(userId: $userId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $UserVisitedCopyWith<$Res> implements $UserDetailStateCopyWith<$Res> {
+  factory $UserVisitedCopyWith(UserVisited value, $Res Function(UserVisited) _then) = _$UserVisitedCopyWithImpl;
+@useResult
+$Res call({
+ int userId
+});
+
+
+
+
+}
+/// @nodoc
+class _$UserVisitedCopyWithImpl<$Res>
+    implements $UserVisitedCopyWith<$Res> {
+  _$UserVisitedCopyWithImpl(this._self, this._then);
+
+  final UserVisited _self;
+  final $Res Function(UserVisited) _then;
+
+/// Create a copy of UserDetailState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? userId = null,}) {
+  return _then(UserVisited(
+userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
 class UserDetailFailure implements UserDetailState {
   const UserDetailFailure({required this.error});
   
@@ -519,7 +591,7 @@ extension UserDetailEventPatterns on UserDetailEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Retrieved value)?  retrieved,TResult Function( _Updated value)?  updated,TResult Function( _Get value)?  get,TResult Function( _Update value)?  update,TResult Function( _Follow value)?  follow,TResult Function( _Mute value)?  mute,TResult Function( _Block value)?  block,TResult Function( _Unsubscribe value)?  unsubscribe,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Retrieved value)?  retrieved,TResult Function( _Updated value)?  updated,TResult Function( _Get value)?  get,TResult Function( _Update value)?  update,TResult Function( _Follow value)?  follow,TResult Function( _Mute value)?  mute,TResult Function( _Block value)?  block,TResult Function( _AddVisit value)?  addVisit,TResult Function( _VisitAdded value)?  visitAdded,TResult Function( _Unsubscribe value)?  unsubscribe,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Retrieved() when retrieved != null:
@@ -529,7 +601,9 @@ return get(_that);case _Update() when update != null:
 return update(_that);case _Follow() when follow != null:
 return follow(_that);case _Mute() when mute != null:
 return mute(_that);case _Block() when block != null:
-return block(_that);case _Unsubscribe() when unsubscribe != null:
+return block(_that);case _AddVisit() when addVisit != null:
+return addVisit(_that);case _VisitAdded() when visitAdded != null:
+return visitAdded(_that);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that);case _:
   return orElse();
 
@@ -548,7 +622,7 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Retrieved value)  retrieved,required TResult Function( _Updated value)  updated,required TResult Function( _Get value)  get,required TResult Function( _Update value)  update,required TResult Function( _Follow value)  follow,required TResult Function( _Mute value)  mute,required TResult Function( _Block value)  block,required TResult Function( _Unsubscribe value)  unsubscribe,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Retrieved value)  retrieved,required TResult Function( _Updated value)  updated,required TResult Function( _Get value)  get,required TResult Function( _Update value)  update,required TResult Function( _Follow value)  follow,required TResult Function( _Mute value)  mute,required TResult Function( _Block value)  block,required TResult Function( _AddVisit value)  addVisit,required TResult Function( _VisitAdded value)  visitAdded,required TResult Function( _Unsubscribe value)  unsubscribe,}){
 final _that = this;
 switch (_that) {
 case _Retrieved():
@@ -558,7 +632,9 @@ return get(_that);case _Update():
 return update(_that);case _Follow():
 return follow(_that);case _Mute():
 return mute(_that);case _Block():
-return block(_that);case _Unsubscribe():
+return block(_that);case _AddVisit():
+return addVisit(_that);case _VisitAdded():
+return visitAdded(_that);case _Unsubscribe():
 return unsubscribe(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -573,7 +649,7 @@ return unsubscribe(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Retrieved value)?  retrieved,TResult? Function( _Updated value)?  updated,TResult? Function( _Get value)?  get,TResult? Function( _Update value)?  update,TResult? Function( _Follow value)?  follow,TResult? Function( _Mute value)?  mute,TResult? Function( _Block value)?  block,TResult? Function( _Unsubscribe value)?  unsubscribe,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Retrieved value)?  retrieved,TResult? Function( _Updated value)?  updated,TResult? Function( _Get value)?  get,TResult? Function( _Update value)?  update,TResult? Function( _Follow value)?  follow,TResult? Function( _Mute value)?  mute,TResult? Function( _Block value)?  block,TResult? Function( _AddVisit value)?  addVisit,TResult? Function( _VisitAdded value)?  visitAdded,TResult? Function( _Unsubscribe value)?  unsubscribe,}){
 final _that = this;
 switch (_that) {
 case _Retrieved() when retrieved != null:
@@ -583,7 +659,9 @@ return get(_that);case _Update() when update != null:
 return update(_that);case _Follow() when follow != null:
 return follow(_that);case _Mute() when mute != null:
 return mute(_that);case _Block() when block != null:
-return block(_that);case _Unsubscribe() when unsubscribe != null:
+return block(_that);case _AddVisit() when addVisit != null:
+return addVisit(_that);case _VisitAdded() when visitAdded != null:
+return visitAdded(_that);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that);case _:
   return null;
 
@@ -601,7 +679,7 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  retrieved,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( User user)?  get,TResult Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath)?  update,TResult Function( User user)?  follow,TResult Function( User user)?  mute,TResult Function( User user)?  block,TResult Function( User user)?  unsubscribe,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  retrieved,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( User user)?  get,TResult Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath)?  update,TResult Function( User user)?  follow,TResult Function( User user)?  mute,TResult Function( User user)?  block,TResult Function( User user)?  addVisit,TResult Function( Map<String, dynamic> payload)?  visitAdded,TResult Function( User user)?  unsubscribe,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Retrieved() when retrieved != null:
 return retrieved(_that.payload);case _Updated() when updated != null:
@@ -610,7 +688,9 @@ return get(_that.user);case _Update() when update != null:
 return update(_that.user,_that.name,_that.bio,_that.imagePath,_that.coverPhotoPath);case _Follow() when follow != null:
 return follow(_that.user);case _Mute() when mute != null:
 return mute(_that.user);case _Block() when block != null:
-return block(_that.user);case _Unsubscribe() when unsubscribe != null:
+return block(_that.user);case _AddVisit() when addVisit != null:
+return addVisit(_that.user);case _VisitAdded() when visitAdded != null:
+return visitAdded(_that.payload);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that.user);case _:
   return orElse();
 
@@ -629,7 +709,7 @@ return unsubscribe(_that.user);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  retrieved,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( User user)  get,required TResult Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath)  update,required TResult Function( User user)  follow,required TResult Function( User user)  mute,required TResult Function( User user)  block,required TResult Function( User user)  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  retrieved,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( User user)  get,required TResult Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath)  update,required TResult Function( User user)  follow,required TResult Function( User user)  mute,required TResult Function( User user)  block,required TResult Function( User user)  addVisit,required TResult Function( Map<String, dynamic> payload)  visitAdded,required TResult Function( User user)  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Retrieved():
 return retrieved(_that.payload);case _Updated():
@@ -638,7 +718,9 @@ return get(_that.user);case _Update():
 return update(_that.user,_that.name,_that.bio,_that.imagePath,_that.coverPhotoPath);case _Follow():
 return follow(_that.user);case _Mute():
 return mute(_that.user);case _Block():
-return block(_that.user);case _Unsubscribe():
+return block(_that.user);case _AddVisit():
+return addVisit(_that.user);case _VisitAdded():
+return visitAdded(_that.payload);case _Unsubscribe():
 return unsubscribe(_that.user);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -653,7 +735,7 @@ return unsubscribe(_that.user);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  retrieved,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( User user)?  get,TResult? Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath)?  update,TResult? Function( User user)?  follow,TResult? Function( User user)?  mute,TResult? Function( User user)?  block,TResult? Function( User user)?  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  retrieved,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( User user)?  get,TResult? Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath)?  update,TResult? Function( User user)?  follow,TResult? Function( User user)?  mute,TResult? Function( User user)?  block,TResult? Function( User user)?  addVisit,TResult? Function( Map<String, dynamic> payload)?  visitAdded,TResult? Function( User user)?  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Retrieved() when retrieved != null:
 return retrieved(_that.payload);case _Updated() when updated != null:
@@ -662,7 +744,9 @@ return get(_that.user);case _Update() when update != null:
 return update(_that.user,_that.name,_that.bio,_that.imagePath,_that.coverPhotoPath);case _Follow() when follow != null:
 return follow(_that.user);case _Mute() when mute != null:
 return mute(_that.user);case _Block() when block != null:
-return block(_that.user);case _Unsubscribe() when unsubscribe != null:
+return block(_that.user);case _AddVisit() when addVisit != null:
+return addVisit(_that.user);case _VisitAdded() when visitAdded != null:
+return visitAdded(_that.payload);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that.user);case _:
   return null;
 
@@ -1196,6 +1280,153 @@ $UserCopyWith<$Res> get user {
     return _then(_self.copyWith(user: value));
   });
 }
+}
+
+/// @nodoc
+
+
+class _AddVisit implements UserDetailEvent {
+  const _AddVisit({required this.user});
+  
+
+ final  User user;
+
+/// Create a copy of UserDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AddVisitCopyWith<_AddVisit> get copyWith => __$AddVisitCopyWithImpl<_AddVisit>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AddVisit&&(identical(other.user, user) || other.user == user));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,user);
+
+@override
+String toString() {
+  return 'UserDetailEvent.addVisit(user: $user)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AddVisitCopyWith<$Res> implements $UserDetailEventCopyWith<$Res> {
+  factory _$AddVisitCopyWith(_AddVisit value, $Res Function(_AddVisit) _then) = __$AddVisitCopyWithImpl;
+@useResult
+$Res call({
+ User user
+});
+
+
+$UserCopyWith<$Res> get user;
+
+}
+/// @nodoc
+class __$AddVisitCopyWithImpl<$Res>
+    implements _$AddVisitCopyWith<$Res> {
+  __$AddVisitCopyWithImpl(this._self, this._then);
+
+  final _AddVisit _self;
+  final $Res Function(_AddVisit) _then;
+
+/// Create a copy of UserDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
+  return _then(_AddVisit(
+user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as User,
+  ));
+}
+
+/// Create a copy of UserDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$UserCopyWith<$Res> get user {
+  
+  return $UserCopyWith<$Res>(_self.user, (value) {
+    return _then(_self.copyWith(user: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _VisitAdded implements UserDetailEvent {
+  const _VisitAdded({required final  Map<String, dynamic> payload}): _payload = payload;
+  
+
+ final  Map<String, dynamic> _payload;
+ Map<String, dynamic> get payload {
+  if (_payload is EqualUnmodifiableMapView) return _payload;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_payload);
+}
+
+
+/// Create a copy of UserDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$VisitAddedCopyWith<_VisitAdded> get copyWith => __$VisitAddedCopyWithImpl<_VisitAdded>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VisitAdded&&const DeepCollectionEquality().equals(other._payload, _payload));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
+
+@override
+String toString() {
+  return 'UserDetailEvent.visitAdded(payload: $payload)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$VisitAddedCopyWith<$Res> implements $UserDetailEventCopyWith<$Res> {
+  factory _$VisitAddedCopyWith(_VisitAdded value, $Res Function(_VisitAdded) _then) = __$VisitAddedCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, dynamic> payload
+});
+
+
+
+
+}
+/// @nodoc
+class __$VisitAddedCopyWithImpl<$Res>
+    implements _$VisitAddedCopyWith<$Res> {
+  __$VisitAddedCopyWithImpl(this._self, this._then);
+
+  final _VisitAdded _self;
+  final $Res Function(_VisitAdded) _then;
+
+/// Create a copy of UserDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
+  return _then(_VisitAdded(
+payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
+  ));
+}
+
+
 }
 
 /// @nodoc

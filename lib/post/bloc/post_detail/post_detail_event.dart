@@ -49,6 +49,10 @@ sealed class PostDetailEvent with _$PostDetailEvent {
     required Map<String, dynamic> payload,
   }) = _ViewAdded;
 
+  const factory PostDetailEvent.clickAdded({
+    required Map<String, dynamic> payload,
+  }) = _ClickAdded;
+
   const factory PostDetailEvent.create({
     required String body,
     required PostStatus status,
@@ -95,6 +99,8 @@ sealed class PostDetailEvent with _$PostDetailEvent {
   }) = _Patch;
 
   const factory PostDetailEvent.addView({required Post post}) = _AddView;
+
+  const factory PostDetailEvent.addClick({required Post post}) = _AddClick;
 
   const factory PostDetailEvent.like({required Post post}) = _Like;
 

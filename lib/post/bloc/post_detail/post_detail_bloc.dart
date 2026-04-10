@@ -52,6 +52,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
             add(_Downvoted(payload: message['payload']));
           case 'add_view':
             add(_ViewAdded(payload: message['payload']));
+          case 'add_click':
+            add(_ClickAdded(payload: message['payload']));
           case 'report':
             add(_Reported(payload: message['payload']));
         }
@@ -68,6 +70,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     on<_Get>((event, emit) => _onGet(event, emit));
     on<_Patch>((event, emit) async => await _onPatch(event, emit));
     on<_AddView>((event, emit) => _onAddView(event, emit));
+    on<_AddClick>((event, emit) => _onAddClick(event, emit));
     on<_Like>((event, emit) => _onLike(event, emit));
     on<_Bookmark>((event, emit) => _onBookmark(event, emit));
     on<_Upvote>((event, emit) => _onUpvote(event, emit));
@@ -79,6 +82,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     on<_Upvoted>((event, emit) => _onUpvoted(event, emit));
     on<_Downvoted>((event, emit) => _onDownvoted(event, emit));
     on<_ViewAdded>((event, emit) => _onViewAdded(event, emit));
+    on<_ClickAdded>((event, emit) => _onClickAdded(event, emit));
     on<_Report>((event, emit) => _onReport(event, emit));
     on<_Unsubscribe>((event, emit) => _onUnsubscribe(event, emit));
   }
@@ -231,6 +235,14 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     }
   }
 
+  void _onClickAdded(_ClickAdded event, Emitter<PostDetailState> emit) {
+    if (event.payload['response_status'] == 200) {
+      emit(PostClicked(postId: event.payload['data']['pk']));
+    } else {
+      emit(PostDetailFailure(error: event.payload['errors'].toString()));
+    }
+  }
+
   void _onReported(_Reported event, Emitter<PostDetailState> emit) {
     emit(PostDetailLoading());
     if (event.payload['response_status'] == 200) {
@@ -332,6 +344,24 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       'stream': stream,
       'payload': {
         "action": 'add_view',
+        "request_id": requestId,
+        'pk': event.post.id,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  void _onAddClick(_AddClick event, Emitter<PostDetailState> emit) {
+    emit(PostDetailLoading());
+    if (!webSocketService.isConnected) {
+      emit(PostDetailFailure(error: serverError));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        "action": 'add_click',
         "request_id": requestId,
         'pk': event.post.id,
       },

@@ -26,5 +26,12 @@ sealed class UserDetailEvent with _$UserDetailEvent {
 
   const factory UserDetailEvent.block({required User user}) = _Block;
 
-  const factory UserDetailEvent.unsubscribe({required User user}) = _Unsubscribe;
+  const factory UserDetailEvent.addVisit({required User user}) = _AddVisit;
+
+  const factory UserDetailEvent.visitAdded({
+    required Map<String, dynamic> payload,
+  }) = _VisitAdded;
+
+  const factory UserDetailEvent.unsubscribe({required User user}) =
+      _Unsubscribe;
 }

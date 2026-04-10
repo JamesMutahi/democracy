@@ -60,6 +60,8 @@ class PostDetailState with _$PostDetailState {
 
   const factory PostDetailState.viewed({required int postId}) = PostViewed;
 
+  const factory PostDetailState.clicked({required int postId}) = PostClicked;
+
   const factory PostDetailState.deleted({required int postId}) = PostDeleted;
 
   const factory PostDetailState.repostDeleted({

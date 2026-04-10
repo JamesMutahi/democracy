@@ -38,6 +38,8 @@ _User _$UserFromJson(Map<String, dynamic> json) => _User(
   hasBlocked: json['has_blocked'] as bool,
   isFollowed: json['is_followed'] as bool,
   isNotifying: json['is_notifying'] as bool,
+  visits: (json['visits'] as num).toInt(),
+  isVisited: json['is_visited'] as bool,
 );
 
 Map<String, dynamic> _$UserToJson(_User instance) => <String, dynamic>{
@@ -62,4 +64,6 @@ Map<String, dynamic> _$UserToJson(_User instance) => <String, dynamic>{
   'has_blocked': instance.hasBlocked,
   'is_followed': instance.isFollowed,
   'is_notifying': instance.isNotifying,
+  'visits': instance.visits,
+  'is_visited': instance.isVisited,
 };

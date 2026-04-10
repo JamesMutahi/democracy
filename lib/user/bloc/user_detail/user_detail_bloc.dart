@@ -27,6 +27,8 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
           case 'mute':
           case 'block':
             add(_Updated(payload: message['payload']));
+          case 'add_visit':
+            add(_VisitAdded(payload: message['payload']));
         }
       }
     });
@@ -37,6 +39,8 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
     on<_Follow>((event, emit) => _onFollow(event, emit));
     on<_Mute>((event, emit) => _onMute(event, emit));
     on<_Block>((event, emit) => _onBlock(event, emit));
+    on<_AddVisit>((event, emit) => _onAddVisit(event, emit));
+    on<_VisitAdded>((event, emit) => _onVisitAdded(event, emit));
     on<_Unsubscribe>((event, emit) => _onUnsubscribe(event, emit));
   }
 
@@ -160,6 +164,32 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
       },
     };
     webSocketService.send(message);
+  }
+
+  void _onAddVisit(_AddVisit event, Emitter<UserDetailState> emit) {
+    emit(_Loading());
+    if (!webSocketService.isConnected) {
+      emit(UserDetailFailure(error: serverError));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        "action": 'add_visit',
+        "request_id": requestId,
+        'pk': event.user.id,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  void _onVisitAdded(_VisitAdded event, Emitter<UserDetailState> emit) {
+    if (event.payload['response_status'] == 200) {
+      emit(UserVisited(userId: event.payload['data']['pk']));
+    } else {
+      emit(UserDetailFailure(error: event.payload['errors'].toString()));
+    }
   }
 
   void _onUnsubscribe(_Unsubscribe event, Emitter<UserDetailState> emit) async {

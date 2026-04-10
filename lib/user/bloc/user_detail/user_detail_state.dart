@@ -10,6 +10,8 @@ class UserDetailState with _$UserDetailState {
 
   const factory UserDetailState.updated({required User user}) = UserUpdated;
 
+  const factory UserDetailState.visited({required int userId}) = UserVisited;
+
   const factory UserDetailState.failure({required String error}) =
       UserDetailFailure;
 }

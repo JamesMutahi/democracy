@@ -1,3 +1,4 @@
+import 'package:democracy/app/shared/constants/strings.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/expandable_fab.dart';
@@ -76,11 +77,7 @@ class _HomePageState extends State<HomePage>
                   CustomAppBar(
                     user: widget.user,
                     notifications: widget.notifications,
-                    middle: Image.asset(
-                      'assets/images/shield.png',
-                      width: 50,
-                      height: 50,
-                    ),
+                    middle: Image.asset(logo, width: 50, height: 50),
                     bottom: TabBar(
                       dividerColor: Theme.of(
                         context,
