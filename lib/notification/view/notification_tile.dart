@@ -6,6 +6,7 @@ import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/petition/view/petition_detail.dart';
 import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
+import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
@@ -31,7 +32,9 @@ class NotificationTile extends StatelessWidget {
       ),
       title: Text(notification.text),
       subtitle: Text(
-        notification.post != null
+        notification.user != null
+            ? notification.user!.name
+            : notification.post != null
             ? notification.post!.body
             : notification.ballot != null
             ? notification.ballot!.title
@@ -54,6 +57,9 @@ class NotificationTile extends StatelessWidget {
         context.read<NotificationDetailBloc>().add(
           NotificationDetailEvent.markAsRead(notification: notification),
         );
+        if (notification.user != null) {
+          navigateToProfilePage(context: context, user: notification.user!);
+        }
         if (notification.post != null) {
           bool showAsRepost =
               notification.post!.body.isEmpty &&

@@ -17,7 +17,4 @@ sealed class NotificationDetailEvent with _$NotificationDetailEvent {
   const factory NotificationDetailEvent.markAsRead({
     required Notification notification,
   }) = _MarkAsRead;
-
-  const factory NotificationDetailEvent.changeStatus({required User user}) =
-      _ChangeStatus;
 }

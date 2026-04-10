@@ -4,6 +4,7 @@ import 'package:democracy/meet/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
+import 'package:democracy/user/models/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'notification.freezed.dart';
@@ -15,6 +16,7 @@ sealed class Notification with _$Notification {
     required final int id,
     required final String text,
     @JsonKey(name: 'is_read') required final bool isRead,
+    required final User? user,
     required final Post? post,
     required final Ballot? ballot,
     required final Survey? survey,

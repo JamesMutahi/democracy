@@ -32,6 +32,9 @@ sealed class UserDetailEvent with _$UserDetailEvent {
     required Map<String, dynamic> payload,
   }) = _VisitAdded;
 
+  const factory UserDetailEvent.toggleNotifications({required User user}) =
+      _ToggleNotifications;
+
   const factory UserDetailEvent.unsubscribe({required User user}) =
       _Unsubscribe;
 }

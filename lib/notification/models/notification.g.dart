@@ -11,6 +11,9 @@ _Notification _$NotificationFromJson(Map<String, dynamic> json) =>
       id: (json['id'] as num).toInt(),
       text: json['text'] as String,
       isRead: json['is_read'] as bool,
+      user: json['user'] == null
+          ? null
+          : User.fromJson(json['user'] as Map<String, dynamic>),
       post: json['post'] == null
           ? null
           : Post.fromJson(json['post'] as Map<String, dynamic>),
@@ -37,6 +40,7 @@ Map<String, dynamic> _$NotificationToJson(_Notification instance) =>
       'id': instance.id,
       'text': instance.text,
       'is_read': instance.isRead,
+      'user': instance.user,
       'post': instance.post,
       'ballot': instance.ballot,
       'survey': instance.survey,

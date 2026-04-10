@@ -591,15 +591,14 @@ extension NotificationDetailEventPatterns on NotificationDetailEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _MarkAsRead value)?  markAsRead,TResult Function( _ChangeStatus value)?  changeStatus,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _MarkAsRead value)?  markAsRead,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that);case _Updated() when updated != null:
 return updated(_that);case _Deleted() when deleted != null:
 return deleted(_that);case _MarkAsRead() when markAsRead != null:
-return markAsRead(_that);case _ChangeStatus() when changeStatus != null:
-return changeStatus(_that);case _:
+return markAsRead(_that);case _:
   return orElse();
 
 }
@@ -617,15 +616,14 @@ return changeStatus(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _MarkAsRead value)  markAsRead,required TResult Function( _ChangeStatus value)  changeStatus,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _MarkAsRead value)  markAsRead,}){
 final _that = this;
 switch (_that) {
 case _Created():
 return created(_that);case _Updated():
 return updated(_that);case _Deleted():
 return deleted(_that);case _MarkAsRead():
-return markAsRead(_that);case _ChangeStatus():
-return changeStatus(_that);}
+return markAsRead(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -639,15 +637,14 @@ return changeStatus(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _MarkAsRead value)?  markAsRead,TResult? Function( _ChangeStatus value)?  changeStatus,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _MarkAsRead value)?  markAsRead,}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that);case _Updated() when updated != null:
 return updated(_that);case _Deleted() when deleted != null:
 return deleted(_that);case _MarkAsRead() when markAsRead != null:
-return markAsRead(_that);case _ChangeStatus() when changeStatus != null:
-return changeStatus(_that);case _:
+return markAsRead(_that);case _:
   return null;
 
 }
@@ -664,14 +661,13 @@ return changeStatus(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Notification notification)?  markAsRead,TResult Function( User user)?  changeStatus,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Notification notification)?  markAsRead,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _MarkAsRead() when markAsRead != null:
-return markAsRead(_that.notification);case _ChangeStatus() when changeStatus != null:
-return changeStatus(_that.user);case _:
+return markAsRead(_that.notification);case _:
   return orElse();
 
 }
@@ -689,14 +685,13 @@ return changeStatus(_that.user);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Notification notification)  markAsRead,required TResult Function( User user)  changeStatus,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Notification notification)  markAsRead,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Updated():
 return updated(_that.payload);case _Deleted():
 return deleted(_that.payload);case _MarkAsRead():
-return markAsRead(_that.notification);case _ChangeStatus():
-return changeStatus(_that.user);}
+return markAsRead(_that.notification);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -710,14 +705,13 @@ return changeStatus(_that.user);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Notification notification)?  markAsRead,TResult? Function( User user)?  changeStatus,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Notification notification)?  markAsRead,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _MarkAsRead() when markAsRead != null:
-return markAsRead(_that.notification);case _ChangeStatus() when changeStatus != null:
-return changeStatus(_that.user);case _:
+return markAsRead(_that.notification);case _:
   return null;
 
 }
@@ -1012,81 +1006,6 @@ $NotificationCopyWith<$Res> get notification {
   
   return $NotificationCopyWith<$Res>(_self.notification, (value) {
     return _then(_self.copyWith(notification: value));
-  });
-}
-}
-
-/// @nodoc
-
-
-class _ChangeStatus implements NotificationDetailEvent {
-  const _ChangeStatus({required this.user});
-  
-
- final  User user;
-
-/// Create a copy of NotificationDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$ChangeStatusCopyWith<_ChangeStatus> get copyWith => __$ChangeStatusCopyWithImpl<_ChangeStatus>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChangeStatus&&(identical(other.user, user) || other.user == user));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,user);
-
-@override
-String toString() {
-  return 'NotificationDetailEvent.changeStatus(user: $user)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$ChangeStatusCopyWith<$Res> implements $NotificationDetailEventCopyWith<$Res> {
-  factory _$ChangeStatusCopyWith(_ChangeStatus value, $Res Function(_ChangeStatus) _then) = __$ChangeStatusCopyWithImpl;
-@useResult
-$Res call({
- User user
-});
-
-
-$UserCopyWith<$Res> get user;
-
-}
-/// @nodoc
-class __$ChangeStatusCopyWithImpl<$Res>
-    implements _$ChangeStatusCopyWith<$Res> {
-  __$ChangeStatusCopyWithImpl(this._self, this._then);
-
-  final _ChangeStatus _self;
-  final $Res Function(_ChangeStatus) _then;
-
-/// Create a copy of NotificationDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
-  return _then(_ChangeStatus(
-user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as User,
-  ));
-}
-
-/// Create a copy of NotificationDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UserCopyWith<$Res> get user {
-  
-  return $UserCopyWith<$Res>(_self.user, (value) {
-    return _then(_self.copyWith(user: value));
   });
 }
 }

@@ -1,6 +1,5 @@
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
-import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
@@ -48,28 +47,23 @@ class MessageButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ProfileButton(
-      icon:
-          user.hasBlocked
-              ? Icon(
-                Symbols.email_rounded,
-                color: Theme.of(context).disabledColor,
-              )
-              : Icon(Symbols.email_rounded),
-      onTap:
-          user.hasBlocked
-              ? () {
-                final snackBar = getSnackBar(
-                  context: context,
-                  message: 'Blocked',
-                  status: SnackBarStatus.failure,
-                );
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              }
-              : () {
-                context.read<ChatDetailBloc>().add(
-                  ChatDetailEvent.create(user: user),
-                );
-              },
+      icon: user.hasBlocked
+          ? Icon(Symbols.email_rounded, color: Theme.of(context).disabledColor)
+          : Icon(Symbols.email_rounded),
+      onTap: user.hasBlocked
+          ? () {
+              final snackBar = getSnackBar(
+                context: context,
+                message: 'Blocked',
+                status: SnackBarStatus.failure,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+          : () {
+              context.read<ChatDetailBloc>().add(
+                ChatDetailEvent.create(user: user),
+              );
+            },
     );
   }
 }
@@ -82,13 +76,12 @@ class NotificationButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ProfileButton(
-      icon:
-          user.isNotifying
-              ? Icon(Symbols.notifications_active_rounded)
-              : Icon(Symbols.notifications_off_rounded),
+      icon: user.isNotifying
+          ? Icon(Symbols.notifications_active_rounded)
+          : Icon(Symbols.notifications_off_rounded),
       onTap: () {
-        context.read<NotificationDetailBloc>().add(
-          NotificationDetailEvent.changeStatus(user: user),
+        context.read<UserDetailBloc>().add(
+          UserDetailEvent.toggleNotifications(user: user),
         );
       },
     );

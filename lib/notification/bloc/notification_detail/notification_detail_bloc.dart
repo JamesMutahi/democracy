@@ -4,7 +4,6 @@ import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/app/shared/constants/strings.dart';
 import 'package:democracy/notification/models/notification.dart';
-import 'package:democracy/user/models/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'notification_detail_bloc.freezed.dart';
@@ -34,7 +33,6 @@ class NotificationDetailBloc
     on<_Updated>((event, emit) => _onUpdated(event, emit));
     on<_Deleted>((event, emit) => _onDeleted(event, emit));
     on<_MarkAsRead>((event, emit) => _onMarkAsRead(event, emit));
-    on<_ChangeStatus>((event, emit) => _onChangeStatus(event, emit));
   }
 
   void _onCreated(_Created event, Emitter<NotificationDetailState> emit) {
@@ -85,27 +83,6 @@ class NotificationDetailBloc
         'action': 'mark_as_read',
         'request_id': requestId,
         'pk': event.notification.id,
-      },
-    };
-    webSocketService.send(message);
-  }
-
-  void _onChangeStatus(
-    _ChangeStatus event,
-    Emitter<NotificationDetailState> emit,
-  ) {
-    emit(NotificationDetailLoading());
-    if (!webSocketService.isConnected) {
-      emit(NotificationDetailFailure(error: serverError));
-      return;
-    }
-
-    Map<String, dynamic> message = {
-      'stream': stream,
-      'payload': {
-        'action': 'notify',
-        'request_id': requestId,
-        'pk': event.user.id,
       },
     };
     webSocketService.send(message);

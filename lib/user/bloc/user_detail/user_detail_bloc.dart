@@ -26,6 +26,7 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
           case 'follow':
           case 'mute':
           case 'block':
+          case 'toggle_notifications':
             add(_Updated(payload: message['payload']));
           case 'add_visit':
             add(_VisitAdded(payload: message['payload']));
@@ -41,6 +42,9 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
     on<_Block>((event, emit) => _onBlock(event, emit));
     on<_AddVisit>((event, emit) => _onAddVisit(event, emit));
     on<_VisitAdded>((event, emit) => _onVisitAdded(event, emit));
+    on<_ToggleNotifications>(
+      (event, emit) => _onToggleNotifications(event, emit),
+    );
     on<_Unsubscribe>((event, emit) => _onUnsubscribe(event, emit));
   }
 
@@ -190,6 +194,27 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
     } else {
       emit(UserDetailFailure(error: event.payload['errors'].toString()));
     }
+  }
+
+  void _onToggleNotifications(
+    _ToggleNotifications event,
+    Emitter<UserDetailState> emit,
+  ) {
+    emit(_Loading());
+    if (!webSocketService.isConnected) {
+      emit(UserDetailFailure(error: serverError));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        'action': 'toggle_notifications',
+        'request_id': requestId,
+        'pk': event.user.id,
+      },
+    };
+    webSocketService.send(message);
   }
 
   void _onUnsubscribe(_Unsubscribe event, Emitter<UserDetailState> emit) async {
