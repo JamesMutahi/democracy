@@ -53,6 +53,9 @@ sealed class PostDetailEvent with _$PostDetailEvent {
     required Map<String, dynamic> payload,
   }) = _ClickAdded;
 
+  const factory PostDetailEvent.muted({required Map<String, dynamic> payload}) =
+      _Muted;
+
   const factory PostDetailEvent.create({
     required String body,
     required PostStatus status,
@@ -103,6 +106,8 @@ sealed class PostDetailEvent with _$PostDetailEvent {
   const factory PostDetailEvent.addClick({required Post post}) = _AddClick;
 
   const factory PostDetailEvent.like({required Post post}) = _Like;
+
+  const factory PostDetailEvent.mute({required Post post}) = _Mute;
 
   const factory PostDetailEvent.bookmark({required Post post}) = _Bookmark;
 

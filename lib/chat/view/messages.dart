@@ -132,7 +132,7 @@ class _MessagesState extends State<Messages> {
           groupByDate.forEach((date, list) {
             // ListView is in reverse so objects are set in reverse order as well
             for (Message message in list) {
-              bool alignedRight = widget.currentUser.id == message.user.id;
+              bool alignedRight = widget.currentUser.id == message.author.id;
               String text = extractLinkFromMessage(message);
               widgets.add(SizedBox(height: messageMargin));
               if (message.isDeleted) {

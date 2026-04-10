@@ -183,7 +183,7 @@ class ChatTile extends StatelessWidget {
       return const SizedBox.shrink(); // Hide chats without last message
     }
 
-    final isFromMe = lastMessage.user.id == currentUser.id;
+    final isFromMe = lastMessage.author.id == currentUser.id;
     final lastMessagePrefix = isFromMe ? 'You: ' : '';
 
     final subtitleText = _getLastMessageText(lastMessage, lastMessagePrefix);

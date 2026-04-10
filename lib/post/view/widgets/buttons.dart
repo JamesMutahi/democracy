@@ -54,7 +54,7 @@ class PostPopUp extends StatelessWidget {
 
         return MorePopUp(
           onSelected: (selected) =>
-              _handleMenuSelection(context, selected, post),
+              _handleMenuSelection(context, selected, post, currentUser),
           texts: menuItems,
         );
       },
@@ -62,23 +62,30 @@ class PostPopUp extends StatelessWidget {
   }
 
   List<String> _buildMenuItems(User? currentUser, Post post) {
+    final List<String> items = [];
+
+    if (post.communityNoteOf == null) items.add('Community notes');
+
+    items.add('Share');
+
     if (currentUser?.id == post.author.id) {
-      return post.communityNoteOf == null
-          ? ['Community notes', 'Share', 'Delete']
-          : ['Share', 'Delete'];
+      items.add(post.isMuted ? 'Unmute' : 'Mute');
+      items.add('Delete');
+    } else {
+      items.add(post.author.isMuted ? 'Unmute' : 'Mute');
+      items.add(post.author.isBlocked ? 'Unblock' : 'Block');
+      items.add('Report');
     }
-
-    final List<String> items = ['Community notes', 'Share'];
-
-    items.add(post.author.isMuted ? 'Unmute' : 'Mute');
-    items.add(post.author.isBlocked ? 'Unblock' : 'Block');
-
-    items.add('Report');
 
     return items;
   }
 
-  void _handleMenuSelection(BuildContext context, String selected, Post post) {
+  void _handleMenuSelection(
+    BuildContext context,
+    String selected,
+    Post post,
+    User? currentUser,
+  ) {
     switch (selected) {
       case 'Share':
         showModalBottomSheet<void>(
@@ -93,10 +100,17 @@ class PostPopUp extends StatelessWidget {
         break;
 
       case 'Mute':
-        showDialog(
-          context: context,
-          builder: (_) => MuteDialog(user: post.author),
-        );
+        if (currentUser?.id == post.author.id) {
+          showDialog(
+            context: context,
+            builder: (_) => MutePostDialog(post: post),
+          );
+        } else {
+          showDialog(
+            context: context,
+            builder: (_) => MuteDialog(user: post.author),
+          );
+        }
         break;
 
       case 'Unmute':

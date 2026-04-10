@@ -1,3 +1,5 @@
+import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
+import 'package:democracy/post/models/post.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +47,29 @@ class MuteDialog extends StatelessWidget {
       button1Text: 'Yes',
       onButton1Pressed: () {
         context.read<UserDetailBloc>().add(UserDetailEvent.mute(user: user));
+        Navigator.pop(context);
+      },
+      button2Text: 'No',
+      onButton2Pressed: () {
+        Navigator.pop(context);
+      },
+    );
+  }
+}
+
+class MutePostDialog extends StatelessWidget {
+  const MutePostDialog({super.key, required this.post});
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomDialog(
+      title: 'Mute conversation?',
+      content: 'You will not receive notifications from this post.',
+      button1Text: 'Yes',
+      onButton1Pressed: () {
+        context.read<PostDetailBloc>().add(PostDetailEvent.mute(post: post));
         Navigator.pop(context);
       },
       button2Text: 'No',

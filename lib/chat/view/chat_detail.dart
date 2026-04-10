@@ -455,7 +455,7 @@ class _MessageActions extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         if (messages.length == 1)
-          if (!messages.any((message) => message.user.id != currentUser.id))
+          if (!messages.any((message) => message.author.id != currentUser.id))
             if (DateTime.now().difference(messages.first.createdAt) <
                 Duration(minutes: 15))
               IconButton(
@@ -477,7 +477,7 @@ class _MessageActions extends StatelessWidget {
           },
           icon: Icon(Symbols.content_copy),
         ),
-        (messages.any((message) => message.user.id != currentUser.id))
+        (messages.any((message) => message.author.id != currentUser.id))
             ? SizedBox.shrink()
             : IconButton(
                 onPressed: () {
@@ -537,7 +537,7 @@ String copyMultiple({required Set<Message> forCopy}) {
   for (var message in messages) {
     copiedText +=
         '[${dateFormat.format(message.createdAt)}] '
-        '${message.user.name}: '
+        '${message.author.name}: '
         '${message.text} ${(messages.last == message) ? '' : '\n'}';
   }
   return copiedText;
