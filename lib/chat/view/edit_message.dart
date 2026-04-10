@@ -94,6 +94,9 @@ class _EditMessageState extends State<EditMessage> {
         onLocation: (point) {},
         location: null,
         onRemoveLocation: null,
+        onSectionSelection: (section) {},
+        section: null,
+        onRemoveSection: null,
         onSend: _disableSendButton
             ? null
             : () {

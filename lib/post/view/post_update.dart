@@ -214,6 +214,9 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
               setState(() => _selectedVideo = video);
               _updatePostButtonState(_controller.formattedText);
             },
+            onNewSection: (section) {
+              //   TODO:
+            },
           ),
         ),
       ),
@@ -326,6 +329,11 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
                     meeting: widget.post.meeting!,
                     isDependency: true,
                   ),
+                ),
+              if (widget.post.section != null)
+                SectionView(
+                  section: widget.post.section!,
+                  onRemoveSection: () {},
                 ),
             ],
           ),

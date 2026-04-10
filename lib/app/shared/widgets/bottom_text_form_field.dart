@@ -6,7 +6,9 @@ import 'package:democracy/app/shared/widgets/file_widget.dart';
 import 'package:democracy/app/shared/pages/location.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
 import 'package:democracy/app/shared/utils/media_tools.dart';
+import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/constitution/view/constitution.dart';
+import 'package:democracy/constitution/view/section_tile.dart';
 import 'package:democracy/post/view/widgets/post_form_widgets.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:file_picker/file_picker.dart';
@@ -42,6 +44,9 @@ class BottomTextFormField extends StatefulWidget {
     required this.onLocation,
     required this.location,
     required this.onRemoveLocation,
+    required this.onSectionSelection,
+    required this.section,
+    required this.onRemoveSection,
     this.onSend,
     this.recipient,
     this.onImageEditingComplete,
@@ -71,6 +76,9 @@ class BottomTextFormField extends StatefulWidget {
   final void Function(LatLng) onLocation;
   final LatLng? location;
   final VoidCallback? onRemoveLocation;
+  final void Function(Section) onSectionSelection;
+  final Section? section;
+  final VoidCallback? onRemoveSection;
   final void Function()? onSend;
 
   // For editors in camera
@@ -141,41 +149,7 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (widget.insertedContent != null)
-            Container(
-              margin: EdgeInsets.only(top: 10),
-              child: SingleImageView(
-                image: widget.insertedContent!,
-                onRemove: widget.onRemoveInsertedContent!,
-              ),
-            ),
-          if (widget.selectedImages.isNotEmpty)
-            Container(
-              margin: EdgeInsets.only(top: 10),
-              child: MultiImageView(
-                recipient: widget.recipient!,
-                textEditingController: widget.controller,
-                images: widget.selectedImages,
-                onAdd: widget.onAddImages,
-                onRemove: widget.onRemoveImage,
-              ),
-            ),
-          if (widget.location != null)
-            Container(
-              margin: EdgeInsets.only(left: 15, right: 15, top: 10),
-              child: MapWidget(
-                mapCenter: widget.location!,
-                onRemove: widget.onRemoveLocation,
-              ),
-            ),
-          if (widget.selectedFile != null)
-            Container(
-              margin: EdgeInsets.only(top: 10),
-              child: FileWidget(
-                url: widget.selectedFile!.path,
-                navigateToViewer: false,
-              ),
-            ),
+          _buildAttachments(),
           _extrasRowWidget(),
           Row(
             children: [
@@ -266,6 +240,56 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
     );
   }
 
+  Widget _buildAttachments() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          if (widget.insertedContent != null)
+            Container(
+              margin: EdgeInsets.only(top: 10),
+              child: SingleImageView(
+                image: widget.insertedContent!,
+                onRemove: widget.onRemoveInsertedContent!,
+              ),
+            ),
+          if (widget.selectedImages.isNotEmpty)
+            Container(
+              margin: EdgeInsets.only(top: 10),
+              child: MultiImageView(
+                recipient: widget.recipient!,
+                textEditingController: widget.controller,
+                images: widget.selectedImages,
+                onAdd: widget.onAddImages,
+                onRemove: widget.onRemoveImage,
+              ),
+            ),
+          if (widget.location != null)
+            Container(
+              margin: EdgeInsets.only(left: 15, right: 15, top: 10),
+              child: MapWidget(
+                mapCenter: widget.location!,
+                onRemove: widget.onRemoveLocation,
+              ),
+            ),
+          if (widget.selectedFile != null)
+            Container(
+              margin: EdgeInsets.only(top: 10),
+              child: FileWidget(
+                url: widget.selectedFile!.path,
+                navigateToViewer: false,
+              ),
+            ),
+          if (widget.section != null)
+            SectionView(
+              section: widget.section!,
+              onRemoveSection: widget.onRemoveSection!,
+            ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildTapToOpenExtras() {
     return AnimatedContainer(
       transformAlignment: Alignment.center,
@@ -342,12 +366,52 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
               onExtrasButtonPressed();
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Constitution()),
+                MaterialPageRoute(
+                  builder: (context) =>
+                      Constitution(onSelection: widget.onSectionSelection),
+                ),
               );
             },
           ),
         ),
       ),
+    );
+  }
+}
+
+class SectionView extends StatelessWidget {
+  const SectionView({
+    super.key,
+    required this.section,
+    required this.onRemoveSection,
+  });
+
+  final Section section;
+  final VoidCallback onRemoveSection;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          margin: EdgeInsets.only(top: 10),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Theme.of(context).colorScheme.outlineVariant,
+            ),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: IgnorePointer(child: SectionTile(section: section)),
+        ),
+        Positioned(
+          right: 0,
+          top: 6,
+          child: GestureDetector(
+            onTap: onRemoveSection,
+            child: Icon(Icons.highlight_remove_rounded, color: Colors.red),
+          ),
+        ),
+      ],
     );
   }
 }

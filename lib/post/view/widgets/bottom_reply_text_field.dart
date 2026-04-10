@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart';
 import 'package:democracy/app/shared/widgets/tagging.dart';
 import 'package:democracy/constitution/bloc/sections/sections_bloc.dart';
+import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
@@ -31,6 +32,7 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
   File? _selectedFile;
   File? _insertedContent;
   LatLng? _location;
+  Section? _selectedSection;
 
   double overlayHeight = 300;
   SearchResultView _view = SearchResultView.none;
@@ -179,20 +181,12 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
               });
             },
             onAddImages: (images) {
-              setState(() {
-                _selectedImages.addAll(images);
-              });
+              setState(() => _selectedImages.addAll(images));
             },
             onRemoveImage: (index) {
-              setState(() {
-                _selectedImages.removeAt(index);
-              });
+              setState(() => _selectedImages.removeAt(index));
             },
-            onNewFile: (file) {
-              setState(() {
-                _selectedFile = file;
-              });
-            },
+            onNewFile: (file) => setState(() => _selectedFile = file),
             onContentInsertion: (imageFile) {
               setState(() {
                 _insertedContent = imageFile;
@@ -201,22 +195,17 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
             },
             insertedContent: _insertedContent,
             onRemoveInsertedContent: () {
-              setState(() {
-                _insertedContent = null;
-              });
+              setState(() => _insertedContent = null);
             },
             allowedMimeTypes: const <String>['image/gif'],
-            onLocation: (point) {
-              setState(() {
-                _location = point;
-              });
-            },
+            onLocation: (point) => setState(() => _location = point),
             location: _location,
-            onRemoveLocation: () {
-              setState(() {
-                _location = null;
-              });
+            onRemoveLocation: () => setState(() => _location = null),
+            onSectionSelection: (section) {
+              setState(() => _selectedSection = section);
             },
+            section: _selectedSection,
+            onRemoveSection: () => setState(() => _selectedSection = null),
             onSend:
                 _disableSendButton &&
                     _insertedContent == null &&

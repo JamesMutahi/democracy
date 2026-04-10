@@ -305,7 +305,7 @@ class _ChatDetailState extends State<_ChatDetail> {
         context.read<MessageDetailBloc>().add(
           MessageDetailEvent.create(
             chat: widget.chat,
-            text: _controller.text,
+            text: '',
             imagePath1: imageFile.path,
           ),
         );
@@ -317,13 +317,24 @@ class _ChatDetailState extends State<_ChatDetail> {
         context.read<MessageDetailBloc>().add(
           MessageDetailEvent.create(
             chat: widget.chat,
-            text: _controller.text,
+            text: '',
             location: point,
           ),
         );
       },
       location: null,
       onRemoveLocation: null,
+      onSectionSelection: (section) {
+        context.read<MessageDetailBloc>().add(
+          MessageDetailEvent.create(
+            chat: widget.chat,
+            text: '',
+            section: section,
+          ),
+        );
+      },
+      section: null,
+      onRemoveSection: null,
       onSend:
           _disableSendButton && _selectedImages.isEmpty && _selectedFile == null
           ? null

@@ -8,9 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Constitution extends StatefulWidget {
-  const Constitution({super.key, this.centeredSection});
+  const Constitution({super.key, this.centeredSection, this.onSelection});
 
   final Section? centeredSection;
+  final Function(Section)? onSelection;
 
   @override
   State<Constitution> createState() => _ConstitutionState();
@@ -48,22 +49,30 @@ class _ConstitutionState extends State<Constitution> {
             opacity: _selectedSection != null ? 1.0 : 0.0,
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
-            child: IconButton(
-              onPressed: () {
-                showModalBottomSheet<void>(
-                  context: context,
-                  shape: const BeveledRectangleBorder(),
-                  builder: (BuildContext context) {
-                    return ShareBottomSheet(section: _selectedSection);
-                  },
-                ).then((_) {
-                  setState(() {
-                    _selectedSection = null;
-                  });
-                });
-              },
-              icon: Icon(Icons.share_outlined),
-            ),
+            child: widget.onSelection == null
+                ? FilledButton.tonal(
+                    onPressed: () {
+                      showModalBottomSheet<void>(
+                        context: context,
+                        shape: const BeveledRectangleBorder(),
+                        builder: (BuildContext context) {
+                          return ShareBottomSheet(section: _selectedSection);
+                        },
+                      ).then((_) {
+                        setState(() {
+                          _selectedSection = null;
+                        });
+                      });
+                    },
+                    child: Text('Share'),
+                  )
+                : TextButton(
+                    onPressed: () {
+                      widget.onSelection!(_selectedSection!);
+                      Navigator.pop(context);
+                    },
+                    child: Text('Select'),
+                  ),
           ),
         ],
         actionsPadding: EdgeInsets.only(right: 10),

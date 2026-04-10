@@ -8,6 +8,7 @@ import 'package:democracy/app/shared/utils/media_tools.dart';
 import 'package:democracy/app/shared/widgets/tagging.dart';
 import 'package:democracy/app/shared/widgets/video_viewer.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/constitution/view/constitution.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
@@ -177,6 +178,7 @@ class PostBottomNavBar extends StatefulWidget {
     required this.onLocation,
     this.reply,
     required this.onNewVideo,
+    required this.onNewSection,
   });
 
   final FlutterTaggerController controller;
@@ -188,6 +190,7 @@ class PostBottomNavBar extends StatefulWidget {
   final void Function(LatLng) onLocation;
   final Post? reply;
   final void Function(File) onNewVideo;
+  final void Function(Section) onNewSection;
 
   @override
   State<PostBottomNavBar> createState() => _PostBottomNavBarState();
@@ -360,7 +363,10 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
                 onConstitutionTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Constitution()),
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          Constitution(onSelection: widget.onNewSection),
+                    ),
                   );
                 },
               ),

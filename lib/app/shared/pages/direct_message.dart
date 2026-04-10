@@ -268,13 +268,12 @@ class _DirectMessageState extends State<DirectMessage> {
             });
           },
           allowedMimeTypes: const <String>['image/png', 'image/gif'],
-          onLocation: (point) {
-            setState(() {
-              location = point;
-            });
-          },
-          location: location,
-          onRemoveLocation: null,
+          onLocation: (point) {},
+          location: null,
+          onRemoveLocation: () {},
+          onSectionSelection: (section) {},
+          section: null,
+          onRemoveSection: () {},
           onSend: selectedUsers.isEmpty
               ? null
               : () {

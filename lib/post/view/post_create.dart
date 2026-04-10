@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart'
-    show MultiImageView;
+    show MultiImageView, SectionView;
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/file_widget.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
@@ -65,6 +65,7 @@ class _PostCreatePageState extends State<PostCreatePage> {
   File? _selectedVideo;
   File? _selectedFile;
   LatLng? _selectedLocation;
+  Section? _selectedSection;
 
   @override
   void initState() {
@@ -90,7 +91,7 @@ class _PostCreatePageState extends State<PostCreatePage> {
         survey: widget.survey,
         petition: widget.petition,
         meeting: widget.meeting,
-        section: widget.section,
+        section: widget.section ?? _selectedSection,
         tags: tags,
         imagePath1:
             _insertedImage?.path ??
@@ -235,6 +236,12 @@ class _PostCreatePageState extends State<PostCreatePage> {
               setState(() => _selectedVideo = video);
               _updatePostButtonState(_controller.formattedText);
             },
+            onNewSection: (section) {
+              if (widget.section == null) {
+                setState(() => _selectedSection = section);
+                _updatePostButtonState(_controller.formattedText);
+              }
+            },
           ),
         ),
       ),
@@ -313,6 +320,13 @@ class _PostCreatePageState extends State<PostCreatePage> {
                     mapCenter: _selectedLocation!,
                     onRemove: () => setState(() => _selectedLocation = null),
                   ),
+                ),
+
+              if (_selectedSection != null)
+                SectionView(
+                  section: _selectedSection!,
+                  onRemoveSection: () =>
+                      setState(() => _selectedSection = null),
                 ),
 
               // Dependencies (repost, ballot, survey, etc.)

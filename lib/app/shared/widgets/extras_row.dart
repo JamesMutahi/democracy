@@ -19,7 +19,7 @@ class ExtrasRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      alignment: WrapAlignment.spaceEvenly,
+      alignment: WrapAlignment.center,
       spacing: 10.0,
       runSpacing: 5.0,
       children: <Widget>[
