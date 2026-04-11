@@ -167,6 +167,16 @@ class PostListener extends StatelessWidget {
                   }
                   updatePosts = true;
                 }
+              case PostMuted():
+                if (posts.any((element) => element.id == state.postId)) {
+                  int postIndex = posts.indexWhere(
+                    (element) => element.id == state.postId,
+                  );
+                  posts[postIndex] = posts[postIndex].copyWith(
+                    isMuted: state.isMuted,
+                  );
+                  updatePosts = true;
+                }
               case PostBookmarked():
                 if (posts.any((element) => element.id == state.postId)) {
                   int postIndex = posts.indexWhere(

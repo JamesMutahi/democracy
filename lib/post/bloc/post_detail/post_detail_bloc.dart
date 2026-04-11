@@ -249,7 +249,12 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
 
   void _onMuted(_Muted event, Emitter<PostDetailState> emit) {
     if (event.payload['response_status'] == 200) {
-      emit(PostMuted(postId: event.payload['data']['pk']));
+      emit(
+        PostMuted(
+          postId: event.payload['data']['pk'],
+          isMuted: event.payload['data']['is_muted'],
+        ),
+      );
     } else {
       emit(PostDetailFailure(error: event.payload['errors'].toString()));
     }

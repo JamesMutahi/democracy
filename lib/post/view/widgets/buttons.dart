@@ -114,9 +114,13 @@ class PostPopUp extends StatelessWidget {
         break;
 
       case 'Unmute':
-        context.read<UserDetailBloc>().add(
-          UserDetailEvent.mute(user: post.author),
-        );
+        if (currentUser?.id == post.author.id) {
+          context.read<PostDetailBloc>().add(PostDetailEvent.mute(post: post));
+        } else {
+          context.read<UserDetailBloc>().add(
+            UserDetailEvent.mute(user: post.author),
+          );
+        }
         break;
 
       case 'Block':
