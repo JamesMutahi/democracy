@@ -1,4 +1,5 @@
 import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
+import 'package:democracy/app/bloc/theme/theme_cubit.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/view/pages/index.dart';
 import 'package:democracy/app/view/widgets/bottom_nav_bar.dart';
@@ -26,12 +27,6 @@ class _DashboardState extends State<Dashboard> {
   final int _backPressTimeout = 2; // seconds
 
   List<n_.Notification> _unreadNotifications = [];
-
-  @override
-  void initState() {
-    super.initState();
-    context.read<NotificationsBloc>().add(NotificationsEvent.get());
-  }
 
   @override
   void dispose() {
@@ -167,7 +162,14 @@ class _DashboardState extends State<Dashboard> {
 
   void _handleNotificationUpdate(NotificationDetailState state) {
     if (state is NotificationCreated) {
-      _unreadNotifications.add(state.notification);
+      if (state.notification.chat == null) {
+        _unreadNotifications.add(state.notification);
+      } else {
+        final openChatId = context.read<ThemeCubit>().state.openChatId;
+        if (openChatId != state.notification.chat!.id) {
+          _unreadNotifications.add(state.notification);
+        }
+      }
     } else if (state is NotificationUpdated) {
       final index = _unreadNotifications.indexWhere(
         (n) => n.id == state.notification.id,

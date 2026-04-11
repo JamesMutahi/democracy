@@ -25,7 +25,6 @@ class ChatsBloc extends Bloc<ChatsEvent, ChatsState> {
     });
     on<_Get>((event, emit) => _onGet(event, emit), transformer: debounce());
     on<_Received>((event, emit) => _onReceived(event, emit));
-    on<_Add>((event, emit) => _onAdd(event, emit));
     on<_Update>((event, emit) => _onUpdate(event, emit));
     on<_Remove>((event, emit) => _onRemove(event, emit));
     on<_UpdateMultiple>((event, emit) => _onUpdateMultiple(event, emit));
@@ -69,10 +68,17 @@ class ChatsBloc extends Bloc<ChatsEvent, ChatsState> {
     }
   }
 
-  void _onAdd(_Add event, Emitter<ChatsState> emit) {
+  void _onUpdate(_Update event, Emitter<ChatsState> emit) {
     final exists = state.chats.any((c) => c.id == event.chat.id);
+    if (exists) {
+      final index = state.chats.indexWhere((c) => c.id == event.chat.id);
+      if (index == -1) return;
 
-    if (!exists) {
+      final updatedChats = List<Chat>.from(state.chats);
+      updatedChats[index] = event.chat;
+
+      emit(state.copyWith(chats: updatedChats, status: ChatsStatus.success));
+    } else {
       emit(
         state.copyWith(
           chats: [event.chat, ...state.chats],
@@ -80,16 +86,6 @@ class ChatsBloc extends Bloc<ChatsEvent, ChatsState> {
         ),
       );
     }
-  }
-
-  void _onUpdate(_Update event, Emitter<ChatsState> emit) {
-    final index = state.chats.indexWhere((c) => c.id == event.chat.id);
-    if (index == -1) return;
-
-    final updatedChats = List<Chat>.from(state.chats);
-    updatedChats[index] = event.chat;
-
-    emit(state.copyWith(chats: updatedChats, status: ChatsStatus.success));
   }
 
   void _onRemove(_Remove event, Emitter<ChatsState> emit) {

@@ -1,3 +1,4 @@
+import 'package:democracy/app/bloc/theme/theme_cubit.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
@@ -9,6 +10,7 @@ import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/view/utils/chat_navigator.dart';
 import 'package:democracy/chat/view/utils/link_extractor.dart';
+import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
@@ -38,29 +40,47 @@ class _ChatsState extends State<Chats> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ChatDetailBloc, ChatDetailState>(
-      listener: (context, state) {
-        final chatsBloc = context.read<ChatsBloc>();
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<ChatDetailBloc, ChatDetailState>(
+          listener: (context, state) {
+            final chatsBloc = context.read<ChatsBloc>();
 
-        if (state is ChatCreated) {
-          chatsBloc.add(ChatsEvent.add(chat: state.chat));
-        } else if (state is ChatLoaded) {
-          chatsBloc.add(ChatsEvent.update(chat: state.chat));
-        } else if (state is ChatUpdated) {
-          chatsBloc.add(ChatsEvent.update(chat: state.chat));
-        } else if (state is ChatDeleted) {
-          chatsBloc.add(ChatsEvent.remove(chatId: state.chatId));
-        } else if (state is DirectMessageSent) {
-          chatsBloc.add(ChatsEvent.updateMultiple(chats: state.chats));
-        } else if (state is ChatDetailFailure) {
-          final snackBar = getSnackBar(
-            context: context,
-            message: state.error,
-            status: SnackBarStatus.failure,
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        }
-      },
+            if (state is ChatCreated) {
+              chatsBloc.add(ChatsEvent.update(chat: state.chat));
+            } else if (state is ChatLoaded) {
+              chatsBloc.add(ChatsEvent.update(chat: state.chat));
+            } else if (state is ChatUpdated) {
+              chatsBloc.add(ChatsEvent.update(chat: state.chat));
+            } else if (state is ChatDeleted) {
+              chatsBloc.add(ChatsEvent.remove(chatId: state.chatId));
+            } else if (state is DirectMessageSent) {
+              chatsBloc.add(ChatsEvent.updateMultiple(chats: state.chats));
+            } else if (state is ChatDetailFailure) {
+              final snackBar = getSnackBar(
+                context: context,
+                message: state.error,
+                status: SnackBarStatus.failure,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+          },
+        ),
+        BlocListener<NotificationDetailBloc, NotificationDetailState>(
+          listener: (context, state) {
+            if (state is NotificationCreated) {
+              if (state.notification.chat != null) {
+                final openChatId = context.read<ThemeCubit>().state.openChatId;
+                if (openChatId != state.notification.chat!.id) {
+                  context.read<ChatsBloc>().add(
+                    ChatsEvent.update(chat: state.notification.chat!),
+                  );
+                }
+              }
+            }
+          },
+        ),
+      ],
       child: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
           late User currentUser;
@@ -212,11 +232,6 @@ class ChatTile extends StatelessWidget {
         ],
       ),
       onTap: () {
-        if (chat.unreadMessages > 0) {
-          context.read<ChatDetailBloc>().add(
-            ChatDetailEvent.markAsRead(chat: chat),
-          );
-        }
         navigateToChatDetail(context: context, chat: chat);
       },
       onLongPress: () {

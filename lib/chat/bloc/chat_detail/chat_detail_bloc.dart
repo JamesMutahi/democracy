@@ -51,11 +51,11 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
     on<_Deleted>((event, emit) => _onDeleted(event, emit));
     on<_Create>((event, emit) => _onCreate(event, emit));
     on<_Get>((event, emit) => _onGet(event, emit));
-    on<_Subscribe>((event, emit) => _onSubscribe(event, emit));
     on<_SendDirectMessage>(
       (event, emit) async => await _onSendDirectMessage(event, emit),
     );
     on<_MarkAsRead>((event, emit) => _onMarkAsRead(event, emit));
+    on<_Unsubscribe>((event, emit) => _onUnsubscribe(event, emit));
   }
 
   void _onCreated(_Created event, Emitter<ChatDetailState> emit) {
@@ -126,25 +126,7 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
       'stream': stream,
       'payload': {
         'action': 'retrieve',
-        'request_id': requestId,
-        'pk': event.chat.id,
-      },
-    };
-    webSocketService.send(message);
-  }
-
-  void _onSubscribe(_Subscribe event, Emitter<ChatDetailState> emit) {
-    emit(ChatDetailLoading());
-    if (!webSocketService.isConnected) {
-      emit(ChatDetailFailure(error: serverError));
-      return;
-    }
-
-    Map<String, dynamic> message = {
-      'stream': stream,
-      'payload': {
-        'action': 'join_chat',
-        'request_id': requestId,
+        'request_id': event.chat.id,
         'pk': event.chat.id,
       },
     };
@@ -194,6 +176,24 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
       'payload': {
         'action': 'mark_as_read',
         'request_id': requestId,
+        'pk': event.chat.id,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  void _onUnsubscribe(_Unsubscribe event, Emitter<ChatDetailState> emit) {
+    emit(ChatDetailLoading());
+    if (!webSocketService.isConnected) {
+      emit(ChatDetailFailure(error: serverError));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        'action': 'unsubscribe',
+        'request_id': event.chat.id,
         'pk': event.chat.id,
       },
     };

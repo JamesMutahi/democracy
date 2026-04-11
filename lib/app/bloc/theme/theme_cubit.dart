@@ -36,4 +36,8 @@ class ThemeCubit extends Cubit<ThemeState> {
       emit(state.copyWith(status: ThemeStatus.failure));
     }
   }
+
+  void holdChatId({required int? chatId}) {
+    emit(state.copyWith(openChatId: chatId));
+  }
 }

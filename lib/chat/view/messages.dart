@@ -9,6 +9,7 @@ import 'package:democracy/app/shared/widgets/map_widget.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/shared/widgets/video_viewer.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
+import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
 import 'package:democracy/chat/bloc/messages/messages_bloc.dart';
@@ -27,10 +28,10 @@ import 'package:intl/intl.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class Messages extends StatefulWidget {
-  const Messages({super.key, required this.chat, required this.currentUser});
+  const Messages({super.key, required this.chat, required this.me});
 
   final Chat chat;
-  final User currentUser;
+  final User me;
 
   @override
   State<Messages> createState() => _MessagesState();
@@ -54,6 +55,11 @@ class _MessagesState extends State<Messages> {
             context.read<MessagesBloc>().add(
               MessagesEvent.add(message: state.message),
             );
+            if (widget.me.id != state.message.author.id) {
+              context.read<ChatDetailBloc>().add(
+                ChatDetailEvent.markAsRead(chat: widget.chat),
+              );
+            }
           }
         }
 
@@ -132,7 +138,7 @@ class _MessagesState extends State<Messages> {
           groupByDate.forEach((date, list) {
             // ListView is in reverse so objects are set in reverse order as well
             for (Message message in list) {
-              bool alignedRight = widget.currentUser.id == message.author.id;
+              bool alignedRight = widget.me.id == message.author.id;
               String text = extractLinkFromMessage(message);
               widgets.add(SizedBox(height: messageMargin));
               if (message.isDeleted) {

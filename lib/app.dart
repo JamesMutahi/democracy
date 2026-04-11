@@ -15,6 +15,7 @@ import 'package:democracy/auth/view/login.dart';
 import 'package:democracy/ballot/bloc/ballots/ballots_bloc.dart';
 import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
 import 'package:democracy/meet/bloc/meetings/meetings_bloc.dart';
+import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/petition/bloc/petitions/petitions_bloc.dart';
 import 'package:democracy/post/bloc/following_posts/following_posts_bloc.dart';
 import 'package:democracy/post/bloc/for_you/for_you_bloc.dart';
@@ -235,6 +236,7 @@ class _Listeners extends StatelessWidget {
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
             if (state.status == WebsocketStatus.connected) {
+              context.read<NotificationsBloc>().add(NotificationsEvent.get());
               final snackBar = getSnackBar(
                 context: context,
                 message: 'Connected',

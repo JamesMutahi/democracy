@@ -21,7 +21,7 @@ class AuthProvider {
       }
     } on DioException {
       return Future.error(
-        'Unable to login at this time. \nPlease try again later',
+        'Unable to login at this time. Please try again later',
       );
     }
   }

@@ -752,7 +752,7 @@ extension ChatDetailEventPatterns on ChatDetailEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Loaded value)?  loaded,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Create value)?  create,TResult Function( _Get value)?  get,TResult Function( _Subscribe value)?  subscribe,TResult Function( _SendDirectMessage value)?  sendDirectMessage,TResult Function( _MarkAsRead value)?  markAsRead,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Loaded value)?  loaded,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Create value)?  create,TResult Function( _Get value)?  get,TResult Function( _SendDirectMessage value)?  sendDirectMessage,TResult Function( _MarkAsRead value)?  markAsRead,TResult Function( _Unsubscribe value)?  unsubscribe,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
@@ -761,10 +761,10 @@ return loaded(_that);case _Updated() when updated != null:
 return updated(_that);case _Deleted() when deleted != null:
 return deleted(_that);case _Create() when create != null:
 return create(_that);case _Get() when get != null:
-return get(_that);case _Subscribe() when subscribe != null:
-return subscribe(_that);case _SendDirectMessage() when sendDirectMessage != null:
+return get(_that);case _SendDirectMessage() when sendDirectMessage != null:
 return sendDirectMessage(_that);case _MarkAsRead() when markAsRead != null:
-return markAsRead(_that);case _:
+return markAsRead(_that);case _Unsubscribe() when unsubscribe != null:
+return unsubscribe(_that);case _:
   return orElse();
 
 }
@@ -782,7 +782,7 @@ return markAsRead(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Loaded value)  loaded,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Create value)  create,required TResult Function( _Get value)  get,required TResult Function( _Subscribe value)  subscribe,required TResult Function( _SendDirectMessage value)  sendDirectMessage,required TResult Function( _MarkAsRead value)  markAsRead,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Loaded value)  loaded,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Create value)  create,required TResult Function( _Get value)  get,required TResult Function( _SendDirectMessage value)  sendDirectMessage,required TResult Function( _MarkAsRead value)  markAsRead,required TResult Function( _Unsubscribe value)  unsubscribe,}){
 final _that = this;
 switch (_that) {
 case _Created():
@@ -791,10 +791,10 @@ return loaded(_that);case _Updated():
 return updated(_that);case _Deleted():
 return deleted(_that);case _Create():
 return create(_that);case _Get():
-return get(_that);case _Subscribe():
-return subscribe(_that);case _SendDirectMessage():
+return get(_that);case _SendDirectMessage():
 return sendDirectMessage(_that);case _MarkAsRead():
-return markAsRead(_that);}
+return markAsRead(_that);case _Unsubscribe():
+return unsubscribe(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -808,7 +808,7 @@ return markAsRead(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Create value)?  create,TResult? Function( _Get value)?  get,TResult? Function( _Subscribe value)?  subscribe,TResult? Function( _SendDirectMessage value)?  sendDirectMessage,TResult? Function( _MarkAsRead value)?  markAsRead,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Create value)?  create,TResult? Function( _Get value)?  get,TResult? Function( _SendDirectMessage value)?  sendDirectMessage,TResult? Function( _MarkAsRead value)?  markAsRead,TResult? Function( _Unsubscribe value)?  unsubscribe,}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
@@ -817,10 +817,10 @@ return loaded(_that);case _Updated() when updated != null:
 return updated(_that);case _Deleted() when deleted != null:
 return deleted(_that);case _Create() when create != null:
 return create(_that);case _Get() when get != null:
-return get(_that);case _Subscribe() when subscribe != null:
-return subscribe(_that);case _SendDirectMessage() when sendDirectMessage != null:
+return get(_that);case _SendDirectMessage() when sendDirectMessage != null:
 return sendDirectMessage(_that);case _MarkAsRead() when markAsRead != null:
-return markAsRead(_that);case _:
+return markAsRead(_that);case _Unsubscribe() when unsubscribe != null:
+return unsubscribe(_that);case _:
   return null;
 
 }
@@ -837,7 +837,7 @@ return markAsRead(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( User user)?  create,TResult Function( Chat chat)?  get,TResult Function( Chat chat)?  subscribe,TResult Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? videoPath,  String? filePath,  LatLng? location)?  sendDirectMessage,TResult Function( Chat chat)?  markAsRead,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( User user)?  create,TResult Function( Chat chat)?  get,TResult Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? videoPath,  String? filePath,  LatLng? location)?  sendDirectMessage,TResult Function( Chat chat)?  markAsRead,TResult Function( Chat chat)?  unsubscribe,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
@@ -845,10 +845,10 @@ return loaded(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Create() when create != null:
 return create(_that.user);case _Get() when get != null:
-return get(_that.chat);case _Subscribe() when subscribe != null:
-return subscribe(_that.chat);case _SendDirectMessage() when sendDirectMessage != null:
+return get(_that.chat);case _SendDirectMessage() when sendDirectMessage != null:
 return sendDirectMessage(_that.users,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.imagePath1,_that.imagePath2,_that.imagePath3,_that.imagePath4,_that.videoPath,_that.filePath,_that.location);case _MarkAsRead() when markAsRead != null:
-return markAsRead(_that.chat);case _:
+return markAsRead(_that.chat);case _Unsubscribe() when unsubscribe != null:
+return unsubscribe(_that.chat);case _:
   return orElse();
 
 }
@@ -866,7 +866,7 @@ return markAsRead(_that.chat);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( User user)  create,required TResult Function( Chat chat)  get,required TResult Function( Chat chat)  subscribe,required TResult Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? videoPath,  String? filePath,  LatLng? location)  sendDirectMessage,required TResult Function( Chat chat)  markAsRead,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( User user)  create,required TResult Function( Chat chat)  get,required TResult Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? videoPath,  String? filePath,  LatLng? location)  sendDirectMessage,required TResult Function( Chat chat)  markAsRead,required TResult Function( Chat chat)  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Loaded():
@@ -874,10 +874,10 @@ return loaded(_that.payload);case _Updated():
 return updated(_that.payload);case _Deleted():
 return deleted(_that.payload);case _Create():
 return create(_that.user);case _Get():
-return get(_that.chat);case _Subscribe():
-return subscribe(_that.chat);case _SendDirectMessage():
+return get(_that.chat);case _SendDirectMessage():
 return sendDirectMessage(_that.users,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.imagePath1,_that.imagePath2,_that.imagePath3,_that.imagePath4,_that.videoPath,_that.filePath,_that.location);case _MarkAsRead():
-return markAsRead(_that.chat);}
+return markAsRead(_that.chat);case _Unsubscribe():
+return unsubscribe(_that.chat);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -891,7 +891,7 @@ return markAsRead(_that.chat);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( User user)?  create,TResult? Function( Chat chat)?  get,TResult? Function( Chat chat)?  subscribe,TResult? Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? videoPath,  String? filePath,  LatLng? location)?  sendDirectMessage,TResult? Function( Chat chat)?  markAsRead,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( User user)?  create,TResult? Function( Chat chat)?  get,TResult? Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? videoPath,  String? filePath,  LatLng? location)?  sendDirectMessage,TResult? Function( Chat chat)?  markAsRead,TResult? Function( Chat chat)?  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
@@ -899,10 +899,10 @@ return loaded(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Create() when create != null:
 return create(_that.user);case _Get() when get != null:
-return get(_that.chat);case _Subscribe() when subscribe != null:
-return subscribe(_that.chat);case _SendDirectMessage() when sendDirectMessage != null:
+return get(_that.chat);case _SendDirectMessage() when sendDirectMessage != null:
 return sendDirectMessage(_that.users,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.imagePath1,_that.imagePath2,_that.imagePath3,_that.imagePath4,_that.videoPath,_that.filePath,_that.location);case _MarkAsRead() when markAsRead != null:
-return markAsRead(_that.chat);case _:
+return markAsRead(_that.chat);case _Unsubscribe() when unsubscribe != null:
+return unsubscribe(_that.chat);case _:
   return null;
 
 }
@@ -1351,81 +1351,6 @@ $ChatCopyWith<$Res> get chat {
 /// @nodoc
 
 
-class _Subscribe implements ChatDetailEvent {
-  const _Subscribe({required this.chat});
-  
-
- final  Chat chat;
-
-/// Create a copy of ChatDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$SubscribeCopyWith<_Subscribe> get copyWith => __$SubscribeCopyWithImpl<_Subscribe>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Subscribe&&(identical(other.chat, chat) || other.chat == chat));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,chat);
-
-@override
-String toString() {
-  return 'ChatDetailEvent.subscribe(chat: $chat)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$SubscribeCopyWith<$Res> implements $ChatDetailEventCopyWith<$Res> {
-  factory _$SubscribeCopyWith(_Subscribe value, $Res Function(_Subscribe) _then) = __$SubscribeCopyWithImpl;
-@useResult
-$Res call({
- Chat chat
-});
-
-
-$ChatCopyWith<$Res> get chat;
-
-}
-/// @nodoc
-class __$SubscribeCopyWithImpl<$Res>
-    implements _$SubscribeCopyWith<$Res> {
-  __$SubscribeCopyWithImpl(this._self, this._then);
-
-  final _Subscribe _self;
-  final $Res Function(_Subscribe) _then;
-
-/// Create a copy of ChatDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? chat = null,}) {
-  return _then(_Subscribe(
-chat: null == chat ? _self.chat : chat // ignore: cast_nullable_to_non_nullable
-as Chat,
-  ));
-}
-
-/// Create a copy of ChatDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ChatCopyWith<$Res> get chat {
-  
-  return $ChatCopyWith<$Res>(_self.chat, (value) {
-    return _then(_self.copyWith(chat: value));
-  });
-}
-}
-
-/// @nodoc
-
-
 class _SendDirectMessage implements ChatDetailEvent {
   const _SendDirectMessage({required final  List<User> users, required this.text, this.post, this.ballot, this.survey, this.petition, this.meeting, this.section, this.imagePath1, this.imagePath2, this.imagePath3, this.imagePath4, this.videoPath, this.filePath, this.location}): _users = users;
   
@@ -1653,6 +1578,81 @@ class __$MarkAsReadCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? chat = null,}) {
   return _then(_MarkAsRead(
+chat: null == chat ? _self.chat : chat // ignore: cast_nullable_to_non_nullable
+as Chat,
+  ));
+}
+
+/// Create a copy of ChatDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ChatCopyWith<$Res> get chat {
+  
+  return $ChatCopyWith<$Res>(_self.chat, (value) {
+    return _then(_self.copyWith(chat: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _Unsubscribe implements ChatDetailEvent {
+  const _Unsubscribe({required this.chat});
+  
+
+ final  Chat chat;
+
+/// Create a copy of ChatDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$UnsubscribeCopyWith<_Unsubscribe> get copyWith => __$UnsubscribeCopyWithImpl<_Unsubscribe>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Unsubscribe&&(identical(other.chat, chat) || other.chat == chat));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,chat);
+
+@override
+String toString() {
+  return 'ChatDetailEvent.unsubscribe(chat: $chat)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$UnsubscribeCopyWith<$Res> implements $ChatDetailEventCopyWith<$Res> {
+  factory _$UnsubscribeCopyWith(_Unsubscribe value, $Res Function(_Unsubscribe) _then) = __$UnsubscribeCopyWithImpl;
+@useResult
+$Res call({
+ Chat chat
+});
+
+
+$ChatCopyWith<$Res> get chat;
+
+}
+/// @nodoc
+class __$UnsubscribeCopyWithImpl<$Res>
+    implements _$UnsubscribeCopyWith<$Res> {
+  __$UnsubscribeCopyWithImpl(this._self, this._then);
+
+  final _Unsubscribe _self;
+  final $Res Function(_Unsubscribe) _then;
+
+/// Create a copy of ChatDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? chat = null,}) {
+  return _then(_Unsubscribe(
 chat: null == chat ? _self.chat : chat // ignore: cast_nullable_to_non_nullable
 as Chat,
   ));

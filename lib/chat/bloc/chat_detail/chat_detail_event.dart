@@ -22,8 +22,6 @@ sealed class ChatDetailEvent with _$ChatDetailEvent {
 
   const factory ChatDetailEvent.get({required Chat chat}) = _Get;
 
-  const factory ChatDetailEvent.subscribe({required Chat chat}) = _Subscribe;
-
   const factory ChatDetailEvent.sendDirectMessage({
     required List<User> users,
     required String text,
@@ -43,4 +41,7 @@ sealed class ChatDetailEvent with _$ChatDetailEvent {
   }) = _SendDirectMessage;
 
   const factory ChatDetailEvent.markAsRead({required Chat chat}) = _MarkAsRead;
+
+  const factory ChatDetailEvent.unsubscribe({required Chat chat}) =
+      _Unsubscribe;
 }
