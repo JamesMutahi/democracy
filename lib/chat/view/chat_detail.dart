@@ -5,7 +5,6 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart';
 import 'package:democracy/app/shared/utils/copy.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
-import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
@@ -22,31 +21,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-class ChatDetailPage extends StatelessWidget {
-  const ChatDetailPage({super.key, required this.chat});
-
-  final Chat chat;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<AuthBloc, AuthState>(
-      builder: (context, state) {
-        late User me;
-        if (state is Authenticated) {
-          me = state.user;
-        }
-        User otherUser = me;
-        if (chat.users.length > 1) {
-          otherUser = chat.users.firstWhere((u) => u.id != me.id);
-        }
-        return _ChatDetail(chat: chat, me: me, otherUser: otherUser);
-      },
-    );
-  }
-}
-
-class _ChatDetail extends StatefulWidget {
-  const _ChatDetail({
+class ChatDetailPage extends StatefulWidget {
+  const ChatDetailPage({
+    super.key,
     required this.chat,
     required this.me,
     required this.otherUser,
@@ -57,10 +34,10 @@ class _ChatDetail extends StatefulWidget {
   final User otherUser;
 
   @override
-  State<_ChatDetail> createState() => _ChatDetailState();
+  State<ChatDetailPage> createState() => _ChatDetailPageState();
 }
 
-class _ChatDetailState extends State<_ChatDetail> {
+class _ChatDetailPageState extends State<ChatDetailPage> {
   late Chat _chat = widget.chat;
   late User _otherUser = widget.otherUser;
   final _controller = TextEditingController();

@@ -81,100 +81,94 @@ class _ChatsState extends State<Chats> {
           },
         ),
       ],
-      child: BlocBuilder<AuthBloc, AuthState>(
-        builder: (context, state) {
-          late User currentUser;
-          if (state is Authenticated) {
-            currentUser = state.user;
-          }
-          return BlocBuilder<ChatFilterCubit, ChatFilterState>(
-            builder: (context, filterState) {
-              return BlocBuilder<ChatsBloc, ChatsState>(
-                builder: (context, chatsState) {
-                  final chats = chatsState.chats.toList();
+      child: BlocBuilder<ChatFilterCubit, ChatFilterState>(
+        builder: (context, filterState) {
+          return BlocBuilder<ChatsBloc, ChatsState>(
+            builder: (context, chatsState) {
+              final chats = chatsState.chats.toList();
 
-                  if (chatsState.status == ChatsStatus.initial ||
-                      (chatsState.status == ChatsStatus.loading &&
-                          chats.isEmpty)) {
-                    return const BottomLoader();
-                  }
+              if (chatsState.status == ChatsStatus.initial ||
+                  (chatsState.status == ChatsStatus.loading && chats.isEmpty)) {
+                return const BottomLoader();
+              }
 
-                  if (chatsState.status == ChatsStatus.success) {
-                    if (_refreshController.headerStatus ==
-                        RefreshStatus.refreshing) {
-                      _refreshController.refreshCompleted();
-                    }
-                    if (_refreshController.footerStatus == LoadStatus.loading) {
-                      _refreshController.loadComplete();
-                    }
-                  }
+              if (chatsState.status == ChatsStatus.success) {
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshCompleted();
+                }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadComplete();
+                }
+              }
 
-                  if (chatsState.status == ChatsStatus.failure) {
-                    if (_refreshController.headerStatus ==
-                        RefreshStatus.refreshing) {
-                      _refreshController.refreshFailed();
-                    }
-                    if (_refreshController.footerStatus == LoadStatus.loading) {
-                      _refreshController.loadFailed();
-                    }
-                    if (chatsState.chats.isEmpty) {
-                      return FailureRetryButton(
-                        onPressed: () => context.read<ChatsBloc>().add(
-                          ChatsEvent.get(searchTerm: filterState.searchTerm),
-                        ),
-                      );
-                    }
-                  }
+              if (chatsState.status == ChatsStatus.failure) {
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshFailed();
+                }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadFailed();
+                }
+                if (chatsState.chats.isEmpty) {
+                  return FailureRetryButton(
+                    onPressed: () => context.read<ChatsBloc>().add(
+                      ChatsEvent.get(searchTerm: filterState.searchTerm),
+                    ),
+                  );
+                }
+              }
 
-                  return SmartRefresher(
-                    enablePullDown: true,
-                    enablePullUp: chatsState.hasNext,
-                    header: ClassicHeader(),
-                    controller: _refreshController,
-                    onRefresh: () {
-                      context.read<ChatsBloc>().add(
-                        ChatsEvent.get(searchTerm: filterState.searchTerm),
-                      );
-                    },
-                    onLoading: () {
-                      if (chats.isNotEmpty) {
-                        context.read<ChatsBloc>().add(
-                          ChatsEvent.get(
-                            lastChat: chats.last,
-                            searchTerm: filterState.searchTerm,
-                          ),
-                        );
-                      }
-                    },
-                    footer: ClassicFooter(),
-                    child: chats.isEmpty
-                        ? const Center(
-                            child: Text(
-                              'No chats yet',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          )
-                        : ListView.builder(
-                            itemCount: chats.length,
-                            itemBuilder: (context, index) {
-                              final chat = chats[index];
-                              final otherUser = chat.users.length > 1
-                                  ? chat.users.firstWhere(
-                                      (u) => u.id != currentUser.id,
-                                      orElse: () => currentUser,
-                                    )
-                                  : currentUser;
+              final authBloc = context.read<AuthBloc>();
+              final me = (authBloc.state as Authenticated).user;
 
-                              return ChatTile(
-                                key: ValueKey(chat.id),
-                                chat: chat,
-                                currentUser: currentUser,
-                                otherUser: otherUser,
-                              );
-                            },
-                          ),
+              return SmartRefresher(
+                enablePullDown: true,
+                enablePullUp: chatsState.hasNext,
+                header: ClassicHeader(),
+                controller: _refreshController,
+                onRefresh: () {
+                  context.read<ChatsBloc>().add(
+                    ChatsEvent.get(searchTerm: filterState.searchTerm),
                   );
                 },
+                onLoading: () {
+                  if (chats.isNotEmpty) {
+                    context.read<ChatsBloc>().add(
+                      ChatsEvent.get(
+                        lastChat: chats.last,
+                        searchTerm: filterState.searchTerm,
+                      ),
+                    );
+                  }
+                },
+                footer: ClassicFooter(),
+                child: chats.isEmpty
+                    ? const Center(
+                        child: Text(
+                          'No chats yet',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: chats.length,
+                        itemBuilder: (context, index) {
+                          final chat = chats[index];
+                          final otherUser = chat.users.length > 1
+                              ? chat.users.firstWhere(
+                                  (u) => u.id != me.id,
+                                  orElse: () => me,
+                                )
+                              : me;
+
+                          return ChatTile(
+                            key: ValueKey(chat.id),
+                            chat: chat,
+                            currentUser: me,
+                            otherUser: otherUser,
+                          );
+                        },
+                      ),
               );
             },
           );

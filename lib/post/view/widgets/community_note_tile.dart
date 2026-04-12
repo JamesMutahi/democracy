@@ -21,6 +21,7 @@ class CommunityNoteTile extends StatelessWidget {
     this.hideBorder = false,
     this.showTopThread = false,
     this.showBottomThread = false,
+    this.onViewed,
   });
 
   final Post communityNote;
@@ -30,6 +31,7 @@ class CommunityNoteTile extends StatelessWidget {
   final bool hideBorder;
   final bool showTopThread;
   final bool showBottomThread;
+  final VoidCallback? onViewed;
 
   @override
   Widget build(BuildContext context) {
@@ -50,10 +52,8 @@ class CommunityNoteTile extends StatelessWidget {
         key: Key('${communityNote.id}'),
         onVisibilityChanged: (visibilityInfo) {
           var visibilityPercentage = visibilityInfo.visibleFraction * 100;
-          if (visibilityPercentage > 75 && !communityNote.isViewed) {
-            context.read<PostDetailBloc>().add(
-              PostDetailEvent.addView(post: communityNote),
-            );
+          if (visibilityPercentage > 100) {
+            onViewed?.call();
           }
         },
         child: Stack(

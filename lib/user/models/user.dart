@@ -30,7 +30,6 @@ sealed class User with _$User {
     @JsonKey(name: 'has_blocked') required bool hasBlocked,
     @JsonKey(name: 'is_followed') required bool isFollowed,
     @JsonKey(name: 'is_notifying') required bool isNotifying,
-    required int visits,
     @JsonKey(name: 'is_visited') required bool isVisited,
   }) = _User;
 

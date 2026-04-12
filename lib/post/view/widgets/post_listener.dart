@@ -93,7 +93,7 @@ class PostListener extends StatelessWidget {
                     bookmarks: state.bookmarks,
                     isBookmarked: state.isBookmarked,
                     views: state.views,
-                    isViewed: state.isViewed,
+                    isClicked: state.isClicked,
                     replies: state.replies,
                     reposts: state.reposts,
                     isReposted: state.isReposted,
@@ -123,7 +123,7 @@ class PostListener extends StatelessWidget {
                       bookmarks: state.bookmarks,
                       isBookmarked: state.isBookmarked,
                       views: state.views,
-                      isViewed: state.isViewed,
+                      isClicked: state.isClicked,
                       replies: state.replies,
                       reposts: state.reposts,
                       isReposted: state.isReposted,
@@ -258,12 +258,12 @@ class PostListener extends StatelessWidget {
                   }
                   updatePosts = true;
                 }
-              case PostViewed():
+              case PostClicked():
                 if (posts.any((element) => element.id == state.postId)) {
                   int postIndex = posts.indexWhere(
                     (element) => element.id == state.postId,
                   );
-                  posts[postIndex] = posts[postIndex].copyWith(isViewed: true);
+                  posts[postIndex] = posts[postIndex].copyWith(isClicked: true);
                   updatePosts = true;
                 }
               case PostDeleted(:final postId):

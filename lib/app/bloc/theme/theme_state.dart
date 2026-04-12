@@ -7,25 +7,33 @@ final class ThemeState extends Equatable {
     this.status = ThemeStatus.initial,
     this.index,
     this.openChatId,
+    this.viewedPosts = const {},
   });
 
   final ThemeStatus status;
   final int? index;
   final int? openChatId;
+  final Set<Map<String, int>> viewedPosts;
 
-  ThemeState copyWith({ThemeStatus? status, int? index, int? openChatId}) {
+  ThemeState copyWith({
+    ThemeStatus? status,
+    int? index,
+    int? openChatId,
+    Set<Map<String, int>>? viewedPosts,
+  }) {
     return ThemeState(
       status: status ?? this.status,
       index: index ?? this.index,
       openChatId: openChatId ?? this.index,
+      viewedPosts: viewedPosts ?? this.viewedPosts,
     );
   }
 
   @override
   String toString() {
-    return '''ThemeState { status: $status, index: $index, openChatId: $openChatId }''';
+    return '''ThemeState { status: $status, index: $index, openChatId: $openChatId, viewedPosts: $viewedPosts }''';
   }
 
   @override
-  List<Object> get props => [status, ?index, ?openChatId];
+  List<Object> get props => [status, ?index, ?openChatId, viewedPosts];
 }

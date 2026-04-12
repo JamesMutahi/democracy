@@ -20,7 +20,7 @@ class PostDetailState with _$PostDetailState {
     required int bookmarks,
     required bool isBookmarked,
     required int views,
-    required bool isViewed,
+    required bool isClicked,
     required int replies,
     required int reposts,
     required String communityNote,

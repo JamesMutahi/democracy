@@ -76,6 +76,7 @@ class _BookmarksState extends State<Bookmarks> {
             onFailure: () {
               context.read<BookmarksBloc>().add(BookmarksEvent.get());
             },
+            origin: null,
           );
         },
       ),

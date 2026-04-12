@@ -192,6 +192,7 @@ class _ForYouTabState extends State<ForYouTab>
           onFailure: () {
             context.read<ForYouBloc>().add(ForYouEvent.get());
           },
+          origin: 'For You',
         );
       },
     );
@@ -268,6 +269,7 @@ class _FollowingTabState extends State<FollowingTab> {
           onFailure: () {
             context.read<FollowingPostsBloc>().add(FollowingPostsEvent.get());
           },
+          origin: 'Following',
         );
       },
     );

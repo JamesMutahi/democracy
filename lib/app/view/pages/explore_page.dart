@@ -1,16 +1,26 @@
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
-import 'package:democracy/app/shared/widgets/more_pop_up.dart';
+import 'package:democracy/post/view/shared/add_post_view.dart';
+import 'package:democracy/app/shared/widgets/bottom_loader.dart';
+import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/filters_modal.dart';
 import 'package:democracy/app/view/widgets/results_search_bar.dart';
+import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/post/bloc/post_filter/post_filter_cubit.dart';
 import 'package:democracy/post/bloc/posts/posts_bloc.dart';
 import 'package:democracy/post/bloc/recent/recent_posts_bloc.dart';
+import 'package:democracy/post/bloc/trending_posts/trending_posts_bloc.dart';
 import 'package:democracy/post/models/post.dart';
+import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
+import 'package:democracy/post/view/widgets/post_tile.dart';
+import 'package:democracy/user/bloc/follow_recommendations/follow_recommendations_bloc.dart';
+import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
+import 'package:democracy/user/view/utils/follow_recommendations_navigator.dart';
 import 'package:democracy/user/view/utils/profile_navigator.dart';
+import 'package:democracy/user/view/widgets/user_tile.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,7 +40,11 @@ class ExplorePage extends StatefulWidget {
   State<ExplorePage> createState() => _ExplorePageState();
 }
 
-class _ExplorePageState extends State<ExplorePage> {
+class _ExplorePageState extends State<ExplorePage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   final TextEditingController _controller = TextEditingController();
   DateTime? startDate;
   DateTime? endDate;
@@ -44,6 +58,7 @@ class _ExplorePageState extends State<ExplorePage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return NestedScrollView(
       headerSliverBuilder: (context, bool innerBoxIsScrolled) {
         return [
@@ -120,97 +135,209 @@ class _ExplorePageState extends State<ExplorePage> {
           ),
         ];
       },
-      body: _TrendingSection(),
+      body: _Explore(),
     );
   }
 }
 
-class _TrendingSection extends StatelessWidget {
-  const _TrendingSection();
+class _Explore extends StatefulWidget {
+  const _Explore();
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: double.infinity,
-          padding: EdgeInsets.only(top: 20, left: 10, bottom: 10),
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: Theme.of(context).disabledColor.withAlpha(30),
-              ),
-            ),
-          ),
-          child: Text(
-            'Trending now',
-            style: TextStyle(color: Theme.of(context).colorScheme.outline),
-          ),
-        ),
-        _TrendingTile(),
-      ],
-    );
-  }
+  State<_Explore> createState() => _ExploreState();
 }
 
-class _TrendingTile extends StatelessWidget {
-  const _TrendingTile();
+class _ExploreState extends State<_Explore> {
+  final RefreshController _refreshController = RefreshController();
+
+  @override
+  void initState() {
+    _getData();
+    super.initState();
+  }
+
+  void _getData() {
+    context.read<TrendingPostsBloc>().add(TrendingPostsEvent.get());
+    context.read<FollowRecommendationsBloc>().add(
+      FollowRecommendationsEvent.get(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: Theme.of(context).disabledColor.withAlpha(30),
-              ),
-            ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'AI - Cognitive decline',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 5),
-              Row(
-                children: [
-                  Stack(
-                    children: [
-                      CircleAvatar(radius: 10, backgroundColor: Colors.red),
-                      Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: CircleAvatar(
-                          radius: 10,
-                          backgroundColor: Colors.blue,
-                        ),
+    return BlocBuilder<TrendingPostsBloc, TrendingPostsState>(
+      builder: (context, state) {
+        final posts = state.posts.toList();
+
+        if (state.status == TrendingPostsStatus.initial ||
+            (state.posts.isEmpty &&
+                state.status == TrendingPostsStatus.loading)) {
+          return BottomLoader();
+        }
+
+        if (state.status == TrendingPostsStatus.success) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshCompleted();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadComplete();
+          }
+        }
+
+        if (state.status == TrendingPostsStatus.failure) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshFailed();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadFailed();
+          }
+          if (posts.isEmpty) {
+            return FailureRetryButton(onPressed: _getData);
+          }
+        }
+
+        return SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: state.hasNext,
+          header: ClassicHeader(),
+          controller: _refreshController,
+          onRefresh: _getData,
+          onLoading: () {
+            context.read<TrendingPostsBloc>().add(
+              TrendingPostsEvent.get(previousPosts: posts),
+            );
+          },
+          footer: ClassicFooter(),
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Theme.of(context).disabledColor.withAlpha(30),
                       ),
-                    ],
+                    ),
                   ),
-                  SizedBox(width: 10),
-                  Text('4000 posts'),
-                ],
+                  child: InkWell(
+                    onTap: () {
+                      navigateToFollowRecommendations(context: context);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Who to follow',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.outline,
+                            ),
+                          ),
+                          Icon(
+                            Icons.keyboard_arrow_right,
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              SizedBox(height: 5),
-              Text(
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-                style: TextStyle(color: Theme.of(context).colorScheme.outline),
+              _buildFollowRecommendations(),
+              SliverToBoxAdapter(
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.only(top: 20, left: 10, bottom: 10),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Theme.of(context).disabledColor.withAlpha(30),
+                      ),
+                    ),
+                  ),
+                  child: Text(
+                    'Trending',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.outline,
+                    ),
+                  ),
+                ),
+              ),
+              PostListener(
+                posts: posts,
+                onPostsUpdated: (posts) {
+                  context.read<TrendingPostsBloc>().add(
+                    TrendingPostsEvent.update(posts: posts),
+                  );
+                },
+                child: SliverList(
+                  delegate: SliverChildBuilderDelegate((
+                    BuildContext context,
+                    int index,
+                  ) {
+                    Post post = posts[index];
+                    return PostTile(
+                      key: ValueKey(post.id),
+                      post: post,
+                      isDependency: false,
+                      checkVisibility: false,
+                      onViewed: () {
+                        addPostView(context, 'Explore', post);
+                      },
+                    );
+                  }, childCount: posts.length),
+                ),
               ),
             ],
           ),
-        ),
-        Align(
-          alignment: Alignment.topRight,
-          child: MorePopUp(texts: []),
-        ),
-      ],
+        );
+      },
+    );
+  }
+
+  Widget _buildFollowRecommendations() {
+    return BlocBuilder<FollowRecommendationsBloc, FollowRecommendationsState>(
+      builder: (context, state) {
+        final users = state.users.take(3).toList();
+
+        final authBloc = context.read<AuthBloc>();
+        final me = (authBloc.state as Authenticated).user;
+
+        return BlocListener<UserDetailBloc, UserDetailState>(
+          listener: (context, state) {
+            if (state is UserUpdated) {
+              if (users.any((user) => user.id == state.user.id)) {
+                int index = users.indexWhere(
+                  (user) => user.id == state.user.id,
+                );
+                users[index] = state.user;
+                context.read<FollowRecommendationsBloc>().add(
+                  FollowRecommendationsEvent.update(users: users),
+                );
+              }
+            }
+          },
+          child: SliverList(
+            delegate: SliverChildBuilderDelegate((
+              BuildContext context,
+              int index,
+            ) {
+              User user = users[index];
+              return UserTile(
+                user: user,
+                me: me,
+                showProfileButtons: true,
+                selectedUsers: [],
+                onTap: () {
+                  navigateToProfilePage(context: context, user: user);
+                },
+              );
+            }, childCount: users.length),
+          ),
+        );
+      },
     );
   }
 }
@@ -479,6 +606,7 @@ class _TopPostsState extends State<_TopPostsTab>
               _getPosts(previousPosts: posts);
             },
             onFailure: _getPosts,
+            origin: 'Top posts',
           );
         },
       ),
@@ -588,6 +716,7 @@ class _RecentPostsState extends State<_RecentPostsTab>
               _getPosts(previousPosts: posts);
             },
             onFailure: _getPosts,
+            origin: 'Recent posts',
           );
         },
       ),

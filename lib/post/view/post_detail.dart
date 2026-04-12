@@ -69,9 +69,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
     if (widget.post.replyTo != null) {
       context.read<ReplyToBloc>().add(ReplyToEvent.get(post: widget.post));
     }
-    if (!widget.post.isViewed) {
+    if (!widget.post.isClicked) {
       context.read<PostDetailBloc>().add(
-        PostDetailEvent.addView(post: widget.post),
+        PostDetailEvent.addClick(post: widget.post),
       );
     }
     if (!widget.post.isClicked) {
@@ -358,8 +358,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
   Widget _repostBanner() {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
-        late User user;
-        if (state is Authenticated) user = state.user;
+        User user = (state as Authenticated).user;
         String text = user.id == widget.repost.author.id
             ? 'You reposted'
             : '${widget.repost.author.name} reposted';

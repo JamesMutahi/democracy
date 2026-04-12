@@ -4,11 +4,10 @@ import 'package:democracy/app/shared/widgets/no_results.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/user/view/widgets/profile_buttons.dart';
-import 'package:democracy/user/view/widgets/profile_image.dart';
+import 'package:democracy/user/view/widgets/user_listener.dart';
+import 'package:democracy/user/view/widgets/user_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class UsersListView extends StatelessWidget {
@@ -50,78 +49,54 @@ class UsersListView extends StatelessWidget {
         : failure
         ? FailureRetryButton(onPressed: onFailure)
         : BlocListener<UserDetailBloc, UserDetailState>(
-          listener: (context, state) {
-            if (showProfileButtons) {
-              if (state is UserUpdated) {
-                if (users.any((user) => user.id == state.user.id)) {
-                  int index = users.indexWhere(
-                    (user) => user.id == state.user.id,
-                  );
-                  users[index] = state.user;
-                  onUsersUpdated!(users);
+            listener: (context, state) {
+              if (showProfileButtons) {
+                if (state is UserUpdated) {
+                  if (users.any((user) => user.id == state.user.id)) {
+                    int index = users.indexWhere(
+                      (user) => user.id == state.user.id,
+                    );
+                    users[index] = state.user;
+                    onUsersUpdated!(users);
+                  }
                 }
               }
-            }
-          },
-          child: BlocBuilder<AuthBloc, AuthState>(
-            builder: (context, state) {
-              late User currentUser;
-              if (state is Authenticated) {
-                currentUser = state.user;
-              }
-              return SmartRefresher(
-                enablePullDown: enablePullDown,
-                enablePullUp: enablePullUp,
-                controller: refreshController,
-                onRefresh: onRefresh,
-                header: ClassicHeader(),
-                onLoading: onLoading,
-                footer: ClassicFooter(),
-                child:
-                    users.isEmpty
+            },
+            child: UserListener(
+              users: users,
+              showProfileButtons: showProfileButtons,
+              onUsersUpdated: onUsersUpdated,
+              child: BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, state) {
+                  final me = (state as Authenticated).user;
+
+                  return SmartRefresher(
+                    enablePullDown: enablePullDown,
+                    enablePullUp: enablePullUp,
+                    controller: refreshController,
+                    onRefresh: onRefresh,
+                    header: ClassicHeader(),
+                    onLoading: onLoading,
+                    footer: ClassicFooter(),
+                    child: users.isEmpty
                         ? NoResults(text: 'No results')
                         : ListView.builder(
-                          itemBuilder: (BuildContext context, int index) {
-                            User user = users[index];
-                            return ListTile(
-                              selectedTileColor:
-                                  Theme.of(context).highlightColor,
-                              selected: selectedUsers.contains(user),
-                              leading: ProfileImage(user: user),
-                              title: Text(user.name),
-                              subtitle: Text("@${user.username}"),
-                              trailing:
-                                  showProfileButtons
-                                      ? currentUser.id == user.id
-                                          ? SizedBox.shrink()
-                                          : user.isBlocked
-                                          ? BlockedButton(user: user)
-                                          : Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              if (user.isMuted)
-                                                Row(
-                                                  children: [
-                                                    MutedButton(user: user),
-                                                    SizedBox(width: 7),
-                                                  ],
-                                                ),
-                                              FollowButton(user: user),
-                                            ],
-                                          )
-                                      : (selectedUsers.contains(user)
-                                          ? Icon(Symbols.check_rounded)
-                                          : SizedBox.shrink()),
-                              onTap: () {
-                                onUserTap(user);
-                              },
-                            );
-                          },
-                          itemCount: users.length,
-                        ),
-              );
-            },
-          ),
-        );
+                            itemBuilder: (BuildContext context, int index) {
+                              User user = users[index];
+                              return UserTile(
+                                user: user,
+                                me: me,
+                                showProfileButtons: showProfileButtons,
+                                selectedUsers: selectedUsers,
+                                onTap: () => onUserTap(user),
+                              );
+                            },
+                            itemCount: users.length,
+                          ),
+                  );
+                },
+              ),
+            ),
+          );
   }
 }

@@ -7,7 +7,6 @@ import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
 import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
-import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
@@ -38,6 +37,7 @@ class PostTile extends StatefulWidget {
     this.showTopThread = false,
     this.showBottomThread = false,
     this.showWholeThread = false,
+    this.onViewed,
   });
 
   final Post post;
@@ -48,6 +48,7 @@ class PostTile extends StatefulWidget {
   final bool showTopThread;
   final bool showBottomThread;
   final bool showWholeThread;
+  final VoidCallback? onViewed;
 
   @override
   State<PostTile> createState() => _PostTileState();
@@ -74,75 +75,65 @@ class _PostTileState extends State<PostTile> {
     }
     return Visibility(
       visible: visible,
-      child: VisibilityDetector(
-        key: Key('${widget.post.id}'),
-        onVisibilityChanged: (visibilityInfo) {
-          var visibilityPercentage = visibilityInfo.visibleFraction * 100;
-          if (visibilityPercentage > 75 && !widget.post.isViewed) {
-            context.read<PostDetailBloc>().add(
-              PostDetailEvent.addView(post: widget.post),
-            );
-          }
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: isDependency || hideBorder
-                  ? BorderSide.none
-                  : BorderSide(
-                      color: Theme.of(context).disabledColor.withAlpha(30),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: isDependency || hideBorder
+                ? BorderSide.none
+                : BorderSide(
+                    color: Theme.of(context).disabledColor.withAlpha(30),
+                  ),
+          ),
+        ),
+        child: Column(
+          children: [
+            InkWell(
+              onTap: () {
+                widget.post.repostOf?.communityNoteOf == null
+                    ? navigateToPostDetail(
+                        context: context,
+                        post: showAsRepost
+                            ? widget.post.repostOf!
+                            : widget.post,
+                        showAsRepost: showAsRepost,
+                        repost: widget.post,
+                      )
+                    : navigateToCommunityNoteDetail(
+                        context: context,
+                        post: showAsRepost
+                            ? widget.post.repostOf!
+                            : widget.post,
+                        showAsRepost: showAsRepost,
+                        repost: widget.post,
+                      );
+              },
+              child: showAsRepost
+                  ? Column(
+                      children: [
+                        _repostBanner(),
+                        PostWidgetSelector(
+                          post: widget.post.repostOf!,
+                          isDependency: false,
+                        ),
+                      ],
+                    )
+                  : Stack(
+                      children: [
+                        ThreadLine(
+                          showBottomThread: showBottomThread,
+                          showTopThread: showTopThread,
+                        ),
+                        _PostContainer(
+                          post: widget.post,
+                          isDependency: isDependency,
+                          onViewed: widget.onViewed,
+                        ),
+                      ],
                     ),
             ),
-          ),
-          child: Column(
-            children: [
-              InkWell(
-                onTap: () {
-                  widget.post.repostOf?.communityNoteOf == null
-                      ? navigateToPostDetail(
-                          context: context,
-                          post: showAsRepost
-                              ? widget.post.repostOf!
-                              : widget.post,
-                          showAsRepost: showAsRepost,
-                          repost: widget.post,
-                        )
-                      : navigateToCommunityNoteDetail(
-                          context: context,
-                          post: showAsRepost
-                              ? widget.post.repostOf!
-                              : widget.post,
-                          showAsRepost: showAsRepost,
-                          repost: widget.post,
-                        );
-                },
-                child: showAsRepost
-                    ? Column(
-                        children: [
-                          _repostBanner(),
-                          PostWidgetSelector(
-                            post: widget.post.repostOf!,
-                            isDependency: false,
-                          ),
-                        ],
-                      )
-                    : Stack(
-                        children: [
-                          ThreadLine(
-                            showBottomThread: showBottomThread,
-                            showTopThread: showTopThread,
-                          ),
-                          _PostContainer(
-                            post: widget.post,
-                            isDependency: isDependency,
-                          ),
-                        ],
-                      ),
-              ),
-              if (showThreadedReplies)
-                Thread(post: widget.post, showWholeThread: showWholeThread),
-            ],
-          ),
+            if (showThreadedReplies)
+              Thread(post: widget.post, showWholeThread: showWholeThread),
+          ],
         ),
       ),
     );
@@ -151,8 +142,7 @@ class _PostTileState extends State<PostTile> {
   Widget _repostBanner() {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
-        late User user;
-        if (state is Authenticated) user = state.user;
+        User user = (state as Authenticated).user;
         String text = user.id == widget.post.author.id
             ? 'You reposted'
             : '${widget.post.author.name} reposted';
@@ -182,158 +172,172 @@ class _PostTileState extends State<PostTile> {
 }
 
 class _PostContainer extends StatelessWidget {
-  const _PostContainer({required this.post, required this.isDependency});
+  const _PostContainer({
+    required this.post,
+    required this.isDependency,
+    required this.onViewed,
+  });
 
   final Post post;
   final bool isDependency;
+  final VoidCallback? onViewed;
 
   @override
   Widget build(BuildContext context) {
     var numberFormat = NumberFormat.compact(locale: "en_UK");
-    return Stack(
-      children: [
-        post.isDeleted
-            ? PostDeletedWidget()
-            : Padding(
-                padding: EdgeInsets.only(
-                  left: 10,
-                  right: 15,
-                  top: 10,
-                  bottom: isDependency ? 10 : 5,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    PostAuthorProfile(
-                      isDependency: isDependency,
-                      author: post.author,
-                    ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ProfileName(user: post.author),
-                              if (!isDependency)
-                                Container(
-                                  margin: EdgeInsets.only(right: 20),
-                                  child: TimeDifferenceInfo(
-                                    publishedAt: post.publishedAt,
-                                  ),
-                                ),
-                            ],
-                          ),
-                          PostBody(post: post, isDependency: isDependency),
-                          if (post.image1Url != null)
-                            Container(
-                              margin: EdgeInsets.only(top: 10),
-                              child: ImageViewer(
-                                key: ValueKey(post.id),
-                                post: post,
-                              ),
-                            ),
-                          if (post.videoUrl != null)
-                            Container(
-                              margin: EdgeInsets.only(top: 10),
-                              child: VideoViewer(urls: [post.videoUrl!]),
-                            ),
-                          if (post.fileUrl != null)
-                            Container(
-                              margin: EdgeInsets.only(top: 10),
-                              child: FileWidget(url: post.fileUrl!),
-                            ),
-                          if (post.location != null)
-                            Container(
-                              margin: EdgeInsets.only(top: 10),
-                              child: MapWidget(mapCenter: post.location!),
-                            ),
-                          if (post.repostOf != null && !isDependency)
-                            PostDependency(post: post),
-                          if (post.ballot != null)
-                            DependencyContainer(
-                              child: BallotTile(
-                                ballot: post.ballot!,
-                                isDependency: true,
-                              ),
-                            ),
-                          if (post.survey != null)
-                            DependencyContainer(
-                              child: SurveyTile(
-                                survey: post.survey!,
-                                isDependency: true,
-                              ),
-                            ),
-                          if (post.petition != null)
-                            DependencyContainer(
-                              child: PetitionTile(
-                                petition: post.petition!,
-                                isDependency: true,
-                              ),
-                            ),
-                          if (post.meeting != null)
-                            DependencyContainer(
-                              child: MeetingTile(
-                                meeting: post.meeting!,
-                                isDependency: true,
-                              ),
-                            ),
-                          if (post.section != null)
-                            DependencyContainer(
-                              child: SectionTile(
-                                section: post.section!,
-                                isDependency: true,
-                              ),
-                            ),
-                          if (post.communityNote.isNotEmpty)
-                            CommunityNote(post: post),
-                          if (!isDependency)
-                            Container(
-                              margin: EdgeInsets.only(top: 5),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  ReplyButton(
-                                    post: post,
-                                    numberFormat: numberFormat,
-                                  ),
-                                  RepostButton(
-                                    post: post,
-                                    numberFormat: numberFormat,
-                                  ),
-                                  LikeButton(
-                                    post: post,
-                                    numberFormat: numberFormat,
-                                  ),
-                                  BookmarkButton(
-                                    post: post,
-                                    numberFormat: numberFormat,
-                                  ),
-                                  ViewsButton(
-                                    post: post,
-                                    numberFormat: numberFormat,
-                                  ),
-                                ],
-                              ),
-                            ),
-                        ],
+    return VisibilityDetector(
+      key: Key('${post.id}'),
+      onVisibilityChanged: (visibilityInfo) {
+        var visibilityPercentage = visibilityInfo.visibleFraction * 100;
+        if (visibilityPercentage == 100) {
+          onViewed?.call();
+        }
+      },
+      child: Stack(
+        children: [
+          post.isDeleted
+              ? PostDeletedWidget()
+              : Padding(
+                  padding: EdgeInsets.only(
+                    left: 10,
+                    right: 15,
+                    top: 10,
+                    bottom: isDependency ? 10 : 5,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      PostAuthorProfile(
+                        isDependency: isDependency,
+                        author: post.author,
                       ),
-                    ),
-                  ],
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ProfileName(user: post.author),
+                                if (!isDependency)
+                                  Container(
+                                    margin: EdgeInsets.only(right: 20),
+                                    child: TimeDifferenceInfo(
+                                      publishedAt: post.publishedAt,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                            PostBody(post: post, isDependency: isDependency),
+                            if (post.image1Url != null)
+                              Container(
+                                margin: EdgeInsets.only(top: 10),
+                                child: ImageViewer(
+                                  key: ValueKey(post.id),
+                                  post: post,
+                                ),
+                              ),
+                            if (post.videoUrl != null)
+                              Container(
+                                margin: EdgeInsets.only(top: 10),
+                                child: VideoViewer(urls: [post.videoUrl!]),
+                              ),
+                            if (post.fileUrl != null)
+                              Container(
+                                margin: EdgeInsets.only(top: 10),
+                                child: FileWidget(url: post.fileUrl!),
+                              ),
+                            if (post.location != null)
+                              Container(
+                                margin: EdgeInsets.only(top: 10),
+                                child: MapWidget(mapCenter: post.location!),
+                              ),
+                            if (post.repostOf != null && !isDependency)
+                              PostDependency(post: post),
+                            if (post.ballot != null)
+                              DependencyContainer(
+                                child: BallotTile(
+                                  ballot: post.ballot!,
+                                  isDependency: true,
+                                ),
+                              ),
+                            if (post.survey != null)
+                              DependencyContainer(
+                                child: SurveyTile(
+                                  survey: post.survey!,
+                                  isDependency: true,
+                                ),
+                              ),
+                            if (post.petition != null)
+                              DependencyContainer(
+                                child: PetitionTile(
+                                  petition: post.petition!,
+                                  isDependency: true,
+                                ),
+                              ),
+                            if (post.meeting != null)
+                              DependencyContainer(
+                                child: MeetingTile(
+                                  meeting: post.meeting!,
+                                  isDependency: true,
+                                ),
+                              ),
+                            if (post.section != null)
+                              DependencyContainer(
+                                child: SectionTile(
+                                  section: post.section!,
+                                  isDependency: true,
+                                ),
+                              ),
+                            if (post.communityNote.isNotEmpty)
+                              CommunityNote(post: post),
+                            if (!isDependency)
+                              Container(
+                                margin: EdgeInsets.only(top: 5),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    ReplyButton(
+                                      post: post,
+                                      numberFormat: numberFormat,
+                                    ),
+                                    RepostButton(
+                                      post: post,
+                                      numberFormat: numberFormat,
+                                    ),
+                                    LikeButton(
+                                      post: post,
+                                      numberFormat: numberFormat,
+                                    ),
+                                    BookmarkButton(
+                                      post: post,
+                                      numberFormat: numberFormat,
+                                    ),
+                                    ViewsButton(
+                                      post: post,
+                                      numberFormat: numberFormat,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-        if (!isDependency && !post.isDeleted)
-          Align(
-            alignment: Alignment.topRight,
-            child: PostPopUp(post: post),
-          ),
-      ],
+          if (!isDependency && !post.isDeleted)
+            Align(
+              alignment: Alignment.topRight,
+              child: PostPopUp(post: post),
+            ),
+        ],
+      ),
     );
   }
 }

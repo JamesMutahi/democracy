@@ -132,6 +132,7 @@ class _CommunityNotesState extends State<CommunityNotes> {
                     CommunityNotesEvent.get(post: widget.post),
                   );
                 },
+                origin: 'Community notes',
               );
             },
           ),

@@ -2,6 +2,7 @@ import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/no_results.dart';
 import 'package:democracy/post/models/post.dart';
+import 'package:democracy/post/view/shared/add_post_view.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_widget_selector.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,7 @@ class PostListView extends StatelessWidget {
     required this.onRefresh,
     required this.onLoading,
     required this.onFailure,
+    required this.origin,
   });
 
   final List<Post> posts;
@@ -34,6 +36,7 @@ class PostListView extends StatelessWidget {
   final VoidCallback onRefresh;
   final VoidCallback onLoading;
   final VoidCallback onFailure;
+  final String? origin;
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +66,11 @@ class PostListView extends StatelessWidget {
                           post: post,
                           isDependency: false,
                           checkVisibility: checkVisibility,
+                          onViewed: () {
+                            if (origin != null) {
+                              addPostView(context, origin!, post);
+                            }
+                          },
                         );
                       },
                       itemCount: posts.length,

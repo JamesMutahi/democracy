@@ -7,6 +7,7 @@ import 'package:democracy/app/bloc/repository/api_repository.dart';
 import 'package:democracy/app/bloc/theme/theme_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/app/shared/utils/app_bloc_observer.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
@@ -42,7 +43,6 @@ import 'package:democracy/user/bloc/muted/muted_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -238,34 +238,4 @@ void main() async {
       ),
     ),
   );
-}
-
-class AppBlocObserver extends BlocObserver {
-  final _toIgnore = [BottomNavBarCubit];
-
-  @override
-  void onChange(BlocBase bloc, Change change) {
-    super.onChange(bloc, change);
-    if (kDebugMode) {
-      if (!_toIgnore.contains(bloc.runtimeType)) {
-        print('onChange(${bloc.runtimeType}, $change)');
-      }
-    }
-  }
-
-  @override
-  void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
-    if (kDebugMode) {
-      print('onError(${bloc.runtimeType}, $error, $stackTrace)');
-    }
-    super.onError(bloc, error, stackTrace);
-  }
-
-  @override
-  void onEvent(Bloc bloc, Object? event) {
-    if (kDebugMode) {
-      print('onEvent(${bloc.runtimeType}, $event)');
-    }
-    super.onEvent(bloc, event);
-  }
 }

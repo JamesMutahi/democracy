@@ -1,6 +1,6 @@
 import 'package:democracy/app/bloc/theme/theme_cubit.dart';
 import 'package:democracy/notification/view/preferences.dart';
-import 'package:democracy/user/view/widgets/muted_and_blocked.dart';
+import 'package:democracy/user/view/pages/muted_and_blocked.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';

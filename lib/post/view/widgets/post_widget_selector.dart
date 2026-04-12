@@ -12,6 +12,7 @@ class PostWidgetSelector extends StatelessWidget {
     this.hideBorder = false,
     this.showTopThread = false,
     this.showBottomThread = false,
+    this.onViewed,
   });
 
   final Post post;
@@ -20,6 +21,7 @@ class PostWidgetSelector extends StatelessWidget {
   final bool hideBorder;
   final bool showTopThread;
   final bool showBottomThread;
+  final VoidCallback? onViewed;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +33,7 @@ class PostWidgetSelector extends StatelessWidget {
             hideBorder: hideBorder,
             showTopThread: showTopThread,
             showBottomThread: showBottomThread,
+            onViewed: onViewed,
           )
         : CommunityNoteTile(
             communityNote: post,
@@ -40,6 +43,7 @@ class PostWidgetSelector extends StatelessWidget {
             hideBorder: hideBorder,
             showTopThread: showTopThread,
             showBottomThread: showBottomThread,
+            onViewed: onViewed,
           );
   }
 }

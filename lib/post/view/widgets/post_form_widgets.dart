@@ -13,7 +13,6 @@ import 'package:democracy/constitution/view/constitution.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
-import 'package:democracy/user/models/user.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,15 +28,9 @@ class PostAuthor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthBloc, AuthState>(
-      builder: (context, state) {
-        late User user;
-        if (state is Authenticated) {
-          user = state.user;
-        }
-        return PostAuthorProfile(author: user, isDependency: false);
-      },
-    );
+    final authBloc = context.read<AuthBloc>();
+    final me = (authBloc.state as Authenticated).user;
+    return PostAuthorProfile(author: me, isDependency: false);
   }
 }
 

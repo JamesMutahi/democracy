@@ -57,11 +57,6 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
     context.read<ReplyToBloc>().add(
       ReplyToEvent.get(post: widget.communityNote),
     );
-    if (!widget.communityNote.isViewed) {
-      context.read<PostDetailBloc>().add(
-        PostDetailEvent.addView(post: widget.communityNote),
-      );
-    }
     if (!widget.communityNote.isClicked) {
       context.read<PostDetailBloc>().add(
         PostDetailEvent.addClick(post: widget.communityNote),
@@ -294,8 +289,7 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
   Widget _repostBanner() {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
-        late User user;
-        if (state is Authenticated) user = state.user;
+        User user = (state as Authenticated).user;
         String text = user.id == widget.repost!.author.id
             ? 'You reposted'
             : '${widget.repost!.author.name} reposted';

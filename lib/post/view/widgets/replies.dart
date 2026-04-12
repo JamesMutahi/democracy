@@ -1,5 +1,6 @@
 import 'package:democracy/post/bloc/replies/replies_bloc.dart';
 import 'package:democracy/post/models/post.dart';
+import 'package:democracy/post/view/shared/add_post_view.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,9 @@ class Replies extends StatelessWidget {
             checkVisibility: true,
             showThreadedReplies: reply.thread.isNotEmpty,
             showBottomThread: reply.thread.isNotEmpty,
+            onViewed: () {
+              addPostView(context, 'Replies', reply);
+            },
           );
         }, childCount: replies.length),
       ),

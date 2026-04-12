@@ -9,6 +9,7 @@ import 'package:democracy/post/bloc/user_community_notes/user_community_notes_bl
 import 'package:democracy/post/bloc/user_posts/user_posts_bloc.dart';
 import 'package:democracy/post/bloc/user_replies/user_replies_bloc.dart';
 import 'package:democracy/post/models/post.dart';
+import 'package:democracy/post/view/shared/add_post_view.dart';
 import 'package:democracy/post/view/widgets/community_note_tile.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
@@ -96,6 +97,7 @@ class _UserPostsState extends State<UserPosts> {
               UserPostsEvent.get(user: widget.user),
             );
           },
+          origin: 'User Posts',
         );
       },
     );
@@ -196,12 +198,18 @@ class _UserRepliesState extends State<UserReplies> {
                       checkVisibility: true,
                       showBottomThread: true,
                       hideBorder: true,
+                      onViewed: () {
+                        addPostView(context, 'User Replies', post);
+                      },
                     ),
                     PostTile(
                       key: ValueKey(post.id),
                       post: post,
                       checkVisibility: true,
                       showTopThread: true,
+                      onViewed: () {
+                        addPostView(context, 'User Replies', post);
+                      },
                     ),
                   ],
                 );
@@ -286,6 +294,7 @@ class _LikesState extends State<Likes> {
           onFailure: () {
             context.read<LikesBloc>().add(LikesEvent.get(user: widget.user));
           },
+          origin: 'Likes',
         );
       },
     );
@@ -385,6 +394,9 @@ class _UserCommunityNotesState extends State<UserCommunityNotes> {
                 return CommunityNoteTile(
                   key: ValueKey(post.id),
                   communityNote: post,
+                  onViewed: () {
+                    addPostView(context, 'User Comm. notes', post);
+                  },
                 );
               },
               itemCount: posts.length,

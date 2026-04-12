@@ -19,7 +19,9 @@ import 'package:democracy/notification/bloc/notifications/notifications_bloc.dar
 import 'package:democracy/petition/bloc/petitions/petitions_bloc.dart';
 import 'package:democracy/post/bloc/following_posts/following_posts_bloc.dart';
 import 'package:democracy/post/bloc/for_you/for_you_bloc.dart';
+import 'package:democracy/post/bloc/trending_posts/trending_posts_bloc.dart';
 import 'package:democracy/survey/bloc/surveys/surveys_bloc.dart';
+import 'package:democracy/user/bloc/follow_recommendations/follow_recommendations_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -83,22 +85,19 @@ class MyApp extends StatelessWidget {
 
   Widget _buildFailurePage(BuildContext context, String error) {
     return Scaffold(
-      body: AnimatedContainer(
-        duration: Duration(milliseconds: 300),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(logo, width: 200, height: 200),
-            SizedBox(height: 50),
-            Text(error, style: Theme.of(context).textTheme.titleMedium),
-            SizedBox(height: 20),
-            FailureRetryButton(
-              onPressed: () {
-                context.read<AuthBloc>().add(AuthEvent.authenticate());
-              },
-            ),
-          ],
-        ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(logo, width: 200, height: 200),
+          SizedBox(height: 50),
+          Text(error, style: Theme.of(context).textTheme.titleMedium),
+          SizedBox(height: 20),
+          FailureRetryButton(
+            onPressed: () {
+              context.read<AuthBloc>().add(AuthEvent.authenticate());
+            },
+          ),
+        ],
       ),
     );
   }
@@ -134,6 +133,16 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) =>
               ChatsBloc(webSocketService: context.read<WebSocketService>()),
+        ),
+        BlocProvider(
+          create: (context) => TrendingPostsBloc(
+            webSocketService: context.read<WebSocketService>(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => FollowRecommendationsBloc(
+            webSocketService: context.read<WebSocketService>(),
+          ),
         ),
       ],
       child: Dashboard(),

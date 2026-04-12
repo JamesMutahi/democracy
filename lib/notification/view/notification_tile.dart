@@ -18,38 +18,97 @@ class NotificationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    late Icon icon;
+    String subtitle = '';
+    void Function() onTap;
+    if (notification.post != null) {
+      bool isLike = notification.text.contains('like');
+      icon = Icon(
+        isLike ? Symbols.favorite : Symbols.post_rounded,
+        color: isLike ? Colors.red : null,
+        fill: isLike ? 1 : 0,
+      );
+      subtitle = notification.post!.body;
+      onTap = () {
+        bool showAsRepost =
+            notification.post!.body.isEmpty &&
+            notification.post!.repostOf != null;
+        navigateToPostDetail(
+          context: context,
+          post: showAsRepost
+              ? notification.post!.repostOf!
+              : notification.post!,
+          showAsRepost: showAsRepost,
+          repost: notification.post!,
+        );
+      };
+    } else if (notification.ballot != null) {
+      icon = Icon(Symbols.how_to_vote);
+      subtitle = notification.ballot!.title;
+      onTap = () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => BallotDetail(ballot: notification.ballot!),
+          ),
+        );
+      };
+    } else if (notification.meeting != null) {
+      icon = Icon(Symbols.meeting_room);
+      subtitle = notification.meeting!.title;
+      onTap = () {
+        showModalBottomSheet<void>(
+          context: context,
+          shape: const BeveledRectangleBorder(),
+          builder: (BuildContext context) {
+            return MeetingBottomSheet(meeting: notification.meeting!);
+          },
+        );
+      };
+    } else if (notification.survey != null) {
+      icon = Icon(Symbols.assignment_rounded);
+      subtitle = notification.survey!.title;
+      onTap = () {
+        showModalBottomSheet<void>(
+          context: context,
+          shape: const BeveledRectangleBorder(),
+          builder: (BuildContext context) {
+            return SurveyBottomSheet(survey: notification.survey!);
+          },
+        );
+      };
+    } else if (notification.petition != null) {
+      icon = Icon(Symbols.assignment_rounded);
+      subtitle = notification.petition!.title;
+      onTap = () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) =>
+                PetitionDetail(petition: notification.petition!),
+          ),
+        );
+      };
+    } else if (notification.chat != null) {
+      icon = Icon(Symbols.email_rounded);
+      subtitle = notification.chat!.lastMessage!.text;
+      onTap = () {
+        navigateToChatDetail(context: context, chat: notification.chat!);
+      };
+    } else if (notification.user != null) {
+      icon = Icon(Symbols.person);
+      subtitle = notification.user!.name;
+      onTap = () {
+        navigateToProfilePage(context: context, user: notification.user!);
+      };
+    } else {
+      icon = Icon(Symbols.info_i_rounded);
+      subtitle = 'Missing info';
+      onTap = () {};
+    }
+
     return ListTile(
-      leading: Icon(
-        notification.post != null
-            ? Symbols.post_rounded
-            : notification.ballot != null
-            ? Symbols.how_to_vote
-            : notification.survey != null
-            ? Symbols.assignment_rounded
-            : notification.chat != null
-            ? Symbols.email_rounded
-            : Symbols.info_i_rounded,
-      ),
+      leading: icon,
       title: Text(notification.text),
-      subtitle: Text(
-        notification.user != null
-            ? notification.user!.name
-            : notification.post != null
-            ? notification.post!.body
-            : notification.ballot != null
-            ? notification.ballot!.title
-            : notification.survey != null
-            ? notification.survey!.title
-            : notification.petition != null
-            ? notification.petition!.title
-            : notification.meeting != null
-            ? notification.meeting!.title
-            : notification.chat != null
-            ? notification.chat!.lastMessage!.text
-            : '',
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
+      subtitle: Text(subtitle, maxLines: 1, overflow: TextOverflow.ellipsis),
       trailing: notification.isRead
           ? SizedBox()
           : Icon(Icons.circle_rounded, size: 7, color: Colors.green),
@@ -57,58 +116,7 @@ class NotificationTile extends StatelessWidget {
         context.read<NotificationDetailBloc>().add(
           NotificationDetailEvent.markAsRead(notification: notification),
         );
-        if (notification.user != null) {
-          navigateToProfilePage(context: context, user: notification.user!);
-        }
-        if (notification.post != null) {
-          bool showAsRepost =
-              notification.post!.body.isEmpty &&
-              notification.post!.repostOf != null;
-          navigateToPostDetail(
-            context: context,
-            post: showAsRepost
-                ? notification.post!.repostOf!
-                : notification.post!,
-            showAsRepost: showAsRepost,
-            repost: notification.post!,
-          );
-        }
-        if (notification.meeting != null) {
-          showModalBottomSheet<void>(
-            context: context,
-            shape: const BeveledRectangleBorder(),
-            builder: (BuildContext context) {
-              return MeetingBottomSheet(meeting: notification.meeting!);
-            },
-          );
-        }
-        if (notification.ballot != null) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => BallotDetail(ballot: notification.ballot!),
-            ),
-          );
-        }
-        if (notification.survey != null) {
-          showModalBottomSheet<void>(
-            context: context,
-            shape: const BeveledRectangleBorder(),
-            builder: (BuildContext context) {
-              return SurveyBottomSheet(survey: notification.survey!);
-            },
-          );
-        }
-        if (notification.petition != null) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) =>
-                  PetitionDetail(petition: notification.petition!),
-            ),
-          );
-        }
-        if (notification.chat != null) {
-          navigateToChatDetail(context: context, chat: notification.chat!);
-        }
+        onTap();
       },
     );
   }

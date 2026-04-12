@@ -76,87 +76,84 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthBloc, AuthState>(
-      builder: (context, authState) {
-        final user = authState is Authenticated ? authState.user : null;
+    final authBloc = context.read<AuthBloc>();
+    final user = (authBloc.state as Authenticated).user;
 
-        return Scaffold(
-          key: _scaffoldKey,
-          resizeToAvoidBottomInset: false,
-          drawer: AppDrawer(user: user!),
-          body: SafeArea(
-            child: PopScope(
-              canPop: _canPopNow,
-              onPopInvokedWithResult: (didPop, _) => _onPopInvoked(didPop),
-              child: MultiBlocListener(
-                listeners: [
-                  // Bottom Navigation
-                  BlocListener<BottomNavBarCubit, BottomNavBarState>(
-                    listener: (context, state) {
-                      if (state is BottomNavBarPageChanged) {
-                        _pageController.jumpToPage(state.page);
-                      }
-                    },
-                  ),
-
-                  // Notifications list updates
-                  BlocListener<NotificationsBloc, NotificationsState>(
-                    listener: (context, state) {
-                      if (state.status == NotificationsStatus.success) {
-                        setState(() {
-                          _unreadNotifications = state.notifications
-                              .where((n) => !n.isRead)
-                              .toList();
-                        });
-                      }
-                    },
-                  ),
-
-                  // Real-time notification changes
-                  BlocListener<NotificationDetailBloc, NotificationDetailState>(
-                    listener: (context, state) {
-                      setState(() {
-                        _handleNotificationUpdate(state);
-                      });
-                    },
-                  ),
-                ],
-                child: PageView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  controller: _pageController,
-                  children: [
-                    HomePage(
-                      user: user,
-                      notifications: _unreadNotifications.length,
-                    ),
-                    ExplorePage(
-                      user: user,
-                      notifications: _unreadNotifications.length,
-                    ),
-                    MeetingsPage(
-                      user: user,
-                      notifications: _unreadNotifications.length,
-                    ),
-                    BallotPage(
-                      user: user,
-                      notifications: _unreadNotifications.length,
-                    ),
-                    FormsPage(
-                      user: user,
-                      notifications: _unreadNotifications.length,
-                    ),
-                    MessagePage(
-                      user: user,
-                      notifications: _unreadNotifications.length,
-                    ),
-                  ],
-                ),
+    return Scaffold(
+      key: _scaffoldKey,
+      resizeToAvoidBottomInset: false,
+      drawer: AppDrawer(user: user),
+      body: SafeArea(
+        child: PopScope(
+          canPop: _canPopNow,
+          onPopInvokedWithResult: (didPop, _) => _onPopInvoked(didPop),
+          child: MultiBlocListener(
+            listeners: [
+              // Bottom Navigation
+              BlocListener<BottomNavBarCubit, BottomNavBarState>(
+                listener: (context, state) {
+                  if (state is BottomNavBarPageChanged) {
+                    _pageController.jumpToPage(state.page);
+                  }
+                },
               ),
+
+              // Notifications list updates
+              BlocListener<NotificationsBloc, NotificationsState>(
+                listener: (context, state) {
+                  if (state.status == NotificationsStatus.success) {
+                    setState(() {
+                      _unreadNotifications = state.notifications
+                          .where((n) => !n.isRead)
+                          .toList();
+                    });
+                  }
+                },
+              ),
+
+              // Real-time notification changes
+              BlocListener<NotificationDetailBloc, NotificationDetailState>(
+                listener: (context, state) {
+                  setState(() {
+                    _handleNotificationUpdate(state);
+                  });
+                },
+              ),
+            ],
+            child: PageView(
+              physics: const NeverScrollableScrollPhysics(),
+              controller: _pageController,
+              children: [
+                HomePage(
+                  user: user,
+                  notifications: _unreadNotifications.length,
+                ),
+                ExplorePage(
+                  user: user,
+                  notifications: _unreadNotifications.length,
+                ),
+                MeetingsPage(
+                  user: user,
+                  notifications: _unreadNotifications.length,
+                ),
+                BallotPage(
+                  user: user,
+                  notifications: _unreadNotifications.length,
+                ),
+                FormsPage(
+                  user: user,
+                  notifications: _unreadNotifications.length,
+                ),
+                MessagePage(
+                  user: user,
+                  notifications: _unreadNotifications.length,
+                ),
+              ],
             ),
           ),
-          bottomNavigationBar: const BottomNavBar(),
-        );
-      },
+        ),
+      ),
+      bottomNavigationBar: const BottomNavBar(),
     );
   }
 
