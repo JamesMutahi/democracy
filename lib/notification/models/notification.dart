@@ -15,14 +15,16 @@ sealed class Notification with _$Notification {
   const factory Notification({
     required final int id,
     required final String text,
-    @JsonKey(name: 'is_read') required final bool isRead,
-    required final User? user,
+    required final List<User> users,
+    @JsonKey(name: 'is_like') required final bool isLike,
+    @JsonKey(name: 'is_follow') required final bool isFollow,
     required final Post? post,
     required final Ballot? ballot,
     required final Survey? survey,
     required final Petition? petition,
     required final Meeting? meeting,
     required final Chat? chat,
+    @JsonKey(name: 'is_read') required final bool isRead,
     @JsonKey(name: 'created_at') required final DateTime createdAt,
   }) = _Notification;
 

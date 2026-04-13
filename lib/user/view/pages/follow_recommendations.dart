@@ -4,6 +4,7 @@ import 'package:democracy/user/bloc/follow_recommendations/follow_recommendation
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/utils/profile_navigator.dart';
+import 'package:democracy/user/view/widgets/user_listener.dart';
 import 'package:democracy/user/view/widgets/user_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -53,20 +54,29 @@ class _FollowRecommendationsState extends State<FollowRecommendations> {
                 }
               }
             },
-            child: ListView.builder(
-              itemBuilder: (BuildContext context, int index) {
-                User user = users[index];
-                return UserTile(
-                  user: user,
-                  me: me,
-                  showProfileButtons: true,
-                  selectedUsers: [],
-                  onTap: () {
-                    navigateToProfilePage(context: context, user: user);
-                  },
+            child: UserListener(
+              users: users,
+              showProfileButtons: true,
+              onUsersUpdated: (users) {
+                context.read<FollowRecommendationsBloc>().add(
+                  FollowRecommendationsEvent.update(users: users),
                 );
               },
-              itemCount: users.length,
+              child: ListView.builder(
+                itemBuilder: (BuildContext context, int index) {
+                  User user = users[index];
+                  return UserTile(
+                    user: user,
+                    me: me,
+                    showProfileButtons: true,
+                    selectedUsers: [],
+                    onTap: () {
+                      navigateToProfilePage(context: context, user: user);
+                    },
+                  );
+                },
+                itemCount: users.length,
+              ),
             ),
           );
         },

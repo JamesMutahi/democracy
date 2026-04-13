@@ -18,37 +18,39 @@ class ExtrasRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      alignment: WrapAlignment.center,
-      spacing: 10.0,
-      runSpacing: 5.0,
-      children: <Widget>[
-        _ExtraCard(
-          onTap: onCameraTap,
-          iconData: Icons.photo_camera_outlined,
-          text: 'Camera',
-        ),
-        _ExtraCard(
-          onTap: onGalleryTap,
-          iconData: Icons.photo_library_outlined,
-          text: 'Gallery',
-        ),
-        _ExtraCard(
-          onTap: onLocationTap,
-          iconData: Icons.location_on_outlined,
-          text: 'Location',
-        ),
-        _ExtraCard(
-          onTap: onDocumentTap,
-          iconData: Icons.file_present_outlined,
-          text: 'Document',
-        ),
-        _ExtraCard(
-          onTap: onConstitutionTap,
-          iconData: Icons.book_outlined,
-          text: 'Constitution',
-        ),
-      ],
+    return Center(
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 10.0,
+        runSpacing: 5.0,
+        children: <Widget>[
+          _ExtraCard(
+            onTap: onCameraTap,
+            iconData: Icons.photo_camera_outlined,
+            text: 'Camera',
+          ),
+          _ExtraCard(
+            onTap: onGalleryTap,
+            iconData: Icons.photo_library_outlined,
+            text: 'Gallery',
+          ),
+          _ExtraCard(
+            onTap: onLocationTap,
+            iconData: Icons.location_on_outlined,
+            text: 'Location',
+          ),
+          _ExtraCard(
+            onTap: onDocumentTap,
+            iconData: Icons.file_present_outlined,
+            text: 'Document',
+          ),
+          _ExtraCard(
+            onTap: onConstitutionTap,
+            iconData: Icons.book_outlined,
+            text: 'Constitution',
+          ),
+        ],
+      ),
     );
   }
 }

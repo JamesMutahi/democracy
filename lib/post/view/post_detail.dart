@@ -74,11 +74,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
         PostDetailEvent.addClick(post: widget.post),
       );
     }
-    if (!widget.post.isClicked) {
-      context.read<PostDetailBloc>().add(
-        PostDetailEvent.addClick(post: widget.post),
-      );
-    }
   }
 
   @override
@@ -105,13 +100,19 @@ class _PostDetailPageState extends State<PostDetailPage> {
             listener: (context, state) {
               switch (state) {
                 case PostCreated(post: final post):
-                  context.read<RepliesBloc>().add(RepliesEvent.add(post: post));
+                  if (_post.id == post.replyTo?.id) {
+                    context.read<RepliesBloc>().add(
+                      RepliesEvent.add(post: post),
+                    );
+                  }
+
                 case PostLoaded(:final post):
                   if (_post.id == post.id) {
                     setState(() {
                       _post = post;
                     });
                   }
+
                 case PostUpdated():
                   // update post
                   if (_post.id == state.postId) {
@@ -162,6 +163,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                       _post = _post.copyWith(repostOf: repostOf);
                     });
                   }
+
                 case PostDeleted(:final postId):
                   if (_post.id == postId || widget.repost.id == postId) {
                     setState(() {

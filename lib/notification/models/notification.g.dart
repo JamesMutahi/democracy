@@ -10,10 +10,11 @@ _Notification _$NotificationFromJson(Map<String, dynamic> json) =>
     _Notification(
       id: (json['id'] as num).toInt(),
       text: json['text'] as String,
-      isRead: json['is_read'] as bool,
-      user: json['user'] == null
-          ? null
-          : User.fromJson(json['user'] as Map<String, dynamic>),
+      users: (json['users'] as List<dynamic>)
+          .map((e) => User.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      isLike: json['is_like'] as bool,
+      isFollow: json['is_follow'] as bool,
       post: json['post'] == null
           ? null
           : Post.fromJson(json['post'] as Map<String, dynamic>),
@@ -32,6 +33,7 @@ _Notification _$NotificationFromJson(Map<String, dynamic> json) =>
       chat: json['chat'] == null
           ? null
           : Chat.fromJson(json['chat'] as Map<String, dynamic>),
+      isRead: json['is_read'] as bool,
       createdAt: DateTime.parse(json['created_at'] as String),
     );
 
@@ -39,13 +41,15 @@ Map<String, dynamic> _$NotificationToJson(_Notification instance) =>
     <String, dynamic>{
       'id': instance.id,
       'text': instance.text,
-      'is_read': instance.isRead,
-      'user': instance.user,
+      'users': instance.users,
+      'is_like': instance.isLike,
+      'is_follow': instance.isFollow,
       'post': instance.post,
       'ballot': instance.ballot,
       'survey': instance.survey,
       'petition': instance.petition,
       'meeting': instance.meeting,
       'chat': instance.chat,
+      'is_read': instance.isRead,
       'created_at': instance.createdAt.toIso8601String(),
     };

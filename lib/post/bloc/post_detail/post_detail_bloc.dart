@@ -311,7 +311,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       'stream': stream,
       'payload': {
         'action': 'retrieve',
-        'request_id': requestId,
+        'request_id': event.post.id,
         'pk': event.post.id,
       },
     };

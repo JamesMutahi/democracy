@@ -303,66 +303,71 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
             padding: EdgeInsets.only(
               bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: ExtrasRow(
-                onCameraTap: () async {
-                  openCamera(
-                    context: context,
-                    recipient: widget.reply?.author,
-                    textEditingController: widget.controller,
-                    onImageEditingComplete: (newImage) {
-                      widget.onNewImages([newImage]);
-                    },
-                    onVideoEditingComplete: (video) {
-                      widget.onNewVideo(video);
-                    },
-                  );
-                },
-                onGalleryTap: () async {
-                  List<File>? newImages = await ImagePickerUtil.pickMultiImage(
-                    limit: 4,
-                  );
-                  if (newImages.isNotEmpty) {
-                    widget.onNewImages(newImages);
-                  }
-                },
-                onLocationTap: () async {
-                  var status = await Permission.storage.status;
-                  if (!status.isGranted) {
-                    await Permission.storage.request();
-                  }
-                  if (context.mounted) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            Location(onLocation: widget.onLocation),
-                      ),
-                    );
-                  }
-                },
-                onDocumentTap: () async {
-                  FilePickerResult? result = await FilePicker.platform
-                      .pickFiles(
-                        type: FileType.custom,
-                        allowedExtensions: ['pdf', 'doc', 'docx'],
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  child: ExtrasRow(
+                    onCameraTap: () async {
+                      openCamera(
+                        context: context,
+                        recipient: widget.reply?.author,
+                        textEditingController: widget.controller,
+                        onImageEditingComplete: (newImage) {
+                          widget.onNewImages([newImage]);
+                        },
+                        onVideoEditingComplete: (video) {
+                          widget.onNewVideo(video);
+                        },
                       );
-                  if (result != null) {
-                    File file = File(result.files.single.path!);
-                    widget.onNewFile(file);
-                  }
-                },
-                onConstitutionTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          Constitution(onSelection: widget.onNewSection),
-                    ),
-                  );
-                },
-              ),
+                    },
+                    onGalleryTap: () async {
+                      List<File>? newImages = await ImagePickerUtil.pickMultiImage(
+                        limit: 4,
+                      );
+                      if (newImages.isNotEmpty) {
+                        widget.onNewImages(newImages);
+                      }
+                    },
+                    onLocationTap: () async {
+                      var status = await Permission.storage.status;
+                      if (!status.isGranted) {
+                        await Permission.storage.request();
+                      }
+                      if (context.mounted) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                Location(onLocation: widget.onLocation),
+                          ),
+                        );
+                      }
+                    },
+                    onDocumentTap: () async {
+                      FilePickerResult? result = await FilePicker.platform
+                          .pickFiles(
+                            type: FileType.custom,
+                            allowedExtensions: ['pdf', 'doc', 'docx'],
+                          );
+                      if (result != null) {
+                        File file = File(result.files.single.path!);
+                        widget.onNewFile(file);
+                      }
+                    },
+                    onConstitutionTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              Constitution(onSelection: widget.onNewSection),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
           );
         },

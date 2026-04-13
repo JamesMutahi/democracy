@@ -241,52 +241,49 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
   }
 
   Widget _buildAttachments() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          if (widget.insertedContent != null)
-            Container(
-              margin: EdgeInsets.only(top: 10),
-              child: SingleImageView(
-                image: widget.insertedContent!,
-                onRemove: widget.onRemoveInsertedContent!,
-              ),
+    return Column(
+      children: [
+        if (widget.insertedContent != null)
+          Container(
+            margin: EdgeInsets.only(top: 10),
+            child: SingleImageView(
+              image: widget.insertedContent!,
+              onRemove: widget.onRemoveInsertedContent!,
             ),
-          if (widget.selectedImages.isNotEmpty)
-            Container(
-              margin: EdgeInsets.only(top: 10),
-              child: MultiImageView(
-                recipient: widget.recipient!,
-                textEditingController: widget.controller,
-                images: widget.selectedImages,
-                onAdd: widget.onAddImages,
-                onRemove: widget.onRemoveImage,
-              ),
+          ),
+        if (widget.selectedImages.isNotEmpty)
+          Container(
+            margin: EdgeInsets.only(top: 10),
+            child: MultiImageView(
+              recipient: widget.recipient!,
+              textEditingController: widget.controller,
+              images: widget.selectedImages,
+              onAdd: widget.onAddImages,
+              onRemove: widget.onRemoveImage,
             ),
-          if (widget.location != null)
-            Container(
-              margin: EdgeInsets.only(left: 15, right: 15, top: 10),
-              child: MapWidget(
-                mapCenter: widget.location!,
-                onRemove: widget.onRemoveLocation,
-              ),
+          ),
+        if (widget.location != null)
+          Container(
+            margin: EdgeInsets.only(left: 15, right: 15, top: 10),
+            child: MapWidget(
+              mapCenter: widget.location!,
+              onRemove: widget.onRemoveLocation,
             ),
-          if (widget.selectedFile != null)
-            Container(
-              margin: EdgeInsets.only(top: 10),
-              child: FileWidget(
-                url: widget.selectedFile!.path,
-                navigateToViewer: false,
-              ),
+          ),
+        if (widget.selectedFile != null)
+          Container(
+            margin: EdgeInsets.only(top: 10),
+            child: FileWidget(
+              url: widget.selectedFile!.path,
+              navigateToViewer: false,
             ),
-          if (widget.section != null)
-            SectionView(
-              section: widget.section!,
-              onRemoveSection: widget.onRemoveSection!,
-            ),
-        ],
-      ),
+          ),
+        if (widget.section != null)
+          SectionView(
+            section: widget.section!,
+            onRemoveSection: widget.onRemoveSection!,
+          ),
+      ],
     );
   }
 
