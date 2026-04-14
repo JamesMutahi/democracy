@@ -5,6 +5,7 @@ import 'package:democracy/meet/bloc/meeting_filter/meeting_filter_cubit.dart';
 import 'package:democracy/meet/bloc/meetings/meetings_bloc.dart';
 import 'package:democracy/meet/models/meeting.dart';
 import 'package:democracy/meet/view/meeting_tile.dart';
+import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
@@ -31,20 +32,37 @@ class _MeetingsState extends State<Meetings> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<MeetingDetailBloc, MeetingDetailState>(
-      listener: (context, state) {
-        final meetingsBloc = context.read<MeetingsBloc>();
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<NotificationDetailBloc, NotificationDetailState>(
+          listener: (context, state) {
+            if (state is NotificationCreated) {
+              if (state.notification.meeting != null) {
+                final meetingsBloc = context.read<MeetingsBloc>();
+                final meeting = state.notification.meeting;
+                meetingsBloc.add(MeetingsEvent.add(meeting: meeting!));
+              }
+            }
+          },
+        ),
+        BlocListener<MeetingDetailBloc, MeetingDetailState>(
+          listener: (context, state) {
+            final meetingsBloc = context.read<MeetingsBloc>();
 
-        if (state is MeetingCreated) {
-          meetingsBloc.add(MeetingsEvent.add(meeting: state.meeting));
-        } else if (state is MeetingLoaded) {
-          meetingsBloc.add(MeetingsEvent.update(meeting: state.meeting));
-        } else if (state is MeetingUpdated) {
-          meetingsBloc.add(MeetingsEvent.update(meeting: state.meeting));
-        } else if (state is MeetingDeleted) {
-          meetingsBloc.add(MeetingsEvent.remove(meetingId: state.meetingId));
-        }
-      },
+            if (state is MeetingCreated) {
+              meetingsBloc.add(MeetingsEvent.add(meeting: state.meeting));
+            } else if (state is MeetingLoaded) {
+              meetingsBloc.add(MeetingsEvent.update(meeting: state.meeting));
+            } else if (state is MeetingUpdated) {
+              meetingsBloc.add(MeetingsEvent.update(meeting: state.meeting));
+            } else if (state is MeetingDeleted) {
+              meetingsBloc.add(
+                MeetingsEvent.remove(meetingId: state.meetingId),
+              );
+            }
+          },
+        ),
+      ],
       child: BlocBuilder<MeetingFilterCubit, MeetingFilterState>(
         builder: (context, filterState) {
           return BlocBuilder<MeetingsBloc, MeetingsState>(

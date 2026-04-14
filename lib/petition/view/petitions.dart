@@ -1,5 +1,6 @@
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
+import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
 import 'package:democracy/petition/bloc/petition_filter/petition_filter_cubit.dart';
 import 'package:democracy/petition/bloc/petitions/petitions_bloc.dart';
@@ -36,22 +37,41 @@ class _PetitionsState extends State<Petitions>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocListener<PetitionDetailBloc, PetitionDetailState>(
-      listener: (context, state) {
-        final petitionsBloc = context.read<PetitionsBloc>();
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<NotificationDetailBloc, NotificationDetailState>(
+          listener: (context, state) {
+            if (state is NotificationCreated) {
+              if (state.notification.petition != null) {
+                final petitionsBloc = context.read<PetitionsBloc>();
+                final petition = state.notification.petition;
+                petitionsBloc.add(PetitionsEvent.add(petition: petition!));
+              }
+            }
+          },
+        ),
+        BlocListener<PetitionDetailBloc, PetitionDetailState>(
+          listener: (context, state) {
+            final petitionsBloc = context.read<PetitionsBloc>();
 
-        if (state is PetitionCreated) {
-          petitionsBloc.add(PetitionsEvent.add(petition: state.petition));
-        } else if (state is PetitionLoaded) {
-          petitionsBloc.add(PetitionsEvent.update(petition: state.petition));
-        } else if (state is PetitionUpdated) {
-          petitionsBloc.add(PetitionsEvent.update(petition: state.petition));
-        } else if (state is PetitionDeleted) {
-          petitionsBloc.add(
-            PetitionsEvent.remove(petitionId: state.petitionId),
-          );
-        }
-      },
+            if (state is PetitionCreated) {
+              petitionsBloc.add(PetitionsEvent.add(petition: state.petition));
+            } else if (state is PetitionLoaded) {
+              petitionsBloc.add(
+                PetitionsEvent.update(petition: state.petition),
+              );
+            } else if (state is PetitionUpdated) {
+              petitionsBloc.add(
+                PetitionsEvent.update(petition: state.petition),
+              );
+            } else if (state is PetitionDeleted) {
+              petitionsBloc.add(
+                PetitionsEvent.remove(petitionId: state.petitionId),
+              );
+            }
+          },
+        ),
+      ],
       child: BlocBuilder<PetitionFilterCubit, PetitionFilterState>(
         builder: (context, filterState) {
           return BlocBuilder<PetitionsBloc, PetitionsState>(

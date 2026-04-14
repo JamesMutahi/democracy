@@ -5,6 +5,7 @@ import 'package:democracy/ballot/bloc/ballot_filter/ballot_filter_cubit.dart';
 import 'package:democracy/ballot/bloc/ballots/ballots_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
+import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
@@ -31,20 +32,35 @@ class _BallotsState extends State<Ballots> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<BallotDetailBloc, BallotDetailState>(
-      listener: (context, state) {
-        final ballotsBloc = context.read<BallotsBloc>();
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<NotificationDetailBloc, NotificationDetailState>(
+          listener: (context, state) {
+            if (state is NotificationCreated) {
+              if (state.notification.ballot != null) {
+                final ballotsBloc = context.read<BallotsBloc>();
+                final ballot = state.notification.ballot;
+                ballotsBloc.add(BallotsEvent.add(ballot: ballot!));
+              }
+            }
+          },
+        ),
+        BlocListener<BallotDetailBloc, BallotDetailState>(
+          listener: (context, state) {
+            final ballotsBloc = context.read<BallotsBloc>();
 
-        if (state is BallotCreated) {
-          ballotsBloc.add(BallotsEvent.add(ballot: state.ballot));
-        } else if (state is BallotLoaded) {
-          ballotsBloc.add(BallotsEvent.update(ballot: state.ballot));
-        } else if (state is BallotUpdated) {
-          ballotsBloc.add(BallotsEvent.update(ballot: state.ballot));
-        } else if (state is BallotDeleted) {
-          ballotsBloc.add(BallotsEvent.remove(ballotId: state.ballotId));
-        }
-      },
+            if (state is BallotCreated) {
+              ballotsBloc.add(BallotsEvent.add(ballot: state.ballot));
+            } else if (state is BallotLoaded) {
+              ballotsBloc.add(BallotsEvent.update(ballot: state.ballot));
+            } else if (state is BallotUpdated) {
+              ballotsBloc.add(BallotsEvent.update(ballot: state.ballot));
+            } else if (state is BallotDeleted) {
+              ballotsBloc.add(BallotsEvent.remove(ballotId: state.ballotId));
+            }
+          },
+        ),
+      ],
       child: BlocBuilder<BallotFilterCubit, BallotFilterState>(
         builder: (context, filterState) {
           return BlocBuilder<BallotsBloc, BallotsState>(

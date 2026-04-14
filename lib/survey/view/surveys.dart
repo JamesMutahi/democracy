@@ -1,5 +1,6 @@
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
+import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
 import 'package:democracy/survey/bloc/survey_filter/survey_filter_cubit.dart';
 import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
@@ -38,6 +39,17 @@ class _SurveysState extends State<Surveys> with AutomaticKeepAliveClientMixin {
     super.build(context);
     return MultiBlocListener(
       listeners: [
+        BlocListener<NotificationDetailBloc, NotificationDetailState>(
+          listener: (context, state) {
+            if (state is NotificationCreated) {
+              if (state.notification.survey != null) {
+                final surveysBloc = context.read<SurveysBloc>();
+                final survey = state.notification.survey;
+                surveysBloc.add(SurveysEvent.add(survey: survey!));
+              }
+            }
+          },
+        ),
         BlocListener<SurveyDetailBloc, SurveyDetailState>(
           listener: (context, state) {
             final surveysBloc = context.read<SurveysBloc>();
