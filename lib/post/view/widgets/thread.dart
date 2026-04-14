@@ -3,89 +3,43 @@ import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:flutter/material.dart';
 
-class Thread extends StatefulWidget {
-  const Thread({super.key, required this.post, required this.showWholeThread});
+class Thread extends StatelessWidget {
+  const Thread({
+    super.key,
+    required this.reply,
+    required this.isExpanded,
+    required this.onExpand,
+    required this.onThreadUpdated,
+  });
 
-  final Post post;
-  final bool showWholeThread;
-
-  @override
-  State<Thread> createState() => _ThreadState();
-}
-
-class _ThreadState extends State<Thread> {
-  late List<Post> _posts = widget.post.thread.toList();
-  late bool showWholeThread = widget.showWholeThread;
+  final Post reply;
+  final bool isExpanded;
+  final Function(Post)? onExpand;
+  final Function(Post) onThreadUpdated;
 
   @override
   Widget build(BuildContext context) {
     return PostListener(
-      posts: _posts,
+      posts: reply.thread.toList(),
       onPostsUpdated: (posts) {
-        setState(() {
-          _posts = posts;
-        });
+        var newReply = reply.copyWith(thread: posts);
+        onThreadUpdated(newReply);
       },
-      child: !showWholeThread
-          ? Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                PostTile(
-                  key: ValueKey(_posts.first.id),
-                  post: _posts.first,
-                  showTopThread: true,
-                  showBottomThread: _posts.first.thread.isNotEmpty,
-                  showThreadedReplies: false,
-                  hideBorder: true,
-                  showWholeThread: showWholeThread,
-                ),
-                if (_posts.first.thread.isNotEmpty)
-                  Container(
-                    margin: EdgeInsets.only(left: 22, bottom: 10),
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          showWholeThread = true;
-                        });
-                      },
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.more_vert,
-                            color: Theme.of(context).colorScheme.outlineVariant,
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(left: 17),
-                            child: Text(
-                              'Show more',
-                              style: TextStyle(color: Colors.blueAccent),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-              ],
-            )
-          : ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (BuildContext context, int index) {
-                Post post = _posts[index];
-                return PostTile(
-                  key: ValueKey(post.id),
-                  post: post,
-                  showTopThread: true,
-                  showBottomThread:
-                      post.thread.isNotEmpty || _posts.length != index + 1,
-                  showThreadedReplies: post.thread.isNotEmpty,
-                  showWholeThread: true,
-                  hideBorder: true,
-                );
-              },
-              itemCount: _posts.length,
-            ),
+      child: ListView.builder(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemBuilder: (BuildContext context, int index) {
+          Post post = reply.thread[index];
+          return PostTile(
+            key: ValueKey(post.id),
+            post: post,
+            showTopThread: true,
+            showBottomThread: reply.thread.length != index + 1,
+            hideBorder: true,
+          );
+        },
+        itemCount: reply.thread.length,
+      ),
     );
   }
 }

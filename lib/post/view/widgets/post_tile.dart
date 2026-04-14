@@ -26,7 +26,7 @@ import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-class PostTile extends StatefulWidget {
+class PostTile extends StatelessWidget {
   const PostTile({
     super.key,
     required this.post,
@@ -36,8 +36,10 @@ class PostTile extends StatefulWidget {
     this.showThreadedReplies = false,
     this.showTopThread = false,
     this.showBottomThread = false,
-    this.showWholeThread = false,
     this.onViewed,
+    this.isExpanded,
+    this.onExpand,
+    this.onThreadUpdated,
   });
 
   final Post post;
@@ -47,29 +49,17 @@ class PostTile extends StatefulWidget {
   final bool showThreadedReplies;
   final bool showTopThread;
   final bool showBottomThread;
-  final bool showWholeThread;
   final VoidCallback? onViewed;
-
-  @override
-  State<PostTile> createState() => _PostTileState();
-}
-
-class _PostTileState extends State<PostTile> {
-  late bool checkVisibility = widget.checkVisibility;
-  late bool isDependency = widget.isDependency;
-  late bool hideBorder = widget.hideBorder;
-  late bool showThreadedReplies = widget.showThreadedReplies;
-  late bool showTopThread = widget.showTopThread;
-  late bool showBottomThread = widget.showBottomThread;
-  late bool showWholeThread = widget.showWholeThread;
+  final bool? isExpanded;
+  final Function(Post)? onExpand;
+  final Function(Post)? onThreadUpdated;
 
   @override
   Widget build(BuildContext context) {
-    bool showAsRepost =
-        widget.post.body.isEmpty && widget.post.repostOf != null;
+    bool showAsRepost = post.body.isEmpty && post.repostOf != null;
     bool visible = true;
     if (checkVisibility && !isDependency) {
-      if (widget.post.author.isBlocked || widget.post.author.isMuted) {
+      if (post.author.isBlocked || post.author.isMuted) {
         visible = false;
       }
     }
@@ -89,22 +79,18 @@ class _PostTileState extends State<PostTile> {
           children: [
             InkWell(
               onTap: () {
-                widget.post.repostOf?.communityNoteOf == null
+                post.repostOf?.communityNoteOf == null
                     ? navigateToPostDetail(
                         context: context,
-                        post: showAsRepost
-                            ? widget.post.repostOf!
-                            : widget.post,
+                        post: showAsRepost ? post.repostOf! : post,
                         showAsRepost: showAsRepost,
-                        repost: widget.post,
+                        repost: post,
                       )
                     : navigateToCommunityNoteDetail(
                         context: context,
-                        post: showAsRepost
-                            ? widget.post.repostOf!
-                            : widget.post,
+                        post: showAsRepost ? post.repostOf! : post,
                         showAsRepost: showAsRepost,
-                        repost: widget.post,
+                        repost: post,
                       );
               },
               child: showAsRepost
@@ -112,7 +98,7 @@ class _PostTileState extends State<PostTile> {
                       children: [
                         _repostBanner(),
                         PostWidgetSelector(
-                          post: widget.post.repostOf!,
+                          post: post.repostOf!,
                           isDependency: false,
                         ),
                       ],
@@ -124,15 +110,20 @@ class _PostTileState extends State<PostTile> {
                           showTopThread: showTopThread,
                         ),
                         _PostContainer(
-                          post: widget.post,
+                          post: post,
                           isDependency: isDependency,
-                          onViewed: widget.onViewed,
+                          onViewed: onViewed,
                         ),
                       ],
                     ),
             ),
             if (showThreadedReplies)
-              Thread(post: widget.post, showWholeThread: showWholeThread),
+              Thread(
+                reply: post,
+                isExpanded: isExpanded!,
+                onExpand: onExpand,
+                onThreadUpdated: onThreadUpdated!,
+              ),
           ],
         ),
       ),
@@ -143,10 +134,10 @@ class _PostTileState extends State<PostTile> {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         User user = (state as Authenticated).user;
-        String text = user.id == widget.post.author.id
+        String text = user.id == post.author.id
             ? 'You reposted'
-            : '${widget.post.author.name} reposted';
-        if (widget.post.repostOf!.communityNoteOf != null) {
+            : '${post.author.name} reposted';
+        if (post.repostOf!.communityNoteOf != null) {
           text = '$text a community note';
         }
         return Container(

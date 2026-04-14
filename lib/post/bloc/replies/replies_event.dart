@@ -8,6 +8,10 @@ sealed class RepliesEvent with _$RepliesEvent {
   }) = _Get;
   const factory RepliesEvent.received({required Map<String, dynamic> payload}) =
       _Received;
-  const factory RepliesEvent.add({required Post post}) = _Add;
-  const factory RepliesEvent.update({required List<Post> posts}) = _Update;
+  const factory RepliesEvent.add({required int postId, required Post reply}) =
+      _Add;
+  const factory RepliesEvent.update({
+    required int postId,
+    required List<Post> replies,
+  }) = _Update;
 }

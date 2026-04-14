@@ -17,7 +17,6 @@ final class ReplyToState extends Equatable {
     ReplyToStatus? status,
     List<Post>? posts,
     int? postId,
-    bool? hasNext,
   }) {
     return ReplyToState(
       status: status ?? this.status,

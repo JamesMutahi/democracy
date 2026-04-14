@@ -125,13 +125,13 @@ return update(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Post post,  List<Post>? previousPosts)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Post post)?  add,TResult Function( List<Post> posts)?  update,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Post post,  List<Post>? previousPosts)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( int postId,  Post reply)?  add,TResult Function( int postId,  List<Post> replies)?  update,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.post,_that.previousPosts);case _Received() when received != null:
 return received(_that.payload);case _Add() when add != null:
-return add(_that.post);case _Update() when update != null:
-return update(_that.posts);case _:
+return add(_that.postId,_that.reply);case _Update() when update != null:
+return update(_that.postId,_that.replies);case _:
   return orElse();
 
 }
@@ -149,13 +149,13 @@ return update(_that.posts);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Post post,  List<Post>? previousPosts)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Post post)  add,required TResult Function( List<Post> posts)  update,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Post post,  List<Post>? previousPosts)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( int postId,  Post reply)  add,required TResult Function( int postId,  List<Post> replies)  update,}) {final _that = this;
 switch (_that) {
 case _Get():
 return get(_that.post,_that.previousPosts);case _Received():
 return received(_that.payload);case _Add():
-return add(_that.post);case _Update():
-return update(_that.posts);}
+return add(_that.postId,_that.reply);case _Update():
+return update(_that.postId,_that.replies);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -169,13 +169,13 @@ return update(_that.posts);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Post post,  List<Post>? previousPosts)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Post post)?  add,TResult? Function( List<Post> posts)?  update,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Post post,  List<Post>? previousPosts)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( int postId,  Post reply)?  add,TResult? Function( int postId,  List<Post> replies)?  update,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.post,_that.previousPosts);case _Received() when received != null:
 return received(_that.payload);case _Add() when add != null:
-return add(_that.post);case _Update() when update != null:
-return update(_that.posts);case _:
+return add(_that.postId,_that.reply);case _Update() when update != null:
+return update(_that.postId,_that.replies);case _:
   return null;
 
 }
@@ -344,10 +344,11 @@ as Map<String, dynamic>,
 
 
 class _Add implements RepliesEvent {
-  const _Add({required this.post});
+  const _Add({required this.postId, required this.reply});
   
 
- final  Post post;
+ final  int postId;
+ final  Post reply;
 
 /// Create a copy of RepliesEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -359,16 +360,16 @@ _$AddCopyWith<_Add> get copyWith => __$AddCopyWithImpl<_Add>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Add&&(identical(other.post, post) || other.post == post));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Add&&(identical(other.postId, postId) || other.postId == postId)&&(identical(other.reply, reply) || other.reply == reply));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,post);
+int get hashCode => Object.hash(runtimeType,postId,reply);
 
 @override
 String toString() {
-  return 'RepliesEvent.add(post: $post)';
+  return 'RepliesEvent.add(postId: $postId, reply: $reply)';
 }
 
 
@@ -379,11 +380,11 @@ abstract mixin class _$AddCopyWith<$Res> implements $RepliesEventCopyWith<$Res> 
   factory _$AddCopyWith(_Add value, $Res Function(_Add) _then) = __$AddCopyWithImpl;
 @useResult
 $Res call({
- Post post
+ int postId, Post reply
 });
 
 
-$PostCopyWith<$Res> get post;
+$PostCopyWith<$Res> get reply;
 
 }
 /// @nodoc
@@ -396,9 +397,10 @@ class __$AddCopyWithImpl<$Res>
 
 /// Create a copy of RepliesEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? post = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? postId = null,Object? reply = null,}) {
   return _then(_Add(
-post: null == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
+postId: null == postId ? _self.postId : postId // ignore: cast_nullable_to_non_nullable
+as int,reply: null == reply ? _self.reply : reply // ignore: cast_nullable_to_non_nullable
 as Post,
   ));
 }
@@ -407,10 +409,10 @@ as Post,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$PostCopyWith<$Res> get post {
+$PostCopyWith<$Res> get reply {
   
-  return $PostCopyWith<$Res>(_self.post, (value) {
-    return _then(_self.copyWith(post: value));
+  return $PostCopyWith<$Res>(_self.reply, (value) {
+    return _then(_self.copyWith(reply: value));
   });
 }
 }
@@ -419,14 +421,15 @@ $PostCopyWith<$Res> get post {
 
 
 class _Update implements RepliesEvent {
-  const _Update({required final  List<Post> posts}): _posts = posts;
+  const _Update({required this.postId, required final  List<Post> replies}): _replies = replies;
   
 
- final  List<Post> _posts;
- List<Post> get posts {
-  if (_posts is EqualUnmodifiableListView) return _posts;
+ final  int postId;
+ final  List<Post> _replies;
+ List<Post> get replies {
+  if (_replies is EqualUnmodifiableListView) return _replies;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_posts);
+  return EqualUnmodifiableListView(_replies);
 }
 
 
@@ -440,16 +443,16 @@ _$UpdateCopyWith<_Update> get copyWith => __$UpdateCopyWithImpl<_Update>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Update&&const DeepCollectionEquality().equals(other._posts, _posts));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Update&&(identical(other.postId, postId) || other.postId == postId)&&const DeepCollectionEquality().equals(other._replies, _replies));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_posts));
+int get hashCode => Object.hash(runtimeType,postId,const DeepCollectionEquality().hash(_replies));
 
 @override
 String toString() {
-  return 'RepliesEvent.update(posts: $posts)';
+  return 'RepliesEvent.update(postId: $postId, replies: $replies)';
 }
 
 
@@ -460,7 +463,7 @@ abstract mixin class _$UpdateCopyWith<$Res> implements $RepliesEventCopyWith<$Re
   factory _$UpdateCopyWith(_Update value, $Res Function(_Update) _then) = __$UpdateCopyWithImpl;
 @useResult
 $Res call({
- List<Post> posts
+ int postId, List<Post> replies
 });
 
 
@@ -477,9 +480,10 @@ class __$UpdateCopyWithImpl<$Res>
 
 /// Create a copy of RepliesEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? posts = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? postId = null,Object? replies = null,}) {
   return _then(_Update(
-posts: null == posts ? _self._posts : posts // ignore: cast_nullable_to_non_nullable
+postId: null == postId ? _self.postId : postId // ignore: cast_nullable_to_non_nullable
+as int,replies: null == replies ? _self._replies : replies // ignore: cast_nullable_to_non_nullable
 as List<Post>,
   ));
 }

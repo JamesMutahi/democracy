@@ -67,12 +67,13 @@ class RepliesBloc extends Bloc<RepliesEvent, RepliesState> {
   }
 
   void _onAdd(_Add event, Emitter<RepliesState> emit) {
-    final exists = state.posts.any((post) => post.id == event.post.id);
+    final exists = state.posts.any((post) => post.id == event.reply.id);
 
     if (!exists) {
       emit(
         state.copyWith(
-          posts: [event.post, ...state.posts],
+          postId: event.postId,
+          posts: [event.reply, ...state.posts],
           status: RepliesStatus.success,
         ),
       );
@@ -81,7 +82,13 @@ class RepliesBloc extends Bloc<RepliesEvent, RepliesState> {
 
   void _onUpdate(_Update event, Emitter<RepliesState> emit) {
     emit(state.copyWith(status: RepliesStatus.loading));
-    emit(state.copyWith(posts: event.posts, status: RepliesStatus.success));
+    emit(
+      state.copyWith(
+        postId: event.postId,
+        posts: event.replies,
+        status: RepliesStatus.success,
+      ),
+    );
   }
 
   @override
@@ -92,15 +99,4 @@ class RepliesBloc extends Bloc<RepliesEvent, RepliesState> {
 
   late StreamSubscription _subscription;
   final WebSocketService webSocketService;
-}
-
-List<int> getThreadIds(List<Post> thread) {
-  List<int> postIds = [];
-  for (Post post in thread) {
-    postIds.add(post.id);
-    if (post.thread.isNotEmpty) {
-      postIds.addAll(getThreadIds(post.thread));
-    }
-  }
-  return postIds;
 }

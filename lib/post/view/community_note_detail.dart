@@ -40,6 +40,7 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
   late Post _communityNoteOf = widget.communityNote.communityNoteOf!;
   ValueKey centerKey = ValueKey('Center');
   bool isDeleted = false;
+  List<int> expandedReplies = [];
 
   @override
   void initState() {
@@ -88,7 +89,7 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
                 case PostCreated(post: final post):
                   if (widget.communityNote.id == post.replyTo?.id) {
                     context.read<RepliesBloc>().add(
-                      RepliesEvent.add(post: post),
+                      RepliesEvent.add(postId: _communityNote.id, reply: post),
                     );
                   }
                 case PostLoaded(:final post):
@@ -266,7 +267,35 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
                               ),
                             )
                           else
-                            Replies(replies: replies),
+                            Replies(
+                              replies: replies,
+                              expandedReplies: expandedReplies,
+                              onExpand: (post) {
+                                setState(() {
+                                  expandedReplies.add(post.id);
+                                });
+                              },
+                              onRepliesUpdated: (replies) {
+                                context.read<RepliesBloc>().add(
+                                  RepliesEvent.update(
+                                    postId: _communityNote.id,
+                                    replies: replies,
+                                  ),
+                                );
+                              },
+                              onThreadUpdated: (reply) {
+                                int index = replies.indexWhere(
+                                  (r) => r.id == reply.id,
+                                );
+                                replies[index] = reply;
+                                context.read<RepliesBloc>().add(
+                                  RepliesEvent.update(
+                                    postId: _communityNote.id,
+                                    replies: replies,
+                                  ),
+                                );
+                              },
+                            ),
                         ],
                       ),
                     );

@@ -51,11 +51,16 @@ class PostDetailPage extends StatefulWidget {
   State<PostDetailPage> createState() => _PostDetailPageState();
 }
 
-class _PostDetailPageState extends State<PostDetailPage> {
+class _PostDetailPageState extends State<PostDetailPage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   late Post _post = widget.post;
   final RefreshController _refreshController = RefreshController();
   final ValueKey _centerKey = ValueKey('Center');
   bool _isDeleted = false;
+  List<int> expandedReplies = [];
 
   @override
   void initState() {
@@ -78,6 +83,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return PopScope(
       canPop: true,
       onPopInvokedWithResult: (_, _) {
@@ -102,7 +108,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 case PostCreated(post: final post):
                   if (_post.id == post.replyTo?.id) {
                     context.read<RepliesBloc>().add(
-                      RepliesEvent.add(post: post),
+                      RepliesEvent.add(postId: _post.id, reply: post),
                     );
                   }
 
@@ -297,7 +303,35 @@ class _PostDetailPageState extends State<PostDetailPage> {
                         ),
                       )
                     else
-                      Replies(replies: replies),
+                      Replies(
+                        replies: replies,
+                        expandedReplies: expandedReplies,
+                        onExpand: (post) {
+                          setState(() {
+                            expandedReplies.add(post.id);
+                          });
+                        },
+                        onRepliesUpdated: (replies) {
+                          context.read<RepliesBloc>().add(
+                            RepliesEvent.update(
+                              postId: _post.id,
+                              replies: replies,
+                            ),
+                          );
+                        },
+                        onThreadUpdated: (reply) {
+                          int index = replies.indexWhere(
+                            (r) => r.id == reply.id,
+                          );
+                          replies[index] = reply;
+                          context.read<RepliesBloc>().add(
+                            RepliesEvent.update(
+                              postId: _post.id,
+                              replies: replies,
+                            ),
+                          );
+                        },
+                      ),
                   ],
                 ),
               );
