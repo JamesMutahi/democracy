@@ -30,6 +30,11 @@ class _PetitionDetailState extends State<PetitionDetail> {
     context.read<PetitionDetailBloc>().add(
       PetitionDetailEvent.retrieve(petition: widget.petition),
     );
+    if (!widget.petition.isClicked) {
+      context.read<PetitionDetailBloc>().add(
+        PetitionDetailEvent.addClick(petition: widget.petition),
+      );
+    }
     super.initState();
   }
 
@@ -93,17 +98,47 @@ class _PetitionDetailState extends State<PetitionDetail> {
               : ListView(
                   padding: EdgeInsets.symmetric(vertical: 15),
                   children: [
-                    Container(
-                      height: MediaQuery.of(context).size.height / 4,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: CachedNetworkImageProvider(_petition.image),
-                          fit: BoxFit.cover,
+                    Stack(
+                      children: [
+                        Container(
+                          height: MediaQuery.of(context).size.height / 4,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: CachedNetworkImageProvider(
+                                _petition.image,
+                              ),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
-                      ),
+                        if (_petition.views > 0)
+                          Positioned(
+                            right: 0,
+                            bottom: 0,
+                            child: Container(
+                              margin: EdgeInsets.only(bottom: 5, right: 15),
+                              padding: EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withAlpha(50),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    '${_petition.views} views',
+                                    style: TextStyle(
+                                      color: Colors.black.withAlpha(75),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 10, left: 20, right: 20),
+                      margin: EdgeInsets.only(top: 10, left: 15, right: 15),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,

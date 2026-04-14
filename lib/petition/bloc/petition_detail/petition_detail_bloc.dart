@@ -38,6 +38,10 @@ class PetitionDetailBloc
             add(_Deleted(payload: message['payload']));
           case 'support':
             add(_Received(payload: message['payload']));
+          case 'add_view':
+            add(_ViewAdded(payload: message['payload']));
+          case 'add_click':
+            add(_ClickAdded(payload: message['payload']));
         }
       }
     });
@@ -48,6 +52,10 @@ class PetitionDetailBloc
     on<_Create>((event, emit) async => await _onCreate(event, emit));
     on<_Retrieve>((event, emit) => _onRetrieve(event, emit));
     on<_Support>((event, emit) => _onSupport(event, emit));
+    on<_AddView>((event, emit) => _onAddView(event, emit));
+    on<_ViewAdded>((event, emit) => _onViewAdded(event, emit));
+    on<_AddClick>((event, emit) => _onAddClick(event, emit));
+    on<_ClickAdded>((event, emit) => _onClickAdded(event, emit));
     on<_ChangeStatus>((event, emit) => _onChangeStatus(event, emit));
     on<_Received>((event, emit) => _onReceived(event, emit));
     on<_Unsubscribe>((event, emit) => _onUnsubscribe(event, emit));
@@ -145,6 +153,58 @@ class PetitionDetailBloc
       },
     };
     webSocketService.send(message);
+  }
+
+  void _onAddView(_AddView event, Emitter<PetitionDetailState> emit) {
+    emit(PetitionDetailLoading());
+    if (!webSocketService.isConnected) {
+      emit(PetitionDetailFailure(error: serverError));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        "action": 'add_view',
+        "request_id": requestId,
+        'pk': event.petition.id,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  void _onAddClick(_AddClick event, Emitter<PetitionDetailState> emit) {
+    emit(PetitionDetailLoading());
+    if (!webSocketService.isConnected) {
+      emit(PetitionDetailFailure(error: serverError));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        "action": 'add_click',
+        "request_id": requestId,
+        'pk': event.petition.id,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  void _onViewAdded(_ViewAdded event, Emitter<PetitionDetailState> emit) {
+    if (event.payload['response_status'] == 200) {
+      emit(PetitionViewed(postId: event.payload['data']['pk']));
+    } else {
+      emit(PetitionDetailFailure(error: event.payload['errors'].toString()));
+    }
+  }
+
+  void _onClickAdded(_ClickAdded event, Emitter<PetitionDetailState> emit) {
+    if (event.payload['response_status'] == 200) {
+      emit(PetitionClicked(postId: event.payload['data']['pk']));
+    } else {
+      emit(PetitionDetailFailure(error: event.payload['errors'].toString()));
+    }
   }
 
   void _onChangeStatus(_ChangeStatus event, Emitter<PetitionDetailState> emit) {

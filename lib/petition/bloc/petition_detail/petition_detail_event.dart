@@ -11,6 +11,12 @@ sealed class PetitionDetailEvent with _$PetitionDetailEvent {
   const factory PetitionDetailEvent.updated({
     required Map<String, dynamic> payload,
   }) = _Updated;
+  const factory PetitionDetailEvent.viewAdded({
+    required Map<String, dynamic> payload,
+  }) = _ViewAdded;
+  const factory PetitionDetailEvent.clickAdded({
+    required Map<String, dynamic> payload,
+  }) = _ClickAdded;
   const factory PetitionDetailEvent.deleted({
     required Map<String, dynamic> payload,
   }) = _Deleted;
@@ -26,6 +32,10 @@ sealed class PetitionDetailEvent with _$PetitionDetailEvent {
       _Retrieve;
   const factory PetitionDetailEvent.support({required Petition petition}) =
       _Support;
+  const factory PetitionDetailEvent.addView({required Petition petition}) =
+      _AddView;
+  const factory PetitionDetailEvent.addClick({required Petition petition}) =
+      _AddClick;
   const factory PetitionDetailEvent.changeStatus({required Petition petition}) =
       _ChangeStatus;
   const factory PetitionDetailEvent.received({

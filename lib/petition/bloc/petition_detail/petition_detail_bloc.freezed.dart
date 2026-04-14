@@ -55,7 +55,7 @@ extension PetitionDetailStatePatterns on PetitionDetailState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( PetitionDetailInitial value)?  initial,TResult Function( PetitionDetailLoading value)?  loading,TResult Function( PetitionCreated value)?  created,TResult Function( PetitionLoaded value)?  loaded,TResult Function( PetitionUpdated value)?  updated,TResult Function( PetitionDeleted value)?  deleted,TResult Function( PetitionDetailFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( PetitionDetailInitial value)?  initial,TResult Function( PetitionDetailLoading value)?  loading,TResult Function( PetitionCreated value)?  created,TResult Function( PetitionLoaded value)?  loaded,TResult Function( PetitionUpdated value)?  updated,TResult Function( PetitionViewed value)?  viewed,TResult Function( PetitionClicked value)?  clicked,TResult Function( PetitionDeleted value)?  deleted,TResult Function( PetitionDetailFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case PetitionDetailInitial() when initial != null:
@@ -63,7 +63,9 @@ return initial(_that);case PetitionDetailLoading() when loading != null:
 return loading(_that);case PetitionCreated() when created != null:
 return created(_that);case PetitionLoaded() when loaded != null:
 return loaded(_that);case PetitionUpdated() when updated != null:
-return updated(_that);case PetitionDeleted() when deleted != null:
+return updated(_that);case PetitionViewed() when viewed != null:
+return viewed(_that);case PetitionClicked() when clicked != null:
+return clicked(_that);case PetitionDeleted() when deleted != null:
 return deleted(_that);case PetitionDetailFailure() when failure != null:
 return failure(_that);case _:
   return orElse();
@@ -83,7 +85,7 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( PetitionDetailInitial value)  initial,required TResult Function( PetitionDetailLoading value)  loading,required TResult Function( PetitionCreated value)  created,required TResult Function( PetitionLoaded value)  loaded,required TResult Function( PetitionUpdated value)  updated,required TResult Function( PetitionDeleted value)  deleted,required TResult Function( PetitionDetailFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( PetitionDetailInitial value)  initial,required TResult Function( PetitionDetailLoading value)  loading,required TResult Function( PetitionCreated value)  created,required TResult Function( PetitionLoaded value)  loaded,required TResult Function( PetitionUpdated value)  updated,required TResult Function( PetitionViewed value)  viewed,required TResult Function( PetitionClicked value)  clicked,required TResult Function( PetitionDeleted value)  deleted,required TResult Function( PetitionDetailFailure value)  failure,}){
 final _that = this;
 switch (_that) {
 case PetitionDetailInitial():
@@ -91,7 +93,9 @@ return initial(_that);case PetitionDetailLoading():
 return loading(_that);case PetitionCreated():
 return created(_that);case PetitionLoaded():
 return loaded(_that);case PetitionUpdated():
-return updated(_that);case PetitionDeleted():
+return updated(_that);case PetitionViewed():
+return viewed(_that);case PetitionClicked():
+return clicked(_that);case PetitionDeleted():
 return deleted(_that);case PetitionDetailFailure():
 return failure(_that);case _:
   throw StateError('Unexpected subclass');
@@ -110,7 +114,7 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( PetitionDetailInitial value)?  initial,TResult? Function( PetitionDetailLoading value)?  loading,TResult? Function( PetitionCreated value)?  created,TResult? Function( PetitionLoaded value)?  loaded,TResult? Function( PetitionUpdated value)?  updated,TResult? Function( PetitionDeleted value)?  deleted,TResult? Function( PetitionDetailFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( PetitionDetailInitial value)?  initial,TResult? Function( PetitionDetailLoading value)?  loading,TResult? Function( PetitionCreated value)?  created,TResult? Function( PetitionLoaded value)?  loaded,TResult? Function( PetitionUpdated value)?  updated,TResult? Function( PetitionViewed value)?  viewed,TResult? Function( PetitionClicked value)?  clicked,TResult? Function( PetitionDeleted value)?  deleted,TResult? Function( PetitionDetailFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case PetitionDetailInitial() when initial != null:
@@ -118,7 +122,9 @@ return initial(_that);case PetitionDetailLoading() when loading != null:
 return loading(_that);case PetitionCreated() when created != null:
 return created(_that);case PetitionLoaded() when loaded != null:
 return loaded(_that);case PetitionUpdated() when updated != null:
-return updated(_that);case PetitionDeleted() when deleted != null:
+return updated(_that);case PetitionViewed() when viewed != null:
+return viewed(_that);case PetitionClicked() when clicked != null:
+return clicked(_that);case PetitionDeleted() when deleted != null:
 return deleted(_that);case PetitionDetailFailure() when failure != null:
 return failure(_that);case _:
   return null;
@@ -137,14 +143,16 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Petition petition)?  created,TResult Function( Petition petition)?  loaded,TResult Function( Petition petition)?  updated,TResult Function( int petitionId)?  deleted,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Petition petition)?  created,TResult Function( Petition petition)?  loaded,TResult Function( Petition petition)?  updated,TResult Function( int postId)?  viewed,TResult Function( int postId)?  clicked,TResult Function( int petitionId)?  deleted,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case PetitionDetailInitial() when initial != null:
 return initial();case PetitionDetailLoading() when loading != null:
 return loading();case PetitionCreated() when created != null:
 return created(_that.petition);case PetitionLoaded() when loaded != null:
 return loaded(_that.petition);case PetitionUpdated() when updated != null:
-return updated(_that.petition);case PetitionDeleted() when deleted != null:
+return updated(_that.petition);case PetitionViewed() when viewed != null:
+return viewed(_that.postId);case PetitionClicked() when clicked != null:
+return clicked(_that.postId);case PetitionDeleted() when deleted != null:
 return deleted(_that.petitionId);case PetitionDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return orElse();
@@ -164,14 +172,16 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Petition petition)  created,required TResult Function( Petition petition)  loaded,required TResult Function( Petition petition)  updated,required TResult Function( int petitionId)  deleted,required TResult Function( String error)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Petition petition)  created,required TResult Function( Petition petition)  loaded,required TResult Function( Petition petition)  updated,required TResult Function( int postId)  viewed,required TResult Function( int postId)  clicked,required TResult Function( int petitionId)  deleted,required TResult Function( String error)  failure,}) {final _that = this;
 switch (_that) {
 case PetitionDetailInitial():
 return initial();case PetitionDetailLoading():
 return loading();case PetitionCreated():
 return created(_that.petition);case PetitionLoaded():
 return loaded(_that.petition);case PetitionUpdated():
-return updated(_that.petition);case PetitionDeleted():
+return updated(_that.petition);case PetitionViewed():
+return viewed(_that.postId);case PetitionClicked():
+return clicked(_that.postId);case PetitionDeleted():
 return deleted(_that.petitionId);case PetitionDetailFailure():
 return failure(_that.error);case _:
   throw StateError('Unexpected subclass');
@@ -190,14 +200,16 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Petition petition)?  created,TResult? Function( Petition petition)?  loaded,TResult? Function( Petition petition)?  updated,TResult? Function( int petitionId)?  deleted,TResult? Function( String error)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Petition petition)?  created,TResult? Function( Petition petition)?  loaded,TResult? Function( Petition petition)?  updated,TResult? Function( int postId)?  viewed,TResult? Function( int postId)?  clicked,TResult? Function( int petitionId)?  deleted,TResult? Function( String error)?  failure,}) {final _that = this;
 switch (_that) {
 case PetitionDetailInitial() when initial != null:
 return initial();case PetitionDetailLoading() when loading != null:
 return loading();case PetitionCreated() when created != null:
 return created(_that.petition);case PetitionLoaded() when loaded != null:
 return loaded(_that.petition);case PetitionUpdated() when updated != null:
-return updated(_that.petition);case PetitionDeleted() when deleted != null:
+return updated(_that.petition);case PetitionViewed() when viewed != null:
+return viewed(_that.postId);case PetitionClicked() when clicked != null:
+return clicked(_that.postId);case PetitionDeleted() when deleted != null:
 return deleted(_that.petitionId);case PetitionDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return null;
@@ -499,6 +511,138 @@ $PetitionCopyWith<$Res> get petition {
 /// @nodoc
 
 
+class PetitionViewed implements PetitionDetailState {
+  const PetitionViewed({required this.postId});
+  
+
+ final  int postId;
+
+/// Create a copy of PetitionDetailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PetitionViewedCopyWith<PetitionViewed> get copyWith => _$PetitionViewedCopyWithImpl<PetitionViewed>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PetitionViewed&&(identical(other.postId, postId) || other.postId == postId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,postId);
+
+@override
+String toString() {
+  return 'PetitionDetailState.viewed(postId: $postId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $PetitionViewedCopyWith<$Res> implements $PetitionDetailStateCopyWith<$Res> {
+  factory $PetitionViewedCopyWith(PetitionViewed value, $Res Function(PetitionViewed) _then) = _$PetitionViewedCopyWithImpl;
+@useResult
+$Res call({
+ int postId
+});
+
+
+
+
+}
+/// @nodoc
+class _$PetitionViewedCopyWithImpl<$Res>
+    implements $PetitionViewedCopyWith<$Res> {
+  _$PetitionViewedCopyWithImpl(this._self, this._then);
+
+  final PetitionViewed _self;
+  final $Res Function(PetitionViewed) _then;
+
+/// Create a copy of PetitionDetailState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? postId = null,}) {
+  return _then(PetitionViewed(
+postId: null == postId ? _self.postId : postId // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class PetitionClicked implements PetitionDetailState {
+  const PetitionClicked({required this.postId});
+  
+
+ final  int postId;
+
+/// Create a copy of PetitionDetailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PetitionClickedCopyWith<PetitionClicked> get copyWith => _$PetitionClickedCopyWithImpl<PetitionClicked>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PetitionClicked&&(identical(other.postId, postId) || other.postId == postId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,postId);
+
+@override
+String toString() {
+  return 'PetitionDetailState.clicked(postId: $postId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $PetitionClickedCopyWith<$Res> implements $PetitionDetailStateCopyWith<$Res> {
+  factory $PetitionClickedCopyWith(PetitionClicked value, $Res Function(PetitionClicked) _then) = _$PetitionClickedCopyWithImpl;
+@useResult
+$Res call({
+ int postId
+});
+
+
+
+
+}
+/// @nodoc
+class _$PetitionClickedCopyWithImpl<$Res>
+    implements $PetitionClickedCopyWith<$Res> {
+  _$PetitionClickedCopyWithImpl(this._self, this._then);
+
+  final PetitionClicked _self;
+  final $Res Function(PetitionClicked) _then;
+
+/// Create a copy of PetitionDetailState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? postId = null,}) {
+  return _then(PetitionClicked(
+postId: null == postId ? _self.postId : postId // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
 class PetitionDeleted implements PetitionDetailState {
   const PetitionDeleted({required this.petitionId});
   
@@ -672,17 +816,21 @@ extension PetitionDetailEventPatterns on PetitionDetailEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Loaded value)?  loaded,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Create value)?  create,TResult Function( _Retrieve value)?  retrieve,TResult Function( _Support value)?  support,TResult Function( _ChangeStatus value)?  changeStatus,TResult Function( _Received value)?  received,TResult Function( _Unsubscribe value)?  unsubscribe,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Loaded value)?  loaded,TResult Function( _Updated value)?  updated,TResult Function( _ViewAdded value)?  viewAdded,TResult Function( _ClickAdded value)?  clickAdded,TResult Function( _Deleted value)?  deleted,TResult Function( _Create value)?  create,TResult Function( _Retrieve value)?  retrieve,TResult Function( _Support value)?  support,TResult Function( _AddView value)?  addView,TResult Function( _AddClick value)?  addClick,TResult Function( _ChangeStatus value)?  changeStatus,TResult Function( _Received value)?  received,TResult Function( _Unsubscribe value)?  unsubscribe,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that);case _Loaded() when loaded != null:
 return loaded(_that);case _Updated() when updated != null:
-return updated(_that);case _Deleted() when deleted != null:
+return updated(_that);case _ViewAdded() when viewAdded != null:
+return viewAdded(_that);case _ClickAdded() when clickAdded != null:
+return clickAdded(_that);case _Deleted() when deleted != null:
 return deleted(_that);case _Create() when create != null:
 return create(_that);case _Retrieve() when retrieve != null:
 return retrieve(_that);case _Support() when support != null:
-return support(_that);case _ChangeStatus() when changeStatus != null:
+return support(_that);case _AddView() when addView != null:
+return addView(_that);case _AddClick() when addClick != null:
+return addClick(_that);case _ChangeStatus() when changeStatus != null:
 return changeStatus(_that);case _Received() when received != null:
 return received(_that);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that);case _:
@@ -703,17 +851,21 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Loaded value)  loaded,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Create value)  create,required TResult Function( _Retrieve value)  retrieve,required TResult Function( _Support value)  support,required TResult Function( _ChangeStatus value)  changeStatus,required TResult Function( _Received value)  received,required TResult Function( _Unsubscribe value)  unsubscribe,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Loaded value)  loaded,required TResult Function( _Updated value)  updated,required TResult Function( _ViewAdded value)  viewAdded,required TResult Function( _ClickAdded value)  clickAdded,required TResult Function( _Deleted value)  deleted,required TResult Function( _Create value)  create,required TResult Function( _Retrieve value)  retrieve,required TResult Function( _Support value)  support,required TResult Function( _AddView value)  addView,required TResult Function( _AddClick value)  addClick,required TResult Function( _ChangeStatus value)  changeStatus,required TResult Function( _Received value)  received,required TResult Function( _Unsubscribe value)  unsubscribe,}){
 final _that = this;
 switch (_that) {
 case _Created():
 return created(_that);case _Loaded():
 return loaded(_that);case _Updated():
-return updated(_that);case _Deleted():
+return updated(_that);case _ViewAdded():
+return viewAdded(_that);case _ClickAdded():
+return clickAdded(_that);case _Deleted():
 return deleted(_that);case _Create():
 return create(_that);case _Retrieve():
 return retrieve(_that);case _Support():
-return support(_that);case _ChangeStatus():
+return support(_that);case _AddView():
+return addView(_that);case _AddClick():
+return addClick(_that);case _ChangeStatus():
 return changeStatus(_that);case _Received():
 return received(_that);case _Unsubscribe():
 return unsubscribe(_that);}
@@ -730,17 +882,21 @@ return unsubscribe(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Create value)?  create,TResult? Function( _Retrieve value)?  retrieve,TResult? Function( _Support value)?  support,TResult? Function( _ChangeStatus value)?  changeStatus,TResult? Function( _Received value)?  received,TResult? Function( _Unsubscribe value)?  unsubscribe,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Updated value)?  updated,TResult? Function( _ViewAdded value)?  viewAdded,TResult? Function( _ClickAdded value)?  clickAdded,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Create value)?  create,TResult? Function( _Retrieve value)?  retrieve,TResult? Function( _Support value)?  support,TResult? Function( _AddView value)?  addView,TResult? Function( _AddClick value)?  addClick,TResult? Function( _ChangeStatus value)?  changeStatus,TResult? Function( _Received value)?  received,TResult? Function( _Unsubscribe value)?  unsubscribe,}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that);case _Loaded() when loaded != null:
 return loaded(_that);case _Updated() when updated != null:
-return updated(_that);case _Deleted() when deleted != null:
+return updated(_that);case _ViewAdded() when viewAdded != null:
+return viewAdded(_that);case _ClickAdded() when clickAdded != null:
+return clickAdded(_that);case _Deleted() when deleted != null:
 return deleted(_that);case _Create() when create != null:
 return create(_that);case _Retrieve() when retrieve != null:
 return retrieve(_that);case _Support() when support != null:
-return support(_that);case _ChangeStatus() when changeStatus != null:
+return support(_that);case _AddView() when addView != null:
+return addView(_that);case _AddClick() when addClick != null:
+return addClick(_that);case _ChangeStatus() when changeStatus != null:
 return changeStatus(_that);case _Received() when received != null:
 return received(_that);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that);case _:
@@ -760,16 +916,20 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( String title,  String imagePath,  String description,  County? county,  Constituency? constituency,  Ward? ward)?  create,TResult Function( Petition petition)?  retrieve,TResult Function( Petition petition)?  support,TResult Function( Petition petition)?  changeStatus,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Petition petition)?  unsubscribe,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  viewAdded,TResult Function( Map<String, dynamic> payload)?  clickAdded,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( String title,  String imagePath,  String description,  County? county,  Constituency? constituency,  Ward? ward)?  create,TResult Function( Petition petition)?  retrieve,TResult Function( Petition petition)?  support,TResult Function( Petition petition)?  addView,TResult Function( Petition petition)?  addClick,TResult Function( Petition petition)?  changeStatus,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Petition petition)?  unsubscribe,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
 return loaded(_that.payload);case _Updated() when updated != null:
-return updated(_that.payload);case _Deleted() when deleted != null:
+return updated(_that.payload);case _ViewAdded() when viewAdded != null:
+return viewAdded(_that.payload);case _ClickAdded() when clickAdded != null:
+return clickAdded(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Create() when create != null:
 return create(_that.title,_that.imagePath,_that.description,_that.county,_that.constituency,_that.ward);case _Retrieve() when retrieve != null:
 return retrieve(_that.petition);case _Support() when support != null:
-return support(_that.petition);case _ChangeStatus() when changeStatus != null:
+return support(_that.petition);case _AddView() when addView != null:
+return addView(_that.petition);case _AddClick() when addClick != null:
+return addClick(_that.petition);case _ChangeStatus() when changeStatus != null:
 return changeStatus(_that.petition);case _Received() when received != null:
 return received(_that.payload);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that.petition);case _:
@@ -790,16 +950,20 @@ return unsubscribe(_that.petition);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( String title,  String imagePath,  String description,  County? county,  Constituency? constituency,  Ward? ward)  create,required TResult Function( Petition petition)  retrieve,required TResult Function( Petition petition)  support,required TResult Function( Petition petition)  changeStatus,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Petition petition)  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  viewAdded,required TResult Function( Map<String, dynamic> payload)  clickAdded,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( String title,  String imagePath,  String description,  County? county,  Constituency? constituency,  Ward? ward)  create,required TResult Function( Petition petition)  retrieve,required TResult Function( Petition petition)  support,required TResult Function( Petition petition)  addView,required TResult Function( Petition petition)  addClick,required TResult Function( Petition petition)  changeStatus,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Petition petition)  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Loaded():
 return loaded(_that.payload);case _Updated():
-return updated(_that.payload);case _Deleted():
+return updated(_that.payload);case _ViewAdded():
+return viewAdded(_that.payload);case _ClickAdded():
+return clickAdded(_that.payload);case _Deleted():
 return deleted(_that.payload);case _Create():
 return create(_that.title,_that.imagePath,_that.description,_that.county,_that.constituency,_that.ward);case _Retrieve():
 return retrieve(_that.petition);case _Support():
-return support(_that.petition);case _ChangeStatus():
+return support(_that.petition);case _AddView():
+return addView(_that.petition);case _AddClick():
+return addClick(_that.petition);case _ChangeStatus():
 return changeStatus(_that.petition);case _Received():
 return received(_that.payload);case _Unsubscribe():
 return unsubscribe(_that.petition);}
@@ -816,16 +980,20 @@ return unsubscribe(_that.petition);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( String title,  String imagePath,  String description,  County? county,  Constituency? constituency,  Ward? ward)?  create,TResult? Function( Petition petition)?  retrieve,TResult? Function( Petition petition)?  support,TResult? Function( Petition petition)?  changeStatus,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Petition petition)?  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  viewAdded,TResult? Function( Map<String, dynamic> payload)?  clickAdded,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( String title,  String imagePath,  String description,  County? county,  Constituency? constituency,  Ward? ward)?  create,TResult? Function( Petition petition)?  retrieve,TResult? Function( Petition petition)?  support,TResult? Function( Petition petition)?  addView,TResult? Function( Petition petition)?  addClick,TResult? Function( Petition petition)?  changeStatus,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Petition petition)?  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
 return loaded(_that.payload);case _Updated() when updated != null:
-return updated(_that.payload);case _Deleted() when deleted != null:
+return updated(_that.payload);case _ViewAdded() when viewAdded != null:
+return viewAdded(_that.payload);case _ClickAdded() when clickAdded != null:
+return clickAdded(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Create() when create != null:
 return create(_that.title,_that.imagePath,_that.description,_that.county,_that.constituency,_that.ward);case _Retrieve() when retrieve != null:
 return retrieve(_that.petition);case _Support() when support != null:
-return support(_that.petition);case _ChangeStatus() when changeStatus != null:
+return support(_that.petition);case _AddView() when addView != null:
+return addView(_that.petition);case _AddClick() when addClick != null:
+return addClick(_that.petition);case _ChangeStatus() when changeStatus != null:
 return changeStatus(_that.petition);case _Received() when received != null:
 return received(_that.payload);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that.petition);case _:
@@ -1044,6 +1212,150 @@ class __$UpdatedCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
   return _then(_Updated(
+payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _ViewAdded implements PetitionDetailEvent {
+  const _ViewAdded({required final  Map<String, dynamic> payload}): _payload = payload;
+  
+
+ final  Map<String, dynamic> _payload;
+ Map<String, dynamic> get payload {
+  if (_payload is EqualUnmodifiableMapView) return _payload;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_payload);
+}
+
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ViewAddedCopyWith<_ViewAdded> get copyWith => __$ViewAddedCopyWithImpl<_ViewAdded>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ViewAdded&&const DeepCollectionEquality().equals(other._payload, _payload));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
+
+@override
+String toString() {
+  return 'PetitionDetailEvent.viewAdded(payload: $payload)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ViewAddedCopyWith<$Res> implements $PetitionDetailEventCopyWith<$Res> {
+  factory _$ViewAddedCopyWith(_ViewAdded value, $Res Function(_ViewAdded) _then) = __$ViewAddedCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, dynamic> payload
+});
+
+
+
+
+}
+/// @nodoc
+class __$ViewAddedCopyWithImpl<$Res>
+    implements _$ViewAddedCopyWith<$Res> {
+  __$ViewAddedCopyWithImpl(this._self, this._then);
+
+  final _ViewAdded _self;
+  final $Res Function(_ViewAdded) _then;
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
+  return _then(_ViewAdded(
+payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _ClickAdded implements PetitionDetailEvent {
+  const _ClickAdded({required final  Map<String, dynamic> payload}): _payload = payload;
+  
+
+ final  Map<String, dynamic> _payload;
+ Map<String, dynamic> get payload {
+  if (_payload is EqualUnmodifiableMapView) return _payload;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_payload);
+}
+
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ClickAddedCopyWith<_ClickAdded> get copyWith => __$ClickAddedCopyWithImpl<_ClickAdded>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ClickAdded&&const DeepCollectionEquality().equals(other._payload, _payload));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
+
+@override
+String toString() {
+  return 'PetitionDetailEvent.clickAdded(payload: $payload)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ClickAddedCopyWith<$Res> implements $PetitionDetailEventCopyWith<$Res> {
+  factory _$ClickAddedCopyWith(_ClickAdded value, $Res Function(_ClickAdded) _then) = __$ClickAddedCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, dynamic> payload
+});
+
+
+
+
+}
+/// @nodoc
+class __$ClickAddedCopyWithImpl<$Res>
+    implements _$ClickAddedCopyWith<$Res> {
+  __$ClickAddedCopyWithImpl(this._self, this._then);
+
+  final _ClickAdded _self;
+  final $Res Function(_ClickAdded) _then;
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
+  return _then(_ClickAdded(
 payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>,
   ));
@@ -1369,6 +1681,156 @@ class __$SupportCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? petition = null,}) {
   return _then(_Support(
+petition: null == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
+as Petition,
+  ));
+}
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PetitionCopyWith<$Res> get petition {
+  
+  return $PetitionCopyWith<$Res>(_self.petition, (value) {
+    return _then(_self.copyWith(petition: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _AddView implements PetitionDetailEvent {
+  const _AddView({required this.petition});
+  
+
+ final  Petition petition;
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AddViewCopyWith<_AddView> get copyWith => __$AddViewCopyWithImpl<_AddView>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AddView&&(identical(other.petition, petition) || other.petition == petition));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,petition);
+
+@override
+String toString() {
+  return 'PetitionDetailEvent.addView(petition: $petition)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AddViewCopyWith<$Res> implements $PetitionDetailEventCopyWith<$Res> {
+  factory _$AddViewCopyWith(_AddView value, $Res Function(_AddView) _then) = __$AddViewCopyWithImpl;
+@useResult
+$Res call({
+ Petition petition
+});
+
+
+$PetitionCopyWith<$Res> get petition;
+
+}
+/// @nodoc
+class __$AddViewCopyWithImpl<$Res>
+    implements _$AddViewCopyWith<$Res> {
+  __$AddViewCopyWithImpl(this._self, this._then);
+
+  final _AddView _self;
+  final $Res Function(_AddView) _then;
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? petition = null,}) {
+  return _then(_AddView(
+petition: null == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
+as Petition,
+  ));
+}
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PetitionCopyWith<$Res> get petition {
+  
+  return $PetitionCopyWith<$Res>(_self.petition, (value) {
+    return _then(_self.copyWith(petition: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _AddClick implements PetitionDetailEvent {
+  const _AddClick({required this.petition});
+  
+
+ final  Petition petition;
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AddClickCopyWith<_AddClick> get copyWith => __$AddClickCopyWithImpl<_AddClick>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AddClick&&(identical(other.petition, petition) || other.petition == petition));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,petition);
+
+@override
+String toString() {
+  return 'PetitionDetailEvent.addClick(petition: $petition)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AddClickCopyWith<$Res> implements $PetitionDetailEventCopyWith<$Res> {
+  factory _$AddClickCopyWith(_AddClick value, $Res Function(_AddClick) _then) = __$AddClickCopyWithImpl;
+@useResult
+$Res call({
+ Petition petition
+});
+
+
+$PetitionCopyWith<$Res> get petition;
+
+}
+/// @nodoc
+class __$AddClickCopyWithImpl<$Res>
+    implements _$AddClickCopyWith<$Res> {
+  __$AddClickCopyWithImpl(this._self, this._then);
+
+  final _AddClick _self;
+  final $Res Function(_AddClick) _then;
+
+/// Create a copy of PetitionDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? petition = null,}) {
+  return _then(_AddClick(
 petition: null == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
 as Petition,
   ));

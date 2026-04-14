@@ -1,4 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:collection/collection.dart';
+import 'package:democracy/app/bloc/theme/theme_cubit.dart';
 import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/more_pop_up.dart';
@@ -14,6 +16,7 @@ import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 class PetitionTile extends StatelessWidget {
   const PetitionTile({
@@ -35,64 +38,103 @@ class PetitionTile extends StatelessWidget {
           ),
         );
       },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 200,
-            decoration: BoxDecoration(
-              color: isDependency
-                  ? Colors.transparent
-                  : Theme.of(context).colorScheme.tertiaryContainer,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
+      child: VisibilityDetector(
+        key: Key('${petition.id}'),
+        onVisibilityChanged: (visibilityInfo) {
+          var visibilityPercentage = visibilityInfo.visibleFraction * 100;
+          if (visibilityPercentage == 100) {
+            Map<String, int> viewedPetition = {'Petition': petition.id};
+            final themeState = context.read<ThemeCubit>().state;
+            bool exists = themeState.viewedPosts.any(
+              (element) => const DeepCollectionEquality().equals(
+                element,
+                viewedPetition,
               ),
-              image: DecorationImage(
-                image: CachedNetworkImageProvider(petition.image),
-                fit: BoxFit.cover,
+            );
+            if (!exists) {
+              context.read<PetitionDetailBloc>().add(
+                PetitionDetailEvent.addView(petition: petition),
+              );
+              context.read<ThemeCubit>().addViewedPost(
+                viewedPost: viewedPetition,
+              );
+            }
+          }
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: 200,
+              decoration: BoxDecoration(
+                color: isDependency
+                    ? Colors.transparent
+                    : Theme.of(context).colorScheme.tertiaryContainer,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  topRight: Radius.circular(10),
+                ),
+                image: DecorationImage(
+                  image: CachedNetworkImageProvider(petition.image),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            decoration: BoxDecoration(
-              color: isDependency
-                  ? Colors.transparent
-                  : Theme.of(context).colorScheme.tertiaryContainer,
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(10),
-                bottomRight: Radius.circular(10),
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              decoration: BoxDecoration(
+                color: isDependency
+                    ? Colors.transparent
+                    : Theme.of(context).colorScheme.tertiaryContainer,
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
+                ),
               ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (petition.county != null)
-                  Container(
-                    margin: EdgeInsets.only(bottom: 10),
-                    child: GeoChipRow(
-                      county: petition.county,
-                      constituency: petition.constituency,
-                      ward: petition.ward,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (petition.county != null)
+                    Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      child: GeoChipRow(
+                        county: petition.county,
+                        constituency: petition.constituency,
+                        ward: petition.ward,
+                      ),
+                    ),
+                  Text(
+                    petition.title,
+                    maxLines: 3,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                Text(
-                  petition.title,
-                  maxLines: 3,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                if (!isDependency) SizedBox(height: 10),
-                if (!isDependency) PetitionAuthorInfo(petition: petition),
-              ],
+                  if (!isDependency) SizedBox(height: 5),
+                  if (!isDependency && petition.views > 0)
+                    Container(
+                      margin: EdgeInsets.only(bottom: 5),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            '${petition.views} views',
+                            style: TextStyle(
+                              color: Theme.of(context).disabledColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  if (!isDependency) PetitionAuthorInfo(petition: petition),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
