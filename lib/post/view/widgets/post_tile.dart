@@ -121,7 +121,7 @@ class PostTile extends StatelessWidget {
               Thread(
                 reply: post,
                 isExpanded: isExpanded!,
-                onExpand: onExpand,
+                onExpand: onExpand!,
                 onThreadUpdated: onThreadUpdated!,
               ),
           ],
