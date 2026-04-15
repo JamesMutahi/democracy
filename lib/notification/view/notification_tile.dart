@@ -79,6 +79,33 @@ class NotificationTile extends StatelessWidget {
           );
         }
       };
+    } else if (notification.isSupport) {
+      icon = Icon(Symbols.person);
+      title = Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _UsersRow(users: users),
+          Text(usersText),
+        ],
+      );
+      subtitle = SizedBox.shrink();
+      onTap = () {
+        if (notification.users.length == 1) {
+          navigateToProfilePage(
+            context: context,
+            user: notification.users.first,
+          );
+        } else {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) =>
+                  UsersPage(title: 'New supporters', users: notification.users),
+            ),
+          );
+        }
+      };
     } else if (notification.post != null) {
       icon = Icon(Symbols.post_rounded);
       title = Text(notification.text);
@@ -180,7 +207,8 @@ class NotificationTile extends StatelessWidget {
     }
 
     return ListTile(
-      leading: icon,
+      titleAlignment: ListTileTitleAlignment.top,
+      leading: Container(margin: EdgeInsets.only(top: 5), child: icon),
       title: title,
       subtitle: subtitle,
       trailing: notification.isRead

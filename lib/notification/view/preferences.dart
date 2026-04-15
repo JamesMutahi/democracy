@@ -24,6 +24,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
       body: BlocBuilder<PreferencesBloc, PreferencesState>(
         builder: (context, state) {
           final preferences = state.preferences;
+
           void updatePreferences({
             bool? allowNotifications,
             bool? allowTagNotifications,
@@ -32,6 +33,8 @@ class _PreferencesPageState extends State<PreferencesPage> {
             bool? allowRepostNotifications,
             bool? allowMessageNotifications,
             bool? allowFollowNotifications,
+            bool? allowPetitionNotifications,
+            bool? allowPetitionSupporterNotifications,
           }) {
             context.read<PreferencesBloc>().add(
               PreferencesEvent.update(
@@ -54,6 +57,12 @@ class _PreferencesPageState extends State<PreferencesPage> {
                 allowFollowNotifications:
                     allowFollowNotifications ??
                     preferences!.allowFollowNotifications,
+                allowPetitionNotifications:
+                    allowPetitionNotifications ??
+                    preferences!.allowPetitionNotifications,
+                allowPetitionSupporterNotifications:
+                    allowPetitionSupporterNotifications ??
+                    preferences!.allowPetitionSupporterNotifications,
               ),
             );
           }
@@ -75,17 +84,17 @@ class _PreferencesPageState extends State<PreferencesPage> {
                           Switch(
                             value: preferences.allowNotifications,
                             onChanged: (value) {
-                              setState(() {
-                                updatePreferences(
-                                  allowNotifications: value,
-                                  allowTagNotifications: value,
-                                  allowLikeNotifications: value,
-                                  allowReplyNotifications: value,
-                                  allowRepostNotifications: value,
-                                  allowMessageNotifications: value,
-                                  allowFollowNotifications: value,
-                                );
-                              });
+                              updatePreferences(
+                                allowNotifications: value,
+                                allowTagNotifications: value,
+                                allowLikeNotifications: value,
+                                allowReplyNotifications: value,
+                                allowRepostNotifications: value,
+                                allowMessageNotifications: value,
+                                allowFollowNotifications: value,
+                                allowPetitionNotifications: value,
+                                allowPetitionSupporterNotifications: value,
+                              );
                             },
                           ),
                         ],
@@ -182,6 +191,40 @@ class _PreferencesPageState extends State<PreferencesPage> {
                                     onChanged: (value) {
                                       updatePreferences(
                                         allowFollowNotifications: value,
+                                      );
+                                    },
+                                  ),
+                                  const SizedBox(height: 20),
+                                  Text(
+                                    'Petitions',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.titleMedium,
+                                  ),
+                                  const SizedBox(height: 10),
+                                  const Text(
+                                    'Select which petition activity you would like to '
+                                    'receive notifications on.',
+                                  ),
+                                  const SizedBox(height: 10),
+                                  SwitchRow(
+                                    text: 'Petitions (from people you follow)',
+                                    value:
+                                        preferences.allowPetitionNotifications,
+                                    onChanged: (value) {
+                                      updatePreferences(
+                                        allowPetitionNotifications: value,
+                                      );
+                                    },
+                                  ),
+                                  SwitchRow(
+                                    text: 'Supporters (of your petitions)',
+                                    value: preferences
+                                        .allowPetitionSupporterNotifications,
+                                    onChanged: (value) {
+                                      updatePreferences(
+                                        allowPetitionSupporterNotifications:
+                                            value,
                                       );
                                     },
                                   ),

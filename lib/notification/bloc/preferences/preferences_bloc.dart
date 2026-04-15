@@ -80,6 +80,9 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
           'allow_reply_notifications': event.allowReplyNotifications,
           'allow_repost_notifications': event.allowRepostNotifications,
           'allow_message_notifications': event.allowMessageNotifications,
+          'allow_petition_notifications': event.allowPetitionNotifications,
+          'allow_petition_supporter_notifications':
+              event.allowPetitionSupporterNotifications,
         },
       },
     };

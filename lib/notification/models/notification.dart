@@ -18,6 +18,7 @@ sealed class Notification with _$Notification {
     required final List<User> users,
     @JsonKey(name: 'is_like') required final bool isLike,
     @JsonKey(name: 'is_follow') required final bool isFollow,
+    @JsonKey(name: 'is_support') required final bool isSupport,
     required final Post? post,
     required final Ballot? ballot,
     required final Survey? survey,

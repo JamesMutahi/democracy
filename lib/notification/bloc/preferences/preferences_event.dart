@@ -14,5 +14,7 @@ sealed class PreferencesEvent with _$PreferencesEvent {
     required bool allowRepostNotifications,
     required bool allowMessageNotifications,
     required bool allowFollowNotifications,
+    required bool allowPetitionNotifications,
+    required bool allowPetitionSupporterNotifications,
   }) = _Update;
 }

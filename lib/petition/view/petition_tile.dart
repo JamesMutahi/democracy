@@ -121,10 +121,8 @@ class PetitionTile extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            '${petition.views} views',
-                            style: TextStyle(
-                              color: Theme.of(context).disabledColor,
-                            ),
+                            '${petition.views} ${petition.views > 1 ? 'views' : 'view'}',
+                            style: TextStyle(color: Colors.black.withAlpha(75)),
                           ),
                         ],
                       ),

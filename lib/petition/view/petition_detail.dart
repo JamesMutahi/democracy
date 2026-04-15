@@ -116,7 +116,7 @@ class _PetitionDetailState extends State<PetitionDetail> {
                             right: 0,
                             bottom: 0,
                             child: Container(
-                              margin: EdgeInsets.only(bottom: 5, right: 15),
+                              margin: EdgeInsets.only(bottom: 5, right: 5),
                               padding: EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                 color: Colors.black.withAlpha(50),
@@ -126,7 +126,7 @@ class _PetitionDetailState extends State<PetitionDetail> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    '${_petition.views} views',
+                                    '${_petition.views} ${_petition.views > 1 ? 'views': 'view'}',
                                     style: TextStyle(
                                       color: Colors.black.withAlpha(75),
                                     ),

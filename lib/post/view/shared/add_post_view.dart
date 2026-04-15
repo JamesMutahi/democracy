@@ -9,7 +9,7 @@ void addPostView(BuildContext context, String origin, Post post) {
   var viewedPost = {origin: post.id};
   _checkAndAddView(context, viewedPost, post);
   if (post.repostOf != null) {
-    viewedPost = {'$origin repost': post.repostOf!.id};
+    viewedPost = {'$origin ${post.id} repost': post.repostOf!.id};
     _checkAndAddView(context, viewedPost, post.repostOf!);
   }
 }

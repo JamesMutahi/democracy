@@ -211,7 +211,8 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
                     _insertedContent == null &&
                     _selectedFile == null &&
                     _selectedImages.isEmpty &&
-                    _location == null
+                    _location == null &&
+                    _selectedSection == null
                 ? null
                 : _createPost,
             recipient: widget.post.author,
@@ -258,6 +259,7 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
       _insertedContent = null;
       _selectedImages = [];
       _location = null;
+      _selectedSection = null;
     });
   }
 }

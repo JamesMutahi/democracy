@@ -391,7 +391,7 @@ class SectionView extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          margin: EdgeInsets.only(top: 10),
+          margin: EdgeInsets.only(top: 10, left: 15, right: 15),
           decoration: BoxDecoration(
             border: Border.all(
               color: Theme.of(context).colorScheme.outlineVariant,

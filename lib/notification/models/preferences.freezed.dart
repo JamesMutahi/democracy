@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Preferences {
 
-@JsonKey(name: 'allow_notifications') bool get allowNotifications;@JsonKey(name: 'allow_follow_notifications') bool get allowFollowNotifications;@JsonKey(name: 'allow_tag_notifications') bool get allowTagNotifications;@JsonKey(name: 'allow_like_notifications') bool get allowLikeNotifications;@JsonKey(name: 'allow_reply_notifications') bool get allowReplyNotifications;@JsonKey(name: 'allow_repost_notifications') bool get allowRepostNotifications;@JsonKey(name: 'allow_message_notifications') bool get allowMessageNotifications;
+@JsonKey(name: 'allow_notifications') bool get allowNotifications;@JsonKey(name: 'allow_follow_notifications') bool get allowFollowNotifications;@JsonKey(name: 'allow_tag_notifications') bool get allowTagNotifications;@JsonKey(name: 'allow_like_notifications') bool get allowLikeNotifications;@JsonKey(name: 'allow_reply_notifications') bool get allowReplyNotifications;@JsonKey(name: 'allow_repost_notifications') bool get allowRepostNotifications;@JsonKey(name: 'allow_message_notifications') bool get allowMessageNotifications;@JsonKey(name: 'allow_petition_notifications') bool get allowPetitionNotifications;@JsonKey(name: 'allow_petition_supporter_notifications') bool get allowPetitionSupporterNotifications;
 /// Create a copy of Preferences
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $PreferencesCopyWith<Preferences> get copyWith => _$PreferencesCopyWithImpl<Pref
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Preferences&&(identical(other.allowNotifications, allowNotifications) || other.allowNotifications == allowNotifications)&&(identical(other.allowFollowNotifications, allowFollowNotifications) || other.allowFollowNotifications == allowFollowNotifications)&&(identical(other.allowTagNotifications, allowTagNotifications) || other.allowTagNotifications == allowTagNotifications)&&(identical(other.allowLikeNotifications, allowLikeNotifications) || other.allowLikeNotifications == allowLikeNotifications)&&(identical(other.allowReplyNotifications, allowReplyNotifications) || other.allowReplyNotifications == allowReplyNotifications)&&(identical(other.allowRepostNotifications, allowRepostNotifications) || other.allowRepostNotifications == allowRepostNotifications)&&(identical(other.allowMessageNotifications, allowMessageNotifications) || other.allowMessageNotifications == allowMessageNotifications));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Preferences&&(identical(other.allowNotifications, allowNotifications) || other.allowNotifications == allowNotifications)&&(identical(other.allowFollowNotifications, allowFollowNotifications) || other.allowFollowNotifications == allowFollowNotifications)&&(identical(other.allowTagNotifications, allowTagNotifications) || other.allowTagNotifications == allowTagNotifications)&&(identical(other.allowLikeNotifications, allowLikeNotifications) || other.allowLikeNotifications == allowLikeNotifications)&&(identical(other.allowReplyNotifications, allowReplyNotifications) || other.allowReplyNotifications == allowReplyNotifications)&&(identical(other.allowRepostNotifications, allowRepostNotifications) || other.allowRepostNotifications == allowRepostNotifications)&&(identical(other.allowMessageNotifications, allowMessageNotifications) || other.allowMessageNotifications == allowMessageNotifications)&&(identical(other.allowPetitionNotifications, allowPetitionNotifications) || other.allowPetitionNotifications == allowPetitionNotifications)&&(identical(other.allowPetitionSupporterNotifications, allowPetitionSupporterNotifications) || other.allowPetitionSupporterNotifications == allowPetitionSupporterNotifications));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,allowNotifications,allowFollowNotifications,allowTagNotifications,allowLikeNotifications,allowReplyNotifications,allowRepostNotifications,allowMessageNotifications);
+int get hashCode => Object.hash(runtimeType,allowNotifications,allowFollowNotifications,allowTagNotifications,allowLikeNotifications,allowReplyNotifications,allowRepostNotifications,allowMessageNotifications,allowPetitionNotifications,allowPetitionSupporterNotifications);
 
 @override
 String toString() {
-  return 'Preferences(allowNotifications: $allowNotifications, allowFollowNotifications: $allowFollowNotifications, allowTagNotifications: $allowTagNotifications, allowLikeNotifications: $allowLikeNotifications, allowReplyNotifications: $allowReplyNotifications, allowRepostNotifications: $allowRepostNotifications, allowMessageNotifications: $allowMessageNotifications)';
+  return 'Preferences(allowNotifications: $allowNotifications, allowFollowNotifications: $allowFollowNotifications, allowTagNotifications: $allowTagNotifications, allowLikeNotifications: $allowLikeNotifications, allowReplyNotifications: $allowReplyNotifications, allowRepostNotifications: $allowRepostNotifications, allowMessageNotifications: $allowMessageNotifications, allowPetitionNotifications: $allowPetitionNotifications, allowPetitionSupporterNotifications: $allowPetitionSupporterNotifications)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $PreferencesCopyWith<$Res>  {
   factory $PreferencesCopyWith(Preferences value, $Res Function(Preferences) _then) = _$PreferencesCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'allow_notifications') bool allowNotifications,@JsonKey(name: 'allow_follow_notifications') bool allowFollowNotifications,@JsonKey(name: 'allow_tag_notifications') bool allowTagNotifications,@JsonKey(name: 'allow_like_notifications') bool allowLikeNotifications,@JsonKey(name: 'allow_reply_notifications') bool allowReplyNotifications,@JsonKey(name: 'allow_repost_notifications') bool allowRepostNotifications,@JsonKey(name: 'allow_message_notifications') bool allowMessageNotifications
+@JsonKey(name: 'allow_notifications') bool allowNotifications,@JsonKey(name: 'allow_follow_notifications') bool allowFollowNotifications,@JsonKey(name: 'allow_tag_notifications') bool allowTagNotifications,@JsonKey(name: 'allow_like_notifications') bool allowLikeNotifications,@JsonKey(name: 'allow_reply_notifications') bool allowReplyNotifications,@JsonKey(name: 'allow_repost_notifications') bool allowRepostNotifications,@JsonKey(name: 'allow_message_notifications') bool allowMessageNotifications,@JsonKey(name: 'allow_petition_notifications') bool allowPetitionNotifications,@JsonKey(name: 'allow_petition_supporter_notifications') bool allowPetitionSupporterNotifications
 });
 
 
@@ -65,7 +65,7 @@ class _$PreferencesCopyWithImpl<$Res>
 
 /// Create a copy of Preferences
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? allowNotifications = null,Object? allowFollowNotifications = null,Object? allowTagNotifications = null,Object? allowLikeNotifications = null,Object? allowReplyNotifications = null,Object? allowRepostNotifications = null,Object? allowMessageNotifications = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? allowNotifications = null,Object? allowFollowNotifications = null,Object? allowTagNotifications = null,Object? allowLikeNotifications = null,Object? allowReplyNotifications = null,Object? allowRepostNotifications = null,Object? allowMessageNotifications = null,Object? allowPetitionNotifications = null,Object? allowPetitionSupporterNotifications = null,}) {
   return _then(_self.copyWith(
 allowNotifications: null == allowNotifications ? _self.allowNotifications : allowNotifications // ignore: cast_nullable_to_non_nullable
 as bool,allowFollowNotifications: null == allowFollowNotifications ? _self.allowFollowNotifications : allowFollowNotifications // ignore: cast_nullable_to_non_nullable
@@ -74,6 +74,8 @@ as bool,allowLikeNotifications: null == allowLikeNotifications ? _self.allowLike
 as bool,allowReplyNotifications: null == allowReplyNotifications ? _self.allowReplyNotifications : allowReplyNotifications // ignore: cast_nullable_to_non_nullable
 as bool,allowRepostNotifications: null == allowRepostNotifications ? _self.allowRepostNotifications : allowRepostNotifications // ignore: cast_nullable_to_non_nullable
 as bool,allowMessageNotifications: null == allowMessageNotifications ? _self.allowMessageNotifications : allowMessageNotifications // ignore: cast_nullable_to_non_nullable
+as bool,allowPetitionNotifications: null == allowPetitionNotifications ? _self.allowPetitionNotifications : allowPetitionNotifications // ignore: cast_nullable_to_non_nullable
+as bool,allowPetitionSupporterNotifications: null == allowPetitionSupporterNotifications ? _self.allowPetitionSupporterNotifications : allowPetitionSupporterNotifications // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -156,10 +158,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'allow_notifications')  bool allowNotifications, @JsonKey(name: 'allow_follow_notifications')  bool allowFollowNotifications, @JsonKey(name: 'allow_tag_notifications')  bool allowTagNotifications, @JsonKey(name: 'allow_like_notifications')  bool allowLikeNotifications, @JsonKey(name: 'allow_reply_notifications')  bool allowReplyNotifications, @JsonKey(name: 'allow_repost_notifications')  bool allowRepostNotifications, @JsonKey(name: 'allow_message_notifications')  bool allowMessageNotifications)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'allow_notifications')  bool allowNotifications, @JsonKey(name: 'allow_follow_notifications')  bool allowFollowNotifications, @JsonKey(name: 'allow_tag_notifications')  bool allowTagNotifications, @JsonKey(name: 'allow_like_notifications')  bool allowLikeNotifications, @JsonKey(name: 'allow_reply_notifications')  bool allowReplyNotifications, @JsonKey(name: 'allow_repost_notifications')  bool allowRepostNotifications, @JsonKey(name: 'allow_message_notifications')  bool allowMessageNotifications, @JsonKey(name: 'allow_petition_notifications')  bool allowPetitionNotifications, @JsonKey(name: 'allow_petition_supporter_notifications')  bool allowPetitionSupporterNotifications)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Preferences() when $default != null:
-return $default(_that.allowNotifications,_that.allowFollowNotifications,_that.allowTagNotifications,_that.allowLikeNotifications,_that.allowReplyNotifications,_that.allowRepostNotifications,_that.allowMessageNotifications);case _:
+return $default(_that.allowNotifications,_that.allowFollowNotifications,_that.allowTagNotifications,_that.allowLikeNotifications,_that.allowReplyNotifications,_that.allowRepostNotifications,_that.allowMessageNotifications,_that.allowPetitionNotifications,_that.allowPetitionSupporterNotifications);case _:
   return orElse();
 
 }
@@ -177,10 +179,10 @@ return $default(_that.allowNotifications,_that.allowFollowNotifications,_that.al
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'allow_notifications')  bool allowNotifications, @JsonKey(name: 'allow_follow_notifications')  bool allowFollowNotifications, @JsonKey(name: 'allow_tag_notifications')  bool allowTagNotifications, @JsonKey(name: 'allow_like_notifications')  bool allowLikeNotifications, @JsonKey(name: 'allow_reply_notifications')  bool allowReplyNotifications, @JsonKey(name: 'allow_repost_notifications')  bool allowRepostNotifications, @JsonKey(name: 'allow_message_notifications')  bool allowMessageNotifications)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'allow_notifications')  bool allowNotifications, @JsonKey(name: 'allow_follow_notifications')  bool allowFollowNotifications, @JsonKey(name: 'allow_tag_notifications')  bool allowTagNotifications, @JsonKey(name: 'allow_like_notifications')  bool allowLikeNotifications, @JsonKey(name: 'allow_reply_notifications')  bool allowReplyNotifications, @JsonKey(name: 'allow_repost_notifications')  bool allowRepostNotifications, @JsonKey(name: 'allow_message_notifications')  bool allowMessageNotifications, @JsonKey(name: 'allow_petition_notifications')  bool allowPetitionNotifications, @JsonKey(name: 'allow_petition_supporter_notifications')  bool allowPetitionSupporterNotifications)  $default,) {final _that = this;
 switch (_that) {
 case _Preferences():
-return $default(_that.allowNotifications,_that.allowFollowNotifications,_that.allowTagNotifications,_that.allowLikeNotifications,_that.allowReplyNotifications,_that.allowRepostNotifications,_that.allowMessageNotifications);}
+return $default(_that.allowNotifications,_that.allowFollowNotifications,_that.allowTagNotifications,_that.allowLikeNotifications,_that.allowReplyNotifications,_that.allowRepostNotifications,_that.allowMessageNotifications,_that.allowPetitionNotifications,_that.allowPetitionSupporterNotifications);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -194,10 +196,10 @@ return $default(_that.allowNotifications,_that.allowFollowNotifications,_that.al
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'allow_notifications')  bool allowNotifications, @JsonKey(name: 'allow_follow_notifications')  bool allowFollowNotifications, @JsonKey(name: 'allow_tag_notifications')  bool allowTagNotifications, @JsonKey(name: 'allow_like_notifications')  bool allowLikeNotifications, @JsonKey(name: 'allow_reply_notifications')  bool allowReplyNotifications, @JsonKey(name: 'allow_repost_notifications')  bool allowRepostNotifications, @JsonKey(name: 'allow_message_notifications')  bool allowMessageNotifications)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'allow_notifications')  bool allowNotifications, @JsonKey(name: 'allow_follow_notifications')  bool allowFollowNotifications, @JsonKey(name: 'allow_tag_notifications')  bool allowTagNotifications, @JsonKey(name: 'allow_like_notifications')  bool allowLikeNotifications, @JsonKey(name: 'allow_reply_notifications')  bool allowReplyNotifications, @JsonKey(name: 'allow_repost_notifications')  bool allowRepostNotifications, @JsonKey(name: 'allow_message_notifications')  bool allowMessageNotifications, @JsonKey(name: 'allow_petition_notifications')  bool allowPetitionNotifications, @JsonKey(name: 'allow_petition_supporter_notifications')  bool allowPetitionSupporterNotifications)?  $default,) {final _that = this;
 switch (_that) {
 case _Preferences() when $default != null:
-return $default(_that.allowNotifications,_that.allowFollowNotifications,_that.allowTagNotifications,_that.allowLikeNotifications,_that.allowReplyNotifications,_that.allowRepostNotifications,_that.allowMessageNotifications);case _:
+return $default(_that.allowNotifications,_that.allowFollowNotifications,_that.allowTagNotifications,_that.allowLikeNotifications,_that.allowReplyNotifications,_that.allowRepostNotifications,_that.allowMessageNotifications,_that.allowPetitionNotifications,_that.allowPetitionSupporterNotifications);case _:
   return null;
 
 }
@@ -209,7 +211,7 @@ return $default(_that.allowNotifications,_that.allowFollowNotifications,_that.al
 @JsonSerializable()
 
 class _Preferences implements Preferences {
-  const _Preferences({@JsonKey(name: 'allow_notifications') required this.allowNotifications, @JsonKey(name: 'allow_follow_notifications') required this.allowFollowNotifications, @JsonKey(name: 'allow_tag_notifications') required this.allowTagNotifications, @JsonKey(name: 'allow_like_notifications') required this.allowLikeNotifications, @JsonKey(name: 'allow_reply_notifications') required this.allowReplyNotifications, @JsonKey(name: 'allow_repost_notifications') required this.allowRepostNotifications, @JsonKey(name: 'allow_message_notifications') required this.allowMessageNotifications});
+  const _Preferences({@JsonKey(name: 'allow_notifications') required this.allowNotifications, @JsonKey(name: 'allow_follow_notifications') required this.allowFollowNotifications, @JsonKey(name: 'allow_tag_notifications') required this.allowTagNotifications, @JsonKey(name: 'allow_like_notifications') required this.allowLikeNotifications, @JsonKey(name: 'allow_reply_notifications') required this.allowReplyNotifications, @JsonKey(name: 'allow_repost_notifications') required this.allowRepostNotifications, @JsonKey(name: 'allow_message_notifications') required this.allowMessageNotifications, @JsonKey(name: 'allow_petition_notifications') required this.allowPetitionNotifications, @JsonKey(name: 'allow_petition_supporter_notifications') required this.allowPetitionSupporterNotifications});
   factory _Preferences.fromJson(Map<String, dynamic> json) => _$PreferencesFromJson(json);
 
 @override@JsonKey(name: 'allow_notifications') final  bool allowNotifications;
@@ -219,6 +221,8 @@ class _Preferences implements Preferences {
 @override@JsonKey(name: 'allow_reply_notifications') final  bool allowReplyNotifications;
 @override@JsonKey(name: 'allow_repost_notifications') final  bool allowRepostNotifications;
 @override@JsonKey(name: 'allow_message_notifications') final  bool allowMessageNotifications;
+@override@JsonKey(name: 'allow_petition_notifications') final  bool allowPetitionNotifications;
+@override@JsonKey(name: 'allow_petition_supporter_notifications') final  bool allowPetitionSupporterNotifications;
 
 /// Create a copy of Preferences
 /// with the given fields replaced by the non-null parameter values.
@@ -233,16 +237,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Preferences&&(identical(other.allowNotifications, allowNotifications) || other.allowNotifications == allowNotifications)&&(identical(other.allowFollowNotifications, allowFollowNotifications) || other.allowFollowNotifications == allowFollowNotifications)&&(identical(other.allowTagNotifications, allowTagNotifications) || other.allowTagNotifications == allowTagNotifications)&&(identical(other.allowLikeNotifications, allowLikeNotifications) || other.allowLikeNotifications == allowLikeNotifications)&&(identical(other.allowReplyNotifications, allowReplyNotifications) || other.allowReplyNotifications == allowReplyNotifications)&&(identical(other.allowRepostNotifications, allowRepostNotifications) || other.allowRepostNotifications == allowRepostNotifications)&&(identical(other.allowMessageNotifications, allowMessageNotifications) || other.allowMessageNotifications == allowMessageNotifications));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Preferences&&(identical(other.allowNotifications, allowNotifications) || other.allowNotifications == allowNotifications)&&(identical(other.allowFollowNotifications, allowFollowNotifications) || other.allowFollowNotifications == allowFollowNotifications)&&(identical(other.allowTagNotifications, allowTagNotifications) || other.allowTagNotifications == allowTagNotifications)&&(identical(other.allowLikeNotifications, allowLikeNotifications) || other.allowLikeNotifications == allowLikeNotifications)&&(identical(other.allowReplyNotifications, allowReplyNotifications) || other.allowReplyNotifications == allowReplyNotifications)&&(identical(other.allowRepostNotifications, allowRepostNotifications) || other.allowRepostNotifications == allowRepostNotifications)&&(identical(other.allowMessageNotifications, allowMessageNotifications) || other.allowMessageNotifications == allowMessageNotifications)&&(identical(other.allowPetitionNotifications, allowPetitionNotifications) || other.allowPetitionNotifications == allowPetitionNotifications)&&(identical(other.allowPetitionSupporterNotifications, allowPetitionSupporterNotifications) || other.allowPetitionSupporterNotifications == allowPetitionSupporterNotifications));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,allowNotifications,allowFollowNotifications,allowTagNotifications,allowLikeNotifications,allowReplyNotifications,allowRepostNotifications,allowMessageNotifications);
+int get hashCode => Object.hash(runtimeType,allowNotifications,allowFollowNotifications,allowTagNotifications,allowLikeNotifications,allowReplyNotifications,allowRepostNotifications,allowMessageNotifications,allowPetitionNotifications,allowPetitionSupporterNotifications);
 
 @override
 String toString() {
-  return 'Preferences(allowNotifications: $allowNotifications, allowFollowNotifications: $allowFollowNotifications, allowTagNotifications: $allowTagNotifications, allowLikeNotifications: $allowLikeNotifications, allowReplyNotifications: $allowReplyNotifications, allowRepostNotifications: $allowRepostNotifications, allowMessageNotifications: $allowMessageNotifications)';
+  return 'Preferences(allowNotifications: $allowNotifications, allowFollowNotifications: $allowFollowNotifications, allowTagNotifications: $allowTagNotifications, allowLikeNotifications: $allowLikeNotifications, allowReplyNotifications: $allowReplyNotifications, allowRepostNotifications: $allowRepostNotifications, allowMessageNotifications: $allowMessageNotifications, allowPetitionNotifications: $allowPetitionNotifications, allowPetitionSupporterNotifications: $allowPetitionSupporterNotifications)';
 }
 
 
@@ -253,7 +257,7 @@ abstract mixin class _$PreferencesCopyWith<$Res> implements $PreferencesCopyWith
   factory _$PreferencesCopyWith(_Preferences value, $Res Function(_Preferences) _then) = __$PreferencesCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'allow_notifications') bool allowNotifications,@JsonKey(name: 'allow_follow_notifications') bool allowFollowNotifications,@JsonKey(name: 'allow_tag_notifications') bool allowTagNotifications,@JsonKey(name: 'allow_like_notifications') bool allowLikeNotifications,@JsonKey(name: 'allow_reply_notifications') bool allowReplyNotifications,@JsonKey(name: 'allow_repost_notifications') bool allowRepostNotifications,@JsonKey(name: 'allow_message_notifications') bool allowMessageNotifications
+@JsonKey(name: 'allow_notifications') bool allowNotifications,@JsonKey(name: 'allow_follow_notifications') bool allowFollowNotifications,@JsonKey(name: 'allow_tag_notifications') bool allowTagNotifications,@JsonKey(name: 'allow_like_notifications') bool allowLikeNotifications,@JsonKey(name: 'allow_reply_notifications') bool allowReplyNotifications,@JsonKey(name: 'allow_repost_notifications') bool allowRepostNotifications,@JsonKey(name: 'allow_message_notifications') bool allowMessageNotifications,@JsonKey(name: 'allow_petition_notifications') bool allowPetitionNotifications,@JsonKey(name: 'allow_petition_supporter_notifications') bool allowPetitionSupporterNotifications
 });
 
 
@@ -270,7 +274,7 @@ class __$PreferencesCopyWithImpl<$Res>
 
 /// Create a copy of Preferences
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? allowNotifications = null,Object? allowFollowNotifications = null,Object? allowTagNotifications = null,Object? allowLikeNotifications = null,Object? allowReplyNotifications = null,Object? allowRepostNotifications = null,Object? allowMessageNotifications = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? allowNotifications = null,Object? allowFollowNotifications = null,Object? allowTagNotifications = null,Object? allowLikeNotifications = null,Object? allowReplyNotifications = null,Object? allowRepostNotifications = null,Object? allowMessageNotifications = null,Object? allowPetitionNotifications = null,Object? allowPetitionSupporterNotifications = null,}) {
   return _then(_Preferences(
 allowNotifications: null == allowNotifications ? _self.allowNotifications : allowNotifications // ignore: cast_nullable_to_non_nullable
 as bool,allowFollowNotifications: null == allowFollowNotifications ? _self.allowFollowNotifications : allowFollowNotifications // ignore: cast_nullable_to_non_nullable
@@ -279,6 +283,8 @@ as bool,allowLikeNotifications: null == allowLikeNotifications ? _self.allowLike
 as bool,allowReplyNotifications: null == allowReplyNotifications ? _self.allowReplyNotifications : allowReplyNotifications // ignore: cast_nullable_to_non_nullable
 as bool,allowRepostNotifications: null == allowRepostNotifications ? _self.allowRepostNotifications : allowRepostNotifications // ignore: cast_nullable_to_non_nullable
 as bool,allowMessageNotifications: null == allowMessageNotifications ? _self.allowMessageNotifications : allowMessageNotifications // ignore: cast_nullable_to_non_nullable
+as bool,allowPetitionNotifications: null == allowPetitionNotifications ? _self.allowPetitionNotifications : allowPetitionNotifications // ignore: cast_nullable_to_non_nullable
+as bool,allowPetitionSupporterNotifications: null == allowPetitionSupporterNotifications ? _self.allowPetitionSupporterNotifications : allowPetitionSupporterNotifications // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

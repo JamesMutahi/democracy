@@ -20,6 +20,10 @@ sealed class Preferences with _$Preferences {
     required final bool allowRepostNotifications,
     @JsonKey(name: 'allow_message_notifications')
     required final bool allowMessageNotifications,
+    @JsonKey(name: 'allow_petition_notifications')
+    required final bool allowPetitionNotifications,
+    @JsonKey(name: 'allow_petition_supporter_notifications')
+    required final bool allowPetitionSupporterNotifications,
   }) = _Preferences;
 
   factory Preferences.fromJson(Map<String, Object?> json) =>

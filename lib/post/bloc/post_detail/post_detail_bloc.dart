@@ -351,21 +351,23 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   void _onAddView(_AddView event, Emitter<PostDetailState> emit) {
-    emit(PostDetailLoading());
-    if (!webSocketService.isConnected) {
-      emit(PostDetailFailure(error: serverError));
-      return;
-    }
+    if (!event.post.isDeleted) {
+      emit(PostDetailLoading());
+      if (!webSocketService.isConnected) {
+        emit(PostDetailFailure(error: serverError));
+        return;
+      }
 
-    Map<String, dynamic> message = {
-      'stream': stream,
-      'payload': {
-        "action": 'add_view',
-        "request_id": requestId,
-        'pk': event.post.id,
-      },
-    };
-    webSocketService.send(message);
+      Map<String, dynamic> message = {
+        'stream': stream,
+        'payload': {
+          "action": 'add_view',
+          "request_id": requestId,
+          'pk': event.post.id,
+        },
+      };
+      webSocketService.send(message);
+    }
   }
 
   void _onAddClick(_AddClick event, Emitter<PostDetailState> emit) {
