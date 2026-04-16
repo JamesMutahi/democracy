@@ -173,6 +173,8 @@ void main() async {
           BlocProvider(
             create: (context) => UserDetailBloc(
               webSocketService: context.read<WebSocketService>(),
+              authRepository: context.read<AuthRepository>(),
+              apiRepository: context.read<APIRepository>(),
             ),
           ),
           BlocProvider(

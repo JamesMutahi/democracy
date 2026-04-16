@@ -35,16 +35,14 @@ class _EditProfileState extends State<EditProfile> {
     Color shaderColor = Colors.black.withValues(alpha: 0.3);
     return BlocListener<UserDetailBloc, UserDetailState>(
       listener: (context, state) {
-        if (state is UserUpdated) {
-          if (waiting && widget.user.id == state.user.id) {
-            Navigator.pop(context);
-            final snackBar = getSnackBar(
-              context: context,
-              message: 'Updated',
-              status: SnackBarStatus.success,
-            );
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          }
+        if (state is UserPatched) {
+          Navigator.pop(context);
+          final snackBar = getSnackBar(
+            context: context,
+            message: 'Updated',
+            status: SnackBarStatus.success,
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
       },
       child: Scaffold(
@@ -69,7 +67,7 @@ class _EditProfileState extends State<EditProfile> {
                                 waiting = true;
                               });
                               context.read<UserDetailBloc>().add(
-                                UserDetailEvent.update(
+                                UserDetailEvent.patch(
                                   user: widget.user,
                                   name: name,
                                   bio: bio,

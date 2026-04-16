@@ -12,13 +12,13 @@ sealed class UserDetailEvent with _$UserDetailEvent {
 
   const factory UserDetailEvent.get({required User user}) = _Get;
 
-  const factory UserDetailEvent.update({
+  const factory UserDetailEvent.patch({
     required User user,
     required String name,
     required String bio,
     required String? imagePath,
     required String? coverPhotoPath,
-  }) = _Update;
+  }) = _Patch;
 
   const factory UserDetailEvent.follow({required User user}) = _Follow;
 

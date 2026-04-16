@@ -348,4 +348,37 @@ class APIRepository {
       return Future.error(e.toString());
     }
   }
+
+  Future patchUser({
+    required String token,
+    required String name,
+    required String bio,
+    required String? imagePath,
+    required String? coverPhotoPath,
+    County? county,
+    Constituency? constituency,
+    Ward? ward,
+  }) async {
+    try {
+      FormData data = FormData.fromMap({
+        'name': name,
+        'bio': bio,
+        if (imagePath != null) 'image': await MultipartFile.fromFile(imagePath),
+        if (coverPhotoPath != null)
+          'cover_photo': await MultipartFile.fromFile(coverPhotoPath),
+      });
+      Response response = await dio.patch(
+        'auth/user/',
+        data: data,
+        options: Options(
+          headers: <String, String>{'Authorization': 'Token $token'},
+        ),
+      );
+      if (response.statusCode != 200) {
+        return Future.error(response.data.toString());
+      }
+    } on DioException catch (e) {
+      return Future.error(e.toString());
+    }
+  }
 }

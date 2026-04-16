@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:democracy/app/bloc/repository/api_repository.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/app/shared/constants/strings.dart';
+import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -16,7 +16,11 @@ const String stream = 'users';
 const String requestId = 'users';
 
 class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
-  UserDetailBloc({required this.webSocketService}) : super(const _Initial()) {
+  UserDetailBloc({
+    required this.webSocketService,
+    required this.authRepository,
+    required this.apiRepository,
+  }) : super(const _Initial()) {
     _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
         switch (message['payload']['action']) {
@@ -36,7 +40,7 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
     on<_Retrieved>((event, emit) => _onRetrieved(event, emit));
     on<_Updated>((event, emit) => _onUpdated(event, emit));
     on<_Get>((event, emit) => _onGet(event, emit));
-    on<_Update>((event, emit) => _onUpdate(event, emit));
+    on<_Patch>((event, emit) async => await _onPatch(event, emit));
     on<_Follow>((event, emit) => _onFollow(event, emit));
     on<_Mute>((event, emit) => _onMute(event, emit));
     on<_Block>((event, emit) => _onBlock(event, emit));
@@ -86,34 +90,21 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
     webSocketService.send(message);
   }
 
-  void _onUpdate(_Update event, Emitter<UserDetailState> emit) async {
+  Future _onPatch(_Patch event, Emitter<UserDetailState> emit) async {
     emit(_Loading());
-    if (!webSocketService.isConnected) {
-      emit(UserDetailFailure(error: serverError));
-      return;
+    try {
+      String? token = await authRepository.getToken();
+      await apiRepository.patchUser(
+        token: token!,
+        name: event.name,
+        bio: event.bio,
+        imagePath: event.imagePath,
+        coverPhotoPath: event.coverPhotoPath,
+      );
+      emit(UserPatched());
+    } catch (e) {
+      emit(UserDetailFailure(error: e.toString()));
     }
-
-    Map<String, dynamic> message = {
-      'stream': stream,
-      'payload': {
-        'action': 'patch',
-        'request_id': requestId,
-        'pk': event.user.id,
-        'data': {
-          'name': event.name,
-          'bio': event.bio,
-          if (event.imagePath != null)
-            'image_base64': base64Encode(
-              File(event.imagePath!).readAsBytesSync(),
-            ),
-          if (event.coverPhotoPath != null)
-            'cover_photo_base64': base64Encode(
-              File(event.coverPhotoPath!).readAsBytesSync(),
-            ),
-        },
-      },
-    };
-    webSocketService.send(message);
   }
 
   void _onFollow(_Follow event, Emitter<UserDetailState> emit) async {
@@ -243,4 +234,6 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
 
   late StreamSubscription _subscription;
   final WebSocketService webSocketService;
+  final AuthRepository authRepository;
+  final APIRepository apiRepository;
 }

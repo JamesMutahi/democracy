@@ -286,56 +286,55 @@ class _CameraPageState extends State<CameraPage>
               },
             ),
           ),
-          bottomNavigationBar:
-              isSwitchingCamera ||
-                  widget.onVideoEditingComplete == null ||
-                  controller.value.isRecordingVideo
+          bottomNavigationBar: widget.onVideoEditingComplete == null
               ? SizedBox.shrink()
               : BottomAppBar(
                   padding: const EdgeInsets.all(0.0),
                   height: 60.0,
                   elevation: 100.0,
                   color: Colors.black,
-                  child: TabBar(
-                    controller: _tabController,
-                    isScrollable: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    tabAlignment: TabAlignment.center,
-                    labelStyle: Theme.of(context).textTheme.titleMedium,
-                    splashBorderRadius: BorderRadius.circular(10),
-                    indicator: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white.withAlpha(50),
-                    ),
-                    padding: EdgeInsets.zero,
-                    labelPadding: EdgeInsets.symmetric(horizontal: 10),
-                    labelColor: Colors.white,
-                    unselectedLabelColor: Colors.white,
-                    tabs: [
-                      IgnorePointer(
-                        ignoring: true,
-                        child: SizedBox(width: 200),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10.0,
-                          vertical: 5,
+                  child: isSwitchingCamera || controller.value.isRecordingVideo
+                      ? Container(color: Colors.black)
+                      : TabBar(
+                          controller: _tabController,
+                          isScrollable: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          tabAlignment: TabAlignment.center,
+                          labelStyle: Theme.of(context).textTheme.titleMedium,
+                          splashBorderRadius: BorderRadius.circular(10),
+                          indicator: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white.withAlpha(50),
+                          ),
+                          padding: EdgeInsets.zero,
+                          labelPadding: EdgeInsets.symmetric(horizontal: 10),
+                          labelColor: Colors.white,
+                          unselectedLabelColor: Colors.white,
+                          tabs: [
+                            IgnorePointer(
+                              ignoring: true,
+                              child: SizedBox(width: 200),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10.0,
+                                vertical: 5,
+                              ),
+                              child: Text('Video'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10.0,
+                                vertical: 5,
+                              ),
+                              child: Text('Photo'),
+                            ),
+                            IgnorePointer(
+                              ignoring: true,
+                              child: SizedBox(width: 200),
+                            ),
+                          ],
                         ),
-                        child: Text('Video'),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10.0,
-                          vertical: 5,
-                        ),
-                        child: Text('Photo'),
-                      ),
-                      IgnorePointer(
-                        ignoring: true,
-                        child: SizedBox(width: 200),
-                      ),
-                    ],
-                  ),
                 ),
         ),
         if (_taskId != null)

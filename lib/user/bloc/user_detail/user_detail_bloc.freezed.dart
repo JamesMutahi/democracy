@@ -55,14 +55,15 @@ extension UserDetailStatePatterns on UserDetailState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( UserLoaded value)?  loaded,TResult Function( UserUpdated value)?  updated,TResult Function( UserVisited value)?  visited,TResult Function( UserDetailFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( UserLoaded value)?  loaded,TResult Function( UserUpdated value)?  updated,TResult Function( UserPatched value)?  patched,TResult Function( UserVisited value)?  visited,TResult Function( UserDetailFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
 return loading(_that);case UserLoaded() when loaded != null:
 return loaded(_that);case UserUpdated() when updated != null:
-return updated(_that);case UserVisited() when visited != null:
+return updated(_that);case UserPatched() when patched != null:
+return patched(_that);case UserVisited() when visited != null:
 return visited(_that);case UserDetailFailure() when failure != null:
 return failure(_that);case _:
   return orElse();
@@ -82,14 +83,15 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( UserLoaded value)  loaded,required TResult Function( UserUpdated value)  updated,required TResult Function( UserVisited value)  visited,required TResult Function( UserDetailFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( UserLoaded value)  loaded,required TResult Function( UserUpdated value)  updated,required TResult Function( UserPatched value)  patched,required TResult Function( UserVisited value)  visited,required TResult Function( UserDetailFailure value)  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial():
 return initial(_that);case _Loading():
 return loading(_that);case UserLoaded():
 return loaded(_that);case UserUpdated():
-return updated(_that);case UserVisited():
+return updated(_that);case UserPatched():
+return patched(_that);case UserVisited():
 return visited(_that);case UserDetailFailure():
 return failure(_that);case _:
   throw StateError('Unexpected subclass');
@@ -108,14 +110,15 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( UserLoaded value)?  loaded,TResult? Function( UserUpdated value)?  updated,TResult? Function( UserVisited value)?  visited,TResult? Function( UserDetailFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( UserLoaded value)?  loaded,TResult? Function( UserUpdated value)?  updated,TResult? Function( UserPatched value)?  patched,TResult? Function( UserVisited value)?  visited,TResult? Function( UserDetailFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
 return loading(_that);case UserLoaded() when loaded != null:
 return loaded(_that);case UserUpdated() when updated != null:
-return updated(_that);case UserVisited() when visited != null:
+return updated(_that);case UserPatched() when patched != null:
+return patched(_that);case UserVisited() when visited != null:
 return visited(_that);case UserDetailFailure() when failure != null:
 return failure(_that);case _:
   return null;
@@ -134,13 +137,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( User user)?  loaded,TResult Function( User user)?  updated,TResult Function( int userId)?  visited,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( User user)?  loaded,TResult Function( User user)?  updated,TResult Function()?  patched,TResult Function( int userId)?  visited,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case UserLoaded() when loaded != null:
 return loaded(_that.user);case UserUpdated() when updated != null:
-return updated(_that.user);case UserVisited() when visited != null:
+return updated(_that.user);case UserPatched() when patched != null:
+return patched();case UserVisited() when visited != null:
 return visited(_that.userId);case UserDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return orElse();
@@ -160,13 +164,14 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( User user)  loaded,required TResult Function( User user)  updated,required TResult Function( int userId)  visited,required TResult Function( String error)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( User user)  loaded,required TResult Function( User user)  updated,required TResult Function()  patched,required TResult Function( int userId)  visited,required TResult Function( String error)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case UserLoaded():
 return loaded(_that.user);case UserUpdated():
-return updated(_that.user);case UserVisited():
+return updated(_that.user);case UserPatched():
+return patched();case UserVisited():
 return visited(_that.userId);case UserDetailFailure():
 return failure(_that.error);case _:
   throw StateError('Unexpected subclass');
@@ -185,13 +190,14 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( User user)?  loaded,TResult? Function( User user)?  updated,TResult? Function( int userId)?  visited,TResult? Function( String error)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( User user)?  loaded,TResult? Function( User user)?  updated,TResult? Function()?  patched,TResult? Function( int userId)?  visited,TResult? Function( String error)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case UserLoaded() when loaded != null:
 return loaded(_that.user);case UserUpdated() when updated != null:
-return updated(_that.user);case UserVisited() when visited != null:
+return updated(_that.user);case UserPatched() when patched != null:
+return patched();case UserVisited() when visited != null:
 return visited(_that.userId);case UserDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return null;
@@ -418,6 +424,38 @@ $UserCopyWith<$Res> get user {
 /// @nodoc
 
 
+class UserPatched implements UserDetailState {
+  const UserPatched();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserPatched);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'UserDetailState.patched()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
 class UserVisited implements UserDetailState {
   const UserVisited({required this.userId});
   
@@ -591,14 +629,14 @@ extension UserDetailEventPatterns on UserDetailEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Retrieved value)?  retrieved,TResult Function( _Updated value)?  updated,TResult Function( _Get value)?  get,TResult Function( _Update value)?  update,TResult Function( _Follow value)?  follow,TResult Function( _Mute value)?  mute,TResult Function( _Block value)?  block,TResult Function( _AddVisit value)?  addVisit,TResult Function( _VisitAdded value)?  visitAdded,TResult Function( _ToggleNotifications value)?  toggleNotifications,TResult Function( _Unsubscribe value)?  unsubscribe,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Retrieved value)?  retrieved,TResult Function( _Updated value)?  updated,TResult Function( _Get value)?  get,TResult Function( _Patch value)?  patch,TResult Function( _Follow value)?  follow,TResult Function( _Mute value)?  mute,TResult Function( _Block value)?  block,TResult Function( _AddVisit value)?  addVisit,TResult Function( _VisitAdded value)?  visitAdded,TResult Function( _ToggleNotifications value)?  toggleNotifications,TResult Function( _Unsubscribe value)?  unsubscribe,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Retrieved() when retrieved != null:
 return retrieved(_that);case _Updated() when updated != null:
 return updated(_that);case _Get() when get != null:
-return get(_that);case _Update() when update != null:
-return update(_that);case _Follow() when follow != null:
+return get(_that);case _Patch() when patch != null:
+return patch(_that);case _Follow() when follow != null:
 return follow(_that);case _Mute() when mute != null:
 return mute(_that);case _Block() when block != null:
 return block(_that);case _AddVisit() when addVisit != null:
@@ -623,14 +661,14 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Retrieved value)  retrieved,required TResult Function( _Updated value)  updated,required TResult Function( _Get value)  get,required TResult Function( _Update value)  update,required TResult Function( _Follow value)  follow,required TResult Function( _Mute value)  mute,required TResult Function( _Block value)  block,required TResult Function( _AddVisit value)  addVisit,required TResult Function( _VisitAdded value)  visitAdded,required TResult Function( _ToggleNotifications value)  toggleNotifications,required TResult Function( _Unsubscribe value)  unsubscribe,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Retrieved value)  retrieved,required TResult Function( _Updated value)  updated,required TResult Function( _Get value)  get,required TResult Function( _Patch value)  patch,required TResult Function( _Follow value)  follow,required TResult Function( _Mute value)  mute,required TResult Function( _Block value)  block,required TResult Function( _AddVisit value)  addVisit,required TResult Function( _VisitAdded value)  visitAdded,required TResult Function( _ToggleNotifications value)  toggleNotifications,required TResult Function( _Unsubscribe value)  unsubscribe,}){
 final _that = this;
 switch (_that) {
 case _Retrieved():
 return retrieved(_that);case _Updated():
 return updated(_that);case _Get():
-return get(_that);case _Update():
-return update(_that);case _Follow():
+return get(_that);case _Patch():
+return patch(_that);case _Follow():
 return follow(_that);case _Mute():
 return mute(_that);case _Block():
 return block(_that);case _AddVisit():
@@ -651,14 +689,14 @@ return unsubscribe(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Retrieved value)?  retrieved,TResult? Function( _Updated value)?  updated,TResult? Function( _Get value)?  get,TResult? Function( _Update value)?  update,TResult? Function( _Follow value)?  follow,TResult? Function( _Mute value)?  mute,TResult? Function( _Block value)?  block,TResult? Function( _AddVisit value)?  addVisit,TResult? Function( _VisitAdded value)?  visitAdded,TResult? Function( _ToggleNotifications value)?  toggleNotifications,TResult? Function( _Unsubscribe value)?  unsubscribe,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Retrieved value)?  retrieved,TResult? Function( _Updated value)?  updated,TResult? Function( _Get value)?  get,TResult? Function( _Patch value)?  patch,TResult? Function( _Follow value)?  follow,TResult? Function( _Mute value)?  mute,TResult? Function( _Block value)?  block,TResult? Function( _AddVisit value)?  addVisit,TResult? Function( _VisitAdded value)?  visitAdded,TResult? Function( _ToggleNotifications value)?  toggleNotifications,TResult? Function( _Unsubscribe value)?  unsubscribe,}){
 final _that = this;
 switch (_that) {
 case _Retrieved() when retrieved != null:
 return retrieved(_that);case _Updated() when updated != null:
 return updated(_that);case _Get() when get != null:
-return get(_that);case _Update() when update != null:
-return update(_that);case _Follow() when follow != null:
+return get(_that);case _Patch() when patch != null:
+return patch(_that);case _Follow() when follow != null:
 return follow(_that);case _Mute() when mute != null:
 return mute(_that);case _Block() when block != null:
 return block(_that);case _AddVisit() when addVisit != null:
@@ -682,13 +720,13 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  retrieved,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( User user)?  get,TResult Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath)?  update,TResult Function( User user)?  follow,TResult Function( User user)?  mute,TResult Function( User user)?  block,TResult Function( User user)?  addVisit,TResult Function( Map<String, dynamic> payload)?  visitAdded,TResult Function( User user)?  toggleNotifications,TResult Function( User user)?  unsubscribe,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  retrieved,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( User user)?  get,TResult Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath)?  patch,TResult Function( User user)?  follow,TResult Function( User user)?  mute,TResult Function( User user)?  block,TResult Function( User user)?  addVisit,TResult Function( Map<String, dynamic> payload)?  visitAdded,TResult Function( User user)?  toggleNotifications,TResult Function( User user)?  unsubscribe,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Retrieved() when retrieved != null:
 return retrieved(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Get() when get != null:
-return get(_that.user);case _Update() when update != null:
-return update(_that.user,_that.name,_that.bio,_that.imagePath,_that.coverPhotoPath);case _Follow() when follow != null:
+return get(_that.user);case _Patch() when patch != null:
+return patch(_that.user,_that.name,_that.bio,_that.imagePath,_that.coverPhotoPath);case _Follow() when follow != null:
 return follow(_that.user);case _Mute() when mute != null:
 return mute(_that.user);case _Block() when block != null:
 return block(_that.user);case _AddVisit() when addVisit != null:
@@ -713,13 +751,13 @@ return unsubscribe(_that.user);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  retrieved,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( User user)  get,required TResult Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath)  update,required TResult Function( User user)  follow,required TResult Function( User user)  mute,required TResult Function( User user)  block,required TResult Function( User user)  addVisit,required TResult Function( Map<String, dynamic> payload)  visitAdded,required TResult Function( User user)  toggleNotifications,required TResult Function( User user)  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  retrieved,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( User user)  get,required TResult Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath)  patch,required TResult Function( User user)  follow,required TResult Function( User user)  mute,required TResult Function( User user)  block,required TResult Function( User user)  addVisit,required TResult Function( Map<String, dynamic> payload)  visitAdded,required TResult Function( User user)  toggleNotifications,required TResult Function( User user)  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Retrieved():
 return retrieved(_that.payload);case _Updated():
 return updated(_that.payload);case _Get():
-return get(_that.user);case _Update():
-return update(_that.user,_that.name,_that.bio,_that.imagePath,_that.coverPhotoPath);case _Follow():
+return get(_that.user);case _Patch():
+return patch(_that.user,_that.name,_that.bio,_that.imagePath,_that.coverPhotoPath);case _Follow():
 return follow(_that.user);case _Mute():
 return mute(_that.user);case _Block():
 return block(_that.user);case _AddVisit():
@@ -740,13 +778,13 @@ return unsubscribe(_that.user);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  retrieved,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( User user)?  get,TResult? Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath)?  update,TResult? Function( User user)?  follow,TResult? Function( User user)?  mute,TResult? Function( User user)?  block,TResult? Function( User user)?  addVisit,TResult? Function( Map<String, dynamic> payload)?  visitAdded,TResult? Function( User user)?  toggleNotifications,TResult? Function( User user)?  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  retrieved,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( User user)?  get,TResult? Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath)?  patch,TResult? Function( User user)?  follow,TResult? Function( User user)?  mute,TResult? Function( User user)?  block,TResult? Function( User user)?  addVisit,TResult? Function( Map<String, dynamic> payload)?  visitAdded,TResult? Function( User user)?  toggleNotifications,TResult? Function( User user)?  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Retrieved() when retrieved != null:
 return retrieved(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Get() when get != null:
-return get(_that.user);case _Update() when update != null:
-return update(_that.user,_that.name,_that.bio,_that.imagePath,_that.coverPhotoPath);case _Follow() when follow != null:
+return get(_that.user);case _Patch() when patch != null:
+return patch(_that.user,_that.name,_that.bio,_that.imagePath,_that.coverPhotoPath);case _Follow() when follow != null:
 return follow(_that.user);case _Mute() when mute != null:
 return mute(_that.user);case _Block() when block != null:
 return block(_that.user);case _AddVisit() when addVisit != null:
@@ -983,8 +1021,8 @@ $UserCopyWith<$Res> get user {
 /// @nodoc
 
 
-class _Update implements UserDetailEvent {
-  const _Update({required this.user, required this.name, required this.bio, required this.imagePath, required this.coverPhotoPath});
+class _Patch implements UserDetailEvent {
+  const _Patch({required this.user, required this.name, required this.bio, required this.imagePath, required this.coverPhotoPath});
   
 
  final  User user;
@@ -997,13 +1035,13 @@ class _Update implements UserDetailEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$UpdateCopyWith<_Update> get copyWith => __$UpdateCopyWithImpl<_Update>(this, _$identity);
+_$PatchCopyWith<_Patch> get copyWith => __$PatchCopyWithImpl<_Patch>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Update&&(identical(other.user, user) || other.user == user)&&(identical(other.name, name) || other.name == name)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.imagePath, imagePath) || other.imagePath == imagePath)&&(identical(other.coverPhotoPath, coverPhotoPath) || other.coverPhotoPath == coverPhotoPath));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Patch&&(identical(other.user, user) || other.user == user)&&(identical(other.name, name) || other.name == name)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.imagePath, imagePath) || other.imagePath == imagePath)&&(identical(other.coverPhotoPath, coverPhotoPath) || other.coverPhotoPath == coverPhotoPath));
 }
 
 
@@ -1012,15 +1050,15 @@ int get hashCode => Object.hash(runtimeType,user,name,bio,imagePath,coverPhotoPa
 
 @override
 String toString() {
-  return 'UserDetailEvent.update(user: $user, name: $name, bio: $bio, imagePath: $imagePath, coverPhotoPath: $coverPhotoPath)';
+  return 'UserDetailEvent.patch(user: $user, name: $name, bio: $bio, imagePath: $imagePath, coverPhotoPath: $coverPhotoPath)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$UpdateCopyWith<$Res> implements $UserDetailEventCopyWith<$Res> {
-  factory _$UpdateCopyWith(_Update value, $Res Function(_Update) _then) = __$UpdateCopyWithImpl;
+abstract mixin class _$PatchCopyWith<$Res> implements $UserDetailEventCopyWith<$Res> {
+  factory _$PatchCopyWith(_Patch value, $Res Function(_Patch) _then) = __$PatchCopyWithImpl;
 @useResult
 $Res call({
  User user, String name, String bio, String? imagePath, String? coverPhotoPath
@@ -1031,17 +1069,17 @@ $UserCopyWith<$Res> get user;
 
 }
 /// @nodoc
-class __$UpdateCopyWithImpl<$Res>
-    implements _$UpdateCopyWith<$Res> {
-  __$UpdateCopyWithImpl(this._self, this._then);
+class __$PatchCopyWithImpl<$Res>
+    implements _$PatchCopyWith<$Res> {
+  __$PatchCopyWithImpl(this._self, this._then);
 
-  final _Update _self;
-  final $Res Function(_Update) _then;
+  final _Patch _self;
+  final $Res Function(_Patch) _then;
 
 /// Create a copy of UserDetailEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? user = null,Object? name = null,Object? bio = null,Object? imagePath = freezed,Object? coverPhotoPath = freezed,}) {
-  return _then(_Update(
+  return _then(_Patch(
 user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as User,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,bio: null == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
