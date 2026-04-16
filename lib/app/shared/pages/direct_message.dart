@@ -46,6 +46,7 @@ class _DirectMessageState extends State<DirectMessage> {
   List<User> selectedUsers = [];
   final RefreshController _refreshController = RefreshController();
   List<File> _selectedImages = [];
+  String? _selectedVideoPath;
   File? _selectedFile;
   File? _insertedContent;
   LatLng? location;
@@ -274,6 +275,12 @@ class _DirectMessageState extends State<DirectMessage> {
           onSectionSelection: (section) {},
           section: null,
           onRemoveSection: () {},
+          selectedVideoPath: _selectedVideoPath,
+          onRemoveVideo: () {
+            setState(() {
+              _selectedVideoPath = null;
+            });
+          },
           onSend: selectedUsers.isEmpty
               ? null
               : () {

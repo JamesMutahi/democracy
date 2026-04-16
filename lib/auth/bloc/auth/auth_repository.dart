@@ -1,10 +1,11 @@
 part of 'auth_bloc.dart';
 
 class AuthRepository {
-  AuthRepository({required this.authProvider, required this.storage});
+  AuthRepository({required this.authProvider});
 
-  final FlutterSecureStorage storage;
   final AuthProvider authProvider;
+
+  final storage = const FlutterSecureStorage();
 
   Future<String> login({
     required String email,

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:democracy/app/shared/camera/camera.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/utils/media_tools.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
@@ -96,12 +97,16 @@ class _EditProfileState extends State<EditProfile> {
                       builder: (context) {
                         return MediaDialog(
                           onCameraPressed: () async {
-                            File? newImage = await ImagePickerUtil.takePhoto();
-                            if (newImage != null) {
-                              setState(() {
-                                coverPhoto = newImage;
-                              });
-                            }
+                            openCamera(
+                              context: context,
+                              recipient: null,
+                              textEditingController: null,
+                              onImageEditingComplete: (newImage) {
+                                setState(() {
+                                  coverPhoto = newImage;
+                                });
+                              },
+                            );
                           },
                           onGalleryPressed: () async {
                             File? newImage = await ImagePickerUtil.getImage();
@@ -183,12 +188,16 @@ class _EditProfileState extends State<EditProfile> {
                     builder: (context) {
                       return MediaDialog(
                         onCameraPressed: () async {
-                          File? newImage = await ImagePickerUtil.takePhoto();
-                          if (newImage != null) {
-                            setState(() {
-                              image = newImage;
-                            });
-                          }
+                          openCamera(
+                            context: context,
+                            recipient: null,
+                            textEditingController: null,
+                            onImageEditingComplete: (newImage) {
+                              setState(() {
+                                image = newImage;
+                              });
+                            },
+                          );
                         },
                         onGalleryPressed: () async {
                           File? newImage = await ImagePickerUtil.getImage();
@@ -213,7 +222,9 @@ class _EditProfileState extends State<EditProfile> {
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               image: image == null
-                                  ? CachedNetworkImageProvider(widget.user.image)
+                                  ? CachedNetworkImageProvider(
+                                      widget.user.image,
+                                    )
                                   : FileImage(image!),
                               fit: BoxFit.cover,
                             ),

@@ -4,10 +4,9 @@ import 'dart:math';
 
 // Flutter imports:
 import 'package:democracy/app/shared/camera/camera.dart';
-import 'package:democracy/app/shared/camera/utils/stickers.dart';
+import 'package:democracy/app/shared/camera/widgets/stickers.dart';
+import 'package:democracy/app/shared/camera/widgets/send.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/user/view/widgets/profile_image.dart';
-import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 // Package imports:
@@ -28,9 +27,9 @@ class ImageEditor extends StatefulWidget {
   });
 
   final User? recipient;
-  final TextEditingController textEditingController;
+  final TextEditingController? textEditingController;
   final void Function(File) onImageEditingComplete;
-  final void Function(File)? onVideoEditingComplete;
+  final void Function(String)? onVideoEditingComplete;
   final String path;
 
   @override
@@ -563,95 +562,12 @@ class _ImageEditorState extends State<ImageEditor> {
   }
 
   Widget _buildSendArea(ProImageEditorState editor, double opacity) {
-    return Positioned(
-      bottom: MediaQuery.viewInsetsOf(context).bottom,
-      left: 0,
-      right: 0,
-      child: GestureInterceptor(
-        child: Opacity(
-          opacity: opacity,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (widget.recipient != null)
-                  Container(
-                    margin: EdgeInsets.only(bottom: 5),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 4,
-                      horizontal: 10,
-                    ),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          height: 30,
-                          width: 30,
-                          child: ProfileImage(user: widget.recipient!),
-                        ),
-                        SizedBox(width: 5),
-                        ProfileName(user: widget.recipient!),
-                      ],
-                    ),
-                  ),
-                Row(
-                  children: [
-                    Flexible(
-                      child: TextField(
-                        controller: widget.textEditingController,
-                        focusNode: _captionFocus,
-                        textAlignVertical: TextAlignVertical.center,
-                        onTap: () {
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            _captionFocus.requestFocus();
-                          });
-                        },
-                        keyboardType: TextInputType.multiline,
-                        minLines: 1,
-                        maxLines: 4,
-                        maxLength: 500,
-                        cursorColor: Colors.white,
-                        decoration: InputDecoration(
-                          filled: true,
-                          isDense: true,
-                          prefixIcon: const Padding(
-                            padding: EdgeInsets.only(left: 7.0),
-                            child: Icon(
-                              Icons.add_photo_alternate_rounded,
-                              size: 24,
-                              color: Colors.white,
-                            ),
-                          ),
-                          hintText: 'Add a caption...',
-                          hintStyle: const TextStyle(
-                            color: Color.fromARGB(255, 238, 238, 238),
-                            fontWeight: FontWeight.w400,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(40),
-                            borderSide: BorderSide.none,
-                          ),
-                          fillColor: const Color(0xFF202D35),
-                          counterText: '',
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => editor.doneEditing(),
-                      icon: const Icon(Icons.send),
-                      style: IconButton.styleFrom(
-                        backgroundColor: Colors.teal,
-                        foregroundColor: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+    return SendArea(
+      editor: editor,
+      opacity: opacity,
+      recipient: widget.recipient,
+      controller: widget.textEditingController,
+      captionFocus: _captionFocus,
     );
   }
 }

@@ -3,13 +3,11 @@ import 'dart:convert';
 
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/constants/strings.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class WebSocketService {
-  WebSocketService({required this.storage});
-  final FlutterSecureStorage storage;
+  WebSocketService();
   late WebSocketChannel _channel;
   final StreamController<Map<String, dynamic>> _messageController =
       StreamController.broadcast();

@@ -315,6 +315,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       },
       section: null,
       onRemoveSection: null,
+      selectedVideoPath: null,
+      onRemoveVideo: null,
       onSend:
           _disableSendButton && _selectedImages.isEmpty && _selectedFile == null
           ? null
@@ -356,12 +358,12 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         );
         _controller.clear();
       },
-      onVideoEditingComplete: (video) {
+      onVideoEditingComplete: (videoPath) {
         context.read<MessageDetailBloc>().add(
           MessageDetailEvent.create(
             chat: _chat,
             text: _controller.text,
-            videoPath: video.path,
+            videoPath: videoPath,
           ),
         );
         _controller.clear();

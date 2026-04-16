@@ -62,7 +62,7 @@ class _PostCreatePageState extends State<PostCreatePage> {
   // Media state
   File? _insertedImage;
   List<File> _selectedImages = [];
-  File? _selectedVideo;
+  String? _selectedVideoPath;
   File? _selectedFile;
   LatLng? _selectedLocation;
   Section? _selectedSection;
@@ -99,7 +99,7 @@ class _PostCreatePageState extends State<PostCreatePage> {
         imagePath2: _selectedImages.length > 1 ? _selectedImages[1].path : null,
         imagePath3: _selectedImages.length > 2 ? _selectedImages[2].path : null,
         imagePath4: _selectedImages.length > 3 ? _selectedImages[3].path : null,
-        videoPath: _selectedVideo?.path,
+        videoPath: _selectedVideoPath,
         filePath: _selectedFile?.path,
         location: _selectedLocation,
       ),
@@ -112,7 +112,7 @@ class _PostCreatePageState extends State<PostCreatePage> {
       canPost =
           _insertedImage != null ||
           _selectedImages.isNotEmpty ||
-          _selectedVideo != null ||
+              _selectedVideoPath != null ||
           _selectedFile != null ||
           _selectedLocation != null;
     }
@@ -232,8 +232,8 @@ class _PostCreatePageState extends State<PostCreatePage> {
               setState(() => _selectedLocation = point);
               _updatePostButtonState(_controller.formattedText);
             },
-            onNewVideo: (video) {
-              setState(() => _selectedVideo = video);
+            onNewVideo: (videoPath) {
+              setState(() => _selectedVideoPath = videoPath);
               _updatePostButtonState(_controller.formattedText);
             },
             onNewSection: (section) {
@@ -301,8 +301,8 @@ class _PostCreatePageState extends State<PostCreatePage> {
                       setState(() => _selectedImages.removeAt(index)),
                 ),
 
-              if (_selectedVideo != null)
-                PostVideoViewer(video: _selectedVideo!),
+              if (_selectedVideoPath != null)
+                PostVideoViewer(videoPath: _selectedVideoPath!),
 
               if (_selectedFile != null)
                 Padding(

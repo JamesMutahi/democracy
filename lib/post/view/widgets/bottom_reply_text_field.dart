@@ -29,6 +29,7 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
   late Animation<Offset> _animation;
   bool _disableSendButton = true;
   List<File> _selectedImages = [];
+  String? _selectedVideoPath;
   File? _selectedFile;
   File? _insertedContent;
   LatLng? _location;
@@ -206,6 +207,8 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
             },
             section: _selectedSection,
             onRemoveSection: () => setState(() => _selectedSection = null),
+            selectedVideoPath: _selectedVideoPath,
+            onRemoveVideo: () => setState(() => _selectedVideoPath = null),
             onSend:
                 _disableSendButton &&
                     _insertedContent == null &&
@@ -215,12 +218,16 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
                     _selectedSection == null
                 ? null
                 : _createPost,
-            recipient: widget.post.author,
             onImageEditingComplete: (image) {
               setState(() {
                 _selectedImages.add(image);
                 _selectedFile = null;
                 _insertedContent = null;
+              });
+            },
+            onVideoEditingComplete: (videoPath) {
+              setState(() {
+                _selectedVideoPath = videoPath;
               });
             },
           );

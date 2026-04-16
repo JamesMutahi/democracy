@@ -97,6 +97,8 @@ class _EditMessageState extends State<EditMessage> {
         onSectionSelection: (section) {},
         section: null,
         onRemoveSection: null,
+        selectedVideoPath: null,
+        onRemoveVideo: null,
         onSend: _disableSendButton
             ? null
             : () {

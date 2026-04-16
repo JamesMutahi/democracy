@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
@@ -496,7 +494,7 @@ class _PostContainer extends StatelessWidget {
                         child: ImageViewer(key: ValueKey(post.id), post: post),
                       ),
                     if (post.videoUrl != null)
-                      PostVideoViewer(video: File(post.videoUrl!)),
+                      PostVideoViewer(videoPath: post.videoUrl!),
                     if (post.fileUrl != null)
                       Container(
                         margin: EdgeInsets.only(top: 10),

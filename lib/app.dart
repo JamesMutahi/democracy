@@ -8,7 +8,7 @@ import 'package:democracy/app/shared/utils/app_theme.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/shared/pages/splash_page.dart';
-import 'package:democracy/app/view/dashboard.dart';
+import 'package:democracy/app/view/mian_page_view.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/auth/view/login.dart';
@@ -66,7 +66,7 @@ class MyApp extends StatelessWidget {
                         return LoginPage();
                       } else if (state is Authenticated &&
                           socketState.initialConnectionAchieved) {
-                        return _buildDashboard();
+                        return _buildMainPageView();
                       } else if (state is AuthenticationFailure) {
                         return _buildFailurePage(context, state.error);
                       } else {
@@ -102,7 +102,7 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  Widget _buildDashboard() {
+  Widget _buildMainPageView() {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -145,7 +145,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ],
-      child: Dashboard(),
+      child: MainPageView(),
     );
   }
 }

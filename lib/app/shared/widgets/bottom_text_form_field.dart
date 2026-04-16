@@ -6,6 +6,7 @@ import 'package:democracy/app/shared/widgets/file_widget.dart';
 import 'package:democracy/app/shared/pages/location.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
 import 'package:democracy/app/shared/utils/media_tools.dart';
+import 'package:democracy/app/shared/widgets/video_viewer.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/constitution/view/constitution.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
@@ -47,6 +48,8 @@ class BottomTextFormField extends StatefulWidget {
     required this.onSectionSelection,
     required this.section,
     required this.onRemoveSection,
+    required this.selectedVideoPath,
+    required this.onRemoveVideo,
     this.onSend,
     this.recipient,
     this.onImageEditingComplete,
@@ -79,12 +82,14 @@ class BottomTextFormField extends StatefulWidget {
   final void Function(Section) onSectionSelection;
   final Section? section;
   final VoidCallback? onRemoveSection;
+  final String? selectedVideoPath;
+  final VoidCallback? onRemoveVideo;
   final void Function()? onSend;
 
   // For editors in camera
   final User? recipient;
   final void Function(File)? onImageEditingComplete;
-  final void Function(File)? onVideoEditingComplete;
+  final void Function(String)? onVideoEditingComplete;
 
   @override
   State<BottomTextFormField> createState() => _BottomTextFormFieldState();
@@ -255,12 +260,18 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
           Container(
             margin: EdgeInsets.only(top: 10),
             child: MultiImageView(
-              recipient: widget.recipient!,
+              recipient: widget.recipient,
               textEditingController: widget.controller,
               images: widget.selectedImages,
               onAdd: widget.onAddImages,
               onRemove: widget.onRemoveImage,
             ),
+          ),
+        if (widget.selectedVideoPath != null)
+          Container(
+            margin: EdgeInsets.only(top: 10),
+            height: MediaQuery.of(context).size.height/5,
+            child: VideoViewer(urls: [widget.selectedVideoPath!]),
           ),
         if (widget.location != null)
           Container(
@@ -317,7 +328,7 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
               onExtrasButtonPressed();
               openCamera(
                 context: context,
-                recipient: widget.recipient!,
+                recipient: widget.recipient,
                 textEditingController: widget.controller,
                 onImageEditingComplete: widget.onImageEditingComplete!,
                 onVideoEditingComplete: widget.onVideoEditingComplete,

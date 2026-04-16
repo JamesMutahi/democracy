@@ -25,9 +25,9 @@ List<CameraDescription> _cameras = <CameraDescription>[];
 void openCamera({
   required BuildContext context,
   required User? recipient,
-  required TextEditingController textEditingController,
+  required TextEditingController? textEditingController,
   required void Function(File) onImageEditingComplete,
-  void Function(File)? onVideoEditingComplete,
+  void Function(String)? onVideoEditingComplete,
 }) async {
   try {
     _cameras = await availableCameras();
@@ -67,9 +67,9 @@ class CameraPage extends StatefulWidget {
   });
 
   final User? recipient;
-  final TextEditingController textEditingController;
+  final TextEditingController? textEditingController;
   final void Function(File) onImageEditingComplete;
-  final void Function(File)? onVideoEditingComplete;
+  final void Function(String)? onVideoEditingComplete;
   final int? tabIndex;
 
   @override
@@ -286,17 +286,17 @@ class _CameraPageState extends State<CameraPage>
               },
             ),
           ),
-          bottomNavigationBar: BottomAppBar(
-            padding: const EdgeInsets.all(0.0),
-            height: 60.0,
-            elevation: 100.0,
-            color: Colors.black,
-            child:
-                isSwitchingCamera ||
-                    widget.onVideoEditingComplete == null ||
-                    controller.value.isRecordingVideo
-                ? SizedBox.shrink()
-                : TabBar(
+          bottomNavigationBar:
+              isSwitchingCamera ||
+                  widget.onVideoEditingComplete == null ||
+                  controller.value.isRecordingVideo
+              ? SizedBox.shrink()
+              : BottomAppBar(
+                  padding: const EdgeInsets.all(0.0),
+                  height: 60.0,
+                  elevation: 100.0,
+                  color: Colors.black,
+                  child: TabBar(
                     controller: _tabController,
                     isScrollable: true,
                     physics: NeverScrollableScrollPhysics(),
@@ -336,7 +336,7 @@ class _CameraPageState extends State<CameraPage>
                       ),
                     ],
                   ),
-          ),
+                ),
         ),
         if (_taskId != null)
           SafeArea(child: VideoProgressAlert(taskId: _taskId!)),
@@ -923,9 +923,9 @@ class _MainCameraButton extends StatefulWidget {
   final VoidCallback onVideoRecordButtonPressed;
   final VoidCallback onStopButtonPressed;
   final User? recipient;
-  final TextEditingController textEditingController;
+  final TextEditingController? textEditingController;
   final void Function(File) onImageEditingComplete;
-  final void Function(File)? onVideoEditingComplete;
+  final void Function(String)? onVideoEditingComplete;
 
   @override
   State<_MainCameraButton> createState() => _MainCameraButtonState();

@@ -11,14 +11,14 @@ import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class Dashboard extends StatefulWidget {
-  const Dashboard({super.key});
+class MainPageView extends StatefulWidget {
+  const MainPageView({super.key});
 
   @override
-  State<Dashboard> createState() => _DashboardState();
+  State<MainPageView> createState() => _MainPageViewState();
 }
 
-class _DashboardState extends State<Dashboard> {
+class _MainPageViewState extends State<MainPageView> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final PageController _pageController = PageController();
 

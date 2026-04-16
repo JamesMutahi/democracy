@@ -145,16 +145,16 @@ class SingleImageView extends StatelessWidget {
 }
 
 class PostVideoViewer extends StatelessWidget {
-  const PostVideoViewer({super.key, required this.video});
+  const PostVideoViewer({super.key, required this.videoPath});
 
-  final File video;
+  final String videoPath;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 200,
       margin: EdgeInsets.only(top: 10),
-      child: VideoViewer(urls: [video.path]),
+      child: VideoViewer(urls: [videoPath]),
     );
   }
 }
@@ -182,7 +182,7 @@ class PostBottomNavBar extends StatefulWidget {
   final void Function(File) onNewFile;
   final void Function(LatLng) onLocation;
   final Post? reply;
-  final void Function(File) onNewVideo;
+  final void Function(String) onNewVideo;
   final void Function(Section) onNewSection;
 
   @override
@@ -307,7 +307,10 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 10,
+                  ),
                   child: ExtrasRow(
                     onCameraTap: () async {
                       openCamera(
@@ -317,15 +320,14 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
                         onImageEditingComplete: (newImage) {
                           widget.onNewImages([newImage]);
                         },
-                        onVideoEditingComplete: (video) {
-                          widget.onNewVideo(video);
+                        onVideoEditingComplete: (videoPath) {
+                          widget.onNewVideo(videoPath);
                         },
                       );
                     },
                     onGalleryTap: () async {
-                      List<File>? newImages = await ImagePickerUtil.pickMultiImage(
-                        limit: 4,
-                      );
+                      List<File>? newImages =
+                          await ImagePickerUtil.pickMultiImage(limit: 4);
                       if (newImages.isNotEmpty) {
                         widget.onNewImages(newImages);
                       }
