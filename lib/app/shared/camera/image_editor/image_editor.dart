@@ -3,12 +3,14 @@ import 'dart:io';
 import 'dart:math';
 
 // Flutter imports:
+import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/shared/camera/camera.dart';
 import 'package:democracy/app/shared/camera/widgets/stickers.dart';
 import 'package:democracy/app/shared/camera/widgets/send.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 // Package imports:
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -325,12 +327,19 @@ class _ImageEditorState extends State<ImageEditor> {
     if (canPop) {
       Navigator.pop(context);
     } else {
-      openCamera(
-        context: context,
-        recipient: widget.recipient,
-        textEditingController: widget.textEditingController,
-        onImageEditingComplete: widget.onImageEditingComplete,
-        onVideoEditingComplete: widget.onVideoEditingComplete,
+      // Push replacement
+      final cameras = context.read<GlobalCubit>().state.cameras;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CameraPage(
+            cameras: cameras,
+            recipient: widget.recipient,
+            textEditingController: widget.textEditingController,
+            onImageEditingComplete: widget.onImageEditingComplete,
+            onVideoEditingComplete: widget.onVideoEditingComplete,
+          ),
+        ),
       );
     }
   }

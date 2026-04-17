@@ -3,6 +3,7 @@ import 'dart:io' as io;
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/shared/camera/camera.dart';
 import 'package:democracy/app/shared/camera/widgets/stickers.dart';
 import 'package:democracy/app/shared/camera/video_editor/utils/audio_helper_service.dart';
@@ -14,6 +15,7 @@ import 'package:democracy/user/models/user.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pro_image_editor/designs/whatsapp/whatsapp_sticker_editor.dart';
@@ -535,12 +537,19 @@ class _VideoEditorState extends State<VideoEditor> {
 
     // Navigate back to CameraPage (replace current route)
     if (mounted) {
-      openCamera(
-        context: context,
-        recipient: widget.recipient,
-        textEditingController: widget.textEditingController,
-        onImageEditingComplete: widget.onImageEditingComplete,
-        onVideoEditingComplete: widget.onVideoEditingComplete,
+      // Push replacement
+      final cameras = context.read<GlobalCubit>().state.cameras;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CameraPage(
+            cameras: cameras,
+            recipient: widget.recipient,
+            textEditingController: widget.textEditingController,
+            onImageEditingComplete: widget.onImageEditingComplete,
+            onVideoEditingComplete: widget.onVideoEditingComplete,
+          ),
+        ),
       );
     }
   }

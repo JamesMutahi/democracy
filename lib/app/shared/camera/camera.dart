@@ -227,6 +227,7 @@ class _CameraPageState extends State<CameraPage>
                                 Align(
                                   alignment: Alignment.centerRight,
                                   child: _FlashModeButton(
+                                    controller: controller,
                                     onPressed: onSetFlashModeButtonPressed,
                                     turns: turns,
                                   ),
@@ -812,8 +813,13 @@ class _SwitchCameraButtonState extends State<_SwitchCameraButton> {
 }
 
 class _FlashModeButton extends StatefulWidget {
-  const _FlashModeButton({required this.onPressed, required this.turns});
+  const _FlashModeButton({
+    required this.controller,
+    required this.onPressed,
+    required this.turns,
+  });
 
+  final CameraController controller;
   final Function(FlashMode mode) onPressed;
   final int turns;
 
@@ -828,7 +834,21 @@ class _FlashModeButtonState extends State<_FlashModeButton> {
     Icons.flash_on_rounded,
   ];
 
-  int _currentIndex = 0;
+  late int _currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.controller.value.flashMode == FlashMode.off) {
+      _currentIndex = 0;
+    }
+    if (widget.controller.value.flashMode == FlashMode.auto) {
+      _currentIndex = 1;
+    }
+    if (widget.controller.value.flashMode == FlashMode.always) {
+      _currentIndex = 2;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
