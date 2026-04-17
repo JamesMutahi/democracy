@@ -137,14 +137,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( User user)?  loaded,TResult Function( User user)?  updated,TResult Function()?  patched,TResult Function( int userId)?  visited,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( User user)?  loaded,TResult Function( User user)?  updated,TResult Function( User user)?  patched,TResult Function( int userId)?  visited,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case UserLoaded() when loaded != null:
 return loaded(_that.user);case UserUpdated() when updated != null:
 return updated(_that.user);case UserPatched() when patched != null:
-return patched();case UserVisited() when visited != null:
+return patched(_that.user);case UserVisited() when visited != null:
 return visited(_that.userId);case UserDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return orElse();
@@ -164,14 +164,14 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( User user)  loaded,required TResult Function( User user)  updated,required TResult Function()  patched,required TResult Function( int userId)  visited,required TResult Function( String error)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( User user)  loaded,required TResult Function( User user)  updated,required TResult Function( User user)  patched,required TResult Function( int userId)  visited,required TResult Function( String error)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case UserLoaded():
 return loaded(_that.user);case UserUpdated():
 return updated(_that.user);case UserPatched():
-return patched();case UserVisited():
+return patched(_that.user);case UserVisited():
 return visited(_that.userId);case UserDetailFailure():
 return failure(_that.error);case _:
   throw StateError('Unexpected subclass');
@@ -190,14 +190,14 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( User user)?  loaded,TResult? Function( User user)?  updated,TResult? Function()?  patched,TResult? Function( int userId)?  visited,TResult? Function( String error)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( User user)?  loaded,TResult? Function( User user)?  updated,TResult? Function( User user)?  patched,TResult? Function( int userId)?  visited,TResult? Function( String error)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case UserLoaded() when loaded != null:
 return loaded(_that.user);case UserUpdated() when updated != null:
 return updated(_that.user);case UserPatched() when patched != null:
-return patched();case UserVisited() when visited != null:
+return patched(_that.user);case UserVisited() when visited != null:
 return visited(_that.userId);case UserDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return null;
@@ -425,33 +425,76 @@ $UserCopyWith<$Res> get user {
 
 
 class UserPatched implements UserDetailState {
-  const UserPatched();
+  const UserPatched({required this.user});
   
 
+ final  User user;
 
-
+/// Create a copy of UserDetailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$UserPatchedCopyWith<UserPatched> get copyWith => _$UserPatchedCopyWithImpl<UserPatched>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserPatched);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserPatched&&(identical(other.user, user) || other.user == user));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,user);
 
 @override
 String toString() {
-  return 'UserDetailState.patched()';
+  return 'UserDetailState.patched(user: $user)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $UserPatchedCopyWith<$Res> implements $UserDetailStateCopyWith<$Res> {
+  factory $UserPatchedCopyWith(UserPatched value, $Res Function(UserPatched) _then) = _$UserPatchedCopyWithImpl;
+@useResult
+$Res call({
+ User user
+});
 
 
+$UserCopyWith<$Res> get user;
+
+}
+/// @nodoc
+class _$UserPatchedCopyWithImpl<$Res>
+    implements $UserPatchedCopyWith<$Res> {
+  _$UserPatchedCopyWithImpl(this._self, this._then);
+
+  final UserPatched _self;
+  final $Res Function(UserPatched) _then;
+
+/// Create a copy of UserDetailState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
+  return _then(UserPatched(
+user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as User,
+  ));
+}
+
+/// Create a copy of UserDetailState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$UserCopyWith<$Res> get user {
+  
+  return $UserCopyWith<$Res>(_self.user, (value) {
+    return _then(_self.copyWith(user: value));
+  });
+}
+}
 
 /// @nodoc
 

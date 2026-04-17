@@ -303,7 +303,7 @@ class _ExploreState extends State<_Explore> {
         final users = state.users.take(3).toList();
 
         final authBloc = context.read<AuthBloc>();
-        final me = (authBloc.state as Authenticated).user;
+        final me = authBloc.state.user!;
 
         return BlocListener<UserDetailBloc, UserDetailState>(
           listener: (context, state) {

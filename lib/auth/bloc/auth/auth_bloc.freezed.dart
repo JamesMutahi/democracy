@@ -55,11 +55,12 @@ extension AuthEventPatterns on AuthEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Authenticate value)?  authenticate,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Authenticate value)?  authenticate,TResult Function( _UpdateUser value)?  updateUser,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Authenticate() when authenticate != null:
-return authenticate(_that);case _:
+return authenticate(_that);case _UpdateUser() when updateUser != null:
+return updateUser(_that);case _:
   return orElse();
 
 }
@@ -77,11 +78,12 @@ return authenticate(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Authenticate value)  authenticate,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Authenticate value)  authenticate,required TResult Function( _UpdateUser value)  updateUser,}){
 final _that = this;
 switch (_that) {
 case _Authenticate():
-return authenticate(_that);case _:
+return authenticate(_that);case _UpdateUser():
+return updateUser(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -98,11 +100,12 @@ return authenticate(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Authenticate value)?  authenticate,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Authenticate value)?  authenticate,TResult? Function( _UpdateUser value)?  updateUser,}){
 final _that = this;
 switch (_that) {
 case _Authenticate() when authenticate != null:
-return authenticate(_that);case _:
+return authenticate(_that);case _UpdateUser() when updateUser != null:
+return updateUser(_that);case _:
   return null;
 
 }
@@ -119,10 +122,11 @@ return authenticate(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  authenticate,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  authenticate,TResult Function( User user)?  updateUser,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Authenticate() when authenticate != null:
-return authenticate();case _:
+return authenticate();case _UpdateUser() when updateUser != null:
+return updateUser(_that.user);case _:
   return orElse();
 
 }
@@ -140,10 +144,11 @@ return authenticate();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  authenticate,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  authenticate,required TResult Function( User user)  updateUser,}) {final _that = this;
 switch (_that) {
 case _Authenticate():
-return authenticate();case _:
+return authenticate();case _UpdateUser():
+return updateUser(_that.user);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -160,10 +165,11 @@ return authenticate();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  authenticate,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  authenticate,TResult? Function( User user)?  updateUser,}) {final _that = this;
 switch (_that) {
 case _Authenticate() when authenticate != null:
-return authenticate();case _:
+return authenticate();case _UpdateUser() when updateUser != null:
+return updateUser(_that.user);case _:
   return null;
 
 }
@@ -204,267 +210,25 @@ String toString() {
 
 
 /// @nodoc
-mixin _$AuthState {
 
 
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthState);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'AuthState()';
-}
-
-
-}
-
-/// @nodoc
-class $AuthStateCopyWith<$Res>  {
-$AuthStateCopyWith(AuthState _, $Res Function(AuthState) __);
-}
-
-
-/// Adds pattern-matching-related methods to [AuthState].
-extension AuthStatePatterns on AuthState {
-/// A variant of `map` that fallback to returning `orElse`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Unauthenticated value)?  unAuthenticated,TResult Function( Authenticating value)?  authenticating,TResult Function( Authenticated value)?  authenticated,TResult Function( AuthenticationFailure value)?  failure,required TResult orElse(),}){
-final _that = this;
-switch (_that) {
-case Unauthenticated() when unAuthenticated != null:
-return unAuthenticated(_that);case Authenticating() when authenticating != null:
-return authenticating(_that);case Authenticated() when authenticated != null:
-return authenticated(_that);case AuthenticationFailure() when failure != null:
-return failure(_that);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// Callbacks receives the raw object, upcasted.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case final Subclass2 value:
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Unauthenticated value)  unAuthenticated,required TResult Function( Authenticating value)  authenticating,required TResult Function( Authenticated value)  authenticated,required TResult Function( AuthenticationFailure value)  failure,}){
-final _that = this;
-switch (_that) {
-case Unauthenticated():
-return unAuthenticated(_that);case Authenticating():
-return authenticating(_that);case Authenticated():
-return authenticated(_that);case AuthenticationFailure():
-return failure(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
-}
-/// A variant of `map` that fallback to returning `null`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Unauthenticated value)?  unAuthenticated,TResult? Function( Authenticating value)?  authenticating,TResult? Function( Authenticated value)?  authenticated,TResult? Function( AuthenticationFailure value)?  failure,}){
-final _that = this;
-switch (_that) {
-case Unauthenticated() when unAuthenticated != null:
-return unAuthenticated(_that);case Authenticating() when authenticating != null:
-return authenticating(_that);case Authenticated() when authenticated != null:
-return authenticated(_that);case AuthenticationFailure() when failure != null:
-return failure(_that);case _:
-  return null;
-
-}
-}
-/// A variant of `when` that fallback to an `orElse` callback.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  unAuthenticated,TResult Function()?  authenticating,TResult Function( User user)?  authenticated,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
-switch (_that) {
-case Unauthenticated() when unAuthenticated != null:
-return unAuthenticated();case Authenticating() when authenticating != null:
-return authenticating();case Authenticated() when authenticated != null:
-return authenticated(_that.user);case AuthenticationFailure() when failure != null:
-return failure(_that.error);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// As opposed to `map`, this offers destructuring.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case Subclass2(:final field2):
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  unAuthenticated,required TResult Function()  authenticating,required TResult Function( User user)  authenticated,required TResult Function( String error)  failure,}) {final _that = this;
-switch (_that) {
-case Unauthenticated():
-return unAuthenticated();case Authenticating():
-return authenticating();case Authenticated():
-return authenticated(_that.user);case AuthenticationFailure():
-return failure(_that.error);case _:
-  throw StateError('Unexpected subclass');
-
-}
-}
-/// A variant of `when` that fallback to returning `null`
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  unAuthenticated,TResult? Function()?  authenticating,TResult? Function( User user)?  authenticated,TResult? Function( String error)?  failure,}) {final _that = this;
-switch (_that) {
-case Unauthenticated() when unAuthenticated != null:
-return unAuthenticated();case Authenticating() when authenticating != null:
-return authenticating();case Authenticated() when authenticated != null:
-return authenticated(_that.user);case AuthenticationFailure() when failure != null:
-return failure(_that.error);case _:
-  return null;
-
-}
-}
-
-}
-
-/// @nodoc
-
-
-class Unauthenticated implements AuthState {
-  const Unauthenticated();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Unauthenticated);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'AuthState.unAuthenticated()';
-}
-
-
-}
-
-
-
-
-/// @nodoc
-
-
-class Authenticating implements AuthState {
-  const Authenticating();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Authenticating);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'AuthState.authenticating()';
-}
-
-
-}
-
-
-
-
-/// @nodoc
-
-
-class Authenticated implements AuthState {
-  const Authenticated({required this.user});
+class _UpdateUser implements AuthEvent {
+  const _UpdateUser({required this.user});
   
 
  final  User user;
 
-/// Create a copy of AuthState
+/// Create a copy of AuthEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$AuthenticatedCopyWith<Authenticated> get copyWith => _$AuthenticatedCopyWithImpl<Authenticated>(this, _$identity);
+_$UpdateUserCopyWith<_UpdateUser> get copyWith => __$UpdateUserCopyWithImpl<_UpdateUser>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Authenticated&&(identical(other.user, user) || other.user == user));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateUser&&(identical(other.user, user) || other.user == user));
 }
 
 
@@ -473,15 +237,15 @@ int get hashCode => Object.hash(runtimeType,user);
 
 @override
 String toString() {
-  return 'AuthState.authenticated(user: $user)';
+  return 'AuthEvent.updateUser(user: $user)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $AuthenticatedCopyWith<$Res> implements $AuthStateCopyWith<$Res> {
-  factory $AuthenticatedCopyWith(Authenticated value, $Res Function(Authenticated) _then) = _$AuthenticatedCopyWithImpl;
+abstract mixin class _$UpdateUserCopyWith<$Res> implements $AuthEventCopyWith<$Res> {
+  factory _$UpdateUserCopyWith(_UpdateUser value, $Res Function(_UpdateUser) _then) = __$UpdateUserCopyWithImpl;
 @useResult
 $Res call({
  User user
@@ -492,23 +256,23 @@ $UserCopyWith<$Res> get user;
 
 }
 /// @nodoc
-class _$AuthenticatedCopyWithImpl<$Res>
-    implements $AuthenticatedCopyWith<$Res> {
-  _$AuthenticatedCopyWithImpl(this._self, this._then);
+class __$UpdateUserCopyWithImpl<$Res>
+    implements _$UpdateUserCopyWith<$Res> {
+  __$UpdateUserCopyWithImpl(this._self, this._then);
 
-  final Authenticated _self;
-  final $Res Function(Authenticated) _then;
+  final _UpdateUser _self;
+  final $Res Function(_UpdateUser) _then;
 
-/// Create a copy of AuthState
+/// Create a copy of AuthEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
-  return _then(Authenticated(
+  return _then(_UpdateUser(
 user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as User,
   ));
 }
 
-/// Create a copy of AuthState
+/// Create a copy of AuthEvent
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -518,72 +282,6 @@ $UserCopyWith<$Res> get user {
     return _then(_self.copyWith(user: value));
   });
 }
-}
-
-/// @nodoc
-
-
-class AuthenticationFailure implements AuthState {
-  const AuthenticationFailure({required this.error});
-  
-
- final  String error;
-
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$AuthenticationFailureCopyWith<AuthenticationFailure> get copyWith => _$AuthenticationFailureCopyWithImpl<AuthenticationFailure>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthenticationFailure&&(identical(other.error, error) || other.error == error));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,error);
-
-@override
-String toString() {
-  return 'AuthState.failure(error: $error)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $AuthenticationFailureCopyWith<$Res> implements $AuthStateCopyWith<$Res> {
-  factory $AuthenticationFailureCopyWith(AuthenticationFailure value, $Res Function(AuthenticationFailure) _then) = _$AuthenticationFailureCopyWithImpl;
-@useResult
-$Res call({
- String error
-});
-
-
-
-
-}
-/// @nodoc
-class _$AuthenticationFailureCopyWithImpl<$Res>
-    implements $AuthenticationFailureCopyWith<$Res> {
-  _$AuthenticationFailureCopyWithImpl(this._self, this._then);
-
-  final AuthenticationFailure _self;
-  final $Res Function(AuthenticationFailure) _then;
-
-/// Create a copy of AuthState
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? error = null,}) {
-  return _then(AuthenticationFailure(
-error: null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-
 }
 
 // dart format on

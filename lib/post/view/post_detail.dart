@@ -390,7 +390,7 @@ class _PostDetailPageState extends State<PostDetailPage>
   Widget _repostBanner() {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
-        User user = (state as Authenticated).user;
+        User user = state.user!;
         String text = user.id == widget.repost.author.id
             ? 'You reposted'
             : '${widget.repost.author.name} reposted';

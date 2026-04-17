@@ -4,7 +4,6 @@ import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/view/widgets/bookmarks.dart';
 import 'package:democracy/constitution/view/constitution.dart';
 import 'package:democracy/app/view/widgets/settings.dart';
-import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/utils/profile_navigator.dart';
@@ -88,24 +87,15 @@ class AppDrawer extends StatelessWidget {
               ),
             ],
           ),
-          BlocBuilder<AuthBloc, AuthState>(
-            builder: (context, state) {
-              switch (state) {
-                case Authenticated():
-                  return ListTile(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => LogoutDialog(),
-                      );
-                    },
-                    title: Text('Logout'),
-                    leading: Icon(Symbols.logout),
-                  );
-                default:
-                  return SizedBox.shrink();
-              }
+          ListTile(
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) => LogoutDialog(),
+              );
             },
+            title: Text('Logout'),
+            leading: Icon(Symbols.logout),
           ),
         ],
       ),

@@ -120,7 +120,7 @@ class _ChatsState extends State<Chats> {
               }
 
               final authBloc = context.read<AuthBloc>();
-              final me = (authBloc.state as Authenticated).user;
+              final me = authBloc.state.user!;
 
               return SmartRefresher(
                 enablePullDown: true,

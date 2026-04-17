@@ -5,6 +5,7 @@ import 'package:democracy/app/shared/camera/camera.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/utils/media_tools.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
+import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,7 @@ class _EditProfileState extends State<EditProfile> {
       listener: (context, state) {
         if (state is UserPatched) {
           Navigator.pop(context);
+          context.read<AuthBloc>().add(AuthEvent.updateUser(user: state.user));
           final snackBar = getSnackBar(
             context: context,
             message: 'Updated',

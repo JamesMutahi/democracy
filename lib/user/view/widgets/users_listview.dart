@@ -68,7 +68,7 @@ class UsersListView extends StatelessWidget {
               onUsersUpdated: onUsersUpdated,
               child: BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, state) {
-                  final me = (state as Authenticated).user;
+                  final me = state.user!;
 
                   return SmartRefresher(
                     enablePullDown: enablePullDown,

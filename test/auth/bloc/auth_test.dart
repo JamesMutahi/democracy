@@ -14,15 +14,13 @@ void main() {
 
     setUp(() {
       mockAuthRepository = MockAuthRepository();
-      authBloc = AuthBloc(
-        authRepository: mockAuthRepository,
-      );
+      authBloc = AuthBloc(authRepository: mockAuthRepository);
     });
 
     test('initial state is _Unauthenticated', () {
       expect(
         authBloc.state,
-        equals(const AuthState.unAuthenticated()),
+        equals(const AuthState(status: AuthStatus.unAuthenticated)),
       );
     });
 
@@ -34,24 +32,26 @@ void main() {
       },
       act: (bloc) => bloc.add(const AuthEvent.authenticate()),
       expect: () => [
-        const AuthState.authenticating(),
-        const AuthState.unAuthenticated(),
+        const AuthState(status: AuthStatus.authenticating),
+        const AuthState(status: AuthStatus.unAuthenticated),
       ],
     );
 
     blocTest(
       'emits page [_Authenticated] when authenticate is added with token',
       build: () {
-        when(() => mockAuthRepository.getToken())
-            .thenAnswer((_) async => 'test');
-        when(() => mockAuthRepository.getUserFromAPI(token: 'test'))
-            .thenAnswer((_) async => user1);
+        when(
+          () => mockAuthRepository.getToken(),
+        ).thenAnswer((_) async => 'test');
+        when(
+          () => mockAuthRepository.getUserFromAPI(token: 'test'),
+        ).thenAnswer((_) async => user1);
         return authBloc;
       },
       act: (bloc) => bloc.add(const AuthEvent.authenticate()),
       expect: () => [
-        const AuthState.authenticating(),
-        AuthState.authenticated(user: user1),
+        const AuthState(status: AuthStatus.authenticating),
+        AuthState(status: AuthStatus.authenticated, user: user1),
       ],
     );
   });

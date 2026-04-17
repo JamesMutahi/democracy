@@ -29,7 +29,7 @@ class PostAuthor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authBloc = context.read<AuthBloc>();
-    final me = (authBloc.state as Authenticated).user;
+    final me = authBloc.state.user!;
     return PostAuthorProfile(author: me, isDependency: false);
   }
 }

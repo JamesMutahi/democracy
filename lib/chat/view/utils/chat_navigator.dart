@@ -9,7 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 void navigateToChatDetail({required BuildContext context, required Chat chat}) {
   final authBloc = context.read<AuthBloc>();
-  final me = (authBloc.state as Authenticated).user;
+  final me = authBloc.state.user!;
 
   User otherUser = me;
   if (chat.users.length > 1) {

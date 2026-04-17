@@ -53,7 +53,7 @@ class _ProfilePageState extends State<ProfilePage> {
     context.read<UserDetailBloc>().add(UserDetailEvent.get(user: widget.user));
     if (!widget.user.isVisited) {
       final authBloc = context.read<AuthBloc>();
-      final me = (authBloc.state as Authenticated).user;
+      final me = authBloc.state.user!;
       if (me.id != widget.user.id) {
         context.read<UserDetailBloc>().add(
           UserDetailEvent.addVisit(user: widget.user),
@@ -131,10 +131,7 @@ class _ProfilePageState extends State<ProfilePage> {
       ],
       child: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
-          late User currentUser;
-          if (state is Authenticated) {
-            currentUser = state.user;
-          }
+          User currentUser = state.user!;
           bool isCurrentUser = currentUser.id == user.id;
           return BlocListener<ChatDetailBloc, ChatDetailState>(
             listener: (context, state) {

@@ -62,12 +62,12 @@ class MyApp extends StatelessWidget {
                 builder: (context, state) {
                   return BlocBuilder<WebsocketBloc, WebsocketState>(
                     builder: (context, socketState) {
-                      if (state is Unauthenticated) {
+                      if (state.status == AuthStatus.unAuthenticated) {
                         return LoginPage();
-                      } else if (state is Authenticated &&
+                      } else if (state.status == AuthStatus.authenticated &&
                           socketState.initialConnectionAchieved) {
                         return _buildMainPageView();
-                      } else if (state is AuthenticationFailure) {
+                      } else if (state.status == AuthStatus.failure) {
                         return _buildFailurePage(context, state.error);
                       } else {
                         return SplashPage();
@@ -220,7 +220,7 @@ class _Listeners extends StatelessWidget {
         ),
         BlocListener<AuthBloc, AuthState>(
           listener: (context, state) {
-            if (state is Authenticated) {
+            if (state.status == AuthStatus.authenticated) {
               context.read<WebsocketBloc>().add(WebsocketEvent.connect());
             }
           },

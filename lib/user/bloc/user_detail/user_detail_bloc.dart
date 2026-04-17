@@ -94,14 +94,22 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
     emit(_Loading());
     try {
       String? token = await authRepository.getToken();
-      await apiRepository.patchUser(
+      final data = await apiRepository.patchUser(
+        user: event.user,
         token: token!,
         name: event.name,
         bio: event.bio,
         imagePath: event.imagePath,
         coverPhotoPath: event.coverPhotoPath,
       );
-      emit(UserPatched());
+      User user = event.user;
+      user = user.copyWith(
+        name: data['name'],
+        bio: data['bio'],
+        image: data['image'],
+        coverPhoto: data['cover_photo'],
+      );
+      emit(UserPatched(user: user));
     } catch (e) {
       emit(UserDetailFailure(error: e.toString()));
     }

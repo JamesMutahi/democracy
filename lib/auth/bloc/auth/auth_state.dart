@@ -1,13 +1,31 @@
 part of 'auth_bloc.dart';
 
-@freezed
-abstract class AuthState with _$AuthState {
-  const factory AuthState.unAuthenticated() = Unauthenticated;
+enum AuthStatus { unAuthenticated, authenticating, authenticated, failure }
 
-  const factory AuthState.authenticating() = Authenticating;
+final class AuthState extends Equatable {
+  const AuthState({
+    this.status = AuthStatus.unAuthenticated,
+    this.user,
+    this.error = '',
+  });
 
-  const factory AuthState.authenticated({required User user}) = Authenticated;
+  final AuthStatus status;
+  final User? user;
+  final String error;
 
-  const factory AuthState.failure({required String error}) =
-      AuthenticationFailure;
+  AuthState copyWith({AuthStatus? status, User? user, String? error}) {
+    return AuthState(
+      status: status ?? this.status,
+      user: user ?? this.user,
+      error: error ?? this.error,
+    );
+  }
+
+  @override
+  String toString() {
+    return '''AuthState { status: $status, user: $user, error: $error }''';
+  }
+
+  @override
+  List<Object> get props => [status, ?user];
 }

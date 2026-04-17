@@ -48,7 +48,7 @@ class PostPopUp extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
-        final currentUser = state is Authenticated ? state.user : null;
+        final currentUser = state.user!;
 
         final List<String> menuItems = _buildMenuItems(currentUser, post);
 
@@ -61,14 +61,14 @@ class PostPopUp extends StatelessWidget {
     );
   }
 
-  List<String> _buildMenuItems(User? currentUser, Post post) {
+  List<String> _buildMenuItems(User currentUser, Post post) {
     final List<String> items = [];
 
     if (post.communityNoteOf == null) items.add('Community notes');
 
     items.add('Share');
 
-    if (currentUser?.id == post.author.id) {
+    if (currentUser.id == post.author.id) {
       items.add(post.isMuted ? 'Unmute' : 'Mute');
       items.add('Delete');
     } else {

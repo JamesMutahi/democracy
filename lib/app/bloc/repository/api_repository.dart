@@ -349,7 +349,8 @@ class APIRepository {
     }
   }
 
-  Future patchUser({
+  Future<Map> patchUser({
+    required User user,
     required String token,
     required String name,
     required String bio,
@@ -371,7 +372,9 @@ class APIRepository {
           headers: <String, String>{'Authorization': 'Token $token'},
         ),
       );
-      if (response.statusCode != 200) {
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
         return Future.error(response.data.toString());
       }
     } on DioException catch (e) {

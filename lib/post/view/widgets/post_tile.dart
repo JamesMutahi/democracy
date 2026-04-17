@@ -133,7 +133,7 @@ class PostTile extends StatelessWidget {
   Widget _repostBanner() {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
-        User user = (state as Authenticated).user;
+        User user = state.user!;
         String text = user.id == post.author.id
             ? 'You reposted'
             : '${post.author.name} reposted';

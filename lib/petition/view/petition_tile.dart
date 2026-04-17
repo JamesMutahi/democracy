@@ -192,7 +192,7 @@ class PetitionPopUpMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
-        User user = (state as Authenticated).user;
+        User user = state.user!;
         return MorePopUp(
           onSelected: (selected) {
             switch (selected) {

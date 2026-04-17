@@ -77,7 +77,7 @@ class _MainPageViewState extends State<MainPageView> {
   @override
   Widget build(BuildContext context) {
     final authBloc = context.read<AuthBloc>();
-    final user = (authBloc.state as Authenticated).user;
+    final user = authBloc.state.user!;
 
     return Scaffold(
       key: _scaffoldKey,
