@@ -1,4 +1,4 @@
-import 'package:democracy/app/bloc/theme/theme_cubit.dart';
+import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/notification/view/preferences.dart';
 import 'package:democracy/user/view/pages/muted_and_blocked.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +50,7 @@ class ThemeModeListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ThemeCubit, ThemeState>(
+    return BlocBuilder<GlobalCubit, GlobalState>(
       builder: (context, state) {
         List<bool> isSelected = [false, false, false];
         ThemeMode themeMode = ThemeMode.system;
@@ -74,15 +74,15 @@ class ThemeModeListTile extends StatelessWidget {
           onTap: () {
             switch (themeMode) {
               case ThemeMode.light:
-                context.read<ThemeCubit>().change(
+                context.read<GlobalCubit>().change(
                   index: ThemeMode.system.index,
                 );
                 break;
               case ThemeMode.system:
-                context.read<ThemeCubit>().change(index: ThemeMode.dark.index);
+                context.read<GlobalCubit>().change(index: ThemeMode.dark.index);
                 break;
               case ThemeMode.dark:
-                context.read<ThemeCubit>().change(index: ThemeMode.light.index);
+                context.read<GlobalCubit>().change(index: ThemeMode.light.index);
                 break;
             }
           },
@@ -105,11 +105,11 @@ class ThemeModeToggleButtons extends StatelessWidget {
       isSelected: isSelected,
       onPressed: (int newIndex) {
         if (newIndex == 0) {
-          context.read<ThemeCubit>().change(index: ThemeMode.light.index);
+          context.read<GlobalCubit>().change(index: ThemeMode.light.index);
         } else if (newIndex == 1) {
-          context.read<ThemeCubit>().change(index: ThemeMode.system.index);
+          context.read<GlobalCubit>().change(index: ThemeMode.system.index);
         } else {
-          context.read<ThemeCubit>().change(index: ThemeMode.dark.index);
+          context.read<GlobalCubit>().change(index: ThemeMode.dark.index);
         }
       },
       children: const <Widget>[

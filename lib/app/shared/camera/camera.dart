@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/shared/camera/video_editor/video_editor.dart';
 import 'package:democracy/app/shared/camera/video_editor/widgets/video_progress_alert.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:native_device_orientation/native_device_orientation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pro_video_editor/core/models/video/editor_video_model.dart';
@@ -19,34 +21,31 @@ import 'package:video_player/video_player.dart';
 
 import 'image_editor/image_editor.dart';
 
-List<CameraDescription> get cameras => _cameras;
-List<CameraDescription> _cameras = <CameraDescription>[];
-
 void openCamera({
   required BuildContext context,
   required User? recipient,
   required TextEditingController? textEditingController,
   required void Function(File) onImageEditingComplete,
   void Function(String)? onVideoEditingComplete,
-}) async {
-  try {
-    _cameras = await availableCameras();
-  } on CameraException catch (e) {
-    _logError(e.code, e.description);
+}) {
+  final globalCubit = context.read<GlobalCubit>();
+  if (globalCubit.state.cameras.isEmpty) {
+    globalCubit.getCameras();
+    return;
   }
-  if (context.mounted) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CameraPage(
-          recipient: recipient,
-          textEditingController: textEditingController,
-          onImageEditingComplete: onImageEditingComplete,
-          onVideoEditingComplete: onVideoEditingComplete,
-        ),
+  final cameras = globalCubit.state.cameras;
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => CameraPage(
+        cameras: cameras,
+        recipient: recipient,
+        textEditingController: textEditingController,
+        onImageEditingComplete: onImageEditingComplete,
+        onVideoEditingComplete: onVideoEditingComplete,
       ),
-    );
-  }
+    ),
+  );
 }
 
 void _logError(String code, String? message) {
@@ -59,6 +58,7 @@ void _logError(String code, String? message) {
 class CameraPage extends StatefulWidget {
   const CameraPage({
     super.key,
+    required this.cameras,
     required this.recipient,
     required this.textEditingController,
     required this.onImageEditingComplete,
@@ -66,6 +66,7 @@ class CameraPage extends StatefulWidget {
     this.tabIndex,
   });
 
+  final List<CameraDescription> cameras;
   final User? recipient;
   final TextEditingController? textEditingController;
   final void Function(File) onImageEditingComplete;
@@ -95,7 +96,9 @@ class _CameraPageState extends State<CameraPage>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _initializeCameraController(
-      _cameras.firstWhere((c) => c.lensDirection == CameraLensDirection.back),
+      widget.cameras.firstWhere(
+        (c) => c.lensDirection == CameraLensDirection.back,
+      ),
     );
     _tabController = TabController(
       length: 4,
@@ -406,11 +409,11 @@ class _CameraPageState extends State<CameraPage>
   }
 
   Future<void> _switchCamera() async {
-    if (_cameras.isEmpty) return;
+    if (widget.cameras.isEmpty) return;
     final currentDirection = controller.description.lensDirection;
-    final newCamera = _cameras.firstWhere(
+    final newCamera = widget.cameras.firstWhere(
       (c) => c.lensDirection != currentDirection,
-      orElse: () => _cameras.first,
+      orElse: () => widget.cameras.first,
     );
 
     if (controller.value.isRecordingVideo) {

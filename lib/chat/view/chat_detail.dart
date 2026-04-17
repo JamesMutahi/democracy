@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:democracy/app/bloc/theme/theme_cubit.dart';
+import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart';
 import 'package:democracy/app/shared/utils/copy.dart';
@@ -51,7 +51,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   @override
   void initState() {
-    context.read<ThemeCubit>().holdChatId(chatId: widget.chat.id);
+    context.read<GlobalCubit>().holdChatId(chatId: widget.chat.id);
     _getData();
     super.initState();
   }
@@ -139,7 +139,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           if (showMessageActions) {
             context.read<MessageActionsCubit>().closeActionButtons();
           } else {
-            context.read<ThemeCubit>().holdChatId(chatId: null);
+            context.read<GlobalCubit>().holdChatId(chatId: null);
             context.read<UserDetailBloc>().add(
               UserDetailEvent.unsubscribe(user: _otherUser),
             );

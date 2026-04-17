@@ -315,8 +315,8 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
                     onCameraTap: () async {
                       openCamera(
                         context: context,
-                        recipient: widget.reply?.author,
-                        textEditingController: widget.controller,
+                        recipient: null,
+                        textEditingController: null,
                         onImageEditingComplete: (newImage) {
                           widget.onNewImages([newImage]);
                         },

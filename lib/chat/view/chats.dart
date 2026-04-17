@@ -1,4 +1,4 @@
-import 'package:democracy/app/bloc/theme/theme_cubit.dart';
+import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
@@ -70,7 +70,7 @@ class _ChatsState extends State<Chats> {
           listener: (context, state) {
             if (state is NotificationCreated) {
               if (state.notification.chat != null) {
-                final openChatId = context.read<ThemeCubit>().state.openChatId;
+                final openChatId = context.read<GlobalCubit>().state.openChatId;
                 if (openChatId != state.notification.chat!.id) {
                   context.read<ChatsBloc>().add(
                     ChatsEvent.update(chat: state.notification.chat!),

@@ -325,16 +325,12 @@ class _ImageEditorState extends State<ImageEditor> {
     if (canPop) {
       Navigator.pop(context);
     } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => CameraPage(
-            recipient: widget.recipient,
-            textEditingController: widget.textEditingController,
-            onImageEditingComplete: widget.onImageEditingComplete,
-            onVideoEditingComplete: widget.onVideoEditingComplete,
-          ),
-        ),
+      openCamera(
+        context: context,
+        recipient: widget.recipient,
+        textEditingController: widget.textEditingController,
+        onImageEditingComplete: widget.onImageEditingComplete,
+        onVideoEditingComplete: widget.onVideoEditingComplete,
       );
     }
   }

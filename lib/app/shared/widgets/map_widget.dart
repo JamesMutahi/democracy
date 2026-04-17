@@ -1,4 +1,4 @@
-import 'package:democracy/app/bloc/theme/theme_cubit.dart';
+import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +14,7 @@ class MapWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ThemeCubit, ThemeState>(
+    return BlocBuilder<GlobalCubit, GlobalState>(
       builder: (context, state) {
         ThemeMode themeMode = ThemeMode.system;
         if (state.index != null) {

@@ -72,11 +72,9 @@ class _PostDetailPageState extends State<PostDetailPage>
     if (widget.post.replyTo != null) {
       context.read<ReplyToBloc>().add(ReplyToEvent.get(post: widget.post));
     }
-    if (!widget.post.isClicked) {
-      context.read<PostDetailBloc>().add(
-        PostDetailEvent.addClick(post: widget.post),
-      );
-    }
+    context.read<PostDetailBloc>().add(
+      PostDetailEvent.addClick(post: widget.post),
+    );
   }
 
   @override

@@ -347,10 +347,10 @@ class ViewsButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _PostTileButton(
-      onTap: () {},
+      onTap: null,
       number: post.views,
       icon: Icon(
-        Symbols.people_rounded,
+        Symbols.bar_chart_4_bars_rounded,
         color: Theme.of(context).colorScheme.outlineVariant,
         size: 20,
       ),
@@ -398,7 +398,7 @@ class _PostTileButton extends StatelessWidget {
 
   final Icon icon;
   final int number;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {

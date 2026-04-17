@@ -1,6 +1,6 @@
 import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
-import 'package:democracy/app/bloc/theme/theme_cubit.dart';
+import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/app/shared/constants/strings.dart';
@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ThemeCubit, ThemeState>(
+    return BlocBuilder<GlobalCubit, GlobalState>(
       builder: (context, state) {
         ThemeMode themeMode = ThemeMode.system;
         if (state.index != null) {

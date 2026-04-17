@@ -535,17 +535,12 @@ class _VideoEditorState extends State<VideoEditor> {
 
     // Navigate back to CameraPage (replace current route)
     if (mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => CameraPage(
-            recipient: widget.recipient,
-            textEditingController: widget.textEditingController,
-            onImageEditingComplete: widget.onImageEditingComplete,
-            onVideoEditingComplete: widget.onVideoEditingComplete,
-            tabIndex: 1, // Video tab
-          ),
-        ),
+      openCamera(
+        context: context,
+        recipient: widget.recipient,
+        textEditingController: widget.textEditingController,
+        onImageEditingComplete: widget.onImageEditingComplete,
+        onVideoEditingComplete: widget.onVideoEditingComplete,
       );
     }
   }

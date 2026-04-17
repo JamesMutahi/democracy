@@ -4,7 +4,7 @@ import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
 import 'package:democracy/app/bloc/forms_tab_bar/forms_tab_bar_cubit.dart';
 import 'package:democracy/app/bloc/location/location_cubit.dart';
 import 'package:democracy/app/bloc/repository/api_repository.dart';
-import 'package:democracy/app/bloc/theme/theme_cubit.dart';
+import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/app/shared/utils/app_bloc_observer.dart';
@@ -75,7 +75,12 @@ void main() async {
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider(create: (context) => ThemeCubit()..check(), lazy: false),
+          BlocProvider(
+            create: (context) => GlobalCubit()
+              ..check()
+              ..getCameras(),
+            lazy: false,
+          ),
           BlocProvider(
             create: (context) =>
                 ConnectivityBloc()

@@ -355,9 +355,6 @@ class APIRepository {
     required String bio,
     required String? imagePath,
     required String? coverPhotoPath,
-    County? county,
-    Constituency? constituency,
-    Ward? ward,
   }) async {
     try {
       FormData data = FormData.fromMap({

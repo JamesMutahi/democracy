@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
-import 'package:democracy/app/bloc/theme/theme_cubit.dart';
+import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/more_pop_up.dart';
@@ -44,8 +44,8 @@ class PetitionTile extends StatelessWidget {
           var visibilityPercentage = visibilityInfo.visibleFraction * 100;
           if (visibilityPercentage == 100) {
             Map<String, int> viewedPetition = {'Petition': petition.id};
-            final themeState = context.read<ThemeCubit>().state;
-            bool exists = themeState.viewedPosts.any(
+            final globalCubit = context.read<GlobalCubit>();
+            bool exists = globalCubit.state.viewedPosts.any(
               (element) => const DeepCollectionEquality().equals(
                 element,
                 viewedPetition,
@@ -55,9 +55,7 @@ class PetitionTile extends StatelessWidget {
               context.read<PetitionDetailBloc>().add(
                 PetitionDetailEvent.addView(petition: petition),
               );
-              context.read<ThemeCubit>().addViewedPost(
-                viewedPost: viewedPetition,
-              );
+              globalCubit.addViewedPost(viewedPost: viewedPetition);
             }
           }
         },

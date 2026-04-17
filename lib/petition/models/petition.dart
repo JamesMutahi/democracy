@@ -23,7 +23,6 @@ sealed class Petition with _$Petition {
     required int supporters,
     @JsonKey(name: 'recent_supporters') required List<User> recentSupporters,
     @JsonKey(name: 'is_supported') required bool isSupported,
-    @JsonKey(name: 'is_clicked') required bool isClicked,
     @JsonKey(name: 'is_open') required bool isOpen,
     @JsonKey(name: 'created_at') required DateTime createdAt,
     @JsonKey(name: 'is_active') required bool isActive,

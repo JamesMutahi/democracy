@@ -30,11 +30,9 @@ class _PetitionDetailState extends State<PetitionDetail> {
     context.read<PetitionDetailBloc>().add(
       PetitionDetailEvent.retrieve(petition: widget.petition),
     );
-    if (!widget.petition.isClicked) {
-      context.read<PetitionDetailBloc>().add(
-        PetitionDetailEvent.addClick(petition: widget.petition),
-      );
-    }
+    context.read<PetitionDetailBloc>().add(
+      PetitionDetailEvent.addClick(petition: widget.petition),
+    );
     super.initState();
   }
 
@@ -126,7 +124,7 @@ class _PetitionDetailState extends State<PetitionDetail> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    '${_petition.views} ${_petition.views > 1 ? 'views': 'view'}',
+                                    '${_petition.views} ${_petition.views > 1 ? 'views' : 'view'}',
                                     style: TextStyle(
                                       color: Colors.black.withAlpha(75),
                                     ),
