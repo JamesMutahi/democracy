@@ -53,6 +53,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = AppBlocObserver();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  await dotenv.load(fileName: ".env");
   final options = BaseOptions(
     baseUrl: dotenv.env['BASE_URL']!,
     connectTimeout: const Duration(seconds: 5),

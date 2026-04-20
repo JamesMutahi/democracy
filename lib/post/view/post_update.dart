@@ -7,6 +7,7 @@ import 'package:democracy/app/shared/widgets/map_widget.dart';
 import 'package:democracy/app/shared/utils/media_tools.dart';
 import 'package:democracy/app/shared/widgets/video_viewer.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
+import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
@@ -33,28 +34,36 @@ class PostUpdatePage extends StatefulWidget {
 }
 
 class _PostUpdatePageState extends State<PostUpdatePage> {
-  late final _controller = FlutterTaggerController();
+  late final _controller = FlutterTaggerController(text: widget.post.body);
   ValueKey centerKey = ValueKey('Center');
 
-  bool _canPost = false;
+  bool _canPost = true;
 
   // Media state
-  File? _insertedImage;
   List<File> _selectedImages = [];
   String? _selectedVideoPath;
   File? _selectedFile;
   LatLng? _selectedLocation;
+  Section? _selectedSection;
 
   @override
   void initState() {
-    _getData();
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _controller.text = widget.post.body;
-      for (var user in widget.post.taggedUsers) {
-        _controller.addTag(id: user.id.toString(), name: user.username);
-      }
-    });
+    _getData();
+
+    _controller.formatTags();
+
+    final post = widget.post;
+    // Initialize media (cleaner way)
+    _selectedImages = [
+      if (post.image1Url != null) File.fromUri(Uri.parse(post.image1Url!)),
+      if (post.image2Url != null) File.fromUri(Uri.parse(post.image2Url!)),
+      if (post.image3Url != null) File.fromUri(Uri.parse(post.image3Url!)),
+      if (post.image4Url != null) File.fromUri(Uri.parse(post.image4Url!)),
+    ].where((f) => f.path.isNotEmpty).toList();
+
+    if (post.videoUrl != null) _selectedVideoPath = post.videoUrl;
+    if (post.location != null) _selectedLocation = post.location;
   }
 
   void _getData() {
@@ -79,11 +88,9 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
         survey: widget.post.survey,
         petition: widget.post.petition,
         meeting: widget.post.meeting,
-        section: widget.post.section,
+        section: _selectedSection,
         tags: tags,
-        imagePath1:
-            _insertedImage?.path ??
-            (_selectedImages.isNotEmpty ? _selectedImages[0].path : null),
+        imagePath1: _selectedImages.isNotEmpty ? _selectedImages[0].path : null,
         imagePath2: _selectedImages.length > 1 ? _selectedImages[1].path : null,
         imagePath3: _selectedImages.length > 2 ? _selectedImages[2].path : null,
         imagePath4: _selectedImages.length > 3 ? _selectedImages[3].path : null,
@@ -98,7 +105,6 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
     bool canPost = text.trim().isNotEmpty;
     if (!canPost && widget.post.replyTo != null) {
       canPost =
-          _insertedImage != null ||
           _selectedImages.isNotEmpty ||
           _selectedVideoPath != null ||
           _selectedFile != null ||
@@ -196,10 +202,7 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
             files: _selectedImages, // if needed by the bar
             fileLimit: 4,
             onNewImages: (images) {
-              setState(() {
-                _selectedImages = images;
-                _insertedImage = null;
-              });
+              setState(() => _selectedImages = images);
               _updatePostButtonState(_controller.formattedText);
             },
             onNewFile: (file) {
@@ -215,7 +218,10 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
               _updatePostButtonState(_controller.formattedText);
             },
             onNewSection: (section) {
-              //   TODO:
+              if (widget.post.section == null) {
+                setState(() => _selectedSection = section);
+                _updatePostButtonState(_controller.formattedText);
+              }
             },
           ),
         ),
@@ -246,38 +252,21 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
                         : "What's new?",
                     onChanged: _updatePostButtonState,
                     onContentInsertion: (imageFile) {
-                      setState(() {
-                        _insertedImage = imageFile;
-                        _selectedImages.clear();
-                        _selectedFile = null;
-                      });
+                      setState(() => _selectedImages.add(imageFile));
                     },
                   ),
                 ],
               ),
-              if (_insertedImage != null)
-                SingleImageView(
-                  image: _insertedImage!,
-                  onRemove: () {
-                    setState(() {
-                      _insertedImage = null;
-                    });
-                  },
-                ),
               if (_selectedImages.isNotEmpty)
                 MultiImageView(
                   recipient: widget.post.replyTo?.author,
                   textEditingController: _controller,
                   images: _selectedImages,
                   onAdd: (images) {
-                    setState(() {
-                      _selectedImages.addAll(images);
-                    });
+                    setState(() => _selectedImages.addAll(images));
                   },
                   onRemove: (index) {
-                    setState(() {
-                      _selectedImages.removeAt(index);
-                    });
+                    setState(() => _selectedImages.removeAt(index));
                   },
                 ),
               if (_selectedVideoPath != null)
@@ -295,6 +284,12 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
                 ),
               if (_selectedLocation != null)
                 MapWidget(mapCenter: _selectedLocation!),
+              if (_selectedSection != null)
+                SectionView(
+                  section: _selectedSection!,
+                  onRemoveSection: () =>
+                      setState(() => _selectedSection = null),
+                ),
               if (widget.post.repostOf != null)
                 DependencyContainer(
                   child: PostTile(
@@ -333,7 +328,7 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
               if (widget.post.section != null)
                 SectionView(
                   section: widget.post.section!,
-                  onRemoveSection: () {},
+                  onRemoveSection: null,
                 ),
             ],
           ),

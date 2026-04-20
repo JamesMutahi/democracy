@@ -270,7 +270,7 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
         if (widget.selectedVideoPath != null)
           Container(
             margin: EdgeInsets.only(top: 10),
-            height: MediaQuery.of(context).size.height/5,
+            height: MediaQuery.of(context).size.height / 5,
             child: VideoViewer(urls: [widget.selectedVideoPath!]),
           ),
         if (widget.location != null)
@@ -395,7 +395,7 @@ class SectionView extends StatelessWidget {
   });
 
   final Section section;
-  final VoidCallback onRemoveSection;
+  final VoidCallback? onRemoveSection;
 
   @override
   Widget build(BuildContext context) {
@@ -411,14 +411,15 @@ class SectionView extends StatelessWidget {
           ),
           child: IgnorePointer(child: SectionTile(section: section)),
         ),
-        Positioned(
-          right: 0,
-          top: 6,
-          child: GestureDetector(
-            onTap: onRemoveSection,
-            child: Icon(Icons.highlight_remove_rounded, color: Colors.red),
+        if (onRemoveSection != null)
+          Positioned(
+            right: 0,
+            top: 6,
+            child: GestureDetector(
+              onTap: onRemoveSection,
+              child: Icon(Icons.highlight_remove_rounded, color: Colors.red),
+            ),
           ),
-        ),
       ],
     );
   }

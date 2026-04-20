@@ -3,6 +3,7 @@ import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/post/bloc/draft_posts/draft_posts_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/shared/post_navigator.dart';
+import 'package:democracy/post/view/widgets/post_body.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -87,26 +88,37 @@ class _DraftsPostsState extends State<DraftPosts> {
                 padding: EdgeInsets.symmetric(horizontal: 15),
                 itemBuilder: (BuildContext context, int index) {
                   Post post = posts[index];
-                  return GestureDetector(
-                    onTap: () {
-                      navigateToPostUpdate(context: context, post: post);
-                    },
-                    child: Container(
-                      margin: EdgeInsets.only(top: 10),
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).cardColor,
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                      ),
-                      child: Text(post.body),
-                    ),
-                  );
+                  return DraftTile(key: ValueKey(post.id), post: post);
                 },
                 itemCount: posts.length,
               ),
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class DraftTile extends StatelessWidget {
+  const DraftTile({super.key, required this.post});
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        navigateToPostUpdate(context: context, post: post);
+      },
+      child: Container(
+        margin: EdgeInsets.only(top: 10),
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+        ),
+        child: PostBody(post: post),
       ),
     );
   }

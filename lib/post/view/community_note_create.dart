@@ -8,6 +8,7 @@ import 'package:democracy/post/view/widgets/reply_tos.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertagger/fluttertagger.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class CommunityNoteCreate extends StatefulWidget {
@@ -20,7 +21,7 @@ class CommunityNoteCreate extends StatefulWidget {
 }
 
 class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
-  final _controller = TextEditingController();
+  final _controller = FlutterTaggerController();
   bool _disablePostButton = true;
   List<Post> _replyTos = [];
   ValueKey centerKey = ValueKey('Center');

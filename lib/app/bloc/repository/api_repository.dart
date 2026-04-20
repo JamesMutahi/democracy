@@ -163,7 +163,7 @@ class APIRepository {
       }
 
       Response response = await dio.patch(
-        '/post/$id/update/',
+        '/post/update/$id/',
         data: FormData.fromMap(data),
         options: Options(
           headers: <String, String>{'Authorization': 'Token $token'},
