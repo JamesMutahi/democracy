@@ -267,6 +267,7 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
         ),
       ],
       child: FlutterTagger(
+        searchRegex: RegExp(r'^[a-zA-Z0-9]*$'),
         triggerStrategy: TriggerStrategy.eager,
         controller: widget.controller,
         animationController: _animationController,

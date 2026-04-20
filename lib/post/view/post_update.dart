@@ -34,7 +34,7 @@ class PostUpdatePage extends StatefulWidget {
 }
 
 class _PostUpdatePageState extends State<PostUpdatePage> {
-  late final _controller = FlutterTaggerController(text: widget.post.body);
+  late final _controller = FlutterTaggerController();
   ValueKey centerKey = ValueKey('Center');
 
   bool _canPost = true;
@@ -51,10 +51,8 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
     super.initState();
     _getData();
 
-    _controller.formatTags();
-
     final post = widget.post;
-    // Initialize media (cleaner way)
+    // Initialize media
     _selectedImages = [
       if (post.image1Url != null) File.fromUri(Uri.parse(post.image1Url!)),
       if (post.image2Url != null) File.fromUri(Uri.parse(post.image2Url!)),
@@ -64,6 +62,11 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
 
     if (post.videoUrl != null) _selectedVideoPath = post.videoUrl;
     if (post.location != null) _selectedLocation = post.location;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _controller.text = post.body;
+      _controller.formatTags();
+    });
   }
 
   void _getData() {
