@@ -46,8 +46,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   bool showMessageActions = false;
   Set<Message> messages = {};
   bool hideChat = true;
-  List<File> _selectedImages = [];
-  File? _selectedFile;
+  List<File> _media = [];
+  File? _document;
 
   @override
   void initState() {
@@ -267,39 +267,37 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       },
       hintText: 'Message',
       prefixIcon: null,
-      onNewImages: (images) {
+      onNewMedia: (media) {
         setState(() {
-          _selectedImages = images;
+          _media = media;
         });
       },
-      selectedImages: _selectedImages,
-      onAddImages: (images) {
+      media: _media,
+      onAddMedia: (media) {
         setState(() {
-          _selectedImages.addAll(images);
+          _media.addAll(media);
         });
       },
-      onRemoveImage: (index) {
+      onRemoveMedia: (index) {
         setState(() {
-          _selectedImages.removeAt(index);
+          _media.removeAt(index);
         });
       },
-      onNewFile: (file) {
+      onNewDocument: (file) {
         setState(() {
-          _selectedFile = file;
+          _document = file;
         });
       },
-      selectedFile: _selectedFile,
+      document: _document,
       onContentInsertion: (imageFile) {
         context.read<MessageDetailBloc>().add(
           MessageDetailEvent.create(
             chat: _chat,
             text: '',
-            imagePath1: imageFile.path,
+            filePaths: [imageFile.path],
           ),
         );
       },
-      insertedContent: null,
-      onRemoveInsertedContent: null,
       allowedMimeTypes: const <String>['image/png', 'image/gif'],
       onLocation: (point) {
         context.read<MessageDetailBloc>().add(
@@ -315,35 +313,23 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       },
       section: null,
       onRemoveSection: null,
-      selectedVideoPath: null,
-      onRemoveVideo: null,
-      onSend:
-          _disableSendButton && _selectedImages.isEmpty && _selectedFile == null
+      onSend: _disableSendButton && _media.isEmpty && _document == null
           ? null
           : () {
               context.read<MessageDetailBloc>().add(
                 MessageDetailEvent.create(
                   chat: _chat,
                   text: _controller.text,
-                  imagePath1: _selectedImages.isNotEmpty
-                      ? _selectedImages[0].path
-                      : null,
-                  imagePath2: _selectedImages.length > 1
-                      ? _selectedImages[1].path
-                      : null,
-                  imagePath3: _selectedImages.length > 2
-                      ? _selectedImages[2].path
-                      : null,
-                  imagePath4: _selectedImages.length > 3
-                      ? _selectedImages[3].path
-                      : null,
-                  filePath: _selectedFile?.path,
+                  filePaths: [
+                    ..._media.map((m) => m.path),
+                    if (_document != null) _document!.path,
+                  ],
                 ),
               );
               _controller.clear();
               setState(() {
-                _selectedFile = null;
-                _selectedImages = [];
+                _document = null;
+                _media = [];
                 _disableSendButton = true;
               });
             },
@@ -353,7 +339,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           MessageDetailEvent.create(
             chat: _chat,
             text: _controller.text,
-            imagePath1: image.path,
+            filePaths: [image.path],
           ),
         );
         _controller.clear();
@@ -363,7 +349,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           MessageDetailEvent.create(
             chat: _chat,
             text: _controller.text,
-            videoPath: videoPath,
+            filePaths: [videoPath],
           ),
         );
         _controller.clear();

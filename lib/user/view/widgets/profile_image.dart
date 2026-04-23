@@ -8,25 +8,29 @@ class ProfileImage extends StatelessWidget {
     super.key,
     required this.user,
     this.navigateToProfile = false,
+    this.radius = 20,
   });
 
   final User user;
   final bool navigateToProfile;
+  final double radius;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.all(Radius.circular(20)),
-      onTap:
-          navigateToProfile
-              ? () => navigateToProfilePage(context: context, user: user)
-              : null,
+      onTap: navigateToProfile
+          ? () => navigateToProfilePage(context: context, user: user)
+          : null,
       child: CircleAvatar(
-        radius: 20,
+        radius: radius,
         child: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: CachedNetworkImageProvider(user.image),
+              image: CachedNetworkImageProvider(
+                user.image,
+                cacheKey: 'profile ${user.id}',
+              ),
               fit: BoxFit.cover,
             ),
             borderRadius: BorderRadius.circular(100),

@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:democracy/app/shared/constants/regex.dart';
 import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart';
 import 'package:democracy/app/shared/widgets/tagging.dart';
 import 'package:democracy/constitution/bloc/sections/sections_bloc.dart';
 import 'package:democracy/constitution/models/section.dart';
-import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
+import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:flutter/material.dart';
@@ -28,10 +29,8 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
   late AnimationController _animationController;
   late Animation<Offset> _animation;
   bool _disableSendButton = true;
-  List<File> _selectedImages = [];
-  String? _selectedVideoPath;
-  File? _selectedFile;
-  File? _insertedContent;
+  List<File> _media = [];
+  File? _document;
   LatLng? _location;
   Section? _selectedSection;
 
@@ -122,6 +121,7 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
         ),
       ],
       child: FlutterTagger(
+        searchRegex: searchRegex,
         triggerStrategy: TriggerStrategy.eager,
         controller: _controller,
         animationController: _animationController,
@@ -173,30 +173,22 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
             },
             hintText: 'Reply',
             prefixIcon: null,
-            selectedImages: _selectedImages,
-            selectedFile: _selectedFile,
-            onNewImages: (images) {
+            media: _media,
+            document: _document,
+            onNewMedia: (media) {
               setState(() {
-                _selectedImages = images;
-                _insertedContent = null;
+                _media = media;
               });
             },
-            onAddImages: (images) {
-              setState(() => _selectedImages.addAll(images));
+            onAddMedia: (media) {
+              setState(() => _media.addAll(media));
             },
-            onRemoveImage: (index) {
-              setState(() => _selectedImages.removeAt(index));
+            onRemoveMedia: (index) {
+              setState(() => _media.removeAt(index));
             },
-            onNewFile: (file) => setState(() => _selectedFile = file),
+            onNewDocument: (file) => setState(() => _document = file),
             onContentInsertion: (imageFile) {
-              setState(() {
-                _insertedContent = imageFile;
-                _selectedImages = [];
-              });
-            },
-            insertedContent: _insertedContent,
-            onRemoveInsertedContent: () {
-              setState(() => _insertedContent = null);
+              setState(() => _media.add(imageFile));
             },
             allowedMimeTypes: const <String>['image/gif'],
             onLocation: (point) => setState(() => _location = point),
@@ -207,27 +199,22 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
             },
             section: _selectedSection,
             onRemoveSection: () => setState(() => _selectedSection = null),
-            selectedVideoPath: _selectedVideoPath,
-            onRemoveVideo: () => setState(() => _selectedVideoPath = null),
             onSend:
                 _disableSendButton &&
-                    _insertedContent == null &&
-                    _selectedFile == null &&
-                    _selectedImages.isEmpty &&
+                    _document == null &&
+                    _media.isEmpty &&
                     _location == null &&
                     _selectedSection == null
                 ? null
                 : _createPost,
             onImageEditingComplete: (image) {
               setState(() {
-                _selectedImages.add(image);
-                _selectedFile = null;
-                _insertedContent = null;
+                _media.add(image);
               });
             },
             onVideoEditingComplete: (videoPath) {
               setState(() {
-                _selectedVideoPath = videoPath;
+                _media.add(File(videoPath));
               });
             },
           );
@@ -241,30 +228,24 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
     for (var tag in _controller.tags) {
       tags.add({'id': tag.id, 'text': tag.text});
     }
-    context.read<PostDetailBloc>().add(
-      PostDetailEvent.create(
+    context.read<PostCreateBloc>().add(
+      PostCreateEvent.create(
         body: _controller.formattedText,
         status: PostStatus.published,
         replyTo: widget.post,
         tags: tags,
-        imagePath1: _insertedContent != null
-            ? _insertedContent!.path
-            : _selectedImages.isNotEmpty
-            ? _selectedImages[0].path
-            : null,
-        imagePath2: _selectedImages.length > 1 ? _selectedImages[1].path : null,
-        imagePath3: _selectedImages.length > 2 ? _selectedImages[2].path : null,
-        imagePath4: _selectedImages.length > 3 ? _selectedImages[3].path : null,
-        filePath: _selectedFile?.path,
+        filePaths: [
+          ..._media.map((m) => m.path),
+          if (_document != null) _document!.path,
+        ],
         location: _location,
       ),
     );
     _controller.clear();
     setState(() {
       _disableSendButton = true;
-      _selectedFile = null;
-      _insertedContent = null;
-      _selectedImages = [];
+      _document = null;
+      _media = [];
       _location = null;
       _selectedSection = null;
     });

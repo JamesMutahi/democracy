@@ -6,8 +6,6 @@ class PostDetailState with _$PostDetailState {
 
   const factory PostDetailState.loading() = PostDetailLoading;
 
-  const factory PostDetailState.created({required Post post}) = PostCreated;
-
   const factory PostDetailState.loaded({required Post post}) = PostLoaded;
 
   const factory PostDetailState.patched({required Post post}) = PostPatched;
@@ -20,7 +18,6 @@ class PostDetailState with _$PostDetailState {
     required int bookmarks,
     required bool isBookmarked,
     required int views,
-    required bool isClicked,
     required int replies,
     required int reposts,
     required String communityNote,

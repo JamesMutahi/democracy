@@ -1,13 +1,11 @@
 import 'package:collection/collection.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/shared/widgets/file_widget.dart';
+import 'package:democracy/app/shared/widgets/asset_viewer.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/custom_text.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
-import 'package:democracy/app/shared/widgets/image_viewer.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
-import 'package:democracy/app/shared/widgets/video_viewer.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
@@ -166,7 +164,7 @@ class _MessagesState extends State<Messages> {
                     ),
                   );
                 }
-                if (message.image1Url != null) {
+                if (message.assets.isNotEmpty) {
                   if (text.isNotEmpty) {
                     widgets.add(SizedBox(height: messageMargin));
                   }
@@ -174,31 +172,7 @@ class _MessagesState extends State<Messages> {
                     AlignmentContainer(
                       message: message,
                       alignedRight: alignedRight,
-                      child: ImageViewer(message: message),
-                    ),
-                  );
-                }
-                if (message.videoUrl != null) {
-                  if (text.isNotEmpty) {
-                    widgets.add(SizedBox(height: messageMargin));
-                  }
-                  widgets.add(
-                    AlignmentContainer(
-                      message: message,
-                      alignedRight: alignedRight,
-                      child: VideoViewer(urls: [message.videoUrl!]),
-                    ),
-                  );
-                }
-                if (message.fileUrl != null) {
-                  if (text.isNotEmpty) {
-                    widgets.add(SizedBox(height: messageMargin));
-                  }
-                  widgets.add(
-                    AlignmentContainer(
-                      message: message,
-                      alignedRight: alignedRight,
-                      child: FileWidget(url: message.fileUrl!),
+                      child: AssetViewer(assets: message.assets),
                     ),
                   );
                 }

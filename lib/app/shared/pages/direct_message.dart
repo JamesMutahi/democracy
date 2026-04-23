@@ -45,11 +45,9 @@ class _DirectMessageState extends State<DirectMessage> {
   FocusNode focusNode = FocusNode();
   List<User> selectedUsers = [];
   final RefreshController _refreshController = RefreshController();
-  List<File> _selectedImages = [];
-  String? _selectedVideoPath;
-  File? _selectedFile;
-  File? _insertedContent;
-  LatLng? location;
+  List<File> _media = [];
+  File? _document;
+  LatLng? _location;
 
   @override
   void dispose() {
@@ -229,58 +227,46 @@ class _DirectMessageState extends State<DirectMessage> {
           onChanged: (value) {},
           hintText: 'Add a comment',
           prefixIcon: null,
-          onNewImages: (images) {
+          onNewMedia: (media) {
             setState(() {
-              _selectedImages = images;
-              _insertedContent = null;
-              _selectedFile = null;
+              _media = media;
             });
           },
-          selectedImages: _selectedImages,
-          onAddImages: (images) {
+          media: _media,
+          onAddMedia: (media) {
             setState(() {
-              _selectedImages.addAll(images);
+              _media.addAll(media);
             });
           },
-          onRemoveImage: (index) {
+          onRemoveMedia: (index) {
             setState(() {
-              _selectedImages.removeAt(index);
+              _media.removeAt(index);
             });
           },
-          onNewFile: (file) {
+          onNewDocument: (file) {
             setState(() {
-              _selectedFile = file;
-              _selectedImages = [];
-              _insertedContent = null;
+              _document = file;
             });
           },
-          selectedFile: _selectedFile,
+          document: _document,
           onContentInsertion: (imageFile) {
             setState(() {
-              _insertedContent = imageFile;
-              _selectedImages = [];
-              _selectedFile = null;
-            });
-          },
-          insertedContent: _insertedContent,
-          onRemoveInsertedContent: () {
-            setState(() {
-              _insertedContent = null;
+              _media.add(imageFile);
             });
           },
           allowedMimeTypes: const <String>['image/png', 'image/gif'],
-          onLocation: (point) {},
-          location: null,
-          onRemoveLocation: () {},
+          onLocation: (point) {
+            _location = point;
+          },
+          location: _location,
+          onRemoveLocation: () {
+            setState(() {
+              _location = null;
+            });
+          },
           onSectionSelection: (section) {},
           section: null,
           onRemoveSection: () {},
-          selectedVideoPath: _selectedVideoPath,
-          onRemoveVideo: () {
-            setState(() {
-              _selectedVideoPath = null;
-            });
-          },
           onSend: selectedUsers.isEmpty
               ? null
               : () {
@@ -294,22 +280,11 @@ class _DirectMessageState extends State<DirectMessage> {
                       petition: widget.petition,
                       meeting: widget.meeting,
                       section: widget.section,
-                      imagePath1: _insertedContent != null
-                          ? _insertedContent!.path
-                          : _selectedImages.isNotEmpty
-                          ? _selectedImages[0].path
-                          : null,
-                      imagePath2: _selectedImages.length > 1
-                          ? _selectedImages[1].path
-                          : null,
-                      imagePath3: _selectedImages.length > 2
-                          ? _selectedImages[2].path
-                          : null,
-                      imagePath4: _selectedImages.length > 3
-                          ? _selectedImages[3].path
-                          : null,
-                      filePath: _selectedFile?.path,
-                      location: null, //TODO:
+                      filePaths: [
+                        ..._media.map((m) => m.path),
+                        if (_document != null) _document!.path,
+                      ],
+                      location: _location,
                     ),
                   );
                 },

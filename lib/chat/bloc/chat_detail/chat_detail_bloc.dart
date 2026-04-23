@@ -150,12 +150,7 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
         petition: event.petition,
         meeting: event.meeting,
         section: event.section,
-        imagePath1: event.imagePath1,
-        imagePath2: event.imagePath2,
-        imagePath3: event.imagePath3,
-        imagePath4: event.imagePath4,
-        videoPath: event.videoPath,
-        filePath: event.filePath,
+        filePaths: event.filePaths,
         location: event.location,
       );
       emit(DirectMessageSent(chats: chats));

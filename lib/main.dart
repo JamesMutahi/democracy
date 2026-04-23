@@ -31,6 +31,7 @@ import 'package:democracy/petition/bloc/petition_filter/petition_filter_cubit.da
 import 'package:democracy/petition/bloc/supporters/supporters_bloc.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_bloc.dart';
 import 'package:democracy/post/bloc/draft_posts/draft_posts_bloc.dart';
+import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/post_filter/post_filter_cubit.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
@@ -44,7 +45,6 @@ import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -52,7 +52,6 @@ void main() async {
   await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = AppBlocObserver();
-  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await dotenv.load(fileName: ".env");
   final options = BaseOptions(
     baseUrl: dotenv.env['BASE_URL']!,
@@ -121,6 +120,12 @@ void main() async {
           BlocProvider(
             create: (context) => PostDetailBloc(
               webSocketService: context.read<WebSocketService>(),
+              authRepository: context.read<AuthRepository>(),
+              apiRepository: context.read<APIRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => PostCreateBloc(
               authRepository: context.read<AuthRepository>(),
               apiRepository: context.read<APIRepository>(),
             ),

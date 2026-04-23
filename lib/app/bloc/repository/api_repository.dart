@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:democracy/ballot/models/ballot.dart';
@@ -14,13 +15,16 @@ import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:dio/dio.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:mime/mime.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 
 class APIRepository {
   APIRepository({required this.dio});
 
   final Dio dio;
 
-  Future<Post> createPost({
+  Future<Map<String, dynamic>> createPost({
     required String token,
     required String body,
     required PostStatus status,
@@ -32,22 +36,11 @@ class APIRepository {
     Petition? petition,
     Meeting? meeting,
     Section? section,
-    required List<Map> tags,
-    String? imagePath1,
-    String? imagePath2,
-    String? imagePath3,
-    String? imagePath4,
-    String? videoPath,
-    String? filePath,
+    List<Map> tags = const [],
+    List<String> filePaths = const [],
     LatLng? location,
   }) async {
     try {
-      String? fileName;
-      if (filePath != null) {
-        File file = File(filePath);
-        fileName = file.path.split('/').last;
-      }
-
       final data = {
         'status': status == PostStatus.published ? 'published' : 'draft',
         'body': body,
@@ -59,25 +52,31 @@ class APIRepository {
         'petition_id': petition?.id,
         'meeting_id': meeting?.id,
         'section_id': section?.id,
-        if (imagePath1 != null)
-          'image1': await MultipartFile.fromFile(imagePath1),
-        if (imagePath2 != null)
-          'image2': await MultipartFile.fromFile(imagePath2),
-        if (imagePath3 != null)
-          'image3': await MultipartFile.fromFile(imagePath3),
-        if (imagePath4 != null)
-          'image4': await MultipartFile.fromFile(imagePath4),
-        if (videoPath != null) 'video': await MultipartFile.fromFile(videoPath),
-        if (filePath != null) 'file': await MultipartFile.fromFile(filePath),
-        'file_name': fileName,
         if (location != null)
           'location': 'POINT (${location.longitude} ${location.latitude})',
       };
 
-      // Flatten keys: Manually add tags in a format Django Rest Framework understands
+      /// Flatten keys for lists: Manually add tags in a format Django Rest Framework understands
       for (int i = 0; i < tags.length; i++) {
         data["tags[$i]id"] = tags[i]['id'];
         data["tags[$i]text"] = tags[i]['text'];
+      }
+
+      List assets = [];
+      for (var filePath in filePaths) {
+        File file = File(filePath);
+        int bytes = await file.length();
+        assets.add({
+          "name": filePath.split('/').last,
+          "type": lookupMimeType(filePath),
+          "size": bytes,
+        });
+      }
+
+      for (int i = 0; i < assets.length; i++) {
+        data["assets[$i]name"] = assets[i]['name'];
+        data["assets[$i]content_type"] = assets[i]['type'];
+        data["assets[$i]file_size"] = assets[i]['size'];
       }
 
       Response response = await dio.post(
@@ -89,14 +88,73 @@ class APIRepository {
       );
 
       if (response.statusCode == 201) {
-        final Post post = Post.fromJson(response.data);
-        return post;
+        return response.data;
       } else {
         return Future.error('Failed to create post: ${response.data}');
       }
     } on DioException catch (e) {
       return Future.error(e.response?.data ?? e.message ?? 'Unknown error');
     } catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
+  Future<String> uploadAsset({
+    required String name,
+    required String url,
+    required void Function(int, int) onSendProgress,
+  }) async {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+
+      String fullPath = p.join(directory.path, name);
+
+      final file = File(fullPath);
+
+      int fileSize = await file.length();
+
+      // Perform the PUT request
+      Response response = await dio.put(
+        url,
+        data: file.openRead(), // Send as stream to save memory
+        options: Options(
+          headers: {
+            Headers.contentLengthHeader: fileSize,
+            // Ensure this matches your presigned URL configuration
+            'Content-Type': lookupMimeType(file.path),
+          },
+        ),
+        // Track progress
+        onSendProgress: onSendProgress,
+      );
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        return Future.error(response.data.toString());
+      }
+    } on DioException catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
+  Future<Map> assetUploadComplete({
+    required String token,
+    required List<String> assetIdList,
+  }) async {
+    try {
+      Response response = await dio.post(
+        'post/asset-upload-complete/',
+        data: jsonEncode({'asset_id_list': assetIdList}),
+        options: Options(
+          headers: <String, String>{'Authorization': 'Token $token'},
+        ),
+      );
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        return Future.error(response.data.toString());
+      }
+    } on DioException catch (e) {
       return Future.error(e.toString());
     }
   }
@@ -114,20 +172,20 @@ class APIRepository {
     Petition? petition,
     Meeting? meeting,
     Section? section,
-    required List<Map<String, dynamic>> tags,
-    String? imagePath1,
-    String? imagePath2,
-    String? imagePath3,
-    String? imagePath4,
-    String? videoPath,
-    String? filePath,
+    List<Map<String, dynamic>> tags = const [],
+    List<String> filePaths = const [],
     LatLng? location,
   }) async {
     try {
-      String? fileName;
-      if (filePath != null) {
+      List assets = [];
+      for (var filePath in filePaths) {
         File file = File(filePath);
-        fileName = file.path.split('/').last;
+        int bytes = await file.length();
+        assets.add({
+          "name": filePath.split('/').last,
+          "type": p.extension(filePath),
+          "size": bytes,
+        });
       }
 
       final data = {
@@ -141,17 +199,7 @@ class APIRepository {
         'petition_id': ?petition?.id,
         'meeting_id': ?meeting?.id,
         'section_id': ?section?.id,
-        if (imagePath1 != null)
-          'image1': await MultipartFile.fromFile(imagePath1),
-        if (imagePath2 != null)
-          'image2': await MultipartFile.fromFile(imagePath2),
-        if (imagePath3 != null)
-          'image3': await MultipartFile.fromFile(imagePath3),
-        if (imagePath4 != null)
-          'image4': await MultipartFile.fromFile(imagePath4),
-        if (videoPath != null) 'video': await MultipartFile.fromFile(videoPath),
-        if (filePath != null) 'file': await MultipartFile.fromFile(filePath),
-        'file_name': ?fileName,
+        'assets': assets,
         if (location != null)
           'location': 'POINT (${location.longitude} ${location.latitude})',
       };
@@ -190,21 +238,11 @@ class APIRepository {
     Petition? petition,
     Meeting? meeting,
     Section? section,
-    String? imagePath1,
-    String? imagePath2,
-    String? imagePath3,
-    String? imagePath4,
-    String? videoPath,
-    String? filePath,
+    List<String> filePaths = const [],
     LatLng? location,
   }) async {
     try {
-      String? fileName;
-      if (filePath != null) {
-        File file = File(filePath);
-        fileName = file.path.split('/').last;
-      }
-      FormData data = FormData.fromMap({
+      final data = {
         'chat': chat.id,
         'text': text,
         'post_id': post?.id,
@@ -213,23 +251,30 @@ class APIRepository {
         'petition_id': petition?.id,
         'meeting_id': meeting?.id,
         'section_id': section?.id,
-        if (imagePath1 != null)
-          'image1': await MultipartFile.fromFile(imagePath1),
-        if (imagePath2 != null)
-          'image2': await MultipartFile.fromFile(imagePath2),
-        if (imagePath3 != null)
-          'image3': await MultipartFile.fromFile(imagePath3),
-        if (imagePath4 != null)
-          'image4': await MultipartFile.fromFile(imagePath4),
-        if (videoPath != null) 'video': await MultipartFile.fromFile(videoPath),
-        if (filePath != null) 'file': await MultipartFile.fromFile(filePath),
-        'file_name': ?fileName,
         if (location != null)
           'location': 'POINT (${location.longitude} ${location.latitude})',
-      });
+      };
+
+      List assets = [];
+      for (var filePath in filePaths) {
+        File file = File(filePath);
+        int bytes = await file.length();
+        assets.add({
+          "name": filePath.split('/').last,
+          "type": lookupMimeType(filePath),
+          "size": bytes,
+        });
+      }
+
+      for (int i = 0; i < assets.length; i++) {
+        data["assets[$i]name"] = assets[i]['name'];
+        data["assets[$i]content_type"] = assets[i]['type'];
+        data["assets[$i]file_size"] = assets[i]['size'];
+      }
+
       Response response = await dio.post(
         '/chat/create-message/',
-        data: data,
+        data: FormData.fromMap(data),
         options: Options(
           headers: <String, String>{'Authorization': 'Token $token'},
         ),
@@ -255,22 +300,12 @@ class APIRepository {
     Petition? petition,
     Meeting? meeting,
     Section? section,
-    String? imagePath1,
-    String? imagePath2,
-    String? imagePath3,
-    String? imagePath4,
-    String? videoPath,
-    String? filePath,
+    List<String> filePaths = const [],
     LatLng? location,
   }) async {
     try {
-      String? fileName;
-      if (filePath != null) {
-        File file = File(filePath);
-        fileName = file.path.split('/').last;
-      }
       List<int> userIds = users.map((user) => user.id).toList();
-      FormData data = FormData.fromMap({
+      final data = {
         'user_ids': userIds,
         'text': text,
         'post_id': post?.id,
@@ -279,23 +314,30 @@ class APIRepository {
         'petition_id': petition?.id,
         'meeting_id': meeting?.id,
         'section_id': section?.id,
-        if (imagePath1 != null)
-          'image1': await MultipartFile.fromFile(imagePath1),
-        if (imagePath2 != null)
-          'image2': await MultipartFile.fromFile(imagePath2),
-        if (imagePath3 != null)
-          'image3': await MultipartFile.fromFile(imagePath3),
-        if (imagePath4 != null)
-          'image4': await MultipartFile.fromFile(imagePath4),
-        if (videoPath != null) 'video': await MultipartFile.fromFile(videoPath),
-        if (filePath != null) 'file': await MultipartFile.fromFile(filePath),
-        'file_name': ?fileName,
         if (location != null)
           'location': 'POINT (${location.longitude} ${location.latitude})',
-      });
+      };
+
+      List assets = [];
+      for (var filePath in filePaths) {
+        File file = File(filePath);
+        int bytes = await file.length();
+        assets.add({
+          "name": filePath.split('/').last,
+          "type": lookupMimeType(filePath),
+          "size": bytes,
+        });
+      }
+
+      for (int i = 0; i < assets.length; i++) {
+        data["assets[$i]name"] = assets[i]['name'];
+        data["assets[$i]content_type"] = assets[i]['type'];
+        data["assets[$i]file_size"] = assets[i]['size'];
+      }
+
       Response response = await dio.post(
         '/chat/direct-message/',
-        data: data,
+        data: FormData.fromMap(data),
         options: Options(
           headers: <String, String>{'Authorization': 'Token $token'},
         ),

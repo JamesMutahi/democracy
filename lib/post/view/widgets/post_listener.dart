@@ -1,4 +1,5 @@
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
+import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
@@ -22,31 +23,41 @@ class PostListener extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
+        BlocListener<PostCreateBloc, PostCreateState>(
+          listener: (context, state) {
+            if (state.status == PostCreateStatus.success) {
+              bool updatePosts = false;
+              final post = state.post!;
+              // Update repostOf
+              if (post.repostOf != null) {
+                if (posts.any((element) => element.id == post.repostOf!.id)) {
+                  int postIndex = posts.indexWhere(
+                    (element) => element.id == post.repostOf!.id,
+                  );
+                  posts[postIndex] = post.repostOf!;
+                  updatePosts = true;
+                }
+              }
+              // Update replyTo
+              if (post.replyTo != null) {
+                if (posts.any((element) => element.id == post.replyTo!.id)) {
+                  int postIndex = posts.indexWhere(
+                    (element) => element.id == post.replyTo!.id,
+                  );
+                  posts[postIndex] = post.replyTo!;
+                  updatePosts = true;
+                }
+              }
+              if (updatePosts) {
+                onPostsUpdated(posts);
+              }
+            }
+          },
+        ),
         BlocListener<PostDetailBloc, PostDetailState>(
           listener: (context, state) {
             bool updatePosts = false;
             switch (state) {
-              case PostCreated(:final post):
-                // Update repostOf
-                if (post.repostOf != null) {
-                  if (posts.any((element) => element.id == post.repostOf!.id)) {
-                    int postIndex = posts.indexWhere(
-                      (element) => element.id == post.repostOf!.id,
-                    );
-                    posts[postIndex] = post.repostOf!;
-                    updatePosts = true;
-                  }
-                }
-                // Update replyTo
-                if (post.replyTo != null) {
-                  if (posts.any((element) => element.id == post.replyTo!.id)) {
-                    int postIndex = posts.indexWhere(
-                      (element) => element.id == post.replyTo!.id,
-                    );
-                    posts[postIndex] = post.replyTo!;
-                    updatePosts = true;
-                  }
-                }
               case PostLoaded(:final post):
                 // Update posts
                 if (posts.any((element) => element.id == post.id)) {
@@ -298,6 +309,7 @@ class PostListener extends StatelessWidget {
         BlocListener<UserDetailBloc, UserDetailState>(
           listener: (context, state) {
             if (state is UserUpdated) {
+              bool updatePosts = false;
               // Update posts
               List<Post> userPosts = posts
                   .where((post) => post.author.id == state.user.id)
@@ -307,7 +319,7 @@ class PostListener extends StatelessWidget {
                   posts[posts.indexWhere((p) => p.id == post.id)] = post
                       .copyWith(author: state.user);
                 }
-                onPostsUpdated(posts);
+                updatePosts = true;
               }
               //   Update reposts
               List<Post> userReposts = posts
@@ -319,6 +331,9 @@ class PostListener extends StatelessWidget {
                   posts[posts.indexWhere((p) => p.id == post.id)] = post
                       .copyWith(repostOf: repostOf);
                 }
+                updatePosts = true;
+              }
+              if (updatePosts) {
                 onPostsUpdated(posts);
               }
             }
@@ -327,6 +342,7 @@ class PostListener extends StatelessWidget {
         BlocListener<BallotDetailBloc, BallotDetailState>(
           listener: (context, state) {
             if (state is BallotUpdated) {
+              bool updatePosts = false;
               // Update posts
               List<Post> ballotPosts = posts
                   .where((post) => post.ballot?.id == state.ballot.id)
@@ -336,7 +352,7 @@ class PostListener extends StatelessWidget {
                   posts[posts.indexWhere((p) => p.id == post.id)] = post
                       .copyWith(ballot: state.ballot);
                 }
-                onPostsUpdated(posts);
+                updatePosts = true;
               }
               //   Update reposts
               List<Post> ballotReposts = posts
@@ -348,6 +364,9 @@ class PostListener extends StatelessWidget {
                   posts[posts.indexWhere((p) => p.id == post.id)] = post
                       .copyWith(repostOf: repostOf);
                 }
+                updatePosts = true;
+              }
+              if (updatePosts) {
                 onPostsUpdated(posts);
               }
             }
@@ -356,6 +375,7 @@ class PostListener extends StatelessWidget {
         BlocListener<SurveyDetailBloc, SurveyDetailState>(
           listener: (context, state) {
             if (state is SurveyUpdated) {
+              bool updatePosts = false;
               // Update posts
               List<Post> surveyPosts = posts
                   .where((post) => post.survey?.id == state.survey.id)
@@ -365,7 +385,7 @@ class PostListener extends StatelessWidget {
                   posts[posts.indexWhere((p) => p.id == post.id)] = post
                       .copyWith(survey: state.survey);
                 }
-                onPostsUpdated(posts);
+                updatePosts = true;
               }
               //   Update reposts
               List<Post> surveyReposts = posts
@@ -377,6 +397,9 @@ class PostListener extends StatelessWidget {
                   posts[posts.indexWhere((p) => p.id == post.id)] = post
                       .copyWith(repostOf: repostOf);
                 }
+                updatePosts = true;
+              }
+              if (updatePosts) {
                 onPostsUpdated(posts);
               }
             }

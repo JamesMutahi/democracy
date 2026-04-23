@@ -4,6 +4,7 @@ import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/expandable_fab.dart';
 import 'package:democracy/post/bloc/following_posts/following_posts_bloc.dart';
 import 'package:democracy/post/bloc/for_you/for_you_bloc.dart';
+import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
@@ -32,41 +33,49 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocListener<PostDetailBloc, PostDetailState>(
-      listener: (context, state) {
-        if (state is PostCreated) {
-          String message = state.post.status == PostStatus.published
-              ? state.post.replyTo == null
-                    ? 'Posted'
-                    : 'Reply sent'
-              : 'Post saved as draft';
-          final snackBar = getSnackBar(
-            context: context,
-            message: message,
-            status: SnackBarStatus.success,
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        }
-        if (state is PostPatched) {
-          String message = state.post.status == PostStatus.published
-              ? 'Posted'
-              : 'Saved';
-          final snackBar = getSnackBar(
-            context: context,
-            message: message,
-            status: SnackBarStatus.success,
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        }
-        if (state is PostDetailFailure) {
-          final snackBar = getSnackBar(
-            context: context,
-            message: state.error,
-            status: SnackBarStatus.failure,
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<PostDetailBloc, PostDetailState>(
+          listener: (context, state) {
+            if (state is PostPatched) {
+              String message = state.post.status == PostStatus.published
+                  ? 'Posted'
+                  : 'Saved';
+              final snackBar = getSnackBar(
+                context: context,
+                message: message,
+                status: SnackBarStatus.success,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+            if (state is PostDetailFailure) {
+              final snackBar = getSnackBar(
+                context: context,
+                message: state.error,
+                status: SnackBarStatus.failure,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+          },
+        ),
+        BlocListener<PostCreateBloc, PostCreateState>(
+          listener: (context, state) {
+            if (state.status == PostCreateStatus.success) {
+              String message = state.post!.status == PostStatus.published
+                  ? state.post!.replyTo == null
+                        ? 'Posted'
+                        : 'Reply sent'
+                  : 'Post saved as draft';
+              final snackBar = getSnackBar(
+                context: context,
+                message: message,
+                status: SnackBarStatus.success,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+          },
+        ),
+      ],
       child: Stack(
         children: [
           DefaultTabController(

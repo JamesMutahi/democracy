@@ -5,6 +5,7 @@ import 'package:democracy/app/shared/widgets/more_pop_up.dart';
 import 'package:democracy/app/shared/pages/report.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/shared/post_navigator.dart';
@@ -273,8 +274,8 @@ class RepostButton extends StatelessWidget {
               iconData: Icons.repeat_rounded,
               onTap: () {
                 Navigator.pop(context);
-                context.read<PostDetailBloc>().add(
-                  PostDetailEvent.create(
+                context.read<PostCreateBloc>().add(
+                  PostCreateEvent.create(
                     body: '',
                     status: PostStatus.published,
                     repostOf: post.body.isEmpty && post.repostOf != null

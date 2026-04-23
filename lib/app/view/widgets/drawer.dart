@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/view/widgets/bookmarks.dart';
@@ -7,6 +6,7 @@ import 'package:democracy/app/view/widgets/settings.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/utils/profile_navigator.dart';
+import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -27,23 +27,7 @@ class AppDrawer extends StatelessWidget {
             padding: EdgeInsets.zero,
             children: [
               DrawerHeader(
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 65,
-                      backgroundColor: Colors.transparent,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: CachedNetworkImageProvider(user.image),
-                            fit: BoxFit.cover,
-                          ),
-                          borderRadius: BorderRadius.circular(150),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                child: Column(children: [ProfileImage(user: user, radius: 65)]),
               ),
               ListTile(
                 onTap: () {

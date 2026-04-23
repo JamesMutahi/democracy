@@ -57,19 +57,39 @@ class _VideoViewerState extends State<VideoViewer> {
           flickManager.flickControlManager?.autoResume();
         }
       },
-      child: FlickVideoPlayer(
-        flickManager: flickManager,
-        preferredDeviceOrientationFullscreen: const [
-          DeviceOrientation.landscapeLeft,
-          DeviceOrientation.landscapeRight,
-        ],
-        flickVideoWithControls: FlickVideoWithControls(
-          videoFit: BoxFit.fitHeight,
-          controls: CustomOrientationControls(dataManager: dataManager),
-        ),
-        flickVideoWithControlsFullscreen: FlickVideoWithControls(
-          videoFit: BoxFit.fitHeight,
-          controls: CustomOrientationControls(dataManager: dataManager),
+      child: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) async {
+          if (didPop) return;
+
+          bool isFullScreen =
+              flickManager.flickControlManager?.isFullscreen ?? false;
+
+          if (isFullScreen) {
+            flickManager.flickControlManager?.exitFullscreen();
+          } else {
+            Navigator.of(context).pop();
+          }
+        },
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height / 4,
+          ),
+          child: FlickVideoPlayer(
+            flickManager: flickManager,
+            preferredDeviceOrientationFullscreen: const [
+              DeviceOrientation.landscapeLeft,
+              DeviceOrientation.landscapeRight,
+            ],
+            flickVideoWithControls: FlickVideoWithControls(
+              videoFit: BoxFit.fitHeight,
+              controls: CustomOrientationControls(dataManager: dataManager),
+            ),
+            flickVideoWithControlsFullscreen: FlickVideoWithControls(
+              videoFit: BoxFit.fitHeight,
+              controls: CustomOrientationControls(dataManager: dataManager),
+            ),
+          ),
         ),
       ),
     );

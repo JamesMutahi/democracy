@@ -17,16 +17,19 @@ class ImagePickerUtil {
     return null;
   }
 
-  // static Future<File?> takePhoto() async {
-  //   final pickedFile = await _picker.pickImage(source: ImageSource.camera);
-  //   if (pickedFile != null) {
-  //     return File(pickedFile.path);
-  //   }
-  //   return null;
-  // }
-
   static Future<List<File>> pickMultiImage({required int limit}) async {
     final pickedFiles = await _picker.pickMultiImage(
+      imageQuality: 100,
+      limit: limit,
+    );
+    if (pickedFiles.isNotEmpty) {
+      return pickedFiles.map((xFile) => File(xFile.path)).toList();
+    }
+    return [];
+  }
+
+  static Future<List<File>> pickMultipleMedia({required int limit}) async {
+    final pickedFiles = await _picker.pickMultipleMedia(
       imageQuality: 100,
       limit: limit,
     );

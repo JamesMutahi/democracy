@@ -453,7 +453,7 @@ class _VideoEditorState extends State<VideoEditor> {
 
     unawaited(_videoController.pause());
     unawaited(_audioService.pause());
-    final directory = await getTemporaryDirectory();
+    final directory = await getApplicationDocumentsDirectory();
 
     final AudioTrack? customAudioTrack = parameters.customAudioTrack;
     final double volumeBalance = customAudioTrack?.volumeBalance ?? 0;

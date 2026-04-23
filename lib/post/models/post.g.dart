@@ -11,12 +11,9 @@ _Post _$PostFromJson(Map<String, dynamic> json) => _Post(
   author: User.fromJson(json['author'] as Map<String, dynamic>),
   status: const PostStatusConverter().fromJson(json['status'] as String),
   body: json['body'] as String,
-  image1Url: json['image1'] as String?,
-  image2Url: json['image2'] as String?,
-  image3Url: json['image3'] as String?,
-  image4Url: json['image4'] as String?,
-  videoUrl: json['video'] as String?,
-  fileUrl: json['file'] as String?,
+  assets: (json['assets'] as List<dynamic>)
+      .map((e) => Asset.fromJson(e as Map<String, dynamic>))
+      .toList(),
   location: json['location'] == null
       ? null
       : LatLng.fromJson(json['location'] as Map<String, dynamic>),
@@ -77,12 +74,7 @@ Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
   'author': instance.author,
   'status': const PostStatusConverter().toJson(instance.status),
   'body': instance.body,
-  'image1': instance.image1Url,
-  'image2': instance.image2Url,
-  'image3': instance.image3Url,
-  'image4': instance.image4Url,
-  'video': instance.videoUrl,
-  'file': instance.fileUrl,
+  'assets': instance.assets,
   'location': instance.location,
   'likes': instance.likes,
   'is_liked': instance.isLiked,

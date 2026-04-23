@@ -837,7 +837,7 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( User user)?  create,TResult Function( Chat chat)?  get,TResult Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? videoPath,  String? filePath,  LatLng? location)?  sendDirectMessage,TResult Function( Chat chat)?  markAsRead,TResult Function( Chat chat)?  unsubscribe,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( User user)?  create,TResult Function( Chat chat)?  get,TResult Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<String> filePaths,  LatLng? location)?  sendDirectMessage,TResult Function( Chat chat)?  markAsRead,TResult Function( Chat chat)?  unsubscribe,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
@@ -846,7 +846,7 @@ return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Create() when create != null:
 return create(_that.user);case _Get() when get != null:
 return get(_that.chat);case _SendDirectMessage() when sendDirectMessage != null:
-return sendDirectMessage(_that.users,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.imagePath1,_that.imagePath2,_that.imagePath3,_that.imagePath4,_that.videoPath,_that.filePath,_that.location);case _MarkAsRead() when markAsRead != null:
+return sendDirectMessage(_that.users,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.filePaths,_that.location);case _MarkAsRead() when markAsRead != null:
 return markAsRead(_that.chat);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that.chat);case _:
   return orElse();
@@ -866,7 +866,7 @@ return unsubscribe(_that.chat);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( User user)  create,required TResult Function( Chat chat)  get,required TResult Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? videoPath,  String? filePath,  LatLng? location)  sendDirectMessage,required TResult Function( Chat chat)  markAsRead,required TResult Function( Chat chat)  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( User user)  create,required TResult Function( Chat chat)  get,required TResult Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<String> filePaths,  LatLng? location)  sendDirectMessage,required TResult Function( Chat chat)  markAsRead,required TResult Function( Chat chat)  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Loaded():
@@ -875,7 +875,7 @@ return updated(_that.payload);case _Deleted():
 return deleted(_that.payload);case _Create():
 return create(_that.user);case _Get():
 return get(_that.chat);case _SendDirectMessage():
-return sendDirectMessage(_that.users,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.imagePath1,_that.imagePath2,_that.imagePath3,_that.imagePath4,_that.videoPath,_that.filePath,_that.location);case _MarkAsRead():
+return sendDirectMessage(_that.users,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.filePaths,_that.location);case _MarkAsRead():
 return markAsRead(_that.chat);case _Unsubscribe():
 return unsubscribe(_that.chat);}
 }
@@ -891,7 +891,7 @@ return unsubscribe(_that.chat);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( User user)?  create,TResult? Function( Chat chat)?  get,TResult? Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  String? imagePath1,  String? imagePath2,  String? imagePath3,  String? imagePath4,  String? videoPath,  String? filePath,  LatLng? location)?  sendDirectMessage,TResult? Function( Chat chat)?  markAsRead,TResult? Function( Chat chat)?  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( User user)?  create,TResult? Function( Chat chat)?  get,TResult? Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<String> filePaths,  LatLng? location)?  sendDirectMessage,TResult? Function( Chat chat)?  markAsRead,TResult? Function( Chat chat)?  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
@@ -900,7 +900,7 @@ return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Create() when create != null:
 return create(_that.user);case _Get() when get != null:
 return get(_that.chat);case _SendDirectMessage() when sendDirectMessage != null:
-return sendDirectMessage(_that.users,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.imagePath1,_that.imagePath2,_that.imagePath3,_that.imagePath4,_that.videoPath,_that.filePath,_that.location);case _MarkAsRead() when markAsRead != null:
+return sendDirectMessage(_that.users,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.filePaths,_that.location);case _MarkAsRead() when markAsRead != null:
 return markAsRead(_that.chat);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that.chat);case _:
   return null;
@@ -1352,7 +1352,7 @@ $ChatCopyWith<$Res> get chat {
 
 
 class _SendDirectMessage implements ChatDetailEvent {
-  const _SendDirectMessage({required final  List<User> users, required this.text, this.post, this.ballot, this.survey, this.petition, this.meeting, this.section, this.imagePath1, this.imagePath2, this.imagePath3, this.imagePath4, this.videoPath, this.filePath, this.location}): _users = users;
+  const _SendDirectMessage({required final  List<User> users, required this.text, this.post, this.ballot, this.survey, this.petition, this.meeting, this.section, final  List<String> filePaths = const [], this.location}): _users = users,_filePaths = filePaths;
   
 
  final  List<User> _users;
@@ -1369,12 +1369,13 @@ class _SendDirectMessage implements ChatDetailEvent {
  final  Petition? petition;
  final  Meeting? meeting;
  final  Section? section;
- final  String? imagePath1;
- final  String? imagePath2;
- final  String? imagePath3;
- final  String? imagePath4;
- final  String? videoPath;
- final  String? filePath;
+ final  List<String> _filePaths;
+@JsonKey() List<String> get filePaths {
+  if (_filePaths is EqualUnmodifiableListView) return _filePaths;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_filePaths);
+}
+
  final  LatLng? location;
 
 /// Create a copy of ChatDetailEvent
@@ -1387,16 +1388,16 @@ _$SendDirectMessageCopyWith<_SendDirectMessage> get copyWith => __$SendDirectMes
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SendDirectMessage&&const DeepCollectionEquality().equals(other._users, _users)&&(identical(other.text, text) || other.text == text)&&(identical(other.post, post) || other.post == post)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.section, section) || other.section == section)&&(identical(other.imagePath1, imagePath1) || other.imagePath1 == imagePath1)&&(identical(other.imagePath2, imagePath2) || other.imagePath2 == imagePath2)&&(identical(other.imagePath3, imagePath3) || other.imagePath3 == imagePath3)&&(identical(other.imagePath4, imagePath4) || other.imagePath4 == imagePath4)&&(identical(other.videoPath, videoPath) || other.videoPath == videoPath)&&(identical(other.filePath, filePath) || other.filePath == filePath)&&(identical(other.location, location) || other.location == location));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SendDirectMessage&&const DeepCollectionEquality().equals(other._users, _users)&&(identical(other.text, text) || other.text == text)&&(identical(other.post, post) || other.post == post)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.section, section) || other.section == section)&&const DeepCollectionEquality().equals(other._filePaths, _filePaths)&&(identical(other.location, location) || other.location == location));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_users),text,post,ballot,survey,petition,meeting,section,imagePath1,imagePath2,imagePath3,imagePath4,videoPath,filePath,location);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_users),text,post,ballot,survey,petition,meeting,section,const DeepCollectionEquality().hash(_filePaths),location);
 
 @override
 String toString() {
-  return 'ChatDetailEvent.sendDirectMessage(users: $users, text: $text, post: $post, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, section: $section, imagePath1: $imagePath1, imagePath2: $imagePath2, imagePath3: $imagePath3, imagePath4: $imagePath4, videoPath: $videoPath, filePath: $filePath, location: $location)';
+  return 'ChatDetailEvent.sendDirectMessage(users: $users, text: $text, post: $post, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, section: $section, filePaths: $filePaths, location: $location)';
 }
 
 
@@ -1407,7 +1408,7 @@ abstract mixin class _$SendDirectMessageCopyWith<$Res> implements $ChatDetailEve
   factory _$SendDirectMessageCopyWith(_SendDirectMessage value, $Res Function(_SendDirectMessage) _then) = __$SendDirectMessageCopyWithImpl;
 @useResult
 $Res call({
- List<User> users, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting, Section? section, String? imagePath1, String? imagePath2, String? imagePath3, String? imagePath4, String? videoPath, String? filePath, LatLng? location
+ List<User> users, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting, Section? section, List<String> filePaths, LatLng? location
 });
 
 
@@ -1424,7 +1425,7 @@ class __$SendDirectMessageCopyWithImpl<$Res>
 
 /// Create a copy of ChatDetailEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? users = null,Object? text = null,Object? post = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? meeting = freezed,Object? section = freezed,Object? imagePath1 = freezed,Object? imagePath2 = freezed,Object? imagePath3 = freezed,Object? imagePath4 = freezed,Object? videoPath = freezed,Object? filePath = freezed,Object? location = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? users = null,Object? text = null,Object? post = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? meeting = freezed,Object? section = freezed,Object? filePaths = null,Object? location = freezed,}) {
   return _then(_SendDirectMessage(
 users: null == users ? _self._users : users // ignore: cast_nullable_to_non_nullable
 as List<User>,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
@@ -1434,13 +1435,8 @@ as Ballot?,survey: freezed == survey ? _self.survey : survey // ignore: cast_nul
 as Survey?,petition: freezed == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
 as Petition?,meeting: freezed == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
 as Meeting?,section: freezed == section ? _self.section : section // ignore: cast_nullable_to_non_nullable
-as Section?,imagePath1: freezed == imagePath1 ? _self.imagePath1 : imagePath1 // ignore: cast_nullable_to_non_nullable
-as String?,imagePath2: freezed == imagePath2 ? _self.imagePath2 : imagePath2 // ignore: cast_nullable_to_non_nullable
-as String?,imagePath3: freezed == imagePath3 ? _self.imagePath3 : imagePath3 // ignore: cast_nullable_to_non_nullable
-as String?,imagePath4: freezed == imagePath4 ? _self.imagePath4 : imagePath4 // ignore: cast_nullable_to_non_nullable
-as String?,videoPath: freezed == videoPath ? _self.videoPath : videoPath // ignore: cast_nullable_to_non_nullable
-as String?,filePath: freezed == filePath ? _self.filePath : filePath // ignore: cast_nullable_to_non_nullable
-as String?,location: freezed == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
+as Section?,filePaths: null == filePaths ? _self._filePaths : filePaths // ignore: cast_nullable_to_non_nullable
+as List<String>,location: freezed == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
 as LatLng?,
   ));
 }

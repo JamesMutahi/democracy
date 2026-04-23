@@ -10,6 +10,7 @@ import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/edit_profile.dart';
 import 'package:democracy/user/view/utils/following_navigator.dart';
 import 'package:democracy/user/view/widgets/profile_buttons.dart';
+import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -314,7 +315,10 @@ class ProfileAppBarDelegate extends SliverPersistentHeaderDelegate {
                     child: Container(
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: CachedNetworkImageProvider(user.coverPhoto),
+                          image: CachedNetworkImageProvider(
+                            user.coverPhoto,
+                            cacheKey: 'cover ${user.id}',
+                          ),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -334,18 +338,7 @@ class ProfileAppBarDelegate extends SliverPersistentHeaderDelegate {
               child: CircleAvatar(
                 radius: 50,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                child: CircleAvatar(
-                  radius: 47,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: CachedNetworkImageProvider(user.image),
-                        fit: BoxFit.cover,
-                      ),
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                  ),
-                ),
+                child: ProfileImage(user: user, radius: 47),
               ),
             ),
           ),

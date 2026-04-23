@@ -1,7 +1,7 @@
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/shared/widgets/asset_viewer.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
-import 'package:democracy/app/shared/widgets/file_widget.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
@@ -9,15 +9,14 @@ import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
 import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
+import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/replies/replies_bloc.dart';
 import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/bottom_reply_text_field.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
-import 'package:democracy/app/shared/widgets/image_viewer.dart';
 import 'package:democracy/post/view/widgets/post_body.dart';
-import 'package:democracy/post/view/widgets/post_form_widgets.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/post/view/widgets/replies.dart';
 import 'package:democracy/post/view/widgets/reply_tos.dart';
@@ -98,16 +97,21 @@ class _PostDetailPageState extends State<PostDetailPage>
               }
             },
           ),
+          BlocListener<PostCreateBloc, PostCreateState>(
+            listener: (context, state) {
+              if (state.status == PostCreateStatus.success) {
+                final post = state.post!;
+                if (widget.post.id == post.replyTo?.id) {
+                  context.read<RepliesBloc>().add(
+                    RepliesEvent.add(postId: _post.id, reply: post),
+                  );
+                }
+              }
+            },
+          ),
           BlocListener<PostDetailBloc, PostDetailState>(
             listener: (context, state) {
               switch (state) {
-                case PostCreated(post: final post):
-                  if (_post.id == post.replyTo?.id) {
-                    context.read<RepliesBloc>().add(
-                      RepliesEvent.add(postId: _post.id, reply: post),
-                    );
-                  }
-
                 case PostLoaded(:final post):
                   if (_post.id == post.id) {
                     setState(() {
@@ -486,19 +490,12 @@ class _PostContainer extends StatelessWidget {
                     ),
                     SizedBox(height: 5),
                     PostBody(post: post, showWholeText: true),
-                    if (post.image1Url != null)
+                    if (post.assets.isNotEmpty)
                       Container(
                         margin: EdgeInsets.only(top: 10),
-                        child: ImageViewer(key: ValueKey(post.id), post: post),
-                      ),
-                    if (post.videoUrl != null)
-                      PostVideoViewer(videoPath: post.videoUrl!),
-                    if (post.fileUrl != null)
-                      Container(
-                        margin: EdgeInsets.only(top: 10),
-                        child: FileWidget(
-                          url: post.fileUrl!,
-                          navigateToViewer: true,
+                        child: AssetViewer(
+                          key: ValueKey(post.id),
+                          assets: post.assets,
                         ),
                       ),
                     if (post.location != null)

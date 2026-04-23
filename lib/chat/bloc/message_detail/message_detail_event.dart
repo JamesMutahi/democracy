@@ -23,12 +23,7 @@ sealed class MessageDetailEvent with _$MessageDetailEvent {
     Petition? petition,
     Meeting? meeting,
     Section? section,
-    String? imagePath1,
-    String? imagePath2,
-    String? imagePath3,
-    String? imagePath4,
-    String? videoPath,
-    String? filePath,
+    @Default([]) List<String> filePaths,
     LatLng? location,
   }) = _Create;
 

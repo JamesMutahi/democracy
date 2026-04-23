@@ -1,7 +1,6 @@
+import 'package:democracy/app/shared/widgets/asset_viewer.dart';
 import 'package:democracy/app/shared/widgets/custom_text.dart';
-import 'package:democracy/app/shared/widgets/file_widget.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
-import 'package:democracy/app/shared/widgets/video_viewer.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
@@ -10,7 +9,6 @@ import 'package:democracy/petition/view/petition_tile.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
-import 'package:democracy/app/shared/widgets/image_viewer.dart';
 import 'package:democracy/post/view/widgets/post_body.dart';
 import 'package:democracy/post/view/widgets/post_widget_selector.dart';
 import 'package:democracy/post/view/widgets/time_difference.dart';
@@ -224,23 +222,13 @@ class _PostContainer extends StatelessWidget {
                               ],
                             ),
                             PostBody(post: post, isDependency: isDependency),
-                            if (post.image1Url != null)
+                            if (post.assets.isNotEmpty)
                               Container(
                                 margin: EdgeInsets.only(top: 10),
-                                child: ImageViewer(
+                                child: AssetViewer(
                                   key: ValueKey(post.id),
-                                  post: post,
+                                  assets: post.assets,
                                 ),
-                              ),
-                            if (post.videoUrl != null)
-                              Container(
-                                margin: EdgeInsets.only(top: 10),
-                                child: VideoViewer(urls: [post.videoUrl!]),
-                              ),
-                            if (post.fileUrl != null)
-                              Container(
-                                margin: EdgeInsets.only(top: 10),
-                                child: FileWidget(url: post.fileUrl!),
                               ),
                             if (post.location != null)
                               Container(

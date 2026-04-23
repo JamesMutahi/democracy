@@ -1,3 +1,4 @@
+import 'package:democracy/app/models/asset.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/meet/models/meeting.dart';
@@ -19,12 +20,7 @@ sealed class Post with _$Post {
     required final User author,
     @PostStatusConverter() required PostStatus status,
     required String body,
-    @JsonKey(name: 'image1') required String? image1Url,
-    @JsonKey(name: 'image2') required String? image2Url,
-    @JsonKey(name: 'image3') required String? image3Url,
-    @JsonKey(name: 'image4') required String? image4Url,
-    @JsonKey(name: 'video') required String? videoUrl,
-    @JsonKey(name: 'file') required String? fileUrl,
+    required List<Asset> assets,
     required final LatLng? location,
     required int likes,
     @JsonKey(name: 'is_liked') required bool isLiked,

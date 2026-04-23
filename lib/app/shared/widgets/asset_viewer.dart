@@ -1,99 +1,91 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:democracy/chat/models/message.dart';
-import 'package:democracy/post/models/post.dart';
+import 'package:democracy/app/models/asset.dart';
+import 'package:democracy/app/shared/widgets/file_widget.dart';
+import 'package:democracy/app/shared/widgets/video_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
-class ImageViewer extends StatefulWidget {
-  const ImageViewer({super.key, this.post, this.message});
+class AssetViewer extends StatefulWidget {
+  const AssetViewer({super.key, required this.assets});
 
-  final Post? post;
-  final Message? message;
+  final List<Asset> assets;
 
   @override
-  State<ImageViewer> createState() => _ImageViewerState();
+  State<AssetViewer> createState() => _AssetViewerState();
 }
 
-class _ImageViewerState extends State<ImageViewer> {
+class _AssetViewerState extends State<AssetViewer> {
+  late List<Asset> mediaAssets = widget.assets
+      .where((asset) => asset.contentType != ContentType.document)
+      .toList();
+
+  late List<Asset> documentAssets = widget.assets
+      .where((asset) => asset.contentType == ContentType.document)
+      .toList();
+
   @override
   Widget build(BuildContext context) {
-    List<String> images = [];
-    if (widget.post != null) {
-      if (widget.post!.image1Url != null) {
-        images.add(widget.post!.image1Url!);
-      }
-      if (widget.post!.image2Url != null) {
-        images.add(widget.post!.image2Url!);
-      }
-      if (widget.post!.image3Url != null) {
-        images.add(widget.post!.image3Url!);
-      }
-      if (widget.post!.image4Url != null) {
-        images.add(widget.post!.image4Url!);
-      }
-    }
-
-    if (widget.message != null) {
-      if (widget.message!.image1Url != null) {
-        images.add(widget.message!.image1Url!);
-      }
-      if (widget.message!.image2Url != null) {
-        images.add(widget.message!.image2Url!);
-      }
-      if (widget.message!.image3Url != null) {
-        images.add(widget.message!.image3Url!);
-      }
-      if (widget.message!.image4Url != null) {
-        images.add(widget.message!.image4Url!);
-      }
-    }
-
     List<GalleryItem> galleryItems = List.generate(
-      images.length,
-      (index) => GalleryItem(id: index.toString(), resource: images[index]),
+      mediaAssets.length,
+      (index) =>
+          GalleryItem(id: index.toString(), resource: mediaAssets[index].url),
     );
 
-    return images.length == 1
-        ? _ImageWidget(
-            images: images,
-            galleryItems: galleryItems,
-            image: images.first,
-          )
-        : StaggeredGrid.count(
-            crossAxisCount: 4,
-            mainAxisSpacing: 4,
-            crossAxisSpacing: 4,
-            children: [
-              ...images.map(
-                (image) => StaggeredGridTile.count(
-                  crossAxisCellCount: 2,
-                  mainAxisCellCount:
-                      images.length == 3 && images.indexOf(image) == 0 ? 4 : 2,
-                  child: _ImageWidget(
-                    images: images,
-                    galleryItems: galleryItems,
-                    image: image,
+    return Column(
+      children: [
+        mediaAssets.length == 1
+            ? mediaAssets.first.contentType == ContentType.image
+                  ? _ImageWidget(
+                      asset: mediaAssets.first,
+                      urls: [mediaAssets.first.url],
+                      galleryItems: galleryItems,
+                    )
+                  : VideoViewer(urls: [mediaAssets.first.url])
+            : StaggeredGrid.count(
+                crossAxisCount: 4,
+                mainAxisSpacing: 4,
+                crossAxisSpacing: 4,
+                children: [
+                  ...mediaAssets.map(
+                    (asset) => StaggeredGridTile.count(
+                      crossAxisCellCount: 2,
+                      mainAxisCellCount:
+                          mediaAssets.length == 3 &&
+                              mediaAssets.indexOf(asset) == 0
+                          ? 4
+                          : 2,
+                      child: _ImageWidget(
+                        asset: asset,
+                        urls: [...mediaAssets.map((asset) => asset.url)],
+                        galleryItems: galleryItems,
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
-          );
+        if (documentAssets.isNotEmpty)
+          Container(
+            margin: EdgeInsets.only(top: 10),
+            child: FileWidget(url: documentAssets.first.url),
+          ),
+      ],
+    );
   }
 }
 
 class _ImageWidget extends StatelessWidget {
   const _ImageWidget({
-    required this.images,
+    required this.asset,
+    required this.urls,
     required this.galleryItems,
-    required this.image,
   });
 
-  final List<String> images;
+  final Asset asset;
+  final List<String> urls;
   final List<GalleryItem> galleryItems;
-  final String image;
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +99,7 @@ class _ImageWidget extends StatelessWidget {
               backgroundDecoration: BoxDecoration(
                 color: Theme.of(context).canvasColor,
               ),
-              initialIndex: images.indexOf(image),
+              initialIndex: urls.indexOf(asset.url),
               scrollDirection: Axis.horizontal,
             ),
           ),
@@ -115,12 +107,19 @@ class _ImageWidget extends StatelessWidget {
       },
       child: ClipRRect(
         borderRadius: BorderRadius.all(Radius.circular(5.0)),
-        child: CachedNetworkImage(
-          fit: BoxFit.cover,
-          width: 1000.0,
-          imageUrl: image,
-          placeholder: (context, url) => CircularProgressIndicator(),
-          errorWidget: (context, url, error) => Icon(Icons.error),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height / 4,
+          ),
+          child: CachedNetworkImage(
+            fit: BoxFit.cover,
+            width: 1000.0,
+            imageUrl: asset.url,
+            // Use the constant file_key as cacheKey, NOT the temporary url
+            cacheKey: asset.fileKey,
+            placeholder: (context, url) => CircularProgressIndicator(),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+          ),
         ),
       ),
     );
@@ -281,6 +280,15 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
             maxScale: PhotoViewComputedScale.covered * 4.1,
             heroAttributes: PhotoViewHeroAttributes(tag: item.id),
           )
+        : item.isVideo
+        ? PhotoViewGalleryPageOptions.customChild(
+            child: VideoViewer(urls: [item.resource]),
+            childSize: const Size(300, 300),
+            initialScale: PhotoViewComputedScale.contained,
+            minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
+            maxScale: PhotoViewComputedScale.covered * 4.1,
+            heroAttributes: PhotoViewHeroAttributes(tag: item.id),
+          )
         : PhotoViewGalleryPageOptions(
             imageProvider: CachedNetworkImageProvider(item.resource),
             initialScale: PhotoViewComputedScale.contained,
@@ -292,41 +300,15 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
 }
 
 class GalleryItem {
-  GalleryItem({required this.id, required this.resource, this.isSvg = false});
+  GalleryItem({
+    required this.id,
+    required this.resource,
+    this.isSvg = false,
+    this.isVideo = false,
+  });
 
   final String id;
   final String resource;
   final bool isSvg;
-}
-
-class GalleryExampleItemThumbnail extends StatelessWidget {
-  const GalleryExampleItemThumbnail({
-    super.key,
-    required this.galleryExampleItem,
-    required this.onTap,
-  });
-
-  final GalleryItem galleryExampleItem;
-
-  final GestureTapCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5.0),
-      child: GestureDetector(
-        onTap: onTap,
-        child: Hero(
-          tag: galleryExampleItem.id,
-          child: CachedNetworkImage(
-            imageUrl: galleryExampleItem.resource,
-            progressIndicatorBuilder: (context, url, downloadProgress) =>
-                CircularProgressIndicator(value: downloadProgress.progress),
-            errorWidget: (context, url, error) => Icon(Icons.error),
-            height: 80.0,
-          ),
-        ),
-      ),
-    );
-  }
+  final bool isVideo;
 }

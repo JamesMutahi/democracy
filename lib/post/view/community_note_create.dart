@@ -1,5 +1,5 @@
 import 'package:democracy/app/shared/widgets/dialogs.dart';
-import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
+import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_form_widgets.dart';
@@ -33,8 +33,8 @@ class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
   }
 
   void _createPost() {
-    context.read<PostDetailBloc>().add(
-      PostDetailEvent.create(
+    context.read<PostCreateBloc>().add(
+      PostCreateEvent.create(
         body: _controller.text,
         status: PostStatus.published,
         communityNoteOf: widget.post,
@@ -53,9 +53,9 @@ class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<PostDetailBloc, PostDetailState>(
+        BlocListener<PostCreateBloc, PostCreateState>(
           listener: (context, state) {
-            if (state is PostCreated) {
+            if (state.status == PostCreateStatus.success) {
               Navigator.pop(context);
             }
           },

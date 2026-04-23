@@ -2,6 +2,7 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/replies/replies_bloc.dart';
 import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
@@ -81,15 +82,21 @@ class _CommunityNoteDetailState extends State<CommunityNoteDetail> {
               );
             },
           ),
+          BlocListener<PostCreateBloc, PostCreateState>(
+            listener: (context, state) {
+              if (state.status == PostCreateStatus.success) {
+                final post = state.post!;
+                if (widget.communityNote.id == post.replyTo?.id) {
+                  context.read<RepliesBloc>().add(
+                    RepliesEvent.add(postId: _communityNote.id, reply: post),
+                  );
+                }
+              }
+            },
+          ),
           BlocListener<PostDetailBloc, PostDetailState>(
             listener: (context, state) {
               switch (state) {
-                case PostCreated(post: final post):
-                  if (widget.communityNote.id == post.replyTo?.id) {
-                    context.read<RepliesBloc>().add(
-                      RepliesEvent.add(postId: _communityNote.id, reply: post),
-                    );
-                  }
                 case PostLoaded(:final post):
                   if (_communityNote.id == post.id) {
                     setState(() {

@@ -29,12 +29,9 @@ _Message _$MessageFromJson(Map<String, dynamic> json) => _Message(
   section: json['section'] == null
       ? null
       : Section.fromJson(json['section'] as Map<String, dynamic>),
-  image1Url: json['image1'] as String?,
-  image2Url: json['image2'] as String?,
-  image3Url: json['image3'] as String?,
-  image4Url: json['image4'] as String?,
-  videoUrl: json['video'] as String?,
-  fileUrl: json['file'] as String?,
+  assets: (json['assets'] as List<dynamic>)
+      .map((e) => Asset.fromJson(e as Map<String, dynamic>))
+      .toList(),
   location: json['location'] == null
       ? null
       : LatLng.fromJson(json['location'] as Map<String, dynamic>),
@@ -56,12 +53,7 @@ Map<String, dynamic> _$MessageToJson(_Message instance) => <String, dynamic>{
   'petition': instance.petition,
   'meeting': instance.meeting,
   'section': instance.section,
-  'image1': instance.image1Url,
-  'image2': instance.image2Url,
-  'image3': instance.image3Url,
-  'image4': instance.image4Url,
-  'video': instance.videoUrl,
-  'file': instance.fileUrl,
+  'assets': instance.assets,
   'location': instance.location,
   'is_read': instance.isRead,
   'is_edited': instance.isEdited,

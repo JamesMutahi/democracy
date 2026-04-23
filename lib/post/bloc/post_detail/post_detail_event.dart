@@ -56,27 +56,6 @@ sealed class PostDetailEvent with _$PostDetailEvent {
   const factory PostDetailEvent.muted({required Map<String, dynamic> payload}) =
       _Muted;
 
-  const factory PostDetailEvent.create({
-    required String body,
-    required PostStatus status,
-    Post? repostOf,
-    Post? replyTo,
-    Post? communityNoteOf,
-    Ballot? ballot,
-    Survey? survey,
-    Petition? petition,
-    Meeting? meeting,
-    Section? section,
-    required List<Map<String, dynamic>> tags,
-    String? imagePath1,
-    String? imagePath2,
-    String? imagePath3,
-    String? imagePath4,
-    String? videoPath,
-    String? filePath,
-    LatLng? location,
-  }) = _Create;
-
   const factory PostDetailEvent.get({required Post post}) = _Get;
 
   const factory PostDetailEvent.patch({
@@ -91,13 +70,8 @@ sealed class PostDetailEvent with _$PostDetailEvent {
     Petition? petition,
     Meeting? meeting,
     Section? section,
-    required List<Map<String, dynamic>> tags,
-    String? imagePath1,
-    String? imagePath2,
-    String? imagePath3,
-    String? imagePath4,
-    String? videoPath,
-    String? filePath,
+    @Default([]) List<Map<String, dynamic>> tags,
+    @Default([]) List<String> filePaths,
     LatLng? location,
   }) = _Patch;
 

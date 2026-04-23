@@ -1,15 +1,17 @@
 import 'dart:io';
 
+import 'package:democracy/app/models/asset.dart' show ContentType;
+import 'package:democracy/app/shared/camera/camera.dart';
 import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/file_widget.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
 import 'package:democracy/app/shared/utils/media_tools.dart';
-import 'package:democracy/app/shared/widgets/video_viewer.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
+import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
 import 'package:democracy/post/models/post.dart';
@@ -18,6 +20,7 @@ import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/post/view/widgets/reply_tos.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
+import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertagger/fluttertagger.dart';
@@ -40,9 +43,8 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
   bool _canPost = true;
 
   // Media state
-  List<File> _selectedImages = [];
-  String? _selectedVideoPath;
-  File? _selectedFile;
+  List<String> _media = [];
+  String? _document;
   LatLng? _selectedLocation;
   Section? _selectedSection;
 
@@ -52,21 +54,24 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
     _getData();
 
     final post = widget.post;
-    // Initialize media
-    _selectedImages = [
-      if (post.image1Url != null) File.fromUri(Uri.parse(post.image1Url!)),
-      if (post.image2Url != null) File.fromUri(Uri.parse(post.image2Url!)),
-      if (post.image3Url != null) File.fromUri(Uri.parse(post.image3Url!)),
-      if (post.image4Url != null) File.fromUri(Uri.parse(post.image4Url!)),
-    ].where((f) => f.path.isNotEmpty).toList();
 
-    if (post.videoUrl != null) _selectedVideoPath = post.videoUrl;
-    if (post.location != null) _selectedLocation = post.location;
-
+    // Initialize flutter tagger
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _controller.text = post.body;
       _controller.formatTags();
     });
+
+    // Initialize media
+    _media = post.assets
+        .where((asset) => asset.contentType != ContentType.document)
+        .map((asset) => asset.url)
+        .toList();
+    if (post.assets.any((asset) => asset.contentType == ContentType.document)) {
+      _document = post.assets
+          .firstWhere((asset) => asset.contentType == ContentType.document)
+          .url;
+    }
+    if (post.location != null) _selectedLocation = post.location;
   }
 
   void _getData() {
@@ -93,12 +98,7 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
         meeting: widget.post.meeting,
         section: _selectedSection,
         tags: tags,
-        imagePath1: _selectedImages.isNotEmpty ? _selectedImages[0].path : null,
-        imagePath2: _selectedImages.length > 1 ? _selectedImages[1].path : null,
-        imagePath3: _selectedImages.length > 2 ? _selectedImages[2].path : null,
-        imagePath4: _selectedImages.length > 3 ? _selectedImages[3].path : null,
-        videoPath: _selectedVideoPath,
-        filePath: _selectedFile?.path,
+        filePaths: [..._media, ?_document],
         location: _selectedLocation,
       ),
     );
@@ -108,10 +108,10 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
     bool canPost = text.trim().isNotEmpty;
     if (!canPost && widget.post.replyTo != null) {
       canPost =
-          _selectedImages.isNotEmpty ||
-          _selectedVideoPath != null ||
-          _selectedFile != null ||
-          _selectedLocation != null;
+          _media.isNotEmpty ||
+          _document != null ||
+          _selectedLocation != null ||
+          _selectedSection != null;
     }
     if (canPost != _canPost) {
       setState(() => _canPost = canPost);
@@ -147,11 +147,11 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
               }
             },
           ),
-          BlocListener<PostDetailBloc, PostDetailState>(
+          BlocListener<PostCreateBloc, PostCreateState>(
             listener: (context, state) {
-              if (state is PostCreated) {
+              if (state.status == PostCreateStatus.success) {
                 var replyTos = context.read<ReplyToBloc>().state.posts;
-                if (!replyTos.any((p) => p.id == state.post.repostOf?.id)) {
+                if (!replyTos.any((p) => p.id == state.post!.repostOf?.id)) {
                   Navigator.pop(context);
                 }
               }
@@ -161,17 +161,17 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
         child: Scaffold(
           appBar: AppBar(
             leading: IconButton(
-              onPressed: () {
-                _canPost
-                    ? showDialog(
+              onPressed: _canPost
+                  ? () {
+                      showDialog(
                         context: context,
                         builder: (context) => _SaveDraftDialog(
                           onYesPressed: () =>
                               _updatePost(status: PostStatus.draft),
                         ),
-                      )
-                    : null;
-              },
+                      );
+                    }
+                  : null,
               icon: Icon(Symbols.close),
             ),
             title: Text('Edit post'),
@@ -202,22 +202,21 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
             controller: _controller,
             reply: widget.post.replyTo,
             onPickMedia: _pickImages,
-            files: _selectedImages, // if needed by the bar
             fileLimit: 4,
-            onNewImages: (images) {
-              setState(() => _selectedImages = images);
+            onNewMedia: (images) {
+              setState(() {
+                for (var image in images) {
+                  _media.add(image.path);
+                }
+              });
               _updatePostButtonState(_controller.formattedText);
             },
-            onNewFile: (file) {
-              setState(() => _selectedFile = file);
+            onNewDocument: (file) {
+              setState(() => _document = file.path);
               _updatePostButtonState(_controller.formattedText);
             },
             onLocation: (point) {
               setState(() => _selectedLocation = point);
-              _updatePostButtonState(_controller.formattedText);
-            },
-            onNewVideo: (videoPath) {
-              setState(() => _selectedVideoPath = videoPath);
               _updatePostButtonState(_controller.formattedText);
             },
             onNewSection: (section) {
@@ -255,35 +254,31 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
                         : "What's new?",
                     onChanged: _updatePostButtonState,
                     onContentInsertion: (imageFile) {
-                      setState(() => _selectedImages.add(imageFile));
+                      setState(() => _media.add(imageFile.path));
                     },
                   ),
                 ],
               ),
-              if (_selectedImages.isNotEmpty)
-                MultiImageView(
+              if (_media.isNotEmpty)
+                DraftImageView(
                   recipient: widget.post.replyTo?.author,
                   textEditingController: _controller,
-                  images: _selectedImages,
+                  imageUrls: _media,
                   onAdd: (images) {
-                    setState(() => _selectedImages.addAll(images));
+                    setState(() {
+                      for (var image in images) {
+                        _media.add(image.path);
+                      }
+                    });
                   },
                   onRemove: (index) {
-                    setState(() => _selectedImages.removeAt(index));
+                    setState(() => _media.removeAt(index));
                   },
                 ),
-              if (_selectedVideoPath != null)
+              if (_document != null)
                 Container(
                   margin: EdgeInsets.only(top: 10),
-                  child: VideoViewer(urls: [_selectedVideoPath!]),
-                ),
-              if (_selectedFile != null)
-                Container(
-                  margin: EdgeInsets.only(top: 10),
-                  child: FileWidget(
-                    url: _selectedFile!.path,
-                    navigateToViewer: false,
-                  ),
+                  child: FileWidget(url: _document!, navigateToViewer: false),
                 ),
               if (_selectedLocation != null)
                 MapWidget(mapCenter: _selectedLocation!),
@@ -341,11 +336,15 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
   }
 
   Future<void> _pickImages() async {
-    final newImages = await ImagePickerUtil.pickMultiImage(
-      limit: 4 - _selectedImages.length,
+    final newMedia = await ImagePickerUtil.pickMultipleMedia(
+      limit: 4 - _media.length,
     );
-    if (newImages.isNotEmpty) {
-      setState(() => _selectedImages.addAll(newImages));
+    if (newMedia.isNotEmpty) {
+      setState(() {
+        for (var media in newMedia) {
+          _media.add(media.path);
+        }
+      });
     }
   }
 }
@@ -397,4 +396,109 @@ class _SaveDraftDialog extends StatelessWidget {
       },
     );
   }
+}
+
+class DraftImageView extends StatelessWidget {
+  const DraftImageView({
+    super.key,
+    required this.recipient,
+    required this.textEditingController,
+    required this.imageUrls,
+    required this.onAdd,
+    required this.onRemove,
+  });
+
+  final User? recipient;
+  final TextEditingController textEditingController;
+  final List<String> imageUrls;
+  final void Function(List<File>) onAdd;
+  final void Function(int) onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: GridView.builder(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        physics: const ScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: imageUrls.length < 4
+            ? imageUrls.length + 1
+            : imageUrls.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4,
+        ),
+        itemBuilder: (BuildContext context, int index) {
+          if (index == imageUrls.length) {
+            return AddFile(
+              onCameraPressed: () async {
+                openCamera(
+                  context: context,
+                  recipient: recipient,
+                  textEditingController: textEditingController,
+                  onImageEditingComplete: (newImage) {
+                    onAdd([newImage]);
+                  },
+                );
+              },
+              onGalleryPressed: () async {
+                List<File> newImages = await ImagePickerUtil.pickMultiImage(
+                  limit: imageUrls.isEmpty ? 4 : 4 - imageUrls.length,
+                );
+                onAdd(newImages);
+              },
+            );
+          } else {
+            return Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  height: 100,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: const EdgeInsets.only(right: 10, bottom: 10),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: isNetworkImage(imageUrls[index])
+                        ? Image.network(
+                            imageUrls[index],
+                            height: 150,
+                            width: 150,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.file(
+                            File(imageUrls[index]),
+                            height: 150,
+                            width: 150,
+                            fit: BoxFit.cover,
+                          ),
+                  ),
+                ),
+                Positioned(
+                  right: 2,
+                  top: -7,
+                  child: GestureDetector(
+                    onTap: () {
+                      onRemove(index);
+                    },
+                    child: const Icon(
+                      Icons.highlight_remove_rounded,
+                      color: Colors.red,
+                      size: 25,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }
+        },
+      ),
+    );
+  }
+}
+
+bool isNetworkImage(String path) {
+  return Uri.tryParse(path)?.host.isNotEmpty ?? false;
 }

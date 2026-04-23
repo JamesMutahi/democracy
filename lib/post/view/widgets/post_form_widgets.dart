@@ -1,19 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:democracy/app/shared/camera/camera.dart';
+import 'package:democracy/app/shared/constants/regex.dart';
 import 'package:democracy/app/shared/widgets/extras_row.dart';
-import 'package:democracy/app/shared/pages/location.dart';
-import 'package:democracy/app/shared/utils/media_tools.dart';
 import 'package:democracy/app/shared/widgets/tagging.dart';
-import 'package:democracy/app/shared/widgets/video_viewer.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/constitution/models/section.dart';
-import 'package:democracy/constitution/view/constitution.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,7 +16,6 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:fluttertagger/fluttertagger.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class PostAuthor extends StatelessWidget {
   const PostAuthor({super.key});
@@ -104,85 +98,26 @@ class PostTextField extends StatelessWidget {
   }
 }
 
-class SingleImageView extends StatelessWidget {
-  const SingleImageView({
-    super.key,
-    required this.image,
-    required this.onRemove,
-  });
-
-  final File image;
-  final VoidCallback onRemove;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Container(
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-          padding: const EdgeInsets.only(right: 10, bottom: 10),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.file(image, fit: BoxFit.cover),
-          ),
-        ),
-        Positioned(
-          right: 2,
-          top: -7,
-          child: GestureDetector(
-            onTap: onRemove,
-            child: const Icon(
-              Icons.highlight_remove_rounded,
-              color: Colors.red,
-              size: 25,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class PostVideoViewer extends StatelessWidget {
-  const PostVideoViewer({super.key, required this.videoPath});
-
-  final String videoPath;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 200,
-      margin: EdgeInsets.only(top: 10),
-      child: VideoViewer(urls: [videoPath]),
-    );
-  }
-}
-
 class PostBottomNavBar extends StatefulWidget {
   const PostBottomNavBar({
     super.key,
     required this.controller,
     required this.onPickMedia,
-    required this.files,
     required this.fileLimit,
-    required this.onNewImages,
-    required this.onNewFile,
+    required this.onNewMedia,
+    required this.onNewDocument,
     required this.onLocation,
     this.reply,
-    required this.onNewVideo,
     required this.onNewSection,
   });
 
   final FlutterTaggerController controller;
   final VoidCallback onPickMedia;
-  final List<File> files;
   final int fileLimit;
-  final void Function(List<File>) onNewImages;
-  final void Function(File) onNewFile;
+  final void Function(List<File>) onNewMedia;
+  final void Function(File) onNewDocument;
   final void Function(LatLng) onLocation;
   final Post? reply;
-  final void Function(String) onNewVideo;
   final void Function(Section) onNewSection;
 
   @override
@@ -267,7 +202,7 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
         ),
       ],
       child: FlutterTagger(
-        searchRegex: RegExp(r'^[a-zA-Z0-9]*$'),
+        searchRegex: searchRegex,
         triggerStrategy: TriggerStrategy.eager,
         controller: widget.controller,
         animationController: _animationController,
@@ -313,61 +248,10 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
                     vertical: 10,
                   ),
                   child: ExtrasRow(
-                    onCameraTap: () async {
-                      openCamera(
-                        context: context,
-                        recipient: null,
-                        textEditingController: null,
-                        onImageEditingComplete: (newImage) {
-                          widget.onNewImages([newImage]);
-                        },
-                        onVideoEditingComplete: (videoPath) {
-                          widget.onNewVideo(videoPath);
-                        },
-                      );
-                    },
-                    onGalleryTap: () async {
-                      List<File>? newImages =
-                          await ImagePickerUtil.pickMultiImage(limit: 4);
-                      if (newImages.isNotEmpty) {
-                        widget.onNewImages(newImages);
-                      }
-                    },
-                    onLocationTap: () async {
-                      var status = await Permission.storage.status;
-                      if (!status.isGranted) {
-                        await Permission.storage.request();
-                      }
-                      if (context.mounted) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                Location(onLocation: widget.onLocation),
-                          ),
-                        );
-                      }
-                    },
-                    onDocumentTap: () async {
-                      FilePickerResult? result = await FilePicker.platform
-                          .pickFiles(
-                            type: FileType.custom,
-                            allowedExtensions: ['pdf', 'doc', 'docx'],
-                          );
-                      if (result != null) {
-                        File file = File(result.files.single.path!);
-                        widget.onNewFile(file);
-                      }
-                    },
-                    onConstitutionTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              Constitution(onSelection: widget.onNewSection),
-                        ),
-                      );
-                    },
+                    onMedia: widget.onNewMedia,
+                    onLocation: widget.onLocation,
+                    onDocument: widget.onNewDocument,
+                    onSection: widget.onNewSection,
                   ),
                 ),
               ],

@@ -61,14 +61,12 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
         }
       }
     });
-    on<_Created>((event, emit) => _onCreated(event, emit));
     on<_Loaded>((event, emit) => _onLoaded(event, emit));
     on<_Updated>((event, emit) => _onUpdated(event, emit));
     on<_Patched>((event, emit) => _onPatched(event, emit));
     on<_Deleted>((event, emit) => _onDeleted(event, emit));
     on<_RepostDeleted>((event, emit) => _onRepostDeleted(event, emit));
     on<_Reported>((event, emit) => _onReported(event, emit));
-    on<_Create>((event, emit) async => await _onCreate(event, emit));
     on<_Get>((event, emit) => _onGet(event, emit));
     on<_Patch>((event, emit) async => await _onPatch(event, emit));
     on<_Delete>((event, emit) => _onDelete(event, emit));
@@ -89,15 +87,6 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     on<_Muted>((event, emit) => _onMuted(event, emit));
     on<_Report>((event, emit) => _onReport(event, emit));
     on<_Unsubscribe>((event, emit) => _onUnsubscribe(event, emit));
-  }
-
-  void _onCreated(_Created event, Emitter<PostDetailState> emit) {
-    if (event.payload['response_status'] == 201) {
-      final Post post = Post.fromJson(event.payload['data']);
-      emit(PostCreated(post: post));
-    } else {
-      emit(PostDetailFailure(error: event.payload['errors'].toString()));
-    }
   }
 
   void _onLoaded(_Loaded event, Emitter<PostDetailState> emit) {
@@ -122,7 +111,6 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           bookmarks: event.payload['data']['bookmarks'],
           isBookmarked: event.payload['data']['is_bookmarked'],
           views: event.payload['data']['views'],
-          isClicked: event.payload['data']['is_clicked'],
           replies: event.payload['data']['replies'],
           reposts: event.payload['data']['reposts'],
           upvotes: event.payload['data']['upvotes'],
@@ -269,37 +257,6 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     }
   }
 
-  Future _onCreate(_Create event, Emitter<PostDetailState> emit) async {
-    emit(PostDetailLoading());
-    try {
-      String? token = await authRepository.getToken();
-      Post post = await apiRepository.createPost(
-        token: token!,
-        body: event.body,
-        status: event.status,
-        repostOf: event.repostOf,
-        replyTo: event.replyTo,
-        communityNoteOf: event.communityNoteOf,
-        ballot: event.ballot,
-        survey: event.survey,
-        petition: event.petition,
-        meeting: event.meeting,
-        section: event.section,
-        tags: event.tags,
-        imagePath1: event.imagePath1,
-        imagePath2: event.imagePath2,
-        imagePath3: event.imagePath3,
-        imagePath4: event.imagePath4,
-        videoPath: event.videoPath,
-        filePath: event.filePath,
-        location: event.location,
-      );
-      emit(PostCreated(post: post));
-    } catch (e) {
-      emit(PostDetailFailure(error: e.toString()));
-    }
-  }
-
   void _onGet(_Get event, Emitter<PostDetailState> emit) {
     emit(PostDetailLoading());
     if (!webSocketService.isConnected) {
@@ -336,12 +293,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
         meeting: event.meeting,
         section: event.section,
         tags: event.tags,
-        imagePath1: event.imagePath1,
-        imagePath2: event.imagePath2,
-        imagePath3: event.imagePath3,
-        imagePath4: event.imagePath4,
-        videoPath: event.videoPath,
-        filePath: event.filePath,
+        filePaths: event.filePaths,
         location: event.location,
       );
       emit(PostPatched(post: post));

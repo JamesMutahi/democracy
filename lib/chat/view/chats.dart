@@ -1,4 +1,5 @@
 import 'package:democracy/app/bloc/global/global_cubit.dart';
+import 'package:democracy/app/models/asset.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
@@ -246,10 +247,15 @@ class ChatTile extends StatelessWidget {
     if (message.survey != null) return '${prefix}Shared a survey';
     if (message.petition != null) return '${prefix}Shared a petition';
     if (message.section != null) return '${prefix}Shared the constitution';
-    if (message.image1Url != null) return '${prefix}Shared an image';
-    if (message.fileUrl != null) return '${prefix}Shared a file';
+    if (message.assets.isNotEmpty) {
+      return message.assets.first.contentType == ContentType.image
+          ? '${prefix}Shared an image'
+          : message.assets.first.contentType == ContentType.video
+          ? '${prefix}Shared a video'
+          : '${prefix}Shared a document';
+    }
+
     if (message.location != null) return '${prefix}Shared a location';
-    if (message.videoUrl != null) return '${prefix}Shared a video';
 
     return '${prefix}Shared something';
   }

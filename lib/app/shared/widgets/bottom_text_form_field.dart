@@ -3,21 +3,16 @@ import 'dart:io';
 import 'package:democracy/app/shared/camera/camera.dart';
 import 'package:democracy/app/shared/widgets/extras_row.dart';
 import 'package:democracy/app/shared/widgets/file_widget.dart';
-import 'package:democracy/app/shared/pages/location.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
 import 'package:democracy/app/shared/utils/media_tools.dart';
-import 'package:democracy/app/shared/widgets/video_viewer.dart';
 import 'package:democracy/constitution/models/section.dart';
-import 'package:democracy/constitution/view/constitution.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
-import 'package:democracy/post/view/widgets/post_form_widgets.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class BottomTextFormField extends StatefulWidget {
   const BottomTextFormField({
@@ -32,15 +27,13 @@ class BottomTextFormField extends StatefulWidget {
     required this.onChanged,
     required this.hintText,
     required this.prefixIcon,
-    required this.onNewImages,
-    required this.selectedImages,
-    required this.onAddImages,
-    required this.onRemoveImage,
-    required this.onNewFile,
-    required this.selectedFile,
+    required this.onNewMedia,
+    required this.media,
+    required this.onAddMedia,
+    required this.onRemoveMedia,
+    required this.onNewDocument,
+    required this.document,
     required this.onContentInsertion,
-    required this.insertedContent,
-    required this.onRemoveInsertedContent,
     required this.allowedMimeTypes,
     required this.onLocation,
     required this.location,
@@ -48,8 +41,6 @@ class BottomTextFormField extends StatefulWidget {
     required this.onSectionSelection,
     required this.section,
     required this.onRemoveSection,
-    required this.selectedVideoPath,
-    required this.onRemoveVideo,
     this.onSend,
     this.recipient,
     this.onImageEditingComplete,
@@ -66,15 +57,13 @@ class BottomTextFormField extends StatefulWidget {
   final void Function(String) onChanged;
   final String hintText;
   final Widget? prefixIcon;
-  final void Function(List<File>) onNewImages;
-  final List<File> selectedImages;
-  final void Function(List<File>) onAddImages;
-  final void Function(int) onRemoveImage;
-  final void Function(File) onNewFile;
-  final File? selectedFile;
+  final List<File> media;
+  final void Function(List<File>) onNewMedia;
+  final void Function(List<File>) onAddMedia;
   final void Function(File) onContentInsertion;
-  final File? insertedContent;
-  final VoidCallback? onRemoveInsertedContent;
+  final void Function(int) onRemoveMedia;
+  final void Function(File) onNewDocument;
+  final File? document;
   final List<String> allowedMimeTypes;
   final void Function(LatLng) onLocation;
   final LatLng? location;
@@ -82,8 +71,6 @@ class BottomTextFormField extends StatefulWidget {
   final void Function(Section) onSectionSelection;
   final Section? section;
   final VoidCallback? onRemoveSection;
-  final String? selectedVideoPath;
-  final VoidCallback? onRemoveVideo;
   final void Function()? onSend;
 
   // For editors in camera
@@ -248,30 +235,16 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
   Widget _buildAttachments() {
     return Column(
       children: [
-        if (widget.insertedContent != null)
+        if (widget.media.isNotEmpty)
           Container(
             margin: EdgeInsets.only(top: 10),
-            child: SingleImageView(
-              image: widget.insertedContent!,
-              onRemove: widget.onRemoveInsertedContent!,
-            ),
-          ),
-        if (widget.selectedImages.isNotEmpty)
-          Container(
-            margin: EdgeInsets.only(top: 10),
-            child: MultiImageView(
+            child: MultiMediaView(
               recipient: widget.recipient,
               textEditingController: widget.controller,
-              images: widget.selectedImages,
-              onAdd: widget.onAddImages,
-              onRemove: widget.onRemoveImage,
+              media: widget.media,
+              onAdd: widget.onAddMedia,
+              onRemove: widget.onRemoveMedia,
             ),
-          ),
-        if (widget.selectedVideoPath != null)
-          Container(
-            margin: EdgeInsets.only(top: 10),
-            height: MediaQuery.of(context).size.height / 5,
-            child: VideoViewer(urls: [widget.selectedVideoPath!]),
           ),
         if (widget.location != null)
           Container(
@@ -281,11 +254,11 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
               onRemove: widget.onRemoveLocation,
             ),
           ),
-        if (widget.selectedFile != null)
+        if (widget.document != null)
           Container(
             margin: EdgeInsets.only(top: 10),
             child: FileWidget(
-              url: widget.selectedFile!.path,
+              url: widget.document!.path,
               navigateToViewer: false,
             ),
           ),
@@ -324,62 +297,10 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
         child: Container(
           margin: EdgeInsets.only(top: 5),
           child: ExtrasRow(
-            onCameraTap: () async {
-              onExtrasButtonPressed();
-              openCamera(
-                context: context,
-                recipient: widget.recipient,
-                textEditingController: widget.controller,
-                onImageEditingComplete: widget.onImageEditingComplete!,
-                onVideoEditingComplete: widget.onVideoEditingComplete,
-              );
-            },
-            onGalleryTap: () async {
-              onExtrasButtonPressed();
-              List<File>? newImages = await ImagePickerUtil.pickMultiImage(
-                limit: 4,
-              );
-              if (newImages.isNotEmpty) {
-                widget.onNewImages(newImages);
-              }
-            },
-            onLocationTap: () async {
-              onExtrasButtonPressed();
-              var status = await Permission.storage.status;
-              if (!status.isGranted) {
-                await Permission.storage.request();
-              }
-              if (mounted) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        Location(onLocation: widget.onLocation),
-                  ),
-                );
-              }
-            },
-            onDocumentTap: () async {
-              onExtrasButtonPressed();
-              FilePickerResult? result = await FilePicker.platform.pickFiles(
-                type: FileType.custom,
-                allowedExtensions: ['pdf', 'doc', 'docx'],
-              );
-              if (result != null) {
-                File file = File(result.files.single.path!);
-                widget.onNewFile(file);
-              }
-            },
-            onConstitutionTap: () {
-              onExtrasButtonPressed();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      Constitution(onSelection: widget.onSectionSelection),
-                ),
-              );
-            },
+            onMedia: widget.onNewMedia,
+            onLocation: widget.onLocation,
+            onDocument: widget.onNewDocument,
+            onSection: widget.onSectionSelection,
           ),
         ),
       ),
@@ -425,19 +346,19 @@ class SectionView extends StatelessWidget {
   }
 }
 
-class MultiImageView extends StatelessWidget {
-  const MultiImageView({
+class MultiMediaView extends StatelessWidget {
+  const MultiMediaView({
     super.key,
     required this.recipient,
     required this.textEditingController,
-    required this.images,
+    required this.media,
     required this.onAdd,
     required this.onRemove,
   });
 
   final User? recipient;
   final TextEditingController textEditingController;
-  final List<File> images;
+  final List<File> media;
   final void Function(List<File>) onAdd;
   final void Function(int) onRemove;
 
@@ -449,13 +370,13 @@ class MultiImageView extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 10),
         physics: const ScrollPhysics(),
         shrinkWrap: true,
-        itemCount: images.length < 4 ? images.length + 1 : images.length,
+        itemCount: media.length < 4 ? media.length + 1 : media.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
         ),
         itemBuilder: (BuildContext context, int index) {
-          if (index == images.length) {
-            return _AddFile(
+          if (index == media.length) {
+            return AddFile(
               onCameraPressed: () async {
                 openCamera(
                   context: context,
@@ -464,20 +385,23 @@ class MultiImageView extends StatelessWidget {
                   onImageEditingComplete: (newImage) {
                     onAdd([newImage]);
                   },
+                  onVideoEditingComplete: (newVideo) {
+                    onAdd([File(newVideo)]);
+                  },
                 );
               },
               onGalleryPressed: () async {
-                List<File> newImages = await ImagePickerUtil.pickMultiImage(
-                  limit: images.isEmpty ? 4 : 4 - images.length,
+                List<File> newMedia = await ImagePickerUtil.pickMultipleMedia(
+                  limit: media.isEmpty ? 4 : 4 - media.length,
                 );
-                onAdd(newImages);
+                onAdd(newMedia);
               },
             );
           } else {
             return Stack(
               clipBehavior: Clip.none,
               children: [
-                _Thumbnail(thumbnail: images[index]),
+                Thumbnail(thumbnail: media[index]),
                 Positioned(
                   right: 2,
                   top: -7,
@@ -501,13 +425,15 @@ class MultiImageView extends StatelessWidget {
   }
 }
 
-class _Thumbnail extends StatelessWidget {
-  const _Thumbnail({required this.thumbnail});
+class Thumbnail extends StatelessWidget {
+  const Thumbnail({super.key, required this.thumbnail});
 
   final File thumbnail;
 
   @override
   Widget build(BuildContext context) {
+    bool isVideo = checkIsVideo(thumbnail.path);
+
     return Container(
       height: 100,
       width: 100,
@@ -515,19 +441,29 @@ class _Thumbnail extends StatelessWidget {
       padding: const EdgeInsets.only(right: 10, bottom: 10),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
-        child: Image.file(
-          thumbnail,
-          height: 150,
-          width: 150,
-          fit: BoxFit.cover,
-        ),
+        child: isVideo
+            ? Container(
+                height: 150,
+                width: 150,
+                color: Theme.of(context).colorScheme.secondaryContainer,
+                child: Center(child: Icon(Icons.play_arrow_rounded)),
+              )
+            : Image.file(thumbnail, height: 150, width: 150, fit: BoxFit.cover),
       ),
     );
   }
 }
 
-class _AddFile extends StatelessWidget {
-  const _AddFile({
+bool checkIsVideo(String path) {
+  final videoExtensions = ['.mp4', '.mov', '.avi', '.wmv', '.mkv', '.flv'];
+  final extension = p.extension(path).toLowerCase();
+  return videoExtensions.contains(extension);
+}
+
+class AddFile extends StatelessWidget {
+  const AddFile({
+    super.key,
+
     required this.onCameraPressed,
     required this.onGalleryPressed,
   });
