@@ -27,11 +27,11 @@ class BottomTextFormField extends StatefulWidget {
     required this.onChanged,
     required this.hintText,
     required this.prefixIcon,
-    required this.onNewMedia,
+    required this.onMedia,
     required this.media,
     required this.onAddMedia,
     required this.onRemoveMedia,
-    required this.onNewDocument,
+    required this.onDocument,
     required this.document,
     required this.onContentInsertion,
     required this.allowedMimeTypes,
@@ -43,8 +43,8 @@ class BottomTextFormField extends StatefulWidget {
     required this.onRemoveSection,
     this.onSend,
     this.recipient,
-    this.onImageEditingComplete,
-    this.onVideoEditingComplete,
+    required this.onImageEditingComplete,
+    required this.onVideoEditingComplete,
   });
 
   final Key? containerKey;
@@ -58,11 +58,11 @@ class BottomTextFormField extends StatefulWidget {
   final String hintText;
   final Widget? prefixIcon;
   final List<File> media;
-  final void Function(List<File>) onNewMedia;
+  final void Function(List<File>) onMedia;
   final void Function(List<File>) onAddMedia;
   final void Function(File) onContentInsertion;
   final void Function(int) onRemoveMedia;
-  final void Function(File) onNewDocument;
+  final void Function(File) onDocument;
   final File? document;
   final List<String> allowedMimeTypes;
   final void Function(LatLng) onLocation;
@@ -75,8 +75,8 @@ class BottomTextFormField extends StatefulWidget {
 
   // For editors in camera
   final User? recipient;
-  final void Function(File)? onImageEditingComplete;
-  final void Function(String)? onVideoEditingComplete;
+  final void Function(File) onImageEditingComplete;
+  final void Function(String) onVideoEditingComplete;
 
   @override
   State<BottomTextFormField> createState() => _BottomTextFormFieldState();
@@ -84,7 +84,6 @@ class BottomTextFormField extends StatefulWidget {
 
 class _BottomTextFormFieldState extends State<BottomTextFormField>
     with TickerProviderStateMixin {
-  late final AnimationController _extrasButtonAnimationController;
   late final AnimationController _extrasRowAnimationController;
   late final CurvedAnimation _extrasRowAnimation;
   bool _open = false;
@@ -92,11 +91,6 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
   @override
   void initState() {
     super.initState();
-    _extrasButtonAnimationController = AnimationController(
-      value: _open ? 1.0 : 0.0,
-      duration: const Duration(milliseconds: 250),
-      vsync: this,
-    );
     _extrasRowAnimationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
@@ -120,7 +114,6 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
 
   @override
   void dispose() {
-    _extrasButtonAnimationController.dispose();
     _extrasRowAnimationController.dispose();
     _extrasRowAnimation.dispose();
     super.dispose();
@@ -153,8 +146,13 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
                     padding: const EdgeInsets.all(8.0),
                     child: Stack(
                       children: [
-                        _buildTapToOpenExtras(),
-                        if (_open) Icon(Icons.close_rounded),
+                        AnimatedSwitcher(
+                          duration: Duration(milliseconds: 300),
+                          child:
+                              _extrasRowAnimationController.isForwardOrCompleted
+                              ? Icon(Icons.close_rounded)
+                              : Icon(Icons.add_rounded),
+                        ),
                       ],
                     ),
                   ),
@@ -205,8 +203,7 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
                       if (content.hasData) {
                         final Uint8List bytes = content.data!;
                         // Get the application documents directory
-                        final directory =
-                            await getApplicationDocumentsDirectory();
+                        final directory = await getTemporaryDirectory();
                         final String filePath =
                             '${directory.path}/${content.uri.split('/').last}';
                         // Write the bytes to a file
@@ -258,6 +255,7 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
           Container(
             margin: EdgeInsets.only(top: 10),
             child: FileWidget(
+              fileName: p.basename(widget.document!.path),
               url: widget.document!.path,
               navigateToViewer: false,
             ),
@@ -271,25 +269,6 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
     );
   }
 
-  Widget _buildTapToOpenExtras() {
-    return AnimatedContainer(
-      transformAlignment: Alignment.center,
-      transform: Matrix4.diagonal3Values(
-        _open ? 0.7 : 1.0,
-        _open ? 0.7 : 1.0,
-        1.0,
-      ),
-      duration: const Duration(milliseconds: 250),
-      curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
-      child: AnimatedOpacity(
-        opacity: _open ? 0.0 : 1.0,
-        curve: const Interval(0.25, 1.0, curve: Curves.easeInOut),
-        duration: const Duration(milliseconds: 250),
-        child: Icon(Icons.add_rounded),
-      ),
-    );
-  }
-
   Widget _extrasRowWidget() {
     return SizeTransition(
       sizeFactor: _extrasRowAnimation,
@@ -297,9 +276,14 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
         child: Container(
           margin: EdgeInsets.only(top: 5),
           child: ExtrasRow(
-            onMedia: widget.onNewMedia,
+            recipient: widget.recipient,
+            textEditingController: widget.controller,
+            maxAssets: 4 - widget.media.length,
+            onMedia: widget.onMedia,
+            onImageEditingComplete: widget.onImageEditingComplete,
+            onVideoEditingComplete: widget.onVideoEditingComplete,
             onLocation: widget.onLocation,
-            onDocument: widget.onNewDocument,
+            onDocument: widget.onDocument,
             onSection: widget.onSectionSelection,
           ),
         ),
@@ -390,11 +374,16 @@ class MultiMediaView extends StatelessWidget {
                   },
                 );
               },
-              onGalleryPressed: () async {
-                List<File> newMedia = await ImagePickerUtil.pickMultipleMedia(
-                  limit: media.isEmpty ? 4 : 4 - media.length,
+              onGalleryPressed: () {
+                openGallery(
+                  context: context,
+                  maxAssets: 1,
+                  onMedia: (files) {
+                    if (files.isNotEmpty) {
+                      onAdd([files.first]);
+                    }
+                  },
                 );
-                onAdd(newMedia);
               },
             );
           } else {

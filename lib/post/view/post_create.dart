@@ -6,7 +6,6 @@ import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/file_widget.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
-import 'package:democracy/app/shared/utils/media_tools.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/constitution/models/section.dart';
@@ -31,6 +30,7 @@ import 'package:fluttertagger/fluttertagger.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:path/path.dart' as p;
 
 class PostCreatePage extends StatefulWidget {
   const PostCreatePage({
@@ -238,8 +238,7 @@ class _PostCreatePageState extends State<PostCreatePage> {
             bottomNavigationBar: PostBottomNavBar(
               controller: _controller,
               reply: widget.replyTo,
-              onPickMedia: _pickImages, // if needed by the bar
-              fileLimit: 4,
+              maxAssets: 4 - _media.length,
               onNewMedia: (images) {
                 setState(() {
                   _media.addAll(images);
@@ -314,6 +313,7 @@ class _PostCreatePageState extends State<PostCreatePage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 10),
                   child: FileWidget(
+                    fileName: p.basename(_document!.path),
                     url: _document!.path,
                     navigateToViewer: false,
                   ),
@@ -379,15 +379,6 @@ class _PostCreatePageState extends State<PostCreatePage> {
         ),
       ],
     );
-  }
-
-  Future<void> _pickImages() async {
-    final newImages = await ImagePickerUtil.pickMultipleMedia(
-      limit: 4 - _media.length,
-    );
-    if (newImages.isNotEmpty) {
-      setState(() => _media.addAll(newImages));
-    }
   }
 }
 

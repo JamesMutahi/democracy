@@ -102,8 +102,7 @@ class PostBottomNavBar extends StatefulWidget {
   const PostBottomNavBar({
     super.key,
     required this.controller,
-    required this.onPickMedia,
-    required this.fileLimit,
+    required this.maxAssets,
     required this.onNewMedia,
     required this.onNewDocument,
     required this.onLocation,
@@ -112,8 +111,7 @@ class PostBottomNavBar extends StatefulWidget {
   });
 
   final FlutterTaggerController controller;
-  final VoidCallback onPickMedia;
-  final int fileLimit;
+  final int maxAssets;
   final void Function(List<File>) onNewMedia;
   final void Function(File) onNewDocument;
   final void Function(LatLng) onLocation;
@@ -248,10 +246,17 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
                     vertical: 10,
                   ),
                   child: ExtrasRow(
+                    maxAssets: widget.maxAssets,
                     onMedia: widget.onNewMedia,
                     onLocation: widget.onLocation,
                     onDocument: widget.onNewDocument,
                     onSection: widget.onNewSection,
+                    onImageEditingComplete: (file) {
+                      widget.onNewMedia([file]);
+                    },
+                    onVideoEditingComplete: (path) {
+                      widget.onNewMedia([File(path)]);
+                    },
                   ),
                 ),
               ],

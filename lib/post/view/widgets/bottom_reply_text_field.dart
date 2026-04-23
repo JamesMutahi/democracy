@@ -175,10 +175,8 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
             prefixIcon: null,
             media: _media,
             document: _document,
-            onNewMedia: (media) {
-              setState(() {
-                _media = media;
-              });
+            onMedia: (media) {
+              setState(() => _media.addAll(media));
             },
             onAddMedia: (media) {
               setState(() => _media.addAll(media));
@@ -186,7 +184,7 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
             onRemoveMedia: (index) {
               setState(() => _media.removeAt(index));
             },
-            onNewDocument: (file) => setState(() => _document = file),
+            onDocument: (file) => setState(() => _document = file),
             onContentInsertion: (imageFile) {
               setState(() => _media.add(imageFile));
             },

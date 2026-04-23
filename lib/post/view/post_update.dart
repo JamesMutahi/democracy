@@ -26,6 +26,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertagger/fluttertagger.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:path/path.dart' as p;
 
 class PostUpdatePage extends StatefulWidget {
   const PostUpdatePage({super.key, required this.post});
@@ -201,12 +202,11 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
           bottomNavigationBar: PostBottomNavBar(
             controller: _controller,
             reply: widget.post.replyTo,
-            onPickMedia: _pickImages,
-            fileLimit: 4,
-            onNewMedia: (images) {
+            maxAssets: 4 - _media.length,
+            onNewMedia: (files) {
               setState(() {
-                for (var image in images) {
-                  _media.add(image.path);
+                for (var file in files) {
+                  _media.add(file.path);
                 }
               });
               _updatePostButtonState(_controller.formattedText);
@@ -278,7 +278,11 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
               if (_document != null)
                 Container(
                   margin: EdgeInsets.only(top: 10),
-                  child: FileWidget(url: _document!, navigateToViewer: false),
+                  child: FileWidget(
+                    fileName: p.basename(_document!),
+                    url: _document!,
+                    navigateToViewer: false,
+                  ),
                 ),
               if (_selectedLocation != null)
                 MapWidget(mapCenter: _selectedLocation!),
@@ -333,19 +337,6 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
         ),
       ],
     );
-  }
-
-  Future<void> _pickImages() async {
-    final newMedia = await ImagePickerUtil.pickMultipleMedia(
-      limit: 4 - _media.length,
-    );
-    if (newMedia.isNotEmpty) {
-      setState(() {
-        for (var media in newMedia) {
-          _media.add(media.path);
-        }
-      });
-    }
   }
 }
 
@@ -442,10 +433,15 @@ class DraftImageView extends StatelessWidget {
                 );
               },
               onGalleryPressed: () async {
-                List<File> newImages = await ImagePickerUtil.pickMultiImage(
-                  limit: imageUrls.isEmpty ? 4 : 4 - imageUrls.length,
+                openGallery(
+                  context: context,
+                  maxAssets: 1,
+                  onMedia: (files) {
+                    if (files.isNotEmpty) {
+                      onAdd(files);
+                    }
+                  },
                 );
-                onAdd(newImages);
               },
             );
           } else {

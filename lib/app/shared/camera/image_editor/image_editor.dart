@@ -579,7 +579,7 @@ class _ImageEditorState extends State<ImageEditor> {
 
 Future<File> saveImageBytesToFile(Uint8List imageBytes) async {
   // Get the application's documents directory (recommended for persisting data).
-  final Directory directory = await getApplicationDocumentsDirectory();
+  final Directory directory = await getTemporaryDirectory();
 
   // Generate file name
   final now = DateTime.now();

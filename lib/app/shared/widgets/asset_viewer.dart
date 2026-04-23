@@ -69,7 +69,10 @@ class _AssetViewerState extends State<AssetViewer> {
         if (documentAssets.isNotEmpty)
           Container(
             margin: EdgeInsets.only(top: 10),
-            child: FileWidget(url: documentAssets.first.url),
+            child: FileWidget(
+              fileName: documentAssets.first.name,
+              url: documentAssets.first.url,
+            ),
           ),
       ],
     );

@@ -109,12 +109,17 @@ class _EditProfileState extends State<EditProfile> {
                             );
                           },
                           onGalleryPressed: () async {
-                            File? newImage = await ImagePickerUtil.getImage();
-                            if (newImage != null) {
-                              setState(() {
-                                coverPhoto = newImage;
-                              });
-                            }
+                            openGallery(
+                              context: context,
+                              maxAssets: 1,
+                              onMedia: (files) {
+                                if (files.isNotEmpty) {
+                                  setState(() {
+                                    coverPhoto = files.first;
+                                  });
+                                }
+                              },
+                            );
                           },
                         );
                       },
@@ -200,12 +205,17 @@ class _EditProfileState extends State<EditProfile> {
                           );
                         },
                         onGalleryPressed: () async {
-                          File? newImage = await ImagePickerUtil.getImage();
-                          if (newImage != null) {
-                            setState(() {
-                              image = newImage;
-                            });
-                          }
+                          openGallery(
+                            context: context,
+                            maxAssets: 1,
+                            onMedia: (files) {
+                              if (files.isNotEmpty) {
+                                setState(() {
+                                  image = files.first;
+                                });
+                              }
+                            },
+                          );
                         },
                       );
                     },

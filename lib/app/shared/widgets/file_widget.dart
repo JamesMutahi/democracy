@@ -14,16 +14,17 @@ final Dio _dio = Dio();
 class FileWidget extends StatelessWidget {
   const FileWidget({
     super.key,
+    required this.fileName,
     required this.url,
     this.navigateToViewer = true,
   });
 
+  final String fileName;
   final String url;
   final bool navigateToViewer;
 
   @override
   Widget build(BuildContext context) {
-    String fileName = p.basename(url);
     String extension = p.extension(url).toLowerCase();
     late Icon icon;
     if (extension == '.pdf') {

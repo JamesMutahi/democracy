@@ -227,7 +227,7 @@ class _DirectMessageState extends State<DirectMessage> {
           onChanged: (value) {},
           hintText: 'Add a comment',
           prefixIcon: null,
-          onNewMedia: (media) {
+          onMedia: (media) {
             setState(() {
               _media = media;
             });
@@ -243,7 +243,7 @@ class _DirectMessageState extends State<DirectMessage> {
               _media.removeAt(index);
             });
           },
-          onNewDocument: (file) {
+          onDocument: (file) {
             setState(() {
               _document = file;
             });
@@ -267,6 +267,16 @@ class _DirectMessageState extends State<DirectMessage> {
           onSectionSelection: (section) {},
           section: null,
           onRemoveSection: () {},
+          onImageEditingComplete: (file) {
+            setState(() {
+              _media.add(file);
+            });
+          },
+          onVideoEditingComplete: (path) {
+            setState(() {
+              _media.add(File(path));
+            });
+          },
           onSend: selectedUsers.isEmpty
               ? null
               : () {

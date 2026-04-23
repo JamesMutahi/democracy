@@ -81,11 +81,11 @@ class _EditMessageState extends State<EditMessage> {
         },
         hintText: 'Edit message',
         prefixIcon: null,
-        onNewMedia: (images) {},
+        onMedia: (images) {},
         media: [],
         onAddMedia: (images) {},
         onRemoveMedia: (index) {},
-        onNewDocument: (file) {},
+        onDocument: (file) {},
         document: null,
         onContentInsertion: (imageFile) {},
         allowedMimeTypes: const <String>['image/png', 'image/gif'],
@@ -95,6 +95,8 @@ class _EditMessageState extends State<EditMessage> {
         onSectionSelection: (section) {},
         section: null,
         onRemoveSection: null,
+        onImageEditingComplete: (_) {},
+        onVideoEditingComplete: (_) {},
         onSend: _disableSendButton
             ? null
             : () {

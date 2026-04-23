@@ -243,19 +243,6 @@ class _CameraPageState extends State<CameraPage>
                         padding: EdgeInsets.symmetric(horizontal: 10),
                         child: Stack(
                           children: [
-                            if (!controller.value.isRecordingVideo)
-                              if (!isSwitchingCamera)
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: _CameraButton(
-                                    iconData: Icons.photo_outlined,
-                                    onPressed: () {
-                                      //   TODO: Open gallery
-                                    },
-                                    turns: turns,
-                                    child: null,
-                                  ),
-                                ),
                             Align(
                               alignment: Alignment.center,
                               child: _MainCameraButton(

@@ -267,9 +267,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       },
       hintText: 'Message',
       prefixIcon: null,
-      onNewMedia: (media) {
+      onMedia: (media) {
         setState(() {
-          _media = media;
+          _media.addAll(media);
         });
       },
       media: _media,
@@ -283,7 +283,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           _media.removeAt(index);
         });
       },
-      onNewDocument: (file) {
+      onDocument: (file) {
         setState(() {
           _document = file;
         });
@@ -326,12 +326,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   ],
                 ),
               );
-              _controller.clear();
-              setState(() {
-                _document = null;
-                _media = [];
-                _disableSendButton = true;
-              });
+              reset();
             },
       recipient: widget.otherUser,
       onImageEditingComplete: (image) {
@@ -342,7 +337,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             filePaths: [image.path],
           ),
         );
-        _controller.clear();
+        reset();
       },
       onVideoEditingComplete: (videoPath) {
         context.read<MessageDetailBloc>().add(
@@ -352,9 +347,18 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             filePaths: [videoPath],
           ),
         );
-        _controller.clear();
+        reset();
       },
     );
+  }
+
+  void reset() {
+    _controller.clear();
+    setState(() {
+      _document = null;
+      _media = [];
+      _disableSendButton = true;
+    });
   }
 }
 

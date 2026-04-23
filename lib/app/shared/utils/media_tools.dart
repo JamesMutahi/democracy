@@ -1,43 +1,43 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
-class ImagePickerUtil {
-  static final ImagePicker _picker = ImagePicker();
+void openGallery({
+  required BuildContext context,
+  required int maxAssets,
+  required void Function(List<File>) onMedia,
+}) async {
+  final List<AssetEntity>? result = await AssetPicker.pickAssets(
+    context,
+    pickerConfig: AssetPickerConfig(
+      maxAssets: maxAssets,
+      pickerTheme: Theme.of(context),
+      specialPickerType: maxAssets == 1 ? SpecialPickerType.noPreview : null,
+    ),
+  );
+  Directory directory = await getTemporaryDirectory();
 
-  static Future<File?> getImage() async {
-    final pickedFile = await _picker.pickImage(
-      imageQuality: 100,
-      source: ImageSource.gallery,
-    );
-    if (pickedFile != null) {
-      return File(pickedFile.path);
+  List<File> media = [];
+
+  if (result != null) {
+    for (var r in result) {
+      final cachedFile = await r.file;
+
+      if (cachedFile != null) {
+        String fileName = p.basename(cachedFile.path);
+
+        String targetPath = p.join(directory.path, fileName);
+
+        File permanentFile = await cachedFile.copy(targetPath);
+        media.add(permanentFile);
+      }
     }
-    return null;
   }
-
-  static Future<List<File>> pickMultiImage({required int limit}) async {
-    final pickedFiles = await _picker.pickMultiImage(
-      imageQuality: 100,
-      limit: limit,
-    );
-    if (pickedFiles.isNotEmpty) {
-      return pickedFiles.map((xFile) => File(xFile.path)).toList();
-    }
-    return [];
-  }
-
-  static Future<List<File>> pickMultipleMedia({required int limit}) async {
-    final pickedFiles = await _picker.pickMultipleMedia(
-      imageQuality: 100,
-      limit: limit,
-    );
-    if (pickedFiles.isNotEmpty) {
-      return pickedFiles.map((xFile) => File(xFile.path)).toList();
-    }
-    return [];
-  }
+  onMedia(media);
+  PhotoManager.clearFileCache();
 }
 
 class MediaDialog extends StatelessWidget {

@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:democracy/app/shared/camera/camera.dart';
 import 'package:democracy/app/shared/pages/location.dart';
 import 'package:democracy/app/shared/utils/media_tools.dart';
+import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/constitution/view/constitution.dart';
+import 'package:democracy/user/models/user.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
@@ -15,19 +17,38 @@ import 'package:permission_handler/permission_handler.dart';
 class ExtrasRow extends StatelessWidget {
   const ExtrasRow({
     super.key,
+    this.recipient,
+    this.textEditingController,
+    required this.maxAssets,
     required this.onMedia,
+    required this.onImageEditingComplete,
+    required this.onVideoEditingComplete,
     required this.onLocation,
     required this.onDocument,
     required this.onSection,
   });
 
+  final User? recipient;
+  final TextEditingController? textEditingController;
+  final int maxAssets;
   final void Function(List<File>) onMedia;
+  final void Function(File) onImageEditingComplete;
+  final void Function(String) onVideoEditingComplete;
   final void Function(LatLng) onLocation;
   final void Function(File) onDocument;
   final void Function(Section) onSection;
 
   @override
   Widget build(BuildContext context) {
+    void maxAssetsReached() {
+      final snackBar = getSnackBar(
+        context: context,
+        message: 'Only 4 media files allowed at a time.',
+        status: SnackBarStatus.failure,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+
     return Center(
       child: Wrap(
         alignment: WrapAlignment.center,
@@ -36,42 +57,32 @@ class ExtrasRow extends StatelessWidget {
         children: <Widget>[
           _ExtraCard(
             onTap: () {
-              openCamera(
-                context: context,
-                recipient: null,
-                textEditingController: null,
-                onImageEditingComplete: (newImage) {
-                  onMedia([newImage]);
-                },
-                onVideoEditingComplete: (videoPath) {
-                  onMedia([File(videoPath)]);
-                },
-              );
+              if (maxAssets == 0) {
+                maxAssetsReached();
+              } else {
+                openCamera(
+                  context: context,
+                  recipient: recipient,
+                  textEditingController: textEditingController,
+                  onImageEditingComplete: onImageEditingComplete,
+                  onVideoEditingComplete: onVideoEditingComplete,
+                );
+              }
             },
             iconData: Icons.photo_camera_outlined,
             text: 'Camera',
           ),
           _ExtraCard(
-            onTap: () async {
-              List<File>? cachedMedia = await ImagePickerUtil.pickMultipleMedia(
-                limit: 4,
-              );
-
-              Directory appDocDir = await getApplicationDocumentsDirectory();
-
-              List<File> media = [];
-
-              for (File cachedFile in cachedMedia) {
-                if (await cachedFile.exists()) {
-                  String fileName = p.basename(cachedFile.path);
-
-                  String targetPath = p.join(appDocDir.path, fileName);
-
-                  File permanentFile = await cachedFile.copy(targetPath);
-                  media.add(permanentFile);
-                }
+            onTap: () {
+              if (maxAssets == 0) {
+                maxAssetsReached();
+              } else {
+                openGallery(
+                  context: context,
+                  maxAssets: maxAssets,
+                  onMedia: onMedia,
+                );
               }
-              onMedia(media);
             },
             iconData: Icons.photo_library_outlined,
             text: 'Gallery',
@@ -101,8 +112,17 @@ class ExtrasRow extends StatelessWidget {
                 allowedExtensions: ['pdf', 'doc', 'docx'],
               );
               if (result != null) {
-                File file = File(result.files.single.path!);
-                onDocument(file);
+                File cachedFile = File(result.files.single.path!);
+
+                Directory directory = await getTemporaryDirectory();
+
+                String fileName = p.basename(cachedFile.path);
+
+                String targetPath = p.join(directory.path, fileName);
+
+                File permanentFile = await cachedFile.copy(targetPath);
+
+                onDocument(permanentFile);
               }
             },
             iconData: Icons.file_present_outlined,

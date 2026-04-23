@@ -135,13 +135,18 @@ class _CreatePetitionState extends State<CreatePetition> {
                             },
                           );
                         },
-                        onGalleryPressed: () async {
-                          File? newImage = await ImagePickerUtil.getImage();
-                          if (newImage != null) {
-                            setState(() {
-                              image = newImage;
-                            });
-                          }
+                        onGalleryPressed: () {
+                          openGallery(
+                            context: context,
+                            maxAssets: 1,
+                            onMedia: (files) {
+                              if (files.isNotEmpty) {
+                                setState(() {
+                                  image = files.first;
+                                });
+                              }
+                            },
+                          );
                         },
                       );
                     },
