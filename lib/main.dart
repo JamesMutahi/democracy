@@ -16,7 +16,9 @@ import 'package:democracy/ballot/bloc/ballot_filter/ballot_filter_cubit.dart';
 import 'package:democracy/ballot/bloc/ballots/ballots_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/bloc/chat_filter/chat_filter_cubit.dart';
+import 'package:democracy/chat/bloc/direct_message/direct_message_bloc.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
+import 'package:democracy/chat/bloc/message_create/message_create_bloc.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
 import 'package:democracy/constitution/bloc/constitution/constitution_bloc.dart';
 import 'package:democracy/constitution/bloc/section_detail/section_detail_bloc.dart';
@@ -154,6 +156,18 @@ void main() async {
           BlocProvider(
             create: (context) => MessageDetailBloc(
               webSocketService: context.read<WebSocketService>(),
+              authRepository: context.read<AuthRepository>(),
+              apiRepository: context.read<APIRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => MessageCreateBloc(
+              authRepository: context.read<AuthRepository>(),
+              apiRepository: context.read<APIRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => DirectMessageBloc(
               authRepository: context.read<AuthRepository>(),
               apiRepository: context.read<APIRepository>(),
             ),

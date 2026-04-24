@@ -7,6 +7,7 @@ import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/bloc/chat_filter/chat_filter_cubit.dart';
 import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
+import 'package:democracy/chat/bloc/direct_message/direct_message_bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/view/utils/chat_navigator.dart';
@@ -55,15 +56,21 @@ class _ChatsState extends State<Chats> {
               chatsBloc.add(ChatsEvent.update(chat: state.chat));
             } else if (state is ChatDeleted) {
               chatsBloc.add(ChatsEvent.remove(chatId: state.chatId));
-            } else if (state is DirectMessageSent) {
-              chatsBloc.add(ChatsEvent.updateMultiple(chats: state.chats));
-            } else if (state is ChatDetailFailure) {
+            }else if (state is ChatDetailFailure) {
               final snackBar = getSnackBar(
                 context: context,
                 message: state.error,
                 status: SnackBarStatus.failure,
               );
               ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+          },
+        ),
+        BlocListener<DirectMessageBloc, DirectMessageState>(
+          listener: (context, state) {
+            if (state.status == DirectMessageStatus.success) {
+              final chatsBloc = context.read<ChatsBloc>();
+              chatsBloc.add(ChatsEvent.updateMultiple(chats: state.chats));
             }
           },
         ),

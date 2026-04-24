@@ -3,18 +3,10 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/repository/api_repository.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
-import 'package:democracy/app/shared/constants/strings.dart';
+import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
-import 'package:democracy/ballot/models/ballot.dart';
-import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
-import 'package:democracy/constitution/models/section.dart';
-import 'package:democracy/meet/models/meeting.dart';
-import 'package:democracy/petition/models/petition.dart';
-import 'package:democracy/post/models/post.dart';
-import 'package:democracy/survey/models/survey.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:latlong2/latlong.dart';
 
 part 'message_detail_bloc.freezed.dart';
 part 'message_detail_state.dart';
@@ -46,7 +38,6 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
     on<_Created>((event, emit) => _onCreated(event, emit));
     on<_Updated>((event, emit) => _onUpdated(event, emit));
     on<_Deleted>((event, emit) => _onDeleted(event, emit));
-    on<_Create>((event, emit) async => await _onCreate(event, emit));
     on<_Edit>((event, emit) => _onEdit(event, emit));
     on<_Delete>((event, emit) => _onDelete(event, emit));
   }
@@ -74,6 +65,7 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
   void _onDeleted(_Deleted event, Emitter<MessageDetailState> emit) {
     emit(MessageDetailLoading());
     if (event.payload['response_status'] == 204) {
+      print('PAYLOAD: ${event.payload}');
       emit(
         MessageDeleted(
           messageId: event.payload['pk'],
@@ -82,28 +74,6 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
       );
     } else {
       emit(MessageDetailFailure(error: event.payload['errors'].toString()));
-    }
-  }
-
-  Future _onCreate(_Create event, Emitter<MessageDetailState> emit) async {
-    emit(MessageDetailLoading());
-    try {
-      String? token = await authRepository.getToken();
-      await apiRepository.createMessage(
-        token: token!,
-        chat: event.chat,
-        text: event.text,
-        post: event.post,
-        ballot: event.ballot,
-        survey: event.survey,
-        petition: event.petition,
-        meeting: event.meeting,
-        section: event.section,
-        filePaths: event.filePaths,
-        location: event.location,
-      );
-    } catch (e) {
-      emit(MessageDetailFailure(error: e.toString()));
     }
   }
 

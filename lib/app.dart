@@ -3,7 +3,7 @@ import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
 import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
-import 'package:democracy/app/shared/constants/strings.dart';
+import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/app/shared/utils/app_theme.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';

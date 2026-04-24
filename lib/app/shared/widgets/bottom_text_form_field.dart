@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:democracy/app/shared/camera/camera.dart';
+import 'package:democracy/app/shared/constants/variables.dart';
+import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/extras_row.dart';
 import 'package:democracy/app/shared/widgets/file_widget.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
@@ -41,10 +43,14 @@ class BottomTextFormField extends StatefulWidget {
     required this.onSectionSelection,
     required this.section,
     required this.onRemoveSection,
-    this.onSend,
     this.recipient,
     required this.onImageEditingComplete,
     required this.onVideoEditingComplete,
+    required this.showLoading,
+    required this.showFailure,
+    required this.onRetry,
+    required this.onCancelRetry,
+    this.onSend,
   });
 
   final Key? containerKey;
@@ -71,12 +77,18 @@ class BottomTextFormField extends StatefulWidget {
   final void Function(Section) onSectionSelection;
   final Section? section;
   final VoidCallback? onRemoveSection;
-  final void Function()? onSend;
 
   // For editors in camera
   final User? recipient;
   final void Function(File) onImageEditingComplete;
   final void Function(String) onVideoEditingComplete;
+
+  // To send
+  final void Function()? onSend;
+  final bool showLoading;
+  final bool showFailure;
+  final VoidCallback onRetry;
+  final VoidCallback onCancelRetry;
 
   @override
   State<BottomTextFormField> createState() => _BottomTextFormFieldState();
@@ -144,16 +156,12 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
                   margin: EdgeInsets.only(left: 10),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Stack(
-                      children: [
-                        AnimatedSwitcher(
-                          duration: Duration(milliseconds: 300),
-                          child:
-                              _extrasRowAnimationController.isForwardOrCompleted
-                              ? Icon(Icons.close_rounded)
-                              : Icon(Icons.add_rounded),
-                        ),
-                      ],
+                    child: RotationTransition(
+                      turns: Tween<double>(
+                        begin: 0.0,
+                        end: 0.125,
+                      ).animate(_extrasRowAnimationController),
+                      child: const Icon(Icons.add_rounded, size: 24),
                     ),
                   ),
                 ),
@@ -217,9 +225,28 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
                 ),
               ),
               Flexible(
-                child: IconButton(
-                  onPressed: widget.onSend,
-                  icon: Icon(Icons.send_rounded),
+                child: AnimatedSwitcher(
+                  duration: Duration(milliseconds: 300),
+                  child: widget.showLoading
+                      ? BottomLoader()
+                      : widget.showFailure
+                      ? Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              onPressed: widget.onSend,
+                              icon: Icon(Icons.repeat_rounded),
+                            ),
+                            IconButton(
+                              onPressed: widget.onSend,
+                              icon: Icon(Icons.close_rounded),
+                            ),
+                          ],
+                        )
+                      : IconButton(
+                          onPressed: widget.onSend,
+                          icon: Icon(Icons.send_rounded),
+                        ),
                 ),
               ),
             ],
@@ -276,9 +303,10 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
         child: Container(
           margin: EdgeInsets.only(top: 5),
           child: ExtrasRow(
+            controller: _extrasRowAnimationController,
             recipient: widget.recipient,
             textEditingController: widget.controller,
-            maxAssets: 4 - widget.media.length,
+            maxAssets: maxMediaAssetsAllowed - widget.media.length,
             onMedia: widget.onMedia,
             onImageEditingComplete: widget.onImageEditingComplete,
             onVideoEditingComplete: widget.onVideoEditingComplete,

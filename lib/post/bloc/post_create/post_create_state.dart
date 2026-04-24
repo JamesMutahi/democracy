@@ -2,9 +2,7 @@ part of 'post_create_bloc.dart';
 
 enum PostCreateStatus {
   initial,
-  uploadingPost,
-  uploadingAssets,
-  verifyingAssets,
+  loading,
   success,
   failure,
 }

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:democracy/app/models/asset.dart' show ContentType;
 import 'package:democracy/app/shared/camera/camera.dart';
+import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/file_widget.dart';
@@ -202,7 +203,7 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
           bottomNavigationBar: PostBottomNavBar(
             controller: _controller,
             reply: widget.post.replyTo,
-            maxAssets: 4 - _media.length,
+            maxAssets: maxMediaAssetsAllowed - _media.length,
             onNewMedia: (files) {
               setState(() {
                 for (var file in files) {

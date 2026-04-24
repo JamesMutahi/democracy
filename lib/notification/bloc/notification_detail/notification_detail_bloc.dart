@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
-import 'package:democracy/app/shared/constants/strings.dart';
+import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/notification/models/notification.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 

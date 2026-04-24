@@ -3,18 +3,11 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/repository/api_repository.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
-import 'package:democracy/app/shared/constants/strings.dart';
+import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
-import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/models/chat.dart';
-import 'package:democracy/constitution/models/section.dart';
-import 'package:democracy/meet/models/meeting.dart';
-import 'package:democracy/petition/models/petition.dart';
-import 'package:democracy/post/models/post.dart';
-import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:latlong2/latlong.dart';
 
 part 'chat_detail_bloc.freezed.dart';
 part 'chat_detail_state.dart';
@@ -51,9 +44,6 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
     on<_Deleted>((event, emit) => _onDeleted(event, emit));
     on<_Create>((event, emit) => _onCreate(event, emit));
     on<_Get>((event, emit) => _onGet(event, emit));
-    on<_SendDirectMessage>(
-      (event, emit) async => await _onSendDirectMessage(event, emit),
-    );
     on<_MarkAsRead>((event, emit) => _onMarkAsRead(event, emit));
     on<_Unsubscribe>((event, emit) => _onUnsubscribe(event, emit));
   }
@@ -131,32 +121,6 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
       },
     };
     webSocketService.send(message);
-  }
-
-  Future _onSendDirectMessage(
-    _SendDirectMessage event,
-    Emitter<ChatDetailState> emit,
-  ) async {
-    emit(ChatDetailLoading());
-    try {
-      String? token = await authRepository.getToken();
-      final chats = await apiRepository.createDirectMessage(
-        token: token!,
-        users: event.users,
-        text: event.text,
-        post: event.post,
-        ballot: event.ballot,
-        survey: event.survey,
-        petition: event.petition,
-        meeting: event.meeting,
-        section: event.section,
-        filePaths: event.filePaths,
-        location: event.location,
-      );
-      emit(DirectMessageSent(chats: chats));
-    } catch (e) {
-      emit(ChatDetailFailure(error: e.toString()));
-    }
   }
 
   void _onMarkAsRead(_MarkAsRead event, Emitter<ChatDetailState> emit) {

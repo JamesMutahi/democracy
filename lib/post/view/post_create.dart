@@ -1,10 +1,11 @@
 import 'dart:io';
 
+import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart'
     show SectionView, MultiMediaView;
 import 'package:democracy/app/shared/widgets/dialogs.dart';
-import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/file_widget.dart';
+import 'package:democracy/app/shared/widgets/loader_overlay_widgets.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
@@ -25,7 +26,6 @@ import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/survey_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertagger/fluttertagger.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -82,9 +82,6 @@ class _PostCreatePageState extends State<PostCreatePage> {
     final tags = _controller.tags
         .map((tag) => {'id': tag.id, 'text': tag.text})
         .toList();
-    print(
-      'ASSETS: ${[..._media.map((m) => m.path), if (_document != null) _document!.path]}',
-    );
     context.read<PostCreateBloc>().add(
       PostCreateEvent.create(
         body: _controller.formattedText,
@@ -166,31 +163,14 @@ class _PostCreatePageState extends State<PostCreatePage> {
             return BlocBuilder<PostCreateBloc, PostCreateState>(
               builder: (context, state) {
                 return state.status == PostCreateStatus.failure
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('Something went wrong'),
-                          SizedBox(height: 10),
-                          FailureRetryButton(
-                            onPressed: () {
-                              context.read<PostCreateBloc>().add(
-                                PostCreateEvent.retry(),
-                              );
-                            },
-                          ),
-                        ],
+                    ? LoaderOverlayFailure(
+                        onRetry: () {
+                          context.read<PostCreateBloc>().add(
+                            PostCreateEvent.retry(),
+                          );
+                        },
                       )
-                    : Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SpinKitCubeGrid(
-                            color: Theme.of(context).primaryColor,
-                            size: 50.0,
-                          ),
-                          SizedBox(height: 50),
-                          Text(state.progress),
-                        ],
-                      );
+                    : LoaderOverlayLoading(progress: state.progress);
               },
             );
           },
@@ -238,7 +218,7 @@ class _PostCreatePageState extends State<PostCreatePage> {
             bottomNavigationBar: PostBottomNavBar(
               controller: _controller,
               reply: widget.replyTo,
-              maxAssets: 4 - _media.length,
+              maxAssets: maxMediaAssetsAllowed - _media.length,
               onNewMedia: (images) {
                 setState(() {
                   _media.addAll(images);

@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:democracy/app/bloc/repository/api_provider.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/models/chat.dart';
-import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/geo/models/constituency.dart';
 import 'package:democracy/geo/models/county.dart';
@@ -15,7 +14,6 @@ import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mime/mime.dart';
-import 'package:path/path.dart' as p;
 
 class APIRepository {
   APIRepository({required this.apiProvider});
@@ -38,16 +36,7 @@ class APIRepository {
     List<String> filePaths = const [],
     LatLng? location,
   }) async {
-    List<Map> assets = [];
-    for (var filePath in filePaths) {
-      File file = File(filePath);
-      int bytes = await file.length();
-      assets.add({
-        "name": filePath.split('/').last,
-        "type": lookupMimeType(filePath),
-        "size": bytes,
-      });
-    }
+    List<Map> assets = await getAssets(filePaths);
     return await apiProvider.createPost(
       token: token,
       body: body,
@@ -66,23 +55,23 @@ class APIRepository {
     );
   }
 
-  Future<String> uploadAsset({
+  Future<String> uploadPostAsset({
     required String name,
     required String url,
     required void Function(int, int) onSendProgress,
   }) async {
-    return await apiProvider.uploadAsset(
+    return await apiProvider.uploadPostAsset(
       name: name,
       url: url,
       onSendProgress: onSendProgress,
     );
   }
 
-  Future<Map> assetUploadComplete({
+  Future<Map> postAssetUploadComplete({
     required String token,
     required List<String> assetIdList,
   }) async {
-    return await apiProvider.assetUploadComplete(
+    return await apiProvider.postAssetUploadComplete(
       token: token,
       assetIdList: assetIdList,
     );
@@ -105,16 +94,7 @@ class APIRepository {
     List<String> filePaths = const [],
     LatLng? location,
   }) async {
-    List<Map> assets = [];
-    for (var filePath in filePaths) {
-      File file = File(filePath);
-      int bytes = await file.length();
-      assets.add({
-        "name": filePath.split('/').last,
-        "type": p.extension(filePath),
-        "size": bytes,
-      });
-    }
+    List<Map> assets = await getAssets(filePaths);
 
     return await apiProvider.patchPost(
       token: token,
@@ -135,7 +115,7 @@ class APIRepository {
     );
   }
 
-  Future<Message> createMessage({
+  Future<Map<String, dynamic>> createMessage({
     required String token,
     required Chat chat,
     required String text,
@@ -148,16 +128,7 @@ class APIRepository {
     List<String> filePaths = const [],
     LatLng? location,
   }) async {
-    List<Map> assets = [];
-    for (var filePath in filePaths) {
-      File file = File(filePath);
-      int bytes = await file.length();
-      assets.add({
-        "name": filePath.split('/').last,
-        "type": lookupMimeType(filePath),
-        "size": bytes,
-      });
-    }
+    List<Map> assets = await getAssets(filePaths);
 
     return await apiProvider.createMessage(
       token: token,
@@ -174,7 +145,29 @@ class APIRepository {
     );
   }
 
-  Future<List<Chat>> createDirectMessage({
+  Future<String> uploadMessageAsset({
+    required String name,
+    required String url,
+    required void Function(int, int) onSendProgress,
+  }) async {
+    return await apiProvider.uploadMessageAsset(
+      name: name,
+      url: url,
+      onSendProgress: onSendProgress,
+    );
+  }
+
+  Future<Map> messageAssetUploadComplete({
+    required String token,
+    required List<String> assetIdList,
+  }) async {
+    return await apiProvider.messageAssetUploadComplete(
+      token: token,
+      assetIdList: assetIdList,
+    );
+  }
+
+  Future<Map<String, dynamic>> createDirectMessage({
     required String token,
     required List<User> users,
     required String text,
@@ -187,16 +180,7 @@ class APIRepository {
     List<String> filePaths = const [],
     LatLng? location,
   }) async {
-    List<Map> assets = [];
-    for (var filePath in filePaths) {
-      File file = File(filePath);
-      int bytes = await file.length();
-      assets.add({
-        "name": filePath.split('/').last,
-        "type": lookupMimeType(filePath),
-        "size": bytes,
-      });
-    }
+    List<Map> assets = await getAssets(filePaths);
 
     return await apiProvider.createDirectMessage(
       token: token,
@@ -249,5 +233,19 @@ class APIRepository {
       imagePath: imagePath,
       coverPhotoPath: coverPhotoPath,
     );
+  }
+
+  Future<List<Map>> getAssets(List<String> filePaths) async {
+    List<Map> assets = [];
+    for (var filePath in filePaths) {
+      File file = File(filePath);
+      int bytes = await file.length();
+      assets.add({
+        "name": filePath.split('/').last,
+        "type": lookupMimeType(filePath),
+        "size": bytes,
+      });
+    }
+    return assets;
   }
 }

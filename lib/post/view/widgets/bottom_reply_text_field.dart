@@ -37,6 +37,9 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
   double overlayHeight = 300;
   SearchResultView _view = SearchResultView.none;
 
+  bool showLoading = false;
+  bool showFailure = false;
+
   final _controller = FlutterTaggerController();
   final _focusNode = FocusNode();
   late StreamSubscription<bool> keyboardSubscription;
@@ -99,6 +102,36 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
+        BlocListener<PostCreateBloc, PostCreateState>(
+          listener: (context, state) {
+            if (state.status == PostCreateStatus.success) {
+              if (state.post?.replyTo?.id == widget.post.id) {
+                _controller.clear();
+                setState(() {
+                  _disableSendButton = true;
+                  _document = null;
+                  _media = [];
+                  _location = null;
+                  _selectedSection = null;
+                  showLoading = false;
+                  showFailure = false;
+                });
+              }
+            }
+            if (state.status == PostCreateStatus.loading) {
+              setState(() {
+                showLoading = true;
+                showFailure = false;
+              });
+            }
+            if (state.status == PostCreateStatus.failure) {
+              setState(() {
+                showLoading = false;
+                showFailure = true;
+              });
+            }
+          },
+        ),
         BlocListener<UsersBloc, UsersState>(
           listener: (context, state) {
             if (state.status == UsersStatus.success) {
@@ -197,14 +230,6 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
             },
             section: _selectedSection,
             onRemoveSection: () => setState(() => _selectedSection = null),
-            onSend:
-                _disableSendButton &&
-                    _document == null &&
-                    _media.isEmpty &&
-                    _location == null &&
-                    _selectedSection == null
-                ? null
-                : _createPost,
             onImageEditingComplete: (image) {
               setState(() {
                 _media.add(image);
@@ -213,6 +238,25 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
             onVideoEditingComplete: (videoPath) {
               setState(() {
                 _media.add(File(videoPath));
+              });
+            },
+            onSend:
+                _disableSendButton &&
+                    _document == null &&
+                    _media.isEmpty &&
+                    _location == null &&
+                    _selectedSection == null
+                ? null
+                : _createPost,
+            showLoading: showLoading,
+            showFailure: showFailure,
+            onRetry: () {
+              context.read<PostCreateBloc>().add(PostCreateEvent.retry());
+            },
+            onCancelRetry: () {
+              setState(() {
+                showLoading = false;
+                showFailure = false;
               });
             },
           );
@@ -239,13 +283,5 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
         location: _location,
       ),
     );
-    _controller.clear();
-    setState(() {
-      _disableSendButton = true;
-      _document = null;
-      _media = [];
-      _location = null;
-      _selectedSection = null;
-    });
   }
 }

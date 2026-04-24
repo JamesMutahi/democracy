@@ -22,19 +22,6 @@ sealed class ChatDetailEvent with _$ChatDetailEvent {
 
   const factory ChatDetailEvent.get({required Chat chat}) = _Get;
 
-  const factory ChatDetailEvent.sendDirectMessage({
-    required List<User> users,
-    required String text,
-    Post? post,
-    Ballot? ballot,
-    Survey? survey,
-    Petition? petition,
-    Meeting? meeting,
-    Section? section,
-    @Default([]) List<String> filePaths,
-    LatLng? location,
-  }) = _SendDirectMessage;
-
   const factory ChatDetailEvent.markAsRead({required Chat chat}) = _MarkAsRead;
 
   const factory ChatDetailEvent.unsubscribe({required Chat chat}) =

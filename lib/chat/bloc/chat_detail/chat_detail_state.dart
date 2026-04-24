@@ -17,9 +17,6 @@ class ChatDetailState with _$ChatDetailState {
 
   const factory ChatDetailState.deleted({required int chatId}) = ChatDeleted;
 
-  const factory ChatDetailState.directMessageSent({required List<Chat> chats}) =
-      DirectMessageSent;
-
   const factory ChatDetailState.failure({required String error}) =
       ChatDetailFailure;
 }

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:democracy/app/shared/camera/camera.dart';
+import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/app/shared/pages/location.dart';
 import 'package:democracy/app/shared/utils/media_tools.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
@@ -17,6 +18,7 @@ import 'package:permission_handler/permission_handler.dart';
 class ExtrasRow extends StatelessWidget {
   const ExtrasRow({
     super.key,
+    this.controller,
     this.recipient,
     this.textEditingController,
     required this.maxAssets,
@@ -28,6 +30,7 @@ class ExtrasRow extends StatelessWidget {
     required this.onSection,
   });
 
+  final AnimationController? controller;
   final User? recipient;
   final TextEditingController? textEditingController;
   final int maxAssets;
@@ -43,7 +46,7 @@ class ExtrasRow extends StatelessWidget {
     void maxAssetsReached() {
       final snackBar = getSnackBar(
         context: context,
-        message: 'Only 4 media files allowed at a time.',
+        message: 'Only $maxMediaAssetsAllowed media files allowed at a time.',
         status: SnackBarStatus.failure,
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -56,32 +59,38 @@ class ExtrasRow extends StatelessWidget {
         runSpacing: 5.0,
         children: <Widget>[
           _ExtraCard(
-            onTap: () {
+            onTap: () async {
+              await controller?.reverse();
               if (maxAssets == 0) {
                 maxAssetsReached();
               } else {
-                openCamera(
-                  context: context,
-                  recipient: recipient,
-                  textEditingController: textEditingController,
-                  onImageEditingComplete: onImageEditingComplete,
-                  onVideoEditingComplete: onVideoEditingComplete,
-                );
+                if (context.mounted) {
+                  openCamera(
+                    context: context,
+                    recipient: recipient,
+                    textEditingController: textEditingController,
+                    onImageEditingComplete: onImageEditingComplete,
+                    onVideoEditingComplete: onVideoEditingComplete,
+                  );
+                }
               }
             },
             iconData: Icons.photo_camera_outlined,
             text: 'Camera',
           ),
           _ExtraCard(
-            onTap: () {
+            onTap: () async {
+              await controller?.reverse();
               if (maxAssets == 0) {
                 maxAssetsReached();
               } else {
-                openGallery(
-                  context: context,
-                  maxAssets: maxAssets,
-                  onMedia: onMedia,
-                );
+                if (context.mounted) {
+                  openGallery(
+                    context: context,
+                    maxAssets: maxAssets,
+                    onMedia: onMedia,
+                  );
+                }
               }
             },
             iconData: Icons.photo_library_outlined,
@@ -89,6 +98,7 @@ class ExtrasRow extends StatelessWidget {
           ),
           _ExtraCard(
             onTap: () async {
+              await controller?.reverse();
               var status = await Permission.storage.status;
               if (!status.isGranted) {
                 await Permission.storage.request();
@@ -107,6 +117,7 @@ class ExtrasRow extends StatelessWidget {
           ),
           _ExtraCard(
             onTap: () async {
+              await controller?.reverse();
               FilePickerResult? result = await FilePicker.platform.pickFiles(
                 type: FileType.custom,
                 allowedExtensions: ['pdf', 'doc', 'docx'],
@@ -129,13 +140,16 @@ class ExtrasRow extends StatelessWidget {
             text: 'Document',
           ),
           _ExtraCard(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Constitution(onSelection: onSection),
-                ),
-              );
+            onTap: () async {
+              await controller?.reverse();
+              if (context.mounted) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Constitution(onSelection: onSection),
+                  ),
+                );
+              }
             },
             iconData: Icons.book_outlined,
             text: 'Constitution',

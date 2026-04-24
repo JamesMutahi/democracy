@@ -55,7 +55,7 @@ extension ChatDetailStatePatterns on ChatDetailState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ChatDetailInitial value)?  initial,TResult Function( ChatDetailLoading value)?  loading,TResult Function( ChatCreated value)?  created,TResult Function( ChatLoaded value)?  loaded,TResult Function( ChatUpdated value)?  updated,TResult Function( ChatDeleted value)?  deleted,TResult Function( DirectMessageSent value)?  directMessageSent,TResult Function( ChatDetailFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ChatDetailInitial value)?  initial,TResult Function( ChatDetailLoading value)?  loading,TResult Function( ChatCreated value)?  created,TResult Function( ChatLoaded value)?  loaded,TResult Function( ChatUpdated value)?  updated,TResult Function( ChatDeleted value)?  deleted,TResult Function( ChatDetailFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case ChatDetailInitial() when initial != null:
@@ -64,8 +64,7 @@ return loading(_that);case ChatCreated() when created != null:
 return created(_that);case ChatLoaded() when loaded != null:
 return loaded(_that);case ChatUpdated() when updated != null:
 return updated(_that);case ChatDeleted() when deleted != null:
-return deleted(_that);case DirectMessageSent() when directMessageSent != null:
-return directMessageSent(_that);case ChatDetailFailure() when failure != null:
+return deleted(_that);case ChatDetailFailure() when failure != null:
 return failure(_that);case _:
   return orElse();
 
@@ -84,7 +83,7 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ChatDetailInitial value)  initial,required TResult Function( ChatDetailLoading value)  loading,required TResult Function( ChatCreated value)  created,required TResult Function( ChatLoaded value)  loaded,required TResult Function( ChatUpdated value)  updated,required TResult Function( ChatDeleted value)  deleted,required TResult Function( DirectMessageSent value)  directMessageSent,required TResult Function( ChatDetailFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ChatDetailInitial value)  initial,required TResult Function( ChatDetailLoading value)  loading,required TResult Function( ChatCreated value)  created,required TResult Function( ChatLoaded value)  loaded,required TResult Function( ChatUpdated value)  updated,required TResult Function( ChatDeleted value)  deleted,required TResult Function( ChatDetailFailure value)  failure,}){
 final _that = this;
 switch (_that) {
 case ChatDetailInitial():
@@ -93,8 +92,7 @@ return loading(_that);case ChatCreated():
 return created(_that);case ChatLoaded():
 return loaded(_that);case ChatUpdated():
 return updated(_that);case ChatDeleted():
-return deleted(_that);case DirectMessageSent():
-return directMessageSent(_that);case ChatDetailFailure():
+return deleted(_that);case ChatDetailFailure():
 return failure(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -112,7 +110,7 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ChatDetailInitial value)?  initial,TResult? Function( ChatDetailLoading value)?  loading,TResult? Function( ChatCreated value)?  created,TResult? Function( ChatLoaded value)?  loaded,TResult? Function( ChatUpdated value)?  updated,TResult? Function( ChatDeleted value)?  deleted,TResult? Function( DirectMessageSent value)?  directMessageSent,TResult? Function( ChatDetailFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ChatDetailInitial value)?  initial,TResult? Function( ChatDetailLoading value)?  loading,TResult? Function( ChatCreated value)?  created,TResult? Function( ChatLoaded value)?  loaded,TResult? Function( ChatUpdated value)?  updated,TResult? Function( ChatDeleted value)?  deleted,TResult? Function( ChatDetailFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case ChatDetailInitial() when initial != null:
@@ -121,8 +119,7 @@ return loading(_that);case ChatCreated() when created != null:
 return created(_that);case ChatLoaded() when loaded != null:
 return loaded(_that);case ChatUpdated() when updated != null:
 return updated(_that);case ChatDeleted() when deleted != null:
-return deleted(_that);case DirectMessageSent() when directMessageSent != null:
-return directMessageSent(_that);case ChatDetailFailure() when failure != null:
+return deleted(_that);case ChatDetailFailure() when failure != null:
 return failure(_that);case _:
   return null;
 
@@ -140,7 +137,7 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Chat chat,  int userId)?  created,TResult Function( Chat chat)?  loaded,TResult Function( Chat chat)?  updated,TResult Function( int chatId)?  deleted,TResult Function( List<Chat> chats)?  directMessageSent,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Chat chat,  int userId)?  created,TResult Function( Chat chat)?  loaded,TResult Function( Chat chat)?  updated,TResult Function( int chatId)?  deleted,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ChatDetailInitial() when initial != null:
 return initial();case ChatDetailLoading() when loading != null:
@@ -148,8 +145,7 @@ return loading();case ChatCreated() when created != null:
 return created(_that.chat,_that.userId);case ChatLoaded() when loaded != null:
 return loaded(_that.chat);case ChatUpdated() when updated != null:
 return updated(_that.chat);case ChatDeleted() when deleted != null:
-return deleted(_that.chatId);case DirectMessageSent() when directMessageSent != null:
-return directMessageSent(_that.chats);case ChatDetailFailure() when failure != null:
+return deleted(_that.chatId);case ChatDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return orElse();
 
@@ -168,7 +164,7 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Chat chat,  int userId)  created,required TResult Function( Chat chat)  loaded,required TResult Function( Chat chat)  updated,required TResult Function( int chatId)  deleted,required TResult Function( List<Chat> chats)  directMessageSent,required TResult Function( String error)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Chat chat,  int userId)  created,required TResult Function( Chat chat)  loaded,required TResult Function( Chat chat)  updated,required TResult Function( int chatId)  deleted,required TResult Function( String error)  failure,}) {final _that = this;
 switch (_that) {
 case ChatDetailInitial():
 return initial();case ChatDetailLoading():
@@ -176,8 +172,7 @@ return loading();case ChatCreated():
 return created(_that.chat,_that.userId);case ChatLoaded():
 return loaded(_that.chat);case ChatUpdated():
 return updated(_that.chat);case ChatDeleted():
-return deleted(_that.chatId);case DirectMessageSent():
-return directMessageSent(_that.chats);case ChatDetailFailure():
+return deleted(_that.chatId);case ChatDetailFailure():
 return failure(_that.error);case _:
   throw StateError('Unexpected subclass');
 
@@ -195,7 +190,7 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Chat chat,  int userId)?  created,TResult? Function( Chat chat)?  loaded,TResult? Function( Chat chat)?  updated,TResult? Function( int chatId)?  deleted,TResult? Function( List<Chat> chats)?  directMessageSent,TResult? Function( String error)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Chat chat,  int userId)?  created,TResult? Function( Chat chat)?  loaded,TResult? Function( Chat chat)?  updated,TResult? Function( int chatId)?  deleted,TResult? Function( String error)?  failure,}) {final _that = this;
 switch (_that) {
 case ChatDetailInitial() when initial != null:
 return initial();case ChatDetailLoading() when loading != null:
@@ -203,8 +198,7 @@ return loading();case ChatCreated() when created != null:
 return created(_that.chat,_that.userId);case ChatLoaded() when loaded != null:
 return loaded(_that.chat);case ChatUpdated() when updated != null:
 return updated(_that.chat);case ChatDeleted() when deleted != null:
-return deleted(_that.chatId);case DirectMessageSent() when directMessageSent != null:
-return directMessageSent(_that.chats);case ChatDetailFailure() when failure != null:
+return deleted(_that.chatId);case ChatDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return null;
 
@@ -573,78 +567,6 @@ as int,
 /// @nodoc
 
 
-class DirectMessageSent implements ChatDetailState {
-  const DirectMessageSent({required final  List<Chat> chats}): _chats = chats;
-  
-
- final  List<Chat> _chats;
- List<Chat> get chats {
-  if (_chats is EqualUnmodifiableListView) return _chats;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_chats);
-}
-
-
-/// Create a copy of ChatDetailState
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$DirectMessageSentCopyWith<DirectMessageSent> get copyWith => _$DirectMessageSentCopyWithImpl<DirectMessageSent>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DirectMessageSent&&const DeepCollectionEquality().equals(other._chats, _chats));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_chats));
-
-@override
-String toString() {
-  return 'ChatDetailState.directMessageSent(chats: $chats)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $DirectMessageSentCopyWith<$Res> implements $ChatDetailStateCopyWith<$Res> {
-  factory $DirectMessageSentCopyWith(DirectMessageSent value, $Res Function(DirectMessageSent) _then) = _$DirectMessageSentCopyWithImpl;
-@useResult
-$Res call({
- List<Chat> chats
-});
-
-
-
-
-}
-/// @nodoc
-class _$DirectMessageSentCopyWithImpl<$Res>
-    implements $DirectMessageSentCopyWith<$Res> {
-  _$DirectMessageSentCopyWithImpl(this._self, this._then);
-
-  final DirectMessageSent _self;
-  final $Res Function(DirectMessageSent) _then;
-
-/// Create a copy of ChatDetailState
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? chats = null,}) {
-  return _then(DirectMessageSent(
-chats: null == chats ? _self._chats : chats // ignore: cast_nullable_to_non_nullable
-as List<Chat>,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
 class ChatDetailFailure implements ChatDetailState {
   const ChatDetailFailure({required this.error});
   
@@ -752,7 +674,7 @@ extension ChatDetailEventPatterns on ChatDetailEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Loaded value)?  loaded,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Create value)?  create,TResult Function( _Get value)?  get,TResult Function( _SendDirectMessage value)?  sendDirectMessage,TResult Function( _MarkAsRead value)?  markAsRead,TResult Function( _Unsubscribe value)?  unsubscribe,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Loaded value)?  loaded,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Create value)?  create,TResult Function( _Get value)?  get,TResult Function( _MarkAsRead value)?  markAsRead,TResult Function( _Unsubscribe value)?  unsubscribe,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
@@ -761,8 +683,7 @@ return loaded(_that);case _Updated() when updated != null:
 return updated(_that);case _Deleted() when deleted != null:
 return deleted(_that);case _Create() when create != null:
 return create(_that);case _Get() when get != null:
-return get(_that);case _SendDirectMessage() when sendDirectMessage != null:
-return sendDirectMessage(_that);case _MarkAsRead() when markAsRead != null:
+return get(_that);case _MarkAsRead() when markAsRead != null:
 return markAsRead(_that);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that);case _:
   return orElse();
@@ -782,7 +703,7 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Loaded value)  loaded,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Create value)  create,required TResult Function( _Get value)  get,required TResult Function( _SendDirectMessage value)  sendDirectMessage,required TResult Function( _MarkAsRead value)  markAsRead,required TResult Function( _Unsubscribe value)  unsubscribe,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Loaded value)  loaded,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Create value)  create,required TResult Function( _Get value)  get,required TResult Function( _MarkAsRead value)  markAsRead,required TResult Function( _Unsubscribe value)  unsubscribe,}){
 final _that = this;
 switch (_that) {
 case _Created():
@@ -791,8 +712,7 @@ return loaded(_that);case _Updated():
 return updated(_that);case _Deleted():
 return deleted(_that);case _Create():
 return create(_that);case _Get():
-return get(_that);case _SendDirectMessage():
-return sendDirectMessage(_that);case _MarkAsRead():
+return get(_that);case _MarkAsRead():
 return markAsRead(_that);case _Unsubscribe():
 return unsubscribe(_that);}
 }
@@ -808,7 +728,7 @@ return unsubscribe(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Create value)?  create,TResult? Function( _Get value)?  get,TResult? Function( _SendDirectMessage value)?  sendDirectMessage,TResult? Function( _MarkAsRead value)?  markAsRead,TResult? Function( _Unsubscribe value)?  unsubscribe,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Create value)?  create,TResult? Function( _Get value)?  get,TResult? Function( _MarkAsRead value)?  markAsRead,TResult? Function( _Unsubscribe value)?  unsubscribe,}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
@@ -817,8 +737,7 @@ return loaded(_that);case _Updated() when updated != null:
 return updated(_that);case _Deleted() when deleted != null:
 return deleted(_that);case _Create() when create != null:
 return create(_that);case _Get() when get != null:
-return get(_that);case _SendDirectMessage() when sendDirectMessage != null:
-return sendDirectMessage(_that);case _MarkAsRead() when markAsRead != null:
+return get(_that);case _MarkAsRead() when markAsRead != null:
 return markAsRead(_that);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that);case _:
   return null;
@@ -837,7 +756,7 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( User user)?  create,TResult Function( Chat chat)?  get,TResult Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<String> filePaths,  LatLng? location)?  sendDirectMessage,TResult Function( Chat chat)?  markAsRead,TResult Function( Chat chat)?  unsubscribe,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( User user)?  create,TResult Function( Chat chat)?  get,TResult Function( Chat chat)?  markAsRead,TResult Function( Chat chat)?  unsubscribe,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
@@ -845,8 +764,7 @@ return loaded(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Create() when create != null:
 return create(_that.user);case _Get() when get != null:
-return get(_that.chat);case _SendDirectMessage() when sendDirectMessage != null:
-return sendDirectMessage(_that.users,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.filePaths,_that.location);case _MarkAsRead() when markAsRead != null:
+return get(_that.chat);case _MarkAsRead() when markAsRead != null:
 return markAsRead(_that.chat);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that.chat);case _:
   return orElse();
@@ -866,7 +784,7 @@ return unsubscribe(_that.chat);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( User user)  create,required TResult Function( Chat chat)  get,required TResult Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<String> filePaths,  LatLng? location)  sendDirectMessage,required TResult Function( Chat chat)  markAsRead,required TResult Function( Chat chat)  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( User user)  create,required TResult Function( Chat chat)  get,required TResult Function( Chat chat)  markAsRead,required TResult Function( Chat chat)  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Loaded():
@@ -874,8 +792,7 @@ return loaded(_that.payload);case _Updated():
 return updated(_that.payload);case _Deleted():
 return deleted(_that.payload);case _Create():
 return create(_that.user);case _Get():
-return get(_that.chat);case _SendDirectMessage():
-return sendDirectMessage(_that.users,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.filePaths,_that.location);case _MarkAsRead():
+return get(_that.chat);case _MarkAsRead():
 return markAsRead(_that.chat);case _Unsubscribe():
 return unsubscribe(_that.chat);}
 }
@@ -891,7 +808,7 @@ return unsubscribe(_that.chat);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( User user)?  create,TResult? Function( Chat chat)?  get,TResult? Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<String> filePaths,  LatLng? location)?  sendDirectMessage,TResult? Function( Chat chat)?  markAsRead,TResult? Function( Chat chat)?  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( User user)?  create,TResult? Function( Chat chat)?  get,TResult? Function( Chat chat)?  markAsRead,TResult? Function( Chat chat)?  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
@@ -899,8 +816,7 @@ return loaded(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Create() when create != null:
 return create(_that.user);case _Get() when get != null:
-return get(_that.chat);case _SendDirectMessage() when sendDirectMessage != null:
-return sendDirectMessage(_that.users,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.filePaths,_that.location);case _MarkAsRead() when markAsRead != null:
+return get(_that.chat);case _MarkAsRead() when markAsRead != null:
 return markAsRead(_that.chat);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that.chat);case _:
   return null;
@@ -1344,174 +1260,6 @@ $ChatCopyWith<$Res> get chat {
   
   return $ChatCopyWith<$Res>(_self.chat, (value) {
     return _then(_self.copyWith(chat: value));
-  });
-}
-}
-
-/// @nodoc
-
-
-class _SendDirectMessage implements ChatDetailEvent {
-  const _SendDirectMessage({required final  List<User> users, required this.text, this.post, this.ballot, this.survey, this.petition, this.meeting, this.section, final  List<String> filePaths = const [], this.location}): _users = users,_filePaths = filePaths;
-  
-
- final  List<User> _users;
- List<User> get users {
-  if (_users is EqualUnmodifiableListView) return _users;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_users);
-}
-
- final  String text;
- final  Post? post;
- final  Ballot? ballot;
- final  Survey? survey;
- final  Petition? petition;
- final  Meeting? meeting;
- final  Section? section;
- final  List<String> _filePaths;
-@JsonKey() List<String> get filePaths {
-  if (_filePaths is EqualUnmodifiableListView) return _filePaths;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_filePaths);
-}
-
- final  LatLng? location;
-
-/// Create a copy of ChatDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$SendDirectMessageCopyWith<_SendDirectMessage> get copyWith => __$SendDirectMessageCopyWithImpl<_SendDirectMessage>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SendDirectMessage&&const DeepCollectionEquality().equals(other._users, _users)&&(identical(other.text, text) || other.text == text)&&(identical(other.post, post) || other.post == post)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.section, section) || other.section == section)&&const DeepCollectionEquality().equals(other._filePaths, _filePaths)&&(identical(other.location, location) || other.location == location));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_users),text,post,ballot,survey,petition,meeting,section,const DeepCollectionEquality().hash(_filePaths),location);
-
-@override
-String toString() {
-  return 'ChatDetailEvent.sendDirectMessage(users: $users, text: $text, post: $post, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, section: $section, filePaths: $filePaths, location: $location)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$SendDirectMessageCopyWith<$Res> implements $ChatDetailEventCopyWith<$Res> {
-  factory _$SendDirectMessageCopyWith(_SendDirectMessage value, $Res Function(_SendDirectMessage) _then) = __$SendDirectMessageCopyWithImpl;
-@useResult
-$Res call({
- List<User> users, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting, Section? section, List<String> filePaths, LatLng? location
-});
-
-
-$PostCopyWith<$Res>? get post;$BallotCopyWith<$Res>? get ballot;$SurveyCopyWith<$Res>? get survey;$PetitionCopyWith<$Res>? get petition;$MeetingCopyWith<$Res>? get meeting;$SectionCopyWith<$Res>? get section;
-
-}
-/// @nodoc
-class __$SendDirectMessageCopyWithImpl<$Res>
-    implements _$SendDirectMessageCopyWith<$Res> {
-  __$SendDirectMessageCopyWithImpl(this._self, this._then);
-
-  final _SendDirectMessage _self;
-  final $Res Function(_SendDirectMessage) _then;
-
-/// Create a copy of ChatDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? users = null,Object? text = null,Object? post = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? meeting = freezed,Object? section = freezed,Object? filePaths = null,Object? location = freezed,}) {
-  return _then(_SendDirectMessage(
-users: null == users ? _self._users : users // ignore: cast_nullable_to_non_nullable
-as List<User>,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
-as String,post: freezed == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
-as Post?,ballot: freezed == ballot ? _self.ballot : ballot // ignore: cast_nullable_to_non_nullable
-as Ballot?,survey: freezed == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
-as Survey?,petition: freezed == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
-as Petition?,meeting: freezed == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
-as Meeting?,section: freezed == section ? _self.section : section // ignore: cast_nullable_to_non_nullable
-as Section?,filePaths: null == filePaths ? _self._filePaths : filePaths // ignore: cast_nullable_to_non_nullable
-as List<String>,location: freezed == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
-as LatLng?,
-  ));
-}
-
-/// Create a copy of ChatDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$PostCopyWith<$Res>? get post {
-    if (_self.post == null) {
-    return null;
-  }
-
-  return $PostCopyWith<$Res>(_self.post!, (value) {
-    return _then(_self.copyWith(post: value));
-  });
-}/// Create a copy of ChatDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$BallotCopyWith<$Res>? get ballot {
-    if (_self.ballot == null) {
-    return null;
-  }
-
-  return $BallotCopyWith<$Res>(_self.ballot!, (value) {
-    return _then(_self.copyWith(ballot: value));
-  });
-}/// Create a copy of ChatDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$SurveyCopyWith<$Res>? get survey {
-    if (_self.survey == null) {
-    return null;
-  }
-
-  return $SurveyCopyWith<$Res>(_self.survey!, (value) {
-    return _then(_self.copyWith(survey: value));
-  });
-}/// Create a copy of ChatDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$PetitionCopyWith<$Res>? get petition {
-    if (_self.petition == null) {
-    return null;
-  }
-
-  return $PetitionCopyWith<$Res>(_self.petition!, (value) {
-    return _then(_self.copyWith(petition: value));
-  });
-}/// Create a copy of ChatDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$MeetingCopyWith<$Res>? get meeting {
-    if (_self.meeting == null) {
-    return null;
-  }
-
-  return $MeetingCopyWith<$Res>(_self.meeting!, (value) {
-    return _then(_self.copyWith(meeting: value));
-  });
-}/// Create a copy of ChatDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$SectionCopyWith<$Res>? get section {
-    if (_self.section == null) {
-    return null;
-  }
-
-  return $SectionCopyWith<$Res>(_self.section!, (value) {
-    return _then(_self.copyWith(section: value));
   });
 }
 }

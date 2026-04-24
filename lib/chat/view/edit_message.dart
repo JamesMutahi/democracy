@@ -108,6 +108,10 @@ class _EditMessageState extends State<EditMessage> {
                 );
                 Navigator.pop(context);
               },
+        showLoading: false,
+        showFailure: false,
+        onRetry: () {},
+        onCancelRetry: () {},
       ),
     );
   }

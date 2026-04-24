@@ -7,6 +7,7 @@ import 'package:democracy/app/shared/utils/copy.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
+import 'package:democracy/chat/bloc/message_create/message_create_bloc.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
@@ -48,6 +49,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   bool hideChat = true;
   List<File> _media = [];
   File? _document;
+  bool _showLoading = false;
+  bool _showFailure = false;
 
   @override
   void initState() {
@@ -90,6 +93,27 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
+        BlocListener<MessageCreateBloc, MessageCreateState>(
+          listener: (context, state) {
+            if (state.status == MessageCreateStatus.success) {
+              if (state.message?.chatId == widget.chat.id) {
+                reset();
+              }
+            }
+            if (state.status == MessageCreateStatus.loading) {
+              setState(() {
+                _showLoading = true;
+                _showFailure =false;
+              });
+            }
+            if (state.status == MessageCreateStatus.failure) {
+              setState(() {
+                _showLoading = false;
+                _showFailure =true;
+              });
+            }
+          },
+        ),
         BlocListener<ChatDetailBloc, ChatDetailState>(
           listener: (context, state) {
             if (state is ChatLoaded) {
@@ -290,8 +314,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       },
       document: _document,
       onContentInsertion: (imageFile) {
-        context.read<MessageDetailBloc>().add(
-          MessageDetailEvent.create(
+        context.read<MessageCreateBloc>().add(
+          MessageCreateEvent.create(
             chat: _chat,
             text: '',
             filePaths: [imageFile.path],
@@ -300,24 +324,45 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       },
       allowedMimeTypes: const <String>['image/png', 'image/gif'],
       onLocation: (point) {
-        context.read<MessageDetailBloc>().add(
-          MessageDetailEvent.create(chat: _chat, text: '', location: point),
+        context.read<MessageCreateBloc>().add(
+          MessageCreateEvent.create(chat: _chat, text: '', location: point),
         );
       },
       location: null,
       onRemoveLocation: null,
       onSectionSelection: (section) {
-        context.read<MessageDetailBloc>().add(
-          MessageDetailEvent.create(chat: _chat, text: '', section: section),
+        context.read<MessageCreateBloc>().add(
+          MessageCreateEvent.create(chat: _chat, text: '', section: section),
         );
       },
       section: null,
       onRemoveSection: null,
+      recipient: widget.otherUser,
+      onImageEditingComplete: (image) {
+        context.read<MessageCreateBloc>().add(
+          MessageCreateEvent.create(
+            chat: _chat,
+            text: _controller.text,
+            filePaths: [image.path],
+          ),
+        );
+        reset();
+      },
+      onVideoEditingComplete: (videoPath) {
+        context.read<MessageCreateBloc>().add(
+          MessageCreateEvent.create(
+            chat: _chat,
+            text: _controller.text,
+            filePaths: [videoPath],
+          ),
+        );
+        reset();
+      },
       onSend: _disableSendButton && _media.isEmpty && _document == null
           ? null
           : () {
-              context.read<MessageDetailBloc>().add(
-                MessageDetailEvent.create(
+              context.read<MessageCreateBloc>().add(
+                MessageCreateEvent.create(
                   chat: _chat,
                   text: _controller.text,
                   filePaths: [
@@ -328,26 +373,16 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               );
               reset();
             },
-      recipient: widget.otherUser,
-      onImageEditingComplete: (image) {
-        context.read<MessageDetailBloc>().add(
-          MessageDetailEvent.create(
-            chat: _chat,
-            text: _controller.text,
-            filePaths: [image.path],
-          ),
-        );
-        reset();
+      showLoading: _showLoading,
+      showFailure: _showFailure,
+      onRetry: () {
+        context.read<MessageCreateBloc>().add(MessageCreateEvent.retry());
       },
-      onVideoEditingComplete: (videoPath) {
-        context.read<MessageDetailBloc>().add(
-          MessageDetailEvent.create(
-            chat: _chat,
-            text: _controller.text,
-            filePaths: [videoPath],
-          ),
-        );
-        reset();
+      onCancelRetry: () {
+        setState(() {
+          _showLoading = false;
+          _showFailure = false;
+        });
       },
     );
   }
@@ -358,6 +393,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       _document = null;
       _media = [];
       _disableSendButton = true;
+      _showLoading = false;
+      _showFailure = false;
     });
   }
 }

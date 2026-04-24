@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/models/chat.dart';
-import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/geo/models/constituency.dart';
 import 'package:democracy/geo/models/county.dart';
@@ -69,7 +68,7 @@ class APIProvider {
       }
 
       Response response = await dio.post(
-        '/post/create/',
+        'post/create/',
         data: FormData.fromMap(data),
         options: Options(
           headers: <String, String>{'Authorization': 'Token $token'},
@@ -88,7 +87,7 @@ class APIProvider {
     }
   }
 
-  Future<String> uploadAsset({
+  Future<String> uploadPostAsset({
     required String name,
     required String url,
     required void Function(int, int) onSendProgress,
@@ -126,7 +125,7 @@ class APIProvider {
     }
   }
 
-  Future<Map> assetUploadComplete({
+  Future<Map> postAssetUploadComplete({
     required String token,
     required List<String> assetIdList,
   }) async {
@@ -189,7 +188,7 @@ class APIProvider {
       }
 
       Response response = await dio.patch(
-        '/post/update/$id/',
+        'post/update/$id/',
         data: FormData.fromMap(data),
         options: Options(
           headers: <String, String>{'Authorization': 'Token $token'},
@@ -206,7 +205,7 @@ class APIProvider {
     }
   }
 
-  Future<Message> createMessage({
+  Future<Map<String, dynamic>> createMessage({
     required String token,
     required Chat chat,
     required String text,
@@ -240,15 +239,14 @@ class APIProvider {
       }
 
       Response response = await dio.post(
-        '/chat/create-message/',
+        'chat/create-message/',
         data: FormData.fromMap(data),
         options: Options(
           headers: <String, String>{'Authorization': 'Token $token'},
         ),
       );
       if (response.statusCode == 201) {
-        final Message message = Message.fromJson(response.data);
-        return message;
+        return response.data;
       } else {
         return Future.error(response.data.toString());
       }
@@ -257,7 +255,67 @@ class APIProvider {
     }
   }
 
-  Future<List<Chat>> createDirectMessage({
+  Future<String> uploadMessageAsset({
+    required String name,
+    required String url,
+    required void Function(int, int) onSendProgress,
+  }) async {
+    try {
+      final directory = await getTemporaryDirectory();
+
+      String fullPath = p.join(directory.path, name);
+
+      final file = File(fullPath);
+
+      int fileSize = await file.length();
+
+      // Perform the PUT request
+      Response response = await dio.put(
+        url,
+        data: file.openRead(), // Send as stream to save memory
+        options: Options(
+          headers: {
+            Headers.contentLengthHeader: fileSize,
+            // Ensure this matches the presigned URL configuration
+            'Content-Type': lookupMimeType(file.path),
+          },
+        ),
+        // Track progress
+        onSendProgress: onSendProgress,
+      );
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        return Future.error(response.data.toString());
+      }
+    } on DioException catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
+  Future<Map> messageAssetUploadComplete({
+    required String token,
+    required List<String> assetIdList,
+  }) async {
+    try {
+      Response response = await dio.post(
+        'chat/asset-upload-complete/',
+        data: jsonEncode({'asset_id_list': assetIdList}),
+        options: Options(
+          headers: <String, String>{'Authorization': 'Token $token'},
+        ),
+      );
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        return Future.error(response.data.toString());
+      }
+    } on DioException catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
+  Future<Map<String, dynamic>> createDirectMessage({
     required String token,
     required List<User> users,
     required String text,
@@ -292,17 +350,14 @@ class APIProvider {
       }
 
       Response response = await dio.post(
-        '/chat/direct-message/',
+        'chat/direct-message/',
         data: FormData.fromMap(data),
         options: Options(
           headers: <String, String>{'Authorization': 'Token $token'},
         ),
       );
       if (response.statusCode == 201) {
-        final List<Chat> chats = List.from(
-          response.data.map((e) => Chat.fromJson(e)),
-        );
-        return chats;
+        return response.data;
       } else {
         return Future.error(response.data.toString());
       }
@@ -330,7 +385,7 @@ class APIProvider {
         'ward_id': ward?.id,
       });
       Response response = await dio.post(
-        '/petition/create/',
+        'petition/create/',
         data: data,
         options: Options(
           headers: <String, String>{'Authorization': 'Token $token'},
