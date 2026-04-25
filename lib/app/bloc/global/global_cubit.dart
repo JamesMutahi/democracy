@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:camera/camera.dart';
-import 'package:democracy/app/models/asset.dart';
 import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -59,9 +58,5 @@ class GlobalCubit extends Cubit<GlobalState> {
         'Error: $code${message == null ? '' : '\nError Message: $message'}',
       );
     }
-  }
-
-  void changeVideo({required Asset asset}) {
-    emit(state.copyWith(currentlyPlaying: asset));
   }
 }

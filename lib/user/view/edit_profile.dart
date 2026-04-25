@@ -134,6 +134,7 @@ class _EditProfileState extends State<EditProfile> {
                             image: coverPhoto == null
                                 ? CachedNetworkImageProvider(
                                     widget.user.coverPhoto,
+                                    cacheKey: 'cover ${widget.user.id}',
                                   )
                                 : FileImage(coverPhoto!),
                             fit: BoxFit.cover,
@@ -234,6 +235,7 @@ class _EditProfileState extends State<EditProfile> {
                               image: image == null
                                   ? CachedNetworkImageProvider(
                                       widget.user.image,
+                                      cacheKey: 'profile ${widget.user.id}',
                                     )
                                   : FileImage(image!),
                               fit: BoxFit.cover,

@@ -1,10 +1,8 @@
 import 'package:cached_video_player_plus/cached_video_player_plus.dart';
-import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/models/asset.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:chewie/chewie.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VideoViewer extends StatefulWidget {
   const VideoViewer({
@@ -22,7 +20,8 @@ class VideoViewer extends StatefulWidget {
   State<VideoViewer> createState() => _VideoViewerState();
 }
 
-class _VideoViewerState extends State<VideoViewer> {
+class _VideoViewerState extends State<VideoViewer>
+    with AutomaticKeepAliveClientMixin {
   late final CachedVideoPlayerPlus _player;
   late ChewieController _chewieController;
 
@@ -31,6 +30,9 @@ class _VideoViewerState extends State<VideoViewer> {
     super.initState();
     initializePlayer();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   Future<void> initializePlayer() async {
     _player = CachedVideoPlayerPlus.networkUrl(
@@ -63,17 +65,9 @@ class _VideoViewerState extends State<VideoViewer> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<GlobalCubit, GlobalState>(
-      listener: (context, state) {
-        if (state.currentlyPlaying?.id != widget.asset.id) {
-          if (_chewieController.isPlaying) {
-            _chewieController.pause();
-          }
-        }
-      },
-      child: _player.isInitialized
-          ? Chewie(controller: _chewieController)
-          : BottomLoader(),
-    );
+    super.build(context);
+    return _player.isInitialized
+        ? Chewie(controller: _chewieController)
+        : BottomLoader();
   }
 }

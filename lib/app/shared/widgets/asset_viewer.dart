@@ -67,11 +67,6 @@ class _AssetViewerState extends State<AssetViewer> {
                       int crossAxisCellCount = 2;
                       int mainAxisCellCount = 2;
 
-                      if (media.length == 1) {
-                        mainAxisCellCount = 4;
-                        crossAxisCellCount = 4;
-                      }
-
                       if (media.length == 3 && media.indexOf(asset) == 0) {
                         mainAxisCellCount = 4;
                       }

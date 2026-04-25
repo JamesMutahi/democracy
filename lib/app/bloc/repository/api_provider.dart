@@ -112,9 +112,10 @@ class APIProvider {
     required List<String> assetIdList,
   }) async {
     try {
+      final data = {'asset_id_list': assetIdList};
       Response response = await dio.post(
         'post/asset-upload-complete/',
-        data: jsonEncode({'asset_id_list': assetIdList}),
+        data: FormData.fromMap(data),
         options: Options(
           headers: <String, String>{'Authorization': 'Token $token'},
         ),
