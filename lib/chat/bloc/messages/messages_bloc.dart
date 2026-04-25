@@ -82,6 +82,7 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
     // Avoid duplicates
     if (state.messages.any((m) => m.id == message.id)) return;
 
+    emit(state.copyWith(status: MessagesStatus.loading));
     emit(
       state.copyWith(
         chatId: message.chatId,
@@ -94,7 +95,7 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
   void _onUpdate(_Update event, Emitter<MessagesState> emit) {
     final index = state.messages.indexWhere((m) => m.id == event.message.id);
     if (index == -1) return;
-
+    emit(state.copyWith(status: MessagesStatus.loading));
     final updatedMessages = List<Message>.from(state.messages);
     updatedMessages[index] = event.message;
 
@@ -104,6 +105,7 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
   }
 
   void _onRemove(_Remove event, Emitter<MessagesState> emit) {
+    emit(state.copyWith(status: MessagesStatus.loading));
     final updatedMessages = state.messages
         .where((m) => m.id != event.messageId)
         .toList();

@@ -294,6 +294,7 @@ class _ImageEditorState extends State<ImageEditor> {
           canPop = true;
         });
       } catch (e) {
+        // TODO: Log error
         print('Error saving file: $e');
       }
     },

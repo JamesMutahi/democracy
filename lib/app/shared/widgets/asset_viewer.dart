@@ -1,12 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:democracy/app/models/asset.dart';
+import 'package:democracy/app/shared/constants/variables.dart';
+import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/file_widget.dart';
 import 'package:democracy/app/shared/widgets/video_viewer.dart';
+import 'package:democracy/chat/bloc/message_create/message_create_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_gallery.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 class AssetViewer extends StatefulWidget {
   const AssetViewer({super.key, required this.assets});
@@ -18,300 +21,227 @@ class AssetViewer extends StatefulWidget {
 }
 
 class _AssetViewerState extends State<AssetViewer> {
-  late List<Asset> mediaAssets = widget.assets
+  late List<Asset> media = widget.assets
       .where((asset) => asset.contentType != ContentType.document)
       .toList();
 
-  late List<Asset> documentAssets = widget.assets
+  late List<Asset> documents = widget.assets
       .where((asset) => asset.contentType == ContentType.document)
       .toList();
 
   @override
   Widget build(BuildContext context) {
-    List<GalleryItem> galleryItems = List.generate(
-      mediaAssets.length,
-      (index) =>
-          GalleryItem(id: index.toString(), resource: mediaAssets[index].url),
-    );
+    bool isMobile = ResponsiveBreakpoints.of(context).isMobile;
 
-    return Column(
-      children: [
-        mediaAssets.length == 1
-            ? mediaAssets.first.contentType == ContentType.image
-                  ? _ImageWidget(
-                      asset: mediaAssets.first,
-                      urls: [mediaAssets.first.url],
-                      galleryItems: galleryItems,
-                    )
-                  : VideoViewer(urls: [mediaAssets.first.url])
-            : StaggeredGrid.count(
-                crossAxisCount: 4,
-                mainAxisSpacing: 4,
-                crossAxisSpacing: 4,
-                children: [
-                  ...mediaAssets.map(
-                    (asset) => StaggeredGridTile.count(
-                      crossAxisCellCount: 2,
-                      mainAxisCellCount:
-                          mediaAssets.length == 3 &&
-                              mediaAssets.indexOf(asset) == 0
-                          ? 4
-                          : 2,
-                      child: _ImageWidget(
-                        asset: asset,
-                        urls: [...mediaAssets.map((asset) => asset.url)],
-                        galleryItems: galleryItems,
-                      ),
-                    ),
-                  ),
-                ],
+    return BlocListener<MessageCreateBloc, MessageCreateState>(
+      listener: (context, state) {
+        if (state.status == MessageCreateStatus.success) {
+          if (state.message!.assets.isNotEmpty) {
+            for (final asset in state.message!.assets) {
+              if (media.any((a) => a.id == asset.id && !a.isCompleted)) {
+                setState(() {
+                  int index = media.indexWhere((a) => a.id == asset.id);
+                  media[index] = asset;
+                });
+              }
+              if (documents.any((a) => a.id == asset.id && !a.isCompleted)) {
+                setState(() {
+                  int index = documents.indexWhere((a) => a.id == asset.id);
+                  documents[index] = asset;
+                });
+              }
+            }
+          }
+        }
+      },
+      child: Column(
+        children: [
+          media.length == 1
+              ? _buildMediaWidget(media.first, isMobile)
+              : StaggeredGrid.count(
+                  crossAxisCount: 4,
+                  mainAxisSpacing: 4,
+                  crossAxisSpacing: 4,
+                  children: [
+                    ...media.map((asset) {
+                      int crossAxisCellCount = 2;
+                      int mainAxisCellCount = 2;
+
+                      if (media.length == 1) {
+                        mainAxisCellCount = 4;
+                        crossAxisCellCount = 4;
+                      }
+
+                      if (media.length == 3 && media.indexOf(asset) == 0) {
+                        mainAxisCellCount = 4;
+                      }
+
+                      return StaggeredGridTile.count(
+                        crossAxisCellCount: crossAxisCellCount,
+                        mainAxisCellCount: mainAxisCellCount,
+                        child: _buildMediaWidget(asset, isMobile),
+                      );
+                    }),
+                  ],
+                ),
+          if (documents.isNotEmpty)
+            ...documents.map(
+              (document) => Container(
+                margin: EdgeInsets.only(top: 10),
+                child: FileWidget(fileName: document.name, url: document.url),
               ),
-        if (documentAssets.isNotEmpty)
-          Container(
-            margin: EdgeInsets.only(top: 10),
-            child: FileWidget(
-              fileName: documentAssets.first.name,
-              url: documentAssets.first.url,
             ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMediaWidget(Asset asset, bool isMobile) {
+    return asset.contentType == ContentType.image
+        ? _ImageWidget(
+            asset: asset,
+            onTap: () => _openCarousel(asset: asset, media: media),
+          )
+        : _VideoWidget(
+            asset: asset,
+            onTap: () => _openCarousel(asset: asset, media: media),
+            showControls: media.length == 1 || !isMobile,
+          );
+  }
+
+  void _openCarousel({required Asset asset, required List<Asset> media}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            _MediaCarousel(media: media, selectedAsset: asset),
+      ),
+    );
+  }
+}
+
+class _VideoWidget extends StatelessWidget {
+  const _VideoWidget({
+    required this.asset,
+    required this.onTap,
+    required this.showControls,
+  });
+
+  final Asset asset;
+  final VoidCallback onTap;
+  final bool showControls;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height / 3,
           ),
-      ],
+          child: Stack(
+            children: [
+              VideoViewer(asset: asset, showControls: showControls),
+              if (!showControls)
+                Center(
+                  child: CircleAvatar(
+                    radius: 20,
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                    child: Icon(Icons.play_arrow_rounded),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
 
 class _ImageWidget extends StatelessWidget {
-  const _ImageWidget({
-    required this.asset,
-    required this.urls,
-    required this.galleryItems,
-  });
+  const _ImageWidget({required this.asset, required this.onTap});
 
   final Asset asset;
-  final List<String> urls;
-  final List<GalleryItem> galleryItems;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => GalleryPhotoViewWrapper(
-              galleryItems: galleryItems,
-              backgroundDecoration: BoxDecoration(
-                color: Theme.of(context).canvasColor,
-              ),
-              initialIndex: urls.indexOf(asset.url),
-              scrollDirection: Axis.horizontal,
-            ),
-          ),
-        );
-      },
+      onTap: onTap,
       child: ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
         child: ConstrainedBox(
           constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height / 4,
+            maxHeight: MediaQuery.of(context).size.height / 3,
           ),
-          child: CachedNetworkImage(
-            fit: BoxFit.cover,
-            width: 1000.0,
-            imageUrl: asset.url,
-            // Use the constant file_key as cacheKey, NOT the temporary url
-            cacheKey: asset.fileKey,
-            placeholder: (context, url) => CircularProgressIndicator(),
-            errorWidget: (context, url, error) => Icon(Icons.error),
-          ),
+          child: !asset.isCompleted
+              ? BottomLoader()
+              : CachedNetworkImage(
+                  fit: BoxFit.cover,
+                  width: 1000.0,
+                  imageUrl: asset.url,
+                  cacheKey: asset.fileKey,
+                  placeholder: (context, url) => BottomLoader(),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ),
         ),
       ),
     );
   }
 }
 
-class GalleryPhotoViewWrapper extends StatefulWidget {
-  GalleryPhotoViewWrapper({
-    super.key,
-    this.loadingBuilder,
-    this.backgroundDecoration,
-    this.minScale,
-    this.maxScale,
-    this.initialIndex = 0,
-    required this.galleryItems,
-    this.scrollDirection = Axis.horizontal,
-  }) : pageController = PageController(initialPage: initialIndex);
+class _MediaCarousel extends StatelessWidget {
+  const _MediaCarousel({required this.media, required this.selectedAsset});
 
-  final LoadingBuilder? loadingBuilder;
-  final BoxDecoration? backgroundDecoration;
-  final dynamic minScale;
-  final dynamic maxScale;
-  final int initialIndex;
-  final PageController pageController;
-  final List<GalleryItem> galleryItems;
-  final Axis scrollDirection;
-
-  @override
-  State<StatefulWidget> createState() {
-    return _GalleryPhotoViewWrapperState();
-  }
-}
-
-class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
-  late int currentIndex = widget.initialIndex;
-
-  void onPageChanged(int index) {
-    setState(() {
-      currentIndex = index;
-    });
-  }
+  final List<Asset> media;
+  final Asset selectedAsset;
 
   @override
   Widget build(BuildContext context) {
-    return ColoredBox(
-      color: Theme.of(context).canvasColor,
-      child: SafeArea(
-        child: Scaffold(
-          body: Container(
-            decoration: widget.backgroundDecoration,
-            constraints: BoxConstraints.expand(
-              height: MediaQuery.of(context).size.height,
-            ),
-            child: Stack(
-              alignment: Alignment.bottomRight,
-              children: <Widget>[
-                PhotoViewGallery.builder(
-                  scrollPhysics: const BouncingScrollPhysics(),
-                  builder: _buildItem,
-                  itemCount: widget.galleryItems.length,
-                  loadingBuilder: widget.loadingBuilder,
-                  backgroundDecoration: widget.backgroundDecoration,
-                  pageController: widget.pageController,
-                  onPageChanged: onPageChanged,
-                  scrollDirection: widget.scrollDirection,
+    return Scaffold(
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Center(
+              child: CarouselSlider(
+                options: CarouselOptions(
+                  height: 700.0,
+                  initialPage: media.indexOf(selectedAsset),
+                  enableInfiniteScroll: false,
+                  enlargeCenterPage: true,
                 ),
-                Positioned(
-                  right: 0,
-                  top: 0,
-                  bottom: 0,
-                  child: Center(
-                    child: IconButton(
-                      onPressed: () {
-                        widget.pageController.animateToPage(
-                          currentIndex + 1,
-                          duration: const Duration(milliseconds: 600),
-                          curve: Curves.ease,
+                items: media.map((asset) {
+                  return asset.contentType == ContentType.image
+                      ? CachedNetworkImage(
+                          imageUrl: asset.url,
+                          cacheKey: asset.fileKey,
+                          placeholder: (context, url) => BottomLoader(),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
+                        )
+                      : VideoViewer(
+                          asset: asset,
+                          autoPlay: selectedAsset.id == asset.id,
                         );
-                      },
-                      icon: Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        color:
-                            (currentIndex ==
-                                widget.galleryItems.indexOf(
-                                  widget.galleryItems.last,
-                                ))
-                            ? Theme.of(context).colorScheme.outline
-                            : Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  child: Center(
-                    child: IconButton(
-                      onPressed: () {
-                        widget.pageController.animateToPage(
-                          currentIndex - 1,
-                          duration: const Duration(milliseconds: 600),
-                          curve: Curves.ease,
-                        );
-                      },
-                      icon: Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        color:
-                            (currentIndex ==
-                                widget.galleryItems.indexOf(
-                                  widget.galleryItems.first,
-                                ))
-                            ? Theme.of(context).colorScheme.outline
-                            : Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 10,
-                  right: 10,
-                  child: IconButton.outlined(
-                    style: ButtonStyle(
-                      shape: WidgetStateProperty.all(const CircleBorder()),
-                      side: WidgetStateProperty.all(
-                        BorderSide(
-                          width: 3,
-                          color: Theme.of(context).colorScheme.outlineVariant,
-                        ),
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(Icons.close_rounded),
-                  ),
-                ),
-              ],
+                }).toList(),
+              ),
             ),
-          ),
+            Align(
+              alignment: Alignment.topRight,
+              child: Container(
+                margin: const EdgeInsets.all(15.0),
+                child: IconButton.filledTonal(
+                  onPressed: () => Navigator.pop(context),
+                  icon: Icon(Icons.close_rounded),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
-
-  PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
-    final GalleryItem item = widget.galleryItems[index];
-    return item.isSvg
-        ? PhotoViewGalleryPageOptions.customChild(
-            child: SizedBox(
-              width: 300,
-              height: 300,
-              child: SvgPicture.asset(item.resource, height: 200.0),
-            ),
-            childSize: const Size(300, 300),
-            initialScale: PhotoViewComputedScale.contained,
-            minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
-            maxScale: PhotoViewComputedScale.covered * 4.1,
-            heroAttributes: PhotoViewHeroAttributes(tag: item.id),
-          )
-        : item.isVideo
-        ? PhotoViewGalleryPageOptions.customChild(
-            child: VideoViewer(urls: [item.resource]),
-            childSize: const Size(300, 300),
-            initialScale: PhotoViewComputedScale.contained,
-            minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
-            maxScale: PhotoViewComputedScale.covered * 4.1,
-            heroAttributes: PhotoViewHeroAttributes(tag: item.id),
-          )
-        : PhotoViewGalleryPageOptions(
-            imageProvider: CachedNetworkImageProvider(item.resource),
-            initialScale: PhotoViewComputedScale.contained,
-            minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
-            maxScale: PhotoViewComputedScale.covered * 4.1,
-            heroAttributes: PhotoViewHeroAttributes(tag: item.id),
-          );
-  }
-}
-
-class GalleryItem {
-  GalleryItem({
-    required this.id,
-    required this.resource,
-    this.isSvg = false,
-    this.isVideo = false,
-  });
-
-  final String id;
-  final String resource;
-  final bool isSvg;
-  final bool isVideo;
 }

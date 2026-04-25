@@ -9,6 +9,7 @@ import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
+import 'package:democracy/chat/bloc/message_create/message_create_bloc.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
 import 'package:democracy/chat/bloc/messages/messages_bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
@@ -46,45 +47,61 @@ class _MessagesState extends State<Messages> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<MessageDetailBloc, MessageDetailState>(
-      listener: (context, state) {
-        if (state is MessageCreated) {
-          if (state.message.chatId == widget.chat.id) {
-            context.read<MessagesBloc>().add(
-              MessagesEvent.add(message: state.message),
-            );
-            if (widget.me.id != state.message.author.id) {
-              context.read<ChatDetailBloc>().add(
-                ChatDetailEvent.markAsRead(chat: widget.chat),
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<MessageCreateBloc, MessageCreateState>(
+          listener: (context, state) {
+            if (state.status == MessageCreateStatus.success) {
+              if (state.message?.chatId == widget.chat.id) {
+                if (state.message!.assets.isNotEmpty) {
+                  context.read<MessagesBloc>().add(
+                    MessagesEvent.update(message: state.message!),
+                  );
+                }
+              }
+            }
+          },
+        ),
+        BlocListener<MessageDetailBloc, MessageDetailState>(
+          listener: (context, state) {
+            if (state is MessageCreated) {
+              if (state.message.chatId == widget.chat.id) {
+                context.read<MessagesBloc>().add(
+                  MessagesEvent.add(message: state.message),
+                );
+                if (widget.me.id != state.message.author.id) {
+                  context.read<ChatDetailBloc>().add(
+                    ChatDetailEvent.markAsRead(chat: widget.chat),
+                  );
+                }
+              }
+            }
+
+            if (state is MessageUpdated) {
+              if (state.message.chatId == widget.chat.id) {
+                context.read<MessagesBloc>().add(
+                  MessagesEvent.update(message: state.message),
+                );
+              }
+            }
+
+            if (state is MessageDeleted) {
+              context.read<MessagesBloc>().add(
+                MessagesEvent.remove(messageId: state.messageId),
               );
             }
-          }
-        }
 
-        if (state is MessageUpdated) {
-          if (state.message.chatId == widget.chat.id) {
-            context.read<MessagesBloc>().add(
-              MessagesEvent.update(message: state.message),
-            );
-          }
-        }
-
-        if (state is MessageDeleted) {
-          context.read<MessagesBloc>().add(
-            MessagesEvent.remove(messageId: state.messageId),
-          );
-        }
-
-        if (state is MessageDetailFailure) {
-          final snackBar = getSnackBar(
-            context: context,
-            message: state.error,
-            status: SnackBarStatus.failure,
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        }
-      },
-
+            if (state is MessageDetailFailure) {
+              final snackBar = getSnackBar(
+                context: context,
+                message: state.error,
+                status: SnackBarStatus.failure,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+          },
+        ),
+      ],
       child: BlocBuilder<MessagesBloc, MessagesState>(
         buildWhen: (previous, current) {
           return current.chatId == widget.chat.id;
@@ -157,10 +174,9 @@ class _MessagesState extends State<Messages> {
                 if (text.isNotEmpty) {
                   widgets.add(
                     AlignmentContainer(
-                      key: ValueKey(message.id),
                       message: message,
                       alignedRight: alignedRight,
-                      child: MessageCard(text: text),
+                      child: MessageCard(key: ValueKey(message.id), text: text),
                     ),
                   );
                 }
@@ -172,7 +188,10 @@ class _MessagesState extends State<Messages> {
                     AlignmentContainer(
                       message: message,
                       alignedRight: alignedRight,
-                      child: AssetViewer(assets: message.assets),
+                      child: AssetViewer(
+                        key: ValueKey(message.id),
+                        assets: message.assets,
+                      ),
                     ),
                   );
                 }
@@ -184,7 +203,10 @@ class _MessagesState extends State<Messages> {
                     AlignmentContainer(
                       message: message,
                       alignedRight: alignedRight,
-                      child: MapWidget(mapCenter: message.location!),
+                      child: MapWidget(
+                        key: ValueKey(message.id),
+                        mapCenter: message.location!,
+                      ),
                     ),
                   );
                 }
@@ -197,6 +219,7 @@ class _MessagesState extends State<Messages> {
                       message: message,
                       alignedRight: alignedRight,
                       child: PostWidgetSelector(
+                        key: ValueKey(message.id),
                         post: message.post!,
                         isDependency: true,
                       ),
@@ -212,6 +235,7 @@ class _MessagesState extends State<Messages> {
                       message: message,
                       alignedRight: alignedRight,
                       child: BallotTile(
+                        key: ValueKey(message.id),
                         ballot: message.ballot!,
                         isDependency: true,
                       ),
@@ -227,6 +251,7 @@ class _MessagesState extends State<Messages> {
                       message: message,
                       alignedRight: alignedRight,
                       child: SurveyTile(
+                        key: ValueKey(message.id),
                         survey: message.survey!,
                         isDependency: true,
                       ),
@@ -242,6 +267,7 @@ class _MessagesState extends State<Messages> {
                       message: message,
                       alignedRight: alignedRight,
                       child: PetitionTile(
+                        key: ValueKey(message.id),
                         petition: message.petition!,
                         isDependency: true,
                       ),
@@ -257,6 +283,7 @@ class _MessagesState extends State<Messages> {
                       message: message,
                       alignedRight: alignedRight,
                       child: MeetingTile(
+                        key: ValueKey(message.id),
                         meeting: message.meeting!,
                         isDependency: true,
                       ),
@@ -272,6 +299,7 @@ class _MessagesState extends State<Messages> {
                       message: message,
                       alignedRight: alignedRight,
                       child: SectionTile(
+                        key: ValueKey(message.id),
                         section: message.section!,
                         isDependency: true,
                       ),

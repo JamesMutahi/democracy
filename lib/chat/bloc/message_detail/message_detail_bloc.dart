@@ -65,7 +65,6 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
   void _onDeleted(_Deleted event, Emitter<MessageDetailState> emit) {
     emit(MessageDetailLoading());
     if (event.payload['response_status'] == 204) {
-      print('PAYLOAD: ${event.payload}');
       emit(
         MessageDeleted(
           messageId: event.payload['pk'],

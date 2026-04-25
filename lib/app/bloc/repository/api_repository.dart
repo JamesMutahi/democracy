@@ -1,6 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
 
-import 'package:democracy/app/bloc/repository/api_provider.dart';
+import 'package:democracy/app/models/asset.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/constitution/models/section.dart';
@@ -12,8 +13,13 @@ import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/user/models/user.dart';
+import 'package:dio/dio.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mime/mime.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
+
+part 'api_provider.dart';
 
 class APIRepository {
   APIRepository({required this.apiProvider});
@@ -157,7 +163,7 @@ class APIRepository {
     );
   }
 
-  Future<Map> messageAssetUploadComplete({
+  Future<List<Asset>> messageAssetUploadComplete({
     required String token,
     required List<String> assetIdList,
   }) async {

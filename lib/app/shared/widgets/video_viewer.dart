@@ -1,276 +1,79 @@
-import 'dart:async';
-
-import 'package:flick_video_player/flick_video_player.dart';
+import 'package:cached_video_player_plus/cached_video_player_plus.dart';
+import 'package:democracy/app/bloc/global/global_cubit.dart';
+import 'package:democracy/app/models/asset.dart';
+import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-import 'package:video_player/video_player.dart';
-import 'package:visibility_detector/visibility_detector.dart';
+import 'package:chewie/chewie.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VideoViewer extends StatefulWidget {
-  const VideoViewer({super.key, required this.urls});
+  const VideoViewer({
+    super.key,
+    required this.asset,
+    this.showControls = true,
+    this.autoPlay = false,
+  });
 
-  final List<String> urls;
+  final Asset asset;
+  final bool showControls;
+  final bool autoPlay;
 
   @override
   State<VideoViewer> createState() => _VideoViewerState();
 }
 
 class _VideoViewerState extends State<VideoViewer> {
-  late FlickManager flickManager;
-  late DataManager dataManager;
+  late final CachedVideoPlayerPlus _player;
+  late ChewieController _chewieController;
 
   @override
   void initState() {
     super.initState();
-    _initFlickManager();
+    initializePlayer();
   }
 
-  void _initFlickManager() {
-    flickManager = FlickManager(
-      autoPlay: false,
-      videoPlayerController: VideoPlayerController.networkUrl(
-        Uri.parse(widget.urls[0]),
-      ),
-      onVideoEnd: () {
-        dataManager.skipToNextVideo(const Duration(seconds: 5));
-      },
+  Future<void> initializePlayer() async {
+    _player = CachedVideoPlayerPlus.networkUrl(
+      Uri.parse(widget.asset.url),
+      cacheKey: widget.asset.fileKey,
+      invalidateCacheIfOlderThan: const Duration(minutes: 69), // Nice!
     );
+    await _player.initialize().then((_) {
+      setState(() {});
+    });
+    _createChewieController();
+    setState(() {});
+  }
 
-    dataManager = DataManager(flickManager: flickManager, urls: widget.urls);
+  void _createChewieController() {
+    _chewieController = ChewieController(
+      videoPlayerController: _player.controller,
+      autoInitialize: true,
+      showControls: widget.showControls,
+      autoPlay: widget.autoPlay,
+    );
   }
 
   @override
   void dispose() {
-    flickManager.dispose();
+    _player.dispose();
+    _chewieController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return VisibilityDetector(
-      key: ObjectKey(flickManager),
-      onVisibilityChanged: (visibility) {
-        if (visibility.visibleFraction == 0 && mounted) {
-          flickManager.flickControlManager?.autoPause();
-        } else if (visibility.visibleFraction == 1) {
-          flickManager.flickControlManager?.autoResume();
+    return BlocListener<GlobalCubit, GlobalState>(
+      listener: (context, state) {
+        if (state.currentlyPlaying?.id != widget.asset.id) {
+          if (_chewieController.isPlaying) {
+            _chewieController.pause();
+          }
         }
       },
-      child: PopScope(
-        canPop: false,
-        onPopInvokedWithResult: (didPop, result) async {
-          if (didPop) return;
-
-          bool isFullScreen =
-              flickManager.flickControlManager?.isFullscreen ?? false;
-
-          if (isFullScreen) {
-            flickManager.flickControlManager?.exitFullscreen();
-          } else {
-            Navigator.of(context).pop();
-          }
-        },
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height / 4,
-          ),
-          child: FlickVideoPlayer(
-            flickManager: flickManager,
-            preferredDeviceOrientationFullscreen: const [
-              DeviceOrientation.landscapeLeft,
-              DeviceOrientation.landscapeRight,
-            ],
-            flickVideoWithControls: FlickVideoWithControls(
-              videoFit: BoxFit.fitHeight,
-              controls: CustomOrientationControls(dataManager: dataManager),
-            ),
-            flickVideoWithControlsFullscreen: FlickVideoWithControls(
-              videoFit: BoxFit.fitHeight,
-              controls: CustomOrientationControls(dataManager: dataManager),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class DataManager {
-  DataManager({required this.flickManager, required this.urls});
-
-  int currentPlaying = 0;
-  final FlickManager flickManager;
-  final List<String> urls;
-
-  late Timer videoChangeTimer;
-
-  String getNextVideo() {
-    currentPlaying++;
-    return urls[currentPlaying];
-  }
-
-  bool hasNextVideo() {
-    return currentPlaying != urls.length - 1;
-  }
-
-  bool hasPreviousVideo() {
-    return currentPlaying != 0;
-  }
-
-  void skipToNextVideo([Duration? duration]) {
-    if (hasNextVideo()) {
-      flickManager.handleChangeVideo(
-        VideoPlayerController.networkUrl(Uri.parse(urls[currentPlaying + 1])),
-        videoChangeDuration: duration,
-      );
-
-      currentPlaying++;
-    }
-  }
-
-  void skipToPreviousVideo() {
-    if (hasPreviousVideo()) {
-      currentPlaying--;
-      flickManager.handleChangeVideo(
-        VideoPlayerController.networkUrl(Uri.parse(urls[currentPlaying])),
-      );
-    }
-  }
-
-  void cancelVideoAutoPlayTimer({required bool playNext}) {
-    if (playNext != true) {
-      currentPlaying--;
-    }
-
-    flickManager.flickVideoManager?.cancelVideoAutoPlayTimer(
-      playNext: playNext,
-    );
-  }
-}
-
-class CustomOrientationControls extends StatelessWidget {
-  const CustomOrientationControls({
-    super.key,
-    this.iconSize = 20,
-    this.fontSize = 12,
-    this.dataManager,
-  });
-
-  final double iconSize;
-  final double fontSize;
-  final DataManager? dataManager;
-
-  @override
-  Widget build(BuildContext context) {
-    FlickVideoManager flickVideoManager = Provider.of<FlickVideoManager>(
-      context,
-    );
-
-    return Stack(
-      children: <Widget>[
-        Positioned.fill(
-          child: FlickAutoHideChild(child: Container(color: Colors.black38)),
-        ),
-        Positioned.fill(
-          child: FlickShowControlsAction(
-            child: FlickSeekVideoAction(
-              child: Center(
-                child: flickVideoManager.nextVideoAutoPlayTimer != null
-                    ? FlickAutoPlayCircularProgress(
-                        colors: FlickAutoPlayTimerProgressColors(
-                          backgroundColor: Colors.white30,
-                          color: Colors.red,
-                        ),
-                      )
-                    : FlickAutoHideChild(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: GestureDetector(
-                                onTap: () {
-                                  dataManager!.skipToPreviousVideo();
-                                },
-                                child: Icon(
-                                  Icons.skip_previous,
-                                  color: dataManager!.hasPreviousVideo()
-                                      ? Colors.white
-                                      : Colors.white38,
-                                  size: 35,
-                                ),
-                              ),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: FlickPlayToggle(size: 50),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: GestureDetector(
-                                onTap: () {
-                                  dataManager!.skipToNextVideo();
-                                },
-                                child: Icon(
-                                  Icons.skip_next,
-                                  color: dataManager!.hasNextVideo()
-                                      ? Colors.white
-                                      : Colors.white38,
-                                  size: 35,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-              ),
-            ),
-          ),
-        ),
-        Positioned.fill(
-          child: FlickAutoHideChild(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          FlickCurrentPosition(fontSize: fontSize),
-                          Text(
-                            ' / ',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: fontSize,
-                            ),
-                          ),
-                          FlickTotalDuration(fontSize: fontSize),
-                        ],
-                      ),
-                      Expanded(child: Container()),
-                      FlickFullScreenToggle(size: iconSize),
-                    ],
-                  ),
-                  FlickVideoProgressBar(
-                    flickProgressBarSettings: FlickProgressBarSettings(
-                      height: 5,
-                      handleRadius: 5,
-                      curveRadius: 50,
-                      backgroundColor: Colors.white24,
-                      bufferedColor: Colors.white38,
-                      playedColor: Colors.red,
-                      handleColor: Colors.red,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ],
+      child: _player.isInitialized
+          ? Chewie(controller: _chewieController)
+          : BottomLoader(),
     );
   }
 }

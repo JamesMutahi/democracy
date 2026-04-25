@@ -59,7 +59,6 @@ class DirectMessageBloc extends Bloc<DirectMessageEvent, DirectMessageState> {
         filePaths: event.filePaths,
         location: event.location,
       );
-      print('DATA: $data');
       List<Chat> chats = List.from(data['chats'].map((e) => Chat.fromJson(e)));
 
       final uploads = data['uploads'];

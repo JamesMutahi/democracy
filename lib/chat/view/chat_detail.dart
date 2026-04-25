@@ -249,7 +249,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     return _otherUser.hasBlocked
         ? Container(
             margin: const EdgeInsets.only(bottom: 8.0),
-            child: Text('You have been blocked', textAlign: TextAlign.center),
+            child: Text('You are blocked', textAlign: TextAlign.center),
           )
         : OutlinedButton(
             style: ButtonStyle(

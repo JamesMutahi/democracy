@@ -161,13 +161,12 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
                         begin: 0.0,
                         end: 0.125,
                       ).animate(_extrasRowAnimationController),
-                      child: const Icon(Icons.add_rounded, size: 24),
+                      child: const Icon(Icons.add_rounded),
                     ),
                   ),
                 ),
               ),
-              Flexible(
-                flex: 6,
+              Expanded(
                 child: TextFormField(
                   focusNode: widget.focusNode,
                   showCursor: widget.showCursor,
@@ -193,7 +192,11 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
                     prefixStyle: TextStyle(
                       color: Theme.of(context).primaryColor,
                     ),
-                    contentPadding: const EdgeInsets.all(15),
+                    contentPadding: const EdgeInsets.only(
+                      left: 10,
+                      top: 10,
+                      bottom: 10,
+                    ),
                     border: InputBorder.none,
                     focusedBorder: UnderlineInputBorder(
                       borderRadius: BorderRadius.circular(0),
@@ -224,22 +227,32 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
                   ),
                 ),
               ),
-              Flexible(
+              Align(
+                alignment: Alignment.centerRight,
                 child: AnimatedSwitcher(
                   duration: Duration(milliseconds: 300),
                   child: widget.showLoading
-                      ? BottomLoader()
+                      ? Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: BottomLoader(),
+                        )
                       : widget.showFailure
                       ? Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            IconButton(
-                              onPressed: widget.onSend,
-                              icon: Icon(Icons.repeat_rounded),
+                            IconButton.filledTonal(
+                              onPressed: widget.onRetry,
+                              icon: Icon(
+                                Icons.repeat_rounded,
+                                color: Colors.green,
+                              ),
                             ),
-                            IconButton(
-                              onPressed: widget.onSend,
-                              icon: Icon(Icons.close_rounded),
+                            IconButton.filledTonal(
+                              onPressed: widget.onCancelRetry,
+                              icon: Icon(
+                                Icons.close_rounded,
+                                color: Colors.red,
+                              ),
                             ),
                           ],
                         )

@@ -1,4 +1,5 @@
 import 'package:democracy/app/bloc/global/global_cubit.dart';
+import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -64,7 +65,7 @@ class _MapWidgetState extends State<_MapWidget> {
           height: 150,
           constraints: BoxConstraints(maxWidth: 500),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(borderRadius),
             child: FlutterMap(
               options: MapOptions(
                 initialZoom: 18,

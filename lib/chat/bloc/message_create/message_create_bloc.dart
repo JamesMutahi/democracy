@@ -113,12 +113,17 @@ class MessageCreateBloc extends Bloc<MessageCreateEvent, MessageCreateState> {
       }
 
       String? token = await authRepository.getToken();
-      await apiRepository.messageAssetUploadComplete(
+      final assets = await apiRepository.messageAssetUploadComplete(
         token: token!,
         assetIdList: assetIdList,
       );
 
-      emit(state.copyWith(status: MessageCreateStatus.success));
+      emit(
+        state.copyWith(
+          status: MessageCreateStatus.success,
+          message: state.message?.copyWith(assets: assets),
+        ),
+      );
     } catch (e) {
       emit(
         state.copyWith(

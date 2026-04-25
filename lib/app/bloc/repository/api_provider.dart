@@ -1,22 +1,4 @@
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:democracy/ballot/models/ballot.dart';
-import 'package:democracy/chat/models/chat.dart';
-import 'package:democracy/constitution/models/section.dart';
-import 'package:democracy/geo/models/constituency.dart';
-import 'package:democracy/geo/models/county.dart';
-import 'package:democracy/geo/models/ward.dart';
-import 'package:democracy/meet/models/meeting.dart';
-import 'package:democracy/petition/models/petition.dart';
-import 'package:democracy/post/models/post.dart';
-import 'package:democracy/survey/models/survey.dart';
-import 'package:democracy/user/models/user.dart';
-import 'package:dio/dio.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:mime/mime.dart';
-import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
+part of 'api_repository.dart';
 
 class APIProvider {
   APIProvider({required this.dio});
@@ -293,20 +275,24 @@ class APIProvider {
     }
   }
 
-  Future<Map> messageAssetUploadComplete({
+  Future<List<Asset>> messageAssetUploadComplete({
     required String token,
     required List<String> assetIdList,
   }) async {
     try {
+      final data = {'asset_id_list': assetIdList};
       Response response = await dio.post(
         'chat/asset-upload-complete/',
-        data: jsonEncode({'asset_id_list': assetIdList}),
+        data: FormData.fromMap(data),
         options: Options(
           headers: <String, String>{'Authorization': 'Token $token'},
         ),
       );
       if (response.statusCode == 200) {
-        return response.data;
+        List<Asset> assets = List.from(
+          response.data.map((e) => Asset.fromJson(e)),
+        );
+        return assets;
       } else {
         return Future.error(response.data.toString());
       }

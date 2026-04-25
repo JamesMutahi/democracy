@@ -3,7 +3,6 @@ import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
 import 'package:democracy/app/bloc/forms_tab_bar/forms_tab_bar_cubit.dart';
 import 'package:democracy/app/bloc/location/location_cubit.dart';
-import 'package:democracy/app/bloc/repository/api_provider.dart';
 import 'package:democracy/app/bloc/repository/api_repository.dart';
 import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';

@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:camera/camera.dart';
+import 'package:democracy/app/models/asset.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'global_state.dart';
@@ -54,9 +54,14 @@ class GlobalCubit extends Cubit<GlobalState> {
     } on CameraException catch (e) {
       String code = e.code;
       String? message = e.description;
-      debugPrint(
+      // TODO: Log error
+      print(
         'Error: $code${message == null ? '' : '\nError Message: $message'}',
       );
     }
+  }
+
+  void changeVideo({required Asset asset}) {
+    emit(state.copyWith(currentlyPlaying: asset));
   }
 }

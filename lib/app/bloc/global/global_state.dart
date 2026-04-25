@@ -9,6 +9,7 @@ final class GlobalState extends Equatable {
     this.openChatId,
     this.viewedPosts = const {},
     this.cameras = const [],
+    this.currentlyPlaying,
   });
 
   final GlobalStatus status;
@@ -16,6 +17,7 @@ final class GlobalState extends Equatable {
   final int? openChatId;
   final Set<Map<String, int>> viewedPosts;
   final List<CameraDescription> cameras;
+  final Asset? currentlyPlaying;
 
   GlobalState copyWith({
     GlobalStatus? status,
@@ -23,6 +25,7 @@ final class GlobalState extends Equatable {
     int? openChatId,
     Set<Map<String, int>>? viewedPosts,
     List<CameraDescription>? cameras,
+    Asset? currentlyPlaying,
   }) {
     return GlobalState(
       status: status ?? this.status,
@@ -30,14 +33,22 @@ final class GlobalState extends Equatable {
       openChatId: openChatId ?? this.index,
       viewedPosts: viewedPosts ?? this.viewedPosts,
       cameras: cameras ?? this.cameras,
+      currentlyPlaying: currentlyPlaying ?? currentlyPlaying,
     );
   }
 
   @override
   String toString() {
-    return '''GlobalState { status: $status, index: $index, openChatId: $openChatId, viewedPosts: $viewedPosts, cameras: ${cameras.length} }''';
+    return '''GlobalState { status: $status, index: $index, openChatId: $openChatId, viewedPosts: $viewedPosts, cameras: ${cameras.length}, currentlyPlaying: ${currentlyPlaying?.id} }''';
   }
 
   @override
-  List<Object> get props => [status, ?index, ?openChatId, viewedPosts, cameras];
+  List<Object?> get props => [
+    status,
+    index,
+    openChatId,
+    viewedPosts,
+    cameras,
+    currentlyPlaying,
+  ];
 }
