@@ -5,31 +5,27 @@ enum DraftPostsStatus { initial, loading, success, failure }
 final class DraftPostsState extends Equatable {
   const DraftPostsState({
     this.status = DraftPostsStatus.initial,
-    this.posts = const [],
-    this.hasNext = false,
+    this.drafts = const [],
   });
 
   final DraftPostsStatus status;
-  final List<Post> posts;
-  final bool hasNext;
+  final List<DraftPost> drafts;
 
   DraftPostsState copyWith({
     DraftPostsStatus? status,
-    List<Post>? posts,
-    bool? hasNext,
+    List<DraftPost>? drafts,
   }) {
     return DraftPostsState(
       status: status ?? this.status,
-      posts: posts ?? this.posts,
-      hasNext: hasNext ?? this.hasNext,
+      drafts: drafts ?? this.drafts,
     );
   }
 
   @override
   String toString() {
-    return '''PostsState { status: $status, posts: ${posts.length}, hasNext: $hasNext }''';
+    return '''PostsState { status: $status, drafts: ${drafts.length} }''';
   }
 
   @override
-  List<Object> get props => [status, posts];
+  List<Object> get props => [status, drafts];
 }

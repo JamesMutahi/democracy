@@ -1,20 +1,21 @@
 import 'dart:io';
 
-import 'package:democracy/app/models/asset.dart' show ContentType;
 import 'package:democracy/app/shared/camera/camera.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/file_widget.dart';
+import 'package:democracy/app/shared/widgets/loader_overlay_widgets.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
 import 'package:democracy/app/shared/utils/media_tools.dart';
 import 'package:democracy/ballot/view/ballot_tile.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
+import 'package:democracy/post/bloc/draft_post/draft_post_bloc.dart';
 import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
-import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
+import 'package:democracy/post/models/draft_post.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_form_widgets.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
@@ -26,13 +27,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertagger/fluttertagger.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:path/path.dart' as p;
 
 class PostUpdatePage extends StatefulWidget {
-  const PostUpdatePage({super.key, required this.post});
+  const PostUpdatePage({super.key, required this.draft});
 
-  final Post post;
+  final DraftPost draft;
 
   @override
   State<PostUpdatePage> createState() => _PostUpdatePageState();
@@ -40,13 +42,13 @@ class PostUpdatePage extends StatefulWidget {
 
 class _PostUpdatePageState extends State<PostUpdatePage> {
   late final _controller = FlutterTaggerController();
-  ValueKey centerKey = ValueKey('Center');
+  final ValueKey _centerKey = ValueKey('Center');
 
   bool _canPost = true;
 
   // Media state
-  List<String> _media = [];
-  String? _document;
+  List<File> _media = [];
+  File? _document;
   LatLng? _selectedLocation;
   Section? _selectedSection;
 
@@ -55,52 +57,88 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
     super.initState();
     _getData();
 
-    final post = widget.post;
+    final draft = widget.draft;
 
     // Initialize flutter tagger
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _controller.text = post.body;
+      _controller.text = draft.body;
       _controller.formatTags();
     });
 
     // Initialize media
-    _media = post.assets
-        .where((asset) => asset.contentType != ContentType.document)
-        .map((asset) => asset.url)
-        .toList();
-    if (post.assets.any((asset) => asset.contentType == ContentType.document)) {
-      _document = post.assets
-          .firstWhere((asset) => asset.contentType == ContentType.document)
-          .url;
-    }
-    if (post.location != null) _selectedLocation = post.location;
+    _media = [];
+    _document = null;
+    if (draft.location != null) _selectedLocation = draft.location;
   }
 
   void _getData() {
-    if (widget.post.replyTo != null) {
-      context.read<ReplyToBloc>().add(ReplyToEvent.get(post: widget.post));
+    if (widget.draft.replyTo != null) {
+      context.read<ReplyToBloc>().add(
+        ReplyToEvent.get(post: widget.draft.replyTo!),
+      );
+      context.read<ReplyToBloc>().add(
+        ReplyToEvent.add(post: widget.draft.replyTo!),
+      );
     }
   }
 
-  void _updatePost({PostStatus status = PostStatus.published}) {
-    List<Map<String, dynamic>> tags = [];
-    for (var tag in _controller.tags) {
-      tags.add({'id': tag.id, 'text': tag.text});
-    }
-    context.read<PostDetailBloc>().add(
-      PostDetailEvent.patch(
-        id: widget.post.id,
+  void _createPost() {
+    context.loaderOverlay.show();
+
+    final tags = _controller.tags
+        .map((tag) => {'id': tag.id, 'text': tag.text})
+        .toList();
+
+    context.read<PostCreateBloc>().add(
+      PostCreateEvent.create(
         body: _controller.formattedText,
-        status: status,
-        replyTo: widget.post.replyTo,
-        repostOf: widget.post.repostOf,
-        ballot: widget.post.ballot,
-        survey: widget.post.survey,
-        petition: widget.post.petition,
-        meeting: widget.post.meeting,
+        status: PostStatus.published,
+        replyTo: widget.draft.replyTo,
+        repostOf: widget.draft.repostOf,
+        ballot: widget.draft.ballot,
+        survey: widget.draft.survey,
+        petition: widget.draft.petition,
+        meeting: widget.draft.meeting,
         section: _selectedSection,
         tags: tags,
-        filePaths: [..._media, ?_document],
+        filePaths: [
+          ..._media.map((m) => m.path),
+          if (_document != null) _document!.path,
+        ],
+        location: _selectedLocation,
+      ),
+    );
+  }
+
+  void _deleteDraft() {
+    context.read<DraftPostBloc>().add(
+      DraftPostEvent.delete(draft: widget.draft),
+    );
+  }
+
+  void _saveDraft() {
+    context.loaderOverlay.show();
+
+    final tags = _controller.tags
+        .map((tag) => {'id': tag.id, 'text': tag.text})
+        .toList();
+
+    context.read<DraftPostBloc>().add(
+      DraftPostEvent.save(
+        id: widget.draft.id,
+        body: _controller.formattedText,
+        replyTo: widget.draft.replyTo,
+        repostOf: widget.draft.repostOf,
+        ballot: widget.draft.ballot,
+        survey: widget.draft.survey,
+        petition: widget.draft.petition,
+        meeting: widget.draft.meeting,
+        section: _selectedSection,
+        tags: tags,
+        filePaths: [
+          ..._media.map((m) => m.path),
+          if (_document != null) _document!.path,
+        ],
         location: _selectedLocation,
       ),
     );
@@ -108,7 +146,7 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
 
   void _updatePostButtonState(String text) {
     bool canPost = text.trim().isNotEmpty;
-    if (!canPost && widget.post.replyTo != null) {
+    if (!canPost && widget.draft.replyTo != null) {
       canPost =
           _media.isNotEmpty ||
           _document != null ||
@@ -132,100 +170,137 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
         } else {
           showDialog(
             context: context,
-            builder: (context) => _SaveDraftDialog(
-              onYesPressed: () => _updatePost(status: PostStatus.draft),
-            ),
+            builder: (context) => _SaveDraftDialog(onYesPressed: _saveDraft),
           );
         }
       },
       child: MultiBlocListener(
         listeners: [
-          BlocListener<PostDetailBloc, PostDetailState>(
+          BlocListener<PostCreateBloc, PostCreateState>(
             listener: (context, state) {
-              if (state is PostPatched) {
-                if (state.post.id == widget.post.id) {
+              if (state.status == PostCreateStatus.success) {
+                final post = state.post!;
+
+                // Handle repost case and normal post (not a reply)
+                if (widget.draft.repostOf != null ||
+                    widget.draft.replyTo == null) {
+                  _deleteDraft();
+                  Navigator.pop(context);
+                  return;
+                }
+
+                // Handle reply case - only pop if the replied-to post is NOT in the ReplyToBloc
+                final replyTos = context.read<ReplyToBloc>().state.posts;
+                final isReplyingToPostInReplyTos = replyTos.any(
+                  (p) => p.id == post.repostOf?.id,
+                );
+
+                if (!isReplyingToPostInReplyTos) {
+                  _deleteDraft();
                   Navigator.pop(context);
                 }
               }
             },
           ),
-          BlocListener<PostCreateBloc, PostCreateState>(
+          BlocListener<DraftPostBloc, DraftPostState>(
             listener: (context, state) {
-              if (state.status == PostCreateStatus.success) {
-                var replyTos = context.read<ReplyToBloc>().state.posts;
-                if (!replyTos.any((p) => p.id == state.post!.repostOf?.id)) {
-                  Navigator.pop(context);
-                }
+              if (state is DraftSaved) {
+                Navigator.pop(context);
               }
             },
           ),
         ],
-        child: Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              onPressed: _canPost
-                  ? () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => _SaveDraftDialog(
-                          onYesPressed: () =>
-                              _updatePost(status: PostStatus.draft),
-                        ),
-                      );
-                    }
-                  : null,
-              icon: Icon(Symbols.close),
-            ),
-            title: Text('Edit post'),
-            actions: [
-              OutlinedButton(
+        child: LoaderOverlay(
+          overlayWidgetBuilder: (_) {
+            return BlocBuilder<DraftPostBloc, DraftPostState>(
+              builder: (context, draftPostState) {
+                return BlocBuilder<PostCreateBloc, PostCreateState>(
+                  builder: (context, postCreateState) {
+                    return postCreateState.status == PostCreateStatus.failure ||
+                            draftPostState is DraftFailure
+                        ? LoaderOverlayFailure(
+                            onRetry: () {
+                              if (draftPostState is DraftFailure) {
+                                _saveDraft();
+                              } else {
+                                context.read<PostCreateBloc>().add(
+                                  PostCreateEvent.retry(),
+                                );
+                              }
+                            },
+                          )
+                        : LoaderOverlayLoading(
+                            progress: postCreateState.progress,
+                          );
+                  },
+                );
+              },
+            );
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              leading: IconButton(
                 onPressed: _canPost
                     ? () {
                         showDialog(
                           context: context,
                           builder: (context) =>
-                              PostUpdateDialog(onYesPressed: _updatePost),
+                              _SaveDraftDialog(onYesPressed: _saveDraft),
                         );
                       }
                     : null,
-                child: Text('Post'),
+                icon: Icon(Symbols.close),
               ),
-            ],
-            actionsPadding: EdgeInsets.only(right: 15),
-          ),
-          body: CustomScrollView(
-            center: centerKey,
-            slivers: [
-              if (widget.post.replyTo != null) ReplyTos(post: widget.post),
-              SliverToBoxAdapter(key: centerKey, child: _buildPostForm()),
-            ],
-          ),
-          bottomNavigationBar: PostBottomNavBar(
-            controller: _controller,
-            reply: widget.post.replyTo,
-            maxAssets: maxMediaAssetsAllowed - _media.length,
-            onNewMedia: (files) {
-              setState(() {
-                for (var file in files) {
-                  _media.add(file.path);
-                }
-              });
-              _updatePostButtonState(_controller.formattedText);
-            },
-            onNewDocument: (file) {
-              setState(() => _document = file.path);
-              _updatePostButtonState(_controller.formattedText);
-            },
-            onLocation: (point) {
-              setState(() => _selectedLocation = point);
-              _updatePostButtonState(_controller.formattedText);
-            },
-            onNewSection: (section) {
-              if (widget.post.section == null) {
+              title: Text('Edit post'),
+              actions: [
+                OutlinedButton(
+                  onPressed: _canPost
+                      ? () {
+                          showDialog(
+                            context: context,
+                            builder: (context) =>
+                                PostUpdateDialog(onYesPressed: _createPost),
+                          );
+                        }
+                      : null,
+                  child: Text('Post'),
+                ),
+              ],
+              actionsPadding: EdgeInsets.only(right: 15),
+            ),
+            body: CustomScrollView(
+              center: _centerKey,
+              slivers: [
+                if (widget.draft.replyTo != null)
+                  ReplyTos(post: widget.draft.replyTo!),
+                SliverToBoxAdapter(key: _centerKey, child: _buildPostForm()),
+              ],
+            ),
+            bottomNavigationBar: PostBottomNavBar(
+              controller: _controller,
+              reply: widget.draft.replyTo,
+              maxAssets: maxMediaAssetsAllowed - _media.length,
+              onNewMedia: (files) {
+                setState(() {
+                  for (var file in files) {
+                    _media.add(file);
+                  }
+                });
+                _updatePostButtonState(_controller.formattedText);
+              },
+              onNewDocument: (file) {
+                setState(() => _document = file);
+                _updatePostButtonState(_controller.formattedText);
+              },
+              onLocation: (point) {
+                setState(() => _selectedLocation = point);
+                _updatePostButtonState(_controller.formattedText);
+              },
+              onNewSection: (section) {
                 setState(() => _selectedSection = section);
                 _updatePostButtonState(_controller.formattedText);
-              }
-            },
+              },
+            ),
           ),
         ),
       ),
@@ -235,7 +310,7 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
   Widget _buildPostForm() {
     return Stack(
       children: [
-        if (widget.post.replyTo != null)
+        if (widget.draft.replyTo != null)
           ThreadLine(showBottomThread: false, showTopThread: true),
         Container(
           padding: EdgeInsets.only(left: 10, right: 15, top: 10, bottom: 5),
@@ -250,25 +325,25 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
                   PostAuthor(),
                   PostTextField(
                     controller: _controller,
-                    hintText: widget.post.replyTo != null
+                    hintText: widget.draft.replyTo != null
                         ? 'Reply'
                         : "What's new?",
                     onChanged: _updatePostButtonState,
                     onContentInsertion: (imageFile) {
-                      setState(() => _media.add(imageFile.path));
+                      setState(() => _media.add(imageFile));
                     },
                   ),
                 ],
               ),
               if (_media.isNotEmpty)
-                DraftImageView(
-                  recipient: widget.post.replyTo?.author,
+                DraftMediaView(
+                  recipient: widget.draft.replyTo?.author,
                   textEditingController: _controller,
-                  imageUrls: _media,
+                  media: _media,
                   onAdd: (images) {
                     setState(() {
                       for (var image in images) {
-                        _media.add(image.path);
+                        _media.add(image);
                       }
                     });
                   },
@@ -280,9 +355,9 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
                 Container(
                   margin: EdgeInsets.only(top: 10),
                   child: FileWidget(
-                    fileName: p.basename(_document!),
-                    url: _document!,
-                    navigateToViewer: false,
+                    fileName: p.basename(_document!.path),
+                    url: _document!.path,
+                    navigateToViewer: true,
                   ),
                 ),
               if (_selectedLocation != null)
@@ -293,44 +368,44 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
                   onRemoveSection: () =>
                       setState(() => _selectedSection = null),
                 ),
-              if (widget.post.repostOf != null)
+              if (widget.draft.repostOf != null)
                 DependencyContainer(
                   child: PostTile(
-                    post: widget.post.repostOf!,
+                    post: widget.draft.repostOf!,
                     isDependency: true,
                   ),
                 ),
-              if (widget.post.ballot != null)
+              if (widget.draft.ballot != null)
                 DependencyContainer(
                   child: BallotTile(
-                    ballot: widget.post.ballot!,
+                    ballot: widget.draft.ballot!,
                     isDependency: true,
                   ),
                 ),
-              if (widget.post.survey != null)
+              if (widget.draft.survey != null)
                 DependencyContainer(
                   child: SurveyTile(
-                    survey: widget.post.survey!,
+                    survey: widget.draft.survey!,
                     isDependency: true,
                   ),
                 ),
-              if (widget.post.petition != null)
+              if (widget.draft.petition != null)
                 DependencyContainer(
                   child: PetitionTile(
-                    petition: widget.post.petition!,
+                    petition: widget.draft.petition!,
                     isDependency: true,
                   ),
                 ),
-              if (widget.post.meeting != null)
+              if (widget.draft.meeting != null)
                 DependencyContainer(
                   child: MeetingTile(
-                    meeting: widget.post.meeting!,
+                    meeting: widget.draft.meeting!,
                     isDependency: true,
                   ),
                 ),
-              if (widget.post.section != null)
+              if (widget.draft.section != null)
                 SectionView(
-                  section: widget.post.section!,
+                  section: widget.draft.section!,
                   onRemoveSection: null,
                 ),
             ],
@@ -390,19 +465,19 @@ class _SaveDraftDialog extends StatelessWidget {
   }
 }
 
-class DraftImageView extends StatelessWidget {
-  const DraftImageView({
+class DraftMediaView extends StatelessWidget {
+  const DraftMediaView({
     super.key,
     required this.recipient,
     required this.textEditingController,
-    required this.imageUrls,
+    required this.media,
     required this.onAdd,
     required this.onRemove,
   });
 
   final User? recipient;
   final TextEditingController textEditingController;
-  final List<String> imageUrls;
+  final List<File> media;
   final void Function(List<File>) onAdd;
   final void Function(int) onRemove;
 
@@ -414,14 +489,12 @@ class DraftImageView extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 10),
         physics: const ScrollPhysics(),
         shrinkWrap: true,
-        itemCount: imageUrls.length < 4
-            ? imageUrls.length + 1
-            : imageUrls.length,
+        itemCount: media.length < 4 ? media.length + 1 : media.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
         ),
         itemBuilder: (BuildContext context, int index) {
-          if (index == imageUrls.length) {
+          if (index == media.length) {
             return AddFile(
               onCameraPressed: () async {
                 openCamera(
@@ -458,19 +531,12 @@ class DraftImageView extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 10, bottom: 10),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: isNetworkImage(imageUrls[index])
-                        ? Image.network(
-                            imageUrls[index],
-                            height: 150,
-                            width: 150,
-                            fit: BoxFit.cover,
-                          )
-                        : Image.file(
-                            File(imageUrls[index]),
-                            height: 150,
-                            width: 150,
-                            fit: BoxFit.cover,
-                          ),
+                    child: Image.file(
+                      media[index],
+                      height: 150,
+                      width: 150,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
                 Positioned(
@@ -494,8 +560,4 @@ class DraftImageView extends StatelessWidget {
       ),
     );
   }
-}
-
-bool isNetworkImage(String path) {
-  return Uri.tryParse(path)?.host.isNotEmpty ?? false;
 }

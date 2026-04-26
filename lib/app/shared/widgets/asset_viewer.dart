@@ -9,6 +9,7 @@ import 'package:democracy/chat/bloc/message_create/message_create_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 class AssetViewer extends StatefulWidget {
@@ -138,7 +139,11 @@ class _VideoWidget extends StatelessWidget {
           ),
           child: Stack(
             children: [
-              VideoViewer(asset: asset, showControls: showControls),
+              VideoViewer(
+                url: asset.url,
+                cacheKey: asset.fileKey,
+                showControls: showControls,
+              ),
               if (!showControls)
                 Center(
                   child: CircleAvatar(
@@ -201,27 +206,30 @@ class _MediaCarousel extends StatelessWidget {
         child: Stack(
           children: [
             Center(
-              child: CarouselSlider(
-                options: CarouselOptions(
-                  height: 700.0,
-                  initialPage: media.indexOf(selectedAsset),
-                  enableInfiniteScroll: false,
-                  enlargeCenterPage: true,
+              child: PhotoViewGestureDetectorScope(
+                axis: Axis.horizontal,
+                child: CarouselSlider(
+                  options: CarouselOptions(
+                    height: 700.0,
+                    initialPage: media.indexOf(selectedAsset),
+                    enableInfiniteScroll: false,
+                    enlargeCenterPage: true,
+                  ),
+                  items: media.map((asset) {
+                    return asset.contentType == ContentType.image
+                        ? PhotoView(
+                            imageProvider: CachedNetworkImageProvider(
+                              asset.url,
+                              cacheKey: asset.fileKey,
+                            ),
+                          )
+                        : VideoViewer(
+                            url: asset.url,
+                            cacheKey: asset.fileKey,
+                            autoPlay: selectedAsset.id == asset.id,
+                          );
+                  }).toList(),
                 ),
-                items: media.map((asset) {
-                  return asset.contentType == ContentType.image
-                      ? CachedNetworkImage(
-                          imageUrl: asset.url,
-                          cacheKey: asset.fileKey,
-                          placeholder: (context, url) => BottomLoader(),
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
-                        )
-                      : VideoViewer(
-                          asset: asset,
-                          autoPlay: selectedAsset.id == asset.id,
-                        );
-                }).toList(),
               ),
             ),
             Align(

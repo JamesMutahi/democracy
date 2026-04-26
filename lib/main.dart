@@ -32,10 +32,12 @@ import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dar
 import 'package:democracy/petition/bloc/petition_filter/petition_filter_cubit.dart';
 import 'package:democracy/petition/bloc/supporters/supporters_bloc.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_bloc.dart';
+import 'package:democracy/post/bloc/draft_post/draft_post_bloc.dart';
 import 'package:democracy/post/bloc/draft_posts/draft_posts_bloc.dart';
 import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/post_filter/post_filter_cubit.dart';
+import 'package:democracy/post/models/draft_post.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
 import 'package:democracy/survey/bloc/survey_filter/survey_filter_cubit.dart';
 import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
@@ -49,6 +51,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:isar_community/isar.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env");
@@ -66,6 +70,15 @@ void main() async {
 
   final dio = Dio(options);
 
+  final dir = await getApplicationDocumentsDirectory();
+
+  // Open Isar instance
+  final isar = await Isar.open(
+    [DraftPostSchema], // List generated schemas here
+    directory: dir.path,
+    name: 'drafts', // Optional: for multiple instances
+  );
+
   runApp(
     MultiRepositoryProvider(
       providers: [
@@ -76,6 +89,7 @@ void main() async {
         RepositoryProvider.value(
           value: APIRepository(apiProvider: APIProvider(dio: dio)),
         ),
+        RepositoryProvider.value(value: DraftPostRepository(isar: isar)),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -140,8 +154,13 @@ void main() async {
             ),
           ),
           BlocProvider(
+            create: (context) => DraftPostBloc(
+              draftPostRepository: context.read<DraftPostRepository>(),
+            ),
+          ),
+          BlocProvider(
             create: (context) => DraftPostsBloc(
-              webSocketService: context.read<WebSocketService>(),
+              draftPostRepository: context.read<DraftPostRepository>(),
             ),
           ),
           BlocProvider(

@@ -84,7 +84,7 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
       'payload': {
         'action': 'retrieve',
         'request_id': requestId,
-        'pk': event.user.id,
+        'pk': event.userId,
       },
     };
     webSocketService.send(message);

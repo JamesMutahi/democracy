@@ -5,14 +5,8 @@ import 'package:democracy/app/bloc/repository/api_repository.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
-import 'package:democracy/ballot/models/ballot.dart';
-import 'package:democracy/constitution/models/section.dart';
-import 'package:democracy/meet/models/meeting.dart';
-import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:democracy/survey/models/survey.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:latlong2/latlong.dart';
 
 part 'post_detail_bloc.freezed.dart';
 part 'post_detail_state.dart';
@@ -36,8 +30,6 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
             add(_Loaded(payload: message['payload']));
           case 'update':
             add(_Updated(payload: message['payload']));
-          case 'patch':
-            add(_Patched(payload: message['payload']));
           case 'delete':
             add(_Deleted(payload: message['payload']));
           case 'delete_repost':
@@ -63,12 +55,10 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     });
     on<_Loaded>((event, emit) => _onLoaded(event, emit));
     on<_Updated>((event, emit) => _onUpdated(event, emit));
-    on<_Patched>((event, emit) => _onPatched(event, emit));
     on<_Deleted>((event, emit) => _onDeleted(event, emit));
     on<_RepostDeleted>((event, emit) => _onRepostDeleted(event, emit));
     on<_Reported>((event, emit) => _onReported(event, emit));
     on<_Get>((event, emit) => _onGet(event, emit));
-    on<_Patch>((event, emit) async => await _onPatch(event, emit));
     on<_Delete>((event, emit) => _onDelete(event, emit));
     on<_DeleteRepost>((event, emit) => _onDeleteRepost(event, emit));
     on<_Like>((event, emit) => _onLike(event, emit));
@@ -124,16 +114,6 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           isActive: event.payload['data']['is_active'],
         ),
       );
-    } else {
-      emit(PostDetailFailure(error: event.payload['errors'].toString()));
-    }
-  }
-
-  void _onPatched(_Patched event, Emitter<PostDetailState> emit) {
-    emit(PostDetailLoading());
-    if (event.payload['response_status'] == 200) {
-      final Post post = Post.fromJson(event.payload['data']);
-      emit(PostPatched(post: post));
     } else {
       emit(PostDetailFailure(error: event.payload['errors'].toString()));
     }
@@ -273,33 +253,6 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       },
     };
     webSocketService.send(message);
-  }
-
-  Future _onPatch(_Patch event, Emitter<PostDetailState> emit) async {
-    emit(PostDetailLoading());
-    try {
-      String? token = await authRepository.getToken();
-      Post post = await apiRepository.patchPost(
-        token: token!,
-        id: event.id,
-        body: event.body,
-        status: event.status,
-        repostOf: event.repostOf,
-        replyTo: event.replyTo,
-        communityNoteOf: event.communityNoteOf,
-        ballot: event.ballot,
-        survey: event.survey,
-        petition: event.petition,
-        meeting: event.meeting,
-        section: event.section,
-        tags: event.tags,
-        filePaths: event.filePaths,
-        location: event.location,
-      );
-      emit(PostPatched(post: post));
-    } catch (e) {
-      emit(PostDetailFailure(error: e.toString()));
-    }
   }
 
   void _onAddView(_AddView event, Emitter<PostDetailState> emit) {

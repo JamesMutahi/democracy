@@ -15,6 +15,7 @@ import 'package:democracy/meet/models/meeting.dart';
 import 'package:democracy/meet/view/meeting_tile.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/petition_tile.dart';
+import 'package:democracy/post/bloc/draft_post/draft_post_bloc.dart';
 import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
 import 'package:democracy/post/models/post.dart';
@@ -76,7 +77,7 @@ class _PostCreatePageState extends State<PostCreatePage> {
     }
   }
 
-  void _createPost({PostStatus status = PostStatus.published}) {
+  void _createPost() {
     context.loaderOverlay.show();
 
     final tags = _controller.tags
@@ -85,7 +86,35 @@ class _PostCreatePageState extends State<PostCreatePage> {
     context.read<PostCreateBloc>().add(
       PostCreateEvent.create(
         body: _controller.formattedText,
-        status: status,
+        status: PostStatus.published,
+        replyTo: widget.replyTo,
+        repostOf: widget.repostOf,
+        ballot: widget.ballot,
+        survey: widget.survey,
+        petition: widget.petition,
+        meeting: widget.meeting,
+        section: widget.section ?? _selectedSection,
+        tags: tags,
+        filePaths: [
+          ..._media.map((m) => m.path),
+          if (_document != null) _document!.path,
+        ],
+        location: _selectedLocation,
+      ),
+    );
+  }
+
+  void _saveDraft() {
+    context.loaderOverlay.show();
+
+    final tags = _controller.tags
+        .map((tag) => {'id': tag.id, 'text': tag.text})
+        .toList();
+
+    context.read<DraftPostBloc>().add(
+      DraftPostEvent.save(
+        id: null,
+        body: _controller.formattedText,
         replyTo: widget.replyTo,
         repostOf: widget.repostOf,
         ballot: widget.ballot,
@@ -141,6 +170,13 @@ class _PostCreatePageState extends State<PostCreatePage> {
             }
           },
         ),
+        BlocListener<DraftPostBloc, DraftPostState>(
+          listener: (context, state) {
+            if (state is DraftSaved) {
+              Navigator.pop(context);
+            }
+          },
+        ),
       ],
       child: PopScope(
         canPop: false,
@@ -152,9 +188,7 @@ class _PostCreatePageState extends State<PostCreatePage> {
           } else {
             showDialog(
               context: context,
-              builder: (context) => _SaveDraftDialog(
-                onYesPressed: () => _createPost(status: PostStatus.draft),
-              ),
+              builder: (context) => _SaveDraftDialog(onYesPressed: _saveDraft),
             );
           }
         },
@@ -184,10 +218,8 @@ class _PostCreatePageState extends State<PostCreatePage> {
                   } else {
                     showDialog(
                       context: context,
-                      builder: (context) => _SaveDraftDialog(
-                        onYesPressed: () =>
-                            _createPost(status: PostStatus.draft),
-                      ),
+                      builder: (context) =>
+                          _SaveDraftDialog(onYesPressed: _saveDraft),
                     );
                   }
                 },

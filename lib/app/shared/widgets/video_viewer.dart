@@ -1,5 +1,6 @@
+import 'dart:io';
+
 import 'package:cached_video_player_plus/cached_video_player_plus.dart';
-import 'package:democracy/app/models/asset.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:chewie/chewie.dart';
@@ -7,12 +8,14 @@ import 'package:chewie/chewie.dart';
 class VideoViewer extends StatefulWidget {
   const VideoViewer({
     super.key,
-    required this.asset,
+    required this.url,
+    this.cacheKey,
     this.showControls = true,
     this.autoPlay = false,
   });
 
-  final Asset asset;
+  final String url;
+  final String? cacheKey;
   final bool showControls;
   final bool autoPlay;
 
@@ -35,11 +38,17 @@ class _VideoViewerState extends State<VideoViewer>
   bool get wantKeepAlive => true;
 
   Future<void> initializePlayer() async {
-    _player = CachedVideoPlayerPlus.networkUrl(
-      Uri.parse(widget.asset.url),
-      cacheKey: widget.asset.fileKey,
-      invalidateCacheIfOlderThan: const Duration(minutes: 69), // Nice!
-    );
+    bool isNetworkImage = Uri.tryParse(widget.url)?.host.isNotEmpty ?? false;
+    if (isNetworkImage) {
+      _player = CachedVideoPlayerPlus.networkUrl(
+        Uri.parse(widget.url),
+        cacheKey: widget.cacheKey,
+        invalidateCacheIfOlderThan: const Duration(minutes: 69), // Nice!
+      );
+    } else {
+      _player = CachedVideoPlayerPlus.file(File(widget.url));
+    }
+
     await _player.initialize().then((_) {
       setState(() {});
     });

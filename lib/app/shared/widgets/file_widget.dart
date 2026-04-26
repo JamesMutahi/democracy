@@ -36,11 +36,17 @@ class FileWidget extends StatelessWidget {
       onTap: !navigateToViewer
           ? null
           : () async {
-              // 1. Request permissions (especially for Android)
-              await requestPermissions();
+              bool isNetworkImage = Uri.tryParse(url)?.host.isNotEmpty ?? false;
+              String? path;
+              if (isNetworkImage) {
+                // 1. Request permissions (especially for Android)
+                await requestPermissions();
 
-              // 2. Download the file
-              String? path = await downloadFile(url, fileName);
+                // 2. Download the file
+                path = await downloadFile(url, fileName);
+              } else {
+                path = url;
+              }
 
               // 3. Open the file
               if (path != null) {

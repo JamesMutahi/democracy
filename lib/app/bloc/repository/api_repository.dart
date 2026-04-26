@@ -82,44 +82,6 @@ class APIRepository {
     );
   }
 
-  Future<Post> patchPost({
-    required String token,
-    required int id,
-    String? body,
-    required PostStatus status,
-    Post? repostOf,
-    Post? replyTo,
-    Post? communityNoteOf,
-    Ballot? ballot,
-    Survey? survey,
-    Petition? petition,
-    Meeting? meeting,
-    Section? section,
-    List<Map<String, dynamic>> tags = const [],
-    List<String> filePaths = const [],
-    LatLng? location,
-  }) async {
-    List<Map> assets = await getAssets(filePaths);
-
-    return await apiProvider.patchPost(
-      token: token,
-      id: id,
-      body: body,
-      status: status,
-      repostOf: repostOf,
-      replyTo: replyTo,
-      communityNoteOf: communityNoteOf,
-      ballot: ballot,
-      survey: survey,
-      petition: petition,
-      meeting: meeting,
-      section: section,
-      tags: tags,
-      assets: assets,
-      location: location,
-    );
-  }
-
   Future<Map<String, dynamic>> createMessage({
     required String token,
     required Chat chat,

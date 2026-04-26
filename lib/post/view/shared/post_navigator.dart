@@ -6,6 +6,7 @@ import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/bloc/community_notes/community_notes_bloc.dart';
 import 'package:democracy/post/bloc/replies/replies_bloc.dart';
 import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
+import 'package:democracy/post/models/draft_post.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/community_note_detail.dart';
 import 'package:democracy/post/view/community_notes.dart';
@@ -131,14 +132,17 @@ void navigateToPostCreate({
   );
 }
 
-void navigateToPostUpdate({required BuildContext context, required Post post}) {
+void navigateToPostUpdate({
+  required BuildContext context,
+  required DraftPost draft,
+}) {
   Navigator.push(
     context,
     MaterialPageRoute(
       builder: (context) => BlocProvider(
         create: (context) =>
             ReplyToBloc(webSocketService: context.read<WebSocketService>()),
-        child: PostUpdatePage(post: post),
+        child: PostUpdatePage(draft: draft),
       ),
     ),
   );

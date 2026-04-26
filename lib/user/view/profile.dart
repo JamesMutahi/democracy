@@ -51,7 +51,9 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     // Retrieve and subscribe to user
-    context.read<UserDetailBloc>().add(UserDetailEvent.get(user: widget.user));
+    context.read<UserDetailBloc>().add(
+      UserDetailEvent.get(userId: widget.user.id),
+    );
     if (!widget.user.isVisited) {
       final authBloc = context.read<AuthBloc>();
       final me = authBloc.state.user!;
@@ -124,7 +126,7 @@ class _ProfilePageState extends State<ProfilePage> {
           listener: (context, state) {
             if (state.status == WebsocketStatus.connected) {
               context.read<UserDetailBloc>().add(
-                UserDetailEvent.get(user: widget.user),
+                UserDetailEvent.get(userId: widget.user.id),
               );
             }
           },

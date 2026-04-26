@@ -8,8 +8,6 @@ class PostDetailState with _$PostDetailState {
 
   const factory PostDetailState.loaded({required Post post}) = PostLoaded;
 
-  const factory PostDetailState.patched({required Post post}) = PostPatched;
-
   const factory PostDetailState.updated({
     required int postId,
     required String body,

@@ -55,14 +55,13 @@ extension PostDetailStatePatterns on PostDetailState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( PostDetailLoading value)?  loading,TResult Function( PostLoaded value)?  loaded,TResult Function( PostPatched value)?  patched,TResult Function( PostUpdated value)?  updated,TResult Function( PostLiked value)?  liked,TResult Function( PostBookmarked value)?  bookmarked,TResult Function( PostUpvoted value)?  upvoted,TResult Function( PostDownvoted value)?  downvoted,TResult Function( PostViewed value)?  viewed,TResult Function( PostClicked value)?  clicked,TResult Function( PostMuted value)?  muted,TResult Function( PostDeleted value)?  deleted,TResult Function( RepostDeleted value)?  repostDeleted,TResult Function( PostReported value)?  reported,TResult Function( PostDetailFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( PostDetailLoading value)?  loading,TResult Function( PostLoaded value)?  loaded,TResult Function( PostUpdated value)?  updated,TResult Function( PostLiked value)?  liked,TResult Function( PostBookmarked value)?  bookmarked,TResult Function( PostUpvoted value)?  upvoted,TResult Function( PostDownvoted value)?  downvoted,TResult Function( PostViewed value)?  viewed,TResult Function( PostClicked value)?  clicked,TResult Function( PostMuted value)?  muted,TResult Function( PostDeleted value)?  deleted,TResult Function( RepostDeleted value)?  repostDeleted,TResult Function( PostReported value)?  reported,TResult Function( PostDetailFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case PostDetailLoading() when loading != null:
 return loading(_that);case PostLoaded() when loaded != null:
-return loaded(_that);case PostPatched() when patched != null:
-return patched(_that);case PostUpdated() when updated != null:
+return loaded(_that);case PostUpdated() when updated != null:
 return updated(_that);case PostLiked() when liked != null:
 return liked(_that);case PostBookmarked() when bookmarked != null:
 return bookmarked(_that);case PostUpvoted() when upvoted != null:
@@ -92,14 +91,13 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( PostDetailLoading value)  loading,required TResult Function( PostLoaded value)  loaded,required TResult Function( PostPatched value)  patched,required TResult Function( PostUpdated value)  updated,required TResult Function( PostLiked value)  liked,required TResult Function( PostBookmarked value)  bookmarked,required TResult Function( PostUpvoted value)  upvoted,required TResult Function( PostDownvoted value)  downvoted,required TResult Function( PostViewed value)  viewed,required TResult Function( PostClicked value)  clicked,required TResult Function( PostMuted value)  muted,required TResult Function( PostDeleted value)  deleted,required TResult Function( RepostDeleted value)  repostDeleted,required TResult Function( PostReported value)  reported,required TResult Function( PostDetailFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( PostDetailLoading value)  loading,required TResult Function( PostLoaded value)  loaded,required TResult Function( PostUpdated value)  updated,required TResult Function( PostLiked value)  liked,required TResult Function( PostBookmarked value)  bookmarked,required TResult Function( PostUpvoted value)  upvoted,required TResult Function( PostDownvoted value)  downvoted,required TResult Function( PostViewed value)  viewed,required TResult Function( PostClicked value)  clicked,required TResult Function( PostMuted value)  muted,required TResult Function( PostDeleted value)  deleted,required TResult Function( RepostDeleted value)  repostDeleted,required TResult Function( PostReported value)  reported,required TResult Function( PostDetailFailure value)  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial():
 return initial(_that);case PostDetailLoading():
 return loading(_that);case PostLoaded():
-return loaded(_that);case PostPatched():
-return patched(_that);case PostUpdated():
+return loaded(_that);case PostUpdated():
 return updated(_that);case PostLiked():
 return liked(_that);case PostBookmarked():
 return bookmarked(_that);case PostUpvoted():
@@ -128,14 +126,13 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( PostDetailLoading value)?  loading,TResult? Function( PostLoaded value)?  loaded,TResult? Function( PostPatched value)?  patched,TResult? Function( PostUpdated value)?  updated,TResult? Function( PostLiked value)?  liked,TResult? Function( PostBookmarked value)?  bookmarked,TResult? Function( PostUpvoted value)?  upvoted,TResult? Function( PostDownvoted value)?  downvoted,TResult? Function( PostViewed value)?  viewed,TResult? Function( PostClicked value)?  clicked,TResult? Function( PostMuted value)?  muted,TResult? Function( PostDeleted value)?  deleted,TResult? Function( RepostDeleted value)?  repostDeleted,TResult? Function( PostReported value)?  reported,TResult? Function( PostDetailFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( PostDetailLoading value)?  loading,TResult? Function( PostLoaded value)?  loaded,TResult? Function( PostUpdated value)?  updated,TResult? Function( PostLiked value)?  liked,TResult? Function( PostBookmarked value)?  bookmarked,TResult? Function( PostUpvoted value)?  upvoted,TResult? Function( PostDownvoted value)?  downvoted,TResult? Function( PostViewed value)?  viewed,TResult? Function( PostClicked value)?  clicked,TResult? Function( PostMuted value)?  muted,TResult? Function( PostDeleted value)?  deleted,TResult? Function( RepostDeleted value)?  repostDeleted,TResult? Function( PostReported value)?  reported,TResult? Function( PostDetailFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case PostDetailLoading() when loading != null:
 return loading(_that);case PostLoaded() when loaded != null:
-return loaded(_that);case PostPatched() when patched != null:
-return patched(_that);case PostUpdated() when updated != null:
+return loaded(_that);case PostUpdated() when updated != null:
 return updated(_that);case PostLiked() when liked != null:
 return liked(_that);case PostBookmarked() when bookmarked != null:
 return bookmarked(_that);case PostUpvoted() when upvoted != null:
@@ -164,13 +161,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Post post)?  loaded,TResult Function( Post post)?  patched,TResult Function( int postId,  String body,  int likes,  bool isLiked,  int bookmarks,  bool isBookmarked,  int views,  int replies,  int reposts,  String communityNote,  bool isUpvoted,  bool isDownvoted,  int upvotes,  int downvotes,  bool isReposted,  bool isQuoted,  bool isDeleted,  bool isActive)?  updated,TResult Function( int postId,  bool isLiked,  int likes)?  liked,TResult Function( int postId,  bool isBookmarked,  int bookmarks)?  bookmarked,TResult Function( int postId,  bool isUpvoted,  int upvotes)?  upvoted,TResult Function( int postId,  bool isDownvoted,  int downvotes)?  downvoted,TResult Function( int postId)?  viewed,TResult Function( int postId)?  clicked,TResult Function( int postId,  bool isMuted)?  muted,TResult Function( int postId)?  deleted,TResult Function( int postId,  int repostId,  int reposts)?  repostDeleted,TResult Function()?  reported,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Post post)?  loaded,TResult Function( int postId,  String body,  int likes,  bool isLiked,  int bookmarks,  bool isBookmarked,  int views,  int replies,  int reposts,  String communityNote,  bool isUpvoted,  bool isDownvoted,  int upvotes,  int downvotes,  bool isReposted,  bool isQuoted,  bool isDeleted,  bool isActive)?  updated,TResult Function( int postId,  bool isLiked,  int likes)?  liked,TResult Function( int postId,  bool isBookmarked,  int bookmarks)?  bookmarked,TResult Function( int postId,  bool isUpvoted,  int upvotes)?  upvoted,TResult Function( int postId,  bool isDownvoted,  int downvotes)?  downvoted,TResult Function( int postId)?  viewed,TResult Function( int postId)?  clicked,TResult Function( int postId,  bool isMuted)?  muted,TResult Function( int postId)?  deleted,TResult Function( int postId,  int repostId,  int reposts)?  repostDeleted,TResult Function()?  reported,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case PostDetailLoading() when loading != null:
 return loading();case PostLoaded() when loaded != null:
-return loaded(_that.post);case PostPatched() when patched != null:
-return patched(_that.post);case PostUpdated() when updated != null:
+return loaded(_that.post);case PostUpdated() when updated != null:
 return updated(_that.postId,_that.body,_that.likes,_that.isLiked,_that.bookmarks,_that.isBookmarked,_that.views,_that.replies,_that.reposts,_that.communityNote,_that.isUpvoted,_that.isDownvoted,_that.upvotes,_that.downvotes,_that.isReposted,_that.isQuoted,_that.isDeleted,_that.isActive);case PostLiked() when liked != null:
 return liked(_that.postId,_that.isLiked,_that.likes);case PostBookmarked() when bookmarked != null:
 return bookmarked(_that.postId,_that.isBookmarked,_that.bookmarks);case PostUpvoted() when upvoted != null:
@@ -200,13 +196,12 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Post post)  loaded,required TResult Function( Post post)  patched,required TResult Function( int postId,  String body,  int likes,  bool isLiked,  int bookmarks,  bool isBookmarked,  int views,  int replies,  int reposts,  String communityNote,  bool isUpvoted,  bool isDownvoted,  int upvotes,  int downvotes,  bool isReposted,  bool isQuoted,  bool isDeleted,  bool isActive)  updated,required TResult Function( int postId,  bool isLiked,  int likes)  liked,required TResult Function( int postId,  bool isBookmarked,  int bookmarks)  bookmarked,required TResult Function( int postId,  bool isUpvoted,  int upvotes)  upvoted,required TResult Function( int postId,  bool isDownvoted,  int downvotes)  downvoted,required TResult Function( int postId)  viewed,required TResult Function( int postId)  clicked,required TResult Function( int postId,  bool isMuted)  muted,required TResult Function( int postId)  deleted,required TResult Function( int postId,  int repostId,  int reposts)  repostDeleted,required TResult Function()  reported,required TResult Function( String error)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Post post)  loaded,required TResult Function( int postId,  String body,  int likes,  bool isLiked,  int bookmarks,  bool isBookmarked,  int views,  int replies,  int reposts,  String communityNote,  bool isUpvoted,  bool isDownvoted,  int upvotes,  int downvotes,  bool isReposted,  bool isQuoted,  bool isDeleted,  bool isActive)  updated,required TResult Function( int postId,  bool isLiked,  int likes)  liked,required TResult Function( int postId,  bool isBookmarked,  int bookmarks)  bookmarked,required TResult Function( int postId,  bool isUpvoted,  int upvotes)  upvoted,required TResult Function( int postId,  bool isDownvoted,  int downvotes)  downvoted,required TResult Function( int postId)  viewed,required TResult Function( int postId)  clicked,required TResult Function( int postId,  bool isMuted)  muted,required TResult Function( int postId)  deleted,required TResult Function( int postId,  int repostId,  int reposts)  repostDeleted,required TResult Function()  reported,required TResult Function( String error)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case PostDetailLoading():
 return loading();case PostLoaded():
-return loaded(_that.post);case PostPatched():
-return patched(_that.post);case PostUpdated():
+return loaded(_that.post);case PostUpdated():
 return updated(_that.postId,_that.body,_that.likes,_that.isLiked,_that.bookmarks,_that.isBookmarked,_that.views,_that.replies,_that.reposts,_that.communityNote,_that.isUpvoted,_that.isDownvoted,_that.upvotes,_that.downvotes,_that.isReposted,_that.isQuoted,_that.isDeleted,_that.isActive);case PostLiked():
 return liked(_that.postId,_that.isLiked,_that.likes);case PostBookmarked():
 return bookmarked(_that.postId,_that.isBookmarked,_that.bookmarks);case PostUpvoted():
@@ -235,13 +230,12 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Post post)?  loaded,TResult? Function( Post post)?  patched,TResult? Function( int postId,  String body,  int likes,  bool isLiked,  int bookmarks,  bool isBookmarked,  int views,  int replies,  int reposts,  String communityNote,  bool isUpvoted,  bool isDownvoted,  int upvotes,  int downvotes,  bool isReposted,  bool isQuoted,  bool isDeleted,  bool isActive)?  updated,TResult? Function( int postId,  bool isLiked,  int likes)?  liked,TResult? Function( int postId,  bool isBookmarked,  int bookmarks)?  bookmarked,TResult? Function( int postId,  bool isUpvoted,  int upvotes)?  upvoted,TResult? Function( int postId,  bool isDownvoted,  int downvotes)?  downvoted,TResult? Function( int postId)?  viewed,TResult? Function( int postId)?  clicked,TResult? Function( int postId,  bool isMuted)?  muted,TResult? Function( int postId)?  deleted,TResult? Function( int postId,  int repostId,  int reposts)?  repostDeleted,TResult? Function()?  reported,TResult? Function( String error)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Post post)?  loaded,TResult? Function( int postId,  String body,  int likes,  bool isLiked,  int bookmarks,  bool isBookmarked,  int views,  int replies,  int reposts,  String communityNote,  bool isUpvoted,  bool isDownvoted,  int upvotes,  int downvotes,  bool isReposted,  bool isQuoted,  bool isDeleted,  bool isActive)?  updated,TResult? Function( int postId,  bool isLiked,  int likes)?  liked,TResult? Function( int postId,  bool isBookmarked,  int bookmarks)?  bookmarked,TResult? Function( int postId,  bool isUpvoted,  int upvotes)?  upvoted,TResult? Function( int postId,  bool isDownvoted,  int downvotes)?  downvoted,TResult? Function( int postId)?  viewed,TResult? Function( int postId)?  clicked,TResult? Function( int postId,  bool isMuted)?  muted,TResult? Function( int postId)?  deleted,TResult? Function( int postId,  int repostId,  int reposts)?  repostDeleted,TResult? Function()?  reported,TResult? Function( String error)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case PostDetailLoading() when loading != null:
 return loading();case PostLoaded() when loaded != null:
-return loaded(_that.post);case PostPatched() when patched != null:
-return patched(_that.post);case PostUpdated() when updated != null:
+return loaded(_that.post);case PostUpdated() when updated != null:
 return updated(_that.postId,_that.body,_that.likes,_that.isLiked,_that.bookmarks,_that.isBookmarked,_that.views,_that.replies,_that.reposts,_that.communityNote,_that.isUpvoted,_that.isDownvoted,_that.upvotes,_that.downvotes,_that.isReposted,_that.isQuoted,_that.isDeleted,_that.isActive);case PostLiked() when liked != null:
 return liked(_that.postId,_that.isLiked,_that.likes);case PostBookmarked() when bookmarked != null:
 return bookmarked(_that.postId,_that.isBookmarked,_that.bookmarks);case PostUpvoted() when upvoted != null:
@@ -383,81 +377,6 @@ class _$PostLoadedCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? post = null,}) {
   return _then(PostLoaded(
-post: null == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
-as Post,
-  ));
-}
-
-/// Create a copy of PostDetailState
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$PostCopyWith<$Res> get post {
-  
-  return $PostCopyWith<$Res>(_self.post, (value) {
-    return _then(_self.copyWith(post: value));
-  });
-}
-}
-
-/// @nodoc
-
-
-class PostPatched implements PostDetailState {
-  const PostPatched({required this.post});
-  
-
- final  Post post;
-
-/// Create a copy of PostDetailState
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$PostPatchedCopyWith<PostPatched> get copyWith => _$PostPatchedCopyWithImpl<PostPatched>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostPatched&&(identical(other.post, post) || other.post == post));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,post);
-
-@override
-String toString() {
-  return 'PostDetailState.patched(post: $post)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $PostPatchedCopyWith<$Res> implements $PostDetailStateCopyWith<$Res> {
-  factory $PostPatchedCopyWith(PostPatched value, $Res Function(PostPatched) _then) = _$PostPatchedCopyWithImpl;
-@useResult
-$Res call({
- Post post
-});
-
-
-$PostCopyWith<$Res> get post;
-
-}
-/// @nodoc
-class _$PostPatchedCopyWithImpl<$Res>
-    implements $PostPatchedCopyWith<$Res> {
-  _$PostPatchedCopyWithImpl(this._self, this._then);
-
-  final PostPatched _self;
-  final $Res Function(PostPatched) _then;
-
-/// Create a copy of PostDetailState
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? post = null,}) {
-  return _then(PostPatched(
 post: null == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
 as Post,
   ));
@@ -1333,14 +1252,13 @@ extension PostDetailEventPatterns on PostDetailEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Loaded value)?  loaded,TResult Function( _Updated value)?  updated,TResult Function( _Patched value)?  patched,TResult Function( _Deleted value)?  deleted,TResult Function( _RepostDeleted value)?  repostDeleted,TResult Function( _Reported value)?  reported,TResult Function( _Liked value)?  liked,TResult Function( _Bookmarked value)?  bookmarked,TResult Function( _Upvoted value)?  upvoted,TResult Function( _Downvoted value)?  downvoted,TResult Function( _ViewAdded value)?  viewAdded,TResult Function( _ClickAdded value)?  clickAdded,TResult Function( _Muted value)?  muted,TResult Function( _Get value)?  get,TResult Function( _Patch value)?  patch,TResult Function( _AddView value)?  addView,TResult Function( _AddClick value)?  addClick,TResult Function( _Like value)?  like,TResult Function( _Mute value)?  mute,TResult Function( _Bookmark value)?  bookmark,TResult Function( _Upvote value)?  upvote,TResult Function( _Downvote value)?  downvote,TResult Function( _Delete value)?  delete,TResult Function( _DeleteRepost value)?  deleteRepost,TResult Function( _Report value)?  report,TResult Function( _Unsubscribe value)?  unsubscribe,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Loaded value)?  loaded,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _RepostDeleted value)?  repostDeleted,TResult Function( _Reported value)?  reported,TResult Function( _Liked value)?  liked,TResult Function( _Bookmarked value)?  bookmarked,TResult Function( _Upvoted value)?  upvoted,TResult Function( _Downvoted value)?  downvoted,TResult Function( _ViewAdded value)?  viewAdded,TResult Function( _ClickAdded value)?  clickAdded,TResult Function( _Muted value)?  muted,TResult Function( _Get value)?  get,TResult Function( _AddView value)?  addView,TResult Function( _AddClick value)?  addClick,TResult Function( _Like value)?  like,TResult Function( _Mute value)?  mute,TResult Function( _Bookmark value)?  bookmark,TResult Function( _Upvote value)?  upvote,TResult Function( _Downvote value)?  downvote,TResult Function( _Delete value)?  delete,TResult Function( _DeleteRepost value)?  deleteRepost,TResult Function( _Report value)?  report,TResult Function( _Unsubscribe value)?  unsubscribe,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that);case _Loaded() when loaded != null:
 return loaded(_that);case _Updated() when updated != null:
-return updated(_that);case _Patched() when patched != null:
-return patched(_that);case _Deleted() when deleted != null:
+return updated(_that);case _Deleted() when deleted != null:
 return deleted(_that);case _RepostDeleted() when repostDeleted != null:
 return repostDeleted(_that);case _Reported() when reported != null:
 return reported(_that);case _Liked() when liked != null:
@@ -1351,8 +1269,7 @@ return downvoted(_that);case _ViewAdded() when viewAdded != null:
 return viewAdded(_that);case _ClickAdded() when clickAdded != null:
 return clickAdded(_that);case _Muted() when muted != null:
 return muted(_that);case _Get() when get != null:
-return get(_that);case _Patch() when patch != null:
-return patch(_that);case _AddView() when addView != null:
+return get(_that);case _AddView() when addView != null:
 return addView(_that);case _AddClick() when addClick != null:
 return addClick(_that);case _Like() when like != null:
 return like(_that);case _Mute() when mute != null:
@@ -1381,14 +1298,13 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Loaded value)  loaded,required TResult Function( _Updated value)  updated,required TResult Function( _Patched value)  patched,required TResult Function( _Deleted value)  deleted,required TResult Function( _RepostDeleted value)  repostDeleted,required TResult Function( _Reported value)  reported,required TResult Function( _Liked value)  liked,required TResult Function( _Bookmarked value)  bookmarked,required TResult Function( _Upvoted value)  upvoted,required TResult Function( _Downvoted value)  downvoted,required TResult Function( _ViewAdded value)  viewAdded,required TResult Function( _ClickAdded value)  clickAdded,required TResult Function( _Muted value)  muted,required TResult Function( _Get value)  get,required TResult Function( _Patch value)  patch,required TResult Function( _AddView value)  addView,required TResult Function( _AddClick value)  addClick,required TResult Function( _Like value)  like,required TResult Function( _Mute value)  mute,required TResult Function( _Bookmark value)  bookmark,required TResult Function( _Upvote value)  upvote,required TResult Function( _Downvote value)  downvote,required TResult Function( _Delete value)  delete,required TResult Function( _DeleteRepost value)  deleteRepost,required TResult Function( _Report value)  report,required TResult Function( _Unsubscribe value)  unsubscribe,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Loaded value)  loaded,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _RepostDeleted value)  repostDeleted,required TResult Function( _Reported value)  reported,required TResult Function( _Liked value)  liked,required TResult Function( _Bookmarked value)  bookmarked,required TResult Function( _Upvoted value)  upvoted,required TResult Function( _Downvoted value)  downvoted,required TResult Function( _ViewAdded value)  viewAdded,required TResult Function( _ClickAdded value)  clickAdded,required TResult Function( _Muted value)  muted,required TResult Function( _Get value)  get,required TResult Function( _AddView value)  addView,required TResult Function( _AddClick value)  addClick,required TResult Function( _Like value)  like,required TResult Function( _Mute value)  mute,required TResult Function( _Bookmark value)  bookmark,required TResult Function( _Upvote value)  upvote,required TResult Function( _Downvote value)  downvote,required TResult Function( _Delete value)  delete,required TResult Function( _DeleteRepost value)  deleteRepost,required TResult Function( _Report value)  report,required TResult Function( _Unsubscribe value)  unsubscribe,}){
 final _that = this;
 switch (_that) {
 case _Created():
 return created(_that);case _Loaded():
 return loaded(_that);case _Updated():
-return updated(_that);case _Patched():
-return patched(_that);case _Deleted():
+return updated(_that);case _Deleted():
 return deleted(_that);case _RepostDeleted():
 return repostDeleted(_that);case _Reported():
 return reported(_that);case _Liked():
@@ -1399,8 +1315,7 @@ return downvoted(_that);case _ViewAdded():
 return viewAdded(_that);case _ClickAdded():
 return clickAdded(_that);case _Muted():
 return muted(_that);case _Get():
-return get(_that);case _Patch():
-return patch(_that);case _AddView():
+return get(_that);case _AddView():
 return addView(_that);case _AddClick():
 return addClick(_that);case _Like():
 return like(_that);case _Mute():
@@ -1425,14 +1340,13 @@ return unsubscribe(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Updated value)?  updated,TResult? Function( _Patched value)?  patched,TResult? Function( _Deleted value)?  deleted,TResult? Function( _RepostDeleted value)?  repostDeleted,TResult? Function( _Reported value)?  reported,TResult? Function( _Liked value)?  liked,TResult? Function( _Bookmarked value)?  bookmarked,TResult? Function( _Upvoted value)?  upvoted,TResult? Function( _Downvoted value)?  downvoted,TResult? Function( _ViewAdded value)?  viewAdded,TResult? Function( _ClickAdded value)?  clickAdded,TResult? Function( _Muted value)?  muted,TResult? Function( _Get value)?  get,TResult? Function( _Patch value)?  patch,TResult? Function( _AddView value)?  addView,TResult? Function( _AddClick value)?  addClick,TResult? Function( _Like value)?  like,TResult? Function( _Mute value)?  mute,TResult? Function( _Bookmark value)?  bookmark,TResult? Function( _Upvote value)?  upvote,TResult? Function( _Downvote value)?  downvote,TResult? Function( _Delete value)?  delete,TResult? Function( _DeleteRepost value)?  deleteRepost,TResult? Function( _Report value)?  report,TResult? Function( _Unsubscribe value)?  unsubscribe,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _RepostDeleted value)?  repostDeleted,TResult? Function( _Reported value)?  reported,TResult? Function( _Liked value)?  liked,TResult? Function( _Bookmarked value)?  bookmarked,TResult? Function( _Upvoted value)?  upvoted,TResult? Function( _Downvoted value)?  downvoted,TResult? Function( _ViewAdded value)?  viewAdded,TResult? Function( _ClickAdded value)?  clickAdded,TResult? Function( _Muted value)?  muted,TResult? Function( _Get value)?  get,TResult? Function( _AddView value)?  addView,TResult? Function( _AddClick value)?  addClick,TResult? Function( _Like value)?  like,TResult? Function( _Mute value)?  mute,TResult? Function( _Bookmark value)?  bookmark,TResult? Function( _Upvote value)?  upvote,TResult? Function( _Downvote value)?  downvote,TResult? Function( _Delete value)?  delete,TResult? Function( _DeleteRepost value)?  deleteRepost,TResult? Function( _Report value)?  report,TResult? Function( _Unsubscribe value)?  unsubscribe,}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that);case _Loaded() when loaded != null:
 return loaded(_that);case _Updated() when updated != null:
-return updated(_that);case _Patched() when patched != null:
-return patched(_that);case _Deleted() when deleted != null:
+return updated(_that);case _Deleted() when deleted != null:
 return deleted(_that);case _RepostDeleted() when repostDeleted != null:
 return repostDeleted(_that);case _Reported() when reported != null:
 return reported(_that);case _Liked() when liked != null:
@@ -1443,8 +1357,7 @@ return downvoted(_that);case _ViewAdded() when viewAdded != null:
 return viewAdded(_that);case _ClickAdded() when clickAdded != null:
 return clickAdded(_that);case _Muted() when muted != null:
 return muted(_that);case _Get() when get != null:
-return get(_that);case _Patch() when patch != null:
-return patch(_that);case _AddView() when addView != null:
+return get(_that);case _AddView() when addView != null:
 return addView(_that);case _AddClick() when addClick != null:
 return addClick(_that);case _Like() when like != null:
 return like(_that);case _Mute() when mute != null:
@@ -1472,13 +1385,12 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  patched,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Map<String, dynamic> payload)?  repostDeleted,TResult Function( Map<String, dynamic> payload)?  reported,TResult Function( Map<String, dynamic> payload)?  liked,TResult Function( Map<String, dynamic> payload)?  bookmarked,TResult Function( Map<String, dynamic> payload)?  upvoted,TResult Function( Map<String, dynamic> payload)?  downvoted,TResult Function( Map<String, dynamic> payload)?  viewAdded,TResult Function( Map<String, dynamic> payload)?  clickAdded,TResult Function( Map<String, dynamic> payload)?  muted,TResult Function( Post post)?  get,TResult Function( int id,  String body,  PostStatus status,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, dynamic>> tags,  List<String> filePaths,  LatLng? location)?  patch,TResult Function( Post post)?  addView,TResult Function( Post post)?  addClick,TResult Function( Post post)?  like,TResult Function( Post post)?  mute,TResult Function( Post post)?  bookmark,TResult Function( Post post)?  upvote,TResult Function( Post post)?  downvote,TResult Function( Post post)?  delete,TResult Function( Post post)?  deleteRepost,TResult Function( String issue,  Post post)?  report,TResult Function( Post post)?  unsubscribe,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Map<String, dynamic> payload)?  repostDeleted,TResult Function( Map<String, dynamic> payload)?  reported,TResult Function( Map<String, dynamic> payload)?  liked,TResult Function( Map<String, dynamic> payload)?  bookmarked,TResult Function( Map<String, dynamic> payload)?  upvoted,TResult Function( Map<String, dynamic> payload)?  downvoted,TResult Function( Map<String, dynamic> payload)?  viewAdded,TResult Function( Map<String, dynamic> payload)?  clickAdded,TResult Function( Map<String, dynamic> payload)?  muted,TResult Function( Post post)?  get,TResult Function( Post post)?  addView,TResult Function( Post post)?  addClick,TResult Function( Post post)?  like,TResult Function( Post post)?  mute,TResult Function( Post post)?  bookmark,TResult Function( Post post)?  upvote,TResult Function( Post post)?  downvote,TResult Function( Post post)?  delete,TResult Function( Post post)?  deleteRepost,TResult Function( String issue,  Post post)?  report,TResult Function( Post post)?  unsubscribe,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
 return loaded(_that.payload);case _Updated() when updated != null:
-return updated(_that.payload);case _Patched() when patched != null:
-return patched(_that.payload);case _Deleted() when deleted != null:
+return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _RepostDeleted() when repostDeleted != null:
 return repostDeleted(_that.payload);case _Reported() when reported != null:
 return reported(_that.payload);case _Liked() when liked != null:
@@ -1489,8 +1401,7 @@ return downvoted(_that.payload);case _ViewAdded() when viewAdded != null:
 return viewAdded(_that.payload);case _ClickAdded() when clickAdded != null:
 return clickAdded(_that.payload);case _Muted() when muted != null:
 return muted(_that.payload);case _Get() when get != null:
-return get(_that.post);case _Patch() when patch != null:
-return patch(_that.id,_that.body,_that.status,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.filePaths,_that.location);case _AddView() when addView != null:
+return get(_that.post);case _AddView() when addView != null:
 return addView(_that.post);case _AddClick() when addClick != null:
 return addClick(_that.post);case _Like() when like != null:
 return like(_that.post);case _Mute() when mute != null:
@@ -1519,13 +1430,12 @@ return unsubscribe(_that.post);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  patched,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Map<String, dynamic> payload)  repostDeleted,required TResult Function( Map<String, dynamic> payload)  reported,required TResult Function( Map<String, dynamic> payload)  liked,required TResult Function( Map<String, dynamic> payload)  bookmarked,required TResult Function( Map<String, dynamic> payload)  upvoted,required TResult Function( Map<String, dynamic> payload)  downvoted,required TResult Function( Map<String, dynamic> payload)  viewAdded,required TResult Function( Map<String, dynamic> payload)  clickAdded,required TResult Function( Map<String, dynamic> payload)  muted,required TResult Function( Post post)  get,required TResult Function( int id,  String body,  PostStatus status,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, dynamic>> tags,  List<String> filePaths,  LatLng? location)  patch,required TResult Function( Post post)  addView,required TResult Function( Post post)  addClick,required TResult Function( Post post)  like,required TResult Function( Post post)  mute,required TResult Function( Post post)  bookmark,required TResult Function( Post post)  upvote,required TResult Function( Post post)  downvote,required TResult Function( Post post)  delete,required TResult Function( Post post)  deleteRepost,required TResult Function( String issue,  Post post)  report,required TResult Function( Post post)  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Map<String, dynamic> payload)  repostDeleted,required TResult Function( Map<String, dynamic> payload)  reported,required TResult Function( Map<String, dynamic> payload)  liked,required TResult Function( Map<String, dynamic> payload)  bookmarked,required TResult Function( Map<String, dynamic> payload)  upvoted,required TResult Function( Map<String, dynamic> payload)  downvoted,required TResult Function( Map<String, dynamic> payload)  viewAdded,required TResult Function( Map<String, dynamic> payload)  clickAdded,required TResult Function( Map<String, dynamic> payload)  muted,required TResult Function( Post post)  get,required TResult Function( Post post)  addView,required TResult Function( Post post)  addClick,required TResult Function( Post post)  like,required TResult Function( Post post)  mute,required TResult Function( Post post)  bookmark,required TResult Function( Post post)  upvote,required TResult Function( Post post)  downvote,required TResult Function( Post post)  delete,required TResult Function( Post post)  deleteRepost,required TResult Function( String issue,  Post post)  report,required TResult Function( Post post)  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Loaded():
 return loaded(_that.payload);case _Updated():
-return updated(_that.payload);case _Patched():
-return patched(_that.payload);case _Deleted():
+return updated(_that.payload);case _Deleted():
 return deleted(_that.payload);case _RepostDeleted():
 return repostDeleted(_that.payload);case _Reported():
 return reported(_that.payload);case _Liked():
@@ -1536,8 +1446,7 @@ return downvoted(_that.payload);case _ViewAdded():
 return viewAdded(_that.payload);case _ClickAdded():
 return clickAdded(_that.payload);case _Muted():
 return muted(_that.payload);case _Get():
-return get(_that.post);case _Patch():
-return patch(_that.id,_that.body,_that.status,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.filePaths,_that.location);case _AddView():
+return get(_that.post);case _AddView():
 return addView(_that.post);case _AddClick():
 return addClick(_that.post);case _Like():
 return like(_that.post);case _Mute():
@@ -1562,13 +1471,12 @@ return unsubscribe(_that.post);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  patched,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Map<String, dynamic> payload)?  repostDeleted,TResult? Function( Map<String, dynamic> payload)?  reported,TResult? Function( Map<String, dynamic> payload)?  liked,TResult? Function( Map<String, dynamic> payload)?  bookmarked,TResult? Function( Map<String, dynamic> payload)?  upvoted,TResult? Function( Map<String, dynamic> payload)?  downvoted,TResult? Function( Map<String, dynamic> payload)?  viewAdded,TResult? Function( Map<String, dynamic> payload)?  clickAdded,TResult? Function( Map<String, dynamic> payload)?  muted,TResult? Function( Post post)?  get,TResult? Function( int id,  String body,  PostStatus status,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, dynamic>> tags,  List<String> filePaths,  LatLng? location)?  patch,TResult? Function( Post post)?  addView,TResult? Function( Post post)?  addClick,TResult? Function( Post post)?  like,TResult? Function( Post post)?  mute,TResult? Function( Post post)?  bookmark,TResult? Function( Post post)?  upvote,TResult? Function( Post post)?  downvote,TResult? Function( Post post)?  delete,TResult? Function( Post post)?  deleteRepost,TResult? Function( String issue,  Post post)?  report,TResult? Function( Post post)?  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Map<String, dynamic> payload)?  repostDeleted,TResult? Function( Map<String, dynamic> payload)?  reported,TResult? Function( Map<String, dynamic> payload)?  liked,TResult? Function( Map<String, dynamic> payload)?  bookmarked,TResult? Function( Map<String, dynamic> payload)?  upvoted,TResult? Function( Map<String, dynamic> payload)?  downvoted,TResult? Function( Map<String, dynamic> payload)?  viewAdded,TResult? Function( Map<String, dynamic> payload)?  clickAdded,TResult? Function( Map<String, dynamic> payload)?  muted,TResult? Function( Post post)?  get,TResult? Function( Post post)?  addView,TResult? Function( Post post)?  addClick,TResult? Function( Post post)?  like,TResult? Function( Post post)?  mute,TResult? Function( Post post)?  bookmark,TResult? Function( Post post)?  upvote,TResult? Function( Post post)?  downvote,TResult? Function( Post post)?  delete,TResult? Function( Post post)?  deleteRepost,TResult? Function( String issue,  Post post)?  report,TResult? Function( Post post)?  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
 return loaded(_that.payload);case _Updated() when updated != null:
-return updated(_that.payload);case _Patched() when patched != null:
-return patched(_that.payload);case _Deleted() when deleted != null:
+return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _RepostDeleted() when repostDeleted != null:
 return repostDeleted(_that.payload);case _Reported() when reported != null:
 return reported(_that.payload);case _Liked() when liked != null:
@@ -1579,8 +1487,7 @@ return downvoted(_that.payload);case _ViewAdded() when viewAdded != null:
 return viewAdded(_that.payload);case _ClickAdded() when clickAdded != null:
 return clickAdded(_that.payload);case _Muted() when muted != null:
 return muted(_that.payload);case _Get() when get != null:
-return get(_that.post);case _Patch() when patch != null:
-return patch(_that.id,_that.body,_that.status,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.filePaths,_that.location);case _AddView() when addView != null:
+return get(_that.post);case _AddView() when addView != null:
 return addView(_that.post);case _AddClick() when addClick != null:
 return addClick(_that.post);case _Like() when like != null:
 return like(_that.post);case _Mute() when mute != null:
@@ -1807,78 +1714,6 @@ class __$UpdatedCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
   return _then(_Updated(
-payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class _Patched implements PostDetailEvent {
-  const _Patched({required final  Map<String, dynamic> payload}): _payload = payload;
-  
-
- final  Map<String, dynamic> _payload;
- Map<String, dynamic> get payload {
-  if (_payload is EqualUnmodifiableMapView) return _payload;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_payload);
-}
-
-
-/// Create a copy of PostDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$PatchedCopyWith<_Patched> get copyWith => __$PatchedCopyWithImpl<_Patched>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Patched&&const DeepCollectionEquality().equals(other._payload, _payload));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
-
-@override
-String toString() {
-  return 'PostDetailEvent.patched(payload: $payload)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$PatchedCopyWith<$Res> implements $PostDetailEventCopyWith<$Res> {
-  factory _$PatchedCopyWith(_Patched value, $Res Function(_Patched) _then) = __$PatchedCopyWithImpl;
-@useResult
-$Res call({
- Map<String, dynamic> payload
-});
-
-
-
-
-}
-/// @nodoc
-class __$PatchedCopyWithImpl<$Res>
-    implements _$PatchedCopyWith<$Res> {
-  __$PatchedCopyWithImpl(this._self, this._then);
-
-  final _Patched _self;
-  final $Res Function(_Patched) _then;
-
-/// Create a copy of PostDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
-  return _then(_Patched(
 payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>,
   ));
@@ -2678,206 +2513,6 @@ $PostCopyWith<$Res> get post {
   
   return $PostCopyWith<$Res>(_self.post, (value) {
     return _then(_self.copyWith(post: value));
-  });
-}
-}
-
-/// @nodoc
-
-
-class _Patch implements PostDetailEvent {
-  const _Patch({required this.id, required this.body, required this.status, this.repostOf, this.replyTo, this.communityNoteOf, this.ballot, this.survey, this.petition, this.meeting, this.section, final  List<Map<String, dynamic>> tags = const [], final  List<String> filePaths = const [], this.location}): _tags = tags,_filePaths = filePaths;
-  
-
- final  int id;
- final  String body;
- final  PostStatus status;
- final  Post? repostOf;
- final  Post? replyTo;
- final  Post? communityNoteOf;
- final  Ballot? ballot;
- final  Survey? survey;
- final  Petition? petition;
- final  Meeting? meeting;
- final  Section? section;
- final  List<Map<String, dynamic>> _tags;
-@JsonKey() List<Map<String, dynamic>> get tags {
-  if (_tags is EqualUnmodifiableListView) return _tags;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_tags);
-}
-
- final  List<String> _filePaths;
-@JsonKey() List<String> get filePaths {
-  if (_filePaths is EqualUnmodifiableListView) return _filePaths;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_filePaths);
-}
-
- final  LatLng? location;
-
-/// Create a copy of PostDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$PatchCopyWith<_Patch> get copyWith => __$PatchCopyWithImpl<_Patch>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Patch&&(identical(other.id, id) || other.id == id)&&(identical(other.body, body) || other.body == body)&&(identical(other.status, status) || other.status == status)&&(identical(other.repostOf, repostOf) || other.repostOf == repostOf)&&(identical(other.replyTo, replyTo) || other.replyTo == replyTo)&&(identical(other.communityNoteOf, communityNoteOf) || other.communityNoteOf == communityNoteOf)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.section, section) || other.section == section)&&const DeepCollectionEquality().equals(other._tags, _tags)&&const DeepCollectionEquality().equals(other._filePaths, _filePaths)&&(identical(other.location, location) || other.location == location));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,id,body,status,repostOf,replyTo,communityNoteOf,ballot,survey,petition,meeting,section,const DeepCollectionEquality().hash(_tags),const DeepCollectionEquality().hash(_filePaths),location);
-
-@override
-String toString() {
-  return 'PostDetailEvent.patch(id: $id, body: $body, status: $status, repostOf: $repostOf, replyTo: $replyTo, communityNoteOf: $communityNoteOf, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, section: $section, tags: $tags, filePaths: $filePaths, location: $location)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$PatchCopyWith<$Res> implements $PostDetailEventCopyWith<$Res> {
-  factory _$PatchCopyWith(_Patch value, $Res Function(_Patch) _then) = __$PatchCopyWithImpl;
-@useResult
-$Res call({
- int id, String body, PostStatus status, Post? repostOf, Post? replyTo, Post? communityNoteOf, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting, Section? section, List<Map<String, dynamic>> tags, List<String> filePaths, LatLng? location
-});
-
-
-$PostCopyWith<$Res>? get repostOf;$PostCopyWith<$Res>? get replyTo;$PostCopyWith<$Res>? get communityNoteOf;$BallotCopyWith<$Res>? get ballot;$SurveyCopyWith<$Res>? get survey;$PetitionCopyWith<$Res>? get petition;$MeetingCopyWith<$Res>? get meeting;$SectionCopyWith<$Res>? get section;
-
-}
-/// @nodoc
-class __$PatchCopyWithImpl<$Res>
-    implements _$PatchCopyWith<$Res> {
-  __$PatchCopyWithImpl(this._self, this._then);
-
-  final _Patch _self;
-  final $Res Function(_Patch) _then;
-
-/// Create a copy of PostDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? id = null,Object? body = null,Object? status = null,Object? repostOf = freezed,Object? replyTo = freezed,Object? communityNoteOf = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? meeting = freezed,Object? section = freezed,Object? tags = null,Object? filePaths = null,Object? location = freezed,}) {
-  return _then(_Patch(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,body: null == body ? _self.body : body // ignore: cast_nullable_to_non_nullable
-as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as PostStatus,repostOf: freezed == repostOf ? _self.repostOf : repostOf // ignore: cast_nullable_to_non_nullable
-as Post?,replyTo: freezed == replyTo ? _self.replyTo : replyTo // ignore: cast_nullable_to_non_nullable
-as Post?,communityNoteOf: freezed == communityNoteOf ? _self.communityNoteOf : communityNoteOf // ignore: cast_nullable_to_non_nullable
-as Post?,ballot: freezed == ballot ? _self.ballot : ballot // ignore: cast_nullable_to_non_nullable
-as Ballot?,survey: freezed == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
-as Survey?,petition: freezed == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
-as Petition?,meeting: freezed == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
-as Meeting?,section: freezed == section ? _self.section : section // ignore: cast_nullable_to_non_nullable
-as Section?,tags: null == tags ? _self._tags : tags // ignore: cast_nullable_to_non_nullable
-as List<Map<String, dynamic>>,filePaths: null == filePaths ? _self._filePaths : filePaths // ignore: cast_nullable_to_non_nullable
-as List<String>,location: freezed == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
-as LatLng?,
-  ));
-}
-
-/// Create a copy of PostDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$PostCopyWith<$Res>? get repostOf {
-    if (_self.repostOf == null) {
-    return null;
-  }
-
-  return $PostCopyWith<$Res>(_self.repostOf!, (value) {
-    return _then(_self.copyWith(repostOf: value));
-  });
-}/// Create a copy of PostDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$PostCopyWith<$Res>? get replyTo {
-    if (_self.replyTo == null) {
-    return null;
-  }
-
-  return $PostCopyWith<$Res>(_self.replyTo!, (value) {
-    return _then(_self.copyWith(replyTo: value));
-  });
-}/// Create a copy of PostDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$PostCopyWith<$Res>? get communityNoteOf {
-    if (_self.communityNoteOf == null) {
-    return null;
-  }
-
-  return $PostCopyWith<$Res>(_self.communityNoteOf!, (value) {
-    return _then(_self.copyWith(communityNoteOf: value));
-  });
-}/// Create a copy of PostDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$BallotCopyWith<$Res>? get ballot {
-    if (_self.ballot == null) {
-    return null;
-  }
-
-  return $BallotCopyWith<$Res>(_self.ballot!, (value) {
-    return _then(_self.copyWith(ballot: value));
-  });
-}/// Create a copy of PostDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$SurveyCopyWith<$Res>? get survey {
-    if (_self.survey == null) {
-    return null;
-  }
-
-  return $SurveyCopyWith<$Res>(_self.survey!, (value) {
-    return _then(_self.copyWith(survey: value));
-  });
-}/// Create a copy of PostDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$PetitionCopyWith<$Res>? get petition {
-    if (_self.petition == null) {
-    return null;
-  }
-
-  return $PetitionCopyWith<$Res>(_self.petition!, (value) {
-    return _then(_self.copyWith(petition: value));
-  });
-}/// Create a copy of PostDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$MeetingCopyWith<$Res>? get meeting {
-    if (_self.meeting == null) {
-    return null;
-  }
-
-  return $MeetingCopyWith<$Res>(_self.meeting!, (value) {
-    return _then(_self.copyWith(meeting: value));
-  });
-}/// Create a copy of PostDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$SectionCopyWith<$Res>? get section {
-    if (_self.section == null) {
-    return null;
-  }
-
-  return $SectionCopyWith<$Res>(_self.section!, (value) {
-    return _then(_self.copyWith(section: value));
   });
 }
 }

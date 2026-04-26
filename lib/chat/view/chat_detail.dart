@@ -61,7 +61,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   void _getData() {
     context.read<ChatDetailBloc>().add(ChatDetailEvent.get(chat: widget.chat));
-    context.read<UserDetailBloc>().add(UserDetailEvent.get(user: _otherUser));
+    context.read<UserDetailBloc>().add(
+      UserDetailEvent.get(userId: _otherUser.id),
+    );
     context.read<ChatDetailBloc>().add(
       ChatDetailEvent.markAsRead(chat: widget.chat),
     );
@@ -103,13 +105,13 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             if (state.status == MessageCreateStatus.loading) {
               setState(() {
                 _showLoading = true;
-                _showFailure =false;
+                _showFailure = false;
               });
             }
             if (state.status == MessageCreateStatus.failure) {
               setState(() {
                 _showLoading = false;
-                _showFailure =true;
+                _showFailure = true;
               });
             }
           },

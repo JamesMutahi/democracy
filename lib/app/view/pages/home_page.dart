@@ -2,11 +2,11 @@ import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/expandable_fab.dart';
+import 'package:democracy/post/bloc/draft_post/draft_post_bloc.dart';
 import 'package:democracy/post/bloc/following_posts/following_posts_bloc.dart';
 import 'package:democracy/post/bloc/for_you/for_you_bloc.dart';
 import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
-import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
@@ -37,17 +37,6 @@ class _HomePageState extends State<HomePage>
       listeners: [
         BlocListener<PostDetailBloc, PostDetailState>(
           listener: (context, state) {
-            if (state is PostPatched) {
-              String message = state.post.status == PostStatus.published
-                  ? 'Posted'
-                  : 'Saved';
-              final snackBar = getSnackBar(
-                context: context,
-                message: message,
-                status: SnackBarStatus.success,
-              );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            }
             if (state is PostDetailFailure) {
               final snackBar = getSnackBar(
                 context: context,
@@ -61,11 +50,22 @@ class _HomePageState extends State<HomePage>
         BlocListener<PostCreateBloc, PostCreateState>(
           listener: (context, state) {
             if (state.status == PostCreateStatus.success) {
-              String message = state.post!.status == PostStatus.published
-                  ? state.post!.replyTo == null
-                        ? 'Posted'
-                        : 'Reply sent'
-                  : 'Post saved as draft';
+              String message = state.post!.replyTo == null
+                  ? 'Posted'
+                  : 'Reply sent';
+              final snackBar = getSnackBar(
+                context: context,
+                message: message,
+                status: SnackBarStatus.success,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+          },
+        ),
+        BlocListener<DraftPostBloc, DraftPostState>(
+          listener: (context, state) {
+            if (state is DraftSaved) {
+              String message = 'Post saved as draft';
               final snackBar = getSnackBar(
                 context: context,
                 message: message,

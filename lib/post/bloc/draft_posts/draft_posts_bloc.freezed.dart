@@ -55,13 +55,14 @@ extension DraftPostsEventPatterns on DraftPostsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Update value)?  update,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Add value)?  add,TResult Function( _Update value)?  update,TResult Function( _Remove value)?  remove,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that);case _Received() when received != null:
-return received(_that);case _Update() when update != null:
-return update(_that);case _:
+return get(_that);case _Add() when add != null:
+return add(_that);case _Update() when update != null:
+return update(_that);case _Remove() when remove != null:
+return remove(_that);case _:
   return orElse();
 
 }
@@ -79,13 +80,14 @@ return update(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Update value)  update,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Add value)  add,required TResult Function( _Update value)  update,required TResult Function( _Remove value)  remove,}){
 final _that = this;
 switch (_that) {
 case _Get():
-return get(_that);case _Received():
-return received(_that);case _Update():
-return update(_that);}
+return get(_that);case _Add():
+return add(_that);case _Update():
+return update(_that);case _Remove():
+return remove(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -99,13 +101,14 @@ return update(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Update value)?  update,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Add value)?  add,TResult? Function( _Update value)?  update,TResult? Function( _Remove value)?  remove,}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that);case _Received() when received != null:
-return received(_that);case _Update() when update != null:
-return update(_that);case _:
+return get(_that);case _Add() when add != null:
+return add(_that);case _Update() when update != null:
+return update(_that);case _Remove() when remove != null:
+return remove(_that);case _:
   return null;
 
 }
@@ -122,12 +125,13 @@ return update(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( List<Post>? previousPosts)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( List<Post> posts)?  update,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  get,TResult Function( DraftPost draft)?  add,TResult Function( DraftPost draft)?  update,TResult Function( int id)?  remove,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.previousPosts);case _Received() when received != null:
-return received(_that.payload);case _Update() when update != null:
-return update(_that.posts);case _:
+return get();case _Add() when add != null:
+return add(_that.draft);case _Update() when update != null:
+return update(_that.draft);case _Remove() when remove != null:
+return remove(_that.id);case _:
   return orElse();
 
 }
@@ -145,12 +149,13 @@ return update(_that.posts);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( List<Post>? previousPosts)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( List<Post> posts)  update,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  get,required TResult Function( DraftPost draft)  add,required TResult Function( DraftPost draft)  update,required TResult Function( int id)  remove,}) {final _that = this;
 switch (_that) {
 case _Get():
-return get(_that.previousPosts);case _Received():
-return received(_that.payload);case _Update():
-return update(_that.posts);}
+return get();case _Add():
+return add(_that.draft);case _Update():
+return update(_that.draft);case _Remove():
+return remove(_that.id);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -164,12 +169,13 @@ return update(_that.posts);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( List<Post>? previousPosts)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( List<Post> posts)?  update,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  get,TResult? Function( DraftPost draft)?  add,TResult? Function( DraftPost draft)?  update,TResult? Function( int id)?  remove,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.previousPosts);case _Received() when received != null:
-return received(_that.payload);case _Update() when update != null:
-return update(_that.posts);case _:
+return get();case _Add() when add != null:
+return add(_that.draft);case _Update() when update != null:
+return update(_that.draft);case _Remove() when remove != null:
+return remove(_that.id);case _:
   return null;
 
 }
@@ -181,50 +187,74 @@ return update(_that.posts);case _:
 
 
 class _Get implements DraftPostsEvent {
-  const _Get({final  List<Post>? previousPosts}): _previousPosts = previousPosts;
+  const _Get();
   
 
- final  List<Post>? _previousPosts;
- List<Post>? get previousPosts {
-  final value = _previousPosts;
-  if (value == null) return null;
-  if (_previousPosts is EqualUnmodifiableListView) return _previousPosts;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(value);
-}
 
 
-/// Create a copy of DraftPostsEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$GetCopyWith<_Get> get copyWith => __$GetCopyWithImpl<_Get>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&const DeepCollectionEquality().equals(other._previousPosts, _previousPosts));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get);
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_previousPosts));
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'DraftPostsEvent.get(previousPosts: $previousPosts)';
+  return 'DraftPostsEvent.get()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _Add implements DraftPostsEvent {
+  const _Add({required this.draft});
+  
+
+ final  DraftPost draft;
+
+/// Create a copy of DraftPostsEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AddCopyWith<_Add> get copyWith => __$AddCopyWithImpl<_Add>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Add&&(identical(other.draft, draft) || other.draft == draft));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,draft);
+
+@override
+String toString() {
+  return 'DraftPostsEvent.add(draft: $draft)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$GetCopyWith<$Res> implements $DraftPostsEventCopyWith<$Res> {
-  factory _$GetCopyWith(_Get value, $Res Function(_Get) _then) = __$GetCopyWithImpl;
+abstract mixin class _$AddCopyWith<$Res> implements $DraftPostsEventCopyWith<$Res> {
+  factory _$AddCopyWith(_Add value, $Res Function(_Add) _then) = __$AddCopyWithImpl;
 @useResult
 $Res call({
- List<Post>? previousPosts
+ DraftPost draft
 });
 
 
@@ -232,91 +262,19 @@ $Res call({
 
 }
 /// @nodoc
-class __$GetCopyWithImpl<$Res>
-    implements _$GetCopyWith<$Res> {
-  __$GetCopyWithImpl(this._self, this._then);
+class __$AddCopyWithImpl<$Res>
+    implements _$AddCopyWith<$Res> {
+  __$AddCopyWithImpl(this._self, this._then);
 
-  final _Get _self;
-  final $Res Function(_Get) _then;
-
-/// Create a copy of DraftPostsEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? previousPosts = freezed,}) {
-  return _then(_Get(
-previousPosts: freezed == previousPosts ? _self._previousPosts : previousPosts // ignore: cast_nullable_to_non_nullable
-as List<Post>?,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class _Received implements DraftPostsEvent {
-  const _Received({required final  Map<String, dynamic> payload}): _payload = payload;
-  
-
- final  Map<String, dynamic> _payload;
- Map<String, dynamic> get payload {
-  if (_payload is EqualUnmodifiableMapView) return _payload;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_payload);
-}
-
+  final _Add _self;
+  final $Res Function(_Add) _then;
 
 /// Create a copy of DraftPostsEvent
 /// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$ReceivedCopyWith<_Received> get copyWith => __$ReceivedCopyWithImpl<_Received>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Received&&const DeepCollectionEquality().equals(other._payload, _payload));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
-
-@override
-String toString() {
-  return 'DraftPostsEvent.received(payload: $payload)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$ReceivedCopyWith<$Res> implements $DraftPostsEventCopyWith<$Res> {
-  factory _$ReceivedCopyWith(_Received value, $Res Function(_Received) _then) = __$ReceivedCopyWithImpl;
-@useResult
-$Res call({
- Map<String, dynamic> payload
-});
-
-
-
-
-}
-/// @nodoc
-class __$ReceivedCopyWithImpl<$Res>
-    implements _$ReceivedCopyWith<$Res> {
-  __$ReceivedCopyWithImpl(this._self, this._then);
-
-  final _Received _self;
-  final $Res Function(_Received) _then;
-
-/// Create a copy of DraftPostsEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
-  return _then(_Received(
-payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>,
+@pragma('vm:prefer-inline') $Res call({Object? draft = null,}) {
+  return _then(_Add(
+draft: null == draft ? _self.draft : draft // ignore: cast_nullable_to_non_nullable
+as DraftPost,
   ));
 }
 
@@ -327,16 +285,10 @@ as Map<String, dynamic>,
 
 
 class _Update implements DraftPostsEvent {
-  const _Update({required final  List<Post> posts}): _posts = posts;
+  const _Update({required this.draft});
   
 
- final  List<Post> _posts;
- List<Post> get posts {
-  if (_posts is EqualUnmodifiableListView) return _posts;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_posts);
-}
-
+ final  DraftPost draft;
 
 /// Create a copy of DraftPostsEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -348,16 +300,16 @@ _$UpdateCopyWith<_Update> get copyWith => __$UpdateCopyWithImpl<_Update>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Update&&const DeepCollectionEquality().equals(other._posts, _posts));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Update&&(identical(other.draft, draft) || other.draft == draft));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_posts));
+int get hashCode => Object.hash(runtimeType,draft);
 
 @override
 String toString() {
-  return 'DraftPostsEvent.update(posts: $posts)';
+  return 'DraftPostsEvent.update(draft: $draft)';
 }
 
 
@@ -368,7 +320,7 @@ abstract mixin class _$UpdateCopyWith<$Res> implements $DraftPostsEventCopyWith<
   factory _$UpdateCopyWith(_Update value, $Res Function(_Update) _then) = __$UpdateCopyWithImpl;
 @useResult
 $Res call({
- List<Post> posts
+ DraftPost draft
 });
 
 
@@ -385,10 +337,76 @@ class __$UpdateCopyWithImpl<$Res>
 
 /// Create a copy of DraftPostsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? posts = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? draft = null,}) {
   return _then(_Update(
-posts: null == posts ? _self._posts : posts // ignore: cast_nullable_to_non_nullable
-as List<Post>,
+draft: null == draft ? _self.draft : draft // ignore: cast_nullable_to_non_nullable
+as DraftPost,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _Remove implements DraftPostsEvent {
+  const _Remove({required this.id});
+  
+
+ final  int id;
+
+/// Create a copy of DraftPostsEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$RemoveCopyWith<_Remove> get copyWith => __$RemoveCopyWithImpl<_Remove>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Remove&&(identical(other.id, id) || other.id == id));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id);
+
+@override
+String toString() {
+  return 'DraftPostsEvent.remove(id: $id)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$RemoveCopyWith<$Res> implements $DraftPostsEventCopyWith<$Res> {
+  factory _$RemoveCopyWith(_Remove value, $Res Function(_Remove) _then) = __$RemoveCopyWithImpl;
+@useResult
+$Res call({
+ int id
+});
+
+
+
+
+}
+/// @nodoc
+class __$RemoveCopyWithImpl<$Res>
+    implements _$RemoveCopyWith<$Res> {
+  __$RemoveCopyWithImpl(this._self, this._then);
+
+  final _Remove _self;
+  final $Res Function(_Remove) _then;
+
+/// Create a copy of DraftPostsEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? id = null,}) {
+  return _then(_Remove(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

@@ -10,7 +10,7 @@ sealed class UserDetailEvent with _$UserDetailEvent {
     required Map<String, dynamic> payload,
   }) = _Updated;
 
-  const factory UserDetailEvent.get({required User user}) = _Get;
+  const factory UserDetailEvent.get({required int userId}) = _Get;
 
   const factory UserDetailEvent.patch({
     required User user,

@@ -130,64 +130,6 @@ class APIProvider {
     }
   }
 
-  Future<Post> patchPost({
-    required String token,
-    required int id,
-    String? body,
-    required PostStatus status,
-    Post? repostOf,
-    Post? replyTo,
-    Post? communityNoteOf,
-    Ballot? ballot,
-    Survey? survey,
-    Petition? petition,
-    Meeting? meeting,
-    Section? section,
-    List<Map> tags = const [],
-    List<Map> assets = const [],
-    LatLng? location,
-  }) async {
-    try {
-      final data = {
-        'status': status == PostStatus.published ? 'published' : 'draft',
-        'body': ?body,
-        'reply_to_id': ?replyTo?.id,
-        'repost_of_id': ?repostOf?.id,
-        'community_note_of_id': ?communityNoteOf?.id,
-        'ballot_id': ?ballot?.id,
-        'survey_id': ?survey?.id,
-        'petition_id': ?petition?.id,
-        'meeting_id': ?meeting?.id,
-        'section_id': ?section?.id,
-        'assets': assets,
-        if (location != null)
-          'location': 'POINT (${location.longitude} ${location.latitude})',
-      };
-
-      // Flatten keys: Manually add tags in a format Django Rest Framework understands
-      for (int i = 0; i < tags.length; i++) {
-        data["tags[$i]id"] = tags[i]['id'];
-        data["tags[$i]text"] = tags[i]['text'];
-      }
-
-      Response response = await dio.patch(
-        'post/update/$id/',
-        data: FormData.fromMap(data),
-        options: Options(
-          headers: <String, String>{'Authorization': 'Token $token'},
-        ),
-      );
-      if (response.statusCode == 200) {
-        final Post post = Post.fromJson(response.data);
-        return post;
-      } else {
-        return Future.error(response.data.toString());
-      }
-    } on DioException catch (e) {
-      return Future.error(e.toString());
-    }
-  }
-
   Future<Map<String, dynamic>> createMessage({
     required String token,
     required Chat chat,
