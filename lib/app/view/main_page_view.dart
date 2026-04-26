@@ -132,18 +132,7 @@ class _MainPageViewState extends State<MainPageView> {
                   user: user,
                   notifications: _unreadNotifications.length,
                 ),
-                MeetingsPage(
-                  user: user,
-                  notifications: _unreadNotifications.length,
-                ),
-                BallotPage(
-                  user: user,
-                  notifications: _unreadNotifications.length,
-                ),
-                FormsPage(
-                  user: user,
-                  notifications: _unreadNotifications.length,
-                ),
+                Hub(user: user, notifications: _unreadNotifications.length),
                 MessagePage(
                   user: user,
                   notifications: _unreadNotifications.length,

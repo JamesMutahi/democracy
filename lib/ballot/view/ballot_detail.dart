@@ -4,7 +4,7 @@ import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/models/option.dart';
-import 'package:democracy/ballot/view/ballot_tile.dart';
+import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

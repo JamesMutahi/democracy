@@ -1,7 +1,6 @@
 import 'package:democracy/app.dart';
 import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
-import 'package:democracy/app/bloc/forms_tab_bar/forms_tab_bar_cubit.dart';
 import 'package:democracy/app/bloc/location/location_cubit.dart';
 import 'package:democracy/app/bloc/repository/api_repository.dart';
 import 'package:democracy/app/bloc/global/global_cubit.dart';
@@ -12,7 +11,6 @@ import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/ballot/bloc/ballot_filter/ballot_filter_cubit.dart';
-import 'package:democracy/ballot/bloc/ballots/ballots_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/bloc/chat_filter/chat_filter_cubit.dart';
 import 'package:democracy/chat/bloc/direct_message/direct_message_bloc.dart';
@@ -122,12 +120,6 @@ void main() async {
             ),
           ),
           BlocProvider(create: (context) => BottomNavBarCubit()),
-          BlocProvider(create: (context) => PageBloc()),
-          BlocProvider(create: (context) => SurveyBottomNavigationBloc()),
-          BlocProvider(
-            create: (context) =>
-                BallotsBloc(webSocketService: context.read<WebSocketService>()),
-          ),
           BlocProvider(create: (context) => BallotFilterCubit()),
           BlocProvider(
             create: (context) => BallotDetailBloc(
@@ -197,6 +189,8 @@ void main() async {
               webSocketService: context.read<WebSocketService>(),
             ),
           ),
+          BlocProvider(create: (context) => PageBloc()),
+          BlocProvider(create: (context) => SurveyBottomNavigationBloc()),
           BlocProvider(
             create: (context) =>
                 AnswerBloc(webSocketService: context.read<WebSocketService>()),
@@ -264,7 +258,6 @@ void main() async {
               webSocketService: context.read<WebSocketService>(),
             ),
           ),
-          BlocProvider(create: (context) => FormsTabBarCubit()),
           BlocProvider(create: (context) => MeetingFilterCubit()),
           BlocProvider(
             create: (context) => MeetingDetailBloc(

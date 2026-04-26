@@ -12,15 +12,11 @@ import 'package:democracy/app/view/main_page_view.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/auth/view/login.dart';
-import 'package:democracy/ballot/bloc/ballots/ballots_bloc.dart';
 import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
-import 'package:democracy/meet/bloc/meetings/meetings_bloc.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
-import 'package:democracy/petition/bloc/petitions/petitions_bloc.dart';
 import 'package:democracy/post/bloc/following_posts/following_posts_bloc.dart';
 import 'package:democracy/post/bloc/for_you/for_you_bloc.dart';
 import 'package:democracy/post/bloc/trending_posts/trending_posts_bloc.dart';
-import 'package:democracy/survey/bloc/surveys/surveys_bloc.dart';
 import 'package:democracy/user/bloc/follow_recommendations/follow_recommendations_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -113,22 +109,6 @@ class MyApp extends StatelessWidget {
           create: (context) => FollowingPostsBloc(
             webSocketService: context.read<WebSocketService>(),
           ),
-        ),
-        BlocProvider(
-          create: (context) =>
-              MeetingsBloc(webSocketService: context.read<WebSocketService>()),
-        ),
-        BlocProvider(
-          create: (context) =>
-              BallotsBloc(webSocketService: context.read<WebSocketService>()),
-        ),
-        BlocProvider(
-          create: (context) =>
-              SurveysBloc(webSocketService: context.read<WebSocketService>()),
-        ),
-        BlocProvider(
-          create: (context) =>
-              PetitionsBloc(webSocketService: context.read<WebSocketService>()),
         ),
         BlocProvider(
           create: (context) =>

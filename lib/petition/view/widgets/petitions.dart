@@ -5,7 +5,7 @@ import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dar
 import 'package:democracy/petition/bloc/petition_filter/petition_filter_cubit.dart';
 import 'package:democracy/petition/bloc/petitions/petitions_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
-import 'package:democracy/petition/view/petition_tile.dart';
+import 'package:democracy/petition/view/widgets/petition_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';

@@ -1,13 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/ballot/view/ballot_detail.dart';
 import 'package:democracy/chat/view/utils/chat_navigator.dart';
-import 'package:democracy/meet/view/meeting_tile.dart';
+import 'package:democracy/meet/view/widgets/meeting_tile.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/petition/view/petition_detail.dart';
 import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/post/view/widgets/post_body.dart';
-import 'package:democracy/survey/view/survey_tile.dart';
+import 'package:democracy/survey/view/widgets/survey_tile.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/pages/users.dart';
 import 'package:democracy/user/view/utils/profile_navigator.dart';

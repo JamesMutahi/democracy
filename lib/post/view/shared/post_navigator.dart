@@ -104,30 +104,41 @@ void navigateToPostCreate({
   Meeting? meeting,
   Section? section,
 }) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) =>
-                RepliesBloc(webSocketService: context.read<WebSocketService>()),
+  Navigator.of(context).push(
+    PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => RepliesBloc(
+                  webSocketService: context.read<WebSocketService>(),
+                ),
+              ),
+              BlocProvider(
+                create: (context) => ReplyToBloc(
+                  webSocketService: context.read<WebSocketService>(),
+                ),
+              ),
+            ],
+            child: PostCreatePage(
+              replyTo: replyTo,
+              repostOf: repostOf,
+              ballot: ballot,
+              survey: survey,
+              petition: petition,
+              meeting: meeting,
+              section: section,
+            ),
           ),
-          BlocProvider(
-            create: (context) =>
-                ReplyToBloc(webSocketService: context.read<WebSocketService>()),
-          ),
-        ],
-        child: PostCreatePage(
-          replyTo: replyTo,
-          repostOf: repostOf,
-          ballot: ballot,
-          survey: survey,
-          petition: petition,
-          meeting: meeting,
-          section: section,
-        ),
-      ),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(0.0, 1.0);
+        const end = Offset.zero;
+        final tween = Tween(
+          begin: begin,
+          end: end,
+        ).chain(CurveTween(curve: Curves.ease));
+        return SlideTransition(position: animation.drive(tween), child: child);
+      },
     ),
   );
 }

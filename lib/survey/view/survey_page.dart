@@ -1,32 +1,20 @@
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/filters_modal.dart';
-import 'package:democracy/meet/bloc/meeting_filter/meeting_filter_cubit.dart';
-import 'package:democracy/meet/bloc/meetings/meetings_bloc.dart';
-import 'package:democracy/meet/view/meetings.dart';
-import 'package:democracy/user/models/user.dart';
+import 'package:democracy/survey/bloc/survey_filter/survey_filter_cubit.dart';
+import 'package:democracy/survey/bloc/surveys/surveys_bloc.dart';
+import 'package:democracy/survey/view/widgets/surveys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class MeetingsPage extends StatefulWidget {
-  const MeetingsPage({
-    super.key,
-    required this.user,
-    required this.notifications,
-  });
-
-  final User user;
-  final int notifications;
+class SurveyPage extends StatefulWidget {
+  const SurveyPage({super.key});
 
   @override
-  State<MeetingsPage> createState() => _MeetingsPageState();
+  State<SurveyPage> createState() => _SurveyPageState();
 }
 
-class _MeetingsPageState extends State<MeetingsPage>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
+class _SurveyPageState extends State<SurveyPage> {
   final TextEditingController _controller = TextEditingController();
 
   @override
@@ -37,65 +25,65 @@ class _MeetingsPageState extends State<MeetingsPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    return NestedScrollView(
-      headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-        return [
-          CustomAppBar(
-            user: widget.user,
-            notifications: widget.notifications,
-            middle: Text(
-              'Meetings',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            bottom: PreferredSize(
-              preferredSize: Size.fromHeight(60.0),
-              child: BlocConsumer<MeetingFilterCubit, MeetingFilterState>(
-                listener: (context, state) {
-                  context.read<MeetingsBloc>().add(
-                    MeetingsEvent.get(
-                      searchTerm: state.searchTerm,
-                      isActive: state.isActive,
-                      sortBy: state.sortBy,
-                      filterByRegion: state.filterByRegion,
-                      startDate: state.startDate,
-                      endDate: state.endDate,
-                    ),
-                  );
-                },
-                builder: (context, state) {
-                  return CustomSearchBar(
-                    controller: _controller,
-                    hintText: 'Search',
-                    filterCount: state.count,
-                    onChanged: (value) {
-                      context.read<MeetingFilterCubit>().searchTermChanged(
-                        searchTerm: value,
-                      );
-                    },
-                    onFilterTap: () {
-                      showGeneralDialog(
-                        context: context,
-                        transitionDuration: const Duration(milliseconds: 300),
-                        pageBuilder: (context, animation, secondaryAnimation) {
-                          return _FiltersModal(
-                            isActive: state.isActive,
-                            filterByRegion: state.filterByRegion,
-                            sortBy: state.sortBy,
-                            startDate: state.startDate,
-                            endDate: state.endDate,
-                          );
-                        },
-                      );
-                    },
-                  );
-                },
+    return Scaffold(
+      body: NestedScrollView(
+        headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
+              floating: true,
+              snap: true,
+              forceElevated: true,
+              title: Text('Surveys'),
+              bottom: PreferredSize(
+                preferredSize: Size.fromHeight(60.0),
+                child: BlocConsumer<SurveyFilterCubit, SurveyFilterState>(
+                  listener: (context, state) {
+                    context.read<SurveysBloc>().add(
+                      SurveysEvent.get(
+                        searchTerm: state.searchTerm,
+                        isActive: state.isActive,
+                        sortBy: state.sortBy,
+                        filterByRegion: state.filterByRegion,
+                        startDate: state.startDate,
+                        endDate: state.endDate,
+                      ),
+                    );
+                  },
+                  builder: (context, state) {
+                    return CustomSearchBar(
+                      controller: _controller,
+                      hintText: 'Search',
+                      filterCount: state.count,
+                      onChanged: (value) {
+                        context.read<SurveyFilterCubit>().searchTermChanged(
+                          searchTerm: value,
+                        );
+                      },
+                      onFilterTap: () {
+                        showGeneralDialog(
+                          context: context,
+                          transitionDuration: const Duration(milliseconds: 300),
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) {
+                                return _FiltersModal(
+                                  isActive: state.isActive,
+                                  filterByRegion: state.filterByRegion,
+                                  sortBy: state.sortBy,
+                                  startDate: state.startDate,
+                                  endDate: state.endDate,
+                                );
+                              },
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
             ),
-          ),
-        ];
-      },
-      body: Meetings(),
+          ];
+        },
+        body: Surveys(),
+      ),
     );
   }
 }
@@ -197,10 +185,7 @@ class _FiltersModalState extends State<_FiltersModal> {
           orientation: OptionsOrientation.vertical,
           decoration: InputDecoration(border: InputBorder.none),
           options: [
-            FormBuilderFieldOption<bool>(
-              value: true,
-              child: Text('Yes (default)'),
-            ),
+            FormBuilderFieldOption<bool>(value: true, child: Text('Yes')),
             FormBuilderFieldOption<bool>(value: false, child: Text('No')),
           ],
           onChanged: (value) {
@@ -223,7 +208,7 @@ class _FiltersModalState extends State<_FiltersModal> {
   }
 
   void _applyFilters() {
-    context.read<MeetingFilterCubit>().filtersChanged(
+    context.read<SurveyFilterCubit>().filtersChanged(
       isActive: isActive,
       filterByRegion: filterByRegion,
       sortBy: sortBy,

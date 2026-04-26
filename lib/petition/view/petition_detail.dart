@@ -5,9 +5,9 @@ import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
-import 'package:democracy/petition/view/petition_tile.dart'
+import 'package:democracy/petition/view/widgets/petition_tile.dart'
     show PetitionSupportersRow, PetitionPopUpMenu, PetitionAuthorInfo;
-import 'package:democracy/petition/view/supporters.dart';
+import 'package:democracy/petition/view/widgets/supporters.dart';
 import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

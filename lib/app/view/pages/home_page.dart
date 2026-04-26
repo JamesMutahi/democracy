@@ -1,7 +1,6 @@
 import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
-import 'package:democracy/app/view/widgets/expandable_fab.dart';
 import 'package:democracy/post/bloc/draft_post/draft_post_bloc.dart';
 import 'package:democracy/post/bloc/following_posts/following_posts_bloc.dart';
 import 'package:democracy/post/bloc/for_you/for_you_bloc.dart';
@@ -27,8 +26,6 @@ class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-
-  bool maskOn = false;
 
   @override
   Widget build(BuildContext context) {
@@ -76,55 +73,33 @@ class _HomePageState extends State<HomePage>
           },
         ),
       ],
-      child: Stack(
-        children: [
-          DefaultTabController(
-            length: 2,
-            child: NestedScrollView(
-              headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-                return [
-                  CustomAppBar(
-                    user: widget.user,
-                    notifications: widget.notifications,
-                    middle: Image.asset(logo, width: 50, height: 50),
-                    bottom: TabBar(
-                      dividerColor: Theme.of(
-                        context,
-                      ).colorScheme.outlineVariant,
-                      labelStyle: Theme.of(context).textTheme.titleMedium,
-                      tabs: [
-                        Tab(text: 'For You'),
-                        Tab(text: 'Following'),
-                      ],
-                    ),
-                  ),
-                ];
-              },
-              body: TabBarView(
-                physics: NeverScrollableScrollPhysics(),
-                children: [ForYouTab(), FollowingTab()],
+      child: DefaultTabController(
+        length: 2,
+        child: NestedScrollView(
+          headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+            return [
+              CustomAppBar(
+                user: widget.user,
+                notifications: widget.notifications,
+                middle: Image.asset(logo, width: 50, height: 50),
+                bottom: TabBar(
+                  dividerColor: Theme.of(
+                    context,
+                  ).colorScheme.outlineVariant,
+                  labelStyle: Theme.of(context).textTheme.titleMedium,
+                  tabs: [
+                    Tab(text: 'For You'),
+                    Tab(text: 'Following'),
+                  ],
+                ),
               ),
-            ),
+            ];
+          },
+          body: TabBarView(
+            physics: NeverScrollableScrollPhysics(),
+            children: [ForYouTab(), FollowingTab()],
           ),
-          if (maskOn)
-            Container(
-              color: Theme.of(context).canvasColor.withValues(alpha: 0.8),
-            ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Container(
-              margin: EdgeInsets.only(right: 10, bottom: 10),
-              child: ExpandableFab(
-                distance: 112,
-                maskToggle: () {
-                  setState(() {
-                    maskOn = !maskOn;
-                  });
-                },
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

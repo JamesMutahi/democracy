@@ -3,7 +3,7 @@ import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
 import 'package:democracy/petition/bloc/user_petitions/user_petitions_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
-import 'package:democracy/petition/view/petition_tile.dart';
+import 'package:democracy/petition/view/widgets/petition_tile.dart';
 import 'package:democracy/post/bloc/likes/likes_bloc.dart';
 import 'package:democracy/post/bloc/user_community_notes/user_community_notes_bloc.dart';
 import 'package:democracy/post/bloc/user_posts/user_posts_bloc.dart';
