@@ -12,7 +12,6 @@ part 'meetings_state.dart';
 part 'meetings_bloc.freezed.dart';
 
 const String stream = 'meetings';
-const String requestId = 'meetings';
 const String action = 'list';
 
 class MeetingsBloc extends Bloc<MeetingsEvent, MeetingsState> {
@@ -42,7 +41,7 @@ class MeetingsBloc extends Bloc<MeetingsEvent, MeetingsState> {
       'stream': stream,
       'payload': {
         'action': 'list',
-        'request_id': requestId,
+        'request_id': event.searchTerm,
         'search_term': event.searchTerm,
         'previous_meetings': event.previousMeetings
             ?.map((meeting) => meeting.id)
@@ -67,6 +66,7 @@ class MeetingsBloc extends Bloc<MeetingsEvent, MeetingsState> {
       emit(
         state.copyWith(
           status: MeetingsStatus.success,
+          searchTerm: event.payload['request_id'],
           meetings: previousMeetings.isEmpty
               ? meetings
               : [...state.meetings, ...meetings],

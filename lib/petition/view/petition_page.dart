@@ -2,10 +2,12 @@ import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/filters_modal.dart';
 import 'package:democracy/petition/bloc/petition_filter/petition_filter_cubit.dart';
 import 'package:democracy/petition/bloc/petitions/petitions_bloc.dart';
+import 'package:democracy/petition/view/petition_create.dart';
 import 'package:democracy/petition/view/widgets/petitions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 class PetitionPage extends StatefulWidget {
   const PetitionPage({super.key});
@@ -60,17 +62,21 @@ class _PetitionPageState extends State<PetitionPage> {
                         );
                       },
                       onFilterTap: () {
+                        final filterCubit = context.read<PetitionFilterCubit>();
                         showGeneralDialog(
                           context: context,
                           transitionDuration: const Duration(milliseconds: 300),
                           pageBuilder:
                               (context, animation, secondaryAnimation) {
-                                return _FiltersModal(
-                                  isOpen: state.isOpen,
-                                  filterByRegion: state.filterByRegion,
-                                  sortBy: state.sortBy,
-                                  startDate: state.startDate,
-                                  endDate: state.endDate,
+                                return BlocProvider.value(
+                                  value: filterCubit,
+                                  child: _FiltersModal(
+                                    isOpen: state.isOpen,
+                                    filterByRegion: state.filterByRegion,
+                                    sortBy: state.sortBy,
+                                    startDate: state.startDate,
+                                    endDate: state.endDate,
+                                  ),
                                 );
                               },
                         );
@@ -83,6 +89,15 @@ class _PetitionPageState extends State<PetitionPage> {
           ];
         },
         body: Petitions(),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CreatePetition()),
+          );
+        },
+        child: Icon(Symbols.create_rounded),
       ),
     );
   }

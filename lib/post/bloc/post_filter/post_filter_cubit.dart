@@ -20,17 +20,13 @@ class PostFilterCubit extends Cubit<PostFilterState> {
     required bool onExplorePage,
     required String searchTerm,
   }) {
-    int count = 0;
-    if (state.startDate != null || state.endDate != null) {
-      count += 1;
-    }
     emit(
       PostFilterState.changed(
         onExplorePage: onExplorePage,
         searchTerm: searchTerm,
         startDate: state.startDate,
         endDate: state.endDate,
-        count: count
+        count: countFilters(),
       ),
     );
   }
@@ -40,17 +36,13 @@ class PostFilterCubit extends Cubit<PostFilterState> {
     required DateTime? startDate,
     required DateTime? endDate,
   }) {
-    int count = 0;
-    if (startDate != null || endDate != null) {
-      count += 1;
-    }
     emit(
       PostFilterState.changed(
         onExplorePage: onExplorePage,
         searchTerm: state.searchTerm,
         startDate: startDate,
         endDate: endDate,
-        count: count,
+        count: countFilters(),
       ),
     );
   }
@@ -65,5 +57,13 @@ class PostFilterCubit extends Cubit<PostFilterState> {
         count: 0,
       ),
     );
+  }
+
+  int countFilters() {
+    int count = 0;
+    if (state.startDate != null || state.endDate != null) {
+      count += 1;
+    }
+    return count;
   }
 }

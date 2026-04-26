@@ -1,6 +1,7 @@
 import 'package:democracy/app.dart';
 import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
+import 'package:democracy/app/bloc/hub_filter/hub_filter_cubit.dart';
 import 'package:democracy/app/bloc/location/location_cubit.dart';
 import 'package:democracy/app/bloc/repository/api_repository.dart';
 import 'package:democracy/app/bloc/global/global_cubit.dart';
@@ -10,7 +11,6 @@ import 'package:democracy/app/shared/utils/app_bloc_observer.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
-import 'package:democracy/ballot/bloc/ballot_filter/ballot_filter_cubit.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/bloc/chat_filter/chat_filter_cubit.dart';
 import 'package:democracy/chat/bloc/direct_message/direct_message_bloc.dart';
@@ -22,12 +22,10 @@ import 'package:democracy/constitution/bloc/section_detail/section_detail_bloc.d
 import 'package:democracy/constitution/bloc/sections/sections_bloc.dart';
 import 'package:democracy/geo/bloc/geo/geo_bloc.dart';
 import 'package:democracy/meet/bloc/meeting_detail/meeting_detail_bloc.dart';
-import 'package:democracy/meet/bloc/meeting_filter/meeting_filter_cubit.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/notification/bloc/preferences/preferences_bloc.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
-import 'package:democracy/petition/bloc/petition_filter/petition_filter_cubit.dart';
 import 'package:democracy/petition/bloc/supporters/supporters_bloc.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_bloc.dart';
 import 'package:democracy/post/bloc/draft_post/draft_post_bloc.dart';
@@ -37,7 +35,6 @@ import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/post_filter/post_filter_cubit.dart';
 import 'package:democracy/post/models/draft_post.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
-import 'package:democracy/survey/bloc/survey_filter/survey_filter_cubit.dart';
 import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/page/page_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/survey_bottom_navigation/survey_bottom_navigation_bloc.dart';
@@ -120,13 +117,13 @@ void main() async {
             ),
           ),
           BlocProvider(create: (context) => BottomNavBarCubit()),
-          BlocProvider(create: (context) => BallotFilterCubit()),
           BlocProvider(
             create: (context) => BallotDetailBloc(
               webSocketService: context.read<WebSocketService>(),
             ),
           ),
           BlocProvider(create: (context) => PostFilterCubit()),
+          BlocProvider(create: (context) => HubFilterCubit()),
           BlocProvider(
             create: (context) => PostDetailBloc(
               webSocketService: context.read<WebSocketService>(),
@@ -183,7 +180,6 @@ void main() async {
             ),
           ),
           BlocProvider(create: (context) => MessageActionsCubit()),
-          BlocProvider(create: (context) => SurveyFilterCubit()),
           BlocProvider(
             create: (context) => SurveyDetailBloc(
               webSocketService: context.read<WebSocketService>(),
@@ -230,7 +226,6 @@ void main() async {
               webSocketService: context.read<WebSocketService>(),
             ),
           ),
-          BlocProvider(create: (context) => PetitionFilterCubit()),
           BlocProvider(
             create: (context) => PetitionDetailBloc(
               webSocketService: context.read<WebSocketService>(),
@@ -258,7 +253,6 @@ void main() async {
               webSocketService: context.read<WebSocketService>(),
             ),
           ),
-          BlocProvider(create: (context) => MeetingFilterCubit()),
           BlocProvider(
             create: (context) => MeetingDetailBloc(
               webSocketService: context.read<WebSocketService>(),

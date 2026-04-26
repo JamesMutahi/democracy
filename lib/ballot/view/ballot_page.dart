@@ -60,19 +60,23 @@ class _BallotPageState extends State<BallotPage> {
                         );
                       },
                       onFilterTap: () {
+                        final filterCubit = context.read<BallotFilterCubit>();
                         showGeneralDialog(
                           context: context,
                           transitionDuration: const Duration(milliseconds: 300),
                           pageBuilder:
                               (context, animation, secondaryAnimation) {
-                                return _FiltersModal(
-                                  isActive: state.isActive,
-                                  filterByRegion: state.filterByRegion,
-                                  sortBy: state.sortBy,
-                                  startDate: state.startDate,
-                                  endDate: state.endDate,
-                                );
-                              },
+                            return BlocProvider.value(
+                              value: filterCubit,
+                              child: _FiltersModal(
+                                isActive: state.isActive,
+                                filterByRegion: state.filterByRegion,
+                                sortBy: state.sortBy,
+                                startDate: state.startDate,
+                                endDate: state.endDate,
+                              ),
+                            );
+                          },
                         );
                       },
                     );
@@ -116,17 +120,17 @@ class _FiltersModalState extends State<_FiltersModal> {
 
   bool get _isUnchanged =>
       isActive == widget.isActive &&
-      filterByRegion == widget.filterByRegion &&
-      sortBy == widget.sortBy &&
-      startDate == widget.startDate &&
-      endDate == widget.endDate;
+          filterByRegion == widget.filterByRegion &&
+          sortBy == widget.sortBy &&
+          startDate == widget.startDate &&
+          endDate == widget.endDate;
 
   bool get _isDefaultState =>
       isActive == true &&
-      sortBy == 'recent' &&
-      filterByRegion == true &&
-      startDate == null &&
-      endDate == null;
+          sortBy == 'recent' &&
+          filterByRegion == true &&
+          startDate == null &&
+          endDate == null;
 
   @override
   Widget build(BuildContext context) {

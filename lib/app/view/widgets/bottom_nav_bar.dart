@@ -95,31 +95,21 @@ class NavBarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(100),
-      child: SizedBox(
-        width: 60,
-        height: 60,
-        child: AnimatedContainer(
-          duration: const Duration(
-            milliseconds: 200,
-          ), // Smooth transition speed
-          curve: Curves.easeInOut,
-          width: isActive ? 27.0 : 25.0,
-          height: isActive ? 27.0 : 25.0,
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
-            child: SvgPicture.asset(
-              asset,
-              width: isActive ? 30.0 : 25,
-              height: isActive ? 30.0 : 25,
-              colorFilter: isActive
-                  ? null
-                  : ColorFilter.mode(
-                      Theme.of(context).disabledColor,
-                      BlendMode.srcIn,
-                    ),
+    return Center(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(100),
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: SvgPicture.asset(
+            asset,
+            width: 26,
+            height: 26,
+            colorFilter: ColorFilter.mode(
+              isActive
+                  ? Theme.of(context).primaryColor
+                  : Theme.of(context).disabledColor,
+              BlendMode.srcIn,
             ),
           ),
         ),

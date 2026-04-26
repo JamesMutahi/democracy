@@ -12,7 +12,6 @@ part 'ballots_state.dart';
 part 'ballots_event.dart';
 
 const String stream = 'ballots';
-const String requestId = 'ballots';
 const String action = 'list';
 
 class BallotsBloc extends Bloc<BallotsEvent, BallotsState> {
@@ -31,7 +30,7 @@ class BallotsBloc extends Bloc<BallotsEvent, BallotsState> {
   }
 
   void _onGet(_Get event, Emitter<BallotsState> emit) {
-    emit(state.copyWith(status: BallotsStatus.loading));
+    emit(state.copyWith(status: BallotsStatus.loading, searchTerm: event.searchTerm));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: BallotsStatus.failure));
       return;
@@ -41,7 +40,7 @@ class BallotsBloc extends Bloc<BallotsEvent, BallotsState> {
       'stream': stream,
       'payload': {
         'action': 'list',
-        'request_id': requestId,
+        'request_id': event.searchTerm,
         'search_term': event.searchTerm,
         'previous_ballots': event.previousBallots
             ?.map((ballot) => ballot.id)
@@ -66,6 +65,7 @@ class BallotsBloc extends Bloc<BallotsEvent, BallotsState> {
       emit(
         state.copyWith(
           status: BallotsStatus.success,
+          searchTerm: event.payload['request_id'],
           ballots: previousBallots.isEmpty
               ? ballots
               : [...state.ballots, ...ballots],

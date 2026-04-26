@@ -32,11 +32,15 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
           if (connectivityResult.contains(ConnectivityResult.none)) {
             add(const _ChangeConnection(ConnectivityFailure()));
           } else {
-            final dio = Dio();
-            Response response = await dio.get('http://example.com');
-            if (response.statusCode == 200) {
-              add(const _ChangeConnection(ConnectivitySuccess()));
-            } else {
+            try {
+              final dio = Dio();
+              Response response = await dio.get('http://example.com');
+              if (response.statusCode == 200) {
+                add(const _ChangeConnection(ConnectivitySuccess()));
+              } else {
+                add(const _ChangeConnection(ConnectivityFailure()));
+              }
+            } catch (e) {
               add(const _ChangeConnection(ConnectivityFailure()));
             }
           }

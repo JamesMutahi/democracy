@@ -12,7 +12,6 @@ part 'surveys_state.dart';
 part 'surveys_event.dart';
 
 const String stream = 'surveys';
-const String requestId = 'surveys';
 const String action = 'list';
 
 class SurveysBloc extends Bloc<SurveysEvent, SurveysState> {
@@ -41,7 +40,7 @@ class SurveysBloc extends Bloc<SurveysEvent, SurveysState> {
       'stream': stream,
       'payload': {
         'action': 'list',
-        'request_id': requestId,
+        'request_id': event.searchTerm,
         'search_term': event.searchTerm,
         'previous_surveys': event.previousSurveys
             ?.map((survey) => survey.id)
@@ -66,6 +65,7 @@ class SurveysBloc extends Bloc<SurveysEvent, SurveysState> {
       emit(
         state.copyWith(
           status: SurveysStatus.success,
+          searchTerm: event.payload['request_id'],
           surveys: previousSurveys.isEmpty
               ? surveys
               : [...state.surveys, ...surveys],

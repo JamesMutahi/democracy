@@ -32,12 +32,7 @@ class RecentPostsBloc extends Bloc<RecentPostsEvent, RecentPostsState> {
   }
 
   void _onGet(_Get event, Emitter<RecentPostsState> emit) async {
-    emit(
-      state.copyWith(
-        status: RecentPostsStatus.loading,
-        searchTerm: event.searchTerm,
-      ),
-    );
+    emit(state.copyWith(status: RecentPostsStatus.loading));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: RecentPostsStatus.failure));
       return;
@@ -47,6 +42,7 @@ class RecentPostsBloc extends Bloc<RecentPostsEvent, RecentPostsState> {
       'stream': stream,
       'payload': {
         "action": action,
+        // sort_by is not blank -> PostsBloc is blank
         "request_id": {'searchTerm': event.searchTerm, 'sort_by': 'recent'},
         'search_term': event.searchTerm,
         'previous_posts': event.previousPosts?.map((post) => post.id).toList(),

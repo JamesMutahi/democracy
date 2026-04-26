@@ -18,8 +18,6 @@ import 'package:democracy/post/models/draft_post.dart';
 import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/survey/view/widgets/survey_tile.dart';
-import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
-import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -44,30 +42,19 @@ class _DraftsPostsState extends State<DraftPosts> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<DraftPostBloc, DraftPostState>(
-          listener: (context, state) {
-            final draftPostsBloc = context.read<DraftPostsBloc>();
-            if (state is DraftSaved) {
-              draftPostsBloc.add(DraftPostsEvent.update(draft: state.draft));
-            }
-            if (state is DraftDeleted) {
-              draftPostsBloc.add(DraftPostsEvent.remove(id: state.draft.id));
-            }
-            if (state is DraftSaved) {
-              draftPostsBloc.add(DraftPostsEvent.update(draft: state.draft));
-            }
-          },
-        ),
-        BlocListener<UserDetailBloc, UserDetailState>(
-          listener: (context, state) {
-            if (state is UserLoaded) {
-              navigateToProfilePage(context: context, user: state.user);
-            }
-          },
-        ),
-      ],
+    return BlocListener<DraftPostBloc, DraftPostState>(
+      listener: (context, state) {
+        final draftPostsBloc = context.read<DraftPostsBloc>();
+        if (state is DraftSaved) {
+          draftPostsBloc.add(DraftPostsEvent.update(draft: state.draft));
+        }
+        if (state is DraftDeleted) {
+          draftPostsBloc.add(DraftPostsEvent.remove(id: state.draft.id));
+        }
+        if (state is DraftSaved) {
+          draftPostsBloc.add(DraftPostsEvent.update(draft: state.draft));
+        }
+      },
       child: Scaffold(
         appBar: AppBar(title: Text('Drafts'), elevation: 0.5),
         body: BlocBuilder<DraftPostsBloc, DraftPostsState>(
@@ -207,11 +194,6 @@ class _DraftPostBodyState extends State<DraftPostBody> {
             readMore = true;
           }
         });
-      },
-      onUserTagPressed: (userId) {
-        context.read<UserDetailBloc>().add(
-          UserDetailEvent.get(userId: int.parse(userId)),
-        );
       },
     );
   }

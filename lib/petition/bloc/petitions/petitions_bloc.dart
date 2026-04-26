@@ -12,7 +12,6 @@ part 'petitions_state.dart';
 part 'petitions_event.dart';
 
 const String stream = 'petitions';
-const String requestId = 'petitions';
 const String action = 'list';
 
 class PetitionsBloc extends Bloc<PetitionsEvent, PetitionsState> {
@@ -41,7 +40,7 @@ class PetitionsBloc extends Bloc<PetitionsEvent, PetitionsState> {
       'stream': stream,
       'payload': {
         'action': 'list',
-        'request_id': requestId,
+        'request_id': event.searchTerm,
         'search_term': event.searchTerm,
         'previous_petitions': event.previousPetitions
             ?.map((petition) => petition.id)
@@ -67,6 +66,7 @@ class PetitionsBloc extends Bloc<PetitionsEvent, PetitionsState> {
       emit(
         state.copyWith(
           status: PetitionsStatus.success,
+          searchTerm: event.payload['request_id'],
           petitions: previousPetitions.isEmpty
               ? petitions
               : [...state.petitions, ...petitions],

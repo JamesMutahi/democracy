@@ -15,6 +15,7 @@ import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
@@ -311,12 +312,16 @@ class ReplyButton extends StatelessWidget {
           ? () => _showBlockedSnackBar(context)
           : () => _navigateToReply(context, post),
       number: post.replies,
-      icon: Icon(
-        Symbols.message_rounded,
-        color: isBlocked
-            ? Theme.of(context).disabledColor
-            : Theme.of(context).colorScheme.outline,
-        size: 20,
+      icon: SvgPicture.asset(
+        'assets/icons/chat.svg',
+        width: 18,
+        height: 18,
+        colorFilter: ColorFilter.mode(
+          isBlocked
+              ? Theme.of(context).disabledColor
+              : Theme.of(context).colorScheme.outline,
+          BlendMode.srcIn,
+        ),
       ),
     );
   }
@@ -350,10 +355,14 @@ class ViewsButton extends StatelessWidget {
     return _PostTileButton(
       onTap: null,
       number: post.views,
-      icon: Icon(
-        Symbols.bar_chart_4_bars_rounded,
-        color: Theme.of(context).colorScheme.outlineVariant,
-        size: 20,
+      icon: SvgPicture.asset(
+        'assets/icons/bar-graph.svg',
+        width: 18,
+        height: 18,
+        colorFilter: ColorFilter.mode(
+          Theme.of(context).colorScheme.outline,
+          BlendMode.srcIn,
+        ),
       ),
     );
   }
@@ -397,7 +406,7 @@ class _PostTileButton extends StatelessWidget {
     required this.onTap,
   });
 
-  final Icon icon;
+  final Widget icon;
   final int number;
   final VoidCallback? onTap;
 

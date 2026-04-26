@@ -60,17 +60,21 @@ class _MeetingsPageState extends State<MeetingPage> {
                         );
                       },
                       onFilterTap: () {
+                        final filterCubit = context.read<MeetingFilterCubit>();
                         showGeneralDialog(
                           context: context,
                           transitionDuration: const Duration(milliseconds: 300),
                           pageBuilder:
                               (context, animation, secondaryAnimation) {
-                                return _FiltersModal(
-                                  isActive: state.isActive,
-                                  filterByRegion: state.filterByRegion,
-                                  sortBy: state.sortBy,
-                                  startDate: state.startDate,
-                                  endDate: state.endDate,
+                                return BlocProvider.value(
+                                  value: filterCubit,
+                                  child: _FiltersModal(
+                                    isActive: state.isActive,
+                                    filterByRegion: state.filterByRegion,
+                                    sortBy: state.sortBy,
+                                    startDate: state.startDate,
+                                    endDate: state.endDate,
+                                  ),
                                 );
                               },
                         );
