@@ -312,15 +312,18 @@ class ReplyButton extends StatelessWidget {
           ? () => _showBlockedSnackBar(context)
           : () => _navigateToReply(context, post),
       number: post.replies,
-      icon: SvgPicture.asset(
-        'assets/icons/chat.svg',
-        width: 18,
-        height: 18,
-        colorFilter: ColorFilter.mode(
-          isBlocked
-              ? Theme.of(context).disabledColor
-              : Theme.of(context).colorScheme.outline,
-          BlendMode.srcIn,
+      icon: Transform.flip(
+        flipX: true,
+        child: SvgPicture.asset(
+          'assets/icons/chat.svg',
+          width: 20,
+          height: 20,
+          colorFilter: ColorFilter.mode(
+            isBlocked
+                ? Theme.of(context).disabledColor
+                : Theme.of(context).colorScheme.outline,
+            BlendMode.srcIn,
+          ),
         ),
       ),
     );
@@ -357,8 +360,8 @@ class ViewsButton extends StatelessWidget {
       number: post.views,
       icon: SvgPicture.asset(
         'assets/icons/bar-graph.svg',
-        width: 18,
-        height: 18,
+        width: 20,
+        height: 20,
         colorFilter: ColorFilter.mode(
           Theme.of(context).colorScheme.outline,
           BlendMode.srcIn,

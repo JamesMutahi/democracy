@@ -45,13 +45,13 @@ class _DraftsPostsState extends State<DraftPosts> {
     return BlocListener<DraftPostBloc, DraftPostState>(
       listener: (context, state) {
         final draftPostsBloc = context.read<DraftPostsBloc>();
-        if (state is DraftSaved) {
+        if (state is DraftPostSaved) {
           draftPostsBloc.add(DraftPostsEvent.update(draft: state.draft));
         }
-        if (state is DraftDeleted) {
+        if (state is DraftPostDeleted) {
           draftPostsBloc.add(DraftPostsEvent.remove(id: state.draft.id));
         }
-        if (state is DraftSaved) {
+        if (state is DraftPostSaved) {
           draftPostsBloc.add(DraftPostsEvent.update(draft: state.draft));
         }
       },

@@ -172,7 +172,7 @@ class _PostCreatePageState extends State<PostCreatePage> {
         ),
         BlocListener<DraftPostBloc, DraftPostState>(
           listener: (context, state) {
-            if (state is DraftSaved) {
+            if (state is DraftPostSaved) {
               Navigator.pop(context);
             }
           },

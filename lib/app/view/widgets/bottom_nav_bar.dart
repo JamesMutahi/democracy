@@ -48,14 +48,14 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   ),
                   SizedBox(width: 60),
                   NavBarItem(
-                    asset: 'assets/icons/hub.svg',
+                    asset: 'assets/icons/layers.svg',
                     isActive: currentPage == 2,
                     onTap: () {
                       context.read<BottomNavBarCubit>().changePage(2);
                     },
                   ),
                   NavBarItem(
-                    asset: 'assets/icons/mail.svg',
+                    asset: 'assets/icons/chat-bubbles.svg',
                     isActive: currentPage == 3,
                     onTap: () {
                       context.read<BottomNavBarCubit>().changePage(3);

@@ -55,12 +55,13 @@ extension DraftPostEventPatterns on DraftPostEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Save value)?  save,TResult Function( _Delete value)?  delete,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Save value)?  save,TResult Function( _Delete value)?  delete,TResult Function( _Clear value)?  clear,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Save() when save != null:
 return save(_that);case _Delete() when delete != null:
-return delete(_that);case _:
+return delete(_that);case _Clear() when clear != null:
+return clear(_that);case _:
   return orElse();
 
 }
@@ -78,12 +79,13 @@ return delete(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Save value)  save,required TResult Function( _Delete value)  delete,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Save value)  save,required TResult Function( _Delete value)  delete,required TResult Function( _Clear value)  clear,}){
 final _that = this;
 switch (_that) {
 case _Save():
 return save(_that);case _Delete():
-return delete(_that);}
+return delete(_that);case _Clear():
+return clear(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -97,12 +99,13 @@ return delete(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Save value)?  save,TResult? Function( _Delete value)?  delete,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Save value)?  save,TResult? Function( _Delete value)?  delete,TResult? Function( _Clear value)?  clear,}){
 final _that = this;
 switch (_that) {
 case _Save() when save != null:
 return save(_that);case _Delete() when delete != null:
-return delete(_that);case _:
+return delete(_that);case _Clear() when clear != null:
+return clear(_that);case _:
   return null;
 
 }
@@ -119,11 +122,12 @@ return delete(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int? id,  String body,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)?  save,TResult Function( DraftPost draft)?  delete,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int? id,  String body,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)?  save,TResult Function( DraftPost draft)?  delete,TResult Function()?  clear,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Save() when save != null:
 return save(_that.id,_that.body,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.filePaths,_that.location);case _Delete() when delete != null:
-return delete(_that.draft);case _:
+return delete(_that.draft);case _Clear() when clear != null:
+return clear();case _:
   return orElse();
 
 }
@@ -141,11 +145,12 @@ return delete(_that.draft);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int? id,  String body,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)  save,required TResult Function( DraftPost draft)  delete,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int? id,  String body,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)  save,required TResult Function( DraftPost draft)  delete,required TResult Function()  clear,}) {final _that = this;
 switch (_that) {
 case _Save():
 return save(_that.id,_that.body,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.filePaths,_that.location);case _Delete():
-return delete(_that.draft);}
+return delete(_that.draft);case _Clear():
+return clear();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -159,11 +164,12 @@ return delete(_that.draft);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int? id,  String body,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)?  save,TResult? Function( DraftPost draft)?  delete,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int? id,  String body,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)?  save,TResult? Function( DraftPost draft)?  delete,TResult? Function()?  clear,}) {final _that = this;
 switch (_that) {
 case _Save() when save != null:
 return save(_that.id,_that.body,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.filePaths,_that.location);case _Delete() when delete != null:
-return delete(_that.draft);case _:
+return delete(_that.draft);case _Clear() when clear != null:
+return clear();case _:
   return null;
 
 }
@@ -436,6 +442,38 @@ as DraftPost,
 }
 
 /// @nodoc
+
+
+class _Clear implements DraftPostEvent {
+  const _Clear();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Clear);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'DraftPostEvent.clear()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
 mixin _$DraftPostState {
 
 
@@ -479,14 +517,15 @@ extension DraftPostStatePatterns on DraftPostState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( DraftSaved value)?  saved,TResult Function( DraftDeleted value)?  deleted,TResult Function( DraftFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( DraftPostSaved value)?  saved,TResult Function( DraftPostDeleted value)?  deleted,TResult Function( DraftPostsCleared value)?  cleared,TResult Function( DraftPostFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
-return loading(_that);case DraftSaved() when saved != null:
-return saved(_that);case DraftDeleted() when deleted != null:
-return deleted(_that);case DraftFailure() when failure != null:
+return loading(_that);case DraftPostSaved() when saved != null:
+return saved(_that);case DraftPostDeleted() when deleted != null:
+return deleted(_that);case DraftPostsCleared() when cleared != null:
+return cleared(_that);case DraftPostFailure() when failure != null:
 return failure(_that);case _:
   return orElse();
 
@@ -505,14 +544,15 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( DraftSaved value)  saved,required TResult Function( DraftDeleted value)  deleted,required TResult Function( DraftFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( DraftPostSaved value)  saved,required TResult Function( DraftPostDeleted value)  deleted,required TResult Function( DraftPostsCleared value)  cleared,required TResult Function( DraftPostFailure value)  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial():
 return initial(_that);case _Loading():
-return loading(_that);case DraftSaved():
-return saved(_that);case DraftDeleted():
-return deleted(_that);case DraftFailure():
+return loading(_that);case DraftPostSaved():
+return saved(_that);case DraftPostDeleted():
+return deleted(_that);case DraftPostsCleared():
+return cleared(_that);case DraftPostFailure():
 return failure(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -530,14 +570,15 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( DraftSaved value)?  saved,TResult? Function( DraftDeleted value)?  deleted,TResult? Function( DraftFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( DraftPostSaved value)?  saved,TResult? Function( DraftPostDeleted value)?  deleted,TResult? Function( DraftPostsCleared value)?  cleared,TResult? Function( DraftPostFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
-return loading(_that);case DraftSaved() when saved != null:
-return saved(_that);case DraftDeleted() when deleted != null:
-return deleted(_that);case DraftFailure() when failure != null:
+return loading(_that);case DraftPostSaved() when saved != null:
+return saved(_that);case DraftPostDeleted() when deleted != null:
+return deleted(_that);case DraftPostsCleared() when cleared != null:
+return cleared(_that);case DraftPostFailure() when failure != null:
 return failure(_that);case _:
   return null;
 
@@ -555,13 +596,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( DraftPost draft)?  saved,TResult Function( DraftPost draft)?  deleted,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( DraftPost draft)?  saved,TResult Function( DraftPost draft)?  deleted,TResult Function()?  cleared,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
-return loading();case DraftSaved() when saved != null:
-return saved(_that.draft);case DraftDeleted() when deleted != null:
-return deleted(_that.draft);case DraftFailure() when failure != null:
+return loading();case DraftPostSaved() when saved != null:
+return saved(_that.draft);case DraftPostDeleted() when deleted != null:
+return deleted(_that.draft);case DraftPostsCleared() when cleared != null:
+return cleared();case DraftPostFailure() when failure != null:
 return failure(_that.error);case _:
   return orElse();
 
@@ -580,13 +622,14 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( DraftPost draft)  saved,required TResult Function( DraftPost draft)  deleted,required TResult Function( String error)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( DraftPost draft)  saved,required TResult Function( DraftPost draft)  deleted,required TResult Function()  cleared,required TResult Function( String error)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
-return loading();case DraftSaved():
-return saved(_that.draft);case DraftDeleted():
-return deleted(_that.draft);case DraftFailure():
+return loading();case DraftPostSaved():
+return saved(_that.draft);case DraftPostDeleted():
+return deleted(_that.draft);case DraftPostsCleared():
+return cleared();case DraftPostFailure():
 return failure(_that.error);case _:
   throw StateError('Unexpected subclass');
 
@@ -604,13 +647,14 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( DraftPost draft)?  saved,TResult? Function( DraftPost draft)?  deleted,TResult? Function( String error)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( DraftPost draft)?  saved,TResult? Function( DraftPost draft)?  deleted,TResult? Function()?  cleared,TResult? Function( String error)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
-return loading();case DraftSaved() when saved != null:
-return saved(_that.draft);case DraftDeleted() when deleted != null:
-return deleted(_that.draft);case DraftFailure() when failure != null:
+return loading();case DraftPostSaved() when saved != null:
+return saved(_that.draft);case DraftPostDeleted() when deleted != null:
+return deleted(_that.draft);case DraftPostsCleared() when cleared != null:
+return cleared();case DraftPostFailure() when failure != null:
 return failure(_that.error);case _:
   return null;
 
@@ -686,8 +730,8 @@ String toString() {
 /// @nodoc
 
 
-class DraftSaved implements DraftPostState {
-  const DraftSaved({required this.draft});
+class DraftPostSaved implements DraftPostState {
+  const DraftPostSaved({required this.draft});
   
 
  final  DraftPost draft;
@@ -696,13 +740,13 @@ class DraftSaved implements DraftPostState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$DraftSavedCopyWith<DraftSaved> get copyWith => _$DraftSavedCopyWithImpl<DraftSaved>(this, _$identity);
+$DraftPostSavedCopyWith<DraftPostSaved> get copyWith => _$DraftPostSavedCopyWithImpl<DraftPostSaved>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DraftSaved&&(identical(other.draft, draft) || other.draft == draft));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DraftPostSaved&&(identical(other.draft, draft) || other.draft == draft));
 }
 
 
@@ -718,8 +762,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class $DraftSavedCopyWith<$Res> implements $DraftPostStateCopyWith<$Res> {
-  factory $DraftSavedCopyWith(DraftSaved value, $Res Function(DraftSaved) _then) = _$DraftSavedCopyWithImpl;
+abstract mixin class $DraftPostSavedCopyWith<$Res> implements $DraftPostStateCopyWith<$Res> {
+  factory $DraftPostSavedCopyWith(DraftPostSaved value, $Res Function(DraftPostSaved) _then) = _$DraftPostSavedCopyWithImpl;
 @useResult
 $Res call({
  DraftPost draft
@@ -730,17 +774,17 @@ $Res call({
 
 }
 /// @nodoc
-class _$DraftSavedCopyWithImpl<$Res>
-    implements $DraftSavedCopyWith<$Res> {
-  _$DraftSavedCopyWithImpl(this._self, this._then);
+class _$DraftPostSavedCopyWithImpl<$Res>
+    implements $DraftPostSavedCopyWith<$Res> {
+  _$DraftPostSavedCopyWithImpl(this._self, this._then);
 
-  final DraftSaved _self;
-  final $Res Function(DraftSaved) _then;
+  final DraftPostSaved _self;
+  final $Res Function(DraftPostSaved) _then;
 
 /// Create a copy of DraftPostState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? draft = null,}) {
-  return _then(DraftSaved(
+  return _then(DraftPostSaved(
 draft: null == draft ? _self.draft : draft // ignore: cast_nullable_to_non_nullable
 as DraftPost,
   ));
@@ -752,8 +796,8 @@ as DraftPost,
 /// @nodoc
 
 
-class DraftDeleted implements DraftPostState {
-  const DraftDeleted({required this.draft});
+class DraftPostDeleted implements DraftPostState {
+  const DraftPostDeleted({required this.draft});
   
 
  final  DraftPost draft;
@@ -762,13 +806,13 @@ class DraftDeleted implements DraftPostState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$DraftDeletedCopyWith<DraftDeleted> get copyWith => _$DraftDeletedCopyWithImpl<DraftDeleted>(this, _$identity);
+$DraftPostDeletedCopyWith<DraftPostDeleted> get copyWith => _$DraftPostDeletedCopyWithImpl<DraftPostDeleted>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DraftDeleted&&(identical(other.draft, draft) || other.draft == draft));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DraftPostDeleted&&(identical(other.draft, draft) || other.draft == draft));
 }
 
 
@@ -784,8 +828,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class $DraftDeletedCopyWith<$Res> implements $DraftPostStateCopyWith<$Res> {
-  factory $DraftDeletedCopyWith(DraftDeleted value, $Res Function(DraftDeleted) _then) = _$DraftDeletedCopyWithImpl;
+abstract mixin class $DraftPostDeletedCopyWith<$Res> implements $DraftPostStateCopyWith<$Res> {
+  factory $DraftPostDeletedCopyWith(DraftPostDeleted value, $Res Function(DraftPostDeleted) _then) = _$DraftPostDeletedCopyWithImpl;
 @useResult
 $Res call({
  DraftPost draft
@@ -796,17 +840,17 @@ $Res call({
 
 }
 /// @nodoc
-class _$DraftDeletedCopyWithImpl<$Res>
-    implements $DraftDeletedCopyWith<$Res> {
-  _$DraftDeletedCopyWithImpl(this._self, this._then);
+class _$DraftPostDeletedCopyWithImpl<$Res>
+    implements $DraftPostDeletedCopyWith<$Res> {
+  _$DraftPostDeletedCopyWithImpl(this._self, this._then);
 
-  final DraftDeleted _self;
-  final $Res Function(DraftDeleted) _then;
+  final DraftPostDeleted _self;
+  final $Res Function(DraftPostDeleted) _then;
 
 /// Create a copy of DraftPostState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? draft = null,}) {
-  return _then(DraftDeleted(
+  return _then(DraftPostDeleted(
 draft: null == draft ? _self.draft : draft // ignore: cast_nullable_to_non_nullable
 as DraftPost,
   ));
@@ -818,8 +862,40 @@ as DraftPost,
 /// @nodoc
 
 
-class DraftFailure implements DraftPostState {
-  const DraftFailure({required this.error});
+class DraftPostsCleared implements DraftPostState {
+  const DraftPostsCleared();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DraftPostsCleared);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'DraftPostState.cleared()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class DraftPostFailure implements DraftPostState {
+  const DraftPostFailure({required this.error});
   
 
  final  String error;
@@ -828,13 +904,13 @@ class DraftFailure implements DraftPostState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$DraftFailureCopyWith<DraftFailure> get copyWith => _$DraftFailureCopyWithImpl<DraftFailure>(this, _$identity);
+$DraftPostFailureCopyWith<DraftPostFailure> get copyWith => _$DraftPostFailureCopyWithImpl<DraftPostFailure>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DraftFailure&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DraftPostFailure&&(identical(other.error, error) || other.error == error));
 }
 
 
@@ -850,8 +926,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class $DraftFailureCopyWith<$Res> implements $DraftPostStateCopyWith<$Res> {
-  factory $DraftFailureCopyWith(DraftFailure value, $Res Function(DraftFailure) _then) = _$DraftFailureCopyWithImpl;
+abstract mixin class $DraftPostFailureCopyWith<$Res> implements $DraftPostStateCopyWith<$Res> {
+  factory $DraftPostFailureCopyWith(DraftPostFailure value, $Res Function(DraftPostFailure) _then) = _$DraftPostFailureCopyWithImpl;
 @useResult
 $Res call({
  String error
@@ -862,17 +938,17 @@ $Res call({
 
 }
 /// @nodoc
-class _$DraftFailureCopyWithImpl<$Res>
-    implements $DraftFailureCopyWith<$Res> {
-  _$DraftFailureCopyWithImpl(this._self, this._then);
+class _$DraftPostFailureCopyWithImpl<$Res>
+    implements $DraftPostFailureCopyWith<$Res> {
+  _$DraftPostFailureCopyWithImpl(this._self, this._then);
 
-  final DraftFailure _self;
-  final $Res Function(DraftFailure) _then;
+  final DraftPostFailure _self;
+  final $Res Function(DraftPostFailure) _then;
 
 /// Create a copy of DraftPostState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? error = null,}) {
-  return _then(DraftFailure(
+  return _then(DraftPostFailure(
 error: null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String,
   ));

@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage>
         ),
         BlocListener<DraftPostBloc, DraftPostState>(
           listener: (context, state) {
-            if (state is DraftSaved) {
+            if (state is DraftPostSaved) {
               String message = 'Post saved as draft';
               final snackBar = getSnackBar(
                 context: context,

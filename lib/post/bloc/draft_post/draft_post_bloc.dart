@@ -20,6 +20,7 @@ class DraftPostBloc extends Bloc<DraftPostEvent, DraftPostState> {
     : super(const DraftPostState.initial()) {
     on<_Save>((event, emit) async => await _onSave(event, emit));
     on<_Delete>((event, emit) async => await _onDelete(event, emit));
+    on<_Clear>((event, emit) async => await _onClear(event, emit));
   }
 
   Future _onSave(_Save event, Emitter<DraftPostState> emit) async {
@@ -41,9 +42,9 @@ class DraftPostBloc extends Bloc<DraftPostEvent, DraftPostState> {
         ..updatedAt = DateTime.now();
       final id = await draftPostRepository.saveDraft(draft: drafted);
       final draft = await draftPostRepository.getDraft(id: id);
-      emit(DraftSaved(draft: draft));
+      emit(DraftPostSaved(draft: draft));
     } catch (e) {
-      emit(DraftFailure(error: e.toString()));
+      emit(DraftPostFailure(error: e.toString()));
     }
   }
 
@@ -51,9 +52,19 @@ class DraftPostBloc extends Bloc<DraftPostEvent, DraftPostState> {
     emit(_Loading());
     try {
       await draftPostRepository.deleteDraft(draft: event.draft);
-      emit(DraftDeleted(draft: event.draft));
+      emit(DraftPostDeleted(draft: event.draft));
     } catch (e) {
-      emit(DraftFailure(error: e.toString()));
+      emit(DraftPostFailure(error: e.toString()));
+    }
+  }
+
+  Future _onClear(_Clear event, Emitter<DraftPostState> emit) async {
+    emit(_Loading());
+    try {
+      await draftPostRepository.clear();
+      emit(DraftPostsCleared());
+    } catch (e) {
+      emit(DraftPostFailure(error: e.toString()));
     }
   }
 

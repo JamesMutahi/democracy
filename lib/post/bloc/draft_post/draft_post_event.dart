@@ -18,4 +18,5 @@ sealed class DraftPostEvent with _$DraftPostEvent {
     LatLng? location,
   }) = _Save;
   const factory DraftPostEvent.delete({required DraftPost draft}) = _Delete;
+  const factory DraftPostEvent.clear() = _Clear;
 }

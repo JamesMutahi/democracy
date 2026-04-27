@@ -4,6 +4,7 @@ import 'package:democracy/app/view/widgets/bookmarks.dart';
 import 'package:democracy/constitution/view/constitution.dart';
 import 'package:democracy/app/view/widgets/settings.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
+import 'package:democracy/post/bloc/draft_post/draft_post_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
@@ -99,6 +100,7 @@ class LogoutDialog extends StatelessWidget {
       onButton1Pressed: () {
         Navigator.pop(context);
         context.read<WebsocketBloc>().add(WebsocketEvent.disconnect());
+        context.read<DraftPostBloc>().add(DraftPostEvent.clear());
         context.read<LoginCubit>().logout();
       },
       button2Text: 'No',

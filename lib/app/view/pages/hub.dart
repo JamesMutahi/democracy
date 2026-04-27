@@ -2,6 +2,7 @@ import 'package:democracy/app/bloc/hub_filter/hub_filter_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_service.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
+import 'package:democracy/app/shared/widgets/no_results.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/filters_modal.dart';
 import 'package:democracy/app/view/widgets/results_search_bar.dart';
@@ -286,9 +287,9 @@ class _HubCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SvgPicture.asset(asset, width: 75, height: 75),
+            SvgPicture.asset(asset, width: 60, height: 60),
             SizedBox(height: 10),
-            Text(text, style: Theme.of(context).textTheme.titleLarge),
+            Text(text, style: Theme.of(context).textTheme.titleMedium),
           ],
         ),
       ),
@@ -569,8 +570,7 @@ class _BallotsTabState extends State<_BallotsTab>
         builder: (context, state) {
           final ballots = state.ballots.toList();
 
-          if (state.status == BallotsStatus.initial ||
-              (ballots.isEmpty && state.status == BallotsStatus.loading)) {
+          if (state.status == BallotsStatus.initial) {
             return const BottomLoader();
           }
 
@@ -609,21 +609,23 @@ class _BallotsTabState extends State<_BallotsTab>
               _getBallots(previousBallots: ballots);
             },
             footer: ClassicFooter(),
-            child: ListView.builder(
-              padding: EdgeInsets.all(15),
-              itemBuilder: (BuildContext context, int index) {
-                Ballot ballot = ballots[index];
-                return Container(
-                  margin: EdgeInsets.only(bottom: 10),
-                  child: BallotTile(
-                    key: ValueKey(ballot.id),
-                    ballot: ballot,
-                    isDependency: false,
+            child: ballots.isEmpty
+                ? NoResults(text: 'No ballots')
+                : ListView.builder(
+                    padding: EdgeInsets.all(15),
+                    itemBuilder: (BuildContext context, int index) {
+                      Ballot ballot = ballots[index];
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: BallotTile(
+                          key: ValueKey(ballot.id),
+                          ballot: ballot,
+                          isDependency: false,
+                        ),
+                      );
+                    },
+                    itemCount: ballots.length,
                   ),
-                );
-              },
-              itemCount: ballots.length,
-            ),
           );
         },
       ),
@@ -700,8 +702,7 @@ class _SurveysTabState extends State<_SurveysTab>
         builder: (context, state) {
           final surveys = state.surveys.toList();
 
-          if (state.status == SurveysStatus.initial ||
-              (surveys.isEmpty && state.status == SurveysStatus.loading)) {
+          if (state.status == SurveysStatus.initial) {
             return const BottomLoader();
           }
 
@@ -740,21 +741,23 @@ class _SurveysTabState extends State<_SurveysTab>
               _getSurveys(previousSurveys: surveys);
             },
             footer: ClassicFooter(),
-            child: ListView.builder(
-              padding: EdgeInsets.all(15),
-              itemBuilder: (BuildContext context, int index) {
-                Survey survey = surveys[index];
-                return Container(
-                  margin: EdgeInsets.only(bottom: 10),
-                  child: SurveyTile(
-                    key: ValueKey(survey.id),
-                    survey: survey,
-                    isDependency: false,
+            child: surveys.isEmpty
+                ? NoResults(text: 'No surveys')
+                : ListView.builder(
+                    padding: EdgeInsets.all(15),
+                    itemBuilder: (BuildContext context, int index) {
+                      Survey survey = surveys[index];
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: SurveyTile(
+                          key: ValueKey(survey.id),
+                          survey: survey,
+                          isDependency: false,
+                        ),
+                      );
+                    },
+                    itemCount: surveys.length,
                   ),
-                );
-              },
-              itemCount: surveys.length,
-            ),
           );
         },
       ),
@@ -831,8 +834,7 @@ class _MeetingsTabState extends State<_MeetingsTab>
         builder: (context, state) {
           final meetings = state.meetings.toList();
 
-          if (state.status == MeetingsStatus.initial ||
-              (meetings.isEmpty && state.status == MeetingsStatus.loading)) {
+          if (state.status == MeetingsStatus.initial) {
             return const BottomLoader();
           }
 
@@ -871,21 +873,23 @@ class _MeetingsTabState extends State<_MeetingsTab>
               _getMeetings(previousMeetings: meetings);
             },
             footer: ClassicFooter(),
-            child: ListView.builder(
-              padding: EdgeInsets.all(15),
-              itemBuilder: (BuildContext context, int index) {
-                Meeting meeting = meetings[index];
-                return Container(
-                  margin: EdgeInsets.only(bottom: 10),
-                  child: MeetingTile(
-                    key: ValueKey(meeting.id),
-                    meeting: meeting,
-                    isDependency: false,
+            child: meetings.isEmpty
+                ? NoResults(text: 'No meetings')
+                : ListView.builder(
+                    padding: EdgeInsets.all(15),
+                    itemBuilder: (BuildContext context, int index) {
+                      Meeting meeting = meetings[index];
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: MeetingTile(
+                          key: ValueKey(meeting.id),
+                          meeting: meeting,
+                          isDependency: false,
+                        ),
+                      );
+                    },
+                    itemCount: meetings.length,
                   ),
-                );
-              },
-              itemCount: meetings.length,
-            ),
           );
         },
       ),
@@ -962,8 +966,7 @@ class _PetitionsTabState extends State<_PetitionsTab>
         builder: (context, state) {
           final petitions = state.petitions.toList();
 
-          if (state.status == PetitionsStatus.initial ||
-              (petitions.isEmpty && state.status == PetitionsStatus.loading)) {
+          if (state.status == PetitionsStatus.initial) {
             return const BottomLoader();
           }
 
@@ -1002,21 +1005,23 @@ class _PetitionsTabState extends State<_PetitionsTab>
               _getBallots(previousPetitions: petitions);
             },
             footer: ClassicFooter(),
-            child: ListView.builder(
-              padding: EdgeInsets.all(15),
-              itemBuilder: (BuildContext context, int index) {
-                Petition petition = petitions[index];
-                return Container(
-                  margin: EdgeInsets.only(bottom: 10),
-                  child: PetitionTile(
-                    key: ValueKey(petition.id),
-                    petition: petition,
-                    isDependency: false,
+            child: petitions.isEmpty
+                ? NoResults(text: 'No petitions')
+                : ListView.builder(
+                    padding: EdgeInsets.all(15),
+                    itemBuilder: (BuildContext context, int index) {
+                      Petition petition = petitions[index];
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: PetitionTile(
+                          key: ValueKey(petition.id),
+                          petition: petition,
+                          isDependency: false,
+                        ),
+                      );
+                    },
+                    itemCount: petitions.length,
                   ),
-                );
-              },
-              itemCount: petitions.length,
-            ),
           );
         },
       ),

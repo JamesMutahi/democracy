@@ -30,4 +30,10 @@ class DraftPostRepository {
       await isar.draftPosts.delete(draft.id);
     });
   }
+
+  Future<void> clear() async {
+    await isar.writeTxn(() async {
+      await isar.draftPosts.clear();
+    });
+  }
 }

@@ -204,7 +204,7 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
           ),
           BlocListener<DraftPostBloc, DraftPostState>(
             listener: (context, state) {
-              if (state is DraftSaved) {
+              if (state is DraftPostSaved) {
                 Navigator.pop(context);
               }
             },
@@ -217,10 +217,10 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
                 return BlocBuilder<PostCreateBloc, PostCreateState>(
                   builder: (context, postCreateState) {
                     return postCreateState.status == PostCreateStatus.failure ||
-                            draftPostState is DraftFailure
+                            draftPostState is DraftPostFailure
                         ? LoaderOverlayFailure(
                             onRetry: () {
-                              if (draftPostState is DraftFailure) {
+                              if (draftPostState is DraftPostFailure) {
                                 _saveDraft();
                               } else {
                                 context.read<PostCreateBloc>().add(
