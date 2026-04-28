@@ -25,6 +25,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.3.2"
+  ansicolor:
+    dependency: transitive
+    description:
+      name: ansicolor
+      sha256: "50e982d500bc863e1d703448afdbf9e5a72eb48840a4f766fa361ffd6877055f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.3"
   archive:
     dependency: transitive
     description:
@@ -1005,6 +1013,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.3.2"
+  jni:
+    dependency: transitive
+    description:
+      name: jni
+      sha256: d2c361082d554d4593c3012e26f6b188f902acd291330f13d6427641a92b3da1
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.14.2"
   js:
     dependency: transitive
     description:
@@ -1102,7 +1118,7 @@ packages:
     source: hosted
     version: "5.0.0"
   logger:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: logger
       sha256: "25aee487596a6257655a1e091ec2ae66bc30e7af663592cc3a27e6591e05035c"
@@ -1589,6 +1605,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.28.0"
+  sentry:
+    dependency: transitive
+    description:
+      name: sentry
+      sha256: "1f78300740739ff4b4920802687879231554350eab73eb229778f463aabda440"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.19.0"
+  sentry_flutter:
+    dependency: "direct main"
+    description:
+      name: sentry_flutter
+      sha256: "168bbb120f7684dee6c0e100817f56ee1925bc2eb7fa55a71253337640c7e241"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.19.0"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -1810,6 +1842,38 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.4.0"
+  talker:
+    dependency: "direct main"
+    description:
+      name: talker
+      sha256: f1a14d623f1d1bec42bb3bb77674eb766ffe8d26e5f79af652d85cb097c3e757
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.17"
+  talker_bloc_logger:
+    dependency: "direct main"
+    description:
+      name: talker_bloc_logger
+      sha256: b799c899b89472e1b2030a97f56c2ce7dfa739f743f464774c89a2c4d7c61447
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.17"
+  talker_dio_logger:
+    dependency: "direct main"
+    description:
+      name: talker_dio_logger
+      sha256: "6dba5c29afb566c6efe1a2c1b676488ea7c727b486bda0654d965a1cfad6ea9b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.17"
+  talker_logger:
+    dependency: "direct main"
+    description:
+      name: talker_logger
+      sha256: "459205c3e571f97ecc6be6e1b1b7e6b97b853e78ea458894650be407596e3216"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.17"
   term_glyph:
     dependency: transitive
     description:

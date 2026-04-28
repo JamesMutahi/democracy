@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:camera/camera.dart';
+import 'package:democracy/app/shared/utils/app_logger.dart';
 import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -50,13 +51,8 @@ class GlobalCubit extends Cubit<GlobalState> {
     try {
       List<CameraDescription> cameras = await availableCameras();
       emit(state.copyWith(cameras: cameras));
-    } on CameraException catch (e) {
-      String code = e.code;
-      String? message = e.description;
-      // TODO: Log error
-      print(
-        'Error: $code${message == null ? '' : '\nError Message: $message'}',
-      );
+    } on CameraException catch (e, s) {
+      AppLogger.critical('Failed to get cameras', e, s);
     }
   }
 }

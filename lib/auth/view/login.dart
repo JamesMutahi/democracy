@@ -37,70 +37,64 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: Scaffold(
         body: Center(
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(50.0),
-              child: Column(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Image.asset(logo, width: 100, height: 100),
-                      SizedBox(width: 15),
-                      Text(
-                        'People \nOf \nKenya',
-                        style: Theme.of(context).textTheme.headlineSmall!
-                            .copyWith(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 15),
+                  Image.asset(logo, width: 100, height: 100),
+                  SizedBox(width: 15),
                   Text(
-                    'Digital and direct democracy',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.outline,
-                      fontStyle: FontStyle.italic,
+                    'People \nOf \nKenya',
+                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                      fontWeight: FontWeight.bold,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 20),
-                  BlocBuilder<LoginCubit, LoginState>(
-                    builder: (context, state) {
-                      return SizedBox(
-                        width: 200,
-                        child: FilledButton.tonal(
-                          onPressed: state is LoginLoading
-                              ? null
-                              : () {
-                                  context.read<LoginCubit>().login(
-                                    username: '${dotenv.env['FAKE_USERNAME']}',
-                                    password: '${dotenv.env['FAKE_PASSWORD']}',
-                                  );
-                                },
-                          child: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 300),
-                            child: state is LoginLoading
-                                ? SpinKitThreeBounce(
-                                    size: 40,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.primary,
-                                  )
-                                : Text(
-                                    'Login via eCitizen',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                          ),
-                        ),
-                      );
-                    },
                   ),
                 ],
               ),
-            ),
+
+              const SizedBox(height: 20),
+              BlocBuilder<LoginCubit, LoginState>(
+                builder: (context, state) {
+                  return SizedBox(
+                    width: 200,
+                    child: FilledButton.tonal(
+                      onPressed: state is LoginLoading
+                          ? null
+                          : () {
+                              context.read<LoginCubit>().login(
+                                username: '${dotenv.env['FAKE_USERNAME']}',
+                                password: '${dotenv.env['FAKE_PASSWORD']}',
+                              );
+                            },
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        child: state is LoginLoading
+                            ? SpinKitThreeBounce(
+                                size: 40,
+                                color: Theme.of(context).colorScheme.primary,
+                              )
+                            : Text(
+                                'Login via eCitizen',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Digital and direct democracy',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Theme.of(context).colorScheme.outline,
+                  fontStyle: FontStyle.italic,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         ),
       ),

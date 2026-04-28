@@ -50,14 +50,15 @@ class LoaderOverlayLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 100),
-          child: SpinKitCubeGrid(color: Theme.of(context).primaryColor, size: 50.0),
-        ),
-        if (progress.isNotEmpty) ...[SizedBox(height: 50), Text(progress)],
+        SizedBox(height: 50),
+        SpinKitCubeGrid(color: Theme.of(context).primaryColor, size: 50.0),
+        SizedBox(height: 50),
+        Text(progress),
       ],
     );
   }
 }
+

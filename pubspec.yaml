@@ -100,8 +100,12 @@ dependencies:
   isar_community: ^3.3.2
   isar_community_flutter_libs: ^3.3.2
   isar_community_generator: ^3.3.2
-  logger: ^2.7.0
   jwt_decoder: ^2.0.1
+  talker: ^5.1.17
+  talker_logger: ^5.1.17
+  talker_bloc_logger: ^5.1.17
+  talker_dio_logger: ^5.1.17
+  sentry_flutter: ^9.19.0
 
 dev_dependencies:
   flutter_test:
