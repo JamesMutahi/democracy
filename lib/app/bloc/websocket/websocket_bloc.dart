@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -43,8 +43,8 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
   Future _onConnect(Emitter<WebsocketState> emit) async {
     emit(state.copyWith(status: WebsocketStatus.loading));
     try {
-      String? token = await authRepository.getToken();
-      String url = dotenv.env['WEBSOCKET_URL']!;
+      String ticket = await authRepository.getTicket();
+      String url = '${dotenv.env['WEBSOCKET_URL']!}?uuid=$ticket';
       _subscription = webSocketService.messages.listen((message) {
         if (message.containsKey(websocket)) {
           switch (message[websocket]) {
@@ -83,7 +83,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
           }
         }
       });
-      await webSocketService.connect(url: url, token: token!);
+      await webSocketService.connect(url: url, ticket: ticket);
     } catch (e) {
       emit(state.copyWith(status: WebsocketStatus.failure));
       _reconnect();

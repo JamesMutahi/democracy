@@ -6,7 +6,6 @@ class APIProvider {
   final Dio dio;
 
   Future<Map<String, dynamic>> createPost({
-    required String token,
     required String body,
     required PostStatus status,
     Post? repostOf,
@@ -52,9 +51,6 @@ class APIProvider {
       Response response = await dio.post(
         'post/create/',
         data: FormData.fromMap(data),
-        options: Options(
-          headers: <String, String>{'Authorization': 'Token $token'},
-        ),
       );
 
       if (response.statusCode == 201) {
@@ -84,7 +80,7 @@ class APIProvider {
       int fileSize = await file.length();
 
       // Perform the PUT request
-      Response response = await dio.put(
+      Response response = await Dio().put(
         url,
         data: file.openRead(), // Send as stream to save memory
         options: Options(
@@ -108,7 +104,6 @@ class APIProvider {
   }
 
   Future<Map> postAssetUploadComplete({
-    required String token,
     required List<String> assetIdList,
   }) async {
     try {
@@ -116,9 +111,6 @@ class APIProvider {
       Response response = await dio.post(
         'post/asset-upload-complete/',
         data: FormData.fromMap(data),
-        options: Options(
-          headers: <String, String>{'Authorization': 'Token $token'},
-        ),
       );
       if (response.statusCode == 200) {
         return response.data;
@@ -131,7 +123,6 @@ class APIProvider {
   }
 
   Future<Map<String, dynamic>> createMessage({
-    required String token,
     required Chat chat,
     required String text,
     Post? post,
@@ -166,9 +157,6 @@ class APIProvider {
       Response response = await dio.post(
         'chat/create-message/',
         data: FormData.fromMap(data),
-        options: Options(
-          headers: <String, String>{'Authorization': 'Token $token'},
-        ),
       );
       if (response.statusCode == 201) {
         return response.data;
@@ -195,7 +183,7 @@ class APIProvider {
       int fileSize = await file.length();
 
       // Perform the PUT request
-      Response response = await dio.put(
+      Response response = await Dio().put(
         url,
         data: file.openRead(), // Send as stream to save memory
         options: Options(
@@ -219,7 +207,6 @@ class APIProvider {
   }
 
   Future<List<Asset>> messageAssetUploadComplete({
-    required String token,
     required List<String> assetIdList,
   }) async {
     try {
@@ -227,9 +214,6 @@ class APIProvider {
       Response response = await dio.post(
         'chat/asset-upload-complete/',
         data: FormData.fromMap(data),
-        options: Options(
-          headers: <String, String>{'Authorization': 'Token $token'},
-        ),
       );
       if (response.statusCode == 200) {
         List<Asset> assets = List.from(
@@ -245,7 +229,6 @@ class APIProvider {
   }
 
   Future<Map<String, dynamic>> createDirectMessage({
-    required String token,
     required List<User> users,
     required String text,
     Post? post,
@@ -281,9 +264,6 @@ class APIProvider {
       Response response = await dio.post(
         'chat/direct-message/',
         data: FormData.fromMap(data),
-        options: Options(
-          headers: <String, String>{'Authorization': 'Token $token'},
-        ),
       );
       if (response.statusCode == 201) {
         return response.data;
@@ -296,7 +276,6 @@ class APIProvider {
   }
 
   Future<Petition> createPetition({
-    required String token,
     required String title,
     required String imagePath,
     required String description,
@@ -313,13 +292,7 @@ class APIProvider {
         'constituency_id': constituency?.id,
         'ward_id': ward?.id,
       });
-      Response response = await dio.post(
-        'petition/create/',
-        data: data,
-        options: Options(
-          headers: <String, String>{'Authorization': 'Token $token'},
-        ),
-      );
+      Response response = await dio.post('petition/create/', data: data);
       if (response.statusCode == 201) {
         final Petition petition = Petition.fromJson(response.data);
         return petition;
@@ -333,7 +306,6 @@ class APIProvider {
 
   Future<Map> patchUser({
     required User user,
-    required String token,
     required String name,
     required String bio,
     required String? imagePath,
@@ -347,13 +319,7 @@ class APIProvider {
         if (coverPhotoPath != null)
           'cover_photo': await MultipartFile.fromFile(coverPhotoPath),
       });
-      Response response = await dio.patch(
-        'auth/user/',
-        data: data,
-        options: Options(
-          headers: <String, String>{'Authorization': 'Token $token'},
-        ),
-      );
+      Response response = await dio.patch('user/', data: data);
       if (response.statusCode == 200) {
         return response.data;
       } else {

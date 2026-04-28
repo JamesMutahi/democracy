@@ -1,4 +1,4 @@
-import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/meet/models/meeting.dart';

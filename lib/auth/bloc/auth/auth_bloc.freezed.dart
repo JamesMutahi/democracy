@@ -55,11 +55,12 @@ extension AuthEventPatterns on AuthEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Authenticate value)?  authenticate,TResult Function( _UpdateUser value)?  updateUser,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Authenticate value)?  authenticate,TResult Function( _TokenExpired value)?  tokenExpired,TResult Function( _UpdateUser value)?  updateUser,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Authenticate() when authenticate != null:
-return authenticate(_that);case _UpdateUser() when updateUser != null:
+return authenticate(_that);case _TokenExpired() when tokenExpired != null:
+return tokenExpired(_that);case _UpdateUser() when updateUser != null:
 return updateUser(_that);case _:
   return orElse();
 
@@ -78,11 +79,12 @@ return updateUser(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Authenticate value)  authenticate,required TResult Function( _UpdateUser value)  updateUser,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Authenticate value)  authenticate,required TResult Function( _TokenExpired value)  tokenExpired,required TResult Function( _UpdateUser value)  updateUser,}){
 final _that = this;
 switch (_that) {
 case _Authenticate():
-return authenticate(_that);case _UpdateUser():
+return authenticate(_that);case _TokenExpired():
+return tokenExpired(_that);case _UpdateUser():
 return updateUser(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -100,11 +102,12 @@ return updateUser(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Authenticate value)?  authenticate,TResult? Function( _UpdateUser value)?  updateUser,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Authenticate value)?  authenticate,TResult? Function( _TokenExpired value)?  tokenExpired,TResult? Function( _UpdateUser value)?  updateUser,}){
 final _that = this;
 switch (_that) {
 case _Authenticate() when authenticate != null:
-return authenticate(_that);case _UpdateUser() when updateUser != null:
+return authenticate(_that);case _TokenExpired() when tokenExpired != null:
+return tokenExpired(_that);case _UpdateUser() when updateUser != null:
 return updateUser(_that);case _:
   return null;
 
@@ -122,10 +125,11 @@ return updateUser(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  authenticate,TResult Function( User user)?  updateUser,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  authenticate,TResult Function()?  tokenExpired,TResult Function( User user)?  updateUser,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Authenticate() when authenticate != null:
-return authenticate();case _UpdateUser() when updateUser != null:
+return authenticate();case _TokenExpired() when tokenExpired != null:
+return tokenExpired();case _UpdateUser() when updateUser != null:
 return updateUser(_that.user);case _:
   return orElse();
 
@@ -144,10 +148,11 @@ return updateUser(_that.user);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  authenticate,required TResult Function( User user)  updateUser,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  authenticate,required TResult Function()  tokenExpired,required TResult Function( User user)  updateUser,}) {final _that = this;
 switch (_that) {
 case _Authenticate():
-return authenticate();case _UpdateUser():
+return authenticate();case _TokenExpired():
+return tokenExpired();case _UpdateUser():
 return updateUser(_that.user);case _:
   throw StateError('Unexpected subclass');
 
@@ -165,10 +170,11 @@ return updateUser(_that.user);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  authenticate,TResult? Function( User user)?  updateUser,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  authenticate,TResult? Function()?  tokenExpired,TResult? Function( User user)?  updateUser,}) {final _that = this;
 switch (_that) {
 case _Authenticate() when authenticate != null:
-return authenticate();case _UpdateUser() when updateUser != null:
+return authenticate();case _TokenExpired() when tokenExpired != null:
+return tokenExpired();case _UpdateUser() when updateUser != null:
 return updateUser(_that.user);case _:
   return null;
 
@@ -201,6 +207,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'AuthEvent.authenticate()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _TokenExpired implements AuthEvent {
+  const _TokenExpired();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TokenExpired);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'AuthEvent.tokenExpired()';
 }
 
 

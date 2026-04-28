@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/repository/api_repository.dart';
-import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/constitution/models/section.dart';
@@ -18,7 +17,7 @@ part 'direct_message_state.dart';
 part 'direct_message_bloc.freezed.dart';
 
 class DirectMessageBloc extends Bloc<DirectMessageEvent, DirectMessageState> {
-  DirectMessageBloc({required this.authRepository, required this.apiRepository})
+  DirectMessageBloc({required this.apiRepository})
     : super(const DirectMessageState()) {
     on<_Send>((event, emit) async => await _onSend(event, emit));
     on<_UploadAssets>(
@@ -45,9 +44,7 @@ class DirectMessageBloc extends Bloc<DirectMessageEvent, DirectMessageState> {
   Future _onSend(_Send event, Emitter<DirectMessageState> emit) async {
     emit(DirectMessageState(status: DirectMessageStatus.uploadingMessages));
     try {
-      String? token = await authRepository.getToken();
       final data = await apiRepository.createDirectMessage(
-        token: token!,
         users: event.users,
         text: event.text,
         post: event.post,
@@ -110,11 +107,7 @@ class DirectMessageBloc extends Bloc<DirectMessageEvent, DirectMessageState> {
         );
       }
 
-      String? token = await authRepository.getToken();
-      await apiRepository.messageAssetUploadComplete(
-        token: token!,
-        assetIdList: assetIdList,
-      );
+      await apiRepository.messageAssetUploadComplete(assetIdList: assetIdList);
 
       emit(state.copyWith(status: DirectMessageStatus.success));
     } catch (e) {
@@ -127,6 +120,5 @@ class DirectMessageBloc extends Bloc<DirectMessageEvent, DirectMessageState> {
     }
   }
 
-  final AuthRepository authRepository;
   final APIRepository apiRepository;
 }

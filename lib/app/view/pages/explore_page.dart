@@ -1,4 +1,4 @@
-import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/post/view/shared/add_post_view.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';

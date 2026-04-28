@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/repository/api_repository.dart';
-import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
@@ -18,7 +17,7 @@ part 'message_create_state.dart';
 part 'message_create_bloc.freezed.dart';
 
 class MessageCreateBloc extends Bloc<MessageCreateEvent, MessageCreateState> {
-  MessageCreateBloc({required this.authRepository, required this.apiRepository})
+  MessageCreateBloc({required this.apiRepository})
     : super(const MessageCreateState()) {
     on<_Create>((event, emit) async => await _onCreate(event, emit));
     on<_UploadAssets>(
@@ -45,9 +44,7 @@ class MessageCreateBloc extends Bloc<MessageCreateEvent, MessageCreateState> {
   Future _onCreate(_Create event, Emitter<MessageCreateState> emit) async {
     emit(MessageCreateState(status: MessageCreateStatus.loading));
     try {
-      String? token = await authRepository.getToken();
       final data = await apiRepository.createMessage(
-        token: token!,
         chat: event.chat,
         text: event.text,
         post: event.post,
@@ -112,9 +109,7 @@ class MessageCreateBloc extends Bloc<MessageCreateEvent, MessageCreateState> {
         );
       }
 
-      String? token = await authRepository.getToken();
       final assets = await apiRepository.messageAssetUploadComplete(
-        token: token!,
         assetIdList: assetIdList,
       );
 
@@ -134,6 +129,5 @@ class MessageCreateBloc extends Bloc<MessageCreateEvent, MessageCreateState> {
     }
   }
 
-  final AuthRepository authRepository;
   final APIRepository apiRepository;
 }

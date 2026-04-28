@@ -1,3 +1,5 @@
+import 'package:democracy/app/bloc/services/websocket_service.dart'
+    show WebsocketStatus;
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
@@ -21,9 +23,10 @@ class BallotDetail extends StatefulWidget {
 class _BallotDetailState extends State<BallotDetail> {
   late Ballot _ballot = widget.ballot;
   bool changingVote = false;
-  late final TextEditingController _textEditingController = TextEditingController(
-    text: widget.ballot.reason == null ? '' : widget.ballot.reason!.text,
-  );
+  late final TextEditingController _textEditingController =
+      TextEditingController(
+        text: widget.ballot.reason == null ? '' : widget.ballot.reason!.text,
+      );
 
   @override
   void initState() {

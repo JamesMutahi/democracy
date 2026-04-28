@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+
+enum WebsocketStatus { initial, loading, connected, disconnected, failure }
 
 class WebSocketService {
   WebSocketService();
@@ -16,10 +17,10 @@ class WebSocketService {
 
   bool isConnected = false;
 
-  Future<void> connect({required String url, required String token}) async {
+  Future<void> connect({required String url, required String ticket}) async {
     _channel = IOWebSocketChannel.connect(
       Uri.parse(url),
-      headers: {'Authorization': 'Token $token', 'Origin': url},
+      headers: {'Origin': url},
     );
     await _channel.ready;
     isConnected = true;

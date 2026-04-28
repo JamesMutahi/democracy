@@ -5,39 +5,23 @@ class AuthRepository {
 
   final AuthProvider authProvider;
 
-  final storage = const FlutterSecureStorage();
-
-  Future<String> login({
-    required String email,
+  Future<Map> login({
+    required String username,
     required String password,
   }) async {
-    return await authProvider.login(email: email, password: password);
+    return await authProvider.login(username: username, password: password);
   }
 
-  Future<String?> saveToken({required String token}) async {
-    await storage.write(key: 'token', value: token);
-    return token;
+  Future<String> getTicket() async {
+    return await authProvider.getTicket();
   }
 
-  Future<String?> getToken() async {
-    try {
-      String? token = await storage.read(key: 'token');
-      return token;
-    } catch (e) {
-      await storage.deleteAll();
-      return null;
-    }
+  Future<void> logout({required String refreshToken}) async {
+    await authProvider.logout(refreshToken: refreshToken);
+    await TokenStorage().clearTokens();
   }
 
-  Future<void> logout({required String token}) async {
-    await authProvider.logout(token: token);
-  }
-
-  Future<void> deleteToken() async {
-    await storage.delete(key: 'token');
-  }
-
-  Future<User> getUserFromAPI({required String token}) async {
-    return await authProvider.getUserFromAPI(token: token);
+  Future<User> getUserFromAPI() async {
+    return await authProvider.getUserFromAPI();
   }
 }

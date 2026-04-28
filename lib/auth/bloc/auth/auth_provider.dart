@@ -5,19 +5,19 @@ class AuthProvider {
 
   final Dio dio;
 
-  Future<String> login({
-    required String email,
+  Future<Map> login({
+    required String username,
     required String password,
   }) async {
     try {
       Response response = await dio.post(
-        'auth/login/',
-        data: {'email': email, 'password': password},
+        'auth/token/',
+        data: {'username': username, 'password': password},
       );
       if (response.statusCode == 200) {
-        return response.data['token'];
+        return response.data;
       } else {
-        return Future.error(response.data['error'][0]);
+        return Future.error(response.data);
       }
     } on DioException {
       return Future.error(
@@ -26,16 +26,29 @@ class AuthProvider {
     }
   }
 
-  Future<void> logout({required String token}) async {
+  Future<String> getTicket() async {
     try {
-      Response response = await dio.delete(
+      Response response = await dio.get('ticket/');
+      if (response.statusCode == 200) {
+        return response.data['uuid'];
+      } else {
+        return Future.error(response.data);
+      }
+    } on DioException {
+      return Future.error(
+        'Unable to login at this time. Please try again later',
+      );
+    }
+  }
+
+  Future<void> logout({required String refreshToken}) async {
+    try {
+      Response response = await dio.post(
         'auth/logout/',
-        options: Options(
-          headers: <String, String>{'Authorization': 'Token $token'},
-        ),
+        data: {'refresh': refreshToken},
       );
       if (response.statusCode != 200) {
-        return Future.error(response.data['error'][0]);
+        return Future.error(response.data);
       }
     } on DioException {
       return Future.error(
@@ -44,18 +57,13 @@ class AuthProvider {
     }
   }
 
-  Future<User> getUserFromAPI({required String token}) async {
+  Future<User> getUserFromAPI() async {
     try {
-      Response response = await dio.get(
-        'auth/user/',
-        options: Options(
-          headers: <String, String>{'Authorization': 'Token $token'},
-        ),
-      );
+      Response response = await dio.get('user/');
       if (response.statusCode == 200) {
         return User.fromJson(response.data);
       } else {
-        return Future.error(response.data['error'][0]);
+        return Future.error(response.data);
       }
     } on DioException {
       return Future.error(

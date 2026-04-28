@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:democracy/app/bloc/global/global_cubit.dart';
+import 'package:democracy/app/bloc/services/websocket_service.dart'
+    show WebsocketStatus;
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart';
 import 'package:democracy/app/shared/utils/copy.dart';

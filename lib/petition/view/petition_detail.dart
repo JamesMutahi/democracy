@@ -1,4 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:democracy/app/bloc/services/websocket_service.dart'
+    show WebsocketStatus;
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/custom_text.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';

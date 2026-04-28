@@ -1,3 +1,5 @@
+import 'package:democracy/app/bloc/services/websocket_service.dart'
+    show WebsocketStatus;
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/asset_viewer.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';

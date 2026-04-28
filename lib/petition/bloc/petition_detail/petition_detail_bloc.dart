@@ -2,9 +2,8 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/repository/api_repository.dart';
-import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
-import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/geo/models/constituency.dart';
 import 'package:democracy/geo/models/county.dart';
 import 'package:democracy/geo/models/ward.dart';
@@ -22,7 +21,6 @@ class PetitionDetailBloc
     extends Bloc<PetitionDetailEvent, PetitionDetailState> {
   PetitionDetailBloc({
     required this.webSocketService,
-    required this.authRepository,
     required this.apiRepository,
   }) : super(const PetitionDetailState.initial()) {
     _subscription = webSocketService.messages.listen((message) {
@@ -103,9 +101,7 @@ class PetitionDetailBloc
   Future _onCreate(_Create event, Emitter<PetitionDetailState> emit) async {
     emit(PetitionDetailLoading());
     try {
-      String? token = await authRepository.getToken();
       Petition petition = await apiRepository.createPetition(
-        token: token!,
         title: event.title,
         description: event.description,
         imagePath: event.imagePath,
@@ -260,6 +256,5 @@ class PetitionDetailBloc
 
   late StreamSubscription _subscription;
   final WebSocketService webSocketService;
-  final AuthRepository authRepository;
   final APIRepository apiRepository;
 }

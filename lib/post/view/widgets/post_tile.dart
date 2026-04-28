@@ -6,6 +6,7 @@ import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
 import 'package:democracy/meet/view/widgets/meeting_tile.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart';
+import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
@@ -228,6 +229,11 @@ class _PostContainer extends StatelessWidget {
                                 child: AssetViewer(
                                   key: ValueKey(post.id),
                                   assets: post.assets,
+                                  onTap: () {
+                                    context.read<PostDetailBloc>().add(
+                                      PostDetailEvent.addClick(post: post),
+                                    );
+                                  },
                                 ),
                               ),
                             if (post.location != null)

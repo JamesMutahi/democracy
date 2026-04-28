@@ -49,6 +49,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   SizedBox(width: 60),
                   NavBarItem(
                     asset: 'assets/icons/layers.svg',
+                    size: 28,
                     isActive: currentPage == 2,
                     onTap: () {
                       context.read<BottomNavBarCubit>().changePage(2);
@@ -85,11 +86,13 @@ class NavBarItem extends StatelessWidget {
   const NavBarItem({
     super.key,
     required this.asset,
+    this.size = 26,
     required this.onTap,
     required this.isActive,
   });
 
   final String asset;
+  final double size;
   final VoidCallback onTap;
   final bool isActive;
 
@@ -103,8 +106,8 @@ class NavBarItem extends StatelessWidget {
           padding: const EdgeInsets.all(15.0),
           child: SvgPicture.asset(
             asset,
-            width: 26,
-            height: 26,
+            width: size,
+            height: size,
             colorFilter: ColorFilter.mode(
               isActive
                   ? Theme.of(context).primaryColor

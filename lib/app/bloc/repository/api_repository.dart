@@ -26,7 +26,6 @@ class APIRepository {
   final APIProvider apiProvider;
 
   Future<Map<String, dynamic>> createPost({
-    required String token,
     required String body,
     required PostStatus status,
     Post? repostOf,
@@ -43,7 +42,6 @@ class APIRepository {
   }) async {
     List<Map> assets = await getAssets(filePaths);
     return await apiProvider.createPost(
-      token: token,
       body: body,
       status: status,
       repostOf: repostOf,
@@ -73,17 +71,14 @@ class APIRepository {
   }
 
   Future<Map> postAssetUploadComplete({
-    required String token,
     required List<String> assetIdList,
   }) async {
     return await apiProvider.postAssetUploadComplete(
-      token: token,
       assetIdList: assetIdList,
     );
   }
 
   Future<Map<String, dynamic>> createMessage({
-    required String token,
     required Chat chat,
     required String text,
     Post? post,
@@ -98,7 +93,6 @@ class APIRepository {
     List<Map> assets = await getAssets(filePaths);
 
     return await apiProvider.createMessage(
-      token: token,
       chat: chat,
       text: text,
       post: post,
@@ -125,17 +119,14 @@ class APIRepository {
   }
 
   Future<List<Asset>> messageAssetUploadComplete({
-    required String token,
     required List<String> assetIdList,
   }) async {
     return await apiProvider.messageAssetUploadComplete(
-      token: token,
       assetIdList: assetIdList,
     );
   }
 
   Future<Map<String, dynamic>> createDirectMessage({
-    required String token,
     required List<User> users,
     required String text,
     Post? post,
@@ -150,7 +141,6 @@ class APIRepository {
     List<Map> assets = await getAssets(filePaths);
 
     return await apiProvider.createDirectMessage(
-      token: token,
       users: users,
       text: text,
       post: post,
@@ -165,7 +155,6 @@ class APIRepository {
   }
 
   Future<Petition> createPetition({
-    required String token,
     required String title,
     required String imagePath,
     required String description,
@@ -174,7 +163,6 @@ class APIRepository {
     Ward? ward,
   }) async {
     return await apiProvider.createPetition(
-      token: token,
       title: title,
       description: description,
       imagePath: imagePath,
@@ -186,7 +174,6 @@ class APIRepository {
 
   Future<Map> patchUser({
     required User user,
-    required String token,
     required String name,
     required String bio,
     required String? imagePath,
@@ -194,7 +181,6 @@ class APIRepository {
   }) async {
     return await apiProvider.patchUser(
       user: user,
-      token: token,
       name: name,
       bio: bio,
       imagePath: imagePath,

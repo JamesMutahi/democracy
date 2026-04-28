@@ -10,7 +10,7 @@ String themeModeKey = 'themeMode';
 class GlobalCubit extends Cubit<GlobalState> {
   GlobalCubit() : super(const GlobalState());
 
-  void check() async {
+  void checkTheme() async {
     try {
       emit(state.copyWith(status: GlobalStatus.loading));
       final SharedPreferences preferences =
@@ -26,7 +26,7 @@ class GlobalCubit extends Cubit<GlobalState> {
     }
   }
 
-  void change({required int index}) async {
+  void changeTheme({required int index}) async {
     try {
       emit(state.copyWith(status: GlobalStatus.loading));
       final SharedPreferences preferences =

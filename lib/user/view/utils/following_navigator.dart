@@ -1,4 +1,4 @@
-import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/user/bloc/followers/followers_bloc.dart';
 import 'package:democracy/user/bloc/following/following_bloc.dart';
 import 'package:democracy/user/models/user.dart';

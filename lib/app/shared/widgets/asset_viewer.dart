@@ -5,7 +5,7 @@ import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/file_widget.dart';
 import 'package:democracy/app/shared/widgets/video_viewer.dart';
-import 'package:democracy/chat/bloc/message_create/message_create_bloc.dart';
+import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -13,9 +13,10 @@ import 'package:photo_view/photo_view.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 class AssetViewer extends StatefulWidget {
-  const AssetViewer({super.key, required this.assets});
+  const AssetViewer({super.key, required this.assets, this.onTap});
 
   final List<Asset> assets;
+  final VoidCallback? onTap;
 
   @override
   State<AssetViewer> createState() => _AssetViewerState();
@@ -34,11 +35,11 @@ class _AssetViewerState extends State<AssetViewer> {
   Widget build(BuildContext context) {
     bool isMobile = ResponsiveBreakpoints.of(context).isMobile;
 
-    return BlocListener<MessageCreateBloc, MessageCreateState>(
+    return BlocListener<MessageDetailBloc, MessageDetailState>(
       listener: (context, state) {
-        if (state.status == MessageCreateStatus.success) {
-          if (state.message!.assets.isNotEmpty) {
-            for (final asset in state.message!.assets) {
+        if (state is MessageUpdated) {
+          if (state.message.assets.isNotEmpty) {
+            for (final asset in state.message.assets) {
               if (media.any((a) => a.id == asset.id && !a.isCompleted)) {
                 setState(() {
                   int index = media.indexWhere((a) => a.id == asset.id);
@@ -102,6 +103,7 @@ class _AssetViewerState extends State<AssetViewer> {
             asset: asset,
             onTap: () => _openCarousel(asset: asset, media: media),
             showControls: media.length == 1 || !isMobile,
+            onVideoPlay: media.length == 1 ? widget.onTap : null,
           );
   }
 
@@ -113,6 +115,7 @@ class _AssetViewerState extends State<AssetViewer> {
             _MediaCarousel(media: media, selectedAsset: asset),
       ),
     );
+    widget.onTap?.call();
   }
 }
 
@@ -121,11 +124,13 @@ class _VideoWidget extends StatelessWidget {
     required this.asset,
     required this.onTap,
     required this.showControls,
+    required this.onVideoPlay,
   });
 
   final Asset asset;
   final VoidCallback onTap;
   final bool showControls;
+  final VoidCallback? onVideoPlay;
 
   @override
   Widget build(BuildContext context) {
@@ -143,6 +148,7 @@ class _VideoWidget extends StatelessWidget {
                 url: asset.url,
                 cacheKey: asset.fileKey,
                 showControls: showControls,
+                onVideoPlay: onVideoPlay,
               ),
               if (!showControls)
                 Center(

@@ -6,8 +6,10 @@ import 'package:democracy/app/bloc/location/location_cubit.dart';
 import 'package:democracy/app/bloc/repository/api_repository.dart';
 import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/utils/app_bloc_observer.dart';
+import 'package:democracy/app/bloc/services/token_interceptor.dart';
+import 'package:democracy/app/bloc/services/token_storage.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
@@ -56,14 +58,26 @@ void main() async {
   await dotenv.load(fileName: ".env");
   final options = BaseOptions(
     baseUrl: dotenv.env['BASE_URL']!,
-    connectTimeout: const Duration(seconds: 5),
-    receiveTimeout: const Duration(seconds: 5),
+    connectTimeout: const Duration(seconds: 10),
+    receiveTimeout: const Duration(seconds: 10),
     validateStatus: (status) {
       return status! < 520;
     },
   );
 
   final dio = Dio(options);
+
+  final tokenStorage = TokenStorage();
+
+  final tokenInterceptor = TokenInterceptor(
+    dio: dio,
+    tokenStorage: tokenStorage,
+  );
+
+  dio.interceptors.add(tokenInterceptor);
+
+  // Optional: Logging
+  dio.interceptors.add(LogInterceptor(responseBody: true));
 
   final dir = await getApplicationDocumentsDirectory();
 
@@ -81,6 +95,7 @@ void main() async {
           value: AuthRepository(authProvider: AuthProvider(dio: dio)),
         ),
         RepositoryProvider.value(value: WebSocketService()),
+        RepositoryProvider.value(value: tokenStorage),
         RepositoryProvider.value(
           value: APIRepository(apiProvider: APIProvider(dio: dio)),
         ),
@@ -90,7 +105,7 @@ void main() async {
         providers: [
           BlocProvider(
             create: (context) => GlobalCubit()
-              ..check()
+              ..checkTheme()
               ..getCameras(),
             lazy: false,
           ),
@@ -101,14 +116,18 @@ void main() async {
             lazy: false,
           ),
           BlocProvider(
-            create: (context) =>
-                AuthBloc(authRepository: context.read<AuthRepository>())
-                  ..add(const AuthEvent.authenticate()),
+            create: (context) => AuthBloc(
+              authRepository: context.read<AuthRepository>(),
+              tokenStorage: tokenStorage,
+              tokenInterceptor: tokenInterceptor,
+            )..add(const AuthEvent.authenticate()),
             lazy: false,
           ),
           BlocProvider(
-            create: (context) =>
-                LoginCubit(authRepository: context.read<AuthRepository>()),
+            create: (context) => LoginCubit(
+              authRepository: context.read<AuthRepository>(),
+              tokenStorage: tokenStorage,
+            ),
           ),
           BlocProvider(
             create: (context) => WebsocketBloc(
@@ -132,10 +151,8 @@ void main() async {
             ),
           ),
           BlocProvider(
-            create: (context) => PostCreateBloc(
-              authRepository: context.read<AuthRepository>(),
-              apiRepository: context.read<APIRepository>(),
-            ),
+            create: (context) =>
+                PostCreateBloc(apiRepository: context.read<APIRepository>()),
           ),
           BlocProvider(
             create: (context) => BookmarksBloc(
@@ -168,16 +185,12 @@ void main() async {
             ),
           ),
           BlocProvider(
-            create: (context) => MessageCreateBloc(
-              authRepository: context.read<AuthRepository>(),
-              apiRepository: context.read<APIRepository>(),
-            ),
+            create: (context) =>
+                MessageCreateBloc(apiRepository: context.read<APIRepository>()),
           ),
           BlocProvider(
-            create: (context) => DirectMessageBloc(
-              authRepository: context.read<AuthRepository>(),
-              apiRepository: context.read<APIRepository>(),
-            ),
+            create: (context) =>
+                DirectMessageBloc(apiRepository: context.read<APIRepository>()),
           ),
           BlocProvider(create: (context) => MessageActionsCubit()),
           BlocProvider(
@@ -209,7 +222,6 @@ void main() async {
           BlocProvider(
             create: (context) => UserDetailBloc(
               webSocketService: context.read<WebSocketService>(),
-              authRepository: context.read<AuthRepository>(),
               apiRepository: context.read<APIRepository>(),
             ),
           ),
@@ -229,7 +241,6 @@ void main() async {
           BlocProvider(
             create: (context) => PetitionDetailBloc(
               webSocketService: context.read<WebSocketService>(),
-              authRepository: context.read<AuthRepository>(),
               apiRepository: context.read<APIRepository>(),
             ),
           ),

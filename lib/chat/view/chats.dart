@@ -2,6 +2,7 @@ import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/models/asset.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
+import 'package:democracy/app/shared/widgets/no_results.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
@@ -56,7 +57,7 @@ class _ChatsState extends State<Chats> {
               chatsBloc.add(ChatsEvent.update(chat: state.chat));
             } else if (state is ChatDeleted) {
               chatsBloc.add(ChatsEvent.remove(chatId: state.chatId));
-            }else if (state is ChatDetailFailure) {
+            } else if (state is ChatDetailFailure) {
               final snackBar = getSnackBar(
                 context: context,
                 message: state.error,
@@ -152,12 +153,7 @@ class _ChatsState extends State<Chats> {
                 },
                 footer: ClassicFooter(),
                 child: chats.isEmpty
-                    ? const Center(
-                        child: Text(
-                          'No chats yet',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      )
+                    ? const NoResults(text: 'No chats')
                     : ListView.builder(
                         itemCount: chats.length,
                         itemBuilder: (context, index) {

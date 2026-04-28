@@ -12,7 +12,6 @@ sealed class User with _$User {
     required final int id,
     required String username,
     required String name,
-    required String email,
     required String image,
     @JsonKey(name: 'cover_photo') required String coverPhoto,
     required String bio,

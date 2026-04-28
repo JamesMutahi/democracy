@@ -74,15 +74,19 @@ class ThemeModeListTile extends StatelessWidget {
           onTap: () {
             switch (themeMode) {
               case ThemeMode.light:
-                context.read<GlobalCubit>().change(
+                context.read<GlobalCubit>().changeTheme(
                   index: ThemeMode.system.index,
                 );
                 break;
               case ThemeMode.system:
-                context.read<GlobalCubit>().change(index: ThemeMode.dark.index);
+                context.read<GlobalCubit>().changeTheme(
+                  index: ThemeMode.dark.index,
+                );
                 break;
               case ThemeMode.dark:
-                context.read<GlobalCubit>().change(index: ThemeMode.light.index);
+                context.read<GlobalCubit>().changeTheme(
+                  index: ThemeMode.light.index,
+                );
                 break;
             }
           },
@@ -105,11 +109,13 @@ class ThemeModeToggleButtons extends StatelessWidget {
       isSelected: isSelected,
       onPressed: (int newIndex) {
         if (newIndex == 0) {
-          context.read<GlobalCubit>().change(index: ThemeMode.light.index);
+          context.read<GlobalCubit>().changeTheme(index: ThemeMode.light.index);
         } else if (newIndex == 1) {
-          context.read<GlobalCubit>().change(index: ThemeMode.system.index);
+          context.read<GlobalCubit>().changeTheme(
+            index: ThemeMode.system.index,
+          );
         } else {
-          context.read<GlobalCubit>().change(index: ThemeMode.dark.index);
+          context.read<GlobalCubit>().changeTheme(index: ThemeMode.dark.index);
         }
       },
       children: const <Widget>[

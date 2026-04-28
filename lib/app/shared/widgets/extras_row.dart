@@ -183,10 +183,17 @@ class _ExtraCard extends StatelessWidget {
           Card(
             child: Padding(
               padding: const EdgeInsets.all(15.0),
-              child: Icon(iconData, size: 30),
+              child: Icon(
+                iconData,
+                size: 30,
+                color: Theme.of(context).colorScheme.outline,
+              ),
             ),
           ),
-          Text(text),
+          Text(
+            text,
+            style: TextStyle(color: Theme.of(context).colorScheme.outline),
+          ),
         ],
       ),
     );

@@ -2,9 +2,8 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/repository/api_repository.dart';
-import 'package:democracy/app/bloc/websocket/websocket_service.dart';
+import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
-import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -18,7 +17,6 @@ const String requestId = 'users';
 class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
   UserDetailBloc({
     required this.webSocketService,
-    required this.authRepository,
     required this.apiRepository,
   }) : super(const _Initial()) {
     _subscription = webSocketService.messages.listen((message) {
@@ -93,10 +91,8 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
   Future _onPatch(_Patch event, Emitter<UserDetailState> emit) async {
     emit(_Loading());
     try {
-      String? token = await authRepository.getToken();
       final data = await apiRepository.patchUser(
         user: event.user,
-        token: token!,
         name: event.name,
         bio: event.bio,
         imagePath: event.imagePath,
@@ -242,6 +238,5 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
 
   late StreamSubscription _subscription;
   final WebSocketService webSocketService;
-  final AuthRepository authRepository;
   final APIRepository apiRepository;
 }

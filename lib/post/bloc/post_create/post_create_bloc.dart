@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/repository/api_repository.dart';
-import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/meet/models/meeting.dart';
@@ -16,7 +15,7 @@ part 'post_create_state.dart';
 part 'post_create_bloc.freezed.dart';
 
 class PostCreateBloc extends Bloc<PostCreateEvent, PostCreateState> {
-  PostCreateBloc({required this.authRepository, required this.apiRepository})
+  PostCreateBloc({required this.apiRepository})
     : super(const PostCreateState()) {
     on<_Create>((event, emit) async => await _onCreate(event, emit));
     on<_UploadAssets>(
@@ -43,9 +42,7 @@ class PostCreateBloc extends Bloc<PostCreateEvent, PostCreateState> {
   Future _onCreate(_Create event, Emitter<PostCreateState> emit) async {
     emit(PostCreateState(status: PostCreateStatus.loading));
     try {
-      String? token = await authRepository.getToken();
       final data = await apiRepository.createPost(
-        token: token!,
         body: event.body,
         status: event.status,
         repostOf: event.repostOf,
@@ -108,11 +105,7 @@ class PostCreateBloc extends Bloc<PostCreateEvent, PostCreateState> {
         );
       }
 
-      String? token = await authRepository.getToken();
-      await apiRepository.postAssetUploadComplete(
-        token: token!,
-        assetIdList: assetIdList,
-      );
+      await apiRepository.postAssetUploadComplete(assetIdList: assetIdList);
 
       emit(state.copyWith(status: PostCreateStatus.success));
     } catch (e) {
@@ -122,6 +115,5 @@ class PostCreateBloc extends Bloc<PostCreateEvent, PostCreateState> {
     }
   }
 
-  final AuthRepository authRepository;
   final APIRepository apiRepository;
 }
