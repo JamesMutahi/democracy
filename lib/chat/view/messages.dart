@@ -54,7 +54,7 @@ class _MessagesState extends State<Messages> {
         BlocListener<MessageCreateBloc, MessageCreateState>(
           listener: (context, state) {
             if (state.status == MessageCreateStatus.success) {
-              if (state.message?.chatId == widget.chat.id) {
+              if (state.message?.chat.targetId == widget.chat.id) {
                 if (state.message!.assets.isNotEmpty) {
                   context.read<MessagesBloc>().add(
                     MessagesEvent.update(message: state.message!),
@@ -67,7 +67,7 @@ class _MessagesState extends State<Messages> {
         BlocListener<MessageDetailBloc, MessageDetailState>(
           listener: (context, state) {
             if (state is MessageCreated) {
-              if (state.message.chatId == widget.chat.id) {
+              if (state.message.chat.targetId == widget.chat.id) {
                 context.read<MessagesBloc>().add(
                   MessagesEvent.add(message: state.message),
                 );
@@ -80,7 +80,7 @@ class _MessagesState extends State<Messages> {
             }
 
             if (state is MessageUpdated) {
-              if (state.message.chatId == widget.chat.id) {
+              if (state.message.chat.targetId == widget.chat.id) {
                 context.read<MessagesBloc>().add(
                   MessagesEvent.update(message: state.message),
                 );
@@ -142,7 +142,8 @@ class _MessagesState extends State<Messages> {
           }
 
           List<Message> messages = state.messages.toList();
-          messages.sort((a, b) => b.id.compareTo(a.id));
+
+          messages.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
           double messageMargin = 10;
 

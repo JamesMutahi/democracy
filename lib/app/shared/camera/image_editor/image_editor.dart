@@ -7,7 +7,7 @@ import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/shared/camera/camera.dart';
 import 'package:democracy/app/shared/camera/widgets/stickers.dart';
 import 'package:democracy/app/shared/camera/widgets/send.dart';
-import 'package:democracy/app/shared/utils/app_logger.dart';
+import 'package:democracy/app/core/app_logger.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

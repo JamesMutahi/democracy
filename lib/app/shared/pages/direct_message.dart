@@ -330,9 +330,6 @@ class _DirectMessageState extends State<DirectMessage> {
                     );
                   },
             showLoading: false,
-            showFailure: false,
-            onRetry: () {},
-            onCancelRetry: () {},
           ),
         ),
       ),

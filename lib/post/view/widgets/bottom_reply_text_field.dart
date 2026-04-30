@@ -249,16 +249,6 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
                 ? null
                 : _createPost,
             showLoading: showLoading,
-            showFailure: showFailure,
-            onRetry: () {
-              context.read<PostCreateBloc>().add(PostCreateEvent.retry());
-            },
-            onCancelRetry: () {
-              setState(() {
-                showLoading = false;
-                showFailure = false;
-              });
-            },
           );
         },
       ),

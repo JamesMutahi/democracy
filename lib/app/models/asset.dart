@@ -40,6 +40,13 @@ class AssetContentTypeConverter implements JsonConverter<ContentType, String> {
 
   @override
   String toJson(ContentType object) {
-    throw UnimplementedError();
+    switch (object) {
+      case ContentType.image:
+        return 'image/jpg';
+      case ContentType.video:
+        return 'video/mp4';
+      default:
+        return 'document';
+    }
   }
 }

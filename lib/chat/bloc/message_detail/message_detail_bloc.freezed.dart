@@ -308,7 +308,7 @@ $Res call({
 });
 
 
-$MessageCopyWith<$Res> get message;
+
 
 }
 /// @nodoc
@@ -328,16 +328,7 @@ as Message,
   ));
 }
 
-/// Create a copy of MessageDetailState
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$MessageCopyWith<$Res> get message {
-  
-  return $MessageCopyWith<$Res>(_self.message, (value) {
-    return _then(_self.copyWith(message: value));
-  });
-}
+
 }
 
 /// @nodoc
@@ -383,7 +374,7 @@ $Res call({
 });
 
 
-$MessageCopyWith<$Res> get message;
+
 
 }
 /// @nodoc
@@ -403,16 +394,7 @@ as Message,
   ));
 }
 
-/// Create a copy of MessageDetailState
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$MessageCopyWith<$Res> get message {
-  
-  return $MessageCopyWith<$Res>(_self.message, (value) {
-    return _then(_self.copyWith(message: value));
-  });
-}
+
 }
 
 /// @nodoc
@@ -666,13 +648,13 @@ return delete(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( int messageId,  String text)?  edit,TResult Function( List<Message> messages)?  delete,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Message message,  String text)?  edit,TResult Function( List<Message> messages)?  delete,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Edit() when edit != null:
-return edit(_that.messageId,_that.text);case _Delete() when delete != null:
+return edit(_that.message,_that.text);case _Delete() when delete != null:
 return delete(_that.messages);case _:
   return orElse();
 
@@ -691,13 +673,13 @@ return delete(_that.messages);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( int messageId,  String text)  edit,required TResult Function( List<Message> messages)  delete,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Message message,  String text)  edit,required TResult Function( List<Message> messages)  delete,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Updated():
 return updated(_that.payload);case _Deleted():
 return deleted(_that.payload);case _Edit():
-return edit(_that.messageId,_that.text);case _Delete():
+return edit(_that.message,_that.text);case _Delete():
 return delete(_that.messages);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -712,13 +694,13 @@ return delete(_that.messages);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( int messageId,  String text)?  edit,TResult? Function( List<Message> messages)?  delete,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Message message,  String text)?  edit,TResult? Function( List<Message> messages)?  delete,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Edit() when edit != null:
-return edit(_that.messageId,_that.text);case _Delete() when delete != null:
+return edit(_that.message,_that.text);case _Delete() when delete != null:
 return delete(_that.messages);case _:
   return null;
 
@@ -947,10 +929,10 @@ as Map<String, dynamic>,
 
 
 class _Edit implements MessageDetailEvent {
-  const _Edit({required this.messageId, required this.text});
+  const _Edit({required this.message, required this.text});
   
 
- final  int messageId;
+ final  Message message;
  final  String text;
 
 /// Create a copy of MessageDetailEvent
@@ -963,16 +945,16 @@ _$EditCopyWith<_Edit> get copyWith => __$EditCopyWithImpl<_Edit>(this, _$identit
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Edit&&(identical(other.messageId, messageId) || other.messageId == messageId)&&(identical(other.text, text) || other.text == text));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Edit&&(identical(other.message, message) || other.message == message)&&(identical(other.text, text) || other.text == text));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,messageId,text);
+int get hashCode => Object.hash(runtimeType,message,text);
 
 @override
 String toString() {
-  return 'MessageDetailEvent.edit(messageId: $messageId, text: $text)';
+  return 'MessageDetailEvent.edit(message: $message, text: $text)';
 }
 
 
@@ -983,7 +965,7 @@ abstract mixin class _$EditCopyWith<$Res> implements $MessageDetailEventCopyWith
   factory _$EditCopyWith(_Edit value, $Res Function(_Edit) _then) = __$EditCopyWithImpl;
 @useResult
 $Res call({
- int messageId, String text
+ Message message, String text
 });
 
 
@@ -1000,10 +982,10 @@ class __$EditCopyWithImpl<$Res>
 
 /// Create a copy of MessageDetailEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? messageId = null,Object? text = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? message = null,Object? text = null,}) {
   return _then(_Edit(
-messageId: null == messageId ? _self.messageId : messageId // ignore: cast_nullable_to_non_nullable
-as int,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
+message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as Message,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

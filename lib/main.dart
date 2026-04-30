@@ -3,14 +3,15 @@ import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
 import 'package:democracy/app/bloc/hub_filter/hub_filter_cubit.dart';
 import 'package:democracy/app/bloc/location/location_cubit.dart';
-import 'package:democracy/app/bloc/repository/api_repository.dart';
+import 'package:democracy/app/bloc/repository/api/api_repository.dart';
 import 'package:democracy/app/bloc/global/global_cubit.dart';
+import 'package:democracy/app/bloc/repository/database/database_repository.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/bloc/services/token_interceptor.dart';
 import 'package:democracy/app/bloc/services/token_storage.dart';
-import 'package:democracy/app/shared/utils/app_logger.dart';
-import 'package:democracy/app/shared/utils/init_dependencies.dart';
+import 'package:democracy/app/core/app_logger.dart';
+import 'package:democracy/app/core/init_dependencies.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
@@ -60,26 +61,14 @@ void main() async {
   await SentryFlutter.init(
     (options) {
       options.dsn = dotenv.env['SENTRY_DSN'];
-
-      // === Core Settings ===
       options.environment = kDebugMode ? 'development' : 'production';
       options.release = 'democracy@${dotenv.env['APP_VERSION'] ?? '1.0.0'}';
-
-      // === Performance Monitoring ===
-      // 20% of transactions in production
       options.tracesSampleRate = kDebugMode ? 1.0 : 0.2;
-
-      // === Profiling (Experimental) ===
-      // Disable by default in production to avoid the warning + overhead
       options.profilesSampleRate = kDebugMode ? 1.0 : 0.0;
-
-      // Optional: Advanced filtering / sanitization
       options.beforeSend = (event, hint) {
-        // You can remove sensitive data here if needed
+        // Remove sensitive data here if needed
         return event;
       };
-
-      // Enable debug mode only during development
       options.debug = kDebugMode;
     },
     appRunner: () async {
@@ -121,8 +110,8 @@ void main() async {
       );
       dio.interceptors.add(tokenInterceptor);
 
-      // Open Isar instance
-      final isar = await openDatabase();
+      // Open Database
+      final objectbox = await ObjectBox.create();
 
       runApp(
         MultiRepositoryProvider(
@@ -135,7 +124,9 @@ void main() async {
             RepositoryProvider.value(
               value: APIRepository(apiProvider: APIProvider(dio: dio)),
             ),
-            RepositoryProvider.value(value: DraftPostRepository(isar: isar)),
+            RepositoryProvider.value(
+              value: DatabaseRepository(store: objectbox.store),
+            ),
           ],
           child: MultiBlocProvider(
             providers: [
@@ -163,6 +154,7 @@ void main() async {
                 create: (context) => LoginCubit(
                   authRepository: context.read<AuthRepository>(),
                   tokenStorage: tokenStorage,
+                  databaseRepository: context.read<DatabaseRepository>(),
                 ),
               ),
               BlocProvider(
@@ -198,12 +190,12 @@ void main() async {
               ),
               BlocProvider(
                 create: (context) => DraftPostBloc(
-                  draftPostRepository: context.read<DraftPostRepository>(),
+                  databaseRepository: context.read<DatabaseRepository>(),
                 ),
               ),
               BlocProvider(
                 create: (context) => DraftPostsBloc(
-                  draftPostRepository: context.read<DraftPostRepository>(),
+                  databaseRepository: context.read<DatabaseRepository>(),
                 ),
               ),
               BlocProvider(
@@ -211,6 +203,7 @@ void main() async {
                   webSocketService: context.read<WebSocketService>(),
                   authRepository: context.read<AuthRepository>(),
                   apiRepository: context.read<APIRepository>(),
+                  databaseRepository: context.read<DatabaseRepository>(),
                 ),
               ),
               BlocProvider(create: (context) => ChatFilterCubit()),
@@ -219,11 +212,13 @@ void main() async {
                   webSocketService: context.read<WebSocketService>(),
                   authRepository: context.read<AuthRepository>(),
                   apiRepository: context.read<APIRepository>(),
+                  databaseRepository: context.read<DatabaseRepository>(),
                 ),
               ),
               BlocProvider(
                 create: (context) => MessageCreateBloc(
                   apiRepository: context.read<APIRepository>(),
+                  databaseRepository: context.read<DatabaseRepository>(),
                 ),
               ),
               BlocProvider(
@@ -247,12 +242,14 @@ void main() async {
               BlocProvider(
                 create: (context) => NotificationsBloc(
                   webSocketService: context.read<WebSocketService>(),
+                  databaseRepository: context.read<DatabaseRepository>(),
                 ),
                 lazy: false,
               ),
               BlocProvider(
                 create: (context) => NotificationDetailBloc(
                   webSocketService: context.read<WebSocketService>(),
+                  databaseRepository: context.read<DatabaseRepository>(),
                 ),
               ),
               BlocProvider(

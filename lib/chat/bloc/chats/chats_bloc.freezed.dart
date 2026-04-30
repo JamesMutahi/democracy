@@ -55,15 +55,13 @@ extension ChatsEventPatterns on ChatsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Update value)?  update,TResult Function( _Remove value)?  remove,TResult Function( _UpdateMultiple value)?  updateMultiple,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Update value)?  update,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
 return received(_that);case _Update() when update != null:
-return update(_that);case _Remove() when remove != null:
-return remove(_that);case _UpdateMultiple() when updateMultiple != null:
-return updateMultiple(_that);case _:
+return update(_that);case _:
   return orElse();
 
 }
@@ -81,15 +79,13 @@ return updateMultiple(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Update value)  update,required TResult Function( _Remove value)  remove,required TResult Function( _UpdateMultiple value)  updateMultiple,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Update value)  update,}){
 final _that = this;
 switch (_that) {
 case _Get():
 return get(_that);case _Received():
 return received(_that);case _Update():
-return update(_that);case _Remove():
-return remove(_that);case _UpdateMultiple():
-return updateMultiple(_that);}
+return update(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -103,15 +99,13 @@ return updateMultiple(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Update value)?  update,TResult? Function( _Remove value)?  remove,TResult? Function( _UpdateMultiple value)?  updateMultiple,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Update value)?  update,}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
 return received(_that);case _Update() when update != null:
-return update(_that);case _Remove() when remove != null:
-return remove(_that);case _UpdateMultiple() when updateMultiple != null:
-return updateMultiple(_that);case _:
+return update(_that);case _:
   return null;
 
 }
@@ -128,14 +122,12 @@ return updateMultiple(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  Chat? lastChat)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Chat chat)?  update,TResult Function( int chatId)?  remove,TResult Function( List<Chat> chats)?  updateMultiple,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  Chat? lastChat)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function()?  update,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.searchTerm,_that.lastChat);case _Received() when received != null:
 return received(_that.payload);case _Update() when update != null:
-return update(_that.chat);case _Remove() when remove != null:
-return remove(_that.chatId);case _UpdateMultiple() when updateMultiple != null:
-return updateMultiple(_that.chats);case _:
+return update();case _:
   return orElse();
 
 }
@@ -153,14 +145,12 @@ return updateMultiple(_that.chats);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  Chat? lastChat)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Chat chat)  update,required TResult Function( int chatId)  remove,required TResult Function( List<Chat> chats)  updateMultiple,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  Chat? lastChat)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function()  update,}) {final _that = this;
 switch (_that) {
 case _Get():
 return get(_that.searchTerm,_that.lastChat);case _Received():
 return received(_that.payload);case _Update():
-return update(_that.chat);case _Remove():
-return remove(_that.chatId);case _UpdateMultiple():
-return updateMultiple(_that.chats);}
+return update();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -174,14 +164,12 @@ return updateMultiple(_that.chats);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  Chat? lastChat)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Chat chat)?  update,TResult? Function( int chatId)?  remove,TResult? Function( List<Chat> chats)?  updateMultiple,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  Chat? lastChat)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function()?  update,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.searchTerm,_that.lastChat);case _Received() when received != null:
 return received(_that.payload);case _Update() when update != null:
-return update(_that.chat);case _Remove() when remove != null:
-return remove(_that.chatId);case _UpdateMultiple() when updateMultiple != null:
-return updateMultiple(_that.chats);case _:
+return update();case _:
   return null;
 
 }
@@ -233,7 +221,7 @@ $Res call({
 });
 
 
-$ChatCopyWith<$Res>? get lastChat;
+
 
 }
 /// @nodoc
@@ -254,19 +242,7 @@ as Chat?,
   ));
 }
 
-/// Create a copy of ChatsEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ChatCopyWith<$Res>? get lastChat {
-    if (_self.lastChat == null) {
-    return null;
-  }
 
-  return $ChatCopyWith<$Res>(_self.lastChat!, (value) {
-    return _then(_self.copyWith(lastChat: value));
-  });
-}
 }
 
 /// @nodoc
@@ -345,213 +321,32 @@ as Map<String, dynamic>,
 
 
 class _Update implements ChatsEvent {
-  const _Update({required this.chat});
+  const _Update();
   
 
- final  Chat chat;
 
-/// Create a copy of ChatsEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$UpdateCopyWith<_Update> get copyWith => __$UpdateCopyWithImpl<_Update>(this, _$identity);
+
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Update&&(identical(other.chat, chat) || other.chat == chat));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Update);
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,chat);
-
-@override
-String toString() {
-  return 'ChatsEvent.update(chat: $chat)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$UpdateCopyWith<$Res> implements $ChatsEventCopyWith<$Res> {
-  factory _$UpdateCopyWith(_Update value, $Res Function(_Update) _then) = __$UpdateCopyWithImpl;
-@useResult
-$Res call({
- Chat chat
-});
-
-
-$ChatCopyWith<$Res> get chat;
-
-}
-/// @nodoc
-class __$UpdateCopyWithImpl<$Res>
-    implements _$UpdateCopyWith<$Res> {
-  __$UpdateCopyWithImpl(this._self, this._then);
-
-  final _Update _self;
-  final $Res Function(_Update) _then;
-
-/// Create a copy of ChatsEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? chat = null,}) {
-  return _then(_Update(
-chat: null == chat ? _self.chat : chat // ignore: cast_nullable_to_non_nullable
-as Chat,
-  ));
-}
-
-/// Create a copy of ChatsEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ChatCopyWith<$Res> get chat {
-  
-  return $ChatCopyWith<$Res>(_self.chat, (value) {
-    return _then(_self.copyWith(chat: value));
-  });
-}
-}
-
-/// @nodoc
-
-
-class _Remove implements ChatsEvent {
-  const _Remove({required this.chatId});
-  
-
- final  int chatId;
-
-/// Create a copy of ChatsEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$RemoveCopyWith<_Remove> get copyWith => __$RemoveCopyWithImpl<_Remove>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Remove&&(identical(other.chatId, chatId) || other.chatId == chatId));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,chatId);
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ChatsEvent.remove(chatId: $chatId)';
+  return 'ChatsEvent.update()';
 }
 
 
 }
 
-/// @nodoc
-abstract mixin class _$RemoveCopyWith<$Res> implements $ChatsEventCopyWith<$Res> {
-  factory _$RemoveCopyWith(_Remove value, $Res Function(_Remove) _then) = __$RemoveCopyWithImpl;
-@useResult
-$Res call({
- int chatId
-});
 
 
-
-
-}
-/// @nodoc
-class __$RemoveCopyWithImpl<$Res>
-    implements _$RemoveCopyWith<$Res> {
-  __$RemoveCopyWithImpl(this._self, this._then);
-
-  final _Remove _self;
-  final $Res Function(_Remove) _then;
-
-/// Create a copy of ChatsEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? chatId = null,}) {
-  return _then(_Remove(
-chatId: null == chatId ? _self.chatId : chatId // ignore: cast_nullable_to_non_nullable
-as int,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class _UpdateMultiple implements ChatsEvent {
-  const _UpdateMultiple({required final  List<Chat> chats}): _chats = chats;
-  
-
- final  List<Chat> _chats;
- List<Chat> get chats {
-  if (_chats is EqualUnmodifiableListView) return _chats;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_chats);
-}
-
-
-/// Create a copy of ChatsEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$UpdateMultipleCopyWith<_UpdateMultiple> get copyWith => __$UpdateMultipleCopyWithImpl<_UpdateMultiple>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateMultiple&&const DeepCollectionEquality().equals(other._chats, _chats));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_chats));
-
-@override
-String toString() {
-  return 'ChatsEvent.updateMultiple(chats: $chats)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$UpdateMultipleCopyWith<$Res> implements $ChatsEventCopyWith<$Res> {
-  factory _$UpdateMultipleCopyWith(_UpdateMultiple value, $Res Function(_UpdateMultiple) _then) = __$UpdateMultipleCopyWithImpl;
-@useResult
-$Res call({
- List<Chat> chats
-});
-
-
-
-
-}
-/// @nodoc
-class __$UpdateMultipleCopyWithImpl<$Res>
-    implements _$UpdateMultipleCopyWith<$Res> {
-  __$UpdateMultipleCopyWithImpl(this._self, this._then);
-
-  final _UpdateMultiple _self;
-  final $Res Function(_UpdateMultiple) _then;
-
-/// Create a copy of ChatsEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? chats = null,}) {
-  return _then(_UpdateMultiple(
-chats: null == chats ? _self._chats : chats // ignore: cast_nullable_to_non_nullable
-as List<Chat>,
-  ));
-}
-
-
-}
 
 // dart format on

@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:democracy/app/bloc/repository/database/database_repository.dart';
 import 'package:democracy/app/shared/utils/transformers.dart';
-import 'package:democracy/post/bloc/draft_post/draft_post_bloc.dart';
 import 'package:democracy/post/models/draft_post.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -16,7 +16,7 @@ const String requestId = 'posts';
 const String action = 'drafts';
 
 class DraftPostsBloc extends Bloc<DraftPostsEvent, DraftPostsState> {
-  DraftPostsBloc({required this.draftPostRepository})
+  DraftPostsBloc({required this.databaseRepository})
     : super(DraftPostsState()) {
     on<_Get>(
       (event, emit) async => await _onGet(event, emit),
@@ -30,7 +30,7 @@ class DraftPostsBloc extends Bloc<DraftPostsEvent, DraftPostsState> {
   Future _onGet(_Get event, Emitter<DraftPostsState> emit) async {
     emit(state.copyWith(status: DraftPostsStatus.loading));
     try {
-      final drafts = await draftPostRepository.fetchDrafts();
+      final drafts = await databaseRepository.fetchDrafts();
       emit(state.copyWith(status: DraftPostsStatus.success, drafts: drafts));
     } catch (e) {
       emit(state.copyWith(status: DraftPostsStatus.failure));
@@ -80,5 +80,5 @@ class DraftPostsBloc extends Bloc<DraftPostsEvent, DraftPostsState> {
     );
   }
 
-  final DraftPostRepository draftPostRepository;
+  final DatabaseRepository databaseRepository;
 }

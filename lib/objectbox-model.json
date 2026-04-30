@@ -1,0 +1,257 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:4508093392900912733",
+      "lastPropertyId": "4:7795444535218738920",
+      "name": "Chat",
+      "properties": [
+        {
+          "id": "1:5723960947784621580",
+          "name": "id",
+          "type": 6,
+          "flags": 129
+        },
+        {
+          "id": "2:4628224136409872408",
+          "name": "usersJson",
+          "type": 9
+        },
+        {
+          "id": "3:187529252864569788",
+          "name": "unreadMessages",
+          "type": 6
+        },
+        {
+          "id": "4:7795444535218738920",
+          "name": "lastMessageId",
+          "indexId": "1:6178847164186925076",
+          "type": 11,
+          "flags": 520,
+          "relationTarget": "Message"
+        }
+      ],
+      "relations": [
+        {
+          "id": "1:2495467324350740979",
+          "name": "messages",
+          "targetId": "3:360974746986061726"
+        }
+      ]
+    },
+    {
+      "id": "2:5363977148625922115",
+      "lastPropertyId": "15:948205295835912004",
+      "name": "DraftPost",
+      "properties": [
+        {
+          "id": "1:1184097624306350941",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:1970381774403629254",
+          "name": "body",
+          "type": 9
+        },
+        {
+          "id": "3:5739811656828620113",
+          "name": "filePaths",
+          "type": 30
+        },
+        {
+          "id": "4:8493938067958260025",
+          "name": "updatedAt",
+          "type": 10
+        },
+        {
+          "id": "5:6496495314297795879",
+          "name": "createdAt",
+          "type": 10
+        },
+        {
+          "id": "6:4044838006271308045",
+          "name": "locationJson",
+          "type": 9
+        },
+        {
+          "id": "7:6977655167073971949",
+          "name": "replyToJson",
+          "type": 9
+        },
+        {
+          "id": "8:8878305876661353910",
+          "name": "repostOfJson",
+          "type": 9
+        },
+        {
+          "id": "9:704009229005157330",
+          "name": "communityNoteOfJson",
+          "type": 9
+        },
+        {
+          "id": "10:2276427656469037958",
+          "name": "ballotJson",
+          "type": 9
+        },
+        {
+          "id": "11:6630013591171368454",
+          "name": "surveyJson",
+          "type": 9
+        },
+        {
+          "id": "12:7331794809423639780",
+          "name": "petitionJson",
+          "type": 9
+        },
+        {
+          "id": "13:4613018214046083354",
+          "name": "meetingJson",
+          "type": 9
+        },
+        {
+          "id": "14:3328815096339374325",
+          "name": "sectionJson",
+          "type": 9
+        },
+        {
+          "id": "15:948205295835912004",
+          "name": "tagsJson",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:360974746986061726",
+      "lastPropertyId": "21:7204170551757178761",
+      "name": "Message",
+      "properties": [
+        {
+          "id": "1:5222149983654943280",
+          "name": "targetId",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:717800694345432413",
+          "name": "id",
+          "type": 6
+        },
+        {
+          "id": "3:5953340159521476473",
+          "name": "text",
+          "type": 9
+        },
+        {
+          "id": "4:5944254126816884648",
+          "name": "isRead",
+          "type": 1
+        },
+        {
+          "id": "5:2285450464718918607",
+          "name": "isEdited",
+          "type": 1
+        },
+        {
+          "id": "6:7164841083985417019",
+          "name": "isDeleted",
+          "type": 1
+        },
+        {
+          "id": "7:722618201613990254",
+          "name": "postRequired",
+          "type": 1
+        },
+        {
+          "id": "8:6190321578982983887",
+          "name": "patchRequired",
+          "type": 1
+        },
+        {
+          "id": "9:8309295689238708592",
+          "name": "createdAt",
+          "type": 10
+        },
+        {
+          "id": "10:1472424613154098738",
+          "name": "updatedAt",
+          "type": 10
+        },
+        {
+          "id": "11:4286773945632654789",
+          "name": "authorJson",
+          "type": 9
+        },
+        {
+          "id": "12:4291386024835224102",
+          "name": "locationJson",
+          "type": 9
+        },
+        {
+          "id": "13:918455753003201513",
+          "name": "postJson",
+          "type": 9
+        },
+        {
+          "id": "14:6727627825323363504",
+          "name": "ballotJson",
+          "type": 9
+        },
+        {
+          "id": "15:7876522097113120105",
+          "name": "surveyJson",
+          "type": 9
+        },
+        {
+          "id": "16:2231236850551063636",
+          "name": "petitionJson",
+          "type": 9
+        },
+        {
+          "id": "17:291135108683617933",
+          "name": "meetingJson",
+          "type": 9
+        },
+        {
+          "id": "18:3750721680211431668",
+          "name": "sectionJson",
+          "type": 9
+        },
+        {
+          "id": "19:537896190871936585",
+          "name": "assetsJson",
+          "type": 9
+        },
+        {
+          "id": "20:9120627803404601846",
+          "name": "uploadsJson",
+          "type": 9
+        },
+        {
+          "id": "21:7204170551757178761",
+          "name": "chatId",
+          "indexId": "2:1953878758056447447",
+          "type": 11,
+          "flags": 520,
+          "relationTarget": "Chat"
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "3:360974746986061726",
+  "lastIndexId": "2:1953878758056447447",
+  "lastRelationId": "1:2495467324350740979",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}

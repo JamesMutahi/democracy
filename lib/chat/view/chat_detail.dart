@@ -52,7 +52,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   List<File> _media = [];
   File? _document;
   bool _showLoading = false;
-  bool _showFailure = false;
 
   @override
   void initState() {
@@ -100,20 +99,18 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         BlocListener<MessageCreateBloc, MessageCreateState>(
           listener: (context, state) {
             if (state.status == MessageCreateStatus.success) {
-              if (state.message?.chatId == widget.chat.id) {
+              if (state.message?.chat.targetId == widget.chat.id) {
                 reset();
               }
             }
             if (state.status == MessageCreateStatus.loading) {
               setState(() {
                 _showLoading = true;
-                _showFailure = false;
               });
             }
             if (state.status == MessageCreateStatus.failure) {
               setState(() {
                 _showLoading = false;
-                _showFailure = true;
               });
             }
           },
@@ -178,9 +175,11 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         },
         child: Scaffold(
           appBar: AppBar(
+            titleSpacing: 0,
             title: showMessageActions
                 ? SizedBox.shrink()
                 : Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       ProfileImage(user: _otherUser, navigateToProfile: true),
                       SizedBox(width: 10),
@@ -320,6 +319,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       onContentInsertion: (imageFile) {
         context.read<MessageCreateBloc>().add(
           MessageCreateEvent.create(
+            author: widget.me,
             chat: _chat,
             text: '',
             filePaths: [imageFile.path],
@@ -329,14 +329,24 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       allowedMimeTypes: const <String>['image/png', 'image/gif'],
       onLocation: (point) {
         context.read<MessageCreateBloc>().add(
-          MessageCreateEvent.create(chat: _chat, text: '', location: point),
+          MessageCreateEvent.create(
+            author: widget.me,
+            chat: _chat,
+            text: '',
+            location: point,
+          ),
         );
       },
       location: null,
       onRemoveLocation: null,
       onSectionSelection: (section) {
         context.read<MessageCreateBloc>().add(
-          MessageCreateEvent.create(chat: _chat, text: '', section: section),
+          MessageCreateEvent.create(
+            author: widget.me,
+            chat: _chat,
+            text: '',
+            section: section,
+          ),
         );
       },
       section: null,
@@ -345,6 +355,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       onImageEditingComplete: (image) {
         context.read<MessageCreateBloc>().add(
           MessageCreateEvent.create(
+            author: widget.me,
             chat: _chat,
             text: _controller.text,
             filePaths: [image.path],
@@ -355,6 +366,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       onVideoEditingComplete: (videoPath) {
         context.read<MessageCreateBloc>().add(
           MessageCreateEvent.create(
+            author: widget.me,
             chat: _chat,
             text: _controller.text,
             filePaths: [videoPath],
@@ -367,6 +379,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           : () {
               context.read<MessageCreateBloc>().add(
                 MessageCreateEvent.create(
+                  author: widget.me,
                   chat: _chat,
                   text: _controller.text,
                   filePaths: [
@@ -378,16 +391,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               reset();
             },
       showLoading: _showLoading,
-      showFailure: _showFailure,
-      onRetry: () {
-        context.read<MessageCreateBloc>().add(MessageCreateEvent.retry());
-      },
-      onCancelRetry: () {
-        setState(() {
-          _showLoading = false;
-          _showFailure = false;
-        });
-      },
     );
   }
 
@@ -398,7 +401,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       _media = [];
       _disableSendButton = true;
       _showLoading = false;
-      _showFailure = false;
     });
   }
 }
@@ -544,7 +546,7 @@ void _copy({required Set<Message> messages}) async {
 
 String copyMultiple({required Set<Message> forCopy}) {
   List<Message> messages = forCopy.toList();
-  messages.sort((a, b) => a.id.compareTo(b.id));
+  messages.sort((a, b) => a.createdAt.compareTo(b.createdAt));
   var dateFormat = DateFormat('dd/MM/yyyy hh:mm');
   String copiedText = '';
   for (var message in messages) {

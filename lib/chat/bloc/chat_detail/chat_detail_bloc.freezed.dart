@@ -315,7 +315,7 @@ $Res call({
 });
 
 
-$ChatCopyWith<$Res> get chat;
+
 
 }
 /// @nodoc
@@ -336,16 +336,7 @@ as int,
   ));
 }
 
-/// Create a copy of ChatDetailState
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ChatCopyWith<$Res> get chat {
-  
-  return $ChatCopyWith<$Res>(_self.chat, (value) {
-    return _then(_self.copyWith(chat: value));
-  });
-}
+
 }
 
 /// @nodoc
@@ -391,7 +382,7 @@ $Res call({
 });
 
 
-$ChatCopyWith<$Res> get chat;
+
 
 }
 /// @nodoc
@@ -411,16 +402,7 @@ as Chat,
   ));
 }
 
-/// Create a copy of ChatDetailState
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ChatCopyWith<$Res> get chat {
-  
-  return $ChatCopyWith<$Res>(_self.chat, (value) {
-    return _then(_self.copyWith(chat: value));
-  });
-}
+
 }
 
 /// @nodoc
@@ -466,7 +448,7 @@ $Res call({
 });
 
 
-$ChatCopyWith<$Res> get chat;
+
 
 }
 /// @nodoc
@@ -486,16 +468,7 @@ as Chat,
   ));
 }
 
-/// Create a copy of ChatDetailState
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ChatCopyWith<$Res> get chat {
-  
-  return $ChatCopyWith<$Res>(_self.chat, (value) {
-    return _then(_self.copyWith(chat: value));
-  });
-}
+
 }
 
 /// @nodoc
@@ -1232,7 +1205,7 @@ $Res call({
 });
 
 
-$ChatCopyWith<$Res> get chat;
+
 
 }
 /// @nodoc
@@ -1252,16 +1225,7 @@ as Chat,
   ));
 }
 
-/// Create a copy of ChatDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ChatCopyWith<$Res> get chat {
-  
-  return $ChatCopyWith<$Res>(_self.chat, (value) {
-    return _then(_self.copyWith(chat: value));
-  });
-}
+
 }
 
 /// @nodoc
@@ -1307,7 +1271,7 @@ $Res call({
 });
 
 
-$ChatCopyWith<$Res> get chat;
+
 
 }
 /// @nodoc
@@ -1327,16 +1291,7 @@ as Chat,
   ));
 }
 
-/// Create a copy of ChatDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ChatCopyWith<$Res> get chat {
-  
-  return $ChatCopyWith<$Res>(_self.chat, (value) {
-    return _then(_self.copyWith(chat: value));
-  });
-}
+
 }
 
 /// @nodoc
@@ -1382,7 +1337,7 @@ $Res call({
 });
 
 
-$ChatCopyWith<$Res> get chat;
+
 
 }
 /// @nodoc
@@ -1402,16 +1357,7 @@ as Chat,
   ));
 }
 
-/// Create a copy of ChatDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ChatCopyWith<$Res> get chat {
-  
-  return $ChatCopyWith<$Res>(_self.chat, (value) {
-    return _then(_self.copyWith(chat: value));
-  });
-}
+
 }
 
 // dart format on

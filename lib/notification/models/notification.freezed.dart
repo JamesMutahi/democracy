@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Notification {
 
- int get id; String get text; List<User> get users;@JsonKey(name: 'is_like') bool get isLike;@JsonKey(name: 'is_follow') bool get isFollow;@JsonKey(name: 'is_support') bool get isSupport; Post? get post; Ballot? get ballot; Survey? get survey; Petition? get petition; Meeting? get meeting; Chat? get chat;@JsonKey(name: 'is_read') bool get isRead;@JsonKey(name: 'created_at') DateTime get createdAt;
+ int get id; String get text; List<User> get users;@JsonKey(name: 'is_like') bool get isLike;@JsonKey(name: 'is_follow') bool get isFollow;@JsonKey(name: 'is_support') bool get isSupport; Post? get post; Ballot? get ballot; Survey? get survey; Petition? get petition; Meeting? get meeting;@ChatConverter() Chat? get chat;@JsonKey(name: 'is_read') bool get isRead;@JsonKey(name: 'created_at') DateTime get createdAt;
 /// Create a copy of Notification
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,11 +48,11 @@ abstract mixin class $NotificationCopyWith<$Res>  {
   factory $NotificationCopyWith(Notification value, $Res Function(Notification) _then) = _$NotificationCopyWithImpl;
 @useResult
 $Res call({
- int id, String text, List<User> users,@JsonKey(name: 'is_like') bool isLike,@JsonKey(name: 'is_follow') bool isFollow,@JsonKey(name: 'is_support') bool isSupport, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting, Chat? chat,@JsonKey(name: 'is_read') bool isRead,@JsonKey(name: 'created_at') DateTime createdAt
+ int id, String text, List<User> users,@JsonKey(name: 'is_like') bool isLike,@JsonKey(name: 'is_follow') bool isFollow,@JsonKey(name: 'is_support') bool isSupport, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting,@ChatConverter() Chat? chat,@JsonKey(name: 'is_read') bool isRead,@JsonKey(name: 'created_at') DateTime createdAt
 });
 
 
-$PostCopyWith<$Res>? get post;$BallotCopyWith<$Res>? get ballot;$SurveyCopyWith<$Res>? get survey;$PetitionCopyWith<$Res>? get petition;$MeetingCopyWith<$Res>? get meeting;$ChatCopyWith<$Res>? get chat;
+$PostCopyWith<$Res>? get post;$BallotCopyWith<$Res>? get ballot;$SurveyCopyWith<$Res>? get survey;$PetitionCopyWith<$Res>? get petition;$MeetingCopyWith<$Res>? get meeting;
 
 }
 /// @nodoc
@@ -144,18 +144,6 @@ $MeetingCopyWith<$Res>? get meeting {
   return $MeetingCopyWith<$Res>(_self.meeting!, (value) {
     return _then(_self.copyWith(meeting: value));
   });
-}/// Create a copy of Notification
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ChatCopyWith<$Res>? get chat {
-    if (_self.chat == null) {
-    return null;
-  }
-
-  return $ChatCopyWith<$Res>(_self.chat!, (value) {
-    return _then(_self.copyWith(chat: value));
-  });
 }
 }
 
@@ -235,7 +223,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String text,  List<User> users, @JsonKey(name: 'is_like')  bool isLike, @JsonKey(name: 'is_follow')  bool isFollow, @JsonKey(name: 'is_support')  bool isSupport,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Chat? chat, @JsonKey(name: 'is_read')  bool isRead, @JsonKey(name: 'created_at')  DateTime createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String text,  List<User> users, @JsonKey(name: 'is_like')  bool isLike, @JsonKey(name: 'is_follow')  bool isFollow, @JsonKey(name: 'is_support')  bool isSupport,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting, @ChatConverter()  Chat? chat, @JsonKey(name: 'is_read')  bool isRead, @JsonKey(name: 'created_at')  DateTime createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Notification() when $default != null:
 return $default(_that.id,_that.text,_that.users,_that.isLike,_that.isFollow,_that.isSupport,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.chat,_that.isRead,_that.createdAt);case _:
@@ -256,7 +244,7 @@ return $default(_that.id,_that.text,_that.users,_that.isLike,_that.isFollow,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String text,  List<User> users, @JsonKey(name: 'is_like')  bool isLike, @JsonKey(name: 'is_follow')  bool isFollow, @JsonKey(name: 'is_support')  bool isSupport,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Chat? chat, @JsonKey(name: 'is_read')  bool isRead, @JsonKey(name: 'created_at')  DateTime createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String text,  List<User> users, @JsonKey(name: 'is_like')  bool isLike, @JsonKey(name: 'is_follow')  bool isFollow, @JsonKey(name: 'is_support')  bool isSupport,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting, @ChatConverter()  Chat? chat, @JsonKey(name: 'is_read')  bool isRead, @JsonKey(name: 'created_at')  DateTime createdAt)  $default,) {final _that = this;
 switch (_that) {
 case _Notification():
 return $default(_that.id,_that.text,_that.users,_that.isLike,_that.isFollow,_that.isSupport,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.chat,_that.isRead,_that.createdAt);}
@@ -273,7 +261,7 @@ return $default(_that.id,_that.text,_that.users,_that.isLike,_that.isFollow,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String text,  List<User> users, @JsonKey(name: 'is_like')  bool isLike, @JsonKey(name: 'is_follow')  bool isFollow, @JsonKey(name: 'is_support')  bool isSupport,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Chat? chat, @JsonKey(name: 'is_read')  bool isRead, @JsonKey(name: 'created_at')  DateTime createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String text,  List<User> users, @JsonKey(name: 'is_like')  bool isLike, @JsonKey(name: 'is_follow')  bool isFollow, @JsonKey(name: 'is_support')  bool isSupport,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting, @ChatConverter()  Chat? chat, @JsonKey(name: 'is_read')  bool isRead, @JsonKey(name: 'created_at')  DateTime createdAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Notification() when $default != null:
 return $default(_that.id,_that.text,_that.users,_that.isLike,_that.isFollow,_that.isSupport,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.chat,_that.isRead,_that.createdAt);case _:
@@ -288,7 +276,7 @@ return $default(_that.id,_that.text,_that.users,_that.isLike,_that.isFollow,_tha
 @JsonSerializable()
 
 class _Notification implements Notification {
-  const _Notification({required this.id, required this.text, required final  List<User> users, @JsonKey(name: 'is_like') required this.isLike, @JsonKey(name: 'is_follow') required this.isFollow, @JsonKey(name: 'is_support') required this.isSupport, required this.post, required this.ballot, required this.survey, required this.petition, required this.meeting, required this.chat, @JsonKey(name: 'is_read') required this.isRead, @JsonKey(name: 'created_at') required this.createdAt}): _users = users;
+  const _Notification({required this.id, required this.text, required final  List<User> users, @JsonKey(name: 'is_like') required this.isLike, @JsonKey(name: 'is_follow') required this.isFollow, @JsonKey(name: 'is_support') required this.isSupport, required this.post, required this.ballot, required this.survey, required this.petition, required this.meeting, @ChatConverter() required this.chat, @JsonKey(name: 'is_read') required this.isRead, @JsonKey(name: 'created_at') required this.createdAt}): _users = users;
   factory _Notification.fromJson(Map<String, dynamic> json) => _$NotificationFromJson(json);
 
 @override final  int id;
@@ -308,7 +296,7 @@ class _Notification implements Notification {
 @override final  Survey? survey;
 @override final  Petition? petition;
 @override final  Meeting? meeting;
-@override final  Chat? chat;
+@override@ChatConverter() final  Chat? chat;
 @override@JsonKey(name: 'is_read') final  bool isRead;
 @override@JsonKey(name: 'created_at') final  DateTime createdAt;
 
@@ -345,11 +333,11 @@ abstract mixin class _$NotificationCopyWith<$Res> implements $NotificationCopyWi
   factory _$NotificationCopyWith(_Notification value, $Res Function(_Notification) _then) = __$NotificationCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String text, List<User> users,@JsonKey(name: 'is_like') bool isLike,@JsonKey(name: 'is_follow') bool isFollow,@JsonKey(name: 'is_support') bool isSupport, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting, Chat? chat,@JsonKey(name: 'is_read') bool isRead,@JsonKey(name: 'created_at') DateTime createdAt
+ int id, String text, List<User> users,@JsonKey(name: 'is_like') bool isLike,@JsonKey(name: 'is_follow') bool isFollow,@JsonKey(name: 'is_support') bool isSupport, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting,@ChatConverter() Chat? chat,@JsonKey(name: 'is_read') bool isRead,@JsonKey(name: 'created_at') DateTime createdAt
 });
 
 
-@override $PostCopyWith<$Res>? get post;@override $BallotCopyWith<$Res>? get ballot;@override $SurveyCopyWith<$Res>? get survey;@override $PetitionCopyWith<$Res>? get petition;@override $MeetingCopyWith<$Res>? get meeting;@override $ChatCopyWith<$Res>? get chat;
+@override $PostCopyWith<$Res>? get post;@override $BallotCopyWith<$Res>? get ballot;@override $SurveyCopyWith<$Res>? get survey;@override $PetitionCopyWith<$Res>? get petition;@override $MeetingCopyWith<$Res>? get meeting;
 
 }
 /// @nodoc
@@ -441,18 +429,6 @@ $MeetingCopyWith<$Res>? get meeting {
 
   return $MeetingCopyWith<$Res>(_self.meeting!, (value) {
     return _then(_self.copyWith(meeting: value));
-  });
-}/// Create a copy of Notification
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ChatCopyWith<$Res>? get chat {
-    if (_self.chat == null) {
-    return null;
-  }
-
-  return $ChatCopyWith<$Res>(_self.chat!, (value) {
-    return _then(_self.copyWith(chat: value));
   });
 }
 }

@@ -234,7 +234,7 @@ $Res call({
 });
 
 
-$ChatCopyWith<$Res> get chat;$MessageCopyWith<$Res>? get oldestMessage;$MessageCopyWith<$Res>? get newestMessage;
+
 
 }
 /// @nodoc
@@ -256,40 +256,7 @@ as Message?,
   ));
 }
 
-/// Create a copy of MessagesEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ChatCopyWith<$Res> get chat {
-  
-  return $ChatCopyWith<$Res>(_self.chat, (value) {
-    return _then(_self.copyWith(chat: value));
-  });
-}/// Create a copy of MessagesEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$MessageCopyWith<$Res>? get oldestMessage {
-    if (_self.oldestMessage == null) {
-    return null;
-  }
 
-  return $MessageCopyWith<$Res>(_self.oldestMessage!, (value) {
-    return _then(_self.copyWith(oldestMessage: value));
-  });
-}/// Create a copy of MessagesEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$MessageCopyWith<$Res>? get newestMessage {
-    if (_self.newestMessage == null) {
-    return null;
-  }
-
-  return $MessageCopyWith<$Res>(_self.newestMessage!, (value) {
-    return _then(_self.copyWith(newestMessage: value));
-  });
-}
 }
 
 /// @nodoc
@@ -407,7 +374,7 @@ $Res call({
 });
 
 
-$MessageCopyWith<$Res> get message;
+
 
 }
 /// @nodoc
@@ -427,16 +394,7 @@ as Message,
   ));
 }
 
-/// Create a copy of MessagesEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$MessageCopyWith<$Res> get message {
-  
-  return $MessageCopyWith<$Res>(_self.message, (value) {
-    return _then(_self.copyWith(message: value));
-  });
-}
+
 }
 
 /// @nodoc
@@ -482,7 +440,7 @@ $Res call({
 });
 
 
-$MessageCopyWith<$Res> get message;
+
 
 }
 /// @nodoc
@@ -502,16 +460,7 @@ as Message,
   ));
 }
 
-/// Create a copy of MessagesEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$MessageCopyWith<$Res> get message {
-  
-  return $MessageCopyWith<$Res>(_self.message, (value) {
-    return _then(_self.copyWith(message: value));
-  });
-}
+
 }
 
 /// @nodoc

@@ -102,16 +102,13 @@ class _EditMessageState extends State<EditMessage> {
             : () {
                 context.read<MessageDetailBloc>().add(
                   MessageDetailEvent.edit(
-                    messageId: widget.message.id,
+                    message: widget.message,
                     text: _controller.text,
                   ),
                 );
                 Navigator.pop(context);
               },
         showLoading: false,
-        showFailure: false,
-        onRetry: () {},
-        onCancelRetry: () {},
       ),
     );
   }

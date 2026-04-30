@@ -1,9 +1,9 @@
 import 'package:democracy/app/bloc/services/token_storage.dart';
-import 'package:democracy/post/models/draft_post.dart';
+import 'package:democracy/objectbox.g.dart';
+import 'package:path/path.dart' as p;
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:isar_community/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:talker/talker.dart';
@@ -88,8 +88,8 @@ TalkerBlocLoggerSettings getBlocLogSettings() {
     printClosings: false,
 
     // How much detail to show
-    printEventFullData: false,
-    printStateFullData: false,
+    printEventFullData: true,
+    printStateFullData: true,
 
     // Filters - Very Important for clean logs
     eventFilter: (bloc, event) {
@@ -111,14 +111,19 @@ bool _isNoisyBloc(String blocName) {
   return noisyBlocs.contains(blocName);
 }
 
-Future<Isar> openDatabase() async {
-  final dir = await getApplicationDocumentsDirectory();
+class ObjectBox {
+  /// The Store of this app.
+  late final Store store;
 
-  return await Isar.open(
-    [DraftPostSchema], // List generated schemas
-    directory: dir.path,
-    name: 'drafts', // Optional: for multiple instances
-  );
+  ObjectBox._create(this.store) {
+    // Add any additional setup code, e.g. build queries.
+  }
+
+  static Future<ObjectBox> create() async {
+    final docsDir = await getApplicationDocumentsDirectory();
+    final store = await openStore(directory: p.join(docsDir.path, "democracy"));
+    return ObjectBox._create(store);
+  }
 }
 
 class MyNetworkClient {

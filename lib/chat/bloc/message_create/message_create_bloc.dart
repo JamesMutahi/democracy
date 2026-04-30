@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:democracy/app/bloc/repository/api_repository.dart';
+import 'package:democracy/app/bloc/repository/api/api_repository.dart';
+import 'package:democracy/app/bloc/repository/database/database_repository.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
@@ -8,6 +9,7 @@ import 'package:democracy/meet/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
+import 'package:democracy/user/models/user.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:latlong2/latlong.dart';
@@ -17,8 +19,10 @@ part 'message_create_state.dart';
 part 'message_create_bloc.freezed.dart';
 
 class MessageCreateBloc extends Bloc<MessageCreateEvent, MessageCreateState> {
-  MessageCreateBloc({required this.apiRepository})
-    : super(const MessageCreateState()) {
+  MessageCreateBloc({
+    required this.apiRepository,
+    required this.databaseRepository,
+  }) : super(const MessageCreateState()) {
     on<_Create>((event, emit) async => await _onCreate(event, emit));
     on<_UploadAssets>(
       (event, emit) async => await _onUploadAssets(event, emit),
@@ -56,7 +60,7 @@ class MessageCreateBloc extends Bloc<MessageCreateEvent, MessageCreateState> {
         filePaths: event.filePaths,
         location: event.location,
       );
-      final Message message = Message.fromJson(data['message']);
+      final message = Message.fromJson(data['message']);
       if (message.assets.isNotEmpty) {
         emit(state.copyWith(message: message));
         add(_UploadAssets(uploads: data['uploads']));
@@ -66,9 +70,26 @@ class MessageCreateBloc extends Bloc<MessageCreateEvent, MessageCreateState> {
         );
       }
     } catch (e) {
+      final message = Message.failed(
+        author: event.author,
+        text: event.text,
+        post: event.post,
+        ballot: event.ballot,
+        survey: event.survey,
+        petition: event.petition,
+        meeting: event.meeting,
+        section: event.section,
+        filePaths: event.filePaths,
+        location: event.location,
+      );
+      await databaseRepository.createMessage(
+        chatId: event.chat.id,
+        message: message,
+      );
       emit(
         state.copyWith(
           status: MessageCreateStatus.failure,
+          message: message,
           error: e.toString(),
         ),
       );
@@ -112,13 +133,7 @@ class MessageCreateBloc extends Bloc<MessageCreateEvent, MessageCreateState> {
       final assets = await apiRepository.messageAssetUploadComplete(
         assetIdList: assetIdList,
       );
-
-      emit(
-        state.copyWith(
-          status: MessageCreateStatus.success,
-          message: state.message?.copyWith(assets: assets),
-        ),
-      );
+      emit(state.copyWith(status: MessageCreateStatus.success));
     } catch (e) {
       emit(
         state.copyWith(
@@ -130,4 +145,5 @@ class MessageCreateBloc extends Bloc<MessageCreateEvent, MessageCreateState> {
   }
 
   final APIRepository apiRepository;
+  final DatabaseRepository databaseRepository;
 }

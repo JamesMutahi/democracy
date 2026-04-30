@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:democracy/app/bloc/repository/database/database_repository.dart';
 import 'package:democracy/app/bloc/services/token_storage.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -7,8 +8,11 @@ part 'login_cubit.freezed.dart';
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  LoginCubit({required this.authRepository, required this.tokenStorage})
-    : super(const LoginState.initial());
+  LoginCubit({
+    required this.authRepository,
+    required this.tokenStorage,
+    required this.databaseRepository,
+  }) : super(const LoginState.initial());
 
   void login({required String username, required String password}) async {
     try {
@@ -40,6 +44,7 @@ class LoginCubit extends Cubit<LoginState> {
         // Ignored: failure here does not affect user experience.
       }
       await tokenStorage.clearTokens();
+      await databaseRepository.clear();
       emit(const LoginState.loggedOut());
     } catch (e) {
       emit(LoginState.failure(error: e.toString()));
@@ -48,4 +53,5 @@ class LoginCubit extends Cubit<LoginState> {
 
   final AuthRepository authRepository;
   final TokenStorage tokenStorage;
+  final DatabaseRepository databaseRepository;
 }

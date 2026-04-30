@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:democracy/app/bloc/repository/api_repository.dart';
+import 'package:democracy/app/bloc/repository/api/api_repository.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/constitution/models/section.dart';

@@ -47,9 +47,6 @@ class BottomTextFormField extends StatefulWidget {
     required this.onImageEditingComplete,
     required this.onVideoEditingComplete,
     required this.showLoading,
-    required this.showFailure,
-    required this.onRetry,
-    required this.onCancelRetry,
     this.onSend,
   });
 
@@ -86,9 +83,6 @@ class BottomTextFormField extends StatefulWidget {
   // To send
   final void Function()? onSend;
   final bool showLoading;
-  final bool showFailure;
-  final VoidCallback onRetry;
-  final VoidCallback onCancelRetry;
 
   @override
   State<BottomTextFormField> createState() => _BottomTextFormFieldState();
@@ -235,26 +229,6 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
                       ? Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: BottomLoader(),
-                        )
-                      : widget.showFailure
-                      ? Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton.filledTonal(
-                              onPressed: widget.onRetry,
-                              icon: Icon(
-                                Icons.repeat_rounded,
-                                color: Colors.green,
-                              ),
-                            ),
-                            IconButton.filledTonal(
-                              onPressed: widget.onCancelRetry,
-                              icon: Icon(
-                                Icons.close_rounded,
-                                color: Colors.red,
-                              ),
-                            ),
-                          ],
                         )
                       : IconButton(
                           onPressed: widget.onSend,

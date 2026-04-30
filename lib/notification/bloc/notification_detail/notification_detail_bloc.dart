@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:democracy/app/bloc/repository/database/database_repository.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/notification/models/notification.dart';
@@ -15,8 +16,10 @@ const String requestId = 'notifications';
 
 class NotificationDetailBloc
     extends Bloc<NotificationDetailEvent, NotificationDetailState> {
-  NotificationDetailBloc({required this.webSocketService})
-    : super(const NotificationDetailState.initial()) {
+  NotificationDetailBloc({
+    required this.webSocketService,
+    required this.databaseRepository,
+  }) : super(const NotificationDetailState.initial()) {
     _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
         switch (message['payload']['action']) {
@@ -29,16 +32,23 @@ class NotificationDetailBloc
         }
       }
     });
-    on<_Created>((event, emit) => _onCreated(event, emit));
+    on<_Created>((event, emit) async => await _onCreated(event, emit));
     on<_Updated>((event, emit) => _onUpdated(event, emit));
     on<_Deleted>((event, emit) => _onDeleted(event, emit));
     on<_MarkAsRead>((event, emit) => _onMarkAsRead(event, emit));
   }
 
-  void _onCreated(_Created event, Emitter<NotificationDetailState> emit) {
+  Future _onCreated(
+    _Created event,
+    Emitter<NotificationDetailState> emit,
+  ) async {
     emit(NotificationDetailLoading());
     if (event.payload['response_status'] == 201) {
-      Notification notification = Notification.fromJson(event.payload['data']);
+      final data = event.payload['data'];
+      Notification notification = Notification.fromJson(data);
+      if (data['chat'] != null) {
+        await databaseRepository.saveChat(data['chat']);
+      }
       emit(NotificationCreated(notification: notification));
     } else {
       emit(
@@ -96,4 +106,5 @@ class NotificationDetailBloc
 
   late StreamSubscription _subscription;
   final WebSocketService webSocketService;
+  final DatabaseRepository databaseRepository;
 }

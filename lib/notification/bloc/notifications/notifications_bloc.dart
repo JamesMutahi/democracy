@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:democracy/app/bloc/repository/database/database_repository.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/notification/models/notification.dart';
 import 'package:equatable/equatable.dart';
@@ -15,8 +16,10 @@ const String requestId = 'notifications';
 const String action = 'list';
 
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
-  NotificationsBloc({required this.webSocketService})
-    : super(const NotificationsState()) {
+  NotificationsBloc({
+    required this.webSocketService,
+    required this.databaseRepository,
+  }) : super(const NotificationsState()) {
     _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream &&
           message['payload']['action'] == action) {
@@ -24,7 +27,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
       }
     });
     on<_Get>((event, emit) => _onGet(event, emit));
-    on<_Received>((event, emit) => _onReceived(event, emit));
+    on<_Received>((event, emit) async => await _onReceived(event, emit));
     on<_Add>((event, emit) => _onAdd(event, emit));
     on<_Update>((event, emit) => _onUpdate(event, emit));
     on<_Remove>((event, emit) => _onRemove(event, emit));
@@ -44,12 +47,17 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     webSocketService.send(message);
   }
 
-  void _onReceived(_Received event, Emitter<NotificationsState> emit) {
+  Future _onReceived(_Received event, Emitter<NotificationsState> emit) async {
     emit(state.copyWith(status: NotificationsStatus.loading));
     if (event.payload['response_status'] == 200) {
       List<Notification> notifications = List.from(
         event.payload['data'].map((e) => Notification.fromJson(e)),
       );
+      for (var data in event.payload['data']) {
+        if (data['chat'] != null) {
+          await databaseRepository.saveChatsData([data['chat']]);
+        }
+      }
       emit(
         state.copyWith(
           status: NotificationsStatus.success,
@@ -114,4 +122,5 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
 
   late StreamSubscription _subscription;
   final WebSocketService webSocketService;
+  final DatabaseRepository databaseRepository;
 }

@@ -15,7 +15,7 @@ sealed class MessageDetailEvent with _$MessageDetailEvent {
   }) = _Deleted;
 
   const factory MessageDetailEvent.edit({
-    required int messageId,
+    required Message message,
     required String text,
   }) = _Edit;
 

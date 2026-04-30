@@ -50,13 +50,13 @@ class _ChatsState extends State<Chats> {
             final chatsBloc = context.read<ChatsBloc>();
 
             if (state is ChatCreated) {
-              chatsBloc.add(ChatsEvent.update(chat: state.chat));
+              chatsBloc.add(ChatsEvent.update());
             } else if (state is ChatLoaded) {
-              chatsBloc.add(ChatsEvent.update(chat: state.chat));
+              chatsBloc.add(ChatsEvent.update());
             } else if (state is ChatUpdated) {
-              chatsBloc.add(ChatsEvent.update(chat: state.chat));
+              chatsBloc.add(ChatsEvent.update());
             } else if (state is ChatDeleted) {
-              chatsBloc.add(ChatsEvent.remove(chatId: state.chatId));
+              chatsBloc.add(ChatsEvent.update());
             } else if (state is ChatDetailFailure) {
               final snackBar = getSnackBar(
                 context: context,
@@ -71,7 +71,7 @@ class _ChatsState extends State<Chats> {
           listener: (context, state) {
             if (state.status == DirectMessageStatus.success) {
               final chatsBloc = context.read<ChatsBloc>();
-              chatsBloc.add(ChatsEvent.updateMultiple(chats: state.chats));
+              chatsBloc.add(ChatsEvent.update());
             }
           },
         ),
@@ -81,9 +81,7 @@ class _ChatsState extends State<Chats> {
               if (state.notification.chat != null) {
                 final openChatId = context.read<GlobalCubit>().state.openChatId;
                 if (openChatId != state.notification.chat!.id) {
-                  context.read<ChatsBloc>().add(
-                    ChatsEvent.update(chat: state.notification.chat!),
-                  );
+                  context.read<ChatsBloc>().add(ChatsEvent.update());
                 }
               }
             }
@@ -196,7 +194,7 @@ class ChatTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lastMessage = chat.lastMessage;
+    final lastMessage = chat.lastMessage.target;
     if (lastMessage == null) {
       return const SizedBox.shrink(); // Hide chats without last message
     }

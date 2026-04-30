@@ -1,10 +1,11 @@
 import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
 import 'package:democracy/app/bloc/global/global_cubit.dart';
+import 'package:democracy/app/bloc/repository/database/database_repository.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
-import 'package:democracy/app/shared/utils/app_theme.dart';
+import 'package:democracy/app/core/app_theme.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/shared/pages/splash_page.dart';
@@ -111,8 +112,10 @@ class MyApp extends StatelessWidget {
           ),
         ),
         BlocProvider(
-          create: (context) =>
-              ChatsBloc(webSocketService: context.read<WebSocketService>()),
+          create: (context) => ChatsBloc(
+            webSocketService: context.read<WebSocketService>(),
+            databaseRepository: context.read<DatabaseRepository>(),
+          ),
         ),
         BlocProvider(
           create: (context) => TrendingPostsBloc(

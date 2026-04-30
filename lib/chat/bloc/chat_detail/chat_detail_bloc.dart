@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:democracy/app/bloc/repository/api_repository.dart';
+import 'package:democracy/app/bloc/repository/api/api_repository.dart';
+import 'package:democracy/app/bloc/repository/database/database_repository.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
@@ -21,6 +22,7 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
     required this.webSocketService,
     required this.authRepository,
     required this.apiRepository,
+    required this.databaseRepository,
   }) : super(const ChatDetailState.initial()) {
     _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
@@ -38,50 +40,52 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
         }
       }
     });
-    on<_Created>((event, emit) => _onCreated(event, emit));
-    on<_Loaded>((event, emit) => _onLoaded(event, emit));
-    on<_Updated>((event, emit) => _onUpdated(event, emit));
-    on<_Deleted>((event, emit) => _onDeleted(event, emit));
+    on<_Created>((event, emit) async => await _onCreated(event, emit));
+    on<_Loaded>((event, emit) async => await _onLoaded(event, emit));
+    on<_Updated>((event, emit) async => await _onUpdated(event, emit));
+    on<_Deleted>((event, emit) async => await _onDeleted(event, emit));
     on<_Create>((event, emit) => _onCreate(event, emit));
     on<_Get>((event, emit) => _onGet(event, emit));
     on<_MarkAsRead>((event, emit) => _onMarkAsRead(event, emit));
     on<_Unsubscribe>((event, emit) => _onUnsubscribe(event, emit));
   }
 
-  void _onCreated(_Created event, Emitter<ChatDetailState> emit) {
+  Future _onCreated(_Created event, Emitter<ChatDetailState> emit) async {
     emit(ChatDetailLoading());
     if (event.payload['response_status'] == 201) {
-      final Chat chat = Chat.fromJson(event.payload['data']);
+      final chat = await databaseRepository.saveChat(event.payload['data']);
       emit(ChatCreated(chat: chat, userId: event.payload['request_id']));
     } else {
       emit(ChatDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
-  void _onLoaded(_Loaded event, Emitter<ChatDetailState> emit) {
+  Future _onLoaded(_Loaded event, Emitter<ChatDetailState> emit) async {
     emit(ChatDetailLoading());
     if (event.payload['response_status'] == 200) {
-      final Chat chat = Chat.fromJson(event.payload['data']);
+      final chat = await databaseRepository.saveChat(event.payload['data']);
       emit(ChatLoaded(chat: chat));
     } else {
       emit(ChatDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
-  void _onUpdated(_Updated event, Emitter<ChatDetailState> emit) {
+  Future _onUpdated(_Updated event, Emitter<ChatDetailState> emit) async {
     emit(ChatDetailLoading());
     if (event.payload['response_status'] == 200) {
-      final Chat chat = Chat.fromJson(event.payload['data']);
+      final chat = await databaseRepository.saveChat(event.payload['data']);
       emit(ChatUpdated(chat: chat));
     } else {
       emit(ChatDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 
-  void _onDeleted(_Deleted event, Emitter<ChatDetailState> emit) {
+  Future _onDeleted(_Deleted event, Emitter<ChatDetailState> emit) async {
     emit(ChatDetailLoading());
     if (event.payload['response_status'] == 204) {
-      emit(ChatDeleted(chatId: event.payload['pk']));
+      int id = event.payload['pk'];
+      await databaseRepository.deleteChat(id: id);
+      emit(ChatDeleted(chatId: id));
     } else {
       emit(ChatDetailFailure(error: event.payload['errors'].toString()));
     }
@@ -169,4 +173,5 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
   final WebSocketService webSocketService;
   final AuthRepository authRepository;
   final APIRepository apiRepository;
+  final DatabaseRepository databaseRepository;
 }

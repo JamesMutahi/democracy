@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:camera/camera.dart';
-import 'package:democracy/app/shared/utils/app_logger.dart';
+import 'package:democracy/app/core/app_logger.dart';
 import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

@@ -192,7 +192,7 @@ class NotificationTile extends StatelessWidget {
       icon = Icon(Symbols.email_rounded);
       title = Text(notification.text);
       subtitle = Text(
-        notification.chat!.lastMessage!.text,
+        notification.chat!.lastMessage.target!.text,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );

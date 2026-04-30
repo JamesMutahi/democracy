@@ -1,3 +1,4 @@
+import 'package:democracy/app/core/json_converters.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/meet/models/meeting.dart';
@@ -24,7 +25,7 @@ sealed class Notification with _$Notification {
     required final Survey? survey,
     required final Petition? petition,
     required final Meeting? meeting,
-    required final Chat? chat,
+    @ChatConverter() required final Chat? chat,
     @JsonKey(name: 'is_read') required final bool isRead,
     @JsonKey(name: 'created_at') required final DateTime createdAt,
   }) = _Notification;

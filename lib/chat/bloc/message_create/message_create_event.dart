@@ -3,6 +3,7 @@ part of 'message_create_bloc.dart';
 @freezed
 class MessageCreateEvent with _$MessageCreateEvent {
   const factory MessageCreateEvent.create({
+    required User author,
     required Chat chat,
     required String text,
     Post? post,

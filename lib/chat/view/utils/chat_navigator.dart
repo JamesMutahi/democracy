@@ -1,3 +1,4 @@
+import 'package:democracy/app/bloc/repository/database/database_repository.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/messages/messages_bloc.dart';
@@ -19,8 +20,10 @@ void navigateToChatDetail({required BuildContext context, required Chat chat}) {
   Navigator.of(context).push(
     MaterialPageRoute(
       builder: (context) => BlocProvider(
-        create: (context) =>
-            MessagesBloc(webSocketService: context.read<WebSocketService>()),
+        create: (context) => MessagesBloc(
+          webSocketService: context.read<WebSocketService>(),
+          databaseRepository: context.read<DatabaseRepository>(),
+        ),
         child: ChatDetailPage(chat: chat, me: me, otherUser: otherUser),
       ),
     ),

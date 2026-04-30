@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:democracy/app/bloc/repository/database/database_repository.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
@@ -16,23 +17,28 @@ const String requestId = 'messages';
 const String action = 'messages';
 
 class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
-  MessagesBloc({required this.webSocketService})
-    : super(const MessagesState()) {
+  MessagesBloc({
+    required this.webSocketService,
+    required this.databaseRepository,
+  }) : super(const MessagesState()) {
     _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream &&
           message['payload']['action'] == action) {
         add(_Received(payload: message['payload']));
       }
     });
-    on<_Get>((event, emit) => _onGet(event, emit));
-    on<_Received>((event, emit) => _onReceived(event, emit));
-    on<_Add>(_onAdd);
-    on<_Update>(_onUpdate);
-    on<_Remove>(_onRemove);
+    on<_Get>((event, emit) async => await _onGet(event, emit));
+    on<_Received>((event, emit) async => await _onReceived(event, emit));
+    on<_Add>((event, emit) async => await _onAdd(event, emit));
+    on<_Update>((event, emit) async => await _onUpdate(event, emit));
+    on<_Remove>((event, emit) async => await _onRemove(event, emit));
   }
 
-  void _onGet(_Get event, Emitter<MessagesState> emit) {
+  Future _onGet(_Get event, Emitter<MessagesState> emit) async {
     emit(state.copyWith(status: MessagesStatus.loading, chatId: event.chat.id));
+    if (event.oldestMessage == null && event.newestMessage == null) {
+      emit(state.copyWith(messages: event.chat.messages.toList()));
+    }
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: MessagesStatus.failure));
       return;
@@ -51,24 +57,20 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
     webSocketService.send(message);
   }
 
-  void _onReceived(_Received event, Emitter<MessagesState> emit) {
+  Future _onReceived(_Received event, Emitter<MessagesState> emit) async {
     emit(state.copyWith(status: MessagesStatus.loading));
     if (event.payload['response_status'] == 200) {
-      final List<Message> messages = List.from(
-        event.payload['data']['results'].map((e) => Message.fromJson(e)),
+      int chatId = event.payload['data']['chat_id'];
+      await databaseRepository.saveMessageData(
+        event.payload['data']['results'],
       );
-      int? oldestMessage = event.payload['data']['oldest_message'];
-      int? newestMessage = event.payload['data']['newest_message'];
+      final messages = await databaseRepository.fetchMessages(chatId: chatId);
       emit(
         state.copyWith(
           status: MessagesStatus.success,
-          messages: oldestMessage != null
-              ? [...state.messages, ...messages]
-              : newestMessage != null
-              ? [...messages, ...state.messages]
-              : messages,
+          messages: messages,
           hasNext: event.payload['data']['has_next'],
-          chatId: event.payload['data']['chat_id'],
+          chatId: chatId,
         ),
       );
     } else {
@@ -76,7 +78,7 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
     }
   }
 
-  void _onAdd(_Add event, Emitter<MessagesState> emit) {
+  Future _onAdd(_Add event, Emitter<MessagesState> emit) async {
     final message = event.message;
 
     // Avoid duplicates
@@ -85,14 +87,14 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
     emit(state.copyWith(status: MessagesStatus.loading));
     emit(
       state.copyWith(
-        chatId: message.chatId,
+        chatId: message.chat.targetId,
         messages: [message, ...state.messages], // newest on top
         status: MessagesStatus.success,
       ),
     );
   }
 
-  void _onUpdate(_Update event, Emitter<MessagesState> emit) {
+  Future _onUpdate(_Update event, Emitter<MessagesState> emit) async {
     final index = state.messages.indexWhere((m) => m.id == event.message.id);
     if (index == -1) return;
     emit(state.copyWith(status: MessagesStatus.loading));
@@ -104,7 +106,7 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
     );
   }
 
-  void _onRemove(_Remove event, Emitter<MessagesState> emit) {
+  Future _onRemove(_Remove event, Emitter<MessagesState> emit) async {
     emit(state.copyWith(status: MessagesStatus.loading));
     final updatedMessages = state.messages
         .where((m) => m.id != event.messageId)
@@ -123,4 +125,5 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
 
   late StreamSubscription _subscription;
   final WebSocketService webSocketService;
+  final DatabaseRepository databaseRepository;
 }

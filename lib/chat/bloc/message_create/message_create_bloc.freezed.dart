@@ -125,10 +125,10 @@ return retry(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<String> filePaths,  LatLng? location)?  create,TResult Function( List<dynamic> uploads)?  uploadAssets,TResult Function()?  retry,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( User author,  Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<String> filePaths,  LatLng? location)?  create,TResult Function( List<dynamic> uploads)?  uploadAssets,TResult Function()?  retry,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Create() when create != null:
-return create(_that.chat,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.filePaths,_that.location);case _UploadAssets() when uploadAssets != null:
+return create(_that.author,_that.chat,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.filePaths,_that.location);case _UploadAssets() when uploadAssets != null:
 return uploadAssets(_that.uploads);case _Retry() when retry != null:
 return retry();case _:
   return orElse();
@@ -148,10 +148,10 @@ return retry();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<String> filePaths,  LatLng? location)  create,required TResult Function( List<dynamic> uploads)  uploadAssets,required TResult Function()  retry,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( User author,  Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<String> filePaths,  LatLng? location)  create,required TResult Function( List<dynamic> uploads)  uploadAssets,required TResult Function()  retry,}) {final _that = this;
 switch (_that) {
 case _Create():
-return create(_that.chat,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.filePaths,_that.location);case _UploadAssets():
+return create(_that.author,_that.chat,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.filePaths,_that.location);case _UploadAssets():
 return uploadAssets(_that.uploads);case _Retry():
 return retry();case _:
   throw StateError('Unexpected subclass');
@@ -170,10 +170,10 @@ return retry();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<String> filePaths,  LatLng? location)?  create,TResult? Function( List<dynamic> uploads)?  uploadAssets,TResult? Function()?  retry,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( User author,  Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<String> filePaths,  LatLng? location)?  create,TResult? Function( List<dynamic> uploads)?  uploadAssets,TResult? Function()?  retry,}) {final _that = this;
 switch (_that) {
 case _Create() when create != null:
-return create(_that.chat,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.filePaths,_that.location);case _UploadAssets() when uploadAssets != null:
+return create(_that.author,_that.chat,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.filePaths,_that.location);case _UploadAssets() when uploadAssets != null:
 return uploadAssets(_that.uploads);case _Retry() when retry != null:
 return retry();case _:
   return null;
@@ -187,9 +187,10 @@ return retry();case _:
 
 
 class _Create implements MessageCreateEvent {
-  const _Create({required this.chat, required this.text, this.post, this.ballot, this.survey, this.petition, this.meeting, this.section, final  List<String> filePaths = const [], this.location}): _filePaths = filePaths;
+  const _Create({required this.author, required this.chat, required this.text, this.post, this.ballot, this.survey, this.petition, this.meeting, this.section, final  List<String> filePaths = const [], this.location}): _filePaths = filePaths;
   
 
+ final  User author;
  final  Chat chat;
  final  String text;
  final  Post? post;
@@ -217,16 +218,16 @@ _$CreateCopyWith<_Create> get copyWith => __$CreateCopyWithImpl<_Create>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Create&&(identical(other.chat, chat) || other.chat == chat)&&(identical(other.text, text) || other.text == text)&&(identical(other.post, post) || other.post == post)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.section, section) || other.section == section)&&const DeepCollectionEquality().equals(other._filePaths, _filePaths)&&(identical(other.location, location) || other.location == location));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Create&&(identical(other.author, author) || other.author == author)&&(identical(other.chat, chat) || other.chat == chat)&&(identical(other.text, text) || other.text == text)&&(identical(other.post, post) || other.post == post)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.section, section) || other.section == section)&&const DeepCollectionEquality().equals(other._filePaths, _filePaths)&&(identical(other.location, location) || other.location == location));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,chat,text,post,ballot,survey,petition,meeting,section,const DeepCollectionEquality().hash(_filePaths),location);
+int get hashCode => Object.hash(runtimeType,author,chat,text,post,ballot,survey,petition,meeting,section,const DeepCollectionEquality().hash(_filePaths),location);
 
 @override
 String toString() {
-  return 'MessageCreateEvent.create(chat: $chat, text: $text, post: $post, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, section: $section, filePaths: $filePaths, location: $location)';
+  return 'MessageCreateEvent.create(author: $author, chat: $chat, text: $text, post: $post, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, section: $section, filePaths: $filePaths, location: $location)';
 }
 
 
@@ -237,11 +238,11 @@ abstract mixin class _$CreateCopyWith<$Res> implements $MessageCreateEventCopyWi
   factory _$CreateCopyWith(_Create value, $Res Function(_Create) _then) = __$CreateCopyWithImpl;
 @useResult
 $Res call({
- Chat chat, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting, Section? section, List<String> filePaths, LatLng? location
+ User author, Chat chat, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting, Section? section, List<String> filePaths, LatLng? location
 });
 
 
-$ChatCopyWith<$Res> get chat;$PostCopyWith<$Res>? get post;$BallotCopyWith<$Res>? get ballot;$SurveyCopyWith<$Res>? get survey;$PetitionCopyWith<$Res>? get petition;$MeetingCopyWith<$Res>? get meeting;$SectionCopyWith<$Res>? get section;
+$UserCopyWith<$Res> get author;$PostCopyWith<$Res>? get post;$BallotCopyWith<$Res>? get ballot;$SurveyCopyWith<$Res>? get survey;$PetitionCopyWith<$Res>? get petition;$MeetingCopyWith<$Res>? get meeting;$SectionCopyWith<$Res>? get section;
 
 }
 /// @nodoc
@@ -254,9 +255,10 @@ class __$CreateCopyWithImpl<$Res>
 
 /// Create a copy of MessageCreateEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? chat = null,Object? text = null,Object? post = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? meeting = freezed,Object? section = freezed,Object? filePaths = null,Object? location = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? author = null,Object? chat = null,Object? text = null,Object? post = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? meeting = freezed,Object? section = freezed,Object? filePaths = null,Object? location = freezed,}) {
   return _then(_Create(
-chat: null == chat ? _self.chat : chat // ignore: cast_nullable_to_non_nullable
+author: null == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
+as User,chat: null == chat ? _self.chat : chat // ignore: cast_nullable_to_non_nullable
 as Chat,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,post: freezed == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
 as Post?,ballot: freezed == ballot ? _self.ballot : ballot // ignore: cast_nullable_to_non_nullable
@@ -274,10 +276,10 @@ as LatLng?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$ChatCopyWith<$Res> get chat {
+$UserCopyWith<$Res> get author {
   
-  return $ChatCopyWith<$Res>(_self.chat, (value) {
-    return _then(_self.copyWith(chat: value));
+  return $UserCopyWith<$Res>(_self.author, (value) {
+    return _then(_self.copyWith(author: value));
   });
 }/// Create a copy of MessageCreateEvent
 /// with the given fields replaced by the non-null parameter values.

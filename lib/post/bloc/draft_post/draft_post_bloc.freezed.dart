@@ -55,13 +55,12 @@ extension DraftPostEventPatterns on DraftPostEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Save value)?  save,TResult Function( _Delete value)?  delete,TResult Function( _Clear value)?  clear,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Save value)?  save,TResult Function( _Delete value)?  delete,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Save() when save != null:
 return save(_that);case _Delete() when delete != null:
-return delete(_that);case _Clear() when clear != null:
-return clear(_that);case _:
+return delete(_that);case _:
   return orElse();
 
 }
@@ -79,13 +78,12 @@ return clear(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Save value)  save,required TResult Function( _Delete value)  delete,required TResult Function( _Clear value)  clear,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Save value)  save,required TResult Function( _Delete value)  delete,}){
 final _that = this;
 switch (_that) {
 case _Save():
 return save(_that);case _Delete():
-return delete(_that);case _Clear():
-return clear(_that);}
+return delete(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -99,13 +97,12 @@ return clear(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Save value)?  save,TResult? Function( _Delete value)?  delete,TResult? Function( _Clear value)?  clear,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Save value)?  save,TResult? Function( _Delete value)?  delete,}){
 final _that = this;
 switch (_that) {
 case _Save() when save != null:
 return save(_that);case _Delete() when delete != null:
-return delete(_that);case _Clear() when clear != null:
-return clear(_that);case _:
+return delete(_that);case _:
   return null;
 
 }
@@ -122,12 +119,11 @@ return clear(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int? id,  String body,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)?  save,TResult Function( DraftPost draft)?  delete,TResult Function()?  clear,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int? id,  String body,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)?  save,TResult Function( DraftPost draft)?  delete,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Save() when save != null:
 return save(_that.id,_that.body,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.filePaths,_that.location);case _Delete() when delete != null:
-return delete(_that.draft);case _Clear() when clear != null:
-return clear();case _:
+return delete(_that.draft);case _:
   return orElse();
 
 }
@@ -145,12 +141,11 @@ return clear();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int? id,  String body,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)  save,required TResult Function( DraftPost draft)  delete,required TResult Function()  clear,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int? id,  String body,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)  save,required TResult Function( DraftPost draft)  delete,}) {final _that = this;
 switch (_that) {
 case _Save():
 return save(_that.id,_that.body,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.filePaths,_that.location);case _Delete():
-return delete(_that.draft);case _Clear():
-return clear();}
+return delete(_that.draft);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -164,12 +159,11 @@ return clear();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int? id,  String body,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)?  save,TResult? Function( DraftPost draft)?  delete,TResult? Function()?  clear,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int? id,  String body,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)?  save,TResult? Function( DraftPost draft)?  delete,}) {final _that = this;
 switch (_that) {
 case _Save() when save != null:
 return save(_that.id,_that.body,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.filePaths,_that.location);case _Delete() when delete != null:
-return delete(_that.draft);case _Clear() when clear != null:
-return clear();case _:
+return delete(_that.draft);case _:
   return null;
 
 }
@@ -440,38 +434,6 @@ as DraftPost,
 
 
 }
-
-/// @nodoc
-
-
-class _Clear implements DraftPostEvent {
-  const _Clear();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Clear);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'DraftPostEvent.clear()';
-}
-
-
-}
-
-
-
 
 /// @nodoc
 mixin _$DraftPostState {
