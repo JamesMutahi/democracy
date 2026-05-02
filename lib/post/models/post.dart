@@ -1,7 +1,7 @@
 import 'package:democracy/app/models/asset.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/constitution/models/section.dart';
-import 'package:democracy/meet/models/meeting.dart';
+import 'package:democracy/meeting/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/user/models/user.dart';

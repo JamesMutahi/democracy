@@ -55,15 +55,16 @@ extension MeetingDetailEventPatterns on MeetingDetailEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Loaded value)?  loaded,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Join value)?  join,TResult Function( _Leave value)?  leave,TResult Function( _Left value)?  left,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Loaded value)?  loaded,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Retrieve value)?  retrieve,TResult Function( _Subscribe value)?  subscribe,TResult Function( _Leave value)?  leave,TResult Function( _Left value)?  left,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that);case _Loaded() when loaded != null:
 return loaded(_that);case _Updated() when updated != null:
 return updated(_that);case _Deleted() when deleted != null:
-return deleted(_that);case _Join() when join != null:
-return join(_that);case _Leave() when leave != null:
+return deleted(_that);case _Retrieve() when retrieve != null:
+return retrieve(_that);case _Subscribe() when subscribe != null:
+return subscribe(_that);case _Leave() when leave != null:
 return leave(_that);case _Left() when left != null:
 return left(_that);case _:
   return orElse();
@@ -83,15 +84,16 @@ return left(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Loaded value)  loaded,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Join value)  join,required TResult Function( _Leave value)  leave,required TResult Function( _Left value)  left,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Loaded value)  loaded,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Retrieve value)  retrieve,required TResult Function( _Subscribe value)  subscribe,required TResult Function( _Leave value)  leave,required TResult Function( _Left value)  left,}){
 final _that = this;
 switch (_that) {
 case _Created():
 return created(_that);case _Loaded():
 return loaded(_that);case _Updated():
 return updated(_that);case _Deleted():
-return deleted(_that);case _Join():
-return join(_that);case _Leave():
+return deleted(_that);case _Retrieve():
+return retrieve(_that);case _Subscribe():
+return subscribe(_that);case _Leave():
 return leave(_that);case _Left():
 return left(_that);}
 }
@@ -107,15 +109,16 @@ return left(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Join value)?  join,TResult? Function( _Leave value)?  leave,TResult? Function( _Left value)?  left,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Retrieve value)?  retrieve,TResult? Function( _Subscribe value)?  subscribe,TResult? Function( _Leave value)?  leave,TResult? Function( _Left value)?  left,}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that);case _Loaded() when loaded != null:
 return loaded(_that);case _Updated() when updated != null:
 return updated(_that);case _Deleted() when deleted != null:
-return deleted(_that);case _Join() when join != null:
-return join(_that);case _Leave() when leave != null:
+return deleted(_that);case _Retrieve() when retrieve != null:
+return retrieve(_that);case _Subscribe() when subscribe != null:
+return subscribe(_that);case _Leave() when leave != null:
 return leave(_that);case _Left() when left != null:
 return left(_that);case _:
   return null;
@@ -134,14 +137,15 @@ return left(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Meeting meeting)?  join,TResult Function( Meeting meeting)?  leave,TResult Function( Map<String, dynamic> payload)?  left,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Meeting meeting)?  retrieve,TResult Function( Meeting meeting)?  subscribe,TResult Function( Meeting meeting)?  leave,TResult Function( Map<String, dynamic> payload)?  left,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
 return loaded(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
-return deleted(_that.payload);case _Join() when join != null:
-return join(_that.meeting);case _Leave() when leave != null:
+return deleted(_that.payload);case _Retrieve() when retrieve != null:
+return retrieve(_that.meeting);case _Subscribe() when subscribe != null:
+return subscribe(_that.meeting);case _Leave() when leave != null:
 return leave(_that.meeting);case _Left() when left != null:
 return left(_that.payload);case _:
   return orElse();
@@ -161,14 +165,15 @@ return left(_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Meeting meeting)  join,required TResult Function( Meeting meeting)  leave,required TResult Function( Map<String, dynamic> payload)  left,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Meeting meeting)  retrieve,required TResult Function( Meeting meeting)  subscribe,required TResult Function( Meeting meeting)  leave,required TResult Function( Map<String, dynamic> payload)  left,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Loaded():
 return loaded(_that.payload);case _Updated():
 return updated(_that.payload);case _Deleted():
-return deleted(_that.payload);case _Join():
-return join(_that.meeting);case _Leave():
+return deleted(_that.payload);case _Retrieve():
+return retrieve(_that.meeting);case _Subscribe():
+return subscribe(_that.meeting);case _Leave():
 return leave(_that.meeting);case _Left():
 return left(_that.payload);}
 }
@@ -184,14 +189,15 @@ return left(_that.payload);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Meeting meeting)?  join,TResult? Function( Meeting meeting)?  leave,TResult? Function( Map<String, dynamic> payload)?  left,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Meeting meeting)?  retrieve,TResult? Function( Meeting meeting)?  subscribe,TResult? Function( Meeting meeting)?  leave,TResult? Function( Map<String, dynamic> payload)?  left,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
 return loaded(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
-return deleted(_that.payload);case _Join() when join != null:
-return join(_that.meeting);case _Leave() when leave != null:
+return deleted(_that.payload);case _Retrieve() when retrieve != null:
+return retrieve(_that.meeting);case _Subscribe() when subscribe != null:
+return subscribe(_that.meeting);case _Leave() when leave != null:
 return leave(_that.meeting);case _Left() when left != null:
 return left(_that.payload);case _:
   return null;
@@ -492,8 +498,8 @@ as Map<String, dynamic>,
 /// @nodoc
 
 
-class _Join implements MeetingDetailEvent {
-  const _Join({required this.meeting});
+class _Retrieve implements MeetingDetailEvent {
+  const _Retrieve({required this.meeting});
   
 
  final  Meeting meeting;
@@ -502,13 +508,13 @@ class _Join implements MeetingDetailEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$JoinCopyWith<_Join> get copyWith => __$JoinCopyWithImpl<_Join>(this, _$identity);
+_$RetrieveCopyWith<_Retrieve> get copyWith => __$RetrieveCopyWithImpl<_Retrieve>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Join&&(identical(other.meeting, meeting) || other.meeting == meeting));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Retrieve&&(identical(other.meeting, meeting) || other.meeting == meeting));
 }
 
 
@@ -517,15 +523,15 @@ int get hashCode => Object.hash(runtimeType,meeting);
 
 @override
 String toString() {
-  return 'MeetingDetailEvent.join(meeting: $meeting)';
+  return 'MeetingDetailEvent.retrieve(meeting: $meeting)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$JoinCopyWith<$Res> implements $MeetingDetailEventCopyWith<$Res> {
-  factory _$JoinCopyWith(_Join value, $Res Function(_Join) _then) = __$JoinCopyWithImpl;
+abstract mixin class _$RetrieveCopyWith<$Res> implements $MeetingDetailEventCopyWith<$Res> {
+  factory _$RetrieveCopyWith(_Retrieve value, $Res Function(_Retrieve) _then) = __$RetrieveCopyWithImpl;
 @useResult
 $Res call({
  Meeting meeting
@@ -536,17 +542,92 @@ $MeetingCopyWith<$Res> get meeting;
 
 }
 /// @nodoc
-class __$JoinCopyWithImpl<$Res>
-    implements _$JoinCopyWith<$Res> {
-  __$JoinCopyWithImpl(this._self, this._then);
+class __$RetrieveCopyWithImpl<$Res>
+    implements _$RetrieveCopyWith<$Res> {
+  __$RetrieveCopyWithImpl(this._self, this._then);
 
-  final _Join _self;
-  final $Res Function(_Join) _then;
+  final _Retrieve _self;
+  final $Res Function(_Retrieve) _then;
 
 /// Create a copy of MeetingDetailEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? meeting = null,}) {
-  return _then(_Join(
+  return _then(_Retrieve(
+meeting: null == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
+as Meeting,
+  ));
+}
+
+/// Create a copy of MeetingDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MeetingCopyWith<$Res> get meeting {
+  
+  return $MeetingCopyWith<$Res>(_self.meeting, (value) {
+    return _then(_self.copyWith(meeting: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _Subscribe implements MeetingDetailEvent {
+  const _Subscribe({required this.meeting});
+  
+
+ final  Meeting meeting;
+
+/// Create a copy of MeetingDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SubscribeCopyWith<_Subscribe> get copyWith => __$SubscribeCopyWithImpl<_Subscribe>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Subscribe&&(identical(other.meeting, meeting) || other.meeting == meeting));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,meeting);
+
+@override
+String toString() {
+  return 'MeetingDetailEvent.subscribe(meeting: $meeting)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SubscribeCopyWith<$Res> implements $MeetingDetailEventCopyWith<$Res> {
+  factory _$SubscribeCopyWith(_Subscribe value, $Res Function(_Subscribe) _then) = __$SubscribeCopyWithImpl;
+@useResult
+$Res call({
+ Meeting meeting
+});
+
+
+$MeetingCopyWith<$Res> get meeting;
+
+}
+/// @nodoc
+class __$SubscribeCopyWithImpl<$Res>
+    implements _$SubscribeCopyWith<$Res> {
+  __$SubscribeCopyWithImpl(this._self, this._then);
+
+  final _Subscribe _self;
+  final $Res Function(_Subscribe) _then;
+
+/// Create a copy of MeetingDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? meeting = null,}) {
+  return _then(_Subscribe(
 meeting: null == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
 as Meeting,
   ));

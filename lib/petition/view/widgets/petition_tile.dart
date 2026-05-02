@@ -157,18 +157,7 @@ class PetitionSupportersRow extends StatelessWidget {
                 child: CircleAvatar(
                   radius: 17,
                   backgroundColor: Theme.of(context).cardColor,
-                  child: CircleAvatar(
-                    radius: 15,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: CachedNetworkImageProvider(user.image),
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                    ),
-                  ),
+                  child: ProfileImage(user: user, radius: 15),
                 ),
               );
             }),

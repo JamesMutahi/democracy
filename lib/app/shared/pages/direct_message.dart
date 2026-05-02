@@ -6,7 +6,7 @@ import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/bloc/direct_message/direct_message_bloc.dart';
 import 'package:democracy/constitution/models/section.dart';
-import 'package:democracy/meet/models/meeting.dart';
+import 'package:democracy/meeting/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';

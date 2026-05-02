@@ -4,8 +4,8 @@ import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/bloc/repository/database/database_repository.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
-import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/app/core/app_theme.dart';
+import 'package:democracy/app/shared/widgets/app_header_logo.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/shared/pages/splash_page.dart';
@@ -85,9 +85,9 @@ class MyApp extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(logo, width: 200, height: 200),
-          SizedBox(height: 50),
-          Text(error, style: Theme.of(context).textTheme.titleMedium),
+          AppHeaderLogo(),
+          SizedBox(height: 20),
+          Text(error, textAlign: TextAlign.center),
           SizedBox(height: 20),
           FailureRetryButton(
             onPressed: () {

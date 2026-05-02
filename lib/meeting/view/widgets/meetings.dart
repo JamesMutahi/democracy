@@ -1,10 +1,10 @@
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
-import 'package:democracy/meet/bloc/meeting_detail/meeting_detail_bloc.dart';
-import 'package:democracy/meet/bloc/meeting_filter/meeting_filter_cubit.dart';
-import 'package:democracy/meet/bloc/meetings/meetings_bloc.dart';
-import 'package:democracy/meet/models/meeting.dart';
-import 'package:democracy/meet/view/widgets/meeting_tile.dart';
+import 'package:democracy/meeting/bloc/meeting_detail/meeting_detail_bloc.dart';
+import 'package:democracy/meeting/bloc/meeting_filter/meeting_filter_cubit.dart';
+import 'package:democracy/meeting/bloc/meetings/meetings_bloc.dart';
+import 'package:democracy/meeting/models/meeting.dart';
+import 'package:democracy/meeting/view/widgets/meeting_tile.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

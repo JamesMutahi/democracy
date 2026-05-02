@@ -1,7 +1,7 @@
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/constitution/models/section.dart';
-import 'package:democracy/meet/models/meeting.dart';
+import 'package:democracy/meeting/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/bloc/community_notes/community_notes_bloc.dart';
 import 'package:democracy/post/bloc/replies/replies_bloc.dart';

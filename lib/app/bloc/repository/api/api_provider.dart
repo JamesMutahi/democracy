@@ -329,4 +329,18 @@ class APIProvider {
       return Future.error(e.toString());
     }
   }
+
+  Future<Map> getMeetingToken({required Meeting meeting}) async {
+    try {
+      FormData data = FormData.fromMap({'meeting_id': meeting.id});
+      Response response = await dio.post('meeting/token/', data: data);
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        return Future.error(response.data.toString());
+      }
+    } on DioException catch (e) {
+      return Future.error(e.toString());
+    }
+  }
 }

@@ -2,15 +2,15 @@ import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/more_pop_up.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
-import 'package:democracy/meet/bloc/meeting_detail/meeting_detail_bloc.dart';
-import 'package:democracy/meet/models/meeting.dart';
-import 'package:democracy/meet/view/meeting_detail.dart';
+import 'package:democracy/meeting/bloc/meeting_detail/meeting_detail_bloc.dart';
+import 'package:democracy/meeting/models/meeting.dart';
+import 'package:democracy/meeting/view/meeting_detail.dart';
 import 'package:democracy/post/view/shared/post_navigator.dart';
-import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class MeetingTile extends StatelessWidget {
   const MeetingTile({
@@ -230,12 +230,7 @@ class MeetingBottomSheet extends StatelessWidget {
             ),
           Text(meeting.description),
           SizedBox(height: 5),
-          GestureDetector(
-            onTap: () {
-              navigateToProfilePage(context: context, user: meeting.host);
-            },
-            child: _HostInfo(meeting: meeting),
-          ),
+          _HostInfo(meeting: meeting),
           SizedBox(height: 5),
           ListenersRow(meeting: meeting),
           SizedBox(height: 5),
@@ -244,7 +239,7 @@ class MeetingBottomSheet extends StatelessWidget {
             child: OutlinedButton(
               onPressed: () {
                 context.read<MeetingDetailBloc>().add(
-                  MeetingDetailEvent.join(meeting: meeting),
+                  MeetingDetailEvent.retrieve(meeting: meeting),
                 );
               },
               child: Text('Join'),
@@ -252,6 +247,39 @@ class MeetingBottomSheet extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class ListenersRow extends StatelessWidget {
+  const ListenersRow({super.key, required this.meeting});
+
+  final Meeting meeting;
+
+  @override
+  Widget build(BuildContext context) {
+    var numberFormat = NumberFormat.compact(locale: "en_UK");
+    final listeners = meeting.listeners.take(5).toList();
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Stack(
+          children: [
+            ...listeners.map((user) {
+              return Container(
+                margin: EdgeInsets.only(left: listeners.indexOf(user) * 15),
+                child: CircleAvatar(
+                  radius: 17,
+                  backgroundColor: Theme.of(context).cardColor,
+                  child: ProfileImage(user: user, radius: 15,),
+                ),
+              );
+            }),
+          ],
+        ),
+        if (meeting.listenerCount > 0) SizedBox(width: 10),
+        Text('${numberFormat.format(meeting.listenerCount)} listening'),
+      ],
     );
   }
 }

@@ -85,7 +85,6 @@ dependencies:
   stop_watch_timer: ^3.2.2
   pro_video_editor: ^1.14.2
   audioplayers: ^6.6.0
-  animated_digit: ^3.3.2
   fluttertoast: ^9.0.0
   mime: ^2.0.0
   loader_overlay: ^5.0.0
@@ -102,6 +101,7 @@ dependencies:
   sentry_flutter: ^9.19.0
   objectbox: ^5.3.1
   objectbox_flutter_libs: any
+  agora_rtc_engine: ^6.5.3
 
 dev_dependencies:
   flutter_test:

@@ -14,7 +14,10 @@ sealed class MeetingDetailEvent with _$MeetingDetailEvent {
   const factory MeetingDetailEvent.deleted({
     required Map<String, dynamic> payload,
   }) = _Deleted;
-  const factory MeetingDetailEvent.join({required Meeting meeting}) = _Join;
+  const factory MeetingDetailEvent.retrieve({required Meeting meeting}) =
+      _Retrieve;
+  const factory MeetingDetailEvent.subscribe({required Meeting meeting}) =
+      _Subscribe;
   const factory MeetingDetailEvent.leave({required Meeting meeting}) = _Leave;
   const factory MeetingDetailEvent.left({
     required Map<String, dynamic> payload,

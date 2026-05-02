@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
-import 'package:democracy/meet/models/meeting.dart';
+import 'package:democracy/meeting/models/meeting.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'meeting_detail_event.dart';
@@ -21,7 +21,8 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
         switch (message['payload']['action']) {
           case 'create':
             add(_Created(payload: message['payload']));
-          case 'join':
+          case 'retrieve':
+          case 'subscribe':
             add(_Loaded(payload: message['payload']));
           case 'update':
             add(_Updated(payload: message['payload']));
@@ -36,7 +37,8 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
     on<_Loaded>((event, emit) => _onLoaded(event, emit));
     on<_Updated>((event, emit) => _onUpdated(event, emit));
     on<_Deleted>((event, emit) => _onDeleted(event, emit));
-    on<_Join>((event, emit) => _onJoin(event, emit));
+    on<_Retrieve>((event, emit) => _onRetrieve(event, emit));
+    on<_Subscribe>((event, emit) => _onSubscribe(event, emit));
     on<_Leave>((event, emit) => _onLeave(event, emit));
     on<_Left>((event, emit) => _onLeft(event, emit));
   }
@@ -80,7 +82,7 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
     }
   }
 
-  void _onJoin(_Join event, Emitter<MeetingDetailState> emit) {
+  void _onRetrieve(_Retrieve event, Emitter<MeetingDetailState> emit) {
     emit(MeetingDetailLoading());
     if (!webSocketService.isConnected) {
       emit(MeetingDetailFailure(error: serverError));
@@ -90,7 +92,25 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
-        "action": 'join',
+        "action": 'retrieve',
+        'request_id': requestId,
+        'pk': event.meeting.id,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  void _onSubscribe(_Subscribe event, Emitter<MeetingDetailState> emit) {
+    emit(MeetingDetailLoading());
+    if (!webSocketService.isConnected) {
+      emit(MeetingDetailFailure(error: serverError));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        "action": 'subscribe',
         'request_id': requestId,
         'pk': event.meeting.id,
       },

@@ -4,7 +4,7 @@ import 'package:democracy/app/shared/widgets/map_widget.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
-import 'package:democracy/meet/view/widgets/meeting_tile.dart';
+import 'package:democracy/meeting/view/widgets/meeting_tile.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
@@ -21,7 +21,6 @@ import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -174,7 +173,6 @@ class _PostContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var numberFormat = NumberFormat.compact(locale: "en_UK");
     return VisibilityDetector(
       key: Key('${post.id}'),
       onVisibilityChanged: (visibilityInfo) {
@@ -287,26 +285,11 @@ class _PostContainer extends StatelessWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    ReplyButton(
-                                      post: post,
-                                      numberFormat: numberFormat,
-                                    ),
-                                    RepostButton(
-                                      post: post,
-                                      numberFormat: numberFormat,
-                                    ),
-                                    LikeButton(
-                                      post: post,
-                                      numberFormat: numberFormat,
-                                    ),
-                                    BookmarkButton(
-                                      post: post,
-                                      numberFormat: numberFormat,
-                                    ),
-                                    ViewsButton(
-                                      post: post,
-                                      numberFormat: numberFormat,
-                                    ),
+                                    ReplyButton(post: post),
+                                    RepostButton(post: post),
+                                    LikeButton(post: post),
+                                    BookmarkButton(post: post),
+                                    ViewsButton(post: post),
                                   ],
                                 ),
                               ),

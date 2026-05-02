@@ -1,4 +1,3 @@
-import 'package:animated_digit/animated_digit.dart';
 import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/more_pop_up.dart';
@@ -177,10 +176,9 @@ class PostPopUp extends StatelessWidget {
 }
 
 class LikeButton extends StatelessWidget {
-  const LikeButton({super.key, required this.post, required this.numberFormat});
+  const LikeButton({super.key, required this.post});
 
   final Post post;
-  final NumberFormat numberFormat;
 
   @override
   Widget build(BuildContext context) {
@@ -201,14 +199,9 @@ class LikeButton extends StatelessWidget {
 }
 
 class RepostButton extends StatelessWidget {
-  const RepostButton({
-    super.key,
-    required this.post,
-    required this.numberFormat,
-  });
+  const RepostButton({super.key, required this.post});
 
   final Post post;
-  final NumberFormat numberFormat;
 
   @override
   Widget build(BuildContext context) {
@@ -294,14 +287,9 @@ class RepostButton extends StatelessWidget {
 }
 
 class ReplyButton extends StatelessWidget {
-  const ReplyButton({
-    super.key,
-    required this.post,
-    required this.numberFormat,
-  });
+  const ReplyButton({super.key, required this.post});
 
   final Post post;
-  final NumberFormat numberFormat;
 
   @override
   Widget build(BuildContext context) {
@@ -344,14 +332,9 @@ class ReplyButton extends StatelessWidget {
 }
 
 class ViewsButton extends StatelessWidget {
-  const ViewsButton({
-    super.key,
-    required this.post,
-    required this.numberFormat,
-  });
+  const ViewsButton({super.key, required this.post});
 
   final Post post;
-  final NumberFormat numberFormat;
 
   @override
   Widget build(BuildContext context) {
@@ -376,12 +359,10 @@ class BookmarkButton extends StatelessWidget {
     super.key,
     required this.post,
     this.showTrailing = true,
-    required this.numberFormat,
   });
 
   final Post post;
   final bool showTrailing;
-  final NumberFormat numberFormat;
 
   @override
   Widget build(BuildContext context) {
@@ -415,6 +396,7 @@ class _PostTileButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var numberFormat = NumberFormat.compact(locale: "en_UK");
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -426,11 +408,9 @@ class _PostTileButton extends StatelessWidget {
           child: Padding(padding: const EdgeInsets.all(7.5), child: icon),
         ),
         if (number > 0)
-          AnimatedDigitWidget(
-            value: number,
-            textStyle: TextStyle(color: Theme.of(context).colorScheme.outline),
-            enableSeparator: true,
-            firstScrollAnimate: false,
+          Text(
+            numberFormat.format(number),
+            style: TextStyle(color: Theme.of(context).colorScheme.outline),
           ),
       ],
     );

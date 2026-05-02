@@ -25,7 +25,8 @@ import 'package:democracy/constitution/bloc/constitution/constitution_bloc.dart'
 import 'package:democracy/constitution/bloc/section_detail/section_detail_bloc.dart';
 import 'package:democracy/constitution/bloc/sections/sections_bloc.dart';
 import 'package:democracy/geo/bloc/geo/geo_bloc.dart';
-import 'package:democracy/meet/bloc/meeting_detail/meeting_detail_bloc.dart';
+import 'package:democracy/meeting/bloc/meeting_detail/meeting_detail_bloc.dart';
+import 'package:democracy/meeting/bloc/meeting_join/meeting_join_bloc.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/notification/bloc/preferences/preferences_bloc.dart';
@@ -307,6 +308,11 @@ void main() async {
               BlocProvider(
                 create: (context) => MeetingDetailBloc(
                   webSocketService: context.read<WebSocketService>(),
+                ),
+              ),
+              BlocProvider(
+                create: (context) => MeetingJoinBloc(
+                  apiRepository: context.read<APIRepository>(),
                 ),
               ),
               BlocProvider(

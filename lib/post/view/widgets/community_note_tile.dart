@@ -109,7 +109,10 @@ class CommunityNoteTile extends StatelessWidget {
                                     },
                                   ),
                                   Text(
-                                    '${communityNote.upvotes - communityNote.downvotes}',
+                                    numberFormat.format(
+                                      communityNote.upvotes -
+                                          communityNote.downvotes,
+                                    ),
                                     style: Theme.of(
                                       context,
                                     ).textTheme.titleLarge,
@@ -214,15 +217,9 @@ class CommunityNoteTile extends StatelessWidget {
                                         Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            RepostButton(
-                                              post: communityNote,
-                                              numberFormat: numberFormat,
-                                            ),
+                                            RepostButton(post: communityNote),
                                             SizedBox(width: 20),
-                                            BookmarkButton(
-                                              post: communityNote,
-                                              numberFormat: numberFormat,
-                                            ),
+                                            BookmarkButton(post: communityNote),
                                           ],
                                         ),
                                       ],

@@ -22,7 +22,7 @@ class ThreadLine extends StatelessWidget {
             child: Container(
               margin: showTopThread ? null : EdgeInsets.only(top: 20),
               height: showBottomThread ? null : 20,
-              width: 2,
+              width: 1.5,
               color: Theme.of(context).colorScheme.outlineVariant,
             ),
           );

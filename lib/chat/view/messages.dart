@@ -18,7 +18,7 @@ import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/view/utils/link_extractor.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
-import 'package:democracy/meet/view/widgets/meeting_tile.dart';
+import 'package:democracy/meeting/view/widgets/meeting_tile.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart';
 import 'package:democracy/post/view/widgets/post_widget_selector.dart';
 import 'package:democracy/survey/view/widgets/survey_tile.dart';

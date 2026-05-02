@@ -7,7 +7,7 @@ import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/geo/models/constituency.dart';
 import 'package:democracy/geo/models/county.dart';
 import 'package:democracy/geo/models/ward.dart';
-import 'package:democracy/meet/models/meeting.dart';
+import 'package:democracy/meeting/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
@@ -73,9 +73,7 @@ class APIRepository {
   Future<Map> postAssetUploadComplete({
     required List<String> assetIdList,
   }) async {
-    return await apiProvider.postAssetUploadComplete(
-      assetIdList: assetIdList,
-    );
+    return await apiProvider.postAssetUploadComplete(assetIdList: assetIdList);
   }
 
   Future<Map<String, dynamic>> createMessage({
@@ -186,6 +184,10 @@ class APIRepository {
       imagePath: imagePath,
       coverPhotoPath: coverPhotoPath,
     );
+  }
+
+  Future<Map> getMeetingToken({required Meeting meeting}) async {
+    return await apiProvider.getMeetingToken(meeting: meeting);
   }
 
   Future<List<Map>> getAssets(List<String> filePaths) async {

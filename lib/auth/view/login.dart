@@ -1,4 +1,4 @@
-import 'package:democracy/app/shared/constants/variables.dart';
+import 'package:democracy/app/shared/widgets/app_header_logo.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:flutter/material.dart';
@@ -40,20 +40,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.asset(logo, width: 100, height: 100),
-                  SizedBox(width: 15),
-                  Text(
-                    'People \nOf \nKenya',
-                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-
+              AppHeaderLogo(),
               const SizedBox(height: 20),
               BlocBuilder<LoginCubit, LoginState>(
                 builder: (context, state) {
@@ -101,3 +88,5 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+
+

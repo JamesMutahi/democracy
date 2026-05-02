@@ -9,7 +9,7 @@ import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
-import 'package:democracy/meet/view/widgets/meeting_tile.dart';
+import 'package:democracy/meeting/view/widgets/meeting_tile.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart';
 import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
@@ -435,7 +435,6 @@ class _PostContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     var timeFormat = DateFormat('hh:mm a');
     var dateFormat = DateFormat('dd/MM/yyyy');
-    var numberFormat = NumberFormat.compact(locale: "en_UK");
 
     return Stack(
       children: [
@@ -558,11 +557,11 @@ class _PostContainer extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        ReplyButton(post: post, numberFormat: numberFormat),
-                        RepostButton(post: post, numberFormat: numberFormat),
-                        LikeButton(post: post, numberFormat: numberFormat),
-                        BookmarkButton(post: post, numberFormat: numberFormat),
-                        ViewsButton(post: post, numberFormat: numberFormat),
+                        ReplyButton(post: post),
+                        RepostButton(post: post),
+                        LikeButton(post: post),
+                        BookmarkButton(post: post),
+                        ViewsButton(post: post),
                       ],
                     ),
                   ],
