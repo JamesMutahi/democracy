@@ -12,8 +12,16 @@ class MeetingDetailState with _$MeetingDetailState {
   const factory MeetingDetailState.loaded({required Meeting meeting}) =
       MeetingLoaded;
 
-  const factory MeetingDetailState.updated({required Meeting meeting}) =
-      MeetingUpdated;
+  const factory MeetingDetailState.updated({
+    required int id,
+    required String title,
+    required String description,
+    required County? county,
+    required Constituency? constituency,
+    required Ward? ward,
+    required int participantsCount,
+    required bool isActive,
+  }) = MeetingUpdated;
 
   const factory MeetingDetailState.deleted({required int meetingId}) =
       MeetingDeleted;

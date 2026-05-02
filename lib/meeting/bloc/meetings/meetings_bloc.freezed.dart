@@ -55,14 +55,15 @@ extension MeetingsEventPatterns on MeetingsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Add value)?  add,TResult Function( _Update value)?  update,TResult Function( _Remove value)?  remove,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Add value)?  add,TResult Function( _Update value)?  update,TResult Function( _UpdateFields value)?  updateFields,TResult Function( _Remove value)?  remove,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
 return received(_that);case _Add() when add != null:
 return add(_that);case _Update() when update != null:
-return update(_that);case _Remove() when remove != null:
+return update(_that);case _UpdateFields() when updateFields != null:
+return updateFields(_that);case _Remove() when remove != null:
 return remove(_that);case _:
   return orElse();
 
@@ -81,14 +82,15 @@ return remove(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Add value)  add,required TResult Function( _Update value)  update,required TResult Function( _Remove value)  remove,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Add value)  add,required TResult Function( _Update value)  update,required TResult Function( _UpdateFields value)  updateFields,required TResult Function( _Remove value)  remove,}){
 final _that = this;
 switch (_that) {
 case _Get():
 return get(_that);case _Received():
 return received(_that);case _Add():
 return add(_that);case _Update():
-return update(_that);case _Remove():
+return update(_that);case _UpdateFields():
+return updateFields(_that);case _Remove():
 return remove(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -103,14 +105,15 @@ return remove(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Add value)?  add,TResult? Function( _Update value)?  update,TResult? Function( _Remove value)?  remove,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Add value)?  add,TResult? Function( _Update value)?  update,TResult? Function( _UpdateFields value)?  updateFields,TResult? Function( _Remove value)?  remove,}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
 return received(_that);case _Add() when add != null:
 return add(_that);case _Update() when update != null:
-return update(_that);case _Remove() when remove != null:
+return update(_that);case _UpdateFields() when updateFields != null:
+return updateFields(_that);case _Remove() when remove != null:
 return remove(_that);case _:
   return null;
 
@@ -128,13 +131,14 @@ return remove(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  List<Meeting>? previousMeetings,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Meeting meeting)?  add,TResult Function( Meeting meeting)?  update,TResult Function( int meetingId)?  remove,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  List<Meeting>? previousMeetings,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Meeting meeting)?  add,TResult Function( Meeting meeting)?  update,TResult Function( int id,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  int participantsCount,  bool isActive)?  updateFields,TResult Function( int meetingId)?  remove,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.searchTerm,_that.previousMeetings,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
 return received(_that.payload);case _Add() when add != null:
 return add(_that.meeting);case _Update() when update != null:
-return update(_that.meeting);case _Remove() when remove != null:
+return update(_that.meeting);case _UpdateFields() when updateFields != null:
+return updateFields(_that.id,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.participantsCount,_that.isActive);case _Remove() when remove != null:
 return remove(_that.meetingId);case _:
   return orElse();
 
@@ -153,13 +157,14 @@ return remove(_that.meetingId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  List<Meeting>? previousMeetings,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Meeting meeting)  add,required TResult Function( Meeting meeting)  update,required TResult Function( int meetingId)  remove,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  List<Meeting>? previousMeetings,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Meeting meeting)  add,required TResult Function( Meeting meeting)  update,required TResult Function( int id,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  int participantsCount,  bool isActive)  updateFields,required TResult Function( int meetingId)  remove,}) {final _that = this;
 switch (_that) {
 case _Get():
 return get(_that.searchTerm,_that.previousMeetings,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received():
 return received(_that.payload);case _Add():
 return add(_that.meeting);case _Update():
-return update(_that.meeting);case _Remove():
+return update(_that.meeting);case _UpdateFields():
+return updateFields(_that.id,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.participantsCount,_that.isActive);case _Remove():
 return remove(_that.meetingId);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -174,13 +179,14 @@ return remove(_that.meetingId);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  List<Meeting>? previousMeetings,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Meeting meeting)?  add,TResult? Function( Meeting meeting)?  update,TResult? Function( int meetingId)?  remove,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  List<Meeting>? previousMeetings,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Meeting meeting)?  add,TResult? Function( Meeting meeting)?  update,TResult? Function( int id,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  int participantsCount,  bool isActive)?  updateFields,TResult? Function( int meetingId)?  remove,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.searchTerm,_that.previousMeetings,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
 return received(_that.payload);case _Add() when add != null:
 return add(_that.meeting);case _Update() when update != null:
-return update(_that.meeting);case _Remove() when remove != null:
+return update(_that.meeting);case _UpdateFields() when updateFields != null:
+return updateFields(_that.id,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.participantsCount,_that.isActive);case _Remove() when remove != null:
 return remove(_that.meetingId);case _:
   return null;
 
@@ -493,6 +499,122 @@ $MeetingCopyWith<$Res> get meeting {
   
   return $MeetingCopyWith<$Res>(_self.meeting, (value) {
     return _then(_self.copyWith(meeting: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _UpdateFields implements MeetingsEvent {
+  const _UpdateFields({required this.id, required this.title, required this.description, required this.county, required this.constituency, required this.ward, required this.participantsCount, required this.isActive});
+  
+
+ final  int id;
+ final  String title;
+ final  String description;
+ final  County? county;
+ final  Constituency? constituency;
+ final  Ward? ward;
+ final  int participantsCount;
+ final  bool isActive;
+
+/// Create a copy of MeetingsEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$UpdateFieldsCopyWith<_UpdateFields> get copyWith => __$UpdateFieldsCopyWithImpl<_UpdateFields>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateFields&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.county, county) || other.county == county)&&(identical(other.constituency, constituency) || other.constituency == constituency)&&(identical(other.ward, ward) || other.ward == ward)&&(identical(other.participantsCount, participantsCount) || other.participantsCount == participantsCount)&&(identical(other.isActive, isActive) || other.isActive == isActive));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,title,description,county,constituency,ward,participantsCount,isActive);
+
+@override
+String toString() {
+  return 'MeetingsEvent.updateFields(id: $id, title: $title, description: $description, county: $county, constituency: $constituency, ward: $ward, participantsCount: $participantsCount, isActive: $isActive)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$UpdateFieldsCopyWith<$Res> implements $MeetingsEventCopyWith<$Res> {
+  factory _$UpdateFieldsCopyWith(_UpdateFields value, $Res Function(_UpdateFields) _then) = __$UpdateFieldsCopyWithImpl;
+@useResult
+$Res call({
+ int id, String title, String description, County? county, Constituency? constituency, Ward? ward, int participantsCount, bool isActive
+});
+
+
+$CountyCopyWith<$Res>? get county;$ConstituencyCopyWith<$Res>? get constituency;$WardCopyWith<$Res>? get ward;
+
+}
+/// @nodoc
+class __$UpdateFieldsCopyWithImpl<$Res>
+    implements _$UpdateFieldsCopyWith<$Res> {
+  __$UpdateFieldsCopyWithImpl(this._self, this._then);
+
+  final _UpdateFields _self;
+  final $Res Function(_UpdateFields) _then;
+
+/// Create a copy of MeetingsEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? county = freezed,Object? constituency = freezed,Object? ward = freezed,Object? participantsCount = null,Object? isActive = null,}) {
+  return _then(_UpdateFields(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String,county: freezed == county ? _self.county : county // ignore: cast_nullable_to_non_nullable
+as County?,constituency: freezed == constituency ? _self.constituency : constituency // ignore: cast_nullable_to_non_nullable
+as Constituency?,ward: freezed == ward ? _self.ward : ward // ignore: cast_nullable_to_non_nullable
+as Ward?,participantsCount: null == participantsCount ? _self.participantsCount : participantsCount // ignore: cast_nullable_to_non_nullable
+as int,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+/// Create a copy of MeetingsEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CountyCopyWith<$Res>? get county {
+    if (_self.county == null) {
+    return null;
+  }
+
+  return $CountyCopyWith<$Res>(_self.county!, (value) {
+    return _then(_self.copyWith(county: value));
+  });
+}/// Create a copy of MeetingsEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ConstituencyCopyWith<$Res>? get constituency {
+    if (_self.constituency == null) {
+    return null;
+  }
+
+  return $ConstituencyCopyWith<$Res>(_self.constituency!, (value) {
+    return _then(_self.copyWith(constituency: value));
+  });
+}/// Create a copy of MeetingsEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$WardCopyWith<$Res>? get ward {
+    if (_self.ward == null) {
+    return null;
+  }
+
+  return $WardCopyWith<$Res>(_self.ward!, (value) {
+    return _then(_self.copyWith(ward: value));
   });
 }
 }

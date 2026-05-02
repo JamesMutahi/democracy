@@ -259,7 +259,7 @@ class ListenersRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var numberFormat = NumberFormat.compact(locale: "en_UK");
-    final listeners = meeting.listeners.take(5).toList();
+    final listeners = meeting.participants.take(5).toList();
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -277,8 +277,8 @@ class ListenersRow extends StatelessWidget {
             }),
           ],
         ),
-        if (meeting.listenerCount > 0) SizedBox(width: 10),
-        Text('${numberFormat.format(meeting.listenerCount)} listening'),
+        if (meeting.participantsCount > 0) SizedBox(width: 10),
+        Text('${numberFormat.format(meeting.participantsCount)} listening'),
       ],
     );
   }

@@ -63,7 +63,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   void _getData() {
     context.read<ChatDetailBloc>().add(ChatDetailEvent.get(chat: widget.chat));
     context.read<UserDetailBloc>().add(
-      UserDetailEvent.get(userId: _otherUser.id),
+      UserDetailEvent.subscribe(userId: _otherUser.id),
     );
     context.read<ChatDetailBloc>().add(
       ChatDetailEvent.markAsRead(chat: widget.chat),
@@ -149,7 +149,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         ),
         BlocListener<UserDetailBloc, UserDetailState>(
           listener: (context, state) {
-            if (state is UserLoaded) {
+            if (state is UserSubscribed) {
               _handleBlockedStatus(state.user);
             }
             if (state is UserUpdated) {

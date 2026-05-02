@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/utils/transformers.dart';
+import 'package:democracy/geo/models/constituency.dart';
+import 'package:democracy/geo/models/county.dart';
+import 'package:democracy/geo/models/ward.dart';
 import 'package:democracy/meeting/models/meeting.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -27,6 +30,7 @@ class MeetingsBloc extends Bloc<MeetingsEvent, MeetingsState> {
     on<_Received>((event, emit) => _onReceived(event, emit));
     on<_Add>((event, emit) => _onAdd(event, emit));
     on<_Update>((event, emit) => _onUpdate(event, emit));
+    on<_UpdateFields>((event, emit) => _onUpdateFields(event, emit));
     on<_Remove>((event, emit) => _onRemove(event, emit));
   }
 
@@ -101,6 +105,28 @@ class MeetingsBloc extends Bloc<MeetingsEvent, MeetingsState> {
 
     final updatedMeetings = List<Meeting>.from(state.meetings);
     updatedMeetings[index] = event.meeting;
+
+    emit(
+      state.copyWith(meetings: updatedMeetings, status: MeetingsStatus.success),
+    );
+  }
+
+  void _onUpdateFields(_UpdateFields event, Emitter<MeetingsState> emit) {
+    final index = state.meetings.indexWhere(
+      (element) => element.id == event.id,
+    );
+    if (index == -1) return;
+
+    final updatedMeetings = List<Meeting>.from(state.meetings);
+    updatedMeetings[index] = updatedMeetings[index].copyWith(
+      title: event.title,
+      description: event.description,
+      county: event.county,
+      constituency: event.constituency,
+      ward: event.ward,
+      participantsCount: event.participantsCount,
+      isActive: event.isActive,
+    );
 
     emit(
       state.copyWith(meetings: updatedMeetings, status: MeetingsStatus.success),

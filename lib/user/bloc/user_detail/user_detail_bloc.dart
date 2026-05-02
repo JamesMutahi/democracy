@@ -15,15 +15,15 @@ const String stream = 'users';
 const String requestId = 'users';
 
 class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
-  UserDetailBloc({
-    required this.webSocketService,
-    required this.apiRepository,
-  }) : super(const _Initial()) {
+  UserDetailBloc({required this.webSocketService, required this.apiRepository})
+    : super(const _Initial()) {
     _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
         switch (message['payload']['action']) {
           case 'retrieve':
             add(_Retrieved(payload: message['payload']));
+          case 'subscribed':
+            add(_Subscribed(payload: message['payload']));
           case 'update':
           case 'follow':
           case 'mute':
@@ -36,8 +36,10 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
       }
     });
     on<_Retrieved>((event, emit) => _onRetrieved(event, emit));
+    on<_Subscribed>((event, emit) => _onSubscribed(event, emit));
     on<_Updated>((event, emit) => _onUpdated(event, emit));
-    on<_Get>((event, emit) => _onGet(event, emit));
+    on<_Retrieve>((event, emit) => _onRetrieve(event, emit));
+    on<_Subscribe>((event, emit) => _onSubscribe(event, emit));
     on<_Patch>((event, emit) async => await _onPatch(event, emit));
     on<_Follow>((event, emit) => _onFollow(event, emit));
     on<_Mute>((event, emit) => _onMute(event, emit));
@@ -54,7 +56,17 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
     emit(_Loading());
     if (event.payload['response_status'] == 200) {
       User user = User.fromJson(event.payload['data']);
-      emit(UserLoaded(user: user));
+      emit(UserRetrieved(user: user));
+    } else {
+      emit(UserDetailFailure(error: event.payload['errors'].toString()));
+    }
+  }
+
+  void _onSubscribed(_Subscribed event, Emitter<UserDetailState> emit) async {
+    emit(_Loading());
+    if (event.payload['response_status'] == 200) {
+      User user = User.fromJson(event.payload['data']);
+      emit(UserSubscribed(user: user));
     } else {
       emit(UserDetailFailure(error: event.payload['errors'].toString()));
     }
@@ -70,7 +82,7 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
     }
   }
 
-  void _onGet(_Get event, Emitter<UserDetailState> emit) async {
+  void _onRetrieve(_Retrieve event, Emitter<UserDetailState> emit) async {
     emit(_Loading());
     if (!webSocketService.isConnected) {
       emit(UserDetailFailure(error: serverError));
@@ -81,6 +93,24 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
       'stream': stream,
       'payload': {
         'action': 'retrieve',
+        'request_id': requestId,
+        'pk': event.userId,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  void _onSubscribe(_Subscribe event, Emitter<UserDetailState> emit) async {
+    emit(_Loading());
+    if (!webSocketService.isConnected) {
+      emit(UserDetailFailure(error: serverError));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        'action': 'subscribe',
         'request_id': requestId,
         'pk': event.userId,
       },

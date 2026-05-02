@@ -16,5 +16,15 @@ sealed class MeetingsEvent with _$MeetingsEvent {
   }) = _Received;
   const factory MeetingsEvent.add({required Meeting meeting}) = _Add;
   const factory MeetingsEvent.update({required Meeting meeting}) = _Update;
+  const factory MeetingsEvent.updateFields({
+    required int id,
+    required String title,
+    required String description,
+    required County? county,
+    required Constituency? constituency,
+    required Ward? ward,
+    required int participantsCount,
+    required bool isActive,
+  }) = _UpdateFields;
   const factory MeetingsEvent.remove({required int meetingId}) = _Remove;
 }

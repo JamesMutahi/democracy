@@ -213,7 +213,13 @@ class NotificationTile extends StatelessWidget {
       subtitle: subtitle,
       trailing: notification.isRead
           ? SizedBox()
-          : Icon(Icons.circle_rounded, size: 7, color: Colors.blue),
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(Icons.circle_rounded, size: 7, color: Colors.blue),
+              ],
+            ),
       onTap: () {
         context.read<NotificationDetailBloc>().add(
           NotificationDetailEvent.markAsRead(notification: notification),

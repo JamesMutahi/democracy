@@ -6,7 +6,10 @@ class UserDetailState with _$UserDetailState {
 
   const factory UserDetailState.loading() = _Loading;
 
-  const factory UserDetailState.loaded({required User user}) = UserLoaded;
+  const factory UserDetailState.retrieved({required User user}) = UserRetrieved;
+
+  const factory UserDetailState.subscribed({required User user}) =
+      UserSubscribed;
 
   const factory UserDetailState.updated({required User user}) = UserUpdated;
 

@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
+import 'package:democracy/geo/models/constituency.dart';
+import 'package:democracy/geo/models/county.dart';
+import 'package:democracy/geo/models/ward.dart';
 import 'package:democracy/meeting/models/meeting.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -66,8 +69,23 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
   void _onUpdated(_Updated event, Emitter<MeetingDetailState> emit) {
     emit(MeetingDetailLoading());
     if (event.payload['response_status'] == 200) {
-      final Meeting meeting = Meeting.fromJson(event.payload['data']);
-      emit(MeetingUpdated(meeting: meeting));
+      final data = event.payload['data'];
+      emit(
+        MeetingUpdated(
+          id: event.payload['pk'],
+          title: data['title'],
+          description: data['description'],
+          county: data['county'] == null
+              ? null
+              : County.fromJson(data['county']),
+          constituency: data['constituency'] == null
+              ? null
+              : Constituency.fromJson(data['constituency']),
+          ward: data['ward'] == null ? null : Ward.fromJson(data['ward']),
+          participantsCount: data['participants_count'],
+          isActive: data['is_active'],
+        ),
+      );
     } else {
       emit(MeetingDetailFailure(error: event.payload['errors'].toString()));
     }

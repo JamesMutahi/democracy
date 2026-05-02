@@ -54,7 +54,18 @@ class _MeetingsState extends State<Meetings> {
             } else if (state is MeetingLoaded) {
               meetingsBloc.add(MeetingsEvent.update(meeting: state.meeting));
             } else if (state is MeetingUpdated) {
-              meetingsBloc.add(MeetingsEvent.update(meeting: state.meeting));
+              meetingsBloc.add(
+                MeetingsEvent.updateFields(
+                  id: state.id,
+                  title: state.title,
+                  description: state.description,
+                  county: state.county,
+                  constituency: state.constituency,
+                  ward: state.ward,
+                  participantsCount: state.participantsCount,
+                  isActive: state.isActive,
+                ),
+              );
             } else if (state is MeetingDeleted) {
               meetingsBloc.add(
                 MeetingsEvent.remove(meetingId: state.meetingId),

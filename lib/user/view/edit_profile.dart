@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/app/shared/camera/camera.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/utils/media_tools.dart';
+import 'package:democracy/app/shared/widgets/loader_overlay_widgets.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
@@ -11,6 +12,7 @@ import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 class EditProfile extends StatefulWidget {
@@ -27,7 +29,6 @@ class _EditProfileState extends State<EditProfile> {
   late String bio = widget.user.bio;
   File? image;
   File? coverPhoto;
-  bool waiting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -47,50 +48,149 @@ class _EditProfileState extends State<EditProfile> {
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: LoaderOverlay(
+        overlayWidgetBuilder: (_) {
+          return LoaderOverlayLoading(progress: '');
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Edit profile'),
+                OutlinedButton(
+                  onPressed:
+                      (image == null &&
+                          coverPhoto == null &&
+                          name == widget.user.name &&
+                          bio == widget.user.bio)
+                      ? null
+                      : () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => _SaveDialog(
+                              onYesPressed: () {
+                                context.loaderOverlay.show();
+                                context.read<UserDetailBloc>().add(
+                                  UserDetailEvent.patch(
+                                    user: widget.user,
+                                    name: name,
+                                    bio: bio,
+                                    imagePath: image?.path,
+                                    coverPhotoPath: coverPhoto?.path,
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                  child: Text('Save'),
+                ),
+              ],
+            ),
+          ),
+          body: Stack(
             children: [
-              Text('Edit profile'),
-              OutlinedButton(
-                onPressed:
-                    (image == null &&
-                        coverPhoto == null &&
-                        name == widget.user.name &&
-                        bio == widget.user.bio)
-                    ? null
-                    : () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => _SaveDialog(
-                            onYesPressed: () {
-                              setState(() {
-                                waiting = true;
-                              });
-                              context.read<UserDetailBloc>().add(
-                                UserDetailEvent.patch(
-                                  user: widget.user,
-                                  name: name,
-                                  bio: bio,
-                                  imagePath: image?.path,
-                                  coverPhotoPath: coverPhoto?.path,
-                                ),
+              Column(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return MediaDialog(
+                            onCameraPressed: () async {
+                              openCamera(
+                                context: context,
+                                recipient: null,
+                                textEditingController: null,
+                                onImageEditingComplete: (newImage) {
+                                  setState(() {
+                                    coverPhoto = newImage;
+                                  });
+                                },
                               );
                             },
+                            onGalleryPressed: () async {
+                              openGallery(
+                                context: context,
+                                maxAssets: 1,
+                                onMedia: (files) {
+                                  if (files.isNotEmpty) {
+                                    setState(() {
+                                      coverPhoto = files.first;
+                                    });
+                                  }
+                                },
+                              );
+                            },
+                          );
+                        },
+                      );
+                    },
+                    child: Stack(
+                      children: [
+                        Container(
+                          height: coverPhotoHeight,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: coverPhoto == null
+                                  ? CachedNetworkImageProvider(
+                                      widget.user.coverPhoto,
+                                      cacheKey: 'cover ${widget.user.id}',
+                                    )
+                                  : FileImage(coverPhoto!),
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                        );
-                      },
-                child: Text('Save'),
+                        ),
+                        Container(
+                          height: coverPhotoHeight,
+                          decoration: BoxDecoration(color: shaderColor),
+                        ),
+                        SizedBox(
+                          height: coverPhotoHeight,
+                          child: CameraAddButton(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 15, right: 15, top: 60),
+                    child: Column(
+                      children: [
+                        ProfileTextFormField(
+                          initialValue: widget.user.name,
+                          label: 'Name',
+                          onChanged: (value) {
+                            setState(() {
+                              name = value;
+                            });
+                          },
+                          maxLines: 2,
+                          maxLength: 50,
+                        ),
+                        SizedBox(height: 15),
+                        ProfileTextFormField(
+                          initialValue: widget.user.bio,
+                          label: 'Bio',
+                          onChanged: (value) {
+                            setState(() {
+                              bio = value;
+                            });
+                          },
+                          maxLines: 4,
+                          maxLength: 255,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-        body: Stack(
-          children: [
-            Column(
-              children: [
-                GestureDetector(
+              Positioned(
+                top: profilePicHeight,
+                left: 10,
+                child: GestureDetector(
                   onTap: () {
                     showDialog(
                       context: context,
@@ -103,7 +203,7 @@ class _EditProfileState extends State<EditProfile> {
                               textEditingController: null,
                               onImageEditingComplete: (newImage) {
                                 setState(() {
-                                  coverPhoto = newImage;
+                                  image = newImage;
                                 });
                               },
                             );
@@ -115,7 +215,7 @@ class _EditProfileState extends State<EditProfile> {
                               onMedia: (files) {
                                 if (files.isNotEmpty) {
                                   setState(() {
-                                    coverPhoto = files.first;
+                                    image = files.first;
                                   });
                                 }
                               },
@@ -125,141 +225,45 @@ class _EditProfileState extends State<EditProfile> {
                       },
                     );
                   },
-                  child: Stack(
-                    children: [
-                      Container(
-                        height: coverPhotoHeight,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: coverPhoto == null
-                                ? CachedNetworkImageProvider(
-                                    widget.user.coverPhoto,
-                                    cacheKey: 'cover ${widget.user.id}',
-                                  )
-                                : FileImage(coverPhoto!),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        height: coverPhotoHeight,
-                        decoration: BoxDecoration(color: shaderColor),
-                      ),
-                      SizedBox(
-                        height: coverPhotoHeight,
-                        child: CameraAddButton(),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 15, right: 15, top: 60),
-                  child: Column(
-                    children: [
-                      ProfileTextFormField(
-                        initialValue: widget.user.name,
-                        label: 'Name',
-                        onChanged: (value) {
-                          setState(() {
-                            name = value;
-                          });
-                        },
-                        maxLines: 2,
-                        maxLength: 50,
-                      ),
-                      SizedBox(height: 15),
-                      ProfileTextFormField(
-                        initialValue: widget.user.bio,
-                        label: 'Bio',
-                        onChanged: (value) {
-                          setState(() {
-                            bio = value;
-                          });
-                        },
-                        maxLines: 4,
-                        maxLength: 255,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Positioned(
-              top: profilePicHeight,
-              left: 10,
-              child: GestureDetector(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return MediaDialog(
-                        onCameraPressed: () async {
-                          openCamera(
-                            context: context,
-                            recipient: null,
-                            textEditingController: null,
-                            onImageEditingComplete: (newImage) {
-                              setState(() {
-                                image = newImage;
-                              });
-                            },
-                          );
-                        },
-                        onGalleryPressed: () async {
-                          openGallery(
-                            context: context,
-                            maxAssets: 1,
-                            onMedia: (files) {
-                              if (files.isNotEmpty) {
-                                setState(() {
-                                  image = files.first;
-                                });
-                              }
-                            },
-                          );
-                        },
-                      );
-                    },
-                  );
-                },
-                child: CircleAvatar(
-                  radius: 53,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   child: CircleAvatar(
-                    radius: 50,
-                    child: Stack(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: image == null
-                                  ? CachedNetworkImageProvider(
-                                      widget.user.image,
-                                      cacheKey: 'profile ${widget.user.id}',
-                                    )
-                                  : FileImage(image!),
-                              fit: BoxFit.cover,
+                    radius: 53,
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    child: CircleAvatar(
+                      radius: 50,
+                      child: Stack(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: image == null
+                                    ? CachedNetworkImageProvider(
+                                        widget.user.image,
+                                        cacheKey: 'profile ${widget.user.id}',
+                                      )
+                                    : FileImage(image!),
+                                fit: BoxFit.cover,
+                              ),
+                              borderRadius: BorderRadius.circular(100),
                             ),
-                            borderRadius: BorderRadius.circular(100),
                           ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: shaderColor,
-                            borderRadius: BorderRadius.circular(100),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: shaderColor,
+                              borderRadius: BorderRadius.circular(100),
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: profilePicHeight,
-                          child: CameraAddButton(),
-                        ),
-                      ],
+                          SizedBox(
+                            height: profilePicHeight,
+                            child: CameraAddButton(),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

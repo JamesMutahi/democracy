@@ -52,10 +52,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void initState() {
-    // Retrieve and subscribe to user
-    context.read<UserDetailBloc>().add(
-      UserDetailEvent.get(userId: widget.user.id),
-    );
+    // subscribe to user
+    _subscribe();
     if (!widget.user.isVisited) {
       final authBloc = context.read<AuthBloc>();
       final me = authBloc.state.user!;
@@ -67,6 +65,12 @@ class _ProfilePageState extends State<ProfilePage> {
     }
     super.initState();
     _scrollController.addListener(_handleScrolling);
+  }
+
+  void _subscribe() {
+    context.read<UserDetailBloc>().add(
+      UserDetailEvent.subscribe(userId: widget.user.id),
+    );
   }
 
   @override
@@ -94,7 +98,7 @@ class _ProfilePageState extends State<ProfilePage> {
       listeners: [
         BlocListener<UserDetailBloc, UserDetailState>(
           listener: (context, state) {
-            if (state is UserLoaded) {
+            if (state is UserSubscribed) {
               if (widget.user.id == state.user.id) {
                 setState(() {
                   user = state.user;
@@ -127,9 +131,7 @@ class _ProfilePageState extends State<ProfilePage> {
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
             if (state.status == WebsocketStatus.connected) {
-              context.read<UserDetailBloc>().add(
-                UserDetailEvent.get(userId: widget.user.id),
-              );
+              _subscribe();
             }
           },
         ),

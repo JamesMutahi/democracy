@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Meeting {
 
- int get id; User get host; String get title; String get description; County? get county; Constituency? get constituency; Ward? get ward; List<User> get speakers; List<User> get listeners;@JsonKey(name: 'listener_count') int get listenerCount;@JsonKey(name: 'is_active') bool get isActive;@JsonKey(name: 'start_time') DateTime get startTime;@JsonKey(name: 'end_time') DateTime get endTime;
+ int get id; User get host; String get title; String get description; County? get county; Constituency? get constituency; Ward? get ward; List<User> get speakers; List<User> get participants;@JsonKey(name: 'participants_count') int get participantsCount;@JsonKey(name: 'is_active') bool get isActive;@JsonKey(name: 'start_time') DateTime get startTime;@JsonKey(name: 'end_time') DateTime get endTime;
 /// Create a copy of Meeting
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $MeetingCopyWith<Meeting> get copyWith => _$MeetingCopyWithImpl<Meeting>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Meeting&&(identical(other.id, id) || other.id == id)&&(identical(other.host, host) || other.host == host)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.county, county) || other.county == county)&&(identical(other.constituency, constituency) || other.constituency == constituency)&&(identical(other.ward, ward) || other.ward == ward)&&const DeepCollectionEquality().equals(other.speakers, speakers)&&const DeepCollectionEquality().equals(other.listeners, listeners)&&(identical(other.listenerCount, listenerCount) || other.listenerCount == listenerCount)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Meeting&&(identical(other.id, id) || other.id == id)&&(identical(other.host, host) || other.host == host)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.county, county) || other.county == county)&&(identical(other.constituency, constituency) || other.constituency == constituency)&&(identical(other.ward, ward) || other.ward == ward)&&const DeepCollectionEquality().equals(other.speakers, speakers)&&const DeepCollectionEquality().equals(other.participants, participants)&&(identical(other.participantsCount, participantsCount) || other.participantsCount == participantsCount)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,host,title,description,county,constituency,ward,const DeepCollectionEquality().hash(speakers),const DeepCollectionEquality().hash(listeners),listenerCount,isActive,startTime,endTime);
+int get hashCode => Object.hash(runtimeType,id,host,title,description,county,constituency,ward,const DeepCollectionEquality().hash(speakers),const DeepCollectionEquality().hash(participants),participantsCount,isActive,startTime,endTime);
 
 @override
 String toString() {
-  return 'Meeting(id: $id, host: $host, title: $title, description: $description, county: $county, constituency: $constituency, ward: $ward, speakers: $speakers, listeners: $listeners, listenerCount: $listenerCount, isActive: $isActive, startTime: $startTime, endTime: $endTime)';
+  return 'Meeting(id: $id, host: $host, title: $title, description: $description, county: $county, constituency: $constituency, ward: $ward, speakers: $speakers, participants: $participants, participantsCount: $participantsCount, isActive: $isActive, startTime: $startTime, endTime: $endTime)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $MeetingCopyWith<$Res>  {
   factory $MeetingCopyWith(Meeting value, $Res Function(Meeting) _then) = _$MeetingCopyWithImpl;
 @useResult
 $Res call({
- int id, User host, String title, String description, County? county, Constituency? constituency, Ward? ward, List<User> speakers, List<User> listeners,@JsonKey(name: 'listener_count') int listenerCount,@JsonKey(name: 'is_active') bool isActive,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'end_time') DateTime endTime
+ int id, User host, String title, String description, County? county, Constituency? constituency, Ward? ward, List<User> speakers, List<User> participants,@JsonKey(name: 'participants_count') int participantsCount,@JsonKey(name: 'is_active') bool isActive,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'end_time') DateTime endTime
 });
 
 
@@ -65,7 +65,7 @@ class _$MeetingCopyWithImpl<$Res>
 
 /// Create a copy of Meeting
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? host = null,Object? title = null,Object? description = null,Object? county = freezed,Object? constituency = freezed,Object? ward = freezed,Object? speakers = null,Object? listeners = null,Object? listenerCount = null,Object? isActive = null,Object? startTime = null,Object? endTime = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? host = null,Object? title = null,Object? description = null,Object? county = freezed,Object? constituency = freezed,Object? ward = freezed,Object? speakers = null,Object? participants = null,Object? participantsCount = null,Object? isActive = null,Object? startTime = null,Object? endTime = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,host: null == host ? _self.host : host // ignore: cast_nullable_to_non_nullable
@@ -75,8 +75,8 @@ as String,county: freezed == county ? _self.county : county // ignore: cast_null
 as County?,constituency: freezed == constituency ? _self.constituency : constituency // ignore: cast_nullable_to_non_nullable
 as Constituency?,ward: freezed == ward ? _self.ward : ward // ignore: cast_nullable_to_non_nullable
 as Ward?,speakers: null == speakers ? _self.speakers : speakers // ignore: cast_nullable_to_non_nullable
-as List<User>,listeners: null == listeners ? _self.listeners : listeners // ignore: cast_nullable_to_non_nullable
-as List<User>,listenerCount: null == listenerCount ? _self.listenerCount : listenerCount // ignore: cast_nullable_to_non_nullable
+as List<User>,participants: null == participants ? _self.participants : participants // ignore: cast_nullable_to_non_nullable
+as List<User>,participantsCount: null == participantsCount ? _self.participantsCount : participantsCount // ignore: cast_nullable_to_non_nullable
 as int,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
 as bool,startTime: null == startTime ? _self.startTime : startTime // ignore: cast_nullable_to_non_nullable
 as DateTime,endTime: null == endTime ? _self.endTime : endTime // ignore: cast_nullable_to_non_nullable
@@ -207,10 +207,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  User host,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  List<User> speakers,  List<User> listeners, @JsonKey(name: 'listener_count')  int listenerCount, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  User host,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  List<User> speakers,  List<User> participants, @JsonKey(name: 'participants_count')  int participantsCount, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Meeting() when $default != null:
-return $default(_that.id,_that.host,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.speakers,_that.listeners,_that.listenerCount,_that.isActive,_that.startTime,_that.endTime);case _:
+return $default(_that.id,_that.host,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.speakers,_that.participants,_that.participantsCount,_that.isActive,_that.startTime,_that.endTime);case _:
   return orElse();
 
 }
@@ -228,10 +228,10 @@ return $default(_that.id,_that.host,_that.title,_that.description,_that.county,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  User host,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  List<User> speakers,  List<User> listeners, @JsonKey(name: 'listener_count')  int listenerCount, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  User host,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  List<User> speakers,  List<User> participants, @JsonKey(name: 'participants_count')  int participantsCount, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime)  $default,) {final _that = this;
 switch (_that) {
 case _Meeting():
-return $default(_that.id,_that.host,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.speakers,_that.listeners,_that.listenerCount,_that.isActive,_that.startTime,_that.endTime);}
+return $default(_that.id,_that.host,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.speakers,_that.participants,_that.participantsCount,_that.isActive,_that.startTime,_that.endTime);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -245,10 +245,10 @@ return $default(_that.id,_that.host,_that.title,_that.description,_that.county,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  User host,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  List<User> speakers,  List<User> listeners, @JsonKey(name: 'listener_count')  int listenerCount, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  User host,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  List<User> speakers,  List<User> participants, @JsonKey(name: 'participants_count')  int participantsCount, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime)?  $default,) {final _that = this;
 switch (_that) {
 case _Meeting() when $default != null:
-return $default(_that.id,_that.host,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.speakers,_that.listeners,_that.listenerCount,_that.isActive,_that.startTime,_that.endTime);case _:
+return $default(_that.id,_that.host,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.speakers,_that.participants,_that.participantsCount,_that.isActive,_that.startTime,_that.endTime);case _:
   return null;
 
 }
@@ -260,7 +260,7 @@ return $default(_that.id,_that.host,_that.title,_that.description,_that.county,_
 @JsonSerializable()
 
 class _Meeting implements Meeting {
-  const _Meeting({required this.id, required this.host, required this.title, required this.description, required this.county, required this.constituency, required this.ward, required final  List<User> speakers, required final  List<User> listeners, @JsonKey(name: 'listener_count') required this.listenerCount, @JsonKey(name: 'is_active') required this.isActive, @JsonKey(name: 'start_time') required this.startTime, @JsonKey(name: 'end_time') required this.endTime}): _speakers = speakers,_listeners = listeners;
+  const _Meeting({required this.id, required this.host, required this.title, required this.description, required this.county, required this.constituency, required this.ward, required final  List<User> speakers, required final  List<User> participants, @JsonKey(name: 'participants_count') required this.participantsCount, @JsonKey(name: 'is_active') required this.isActive, @JsonKey(name: 'start_time') required this.startTime, @JsonKey(name: 'end_time') required this.endTime}): _speakers = speakers,_participants = participants;
   factory _Meeting.fromJson(Map<String, dynamic> json) => _$MeetingFromJson(json);
 
 @override final  int id;
@@ -277,14 +277,14 @@ class _Meeting implements Meeting {
   return EqualUnmodifiableListView(_speakers);
 }
 
- final  List<User> _listeners;
-@override List<User> get listeners {
-  if (_listeners is EqualUnmodifiableListView) return _listeners;
+ final  List<User> _participants;
+@override List<User> get participants {
+  if (_participants is EqualUnmodifiableListView) return _participants;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_listeners);
+  return EqualUnmodifiableListView(_participants);
 }
 
-@override@JsonKey(name: 'listener_count') final  int listenerCount;
+@override@JsonKey(name: 'participants_count') final  int participantsCount;
 @override@JsonKey(name: 'is_active') final  bool isActive;
 @override@JsonKey(name: 'start_time') final  DateTime startTime;
 @override@JsonKey(name: 'end_time') final  DateTime endTime;
@@ -302,16 +302,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Meeting&&(identical(other.id, id) || other.id == id)&&(identical(other.host, host) || other.host == host)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.county, county) || other.county == county)&&(identical(other.constituency, constituency) || other.constituency == constituency)&&(identical(other.ward, ward) || other.ward == ward)&&const DeepCollectionEquality().equals(other._speakers, _speakers)&&const DeepCollectionEquality().equals(other._listeners, _listeners)&&(identical(other.listenerCount, listenerCount) || other.listenerCount == listenerCount)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Meeting&&(identical(other.id, id) || other.id == id)&&(identical(other.host, host) || other.host == host)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.county, county) || other.county == county)&&(identical(other.constituency, constituency) || other.constituency == constituency)&&(identical(other.ward, ward) || other.ward == ward)&&const DeepCollectionEquality().equals(other._speakers, _speakers)&&const DeepCollectionEquality().equals(other._participants, _participants)&&(identical(other.participantsCount, participantsCount) || other.participantsCount == participantsCount)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,host,title,description,county,constituency,ward,const DeepCollectionEquality().hash(_speakers),const DeepCollectionEquality().hash(_listeners),listenerCount,isActive,startTime,endTime);
+int get hashCode => Object.hash(runtimeType,id,host,title,description,county,constituency,ward,const DeepCollectionEquality().hash(_speakers),const DeepCollectionEquality().hash(_participants),participantsCount,isActive,startTime,endTime);
 
 @override
 String toString() {
-  return 'Meeting(id: $id, host: $host, title: $title, description: $description, county: $county, constituency: $constituency, ward: $ward, speakers: $speakers, listeners: $listeners, listenerCount: $listenerCount, isActive: $isActive, startTime: $startTime, endTime: $endTime)';
+  return 'Meeting(id: $id, host: $host, title: $title, description: $description, county: $county, constituency: $constituency, ward: $ward, speakers: $speakers, participants: $participants, participantsCount: $participantsCount, isActive: $isActive, startTime: $startTime, endTime: $endTime)';
 }
 
 
@@ -322,7 +322,7 @@ abstract mixin class _$MeetingCopyWith<$Res> implements $MeetingCopyWith<$Res> {
   factory _$MeetingCopyWith(_Meeting value, $Res Function(_Meeting) _then) = __$MeetingCopyWithImpl;
 @override @useResult
 $Res call({
- int id, User host, String title, String description, County? county, Constituency? constituency, Ward? ward, List<User> speakers, List<User> listeners,@JsonKey(name: 'listener_count') int listenerCount,@JsonKey(name: 'is_active') bool isActive,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'end_time') DateTime endTime
+ int id, User host, String title, String description, County? county, Constituency? constituency, Ward? ward, List<User> speakers, List<User> participants,@JsonKey(name: 'participants_count') int participantsCount,@JsonKey(name: 'is_active') bool isActive,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'end_time') DateTime endTime
 });
 
 
@@ -339,7 +339,7 @@ class __$MeetingCopyWithImpl<$Res>
 
 /// Create a copy of Meeting
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? host = null,Object? title = null,Object? description = null,Object? county = freezed,Object? constituency = freezed,Object? ward = freezed,Object? speakers = null,Object? listeners = null,Object? listenerCount = null,Object? isActive = null,Object? startTime = null,Object? endTime = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? host = null,Object? title = null,Object? description = null,Object? county = freezed,Object? constituency = freezed,Object? ward = freezed,Object? speakers = null,Object? participants = null,Object? participantsCount = null,Object? isActive = null,Object? startTime = null,Object? endTime = null,}) {
   return _then(_Meeting(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,host: null == host ? _self.host : host // ignore: cast_nullable_to_non_nullable
@@ -349,8 +349,8 @@ as String,county: freezed == county ? _self.county : county // ignore: cast_null
 as County?,constituency: freezed == constituency ? _self.constituency : constituency // ignore: cast_nullable_to_non_nullable
 as Constituency?,ward: freezed == ward ? _self.ward : ward // ignore: cast_nullable_to_non_nullable
 as Ward?,speakers: null == speakers ? _self._speakers : speakers // ignore: cast_nullable_to_non_nullable
-as List<User>,listeners: null == listeners ? _self._listeners : listeners // ignore: cast_nullable_to_non_nullable
-as List<User>,listenerCount: null == listenerCount ? _self.listenerCount : listenerCount // ignore: cast_nullable_to_non_nullable
+as List<User>,participants: null == participants ? _self._participants : participants // ignore: cast_nullable_to_non_nullable
+as List<User>,participantsCount: null == participantsCount ? _self.participantsCount : participantsCount // ignore: cast_nullable_to_non_nullable
 as int,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
 as bool,startTime: null == startTime ? _self.startTime : startTime // ignore: cast_nullable_to_non_nullable
 as DateTime,endTime: null == endTime ? _self.endTime : endTime // ignore: cast_nullable_to_non_nullable
