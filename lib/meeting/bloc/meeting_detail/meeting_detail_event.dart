@@ -14,6 +14,11 @@ sealed class MeetingDetailEvent with _$MeetingDetailEvent {
   const factory MeetingDetailEvent.deleted({
     required Map<String, dynamic> payload,
   }) = _Deleted;
+  const factory MeetingDetailEvent.create({
+    required String title,
+    required String description,
+    @Default(false) bool isLiveStream,
+  }) = _Create;
   const factory MeetingDetailEvent.retrieve({required Meeting meeting}) =
       _Retrieve;
   const factory MeetingDetailEvent.subscribe({required Meeting meeting}) =

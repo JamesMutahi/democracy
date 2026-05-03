@@ -247,6 +247,8 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
                   ),
                   child: ExtrasRow(
                     maxAssets: widget.maxAssets,
+                    showLiveButton: true,
+                    textEditingController: widget.controller,
                     onMedia: widget.onNewMedia,
                     onLocation: widget.onLocation,
                     onDocument: widget.onNewDocument,

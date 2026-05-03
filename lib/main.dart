@@ -60,10 +60,10 @@ void main() async {
   await dotenv.load(fileName: ".env");
 
   await SentryFlutter.init(
-    (options) {
+    (options) async {
       options.dsn = dotenv.env['SENTRY_DSN'];
       options.environment = kDebugMode ? 'development' : 'production';
-      options.release = 'democracy@${dotenv.env['APP_VERSION'] ?? '1.0.0'}';
+      options.release = await getRelease();
       options.tracesSampleRate = kDebugMode ? 1.0 : 0.2;
       options.profilesSampleRate = kDebugMode ? 1.0 : 0.0;
       options.beforeSend = (event, hint) {

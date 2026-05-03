@@ -1,4 +1,3 @@
-import 'package:democracy/app/core/json_converters.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/meeting/models/meeting.dart';
@@ -32,4 +31,19 @@ sealed class Notification with _$Notification {
 
   factory Notification.fromJson(Map<String, Object?> json) =>
       _$NotificationFromJson(json);
+}
+
+class ChatConverter implements JsonConverter<Chat?, Map<String, dynamic>?> {
+  const ChatConverter();
+
+  @override
+  Chat? fromJson(Map<String, dynamic>? json) {
+    if (json == null) return null;
+    return Chat.fromJson(json);
+  }
+
+  @override
+  Map<String, dynamic>? toJson(Chat? chat) {
+    return chat?.toJson();
+  }
 }

@@ -7,10 +7,12 @@ import 'package:democracy/app/shared/utils/media_tools.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/constitution/view/constitution.dart';
+import 'package:democracy/meeting/view/meeting_create.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -22,6 +24,7 @@ class ExtrasRow extends StatelessWidget {
     this.recipient,
     this.textEditingController,
     required this.maxAssets,
+    this.showLiveButton = false,
     required this.onMedia,
     required this.onImageEditingComplete,
     required this.onVideoEditingComplete,
@@ -34,6 +37,7 @@ class ExtrasRow extends StatelessWidget {
   final User? recipient;
   final TextEditingController? textEditingController;
   final int maxAssets;
+  final bool showLiveButton;
   final void Function(List<File>) onMedia;
   final void Function(File) onImageEditingComplete;
   final void Function(String) onVideoEditingComplete;
@@ -75,7 +79,7 @@ class ExtrasRow extends StatelessWidget {
                 }
               }
             },
-            iconData: Icons.photo_camera_outlined,
+            iconData: Symbols.photo_camera_rounded,
             text: 'Camera',
           ),
           _ExtraCard(
@@ -93,9 +97,25 @@ class ExtrasRow extends StatelessWidget {
                 }
               }
             },
-            iconData: Icons.photo_library_outlined,
+            iconData: Symbols.photo_library_rounded,
             text: 'Gallery',
           ),
+          if (showLiveButton)
+            _ExtraCard(
+              onTap: () async {
+                await controller?.reverse();
+                if (context.mounted) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MeetingCreate(
+                      textEditingController: textEditingController!,
+                    )),
+                  );
+                }
+              },
+              iconData: Symbols.videocam_rounded,
+              text: 'Live',
+            ),
           _ExtraCard(
             onTap: () async {
               await controller?.reverse();
@@ -112,13 +132,13 @@ class ExtrasRow extends StatelessWidget {
                 );
               }
             },
-            iconData: Icons.location_on_outlined,
+            iconData: Symbols.location_on_rounded,
             text: 'Location',
           ),
           _ExtraCard(
             onTap: () async {
               await controller?.reverse();
-              FilePickerResult? result = await FilePicker.platform.pickFiles(
+              FilePickerResult? result = await FilePicker.pickFiles(
                 type: FileType.custom,
                 allowedExtensions: ['pdf', 'doc', 'docx'],
               );
@@ -136,7 +156,7 @@ class ExtrasRow extends StatelessWidget {
                 onDocument(permanentFile);
               }
             },
-            iconData: Icons.file_present_outlined,
+            iconData: Symbols.file_present_rounded,
             text: 'Document',
           ),
           _ExtraCard(
@@ -151,7 +171,7 @@ class ExtrasRow extends StatelessWidget {
                 );
               }
             },
-            iconData: Icons.book_outlined,
+            iconData: Symbols.book_rounded,
             text: 'Constitution',
           ),
         ],
@@ -173,28 +193,14 @@ class _ExtraCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      splashColor: Colors.transparent,
-      highlightColor: Colors.transparent,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Icon(
-                iconData,
-                size: 30,
-                color: Theme.of(context).colorScheme.outline,
-              ),
-            ),
-          ),
-          Text(
-            text,
-            style: TextStyle(color: Theme.of(context).colorScheme.outline),
-          ),
-        ],
+    return IconButton.filledTonal(
+      onPressed: onTap,
+      tooltip: text,
+      padding: EdgeInsets.all(10),
+      icon: Icon(
+        iconData,
+        size: 25,
+        color: Theme.of(context).colorScheme.outline,
       ),
     );
   }

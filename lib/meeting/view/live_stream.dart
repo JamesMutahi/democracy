@@ -11,35 +11,33 @@ import 'package:democracy/meeting/models/meeting.dart';
 import 'package:democracy/meeting/view/widgets/meeting_pop_up_menu.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/user/view/widgets/profile_image.dart';
-import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class MeetingDetail extends StatefulWidget {
-  const MeetingDetail({super.key, required this.meeting});
+class LiveStream extends StatefulWidget {
+  const LiveStream({super.key, required this.meeting});
 
   final Meeting meeting;
 
   @override
-  State<MeetingDetail> createState() => _MeetingDetailState();
+  State<LiveStream> createState() => _LiveStreamState();
 }
 
-class _MeetingDetailState extends State<MeetingDetail> {
+class _LiveStreamState extends State<LiveStream> {
   late Meeting _meeting = widget.meeting;
   bool isDeleted = false;
   late RtcEngine _engine;
   bool _isJoined = false;
   bool _isMuted = false;
   late List<User> _participants = widget.meeting.participants.toList();
-  List<int> _speakers = [];
-  List<int> _muted = [];
-  int? _activeSpeaker; // TODO: Highlight
   late User me = context.read<AuthBloc>().state.user!;
   late final bool _isHost = me.id == _meeting.host.id;
-  bool _hasRaisedHand = false;
+
+  // Track remote users (especially the host for audience)
+  int? _hostUid; // or main broadcaster UID
+  List<int> _remoteUids = []; // For multi-broadcaster if needed
 
   @override
   void initState() {
@@ -47,19 +45,10 @@ class _MeetingDetailState extends State<MeetingDetail> {
     _initAgora();
   }
 
-  void _updateMuteList(int uid, bool isMuted) {
-    setState(() {
-      if (isMuted) {
-        _muted.add(uid);
-      } else {
-        _muted.remove(uid);
-      }
-    });
-  }
-
   Future<void> _initAgora() async {
-    await [Permission.microphone].request();
-
+    if (_meeting.host.id == me.id) {
+      await [Permission.microphone, Permission.camera].request();
+    }
     final service = AgoraService();
     _engine = await service.getEngine();
 
@@ -67,11 +56,19 @@ class _MeetingDetailState extends State<MeetingDetail> {
       RtcEngineEventHandler(
         onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
           setState(() => _isJoined = true);
+          if (_isHost) {
+            _engine.startPreview(); // Important for host
+          }
           context.read<MeetingDetailBloc>().add(
             MeetingDetailEvent.subscribe(meeting: widget.meeting),
           );
         },
         onUserJoined: (RtcConnection connection, int uid, int elapsed) {
+          setState(() {
+            _remoteUids.add(uid);
+            if (!_isHost) _hostUid = uid; // Assume first joined is host
+          });
+
           if (!_participants.any((p) => p.id == uid)) {
             context.read<UserDetailBloc>().add(
               UserDetailEvent.retrieve(userId: uid),
@@ -81,42 +78,24 @@ class _MeetingDetailState extends State<MeetingDetail> {
         onUserOffline:
             (RtcConnection connection, int uid, UserOfflineReasonType reason) {
               setState(() {
+                _remoteUids.remove(uid);
+                if (_hostUid == uid) _hostUid = null;
                 _participants.removeWhere((p) => p.id == uid);
-                _muted.remove(uid); // Clean up the mute list
               });
-            },
-        onActiveSpeaker: (RtcConnection connection, int uid) {
-          setState(() => _activeSpeaker = uid);
-        },
-        onUserMuteAudio: (RtcConnection connection, int uid, bool muted) {
-          _updateMuteList(uid, muted);
-        },
-        onRemoteAudioStateChanged:
-            (
-              RtcConnection connection,
-              int uid,
-              RemoteAudioState state,
-              RemoteAudioStateReason reason,
-              int elapsed,
-            ) {
-              // Catching states that onUserMuteAudio might miss
-              if (reason ==
-                  RemoteAudioStateReason.remoteAudioReasonRemoteMuted) {
-                _updateMuteList(uid, true);
-              } else if (reason ==
-                  RemoteAudioStateReason.remoteAudioReasonRemoteUnmuted) {
-                _updateMuteList(uid, false);
-              }
             },
       ),
     );
 
-    await _engine.enableAudio();
-    await _engine.enableAudioVolumeIndication(
-      interval: 200,
-      smooth: 3,
-      reportVad: true,
+    await _engine.setVideoEncoderConfiguration(
+      VideoEncoderConfiguration(
+        dimensions: VideoDimensions(width: 1280, height: 720),
+        frameRate: 24,
+        bitrate: 1800,
+        orientationMode: OrientationMode.orientationModeFixedPortrait,
+        degradationPreference: DegradationPreference.maintainQuality,
+      ),
     );
+
     await _engine.setChannelProfile(
       ChannelProfileType.channelProfileLiveBroadcasting,
     );
@@ -125,13 +104,10 @@ class _MeetingDetailState extends State<MeetingDetail> {
           ? ClientRoleType.clientRoleBroadcaster
           : ClientRoleType.clientRoleAudience,
     );
+
     if (mounted) {
       context.read<MeetingJoinBloc>().add(
-        MeetingJoinEvent.join(
-          engine: _engine,
-          meeting: _meeting,
-          user: context.read<AuthBloc>().state.user!,
-        ),
+        MeetingJoinEvent.join(engine: _engine, meeting: _meeting, user: me),
       );
     }
   }
@@ -157,18 +133,6 @@ class _MeetingDetailState extends State<MeetingDetail> {
     showDialog(
       context: context,
       builder: (context) => ExitMeetingDialog(onYesPressed: _leaveChannel),
-    );
-  }
-
-  // Raise Hand Request (send via your Django Channels or Agora RTM)
-  void _toggleRaiseHand() {
-    setState(() => _hasRaisedHand = !_hasRaisedHand);
-    // TODO: Send request to host via WebSocket / Django Channels
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(_hasRaisedHand ? "Hand raised ✓" : "Hand lowered"),
-      ),
     );
   }
 
@@ -260,111 +224,81 @@ class _MeetingDetailState extends State<MeetingDetail> {
               ? Center(child: Text('This meeting has been closed'))
               : !_isJoined
               ? BottomLoader()
-              : _buildParticipantsList(),
+              : _buildLiveStream(),
           bottomNavigationBar: !_isJoined
               ? SizedBox.shrink()
-              : _buildControls(),
+              : _buildHostControls(),
         ),
       ),
     );
   }
 
-  Widget _buildParticipantsList() {
-    return GridView.builder(
-      padding: const EdgeInsets.all(15),
-      itemCount: _participants.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
-        crossAxisSpacing: 4,
-        mainAxisSpacing: 4,
-        childAspectRatio: 0.6,
-      ),
-      itemBuilder: (context, index) {
-        final user = _participants.toList()[index];
-        bool isHost = user.id == _meeting.host.id;
-        bool isSpeaker = _meeting.speakers.any((s) => s.id == user.id);
-        bool isMuted = _muted.contains(user.id);
-        bool isSpeaking = _activeSpeaker == user.id && !isMuted;
-        return Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircleAvatar(
-                radius: 42,
-                backgroundColor: isSpeaking ? Colors.blue : Colors.transparent,
-                child: ProfileImage(user: user, radius: 40),
-              ),
-              SizedBox(height: 5),
-              ProfileName(user: user),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (user.id == _meeting.host.id)
-                    Container(
-                      margin: EdgeInsets.only(right: 2),
-                      child: Icon(
-                        isMuted ? Icons.mic_off_rounded : Icons.mic_rounded,
-                        color: isMuted ? Colors.red : Colors.blue,
-                        size: 17,
-                      ),
-                    ),
-                  Text(
-                    isHost
-                        ? "Host"
-                        : isSpeaker
-                        ? "Speaker"
-                        : "Listener",
-                    style: TextStyle(color: Theme.of(context).disabledColor),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
+  Widget _buildLiveStream() {
+    return Stack(
+      children: [
+        // Main video area
+        Center(
+          child: _isHost
+              ? _localVideoView() // Host sees their own preview
+              : _remoteVideoView(), // Audience sees host
+        ),
+      ],
     );
   }
 
-  Widget _buildControls() {
+  Widget _localVideoView() {
+    return AgoraVideoView(
+      controller: VideoViewController(
+        rtcEngine: _engine,
+        canvas: const VideoCanvas(uid: 0),
+      ),
+    );
+  }
+
+  Widget _remoteVideoView() {
+    if (_hostUid != null) {
+      return AgoraVideoView(
+        controller: VideoViewController.remote(
+          rtcEngine: _engine,
+          canvas: VideoCanvas(uid: _hostUid!),
+          connection: RtcConnection(channelId: _meeting.id.toString()),
+        ),
+      );
+    }
+    return const Center(
+      child: Text('Waiting for host...', style: TextStyle(color: Colors.white)),
+    );
+  }
+
+  Widget _buildHostControls() {
     return BottomAppBar(
-      height: 70,
-      padding: EdgeInsets.symmetric(horizontal: 15),
+      height: 80,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          // Mute Button
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton.filledTonal(
-                color: _isMuted ? Colors.red : null,
-                iconSize: 20,
-                icon: Icon(_isMuted ? Icons.mic_off : Icons.mic),
-                onPressed: () async {
-                  setState(() => _isMuted = !_isMuted);
-                  await _engine.muteLocalAudioStream(_isMuted);
-                },
-              ),
-              Text(
-                _isMuted ? ' Mic is off ' : ' Mic is on  ',
-                style: Theme.of(context).textTheme.labelMedium,
-              ),
-            ],
+          // Mute
+          IconButton(
+            icon: Icon(_isMuted ? Icons.mic_off : Icons.mic),
+            onPressed: () async {
+              setState(() => _isMuted = !_isMuted);
+              await _engine.muteLocalAudioStream(_isMuted);
+            },
           ),
-          if (!_isHost && !_meeting.speakers.contains(me))
-            Row(
-              children: [
-                IconButton.filledTonal(
-                  iconSize: 20,
-                  icon: Icon(
-                    _hasRaisedHand ? Icons.pan_tool : Icons.pan_tool_outlined,
-                  ),
-                  onPressed: _toggleRaiseHand,
-                ),
-              ],
+          // Camera switch (host only)
+          if (_isHost)
+            IconButton(
+              icon: const Icon(Icons.flip_camera_ios),
+              onPressed: () => _engine.switchCamera(),
             ),
+          // End stream (host)
+          if (_isHost)
+            IconButton(
+              icon: const Icon(Icons.call_end, color: Colors.red),
+              onPressed: () {
+                /* End meeting via bloc + leave */
+              },
+            ),
+          // Leave for audience
         ],
       ),
     );

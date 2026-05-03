@@ -1,5 +1,6 @@
 import 'package:democracy/app/bloc/services/token_storage.dart';
 import 'package:democracy/objectbox.g.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart' as p;
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -10,6 +11,16 @@ import 'package:talker/talker.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger_settings.dart';
 import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 import 'package:talker_dio_logger/talker_dio_logger_settings.dart';
+
+Future<String> getRelease() async {
+  final info = await PackageInfo.fromPlatform();
+
+  String appName = info.appName;
+  String version = info.version;
+  String buildNumber = info.buildNumber;
+
+  return '$appName@$version+$buildNumber';
+}
 
 class MyTalkerObserver extends TalkerObserver {
   @override

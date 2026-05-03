@@ -40,6 +40,7 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
     on<_Loaded>((event, emit) => _onLoaded(event, emit));
     on<_Updated>((event, emit) => _onUpdated(event, emit));
     on<_Deleted>((event, emit) => _onDeleted(event, emit));
+    on<_Create>((event, emit) => _onCreate(event, emit));
     on<_Retrieve>((event, emit) => _onRetrieve(event, emit));
     on<_Subscribe>((event, emit) => _onSubscribe(event, emit));
     on<_Leave>((event, emit) => _onLeave(event, emit));
@@ -98,6 +99,28 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
     } else {
       emit(MeetingDetailFailure(error: event.payload['errors'].toString()));
     }
+  }
+
+  void _onCreate(_Create event, Emitter<MeetingDetailState> emit) {
+    emit(MeetingDetailLoading());
+    if (!webSocketService.isConnected) {
+      emit(MeetingDetailFailure(error: serverError));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        "action": 'create',
+        'request_id': requestId,
+        'data': {
+          'title': event.title,
+          'description': event.description,
+          'is_live_stream': event.isLiveStream,
+        },
+      },
+    };
+    webSocketService.send(message);
   }
 
   void _onRetrieve(_Retrieve event, Emitter<MeetingDetailState> emit) {

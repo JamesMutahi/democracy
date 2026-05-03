@@ -5,6 +5,7 @@ import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/meeting/bloc/meeting_detail/meeting_detail_bloc.dart';
 import 'package:democracy/meeting/models/meeting.dart';
 import 'package:democracy/meeting/view/meeting_detail.dart';
+import 'package:democracy/meeting/view/widgets/live_tile.dart';
 import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
@@ -24,99 +25,105 @@ class MeetingTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        showModalBottomSheet<void>(
-          context: context,
-          shape: const BeveledRectangleBorder(),
-          builder: (BuildContext context) {
-            return MeetingBottomSheet(meeting: meeting);
-          },
-        );
-      },
-      child: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(12)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
+    return meeting.isLiveStream
+        ? LivePostTile(meeting: meeting)
+        : GestureDetector(
+            onTap: () {
+              showModalBottomSheet<void>(
+                context: context,
+                shape: const BeveledRectangleBorder(),
+                builder: (BuildContext context) {
+                  return MeetingBottomSheet(meeting: meeting);
+                },
+              );
+            },
+            child: Stack(
               children: [
                 Container(
-                  padding: EdgeInsets.only(
-                    left: 15,
-                    right: 15,
-                    top: 15,
-                    bottom: 10,
-                  ),
                   decoration: BoxDecoration(
-                    color: isDependency
-                        ? Colors.transparent
-                        : Theme.of(context).colorScheme.tertiaryContainer,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(12),
-                      topRight: Radius.circular(12),
-                    ),
+                    borderRadius: const BorderRadius.all(Radius.circular(12)),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      if (meeting.county != null)
-                        Container(
-                          margin: EdgeInsets.only(bottom: 10),
-                          child: GeoChipRow(
-                            county: meeting.county,
-                            constituency: meeting.constituency,
-                            ward: meeting.ward,
+                      Container(
+                        padding: EdgeInsets.only(
+                          left: 15,
+                          right: 15,
+                          top: 15,
+                          bottom: 10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isDependency
+                              ? Colors.transparent
+                              : Theme.of(context).colorScheme.tertiaryContainer,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(12),
+                            topRight: Radius.circular(12),
                           ),
                         ),
-                      Row(
-                        children: [
-                          Icon(Icons.mic_rounded),
-                          SizedBox(width: 5),
-                          Text(
-                            'LIVE',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (meeting.county != null)
+                              Container(
+                                margin: EdgeInsets.only(bottom: 10),
+                                child: GeoChipRow(
+                                  county: meeting.county,
+                                  constituency: meeting.constituency,
+                                  ward: meeting.ward,
+                                ),
+                              ),
+                            Row(
+                              children: [
+                                Icon(Icons.mic_rounded),
+                                SizedBox(width: 5),
+                                Text(
+                                  'LIVE',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              meeting.title,
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                            if (!isDependency) SizedBox(height: 10),
+                            if (!isDependency) ListenersRow(meeting: meeting),
+                          ],
+                        ),
+                      ),
+                      if (!isDependency)
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 10,
                           ),
-                        ],
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        meeting.title,
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      if (!isDependency) SizedBox(height: 10),
-                      if (!isDependency) ListenersRow(meeting: meeting),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .tertiaryContainer
+                                .withValues(alpha: 0.6),
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(12),
+                              bottomRight: Radius.circular(12),
+                            ),
+                          ),
+                          child: _HostInfo(meeting: meeting),
+                        ),
                     ],
                   ),
                 ),
                 if (!isDependency)
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.tertiaryContainer.withValues(alpha: 0.6),
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(12),
-                        bottomRight: Radius.circular(12),
-                      ),
-                    ),
-                    child: _HostInfo(meeting: meeting),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: MeetingPopUp(meeting: meeting),
                   ),
               ],
             ),
-          ),
-          if (!isDependency)
-            Align(
-              alignment: Alignment.topRight,
-              child: MeetingPopUp(meeting: meeting),
-            ),
-        ],
-      ),
-    );
+          );
   }
 }
 
@@ -271,7 +278,7 @@ class ListenersRow extends StatelessWidget {
                 child: CircleAvatar(
                   radius: 17,
                   backgroundColor: Theme.of(context).cardColor,
-                  child: ProfileImage(user: user, radius: 15,),
+                  child: ProfileImage(user: user, radius: 15),
                 ),
               );
             }),

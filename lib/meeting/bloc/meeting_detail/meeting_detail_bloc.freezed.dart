@@ -55,14 +55,15 @@ extension MeetingDetailEventPatterns on MeetingDetailEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Loaded value)?  loaded,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Retrieve value)?  retrieve,TResult Function( _Subscribe value)?  subscribe,TResult Function( _Leave value)?  leave,TResult Function( _Left value)?  left,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Loaded value)?  loaded,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Create value)?  create,TResult Function( _Retrieve value)?  retrieve,TResult Function( _Subscribe value)?  subscribe,TResult Function( _Leave value)?  leave,TResult Function( _Left value)?  left,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that);case _Loaded() when loaded != null:
 return loaded(_that);case _Updated() when updated != null:
 return updated(_that);case _Deleted() when deleted != null:
-return deleted(_that);case _Retrieve() when retrieve != null:
+return deleted(_that);case _Create() when create != null:
+return create(_that);case _Retrieve() when retrieve != null:
 return retrieve(_that);case _Subscribe() when subscribe != null:
 return subscribe(_that);case _Leave() when leave != null:
 return leave(_that);case _Left() when left != null:
@@ -84,14 +85,15 @@ return left(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Loaded value)  loaded,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Retrieve value)  retrieve,required TResult Function( _Subscribe value)  subscribe,required TResult Function( _Leave value)  leave,required TResult Function( _Left value)  left,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Loaded value)  loaded,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Create value)  create,required TResult Function( _Retrieve value)  retrieve,required TResult Function( _Subscribe value)  subscribe,required TResult Function( _Leave value)  leave,required TResult Function( _Left value)  left,}){
 final _that = this;
 switch (_that) {
 case _Created():
 return created(_that);case _Loaded():
 return loaded(_that);case _Updated():
 return updated(_that);case _Deleted():
-return deleted(_that);case _Retrieve():
+return deleted(_that);case _Create():
+return create(_that);case _Retrieve():
 return retrieve(_that);case _Subscribe():
 return subscribe(_that);case _Leave():
 return leave(_that);case _Left():
@@ -109,14 +111,15 @@ return left(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Retrieve value)?  retrieve,TResult? Function( _Subscribe value)?  subscribe,TResult? Function( _Leave value)?  leave,TResult? Function( _Left value)?  left,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Create value)?  create,TResult? Function( _Retrieve value)?  retrieve,TResult? Function( _Subscribe value)?  subscribe,TResult? Function( _Leave value)?  leave,TResult? Function( _Left value)?  left,}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that);case _Loaded() when loaded != null:
 return loaded(_that);case _Updated() when updated != null:
 return updated(_that);case _Deleted() when deleted != null:
-return deleted(_that);case _Retrieve() when retrieve != null:
+return deleted(_that);case _Create() when create != null:
+return create(_that);case _Retrieve() when retrieve != null:
 return retrieve(_that);case _Subscribe() when subscribe != null:
 return subscribe(_that);case _Leave() when leave != null:
 return leave(_that);case _Left() when left != null:
@@ -137,13 +140,14 @@ return left(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Meeting meeting)?  retrieve,TResult Function( Meeting meeting)?  subscribe,TResult Function( Meeting meeting)?  leave,TResult Function( Map<String, dynamic> payload)?  left,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( String title,  String description,  bool isLiveStream)?  create,TResult Function( Meeting meeting)?  retrieve,TResult Function( Meeting meeting)?  subscribe,TResult Function( Meeting meeting)?  leave,TResult Function( Map<String, dynamic> payload)?  left,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
 return loaded(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
-return deleted(_that.payload);case _Retrieve() when retrieve != null:
+return deleted(_that.payload);case _Create() when create != null:
+return create(_that.title,_that.description,_that.isLiveStream);case _Retrieve() when retrieve != null:
 return retrieve(_that.meeting);case _Subscribe() when subscribe != null:
 return subscribe(_that.meeting);case _Leave() when leave != null:
 return leave(_that.meeting);case _Left() when left != null:
@@ -165,13 +169,14 @@ return left(_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Meeting meeting)  retrieve,required TResult Function( Meeting meeting)  subscribe,required TResult Function( Meeting meeting)  leave,required TResult Function( Map<String, dynamic> payload)  left,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( String title,  String description,  bool isLiveStream)  create,required TResult Function( Meeting meeting)  retrieve,required TResult Function( Meeting meeting)  subscribe,required TResult Function( Meeting meeting)  leave,required TResult Function( Map<String, dynamic> payload)  left,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Loaded():
 return loaded(_that.payload);case _Updated():
 return updated(_that.payload);case _Deleted():
-return deleted(_that.payload);case _Retrieve():
+return deleted(_that.payload);case _Create():
+return create(_that.title,_that.description,_that.isLiveStream);case _Retrieve():
 return retrieve(_that.meeting);case _Subscribe():
 return subscribe(_that.meeting);case _Leave():
 return leave(_that.meeting);case _Left():
@@ -189,13 +194,14 @@ return left(_that.payload);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Meeting meeting)?  retrieve,TResult? Function( Meeting meeting)?  subscribe,TResult? Function( Meeting meeting)?  leave,TResult? Function( Map<String, dynamic> payload)?  left,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( String title,  String description,  bool isLiveStream)?  create,TResult? Function( Meeting meeting)?  retrieve,TResult? Function( Meeting meeting)?  subscribe,TResult? Function( Meeting meeting)?  leave,TResult? Function( Map<String, dynamic> payload)?  left,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
 return loaded(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
-return deleted(_that.payload);case _Retrieve() when retrieve != null:
+return deleted(_that.payload);case _Create() when create != null:
+return create(_that.title,_that.description,_that.isLiveStream);case _Retrieve() when retrieve != null:
 return retrieve(_that.meeting);case _Subscribe() when subscribe != null:
 return subscribe(_that.meeting);case _Leave() when leave != null:
 return leave(_that.meeting);case _Left() when left != null:
@@ -489,6 +495,76 @@ class __$DeletedCopyWithImpl<$Res>
   return _then(_Deleted(
 payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _Create implements MeetingDetailEvent {
+  const _Create({required this.title, required this.description, this.isLiveStream = false});
+  
+
+ final  String title;
+ final  String description;
+@JsonKey() final  bool isLiveStream;
+
+/// Create a copy of MeetingDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CreateCopyWith<_Create> get copyWith => __$CreateCopyWithImpl<_Create>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Create&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.isLiveStream, isLiveStream) || other.isLiveStream == isLiveStream));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,title,description,isLiveStream);
+
+@override
+String toString() {
+  return 'MeetingDetailEvent.create(title: $title, description: $description, isLiveStream: $isLiveStream)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CreateCopyWith<$Res> implements $MeetingDetailEventCopyWith<$Res> {
+  factory _$CreateCopyWith(_Create value, $Res Function(_Create) _then) = __$CreateCopyWithImpl;
+@useResult
+$Res call({
+ String title, String description, bool isLiveStream
+});
+
+
+
+
+}
+/// @nodoc
+class __$CreateCopyWithImpl<$Res>
+    implements _$CreateCopyWith<$Res> {
+  __$CreateCopyWithImpl(this._self, this._then);
+
+  final _Create _self;
+  final $Res Function(_Create) _then;
+
+/// Create a copy of MeetingDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? title = null,Object? description = null,Object? isLiveStream = null,}) {
+  return _then(_Create(
+title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String,isLiveStream: null == isLiveStream ? _self.isLiveStream : isLiveStream // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
