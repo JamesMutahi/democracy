@@ -1,12 +1,12 @@
 import 'dart:async';
 
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:bloc/bloc.dart';
+import 'package:democracy/app/bloc/repository/api/api_repository.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
-import 'package:democracy/geo/models/constituency.dart';
-import 'package:democracy/geo/models/county.dart';
-import 'package:democracy/geo/models/ward.dart';
 import 'package:democracy/meeting/models/meeting.dart';
+import 'package:democracy/user/models/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'meeting_detail_event.dart';
@@ -17,8 +17,10 @@ const String stream = 'meetings';
 const String requestId = 'meetings';
 
 class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
-  MeetingDetailBloc({required this.webSocketService})
-    : super(const MeetingDetailState.initial()) {
+  MeetingDetailBloc({
+    required this.webSocketService,
+    required this.apiRepository,
+  }) : super(const MeetingDetailState.initial()) {
     _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
         switch (message['payload']['action']) {
@@ -31,8 +33,6 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
             add(_Updated(payload: message['payload']));
           case 'delete':
             add(_Deleted(payload: message['payload']));
-          case 'leave':
-            add(_Left(payload: message['payload']));
         }
       }
     });
@@ -41,10 +41,10 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
     on<_Updated>((event, emit) => _onUpdated(event, emit));
     on<_Deleted>((event, emit) => _onDeleted(event, emit));
     on<_Create>((event, emit) => _onCreate(event, emit));
+    on<_Join>((event, emit) async => await _onJoin(event, emit));
     on<_Retrieve>((event, emit) => _onRetrieve(event, emit));
     on<_Subscribe>((event, emit) => _onSubscribe(event, emit));
-    on<_Leave>((event, emit) => _onLeave(event, emit));
-    on<_Left>((event, emit) => _onLeft(event, emit));
+    on<_Unsubscribe>((event, emit) => _onUnsubscribe(event, emit));
   }
 
   void _onCreated(_Created event, Emitter<MeetingDetailState> emit) {
@@ -70,23 +70,8 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
   void _onUpdated(_Updated event, Emitter<MeetingDetailState> emit) {
     emit(MeetingDetailLoading());
     if (event.payload['response_status'] == 200) {
-      final data = event.payload['data'];
-      emit(
-        MeetingUpdated(
-          id: event.payload['pk'],
-          title: data['title'],
-          description: data['description'],
-          county: data['county'] == null
-              ? null
-              : County.fromJson(data['county']),
-          constituency: data['constituency'] == null
-              ? null
-              : Constituency.fromJson(data['constituency']),
-          ward: data['ward'] == null ? null : Ward.fromJson(data['ward']),
-          participantsCount: data['participants_count'],
-          isActive: data['is_active'],
-        ),
-      );
+      Meeting meeting = Meeting.fromJson(event.payload['data']);
+      emit(MeetingUpdated(meeting: meeting));
     } else {
       emit(MeetingDetailFailure(error: event.payload['errors'].toString()));
     }
@@ -121,6 +106,26 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
       },
     };
     webSocketService.send(message);
+  }
+
+  Future<void> _onJoin(_Join event, Emitter<MeetingDetailState> emit) async {
+    emit(MeetingDetailLoading());
+    try {
+      final data = await apiRepository.getMeetingToken(meeting: event.meeting);
+      await event.engine.joinChannel(
+        token: data['token'],
+        channelId: event.meeting.id.toString(),
+        uid: event.user.id,
+        options: ChannelMediaOptions(
+          clientRoleType: event.meeting.id == event.user.id
+              ? ClientRoleType.clientRoleBroadcaster
+              : ClientRoleType.clientRoleAudience,
+        ),
+      );
+      emit(MeetingJoined(meeting: event.meeting));
+    } catch (e) {
+      emit(MeetingDetailFailure(error: e.toString()));
+    }
   }
 
   void _onRetrieve(_Retrieve event, Emitter<MeetingDetailState> emit) {
@@ -159,7 +164,7 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
     webSocketService.send(message);
   }
 
-  void _onLeave(_Leave event, Emitter<MeetingDetailState> emit) {
+  void _onUnsubscribe(_Unsubscribe event, Emitter<MeetingDetailState> emit) {
     emit(MeetingDetailLoading());
     if (!webSocketService.isConnected) {
       emit(MeetingDetailFailure(error: serverError));
@@ -169,21 +174,12 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
-        "action": 'leave',
+        "action": 'unsubscribe',
         'request_id': requestId,
         'pk': event.meeting.id,
       },
     };
     webSocketService.send(message);
-  }
-
-  void _onLeft(_Left event, Emitter<MeetingDetailState> emit) {
-    emit(MeetingDetailLoading());
-    if (event.payload['response_status'] == 200) {
-      emit(MeetingLeft(meetingId: event.payload['data']['pk']));
-    } else {
-      emit(MeetingDetailFailure(error: event.payload['errors'].toString()));
-    }
   }
 
   @override
@@ -194,4 +190,5 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
 
   late StreamSubscription _subscription;
   final WebSocketService webSocketService;
+  final APIRepository apiRepository;
 }

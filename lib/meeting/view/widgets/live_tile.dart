@@ -1,8 +1,12 @@
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:democracy/app/bloc/services/agora_service.dart';
+import 'package:democracy/app/core/app_logger.dart';
+import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/meeting/bloc/meeting_detail/meeting_detail_bloc.dart';
 import 'package:democracy/meeting/models/meeting.dart';
 import 'package:democracy/meeting/view/live_stream.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LivePostTile extends StatefulWidget {
   final Meeting meeting;
@@ -18,40 +22,53 @@ class _LivePostTileState extends State<LivePostTile> {
   bool _isJoined = false;
   int? _hostUid;
   bool _isPlaying = false;
+  late int _count = widget.meeting.participantsCount;
 
   Future<void> _startPreview() async {
     try {
       await AgoraService().joinMiniStream(
         meeting: widget.meeting,
         onEngineReady: (engine) {
-          _engine = engine;
-          setState(() => _isJoined = true);
+          setState(() {
+            _engine = engine;
+          });
 
           engine.registerEventHandler(
             RtcEngineEventHandler(
-              onUserJoined: (connection, uid, elapsed) {
-                setState(() => _hostUid = uid);
+              onRtcStats: (connection, stats) {
+                setState(() => _count = stats.userCount ?? 0);
               },
+              onUserJoined: (connection, uid, elapsed) {
+                if (widget.meeting.host.id == uid) {
+                  setState(() => _hostUid = uid);
+                }
+              },
+              onLeaveChannel: (connection, stats) {
+                setState(() => _count = stats.userCount ?? 0);
+              },
+            ),
+          );
+          context.read<MeetingDetailBloc>().add(
+            MeetingDetailEvent.join(
+              engine: engine,
+              meeting: widget.meeting,
+              user: context.read<AuthBloc>().state.user!,
             ),
           );
         },
       );
     } catch (e) {
-      debugPrint("Mini stream error: $e");
+      AppLogger.error(e.toString());
     }
   }
 
   @override
   void dispose() async {
-    await _leaveChannel();
+    _leaveChannel();
     super.dispose();
   }
 
   Future<void> _leaveChannel() async {
-    setState(() {
-      _isPlaying = false;
-      _isJoined = false;
-    });
     await AgoraService().leaveCurrent();
     await AgoraService().dispose();
   }
@@ -60,6 +77,10 @@ class _LivePostTileState extends State<LivePostTile> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
+        setState(() {
+          _isPlaying = false;
+          _isJoined = false;
+        });
         await _leaveChannel();
         if (context.mounted) {
           Navigator.push(
@@ -132,7 +153,7 @@ class _LivePostTileState extends State<LivePostTile> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  '${widget.meeting.participantsCount} watching',
+                  '$_count watching',
                   style: const TextStyle(color: Colors.white, fontSize: 13),
                 ),
               ),

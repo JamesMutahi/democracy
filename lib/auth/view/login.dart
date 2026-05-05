@@ -73,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 10),
               Text(
-                'Digital and direct democracy',
+                'Road to digital and direct democracy',
                 style: TextStyle(
                   fontSize: 14,
                   color: Theme.of(context).colorScheme.outline,

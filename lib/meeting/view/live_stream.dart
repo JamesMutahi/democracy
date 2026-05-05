@@ -6,7 +6,6 @@ import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/meeting/bloc/meeting_detail/meeting_detail_bloc.dart';
-import 'package:democracy/meeting/bloc/meeting_join/meeting_join_bloc.dart';
 import 'package:democracy/meeting/models/meeting.dart';
 import 'package:democracy/meeting/view/widgets/meeting_pop_up_menu.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
@@ -31,13 +30,13 @@ class _LiveStreamState extends State<LiveStream> {
   late RtcEngine _engine;
   bool _isJoined = false;
   bool _isMuted = false;
-  late List<User> _participants = widget.meeting.participants.toList();
   late User me = context.read<AuthBloc>().state.user!;
   late final bool _isHost = me.id == _meeting.host.id;
 
   // Track remote users (especially the host for audience)
   int? _hostUid; // or main broadcaster UID
   List<int> _remoteUids = []; // For multi-broadcaster if needed
+  int? _count;
 
   @override
   void initState() {
@@ -49,67 +48,56 @@ class _LiveStreamState extends State<LiveStream> {
     if (_meeting.host.id == me.id) {
       await [Permission.microphone, Permission.camera].request();
     }
-    final service = AgoraService();
-    _engine = await service.getEngine();
+    await AgoraService().joinLiveStream(
+      isHost: _isHost,
+      meeting: _meeting,
+      onEngineReady: (engine) {
+        setState(() {
+          _engine = engine;
+        });
 
-    _engine.registerEventHandler(
-      RtcEngineEventHandler(
-        onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
-          setState(() => _isJoined = true);
-          if (_isHost) {
-            _engine.startPreview(); // Important for host
-          }
-          context.read<MeetingDetailBloc>().add(
-            MeetingDetailEvent.subscribe(meeting: widget.meeting),
-          );
-        },
-        onUserJoined: (RtcConnection connection, int uid, int elapsed) {
-          setState(() {
-            _remoteUids.add(uid);
-            if (!_isHost) _hostUid = uid; // Assume first joined is host
-          });
-
-          if (!_participants.any((p) => p.id == uid)) {
-            context.read<UserDetailBloc>().add(
-              UserDetailEvent.retrieve(userId: uid),
-            );
-          }
-        },
-        onUserOffline:
-            (RtcConnection connection, int uid, UserOfflineReasonType reason) {
+        _engine.registerEventHandler(
+          RtcEngineEventHandler(
+            onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
+              setState(() => _isJoined = true);
+              if (_isHost) {
+                _engine.startPreview(); // Important for host
+              }
+              context.read<MeetingDetailBloc>().add(
+                MeetingDetailEvent.subscribe(meeting: _meeting),
+              );
+            },
+            onUserJoined: (RtcConnection connection, int uid, int elapsed) {
+              // Primarily tracks broadcasters
               setState(() {
-                _remoteUids.remove(uid);
-                if (_hostUid == uid) _hostUid = null;
-                _participants.removeWhere((p) => p.id == uid);
+                _remoteUids.add(uid);
+                if (_meeting.host.id == uid) {
+                  setState(() => _hostUid = uid);
+                }
               });
             },
-      ),
-    );
+            onUserOffline:
+                (
+                  RtcConnection connection,
+                  int uid,
+                  UserOfflineReasonType reason,
+                ) {
+                  setState(() {
+                    _remoteUids.remove(uid);
+                    if (_hostUid == uid) _hostUid = null;
+                  });
+                },
+            onRtcStats: (connection, stats) {
+              setState(() => _count = stats.userCount);
+            },
+          ),
+        );
 
-    await _engine.setVideoEncoderConfiguration(
-      VideoEncoderConfiguration(
-        dimensions: VideoDimensions(width: 1280, height: 720),
-        frameRate: 24,
-        bitrate: 1800,
-        orientationMode: OrientationMode.orientationModeFixedPortrait,
-        degradationPreference: DegradationPreference.maintainQuality,
-      ),
+        context.read<MeetingDetailBloc>().add(
+          MeetingDetailEvent.join(engine: _engine, meeting: _meeting, user: me),
+        );
+      },
     );
-
-    await _engine.setChannelProfile(
-      ChannelProfileType.channelProfileLiveBroadcasting,
-    );
-    await _engine.setClientRole(
-      role: _isHost
-          ? ClientRoleType.clientRoleBroadcaster
-          : ClientRoleType.clientRoleAudience,
-    );
-
-    if (mounted) {
-      context.read<MeetingJoinBloc>().add(
-        MeetingJoinEvent.join(engine: _engine, meeting: _meeting, user: me),
-      );
-    }
   }
 
   @override
@@ -119,11 +107,11 @@ class _LiveStreamState extends State<LiveStream> {
   }
 
   Future<void> _leaveChannel() async {
-    await _engine.leaveChannel();
-    await _engine.release();
+    await AgoraService().leaveCurrent();
+    await AgoraService().dispose();
     if (mounted) {
       context.read<MeetingDetailBloc>().add(
-        MeetingDetailEvent.leave(meeting: _meeting),
+        MeetingDetailEvent.unsubscribe(meeting: _meeting),
       );
       Navigator.pop(context);
     }
@@ -154,29 +142,15 @@ class _LiveStreamState extends State<LiveStream> {
             switch (state) {
               case MeetingLoaded(:final meeting):
                 if (meeting.id == _meeting.id) {
-                  setState(() {
-                    _meeting = meeting;
-                    _participants = meeting.participants.toList();
-                  });
+                  setState(() => _meeting = meeting);
                 }
               case MeetingUpdated():
-                if (state.id == _meeting.id) {
-                  setState(() {
-                    _meeting = _meeting.copyWith(
-                      title: state.title,
-                      description: state.description,
-                      county: state.county,
-                      constituency: state.constituency,
-                      ward: state.ward,
-                      participantsCount: state.participantsCount,
-                    );
-                  });
+                if (state.meeting.id == _meeting.id) {
+                  setState(() => _meeting = state.meeting);
                 }
               case MeetingDeleted(:final meetingId):
                 if (meetingId == _meeting.id) {
-                  setState(() {
-                    isDeleted = true;
-                  });
+                  setState(() => isDeleted = true);
                 }
             }
           },
@@ -184,11 +158,7 @@ class _LiveStreamState extends State<LiveStream> {
         BlocListener<UserDetailBloc, UserDetailState>(
           listener: (context, state) {
             if (state is UserRetrieved) {
-              if (!_participants.any((p) => state.user.id == p.id)) {
-                setState(() {
-                  _participants.add(state.user);
-                });
-              }
+              //
             }
           },
         ),
@@ -295,7 +265,7 @@ class _LiveStreamState extends State<LiveStream> {
             IconButton(
               icon: const Icon(Icons.call_end, color: Colors.red),
               onPressed: () {
-                /* End meeting via bloc + leave */
+                /* TODO: End meeting via bloc + leave */
               },
             ),
           // Leave for audience

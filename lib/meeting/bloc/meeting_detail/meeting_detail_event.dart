@@ -19,12 +19,15 @@ sealed class MeetingDetailEvent with _$MeetingDetailEvent {
     required String description,
     @Default(false) bool isLiveStream,
   }) = _Create;
+  const factory MeetingDetailEvent.join({
+    required RtcEngine engine,
+    required Meeting meeting,
+    required User user,
+  }) = _Join;
   const factory MeetingDetailEvent.retrieve({required Meeting meeting}) =
       _Retrieve;
   const factory MeetingDetailEvent.subscribe({required Meeting meeting}) =
       _Subscribe;
-  const factory MeetingDetailEvent.leave({required Meeting meeting}) = _Leave;
-  const factory MeetingDetailEvent.left({
-    required Map<String, dynamic> payload,
-  }) = _Left;
+  const factory MeetingDetailEvent.unsubscribe({required Meeting meeting}) =
+      _Unsubscribe;
 }

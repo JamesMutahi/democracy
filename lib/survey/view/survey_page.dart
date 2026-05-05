@@ -33,6 +33,7 @@ class _SurveyPageState extends State<SurveyPage> {
               floating: true,
               snap: true,
               forceElevated: true,
+              titleSpacing: 0,
               title: Text('Surveys'),
               bottom: PreferredSize(
                 preferredSize: Size.fromHeight(60.0),

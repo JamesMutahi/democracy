@@ -2,11 +2,11 @@ import 'package:democracy/app/bloc/services/agora_service.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart'
     show WebsocketStatus;
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/core/app_logger.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/meeting/bloc/meeting_detail/meeting_detail_bloc.dart';
-import 'package:democracy/meeting/bloc/meeting_join/meeting_join_bloc.dart';
 import 'package:democracy/meeting/models/meeting.dart';
 import 'package:democracy/meeting/view/widgets/meeting_pop_up_menu.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
@@ -33,12 +33,13 @@ class _MeetingDetailState extends State<MeetingDetail> {
   late RtcEngine _engine;
   bool _isJoined = false;
   bool _isMuted = false;
-  late List<User> _participants = widget.meeting.participants.toList();
+  late int? _count = _meeting.participantsCount;
   List<int> _speakers = [];
   List<int> _muted = [];
   int? _activeSpeaker; // TODO: Highlight
   late User me = context.read<AuthBloc>().state.user!;
   late final bool _isHost = me.id == _meeting.host.id;
+  late final bool _isSpeaker = _meeting.speakers.any((s) => s.id == me.id);
   bool _hasRaisedHand = false;
 
   @override
@@ -60,80 +61,69 @@ class _MeetingDetailState extends State<MeetingDetail> {
   Future<void> _initAgora() async {
     await [Permission.microphone].request();
 
-    final service = AgoraService();
-    _engine = await service.getEngine();
+    await AgoraService().joinAudioMeeting(
+      isBroadcaster: _isHost || _isSpeaker,
+      meeting: _meeting,
+      onEngineReady: (engine) {
+        setState(() {
+          _engine = engine;
+        });
 
-    _engine.registerEventHandler(
-      RtcEngineEventHandler(
-        onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
-          setState(() => _isJoined = true);
-          context.read<MeetingDetailBloc>().add(
-            MeetingDetailEvent.subscribe(meeting: widget.meeting),
-          );
-        },
-        onUserJoined: (RtcConnection connection, int uid, int elapsed) {
-          if (!_participants.any((p) => p.id == uid)) {
-            context.read<UserDetailBloc>().add(
-              UserDetailEvent.retrieve(userId: uid),
-            );
-          }
-        },
-        onUserOffline:
-            (RtcConnection connection, int uid, UserOfflineReasonType reason) {
-              setState(() {
-                _participants.removeWhere((p) => p.id == uid);
-                _muted.remove(uid); // Clean up the mute list
-              });
+        _engine.registerEventHandler(
+          RtcEngineEventHandler(
+            onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
+              setState(() => _isJoined = true);
+              context.read<MeetingDetailBloc>().add(
+                MeetingDetailEvent.subscribe(meeting: widget.meeting),
+              );
             },
-        onActiveSpeaker: (RtcConnection connection, int uid) {
-          setState(() => _activeSpeaker = uid);
-        },
-        onUserMuteAudio: (RtcConnection connection, int uid, bool muted) {
-          _updateMuteList(uid, muted);
-        },
-        onRemoteAudioStateChanged:
-            (
-              RtcConnection connection,
-              int uid,
-              RemoteAudioState state,
-              RemoteAudioStateReason reason,
-              int elapsed,
-            ) {
-              // Catching states that onUserMuteAudio might miss
-              if (reason ==
-                  RemoteAudioStateReason.remoteAudioReasonRemoteMuted) {
-                _updateMuteList(uid, true);
-              } else if (reason ==
-                  RemoteAudioStateReason.remoteAudioReasonRemoteUnmuted) {
-                _updateMuteList(uid, false);
-              }
+            onRtcStats: (connection, stats) {
+              setState(() => _count = stats.userCount);
             },
-      ),
-    );
+            onUserJoined: (RtcConnection connection, int uid, int elapsed) {
+              //
+            },
+            onUserOffline:
+                (
+                  RtcConnection connection,
+                  int uid,
+                  UserOfflineReasonType reason,
+                ) {
+                  setState(() {
+                    _muted.remove(uid); // Clean up the mute list
+                  });
+                },
+            onActiveSpeaker: (RtcConnection connection, int uid) {
+              setState(() => _activeSpeaker = uid);
+            },
+            onUserMuteAudio: (RtcConnection connection, int uid, bool muted) {
+              _updateMuteList(uid, muted);
+            },
+            onRemoteAudioStateChanged:
+                (
+                  RtcConnection connection,
+                  int uid,
+                  RemoteAudioState state,
+                  RemoteAudioStateReason reason,
+                  int elapsed,
+                ) {
+                  // Catching states that onUserMuteAudio might miss
+                  if (reason ==
+                      RemoteAudioStateReason.remoteAudioReasonRemoteMuted) {
+                    _updateMuteList(uid, true);
+                  } else if (reason ==
+                      RemoteAudioStateReason.remoteAudioReasonRemoteUnmuted) {
+                    _updateMuteList(uid, false);
+                  }
+                },
+          ),
+        );
 
-    await _engine.enableAudio();
-    await _engine.enableAudioVolumeIndication(
-      interval: 200,
-      smooth: 3,
-      reportVad: true,
+        context.read<MeetingDetailBloc>().add(
+          MeetingDetailEvent.join(engine: _engine, meeting: _meeting, user: me),
+        );
+      },
     );
-    await _engine.setChannelProfile(
-      ChannelProfileType.channelProfileLiveBroadcasting,
-    );
-    await _engine.setClientRole(
-      role: _isHost
-          ? ClientRoleType.clientRoleBroadcaster
-          : ClientRoleType.clientRoleAudience,
-    );
-    if (mounted) {
-      context.read<MeetingJoinBloc>().add(
-        MeetingJoinEvent.join(
-          engine: _engine,
-          meeting: _meeting,
-          user: context.read<AuthBloc>().state.user!,
-        ),
-      );
-    }
   }
 
   @override
@@ -143,11 +133,11 @@ class _MeetingDetailState extends State<MeetingDetail> {
   }
 
   Future<void> _leaveChannel() async {
-    await _engine.leaveChannel();
-    await _engine.release();
+    await AgoraService().leaveCurrent();
+    await AgoraService().dispose();
     if (mounted) {
       context.read<MeetingDetailBloc>().add(
-        MeetingDetailEvent.leave(meeting: _meeting),
+        MeetingDetailEvent.unsubscribe(meeting: _meeting),
       );
       Navigator.pop(context);
     }
@@ -163,7 +153,7 @@ class _MeetingDetailState extends State<MeetingDetail> {
   // Raise Hand Request (send via your Django Channels or Agora RTM)
   void _toggleRaiseHand() {
     setState(() => _hasRaisedHand = !_hasRaisedHand);
-    // TODO: Send request to host via WebSocket / Django Channels
+    // TODO: Send request to host via WebSocket
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -190,29 +180,20 @@ class _MeetingDetailState extends State<MeetingDetail> {
             switch (state) {
               case MeetingLoaded(:final meeting):
                 if (meeting.id == _meeting.id) {
+                  for (var p in state.meeting.participants) {
+                    AppLogger.info(p.name);
+                  }
                   setState(() {
                     _meeting = meeting;
-                    _participants = meeting.participants.toList();
                   });
                 }
               case MeetingUpdated():
-                if (state.id == _meeting.id) {
-                  setState(() {
-                    _meeting = _meeting.copyWith(
-                      title: state.title,
-                      description: state.description,
-                      county: state.county,
-                      constituency: state.constituency,
-                      ward: state.ward,
-                      participantsCount: state.participantsCount,
-                    );
-                  });
+                if (state.meeting.id == _meeting.id) {
+                  setState(() => _meeting = state.meeting);
                 }
               case MeetingDeleted(:final meetingId):
                 if (meetingId == _meeting.id) {
-                  setState(() {
-                    isDeleted = true;
-                  });
+                  setState(() => isDeleted = true);
                 }
             }
           },
@@ -220,11 +201,7 @@ class _MeetingDetailState extends State<MeetingDetail> {
         BlocListener<UserDetailBloc, UserDetailState>(
           listener: (context, state) {
             if (state is UserRetrieved) {
-              if (!_participants.any((p) => state.user.id == p.id)) {
-                setState(() {
-                  _participants.add(state.user);
-                });
-              }
+              //
             }
           },
         ),
@@ -272,7 +249,7 @@ class _MeetingDetailState extends State<MeetingDetail> {
   Widget _buildParticipantsList() {
     return GridView.builder(
       padding: const EdgeInsets.all(15),
-      itemCount: _participants.length,
+      itemCount: _meeting.participants.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4,
         crossAxisSpacing: 4,
@@ -280,47 +257,19 @@ class _MeetingDetailState extends State<MeetingDetail> {
         childAspectRatio: 0.6,
       ),
       itemBuilder: (context, index) {
-        final user = _participants.toList()[index];
+        final user = _meeting.participants.toList()[index];
         bool isHost = user.id == _meeting.host.id;
         bool isSpeaker = _meeting.speakers.any((s) => s.id == user.id);
         bool isMuted = _muted.contains(user.id);
         bool isSpeaking = _activeSpeaker == user.id && !isMuted;
-        return Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircleAvatar(
-                radius: 42,
-                backgroundColor: isSpeaking ? Colors.blue : Colors.transparent,
-                child: ProfileImage(user: user, radius: 40),
-              ),
-              SizedBox(height: 5),
-              ProfileName(user: user),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (user.id == _meeting.host.id)
-                    Container(
-                      margin: EdgeInsets.only(right: 2),
-                      child: Icon(
-                        isMuted ? Icons.mic_off_rounded : Icons.mic_rounded,
-                        color: isMuted ? Colors.red : Colors.blue,
-                        size: 17,
-                      ),
-                    ),
-                  Text(
-                    isHost
-                        ? "Host"
-                        : isSpeaker
-                        ? "Speaker"
-                        : "Listener",
-                    style: TextStyle(color: Theme.of(context).disabledColor),
-                  ),
-                ],
-              ),
-            ],
-          ),
+        return _ParticipantTile(
+          key: ValueKey(user.id),
+          isSpeaking: isSpeaking,
+          user: user,
+          meeting: _meeting,
+          isMuted: isMuted,
+          isHost: isHost,
+          isSpeaker: isSpeaker,
         );
       },
     );
@@ -365,6 +314,66 @@ class _MeetingDetailState extends State<MeetingDetail> {
                 ),
               ],
             ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ParticipantTile extends StatelessWidget {
+  const _ParticipantTile({
+    super.key,
+    required this.isSpeaking,
+    required this.user,
+    required Meeting meeting,
+    required this.isMuted,
+    required this.isHost,
+    required this.isSpeaker,
+  }) : _meeting = meeting;
+
+  final bool isSpeaking;
+  final User user;
+  final Meeting _meeting;
+  final bool isMuted;
+  final bool isHost;
+  final bool isSpeaker;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircleAvatar(
+            radius: 42,
+            backgroundColor: isSpeaking ? Colors.blue : Colors.transparent,
+            child: ProfileImage(user: user, radius: 40),
+          ),
+          SizedBox(height: 5),
+          ProfileName(user: user),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (user.id == _meeting.host.id)
+                Container(
+                  margin: EdgeInsets.only(right: 2),
+                  child: Icon(
+                    isMuted ? Icons.mic_off_rounded : Icons.mic_rounded,
+                    color: isMuted ? Colors.red : Colors.blue,
+                    size: 17,
+                  ),
+                ),
+              Text(
+                isHost
+                    ? "Host"
+                    : isSpeaker
+                    ? "Speaker"
+                    : "Listener",
+                style: TextStyle(color: Theme.of(context).disabledColor),
+              ),
+            ],
+          ),
         ],
       ),
     );

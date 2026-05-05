@@ -194,7 +194,7 @@ class _EditProfileState extends State<EditProfile> {
                   onTap: () {
                     showDialog(
                       context: context,
-                      builder: (context) {
+                      builder: (dialogContext) {
                         return MediaDialog(
                           onCameraPressed: () async {
                             openCamera(

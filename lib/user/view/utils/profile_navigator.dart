@@ -4,6 +4,7 @@ import 'package:democracy/post/bloc/likes/likes_bloc.dart';
 import 'package:democracy/post/bloc/user_community_notes/user_community_notes_bloc.dart';
 import 'package:democracy/post/bloc/user_posts/user_posts_bloc.dart';
 import 'package:democracy/post/bloc/user_replies/user_replies_bloc.dart';
+import 'package:democracy/user/bloc/profile/profile_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/profile.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,11 @@ void navigateToProfilePage({
     MaterialPageRoute(
       builder: (context) => MultiBlocProvider(
         providers: [
+          BlocProvider(
+            create: (context) => ProfileBloc(
+              webSocketService: context.read<WebSocketService>(),
+            ),
+          ),
           BlocProvider(
             create: (context) => UserPostsBloc(
               webSocketService: context.read<WebSocketService>(),

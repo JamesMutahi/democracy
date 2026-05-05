@@ -2,11 +2,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart'
     show WebsocketStatus;
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
+import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/view/utils/chat_navigator.dart';
 import 'package:democracy/post/view/draft_posts.dart';
+import 'package:democracy/user/bloc/profile/profile_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/edit_profile.dart';
@@ -45,31 +48,26 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final ScrollController _scrollController = ScrollController();
-  late User user = widget.user;
-  bool nameIsScrolled = false;
-  double expandedHeight = 200;
-  bool hideTabs = true;
+  late User _user = widget.user;
+  bool _nameIsScrolled = false;
+  final double _expandedHeight = 200;
+  bool _hideTabs = true;
 
   @override
   void initState() {
-    // subscribe to user
-    _subscribe();
-    if (!widget.user.isVisited) {
-      final authBloc = context.read<AuthBloc>();
-      final me = authBloc.state.user!;
-      if (me.id != widget.user.id) {
-        context.read<UserDetailBloc>().add(
-          UserDetailEvent.addVisit(user: widget.user),
-        );
-      }
-    }
     super.initState();
+    _subscribe();
+    final me = context.read<AuthBloc>().state.user!;
+    if (me.id != _user.id) {
+      context.read<UserDetailBloc>().add(UserDetailEvent.addVisit(user: _user));
+    }
     _scrollController.addListener(_handleScrolling);
   }
 
   void _subscribe() {
-    context.read<UserDetailBloc>().add(
-      UserDetailEvent.subscribe(userId: widget.user.id),
+    // subscribe and get user
+    context.read<ProfileBloc>().add(
+      ProfileEvent.load(userId: _user.id),
     );
   }
 
@@ -80,20 +78,24 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _handleScrolling() {
-    if (_scrollController.offset > expandedHeight && nameIsScrolled == false) {
+    if (_scrollController.offset > _expandedHeight &&
+        _nameIsScrolled == false) {
       setState(() {
-        nameIsScrolled = true;
+        _nameIsScrolled = true;
       });
     }
-    if (_scrollController.offset < expandedHeight && nameIsScrolled == true) {
+    if (_scrollController.offset < _expandedHeight && _nameIsScrolled == true) {
       setState(() {
-        nameIsScrolled = false;
+        _nameIsScrolled = false;
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    User currentUser = context.read<AuthBloc>().state.user!;
+    bool isCurrentUser = currentUser.id == _user.id;
+
     return MultiBlocListener(
       listeners: [
         BlocListener<UserDetailBloc, UserDetailState>(
@@ -101,13 +103,13 @@ class _ProfilePageState extends State<ProfilePage> {
             if (state is UserSubscribed) {
               if (widget.user.id == state.user.id) {
                 setState(() {
-                  user = state.user;
+                  _user = state.user;
                   if (state.user.isBlocked) {
-                    if (hideTabs == false) {
-                      hideTabs = true;
+                    if (_hideTabs == false) {
+                      _hideTabs = true;
                     }
                   } else {
-                    hideTabs = false;
+                    _hideTabs = false;
                   }
                 });
               }
@@ -115,13 +117,13 @@ class _ProfilePageState extends State<ProfilePage> {
             if (state is UserUpdated) {
               if (widget.user.id == state.user.id) {
                 setState(() {
-                  user = state.user;
+                  _user = state.user;
                   if (state.user.isBlocked) {
-                    if (hideTabs == false) {
-                      hideTabs = true;
+                    if (_hideTabs == false) {
+                      _hideTabs = true;
                     }
                   } else {
-                    hideTabs = false;
+                    _hideTabs = false;
                   }
                 });
               }
@@ -135,129 +137,124 @@ class _ProfilePageState extends State<ProfilePage> {
             }
           },
         ),
-      ],
-      child: BlocBuilder<AuthBloc, AuthState>(
-        builder: (context, state) {
-          User currentUser = state.user!;
-          bool isCurrentUser = currentUser.id == user.id;
-          return BlocListener<ChatDetailBloc, ChatDetailState>(
-            listener: (context, state) {
-              if (state is ChatCreated) {
-                if (state.userId == user.id) {
-                  navigateToChatDetail(context: context, chat: state.chat);
-                }
+        BlocListener<ChatDetailBloc, ChatDetailState>(
+          listener: (context, state) {
+            if (state is ChatCreated) {
+              if (state.userId == _user.id) {
+                navigateToChatDetail(context: context, chat: state.chat);
               }
-            },
-            child: PopScope(
-              canPop: true,
-              onPopInvokedWithResult: (_, _) {
-                context.read<UserDetailBloc>().add(
-                  UserDetailEvent.unsubscribe(user: user),
-                );
-              },
-              child: Scaffold(
-                body: SafeArea(
-                  bottom: false,
-                  child: DefaultTabController(
-                    length: isCurrentUser ? userTabs.length : tabs.length,
-                    child: NestedScrollView(
-                      controller: _scrollController,
-                      headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-                        return [
-                          SliverPersistentHeader(
-                            pinned: true,
-                            floating: true,
-                            delegate: ProfileAppBarDelegate(
-                              user: user,
-                              isCurrentUser: isCurrentUser,
-                              nameIsScrolled: nameIsScrolled,
-                              expandedHeight: expandedHeight,
-                            ),
-                          ),
-                          SliverToBoxAdapter(
-                            child: _UserDetails(user, isCurrentUser),
-                          ),
-                          if (!hideTabs || !user.isBlocked)
-                            SliverPersistentHeader(
-                              delegate: _TabBarAppBarDelegate(
-                                TabBar(
-                                  isScrollable: true,
-                                  tabAlignment: TabAlignment.center,
-                                  labelStyle: Theme.of(
-                                    context,
-                                  ).textTheme.titleMedium,
-                                  dividerColor: Theme.of(
-                                    context,
-                                  ).colorScheme.outlineVariant,
-                                  tabs: isCurrentUser ? userTabs : tabs,
-                                ),
-                              ),
-                              pinned: true,
-                            ),
-                        ];
-                      },
-                      body: (hideTabs && user.isBlocked)
-                          ? Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    '@${user.username} is blocked',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.titleLarge,
-                                  ),
-                                  SizedBox(height: 10),
-                                  OutlinedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        hideTabs = false;
-                                      });
-                                    },
-                                    child: Text('View posts'),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Text(
-                                    'Will not unblock them',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelMedium
-                                        ?.copyWith(
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.outline,
-                                        ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          : TabBarView(
-                              physics: const NeverScrollableScrollPhysics(),
-                              children: [
-                                UserPosts(key: ValueKey(user.id), user: user),
-                                UserReplies(key: ValueKey(user.id), user: user),
-                                if (isCurrentUser)
-                                  Likes(key: ValueKey(user.id), user: user),
-                                UserCommunityNotes(
-                                  key: ValueKey(user.id),
-                                  user: user,
-                                ),
-                                UserPetitions(
-                                  key: ValueKey(user.id),
-                                  user: user,
-                                ),
-                              ],
-                            ),
+            }
+          },
+        ),
+      ],
+      child: Scaffold(
+        body: PopScope(
+          canPop: true,
+          onPopInvokedWithResult: (_, _) {
+            context.read<UserDetailBloc>().add(
+              UserDetailEvent.unsubscribe(user: _user),
+            );
+          },
+          child: SafeArea(
+            bottom: false,
+            child: DefaultTabController(
+              length: isCurrentUser ? userTabs.length : tabs.length,
+              child: NestedScrollView(
+                controller: _scrollController,
+                headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+                  return [
+                    SliverPersistentHeader(
+                      pinned: true,
+                      floating: true,
+                      delegate: ProfileAppBarDelegate(
+                        user: _user,
+                        isCurrentUser: isCurrentUser,
+                        nameIsScrolled: _nameIsScrolled,
+                        expandedHeight: _expandedHeight,
+                      ),
                     ),
-                  ),
+                    SliverToBoxAdapter(
+                      child: _UserDetails(_user, isCurrentUser),
+                    ),
+                    if (!_hideTabs || !_user.isBlocked)
+                      SliverPersistentHeader(
+                        delegate: _TabBarAppBarDelegate(
+                          TabBar(
+                            isScrollable: true,
+                            tabAlignment: TabAlignment.center,
+                            labelStyle: Theme.of(context).textTheme.titleMedium,
+                            dividerColor: Theme.of(
+                              context,
+                            ).colorScheme.outlineVariant,
+                            tabs: isCurrentUser ? userTabs : tabs,
+                          ),
+                        ),
+                        pinned: true,
+                      ),
+                  ];
+                },
+                body: BlocBuilder<ProfileBloc, ProfileState>(
+                  buildWhen: (previous, current) =>
+                      current.user?.id == widget.user.id,
+                  builder: (context, state) {
+                    switch (state.status) {
+                      case ProfileStatus.success:
+                        return _buildProfile(isCurrentUser);
+                      case ProfileStatus.failure:
+                        return FailureRetryButton(onPressed: _subscribe);
+                      default:
+                        return BottomLoader();
+                    }
+                  },
                 ),
               ),
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
+  }
+
+  Widget _buildProfile(bool isCurrentUser) {
+    return (_hideTabs && _user.isBlocked)
+        ? Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  '@${_user.username} is blocked',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                SizedBox(height: 10),
+                OutlinedButton(
+                  onPressed: () {
+                    setState(() {
+                      _hideTabs = false;
+                    });
+                  },
+                  child: Text('View posts'),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  'Will not unblock them',
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
+                ),
+              ],
+            ),
+          )
+        : TabBarView(
+            physics: const NeverScrollableScrollPhysics(),
+            children: [
+              UserPosts(key: ValueKey(_user.id), user: _user),
+              UserReplies(key: ValueKey(_user.id), user: _user),
+              if (isCurrentUser) Likes(key: ValueKey(_user.id), user: _user),
+              UserCommunityNotes(key: ValueKey(_user.id), user: _user),
+              UserPetitions(key: ValueKey(_user.id), user: _user),
+            ],
+          );
   }
 }
 

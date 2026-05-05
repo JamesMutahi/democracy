@@ -33,6 +33,7 @@ class _MeetingsPageState extends State<MeetingPage> {
               floating: true,
               snap: true,
               forceElevated: true,
+              titleSpacing: 0,
               title: Text('Meetings'),
               bottom: PreferredSize(
                 preferredSize: Size.fromHeight(60.0),

@@ -20,6 +20,77 @@ class AgoraService {
     return _engine!;
   }
 
+  Future<void> joinAudioMeeting({
+    required bool isBroadcaster,
+    required Meeting meeting,
+    required Function(RtcEngine) onEngineReady,
+  }) async {
+    if (_currentMeeting == meeting.id) return; // Already in this channel
+
+    final engine = await getEngine();
+
+    await engine.leaveChannel(); // Leave previous
+
+    await engine.enableAudio();
+    await engine.enableAudioVolumeIndication(
+      interval: 200,
+      smooth: 3,
+      reportVad: true,
+    );
+    await engine.setChannelProfile(
+      ChannelProfileType.channelProfileLiveBroadcasting,
+    );
+    await engine.setClientRole(
+      role: isBroadcaster
+          ? ClientRoleType.clientRoleBroadcaster
+          : ClientRoleType.clientRoleAudience,
+    );
+
+    onEngineReady(engine);
+
+    _currentMeeting = meeting.id;
+  }
+
+  Future<void> joinLiveStream({
+    required bool isHost,
+    required Meeting meeting,
+    required Function(RtcEngine) onEngineReady,
+  }) async {
+    if (_currentMeeting == meeting.id) return; // Already in this channel
+
+    final engine = await getEngine();
+
+    await engine.leaveChannel(); // Leave previous
+
+    if (isHost) {
+      await engine.setVideoEncoderConfiguration(
+        VideoEncoderConfiguration(
+          dimensions: VideoDimensions(width: 1280, height: 720),
+          frameRate: 24,
+          bitrate: 1800,
+          orientationMode: OrientationMode.orientationModeFixedPortrait,
+          degradationPreference: DegradationPreference.maintainQuality,
+        ),
+      );
+    }
+
+    await engine.setChannelProfile(
+      ChannelProfileType.channelProfileLiveBroadcasting,
+    );
+    await engine.setClientRole(
+      role: isHost
+          ? ClientRoleType.clientRoleBroadcaster
+          : ClientRoleType.clientRoleAudience,
+    );
+    await engine.setClientRole(role: ClientRoleType.clientRoleAudience);
+    await engine.enableVideo();
+    await engine.enableAudio();
+
+    onEngineReady(engine);
+
+    _currentMeeting = meeting.id;
+  }
+
   Future<void> joinMiniStream({
     required Meeting meeting,
     required Function(RtcEngine) onEngineReady,
