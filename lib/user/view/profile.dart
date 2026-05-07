@@ -25,7 +25,7 @@ import 'package:material_symbols_icons/material_symbols_icons.dart';
 const List<Tab> tabs = <Tab>[
   Tab(text: 'Posts'),
   Tab(text: 'Replies'),
-  Tab(text: 'Comm. notes'),
+  Tab(text: 'Community \nNotes'),
   Tab(text: 'Petitions'),
 ];
 
@@ -33,7 +33,7 @@ const List<Tab> userTabs = <Tab>[
   Tab(text: 'Posts'),
   Tab(text: 'Replies'),
   Tab(text: 'Likes'),
-  Tab(text: 'Comm. notes'),
+  Tab(text: 'Community \nNotes'),
   Tab(text: 'Petitions'),
 ];
 
@@ -66,9 +66,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void _subscribe() {
     // subscribe and get user
-    context.read<ProfileBloc>().add(
-      ProfileEvent.load(userId: _user.id),
-    );
+    context.read<ProfileBloc>().add(ProfileEvent.load(userId: _user.id));
   }
 
   @override
@@ -180,8 +178,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       SliverPersistentHeader(
                         delegate: _TabBarAppBarDelegate(
                           TabBar(
-                            isScrollable: true,
-                            tabAlignment: TabAlignment.center,
+                            isScrollable: isCurrentUser,
+                            tabAlignment: isCurrentUser
+                                ? TabAlignment.center
+                                : TabAlignment.fill,
                             labelStyle: Theme.of(context).textTheme.titleMedium,
                             dividerColor: Theme.of(
                               context,

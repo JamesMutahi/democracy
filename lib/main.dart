@@ -6,6 +6,7 @@ import 'package:democracy/app/bloc/location/location_cubit.dart';
 import 'package:democracy/app/bloc/repository/api/api_repository.dart';
 import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/bloc/repository/database/database_repository.dart';
+import 'package:democracy/app/bloc/sync/sync_bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/bloc/services/token_interceptor.dart';
@@ -19,7 +20,6 @@ import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/bloc/chat_filter/chat_filter_cubit.dart';
 import 'package:democracy/chat/bloc/direct_message/direct_message_bloc.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
-import 'package:democracy/chat/bloc/message_create/message_create_bloc.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
 import 'package:democracy/constitution/bloc/constitution/constitution_bloc.dart';
 import 'package:democracy/constitution/bloc/section_detail/section_detail_bloc.dart';
@@ -216,12 +216,6 @@ void main() async {
                 ),
               ),
               BlocProvider(
-                create: (context) => MessageCreateBloc(
-                  apiRepository: context.read<APIRepository>(),
-                  databaseRepository: context.read<DatabaseRepository>(),
-                ),
-              ),
-              BlocProvider(
                 create: (context) => DirectMessageBloc(
                   apiRepository: context.read<APIRepository>(),
                 ),
@@ -315,6 +309,13 @@ void main() async {
                     GeoBloc(webSocketService: context.read<WebSocketService>()),
               ),
               BlocProvider(create: (context) => LocationCubit()),
+              BlocProvider(
+                create: (context) => SyncBloc(
+                  webSocketService: context.read<WebSocketService>(),
+                  apiRepository: context.read<APIRepository>(),
+                  databaseRepository: context.read<DatabaseRepository>(),
+                ),
+              ),
             ],
             child: const MyApp(),
           ),

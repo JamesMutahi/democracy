@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:democracy/app/shared/camera/camera.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
-import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/extras_row.dart';
 import 'package:democracy/app/shared/widgets/file_widget.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
@@ -46,7 +45,6 @@ class BottomTextFormField extends StatefulWidget {
     this.recipient,
     required this.onImageEditingComplete,
     required this.onVideoEditingComplete,
-    required this.showLoading,
     this.onSend,
   });
 
@@ -82,7 +80,6 @@ class BottomTextFormField extends StatefulWidget {
 
   // To send
   final void Function()? onSend;
-  final bool showLoading;
 
   @override
   State<BottomTextFormField> createState() => _BottomTextFormFieldState();
@@ -225,15 +222,10 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
                 alignment: Alignment.centerRight,
                 child: AnimatedSwitcher(
                   duration: Duration(milliseconds: 300),
-                  child: widget.showLoading
-                      ? Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: BottomLoader(),
-                        )
-                      : IconButton(
-                          onPressed: widget.onSend,
-                          icon: Icon(Icons.send_rounded),
-                        ),
+                  child: IconButton(
+                    onPressed: widget.onSend,
+                    icon: Icon(Icons.send_rounded),
+                  ),
                 ),
               ),
             ],

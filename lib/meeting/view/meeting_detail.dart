@@ -1,11 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/app/bloc/services/agora_service.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart'
     show WebsocketStatus;
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/core/app_logger.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
+import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
+import 'package:democracy/chat/view/utils/chat_navigator.dart';
 import 'package:democracy/meeting/bloc/meeting_detail/meeting_detail_bloc.dart';
 import 'package:democracy/meeting/models/meeting.dart';
 import 'package:democracy/meeting/view/widgets/meeting_pop_up_menu.dart';
@@ -16,6 +20,7 @@ import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class MeetingDetail extends StatefulWidget {
@@ -205,6 +210,13 @@ class _MeetingDetailState extends State<MeetingDetail> {
             }
           },
         ),
+        BlocListener<ChatDetailBloc, ChatDetailState>(
+          listener: (context, state) {
+            if (state is ChatCreated) {
+              navigateToChatDetail(context: context, chat: state.chat);
+            }
+          },
+        ),
       ],
       child: PopScope(
         canPop: false,
@@ -270,6 +282,7 @@ class _MeetingDetailState extends State<MeetingDetail> {
           isMuted: isMuted,
           isHost: isHost,
           isSpeaker: isSpeaker,
+          engine: _engine,
         );
       },
     );
@@ -277,7 +290,7 @@ class _MeetingDetailState extends State<MeetingDetail> {
 
   Widget _buildControls() {
     return BottomAppBar(
-      height: 70,
+      height: 100,
       padding: EdgeInsets.symmetric(horizontal: 15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -289,15 +302,16 @@ class _MeetingDetailState extends State<MeetingDetail> {
             children: [
               IconButton.filledTonal(
                 color: _isMuted ? Colors.red : null,
-                iconSize: 20,
-                icon: Icon(_isMuted ? Icons.mic_off : Icons.mic),
+                iconSize: 30,
+                icon: Icon(_isMuted ? Symbols.mic_off : Symbols.mic),
                 onPressed: () async {
                   setState(() => _isMuted = !_isMuted);
                   await _engine.muteLocalAudioStream(_isMuted);
                 },
               ),
+              SizedBox(height: 5),
               Text(
-                _isMuted ? ' Mic is off ' : ' Mic is on  ',
+                _isMuted ? ' Mic is off ' : ' Mic is on ',
                 style: Theme.of(context).textTheme.labelMedium,
               ),
             ],
@@ -307,13 +321,27 @@ class _MeetingDetailState extends State<MeetingDetail> {
               children: [
                 IconButton.filledTonal(
                   iconSize: 20,
-                  icon: Icon(
-                    _hasRaisedHand ? Icons.pan_tool : Icons.pan_tool_outlined,
-                  ),
+                  icon: Icon(Symbols.pan_tool, fill: _hasRaisedHand ? 1 : 0),
                   onPressed: _toggleRaiseHand,
                 ),
               ],
             ),
+          Row(
+            children: [
+              IconButton.filledTonal(
+                iconSize: 20,
+                icon: Icon(Symbols.share_rounded),
+                onPressed: () {
+                  showModalBottomSheet<void>(
+                    context: context,
+                    isScrollControlled: true,
+                    shape: RoundedRectangleBorder(),
+                    builder: (_) => ShareBottomSheet(meeting: _meeting),
+                  );
+                },
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -329,6 +357,7 @@ class _ParticipantTile extends StatelessWidget {
     required this.isMuted,
     required this.isHost,
     required this.isSpeaker,
+    required this.engine,
   }) : _meeting = meeting;
 
   final bool isSpeaking;
@@ -337,44 +366,56 @@ class _ParticipantTile extends StatelessWidget {
   final bool isMuted;
   final bool isHost;
   final bool isSpeaker;
+  final RtcEngine engine;
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CircleAvatar(
-            radius: 42,
-            backgroundColor: isSpeaking ? Colors.blue : Colors.transparent,
-            child: ProfileImage(user: user, radius: 40),
-          ),
-          SizedBox(height: 5),
-          ProfileName(user: user),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (user.id == _meeting.host.id)
-                Container(
-                  margin: EdgeInsets.only(right: 2),
-                  child: Icon(
-                    isMuted ? Icons.mic_off_rounded : Icons.mic_rounded,
-                    color: isMuted ? Colors.red : Colors.blue,
-                    size: 17,
+    return GestureDetector(
+      onTap: () {
+        showModalBottomSheet<void>(
+          context: context,
+          isScrollControlled: true,
+          showDragHandle: true,
+          shape: RoundedRectangleBorder(),
+          builder: (_) => _ParticipantBottomSheet(user: user, engine: engine),
+        );
+      },
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircleAvatar(
+              radius: 42,
+              backgroundColor: isSpeaking ? Colors.blue : Colors.transparent,
+              child: ProfileImage(user: user, radius: 40),
+            ),
+            SizedBox(height: 5),
+            ProfileName(user: user),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (user.id == _meeting.host.id)
+                  Container(
+                    margin: EdgeInsets.only(right: 2),
+                    child: Icon(
+                      isMuted ? Icons.mic_off_rounded : Icons.mic_rounded,
+                      color: isMuted ? Colors.red : Colors.blue,
+                      size: 17,
+                    ),
                   ),
+                Text(
+                  isHost
+                      ? "Host"
+                      : isSpeaker
+                      ? "Speaker"
+                      : "Listener",
+                  style: TextStyle(color: Theme.of(context).disabledColor),
                 ),
-              Text(
-                isHost
-                    ? "Host"
-                    : isSpeaker
-                    ? "Speaker"
-                    : "Listener",
-                style: TextStyle(color: Theme.of(context).disabledColor),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -399,6 +440,151 @@ class ExitMeetingDialog extends StatelessWidget {
       onButton2Pressed: () {
         Navigator.pop(context);
       },
+    );
+  }
+}
+
+class _ParticipantBottomSheet extends StatelessWidget {
+  const _ParticipantBottomSheet({required this.user, required this.engine});
+
+  final User user;
+  final RtcEngine engine;
+
+  @override
+  Widget build(BuildContext context) {
+    double coverPhotoHeight = MediaQuery.of(context).size.height / 7;
+    double profilePicHeight = MediaQuery.of(context).size.height / 10;
+
+    return BottomSheet(
+      onClosing: () {},
+      builder: (context) => Stack(
+        children: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                height: coverPhotoHeight,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: CachedNetworkImageProvider(
+                      user.coverPhoto,
+                      cacheKey: 'cover ${user.id}',
+                    ),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 100),
+                decoration: BoxDecoration(
+                  border: Border(
+                    top: BorderSide(
+                      color: Theme.of(context).disabledColor.withAlpha(30),
+                    ),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    ListTile(
+                      onTap: () {
+                        Navigator.pop(context);
+                        context.read<ChatDetailBloc>().add(
+                          ChatDetailEvent.create(user: user),
+                        );
+                      },
+                      leading: Icon(Symbols.mail_rounded),
+                      title: Text('Send Direct Message'),
+                    ),
+                    ListTile(
+                      onTap: () async {
+                        //   TODO:
+                      },
+                      leading: Icon(Symbols.close_rounded),
+                      title: Text('Remove from speakers'),
+                    ),
+                    ListTile(
+                      onTap: () async {
+                        await engine.muteRemoteAudioStream(
+                          uid: user.id,
+                          mute: true,
+                        );
+                      },
+                      leading: Icon(Symbols.mic_off_rounded),
+                      title: Text('Mute their mic'),
+                    ),
+                    ListTile(
+                      onTap: () {
+                        //   TODO: Know when blocked
+                        context.read<UserDetailBloc>().add(
+                          UserDetailEvent.block(user: user),
+                        );
+                      },
+                      leading: Icon(Symbols.block_rounded, color: Colors.red),
+                      title: Text('Block', style: TextStyle(color: Colors.red)),
+                    ),
+                    ListTile(
+                      onTap: () {
+                        //   TODO:
+                      },
+                      leading: Icon(Symbols.report_rounded, color: Colors.red),
+                      title: Text(
+                        'Report',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Positioned(
+            top: profilePicHeight,
+            left: 10,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CircleAvatar(
+                  radius: 45,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  child: CircleAvatar(
+                    radius: 42,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: CachedNetworkImageProvider(
+                            user.image,
+                            cacheKey: 'profile ${user.id}',
+                          ),
+                        ),
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 5),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        user.name,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      Text(
+                        '@${user.username}',
+                        style: TextStyle(
+                          color: Theme.of(context).disabledColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

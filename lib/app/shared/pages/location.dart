@@ -186,7 +186,6 @@ class _PermissionDenied extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 50,
-            backgroundColor: Colors.green,
             child: Icon(Icons.location_on_outlined, size: 40),
           ),
           SizedBox(height: 20),

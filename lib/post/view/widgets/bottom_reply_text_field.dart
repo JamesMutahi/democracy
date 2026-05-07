@@ -37,9 +37,6 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
   double overlayHeight = 300;
   SearchResultView _view = SearchResultView.none;
 
-  bool showLoading = false;
-  bool showFailure = false;
-
   final _controller = FlutterTaggerController();
   final _focusNode = FocusNode();
   late StreamSubscription<bool> keyboardSubscription;
@@ -113,22 +110,8 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
                   _media = [];
                   _location = null;
                   _selectedSection = null;
-                  showLoading = false;
-                  showFailure = false;
                 });
               }
-            }
-            if (state.status == PostCreateStatus.loading) {
-              setState(() {
-                showLoading = true;
-                showFailure = false;
-              });
-            }
-            if (state.status == PostCreateStatus.failure) {
-              setState(() {
-                showLoading = false;
-                showFailure = true;
-              });
             }
           },
         ),
@@ -248,7 +231,6 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
                     _selectedSection == null
                 ? null
                 : _createPost,
-            showLoading: showLoading,
           );
         },
       ),

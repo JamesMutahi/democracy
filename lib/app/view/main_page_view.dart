@@ -1,5 +1,7 @@
 import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
+import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
 import 'package:democracy/app/bloc/global/global_cubit.dart';
+import 'package:democracy/app/bloc/sync/sync_bloc.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/view/pages/index.dart';
 import 'package:democracy/app/view/widgets/bottom_nav_bar.dart';
@@ -8,6 +10,9 @@ import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
+import 'package:democracy/post/bloc/draft_post/draft_post_bloc.dart';
+import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
+import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -117,6 +122,53 @@ class _MainPageViewState extends State<MainPageView> {
                   setState(() {
                     _handleNotificationUpdate(state);
                   });
+                },
+              ),
+              BlocListener<PostDetailBloc, PostDetailState>(
+                listener: (context, state) {
+                  if (state is PostDetailFailure) {
+                    final snackBar = getSnackBar(
+                      context: context,
+                      message: state.error,
+                      status: SnackBarStatus.failure,
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
+                },
+              ),
+              BlocListener<PostCreateBloc, PostCreateState>(
+                listener: (context, state) {
+                  if (state.status == PostCreateStatus.success) {
+                    String message = state.post!.replyTo == null
+                        ? 'Posted'
+                        : 'Reply sent';
+                    final snackBar = getSnackBar(
+                      context: context,
+                      message: message,
+                      status: SnackBarStatus.success,
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
+                },
+              ),
+              BlocListener<DraftPostBloc, DraftPostState>(
+                listener: (context, state) {
+                  if (state is DraftPostSaved) {
+                    String message = 'Post saved as draft';
+                    final snackBar = getSnackBar(
+                      context: context,
+                      message: message,
+                      status: SnackBarStatus.success,
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
+                },
+              ),
+              BlocListener<ConnectivityBloc, ConnectivityState>(
+                listener: (context, state) {
+                  if (state is ConnectivitySuccess) {
+                    context.read<SyncBloc>().add(SyncEvent.start());
+                  }
                 },
               ),
             ],

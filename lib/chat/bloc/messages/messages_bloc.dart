@@ -29,7 +29,6 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
     });
     on<_Get>((event, emit) async => await _onGet(event, emit));
     on<_Received>((event, emit) async => await _onReceived(event, emit));
-    on<_Add>((event, emit) async => await _onAdd(event, emit));
     on<_Update>((event, emit) async => await _onUpdate(event, emit));
     on<_Remove>((event, emit) async => await _onRemove(event, emit));
   }
@@ -50,8 +49,8 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
         'action': action,
         'request_id': requestId,
         'chat_id': event.chat.id,
-        'oldest_message': event.oldestMessage?.id,
-        'newest_message': event.newestMessage?.id,
+        'oldest_message': event.oldestMessage?.id!, // get old messages
+        'newest_message': event.newestMessage?.id!, // get new messages
       },
     };
     webSocketService.send(message);
@@ -78,31 +77,16 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
     }
   }
 
-  Future _onAdd(_Add event, Emitter<MessagesState> emit) async {
-    final message = event.message;
-
-    // Avoid duplicates
-    if (state.messages.any((m) => m.id == message.id)) return;
-
-    emit(state.copyWith(status: MessagesStatus.loading));
+  Future _onUpdate(_Update event, Emitter<MessagesState> emit) async {
+    final messages = await databaseRepository.fetchMessages(
+      chatId: event.message.chat.targetId,
+    );
     emit(
       state.copyWith(
-        chatId: message.chat.targetId,
-        messages: [message, ...state.messages], // newest on top
+        chatId: event.message.chat.targetId,
+        messages: messages,
         status: MessagesStatus.success,
       ),
-    );
-  }
-
-  Future _onUpdate(_Update event, Emitter<MessagesState> emit) async {
-    final index = state.messages.indexWhere((m) => m.id == event.message.id);
-    if (index == -1) return;
-    emit(state.copyWith(status: MessagesStatus.loading));
-    final updatedMessages = List<Message>.from(state.messages);
-    updatedMessages[index] = event.message;
-
-    emit(
-      state.copyWith(messages: updatedMessages, status: MessagesStatus.success),
     );
   }
 

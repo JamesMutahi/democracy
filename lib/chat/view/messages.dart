@@ -1,18 +1,15 @@
 import 'package:collection/collection.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart'
     show WebsocketStatus;
+import 'package:democracy/app/bloc/sync/sync_bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/asset_viewer.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/custom_text.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
-import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
-import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
-import 'package:democracy/chat/bloc/message_create/message_create_bloc.dart';
-import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
 import 'package:democracy/chat/bloc/messages/messages_bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
@@ -49,312 +46,263 @@ class _MessagesState extends State<Messages> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<MessageCreateBloc, MessageCreateState>(
-          listener: (context, state) {
-            if (state.status == MessageCreateStatus.success) {
-              if (state.message?.chat.targetId == widget.chat.id) {
-                if (state.message!.assets.isNotEmpty) {
-                  context.read<MessagesBloc>().add(
-                    MessagesEvent.update(message: state.message!),
-                  );
-                }
-              }
-            }
-          },
-        ),
-        BlocListener<MessageDetailBloc, MessageDetailState>(
-          listener: (context, state) {
-            if (state is MessageCreated) {
-              if (state.message.chat.targetId == widget.chat.id) {
-                context.read<MessagesBloc>().add(
-                  MessagesEvent.add(message: state.message),
-                );
-                if (widget.me.id != state.message.author.id) {
-                  context.read<ChatDetailBloc>().add(
-                    ChatDetailEvent.markAsRead(chat: widget.chat),
-                  );
-                }
-              }
-            }
+    return BlocBuilder<MessagesBloc, MessagesState>(
+      buildWhen: (previous, current) {
+        return current.chatId == widget.chat.id;
+      },
+      builder: (context, state) {
+        if (state.status == MessagesStatus.initial ||
+            state.status == MessagesStatus.loading && state.messages.isEmpty) {
+          return const BottomLoader();
+        }
 
-            if (state is MessageUpdated) {
-              if (state.message.chat.targetId == widget.chat.id) {
-                context.read<MessagesBloc>().add(
-                  MessagesEvent.update(message: state.message),
-                );
-              }
-            }
+        if (state.status == MessagesStatus.success) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshCompleted();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadComplete();
+          }
+        }
 
-            if (state is MessageDeleted) {
-              context.read<MessagesBloc>().add(
-                MessagesEvent.remove(messageId: state.messageId),
-              );
-            }
-
-            if (state is MessageDetailFailure) {
-              final snackBar = getSnackBar(
-                context: context,
-                message: state.error,
-                status: SnackBarStatus.failure,
-              );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            }
-          },
-        ),
-      ],
-      child: BlocBuilder<MessagesBloc, MessagesState>(
-        buildWhen: (previous, current) {
-          return current.chatId == widget.chat.id;
-        },
-        builder: (context, state) {
-          if (state.status == MessagesStatus.initial ||
-              state.status == MessagesStatus.loading &&
-                  state.messages.isEmpty) {
-            return const BottomLoader();
+        if (state.status == MessagesStatus.failure) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshFailed();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadFailed();
           }
 
-          if (state.status == MessagesStatus.success) {
-            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-              _refreshController.refreshCompleted();
-            }
-            if (_refreshController.footerStatus == LoadStatus.loading) {
-              _refreshController.loadComplete();
-            }
+          if (state.messages.isEmpty) {
+            return FailureRetryButton(
+              onPressed: () => context.read<MessagesBloc>().add(
+                MessagesEvent.get(chat: widget.chat),
+              ),
+            );
           }
+        }
 
-          if (state.status == MessagesStatus.failure) {
-            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-              _refreshController.refreshFailed();
-            }
-            if (_refreshController.footerStatus == LoadStatus.loading) {
-              _refreshController.loadFailed();
-            }
+        List<Message> messages = state.messages.toList();
 
-            if (state.messages.isEmpty) {
-              return FailureRetryButton(
-                onPressed: () => context.read<MessagesBloc>().add(
-                  MessagesEvent.get(chat: widget.chat),
+        messages.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+        double messageMargin = 10;
+
+        var groupByDate = groupBy(
+          messages,
+          (obj) => DateFormat.yMMMMd().format(obj.createdAt),
+        );
+
+        List<Widget> widgets = [];
+        groupByDate.forEach((date, list) {
+          // ListView is in reverse so objects are set in reverse order as well
+          for (Message message in list) {
+            bool alignedRight = widget.me.id == message.author.id;
+            String text = extractLinkFromMessage(message);
+            widgets.add(SizedBox(height: messageMargin));
+            if (message.isDeleted) {
+              widgets.add(
+                AlignmentContainer(
+                  message: message,
+                  alignedRight: alignedRight,
+                  verticalPadding: 7,
+                  horizontalPadding: 14,
+                  child: Text(
+                    'Message was deleted',
+                    style: TextStyle(color: Theme.of(context).disabledColor),
+                  ),
                 ),
               );
-            }
-          }
-
-          List<Message> messages = state.messages.toList();
-
-          messages.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-
-          double messageMargin = 10;
-
-          var groupByDate = groupBy(
-            messages,
-            (obj) => DateFormat.yMMMMd().format(obj.createdAt),
-          );
-
-          List<Widget> widgets = [];
-          groupByDate.forEach((date, list) {
-            // ListView is in reverse so objects are set in reverse order as well
-            for (Message message in list) {
-              bool alignedRight = widget.me.id == message.author.id;
-              String text = extractLinkFromMessage(message);
-              widgets.add(SizedBox(height: messageMargin));
-              if (message.isDeleted) {
+            } else {
+              widgets.add(
+                MessageTime(message: message, alignedRight: alignedRight),
+              );
+              if (text.isNotEmpty) {
                 widgets.add(
                   AlignmentContainer(
                     message: message,
                     alignedRight: alignedRight,
-                    child: Text(
-                      'Message was deleted',
-                      style: TextStyle(color: Theme.of(context).disabledColor),
-                    ),
+                    verticalPadding: 7,
+                    horizontalPadding: 14,
+                    child: MessageCard(key: ValueKey(message.id), text: text),
                   ),
                 );
-              } else {
-                widgets.add(
-                  MessageTime(message: message, alignedRight: alignedRight),
-                );
+              }
+              if (message.assets.isNotEmpty) {
                 if (text.isNotEmpty) {
-                  widgets.add(
-                    AlignmentContainer(
-                      message: message,
-                      alignedRight: alignedRight,
-                      child: MessageCard(key: ValueKey(message.id), text: text),
-                    ),
-                  );
+                  widgets.add(SizedBox(height: messageMargin));
                 }
-                if (message.assets.isNotEmpty) {
-                  if (text.isNotEmpty) {
-                    widgets.add(SizedBox(height: messageMargin));
-                  }
-                  widgets.add(
-                    AlignmentContainer(
-                      message: message,
-                      alignedRight: alignedRight,
-                      child: AssetViewer(
-                        key: ValueKey(message.id),
-                        assets: message.assets,
-                      ),
+                widgets.add(
+                  AlignmentContainer(
+                    message: message,
+                    alignedRight: alignedRight,
+                    child: AssetViewer(
+                      key: ValueKey(message.id),
+                      assets: message.assets,
                     ),
-                  );
+                  ),
+                );
+              }
+              if (message.location != null) {
+                if (text.isNotEmpty) {
+                  widgets.add(SizedBox(height: messageMargin));
                 }
-                if (message.location != null) {
-                  if (text.isNotEmpty) {
-                    widgets.add(SizedBox(height: messageMargin));
-                  }
-                  widgets.add(
-                    AlignmentContainer(
-                      message: message,
-                      alignedRight: alignedRight,
-                      child: MapWidget(
-                        key: ValueKey(message.id),
-                        mapCenter: message.location!,
-                      ),
+                widgets.add(
+                  AlignmentContainer(
+                    message: message,
+                    alignedRight: alignedRight,
+                    child: MapWidget(
+                      key: ValueKey(message.id),
+                      mapCenter: message.location!,
                     ),
-                  );
+                  ),
+                );
+              }
+              if (message.post != null) {
+                if (text.isNotEmpty) {
+                  widgets.add(SizedBox(height: messageMargin));
                 }
-                if (message.post != null) {
-                  if (text.isNotEmpty) {
-                    widgets.add(SizedBox(height: messageMargin));
-                  }
-                  widgets.add(
-                    AlignmentContainer(
-                      message: message,
-                      alignedRight: alignedRight,
-                      child: PostWidgetSelector(
-                        key: ValueKey(message.id),
-                        post: message.post!,
-                        isDependency: true,
-                      ),
+                widgets.add(
+                  AlignmentContainer(
+                    message: message,
+                    alignedRight: alignedRight,
+                    child: PostWidgetSelector(
+                      key: ValueKey(message.id),
+                      post: message.post!,
+                      isDependency: true,
                     ),
-                  );
+                  ),
+                );
+              }
+              if (message.ballot != null) {
+                if (text.isNotEmpty) {
+                  widgets.add(SizedBox(height: messageMargin));
                 }
-                if (message.ballot != null) {
-                  if (text.isNotEmpty) {
-                    widgets.add(SizedBox(height: messageMargin));
-                  }
-                  widgets.add(
-                    AlignmentContainer(
-                      message: message,
-                      alignedRight: alignedRight,
-                      child: BallotTile(
-                        key: ValueKey(message.id),
-                        ballot: message.ballot!,
-                        isDependency: true,
-                      ),
+                widgets.add(
+                  AlignmentContainer(
+                    message: message,
+                    alignedRight: alignedRight,
+                    child: BallotTile(
+                      key: ValueKey(message.id),
+                      ballot: message.ballot!,
+                      isDependency: true,
                     ),
-                  );
+                  ),
+                );
+              }
+              if (message.survey != null) {
+                if (text.isNotEmpty) {
+                  widgets.add(SizedBox(height: messageMargin));
                 }
-                if (message.survey != null) {
-                  if (text.isNotEmpty) {
-                    widgets.add(SizedBox(height: messageMargin));
-                  }
-                  widgets.add(
-                    AlignmentContainer(
-                      message: message,
-                      alignedRight: alignedRight,
-                      child: SurveyTile(
-                        key: ValueKey(message.id),
-                        survey: message.survey!,
-                        isDependency: true,
-                      ),
+                widgets.add(
+                  AlignmentContainer(
+                    message: message,
+                    alignedRight: alignedRight,
+                    child: SurveyTile(
+                      key: ValueKey(message.id),
+                      survey: message.survey!,
+                      isDependency: true,
                     ),
-                  );
+                  ),
+                );
+              }
+              if (message.petition != null) {
+                if (text.isNotEmpty) {
+                  widgets.add(SizedBox(height: messageMargin));
                 }
-                if (message.petition != null) {
-                  if (text.isNotEmpty) {
-                    widgets.add(SizedBox(height: messageMargin));
-                  }
-                  widgets.add(
-                    AlignmentContainer(
-                      message: message,
-                      alignedRight: alignedRight,
-                      child: PetitionTile(
-                        key: ValueKey(message.id),
-                        petition: message.petition!,
-                        isDependency: true,
-                      ),
+                widgets.add(
+                  AlignmentContainer(
+                    message: message,
+                    alignedRight: alignedRight,
+                    child: PetitionTile(
+                      key: ValueKey(message.id),
+                      petition: message.petition!,
+                      isDependency: true,
                     ),
-                  );
+                  ),
+                );
+              }
+              if (message.meeting != null) {
+                if (text.isNotEmpty) {
+                  widgets.add(SizedBox(height: messageMargin));
                 }
-                if (message.meeting != null) {
-                  if (text.isNotEmpty) {
-                    widgets.add(SizedBox(height: messageMargin));
-                  }
-                  widgets.add(
-                    AlignmentContainer(
-                      message: message,
-                      alignedRight: alignedRight,
-                      child: MeetingTile(
-                        key: ValueKey(message.id),
-                        meeting: message.meeting!,
-                        isDependency: true,
-                      ),
+                widgets.add(
+                  AlignmentContainer(
+                    message: message,
+                    alignedRight: alignedRight,
+                    child: MeetingTile(
+                      key: ValueKey(message.id),
+                      meeting: message.meeting!,
+                      isDependency: true,
                     ),
-                  );
+                  ),
+                );
+              }
+              if (message.section != null) {
+                if (text.isNotEmpty) {
+                  widgets.add(SizedBox(height: messageMargin));
                 }
-                if (message.section != null) {
-                  if (text.isNotEmpty) {
-                    widgets.add(SizedBox(height: messageMargin));
-                  }
-                  widgets.add(
-                    AlignmentContainer(
-                      message: message,
-                      alignedRight: alignedRight,
-                      child: SectionTile(
-                        key: ValueKey(message.id),
-                        section: message.section!,
-                        isDependency: true,
-                      ),
+                widgets.add(
+                  AlignmentContainer(
+                    message: message,
+                    alignedRight: alignedRight,
+                    child: SectionTile(
+                      key: ValueKey(message.id),
+                      section: message.section!,
+                      isDependency: true,
                     ),
-                  );
-                }
+                  ),
+                );
               }
             }
-            widgets.add(SizedBox(height: messageMargin));
-            if (DateFormat.yMMMMd().format(DateTime.now()) == date) {
-              widgets.add(Center(child: Text('Today')));
-            } else if (DateFormat.yMMMMd().format(
-                  DateTime.now().subtract(Duration(days: 1)),
-                ) ==
-                date) {
-              widgets.add(Center(child: Text('Yesterday')));
-            } else {
-              widgets.add(Center(child: Text(date)));
-            }
-            widgets.add(SizedBox(height: messageMargin));
-          });
+          }
+          widgets.add(SizedBox(height: messageMargin));
+          if (DateFormat.yMMMMd().format(DateTime.now()) == date) {
+            widgets.add(Center(child: Text('Today')));
+          } else if (DateFormat.yMMMMd().format(
+                DateTime.now().subtract(Duration(days: 1)),
+              ) ==
+              date) {
+            widgets.add(Center(child: Text('Yesterday')));
+          } else {
+            widgets.add(Center(child: Text(date)));
+          }
+          widgets.add(SizedBox(height: messageMargin));
+        });
 
-          return BlocListener<WebsocketBloc, WebsocketState>(
-            listener: (context, websocketState) {
-              if (websocketState.status == WebsocketStatus.connected) {
-                context.read<MessagesBloc>().add(
-                  MessagesEvent.get(
-                    chat: widget.chat,
-                    newestMessage: messages.first,
-                  ),
-                );
-              }
+        return BlocListener<WebsocketBloc, WebsocketState>(
+          listener: (context, websocketState) {
+            if (websocketState.status == WebsocketStatus.connected) {
+              context.read<MessagesBloc>().add(
+                MessagesEvent.get(
+                  chat: widget.chat,
+                  newestMessage: messages
+                      .where((m) => m.syncStatus == SyncStatus.synced)
+                      .first,
+                ),
+              );
+            }
+          },
+          child: SmartRefresher(
+            // Messages are listed in reverse, down is up and up is down...lol
+            enablePullDown: false,
+            enablePullUp: state.hasNext,
+            controller: _refreshController,
+            onLoading: () {
+              context.read<MessagesBloc>().add(
+                MessagesEvent.get(
+                  chat: widget.chat,
+                  oldestMessage: messages
+                      .where((m) => m.syncStatus == SyncStatus.synced)
+                      .last,
+                ),
+              );
             },
-            child: SmartRefresher(
-              // Messages are listed in reverse, down is up and up is down...lol
-              enablePullDown: false,
-              enablePullUp: state.hasNext,
-              controller: _refreshController,
-              onLoading: () {
-                context.read<MessagesBloc>().add(
-                  MessagesEvent.get(
-                    chat: widget.chat,
-                    oldestMessage: messages.last,
-                  ),
-                );
-              },
-              footer: ClassicFooter(),
-              child: ListView(reverse: true, children: widgets),
-            ),
-          );
-        },
-      ),
+            footer: ClassicFooter(),
+            child: ListView(reverse: true, children: widgets),
+          ),
+        );
+      },
     );
   }
 }
@@ -425,12 +373,19 @@ class MessageTime extends StatelessWidget {
                     ),
                   )
                 : SizedBox.shrink(),
-            Text(
-              timeFormat.format(message.createdAt).toLowerCase(),
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: Theme.of(context).disabledColor,
-              ),
-            ),
+            message.syncStatus == SyncStatus.failed
+                ? Text(
+                    'Not Delivered',
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  )
+                : Text(
+                    timeFormat.format(message.createdAt).toLowerCase(),
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: Theme.of(context).disabledColor,
+                    ),
+                  ),
           ],
         ),
       ),
@@ -444,11 +399,15 @@ class AlignmentContainer extends StatefulWidget {
     required this.alignedRight,
     required this.child,
     required this.message,
+    this.verticalPadding = 5,
+    this.horizontalPadding = 5,
   });
 
   final bool alignedRight;
   final Message message;
   final Widget child;
+  final double verticalPadding;
+  final double horizontalPadding;
 
   @override
   State<AlignmentContainer> createState() => _AlignmentContainerState();
@@ -510,32 +469,59 @@ class _AlignmentContainerState extends State<AlignmentContainer> {
               alignment: widget.alignedRight
                   ? Alignment.topRight
                   : Alignment.topLeft,
-              child: Container(
+              child: ConstrainedBox(
                 constraints: BoxConstraints(
                   maxWidth: messageWidth,
                   minWidth: 60,
                 ),
-                margin: EdgeInsets.only(
-                  left: widget.alignedRight ? 0 : messageMargin,
-                  right: widget.alignedRight ? messageMargin : 0,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: widget.verticalPadding,
+                          horizontal: widget.horizontalPadding,
+                        ),
+                        margin: EdgeInsets.only(
+                          left: widget.alignedRight ? 0 : messageMargin,
+                          right: widget.alignedRight ? messageMargin : 0,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15),
+                            bottomLeft: widget.alignedRight
+                                ? Radius.circular(15)
+                                : Radius.circular(0),
+                            bottomRight: widget.alignedRight
+                                ? Radius.circular(0)
+                                : Radius.circular(15),
+                          ),
+                          color: widget.alignedRight
+                              ? Theme.of(context).colorScheme.primaryContainer
+                              : Theme.of(
+                                  context,
+                                ).colorScheme.secondaryContainer,
+                        ),
+                        child: widget.child,
+                      ),
+                    ),
+                    if (widget.message.syncStatus == SyncStatus.failed)
+                      Container(
+                        margin: EdgeInsets.only(right: 5),
+                        child: GestureDetector(
+                          onTap: () {
+                            context.read<SyncBloc>().add(SyncEvent.start());
+                          },
+                          child: Icon(
+                            Icons.error_rounded,
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(15),
-                    topRight: Radius.circular(15),
-                    bottomLeft: widget.alignedRight
-                        ? Radius.circular(15)
-                        : Radius.circular(0),
-                    bottomRight: widget.alignedRight
-                        ? Radius.circular(0)
-                        : Radius.circular(15),
-                  ),
-                  color: widget.alignedRight
-                      ? Theme.of(context).colorScheme.primaryContainer
-                      : Theme.of(context).colorScheme.secondaryContainer,
-                ),
-                child: widget.child,
               ),
             ),
           ),

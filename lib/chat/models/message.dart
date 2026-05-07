@@ -26,8 +26,11 @@ class Message {
   bool isEdited = false;
   bool isDeleted = false;
 
-  bool postRequired = false;
-  bool patchRequired = false;
+  String syncStatus = SyncStatus.synced;
+  String? syncType;
+  String uuid;
+
+  List<String> filePaths = [];
 
   // Explicit DateTime
   @Property(type: PropertyType.date)
@@ -186,51 +189,47 @@ class Message {
     this.id,
     User? author,
     this.text = '',
+    this.filePaths = const [],
+    Post? post,
+    Survey? survey,
+    Ballot? ballot,
+    Meeting? meeting,
+    Petition? petition,
+    Section? section,
+    LatLng? location,
     this.isRead = false,
     this.isEdited = false,
     this.isDeleted = false,
-    this.postRequired = false,
-    this.patchRequired = false,
+    this.syncStatus = SyncStatus.synced,
+    this.syncType,
+    required this.uuid,
     required this.createdAt,
     required this.updatedAt,
   }) {
     if (author != null) {
       this.author = author;
     }
-  }
-
-  factory Message.failed({
-    required User author,
-    required String text,
-    int? id,
-    Post? post,
-    Ballot? ballot,
-    Survey? survey,
-    Petition? petition,
-    Meeting? meeting,
-    Section? section,
-    List<String> filePaths = const [],
-    LatLng? location,
-    List<Asset>? assets,
-  }) {
-    final now = DateTime.now();
-
-    final message = Message(
-      author: author,
-      text: text,
-      id: id,
-      createdAt: now,
-      updatedAt: now,
-      isRead: true,
-      isEdited: false,
-      isDeleted: false,
-      postRequired: true,
-    );
-
-    if (post != null) message.post = post;
-    if (assets != null && assets.isNotEmpty) message.assets = assets;
-
-    return message;
+    if (post != null) {
+      this.post = post;
+    }
+    if (survey != null) {
+      this.survey = survey;
+    }
+    if (ballot != null) {
+      this.ballot = ballot;
+    }
+    if (meeting != null) {
+      this.meeting = meeting;
+    }
+    if (petition != null) {
+      this.petition = petition;
+    }
+    if (section != null) {
+      this.section = section;
+    }
+    if (location != null) {
+      this.location = location;
+    }
   }
 
   // ==================== JSON SERIALIZATION ====================
@@ -239,6 +238,7 @@ class Message {
     final message = Message(
       id: json['id'] as int?,
       author: User.fromJson(json['author'] as Map<String, dynamic>),
+      uuid: json['uuid'] as String,
       text: json['text'] as String? ?? '',
       isRead: json['is_read'] as bool? ?? false,
       isEdited: json['is_edited'] as bool? ?? false,
@@ -279,4 +279,17 @@ class Message {
       'assets': assets.map((e) => e.toJson()).toList(),
     };
   }
+}
+
+class SyncStatus {
+  static const String pending = 'Pending';
+  static const String synced = 'Synced';
+  static const String failed = 'Failed';
+}
+
+class SyncType {
+  static const String post = 'Post';
+  static const String assets = 'Upload assets';
+  static const String patch = 'Patch';
+  static const String delete = 'Delete';
 }

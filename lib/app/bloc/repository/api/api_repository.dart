@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:democracy/app/models/asset.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/models/chat.dart';
+import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/geo/models/constituency.dart';
 import 'package:democracy/geo/models/county.dart';
@@ -77,6 +78,7 @@ class APIRepository {
   }
 
   Future<Map<String, dynamic>> createMessage({
+    required String uuid,
     required Chat chat,
     required String text,
     Post? post,
@@ -91,6 +93,7 @@ class APIRepository {
     List<Map> assets = await getAssets(filePaths);
 
     return await apiProvider.createMessage(
+      uuid: uuid,
       chat: chat,
       text: text,
       post: post,
@@ -114,6 +117,10 @@ class APIRepository {
       url: url,
       onSendProgress: onSendProgress,
     );
+  }
+
+  Future<List<Map>> generateUploadUrl({required Message message}) async {
+    return await apiProvider.generateUploadUrl(message: message);
   }
 
   Future<List<Asset>> messageAssetUploadComplete({

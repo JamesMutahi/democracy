@@ -4,10 +4,20 @@ import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/repository/api/api_repository.dart';
 import 'package:democracy/app/bloc/repository/database/database_repository.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
-import 'package:democracy/app/shared/constants/variables.dart';
+import 'package:democracy/app/core/app_logger.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/ballot/models/ballot.dart';
+import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
+import 'package:democracy/constitution/models/section.dart';
+import 'package:democracy/meeting/models/meeting.dart';
+import 'package:democracy/petition/models/petition.dart';
+import 'package:democracy/post/models/post.dart';
+import 'package:democracy/survey/models/survey.dart';
+import 'package:democracy/user/models/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:uuid/uuid.dart';
 
 part 'message_detail_bloc.freezed.dart';
 part 'message_detail_state.dart';
@@ -40,6 +50,7 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
     on<_Created>((event, emit) async => await _onCreated(event, emit));
     on<_Updated>((event, emit) async => await _onUpdated(event, emit));
     on<_Deleted>((event, emit) async => await _onDeleted(event, emit));
+    on<_Create>((event, emit) async => await _onCreate(event, emit));
     on<_Edit>((event, emit) async => await _onEdit(event, emit));
     on<_Delete>((event, emit) async => await _onDelete(event, emit));
   }
@@ -47,10 +58,10 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
   Future _onCreated(_Created event, Emitter<MessageDetailState> emit) async {
     emit(MessageDetailLoading());
     if (event.payload['response_status'] == 201) {
-      Message message = Message.fromJson(event.payload['data']);
-      await databaseRepository.createMessage(
+      Message newMessage = Message.fromJson(event.payload['data']);
+      final message = await databaseRepository.createMessage(
         chatId: event.payload['data']['chat'],
-        message: message,
+        message: newMessage,
       );
       emit(MessageCreated(message: message));
     } else {
@@ -71,10 +82,11 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
   Future _onDeleted(_Deleted event, Emitter<MessageDetailState> emit) async {
     emit(MessageDetailLoading());
     if (event.payload['response_status'] == 204) {
+      AppLogger.info(event.payload.toString());
       emit(
         MessageDeleted(
-          messageId: event.payload['pk'],
-          chatId: event.payload['chat_id'],
+          messageId: event.payload['data']['pk'],
+          chatId: event.payload['data']['chat_id'],
         ),
       );
     } else {
@@ -82,39 +94,62 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
     }
   }
 
-  Future _onEdit(_Edit event, Emitter<MessageDetailState> emit) async {
-    if (!webSocketService.isConnected) {
-      emit(MessageDetailFailure(error: serverError));
-      return;
+  Future _onCreate(_Create event, Emitter<MessageDetailState> emit) async {
+    emit(MessageDetailLoading());
+    try {
+      final newMessage = Message(
+        author: event.author,
+        text: event.text,
+        post: event.post,
+        ballot: event.ballot,
+        survey: event.survey,
+        petition: event.petition,
+        meeting: event.meeting,
+        section: event.section,
+        filePaths: event.filePaths,
+        location: event.location,
+        syncStatus: SyncStatus.pending,
+        syncType: SyncType.post,
+        uuid: Uuid().v4(),
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+      final message = await databaseRepository.createMessage(
+        chatId: event.chat.id,
+        message: newMessage,
+      );
+      emit(MessageCreatedInDB(message: message));
+    } catch (e) {
+      emit(MessageDetailFailure(error: e.toString()));
     }
-    Map<String, dynamic> message = {
-      'stream': stream,
-      'payload': {
-        'action': 'edit_message',
-        'request_id': requestId,
-        'pk': event.message.id,
-        'data': {'text': event.text},
-      },
-    };
-    webSocketService.send(message);
+  }
+
+  Future _onEdit(_Edit event, Emitter<MessageDetailState> emit) async {
+    emit(MessageDetailLoading());
+    try {
+      Message message = event.message;
+      message.text = event.text;
+      message.syncStatus = SyncStatus.pending;
+      message.syncType = SyncType.patch;
+      await databaseRepository.updateMessage(message: event.message);
+      emit(MessageUpdatedInDB(message: message));
+    } catch (e) {
+      emit(MessageDetailFailure(error: e.toString()));
+    }
   }
 
   Future _onDelete(_Delete event, Emitter<MessageDetailState> emit) async {
-    if (!webSocketService.isConnected) {
-      emit(MessageDetailFailure(error: serverError));
-      return;
-    }
-
-    for (Message msg in event.messages) {
-      Map<String, dynamic> message = {
-        'stream': stream,
-        'payload': {
-          'action': 'delete_message',
-          'request_id': requestId,
-          'pk': msg.id,
-        },
-      };
-      webSocketService.send(message);
+    emit(MessageDetailLoading());
+    try {
+      for (Message message in event.messages) {
+        message.isDeleted = true;
+        message.syncStatus = SyncStatus.pending;
+        message.syncType = SyncType.delete;
+        await databaseRepository.updateMessage(message: message);
+        emit(MessageDeletedInDB(message: message));
+      }
+    } catch (e) {
+      emit(MessageDetailFailure(error: e.toString()));
     }
   }
 

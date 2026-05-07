@@ -1,11 +1,7 @@
 import 'package:democracy/app/shared/constants/variables.dart';
-import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
-import 'package:democracy/post/bloc/draft_post/draft_post_bloc.dart';
 import 'package:democracy/post/bloc/following_posts/following_posts_bloc.dart';
 import 'package:democracy/post/bloc/for_you/for_you_bloc.dart';
-import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
-import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
@@ -30,75 +26,29 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<PostDetailBloc, PostDetailState>(
-          listener: (context, state) {
-            if (state is PostDetailFailure) {
-              final snackBar = getSnackBar(
-                context: context,
-                message: state.error,
-                status: SnackBarStatus.failure,
-              );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            }
-          },
-        ),
-        BlocListener<PostCreateBloc, PostCreateState>(
-          listener: (context, state) {
-            if (state.status == PostCreateStatus.success) {
-              String message = state.post!.replyTo == null
-                  ? 'Posted'
-                  : 'Reply sent';
-              final snackBar = getSnackBar(
-                context: context,
-                message: message,
-                status: SnackBarStatus.success,
-              );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            }
-          },
-        ),
-        BlocListener<DraftPostBloc, DraftPostState>(
-          listener: (context, state) {
-            if (state is DraftPostSaved) {
-              String message = 'Post saved as draft';
-              final snackBar = getSnackBar(
-                context: context,
-                message: message,
-                status: SnackBarStatus.success,
-              );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            }
-          },
-        ),
-      ],
-      child: DefaultTabController(
-        length: 2,
-        child: NestedScrollView(
-          headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-            return [
-              CustomAppBar(
-                user: widget.user,
-                notifications: widget.notifications,
-                middle: Image.asset(logo, width: 50, height: 50),
-                bottom: TabBar(
-                  dividerColor: Theme.of(
-                    context,
-                  ).colorScheme.outlineVariant,
-                  labelStyle: Theme.of(context).textTheme.titleMedium,
-                  tabs: [
-                    Tab(text: 'For You'),
-                    Tab(text: 'Following'),
-                  ],
-                ),
+    return DefaultTabController(
+      length: 2,
+      child: NestedScrollView(
+        headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+          return [
+            CustomAppBar(
+              user: widget.user,
+              notifications: widget.notifications,
+              middle: Image.asset(logo, width: 50, height: 50),
+              bottom: TabBar(
+                dividerColor: Theme.of(context).colorScheme.outlineVariant,
+                labelStyle: Theme.of(context).textTheme.titleMedium,
+                tabs: [
+                  Tab(text: 'For You'),
+                  Tab(text: 'Following'),
+                ],
               ),
-            ];
-          },
-          body: TabBarView(
-            physics: NeverScrollableScrollPhysics(),
-            children: [ForYouTab(), FollowingTab()],
-          ),
+            ),
+          ];
+        },
+        body: TabBarView(
+          physics: NeverScrollableScrollPhysics(),
+          children: [ForYouTab(), FollowingTab()],
         ),
       ),
     );
@@ -162,7 +112,7 @@ class _ForYouTabState extends State<ForYouTab>
             context.read<ForYouBloc>().add(ForYouEvent.update(posts: posts));
           },
           refreshController: _refreshController,
-          enablePullDown: posts.isNotEmpty,
+          enablePullDown: true,
           enablePullUp: state.hasNext,
           checkVisibility: true,
           onRefresh: () {
@@ -239,7 +189,7 @@ class _FollowingTabState extends State<FollowingTab> {
             );
           },
           refreshController: _refreshController,
-          enablePullDown: posts.isNotEmpty,
+          enablePullDown: true,
           enablePullUp: state.hasNext,
           checkVisibility: true,
           onRefresh: () {

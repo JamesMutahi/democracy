@@ -55,12 +55,15 @@ extension MessageDetailStatePatterns on MessageDetailState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( MessageDetailInitial value)?  initial,TResult Function( MessageDetailLoading value)?  loading,TResult Function( MessageCreated value)?  created,TResult Function( MessageUpdated value)?  updated,TResult Function( MessageDeleted value)?  deleted,TResult Function( MessageDetailFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( MessageDetailInitial value)?  initial,TResult Function( MessageDetailLoading value)?  loading,TResult Function( MessageCreatedInDB value)?  createdInDB,TResult Function( MessageUpdatedInDB value)?  updatedInDB,TResult Function( MessageDeletedInDB value)?  deletedInDB,TResult Function( MessageCreated value)?  created,TResult Function( MessageUpdated value)?  updated,TResult Function( MessageDeleted value)?  deleted,TResult Function( MessageDetailFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case MessageDetailInitial() when initial != null:
 return initial(_that);case MessageDetailLoading() when loading != null:
-return loading(_that);case MessageCreated() when created != null:
+return loading(_that);case MessageCreatedInDB() when createdInDB != null:
+return createdInDB(_that);case MessageUpdatedInDB() when updatedInDB != null:
+return updatedInDB(_that);case MessageDeletedInDB() when deletedInDB != null:
+return deletedInDB(_that);case MessageCreated() when created != null:
 return created(_that);case MessageUpdated() when updated != null:
 return updated(_that);case MessageDeleted() when deleted != null:
 return deleted(_that);case MessageDetailFailure() when failure != null:
@@ -82,12 +85,15 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( MessageDetailInitial value)  initial,required TResult Function( MessageDetailLoading value)  loading,required TResult Function( MessageCreated value)  created,required TResult Function( MessageUpdated value)  updated,required TResult Function( MessageDeleted value)  deleted,required TResult Function( MessageDetailFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( MessageDetailInitial value)  initial,required TResult Function( MessageDetailLoading value)  loading,required TResult Function( MessageCreatedInDB value)  createdInDB,required TResult Function( MessageUpdatedInDB value)  updatedInDB,required TResult Function( MessageDeletedInDB value)  deletedInDB,required TResult Function( MessageCreated value)  created,required TResult Function( MessageUpdated value)  updated,required TResult Function( MessageDeleted value)  deleted,required TResult Function( MessageDetailFailure value)  failure,}){
 final _that = this;
 switch (_that) {
 case MessageDetailInitial():
 return initial(_that);case MessageDetailLoading():
-return loading(_that);case MessageCreated():
+return loading(_that);case MessageCreatedInDB():
+return createdInDB(_that);case MessageUpdatedInDB():
+return updatedInDB(_that);case MessageDeletedInDB():
+return deletedInDB(_that);case MessageCreated():
 return created(_that);case MessageUpdated():
 return updated(_that);case MessageDeleted():
 return deleted(_that);case MessageDetailFailure():
@@ -108,12 +114,15 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( MessageDetailInitial value)?  initial,TResult? Function( MessageDetailLoading value)?  loading,TResult? Function( MessageCreated value)?  created,TResult? Function( MessageUpdated value)?  updated,TResult? Function( MessageDeleted value)?  deleted,TResult? Function( MessageDetailFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( MessageDetailInitial value)?  initial,TResult? Function( MessageDetailLoading value)?  loading,TResult? Function( MessageCreatedInDB value)?  createdInDB,TResult? Function( MessageUpdatedInDB value)?  updatedInDB,TResult? Function( MessageDeletedInDB value)?  deletedInDB,TResult? Function( MessageCreated value)?  created,TResult? Function( MessageUpdated value)?  updated,TResult? Function( MessageDeleted value)?  deleted,TResult? Function( MessageDetailFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case MessageDetailInitial() when initial != null:
 return initial(_that);case MessageDetailLoading() when loading != null:
-return loading(_that);case MessageCreated() when created != null:
+return loading(_that);case MessageCreatedInDB() when createdInDB != null:
+return createdInDB(_that);case MessageUpdatedInDB() when updatedInDB != null:
+return updatedInDB(_that);case MessageDeletedInDB() when deletedInDB != null:
+return deletedInDB(_that);case MessageCreated() when created != null:
 return created(_that);case MessageUpdated() when updated != null:
 return updated(_that);case MessageDeleted() when deleted != null:
 return deleted(_that);case MessageDetailFailure() when failure != null:
@@ -134,11 +143,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Message message)?  created,TResult Function( Message message)?  updated,TResult Function( int messageId,  int chatId)?  deleted,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Message message)?  createdInDB,TResult Function( Message message)?  updatedInDB,TResult Function( Message message)?  deletedInDB,TResult Function( Message message)?  created,TResult Function( Message message)?  updated,TResult Function( int messageId,  int chatId)?  deleted,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case MessageDetailInitial() when initial != null:
 return initial();case MessageDetailLoading() when loading != null:
-return loading();case MessageCreated() when created != null:
+return loading();case MessageCreatedInDB() when createdInDB != null:
+return createdInDB(_that.message);case MessageUpdatedInDB() when updatedInDB != null:
+return updatedInDB(_that.message);case MessageDeletedInDB() when deletedInDB != null:
+return deletedInDB(_that.message);case MessageCreated() when created != null:
 return created(_that.message);case MessageUpdated() when updated != null:
 return updated(_that.message);case MessageDeleted() when deleted != null:
 return deleted(_that.messageId,_that.chatId);case MessageDetailFailure() when failure != null:
@@ -160,11 +172,14 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Message message)  created,required TResult Function( Message message)  updated,required TResult Function( int messageId,  int chatId)  deleted,required TResult Function( String error)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Message message)  createdInDB,required TResult Function( Message message)  updatedInDB,required TResult Function( Message message)  deletedInDB,required TResult Function( Message message)  created,required TResult Function( Message message)  updated,required TResult Function( int messageId,  int chatId)  deleted,required TResult Function( String error)  failure,}) {final _that = this;
 switch (_that) {
 case MessageDetailInitial():
 return initial();case MessageDetailLoading():
-return loading();case MessageCreated():
+return loading();case MessageCreatedInDB():
+return createdInDB(_that.message);case MessageUpdatedInDB():
+return updatedInDB(_that.message);case MessageDeletedInDB():
+return deletedInDB(_that.message);case MessageCreated():
 return created(_that.message);case MessageUpdated():
 return updated(_that.message);case MessageDeleted():
 return deleted(_that.messageId,_that.chatId);case MessageDetailFailure():
@@ -185,11 +200,14 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Message message)?  created,TResult? Function( Message message)?  updated,TResult? Function( int messageId,  int chatId)?  deleted,TResult? Function( String error)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Message message)?  createdInDB,TResult? Function( Message message)?  updatedInDB,TResult? Function( Message message)?  deletedInDB,TResult? Function( Message message)?  created,TResult? Function( Message message)?  updated,TResult? Function( int messageId,  int chatId)?  deleted,TResult? Function( String error)?  failure,}) {final _that = this;
 switch (_that) {
 case MessageDetailInitial() when initial != null:
 return initial();case MessageDetailLoading() when loading != null:
-return loading();case MessageCreated() when created != null:
+return loading();case MessageCreatedInDB() when createdInDB != null:
+return createdInDB(_that.message);case MessageUpdatedInDB() when updatedInDB != null:
+return updatedInDB(_that.message);case MessageDeletedInDB() when deletedInDB != null:
+return deletedInDB(_that.message);case MessageCreated() when created != null:
 return created(_that.message);case MessageUpdated() when updated != null:
 return updated(_that.message);case MessageDeleted() when deleted != null:
 return deleted(_that.messageId,_that.chatId);case MessageDetailFailure() when failure != null:
@@ -264,6 +282,204 @@ String toString() {
 
 
 
+
+/// @nodoc
+
+
+class MessageCreatedInDB implements MessageDetailState {
+  const MessageCreatedInDB({required this.message});
+  
+
+ final  Message message;
+
+/// Create a copy of MessageDetailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MessageCreatedInDBCopyWith<MessageCreatedInDB> get copyWith => _$MessageCreatedInDBCopyWithImpl<MessageCreatedInDB>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MessageCreatedInDB&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'MessageDetailState.createdInDB(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $MessageCreatedInDBCopyWith<$Res> implements $MessageDetailStateCopyWith<$Res> {
+  factory $MessageCreatedInDBCopyWith(MessageCreatedInDB value, $Res Function(MessageCreatedInDB) _then) = _$MessageCreatedInDBCopyWithImpl;
+@useResult
+$Res call({
+ Message message
+});
+
+
+
+
+}
+/// @nodoc
+class _$MessageCreatedInDBCopyWithImpl<$Res>
+    implements $MessageCreatedInDBCopyWith<$Res> {
+  _$MessageCreatedInDBCopyWithImpl(this._self, this._then);
+
+  final MessageCreatedInDB _self;
+  final $Res Function(MessageCreatedInDB) _then;
+
+/// Create a copy of MessageDetailState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(MessageCreatedInDB(
+message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as Message,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class MessageUpdatedInDB implements MessageDetailState {
+  const MessageUpdatedInDB({required this.message});
+  
+
+ final  Message message;
+
+/// Create a copy of MessageDetailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MessageUpdatedInDBCopyWith<MessageUpdatedInDB> get copyWith => _$MessageUpdatedInDBCopyWithImpl<MessageUpdatedInDB>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MessageUpdatedInDB&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'MessageDetailState.updatedInDB(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $MessageUpdatedInDBCopyWith<$Res> implements $MessageDetailStateCopyWith<$Res> {
+  factory $MessageUpdatedInDBCopyWith(MessageUpdatedInDB value, $Res Function(MessageUpdatedInDB) _then) = _$MessageUpdatedInDBCopyWithImpl;
+@useResult
+$Res call({
+ Message message
+});
+
+
+
+
+}
+/// @nodoc
+class _$MessageUpdatedInDBCopyWithImpl<$Res>
+    implements $MessageUpdatedInDBCopyWith<$Res> {
+  _$MessageUpdatedInDBCopyWithImpl(this._self, this._then);
+
+  final MessageUpdatedInDB _self;
+  final $Res Function(MessageUpdatedInDB) _then;
+
+/// Create a copy of MessageDetailState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(MessageUpdatedInDB(
+message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as Message,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class MessageDeletedInDB implements MessageDetailState {
+  const MessageDeletedInDB({required this.message});
+  
+
+ final  Message message;
+
+/// Create a copy of MessageDetailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MessageDeletedInDBCopyWith<MessageDeletedInDB> get copyWith => _$MessageDeletedInDBCopyWithImpl<MessageDeletedInDB>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MessageDeletedInDB&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'MessageDetailState.deletedInDB(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $MessageDeletedInDBCopyWith<$Res> implements $MessageDetailStateCopyWith<$Res> {
+  factory $MessageDeletedInDBCopyWith(MessageDeletedInDB value, $Res Function(MessageDeletedInDB) _then) = _$MessageDeletedInDBCopyWithImpl;
+@useResult
+$Res call({
+ Message message
+});
+
+
+
+
+}
+/// @nodoc
+class _$MessageDeletedInDBCopyWithImpl<$Res>
+    implements $MessageDeletedInDBCopyWith<$Res> {
+  _$MessageDeletedInDBCopyWithImpl(this._self, this._then);
+
+  final MessageDeletedInDB _self;
+  final $Res Function(MessageDeletedInDB) _then;
+
+/// Create a copy of MessageDetailState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(MessageDeletedInDB(
+message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as Message,
+  ));
+}
+
+
+}
 
 /// @nodoc
 
@@ -575,13 +791,14 @@ extension MessageDetailEventPatterns on MessageDetailEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Edit value)?  edit,TResult Function( _Delete value)?  delete,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Create value)?  create,TResult Function( _Edit value)?  edit,TResult Function( _Delete value)?  delete,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that);case _Updated() when updated != null:
 return updated(_that);case _Deleted() when deleted != null:
-return deleted(_that);case _Edit() when edit != null:
+return deleted(_that);case _Create() when create != null:
+return create(_that);case _Edit() when edit != null:
 return edit(_that);case _Delete() when delete != null:
 return delete(_that);case _:
   return orElse();
@@ -601,13 +818,14 @@ return delete(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Edit value)  edit,required TResult Function( _Delete value)  delete,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Create value)  create,required TResult Function( _Edit value)  edit,required TResult Function( _Delete value)  delete,}){
 final _that = this;
 switch (_that) {
 case _Created():
 return created(_that);case _Updated():
 return updated(_that);case _Deleted():
-return deleted(_that);case _Edit():
+return deleted(_that);case _Create():
+return create(_that);case _Edit():
 return edit(_that);case _Delete():
 return delete(_that);}
 }
@@ -623,13 +841,14 @@ return delete(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Edit value)?  edit,TResult? Function( _Delete value)?  delete,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Create value)?  create,TResult? Function( _Edit value)?  edit,TResult? Function( _Delete value)?  delete,}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that);case _Updated() when updated != null:
 return updated(_that);case _Deleted() when deleted != null:
-return deleted(_that);case _Edit() when edit != null:
+return deleted(_that);case _Create() when create != null:
+return create(_that);case _Edit() when edit != null:
 return edit(_that);case _Delete() when delete != null:
 return delete(_that);case _:
   return null;
@@ -648,12 +867,13 @@ return delete(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Message message,  String text)?  edit,TResult Function( List<Message> messages)?  delete,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( User author,  Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<String> filePaths,  LatLng? location)?  create,TResult Function( Message message,  String text)?  edit,TResult Function( List<Message> messages)?  delete,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
-return deleted(_that.payload);case _Edit() when edit != null:
+return deleted(_that.payload);case _Create() when create != null:
+return create(_that.author,_that.chat,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.filePaths,_that.location);case _Edit() when edit != null:
 return edit(_that.message,_that.text);case _Delete() when delete != null:
 return delete(_that.messages);case _:
   return orElse();
@@ -673,12 +893,13 @@ return delete(_that.messages);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Message message,  String text)  edit,required TResult Function( List<Message> messages)  delete,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( User author,  Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<String> filePaths,  LatLng? location)  create,required TResult Function( Message message,  String text)  edit,required TResult Function( List<Message> messages)  delete,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Updated():
 return updated(_that.payload);case _Deleted():
-return deleted(_that.payload);case _Edit():
+return deleted(_that.payload);case _Create():
+return create(_that.author,_that.chat,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.filePaths,_that.location);case _Edit():
 return edit(_that.message,_that.text);case _Delete():
 return delete(_that.messages);}
 }
@@ -694,12 +915,13 @@ return delete(_that.messages);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Message message,  String text)?  edit,TResult? Function( List<Message> messages)?  delete,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( User author,  Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<String> filePaths,  LatLng? location)?  create,TResult? Function( Message message,  String text)?  edit,TResult? Function( List<Message> messages)?  delete,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
-return deleted(_that.payload);case _Edit() when edit != null:
+return deleted(_that.payload);case _Create() when create != null:
+return create(_that.author,_that.chat,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.filePaths,_that.location);case _Edit() when edit != null:
 return edit(_that.message,_that.text);case _Delete() when delete != null:
 return delete(_that.messages);case _:
   return null;
@@ -923,6 +1145,179 @@ as Map<String, dynamic>,
 }
 
 
+}
+
+/// @nodoc
+
+
+class _Create implements MessageDetailEvent {
+  const _Create({required this.author, required this.chat, required this.text, this.post, this.ballot, this.survey, this.petition, this.meeting, this.section, final  List<String> filePaths = const [], this.location}): _filePaths = filePaths;
+  
+
+ final  User author;
+ final  Chat chat;
+ final  String text;
+ final  Post? post;
+ final  Ballot? ballot;
+ final  Survey? survey;
+ final  Petition? petition;
+ final  Meeting? meeting;
+ final  Section? section;
+ final  List<String> _filePaths;
+@JsonKey() List<String> get filePaths {
+  if (_filePaths is EqualUnmodifiableListView) return _filePaths;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_filePaths);
+}
+
+ final  LatLng? location;
+
+/// Create a copy of MessageDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CreateCopyWith<_Create> get copyWith => __$CreateCopyWithImpl<_Create>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Create&&(identical(other.author, author) || other.author == author)&&(identical(other.chat, chat) || other.chat == chat)&&(identical(other.text, text) || other.text == text)&&(identical(other.post, post) || other.post == post)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.section, section) || other.section == section)&&const DeepCollectionEquality().equals(other._filePaths, _filePaths)&&(identical(other.location, location) || other.location == location));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,author,chat,text,post,ballot,survey,petition,meeting,section,const DeepCollectionEquality().hash(_filePaths),location);
+
+@override
+String toString() {
+  return 'MessageDetailEvent.create(author: $author, chat: $chat, text: $text, post: $post, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, section: $section, filePaths: $filePaths, location: $location)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CreateCopyWith<$Res> implements $MessageDetailEventCopyWith<$Res> {
+  factory _$CreateCopyWith(_Create value, $Res Function(_Create) _then) = __$CreateCopyWithImpl;
+@useResult
+$Res call({
+ User author, Chat chat, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting, Section? section, List<String> filePaths, LatLng? location
+});
+
+
+$UserCopyWith<$Res> get author;$PostCopyWith<$Res>? get post;$BallotCopyWith<$Res>? get ballot;$SurveyCopyWith<$Res>? get survey;$PetitionCopyWith<$Res>? get petition;$MeetingCopyWith<$Res>? get meeting;$SectionCopyWith<$Res>? get section;
+
+}
+/// @nodoc
+class __$CreateCopyWithImpl<$Res>
+    implements _$CreateCopyWith<$Res> {
+  __$CreateCopyWithImpl(this._self, this._then);
+
+  final _Create _self;
+  final $Res Function(_Create) _then;
+
+/// Create a copy of MessageDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? author = null,Object? chat = null,Object? text = null,Object? post = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? meeting = freezed,Object? section = freezed,Object? filePaths = null,Object? location = freezed,}) {
+  return _then(_Create(
+author: null == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
+as User,chat: null == chat ? _self.chat : chat // ignore: cast_nullable_to_non_nullable
+as Chat,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
+as String,post: freezed == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
+as Post?,ballot: freezed == ballot ? _self.ballot : ballot // ignore: cast_nullable_to_non_nullable
+as Ballot?,survey: freezed == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
+as Survey?,petition: freezed == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
+as Petition?,meeting: freezed == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
+as Meeting?,section: freezed == section ? _self.section : section // ignore: cast_nullable_to_non_nullable
+as Section?,filePaths: null == filePaths ? _self._filePaths : filePaths // ignore: cast_nullable_to_non_nullable
+as List<String>,location: freezed == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
+as LatLng?,
+  ));
+}
+
+/// Create a copy of MessageDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$UserCopyWith<$Res> get author {
+  
+  return $UserCopyWith<$Res>(_self.author, (value) {
+    return _then(_self.copyWith(author: value));
+  });
+}/// Create a copy of MessageDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PostCopyWith<$Res>? get post {
+    if (_self.post == null) {
+    return null;
+  }
+
+  return $PostCopyWith<$Res>(_self.post!, (value) {
+    return _then(_self.copyWith(post: value));
+  });
+}/// Create a copy of MessageDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$BallotCopyWith<$Res>? get ballot {
+    if (_self.ballot == null) {
+    return null;
+  }
+
+  return $BallotCopyWith<$Res>(_self.ballot!, (value) {
+    return _then(_self.copyWith(ballot: value));
+  });
+}/// Create a copy of MessageDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SurveyCopyWith<$Res>? get survey {
+    if (_self.survey == null) {
+    return null;
+  }
+
+  return $SurveyCopyWith<$Res>(_self.survey!, (value) {
+    return _then(_self.copyWith(survey: value));
+  });
+}/// Create a copy of MessageDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PetitionCopyWith<$Res>? get petition {
+    if (_self.petition == null) {
+    return null;
+  }
+
+  return $PetitionCopyWith<$Res>(_self.petition!, (value) {
+    return _then(_self.copyWith(petition: value));
+  });
+}/// Create a copy of MessageDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MeetingCopyWith<$Res>? get meeting {
+    if (_self.meeting == null) {
+    return null;
+  }
+
+  return $MeetingCopyWith<$Res>(_self.meeting!, (value) {
+    return _then(_self.copyWith(meeting: value));
+  });
+}/// Create a copy of MessageDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SectionCopyWith<$Res>? get section {
+    if (_self.section == null) {
+    return null;
+  }
+
+  return $SectionCopyWith<$Res>(_self.section!, (value) {
+    return _then(_self.copyWith(section: value));
+  });
+}
 }
 
 /// @nodoc

@@ -6,6 +6,15 @@ class MessageDetailState with _$MessageDetailState {
 
   const factory MessageDetailState.loading() = MessageDetailLoading;
 
+  const factory MessageDetailState.createdInDB({required Message message}) =
+      MessageCreatedInDB;
+
+  const factory MessageDetailState.updatedInDB({required Message message}) =
+      MessageUpdatedInDB;
+
+  const factory MessageDetailState.deletedInDB({required Message message}) =
+      MessageDeletedInDB;
+
   const factory MessageDetailState.created({required Message message}) =
       MessageCreated;
 

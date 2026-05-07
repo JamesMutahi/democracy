@@ -123,6 +123,7 @@ class APIProvider {
   }
 
   Future<Map<String, dynamic>> createMessage({
+    required String uuid,
     required Chat chat,
     required String text,
     Post? post,
@@ -136,6 +137,7 @@ class APIProvider {
   }) async {
     try {
       final data = {
+        'uuid': uuid,
         'chat': chat.id,
         'text': text,
         'post_id': post?.id,
@@ -195,6 +197,23 @@ class APIProvider {
         ),
         // Track progress
         onSendProgress: onSendProgress,
+      );
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        return Future.error(response.data.toString());
+      }
+    } on DioException catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
+  Future<List<Map>> generateUploadUrl({required Message message}) async {
+    try {
+      final data = {'message_id': message.id};
+      Response response = await dio.post(
+        'chat/generate-upload-urls/',
+        data: FormData.fromMap(data),
       );
       if (response.statusCode == 200) {
         return response.data;

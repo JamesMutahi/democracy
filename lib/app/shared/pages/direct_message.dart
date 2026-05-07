@@ -329,7 +329,6 @@ class _DirectMessageState extends State<DirectMessage> {
                       ),
                     );
                   },
-            showLoading: false,
           ),
         ),
       ),

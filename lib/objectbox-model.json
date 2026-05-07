@@ -127,7 +127,7 @@
     },
     {
       "id": "3:360974746986061726",
-      "lastPropertyId": "21:7204170551757178761",
+      "lastPropertyId": "27:8619555035425668508",
       "name": "Message",
       "properties": [
         {
@@ -159,16 +159,6 @@
         {
           "id": "6:7164841083985417019",
           "name": "isDeleted",
-          "type": 1
-        },
-        {
-          "id": "7:722618201613990254",
-          "name": "postRequired",
-          "type": 1
-        },
-        {
-          "id": "8:6190321578982983887",
-          "name": "patchRequired",
           "type": 1
         },
         {
@@ -238,6 +228,26 @@
           "type": 11,
           "flags": 520,
           "relationTarget": "Chat"
+        },
+        {
+          "id": "23:9180696663851965925",
+          "name": "filePaths",
+          "type": 30
+        },
+        {
+          "id": "25:6696764188747154582",
+          "name": "syncStatus",
+          "type": 9
+        },
+        {
+          "id": "26:5002875528382314748",
+          "name": "syncType",
+          "type": 9
+        },
+        {
+          "id": "27:8619555035425668508",
+          "name": "uuid",
+          "type": 9
         }
       ],
       "relations": []
@@ -251,7 +261,12 @@
   "modelVersionParserMinimum": 5,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    722618201613990254,
+    6190321578982983887,
+    8405071195291565388,
+    4477292977061935242
+  ],
   "retiredRelationUids": [],
   "version": 1
 }

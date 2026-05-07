@@ -167,7 +167,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
     id: const obx_int.IdUid(3, 360974746986061726),
     name: 'Message',
-    lastPropertyId: const obx_int.IdUid(21, 7204170551757178761),
+    lastPropertyId: const obx_int.IdUid(27, 8619555035425668508),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
@@ -203,18 +203,6 @@ final _entities = <obx_int.ModelEntity>[
       obx_int.ModelProperty(
         id: const obx_int.IdUid(6, 7164841083985417019),
         name: 'isDeleted',
-        type: 1,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(7, 722618201613990254),
-        name: 'postRequired',
-        type: 1,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(8, 6190321578982983887),
-        name: 'patchRequired',
         type: 1,
         flags: 0,
       ),
@@ -299,6 +287,30 @@ final _entities = <obx_int.ModelEntity>[
         relationField: 'chat',
         relationTarget: 'Chat',
       ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(23, 9180696663851965925),
+        name: 'filePaths',
+        type: 30,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(25, 6696764188747154582),
+        name: 'syncStatus',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(26, 5002875528382314748),
+        name: 'syncType',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(27, 8619555035425668508),
+        name: 'uuid',
+        type: 9,
+        flags: 0,
+      ),
     ],
     relations: <obx_int.ModelRelation>[],
     backlinks: <obx_int.ModelBacklink>[],
@@ -354,7 +366,12 @@ obx_int.ModelDefinition getObjectBoxModel() {
     lastSequenceId: const obx_int.IdUid(0, 0),
     retiredEntityUids: const [],
     retiredIndexUids: const [],
-    retiredPropertyUids: const [],
+    retiredPropertyUids: const [
+      722618201613990254,
+      6190321578982983887,
+      8405071195291565388,
+      4477292977061935242,
+    ],
     retiredRelationUids: const [],
     modelVersion: 5,
     modelVersionParserMinimum: 5,
@@ -582,15 +599,21 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final uploadsJsonOffset = object.uploadsJson == null
             ? null
             : fbb.writeString(object.uploadsJson!);
-        fbb.startTable(22);
+        final filePathsOffset = fbb.writeList(
+          object.filePaths.map(fbb.writeString).toList(growable: false),
+        );
+        final syncStatusOffset = fbb.writeString(object.syncStatus);
+        final syncTypeOffset = object.syncType == null
+            ? null
+            : fbb.writeString(object.syncType!);
+        final uuidOffset = fbb.writeString(object.uuid);
+        fbb.startTable(28);
         fbb.addInt64(0, object.targetId);
         fbb.addInt64(1, object.id);
         fbb.addOffset(2, textOffset);
         fbb.addBool(3, object.isRead);
         fbb.addBool(4, object.isEdited);
         fbb.addBool(5, object.isDeleted);
-        fbb.addBool(6, object.postRequired);
-        fbb.addBool(7, object.patchRequired);
         fbb.addInt64(8, object.createdAt.millisecondsSinceEpoch);
         fbb.addInt64(9, object.updatedAt.millisecondsSinceEpoch);
         fbb.addOffset(10, authorJsonOffset);
@@ -604,6 +627,10 @@ obx_int.ModelDefinition getObjectBoxModel() {
         fbb.addOffset(18, assetsJsonOffset);
         fbb.addOffset(19, uploadsJsonOffset);
         fbb.addInt64(20, object.chat.targetId);
+        fbb.addOffset(22, filePathsOffset);
+        fbb.addOffset(24, syncStatusOffset);
+        fbb.addOffset(25, syncTypeOffset);
+        fbb.addOffset(26, uuidOffset);
         fbb.finish(fbb.endTable());
         return object.targetId;
       },
@@ -624,6 +651,10 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final textParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGet(buffer, rootOffset, 8, '');
+        final filePathsParam = const fb.ListReader<String>(
+          fb.StringReader(asciiOptimization: true),
+          lazy: false,
+        ).vTableGet(buffer, rootOffset, 48, []);
         final isReadParam = const fb.BoolReader().vTableGet(
           buffer,
           rootOffset,
@@ -642,18 +673,15 @@ obx_int.ModelDefinition getObjectBoxModel() {
           14,
           false,
         );
-        final postRequiredParam = const fb.BoolReader().vTableGet(
-          buffer,
-          rootOffset,
-          16,
-          false,
-        );
-        final patchRequiredParam = const fb.BoolReader().vTableGet(
-          buffer,
-          rootOffset,
-          18,
-          false,
-        );
+        final syncStatusParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 52, '');
+        final syncTypeParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 54);
+        final uuidParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 56, '');
         final createdAtParam = DateTime.fromMillisecondsSinceEpoch(
           const fb.Int64Reader().vTableGet(buffer, rootOffset, 20, 0),
         );
@@ -665,11 +693,13 @@ obx_int.ModelDefinition getObjectBoxModel() {
                 targetId: targetIdParam,
                 id: idParam,
                 text: textParam,
+                filePaths: filePathsParam,
                 isRead: isReadParam,
                 isEdited: isEditedParam,
                 isDeleted: isDeletedParam,
-                postRequired: postRequiredParam,
-                patchRequired: patchRequiredParam,
+                syncStatus: syncStatusParam,
+                syncType: syncTypeParam,
+                uuid: uuidParam,
                 createdAt: createdAtParam,
                 updatedAt: updatedAtParam,
               )
@@ -854,78 +884,88 @@ class Message_ {
     _entities[2].properties[5],
   );
 
-  /// See [Message.postRequired].
-  static final postRequired = obx.QueryBooleanProperty<Message>(
-    _entities[2].properties[6],
-  );
-
-  /// See [Message.patchRequired].
-  static final patchRequired = obx.QueryBooleanProperty<Message>(
-    _entities[2].properties[7],
-  );
-
   /// See [Message.createdAt].
   static final createdAt = obx.QueryDateProperty<Message>(
-    _entities[2].properties[8],
+    _entities[2].properties[6],
   );
 
   /// See [Message.updatedAt].
   static final updatedAt = obx.QueryDateProperty<Message>(
-    _entities[2].properties[9],
+    _entities[2].properties[7],
   );
 
   /// See [Message.authorJson].
   static final authorJson = obx.QueryStringProperty<Message>(
-    _entities[2].properties[10],
+    _entities[2].properties[8],
   );
 
   /// See [Message.locationJson].
   static final locationJson = obx.QueryStringProperty<Message>(
-    _entities[2].properties[11],
+    _entities[2].properties[9],
   );
 
   /// See [Message.postJson].
   static final postJson = obx.QueryStringProperty<Message>(
-    _entities[2].properties[12],
+    _entities[2].properties[10],
   );
 
   /// See [Message.ballotJson].
   static final ballotJson = obx.QueryStringProperty<Message>(
-    _entities[2].properties[13],
+    _entities[2].properties[11],
   );
 
   /// See [Message.surveyJson].
   static final surveyJson = obx.QueryStringProperty<Message>(
-    _entities[2].properties[14],
+    _entities[2].properties[12],
   );
 
   /// See [Message.petitionJson].
   static final petitionJson = obx.QueryStringProperty<Message>(
-    _entities[2].properties[15],
+    _entities[2].properties[13],
   );
 
   /// See [Message.meetingJson].
   static final meetingJson = obx.QueryStringProperty<Message>(
-    _entities[2].properties[16],
+    _entities[2].properties[14],
   );
 
   /// See [Message.sectionJson].
   static final sectionJson = obx.QueryStringProperty<Message>(
-    _entities[2].properties[17],
+    _entities[2].properties[15],
   );
 
   /// See [Message.assetsJson].
   static final assetsJson = obx.QueryStringProperty<Message>(
-    _entities[2].properties[18],
+    _entities[2].properties[16],
   );
 
   /// See [Message.uploadsJson].
   static final uploadsJson = obx.QueryStringProperty<Message>(
-    _entities[2].properties[19],
+    _entities[2].properties[17],
   );
 
   /// See [Message.chat].
   static final chat = obx.QueryRelationToOne<Message, Chat>(
+    _entities[2].properties[18],
+  );
+
+  /// See [Message.filePaths].
+  static final filePaths = obx.QueryStringVectorProperty<Message>(
+    _entities[2].properties[19],
+  );
+
+  /// See [Message.syncStatus].
+  static final syncStatus = obx.QueryStringProperty<Message>(
     _entities[2].properties[20],
+  );
+
+  /// See [Message.syncType].
+  static final syncType = obx.QueryStringProperty<Message>(
+    _entities[2].properties[21],
+  );
+
+  /// See [Message.uuid].
+  static final uuid = obx.QueryStringProperty<Message>(
+    _entities[2].properties[22],
   );
 }

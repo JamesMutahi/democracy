@@ -55,13 +55,12 @@ extension MessagesEventPatterns on MessagesEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Add value)?  add,TResult Function( _Update value)?  update,TResult Function( _Remove value)?  remove,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Update value)?  update,TResult Function( _Remove value)?  remove,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
-return received(_that);case _Add() when add != null:
-return add(_that);case _Update() when update != null:
+return received(_that);case _Update() when update != null:
 return update(_that);case _Remove() when remove != null:
 return remove(_that);case _:
   return orElse();
@@ -81,13 +80,12 @@ return remove(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Add value)  add,required TResult Function( _Update value)  update,required TResult Function( _Remove value)  remove,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Update value)  update,required TResult Function( _Remove value)  remove,}){
 final _that = this;
 switch (_that) {
 case _Get():
 return get(_that);case _Received():
-return received(_that);case _Add():
-return add(_that);case _Update():
+return received(_that);case _Update():
 return update(_that);case _Remove():
 return remove(_that);}
 }
@@ -103,13 +101,12 @@ return remove(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Add value)?  add,TResult? Function( _Update value)?  update,TResult? Function( _Remove value)?  remove,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Update value)?  update,TResult? Function( _Remove value)?  remove,}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
-return received(_that);case _Add() when add != null:
-return add(_that);case _Update() when update != null:
+return received(_that);case _Update() when update != null:
 return update(_that);case _Remove() when remove != null:
 return remove(_that);case _:
   return null;
@@ -128,12 +125,11 @@ return remove(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Message message)?  add,TResult Function( Message message)?  update,TResult Function( int messageId)?  remove,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Message message)?  update,TResult Function( int messageId)?  remove,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.chat,_that.oldestMessage,_that.newestMessage);case _Received() when received != null:
-return received(_that.payload);case _Add() when add != null:
-return add(_that.message);case _Update() when update != null:
+return received(_that.payload);case _Update() when update != null:
 return update(_that.message);case _Remove() when remove != null:
 return remove(_that.messageId);case _:
   return orElse();
@@ -153,12 +149,11 @@ return remove(_that.messageId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Message message)  add,required TResult Function( Message message)  update,required TResult Function( int messageId)  remove,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Message message)  update,required TResult Function( int messageId)  remove,}) {final _that = this;
 switch (_that) {
 case _Get():
 return get(_that.chat,_that.oldestMessage,_that.newestMessage);case _Received():
-return received(_that.payload);case _Add():
-return add(_that.message);case _Update():
+return received(_that.payload);case _Update():
 return update(_that.message);case _Remove():
 return remove(_that.messageId);}
 }
@@ -174,12 +169,11 @@ return remove(_that.messageId);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Message message)?  add,TResult? Function( Message message)?  update,TResult? Function( int messageId)?  remove,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Message message)?  update,TResult? Function( int messageId)?  remove,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.chat,_that.oldestMessage,_that.newestMessage);case _Received() when received != null:
-return received(_that.payload);case _Add() when add != null:
-return add(_that.message);case _Update() when update != null:
+return received(_that.payload);case _Update() when update != null:
 return update(_that.message);case _Remove() when remove != null:
 return remove(_that.messageId);case _:
   return null;
@@ -325,72 +319,6 @@ class __$ReceivedCopyWithImpl<$Res>
   return _then(_Received(
 payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class _Add implements MessagesEvent {
-  const _Add({required this.message});
-  
-
- final  Message message;
-
-/// Create a copy of MessagesEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$AddCopyWith<_Add> get copyWith => __$AddCopyWithImpl<_Add>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Add&&(identical(other.message, message) || other.message == message));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,message);
-
-@override
-String toString() {
-  return 'MessagesEvent.add(message: $message)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$AddCopyWith<$Res> implements $MessagesEventCopyWith<$Res> {
-  factory _$AddCopyWith(_Add value, $Res Function(_Add) _then) = __$AddCopyWithImpl;
-@useResult
-$Res call({
- Message message
-});
-
-
-
-
-}
-/// @nodoc
-class __$AddCopyWithImpl<$Res>
-    implements _$AddCopyWith<$Res> {
-  __$AddCopyWithImpl(this._self, this._then);
-
-  final _Add _self;
-  final $Res Function(_Add) _then;
-
-/// Create a copy of MessagesEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
-  return _then(_Add(
-message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as Message,
   ));
 }
 

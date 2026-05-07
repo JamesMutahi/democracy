@@ -3,14 +3,16 @@ import 'dart:io';
 import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart'
     show WebsocketStatus;
+import 'package:democracy/app/bloc/sync/sync_bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart';
 import 'package:democracy/app/shared/utils/copy.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
+import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
-import 'package:democracy/chat/bloc/message_create/message_create_bloc.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
+import 'package:democracy/chat/bloc/messages/messages_bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/view/edit_message.dart';
@@ -48,10 +50,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   bool _disableSendButton = true;
   bool showMessageActions = false;
   Set<Message> messages = {};
-  bool hideChat = true;
+  bool hideChat = false;
   List<File> _media = [];
   File? _document;
-  bool _showLoading = false;
 
   @override
   void initState() {
@@ -82,9 +83,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       setState(() {
         _otherUser = user;
         if (_otherUser.isBlocked) {
-          if (hideChat == false) {
-            hideChat = true;
-          }
+          hideChat = true;
         } else {
           hideChat = false;
         }
@@ -96,31 +95,75 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<MessageCreateBloc, MessageCreateState>(
-          listener: (context, state) {
-            if (state.status == MessageCreateStatus.success) {
-              if (state.message?.chat.targetId == widget.chat.id) {
-                reset();
-              }
-            }
-            if (state.status == MessageCreateStatus.loading) {
-              setState(() {
-                _showLoading = true;
-              });
-            }
-            if (state.status == MessageCreateStatus.failure) {
-              setState(() {
-                _showLoading = false;
-              });
-            }
-          },
-        ),
         BlocListener<ChatDetailBloc, ChatDetailState>(
           listener: (context, state) {
             if (state is ChatLoaded) {
               setState(() {
                 _chat = state.chat;
               });
+            }
+          },
+        ),
+        BlocListener<MessageDetailBloc, MessageDetailState>(
+          listener: (context, state) {
+            if (state is MessageCreated) {
+              if (state.message.chat.targetId == widget.chat.id) {
+                context.read<MessagesBloc>().add(
+                  MessagesEvent.update(message: state.message),
+                );
+                if (widget.me.id != state.message.author.id) {
+                  context.read<ChatDetailBloc>().add(
+                    ChatDetailEvent.markAsRead(chat: widget.chat),
+                  );
+                }
+              }
+            }
+            if (state is MessageUpdated) {
+              if (state.message.chat.targetId == widget.chat.id) {
+                context.read<MessagesBloc>().add(
+                  MessagesEvent.update(message: state.message),
+                );
+              }
+            }
+            if (state is MessageDeleted) {
+              if (state.chatId == widget.chat.id) {
+                context.read<MessagesBloc>().add(
+                  MessagesEvent.remove(messageId: state.messageId),
+                );
+              }
+            }
+            if (state is MessageCreatedInDB) {
+              if (state.message.chat.targetId == widget.chat.id) {
+                reset();
+                context.read<MessagesBloc>().add(
+                  MessagesEvent.update(message: state.message),
+                );
+                context.read<SyncBloc>().add(SyncEvent.postMessages());
+              }
+            }
+            if (state is MessageUpdatedInDB) {
+              if (state.message.chat.targetId == widget.chat.id) {
+                context.read<MessagesBloc>().add(
+                  MessagesEvent.update(message: state.message),
+                );
+                context.read<SyncBloc>().add(SyncEvent.patchMessages());
+              }
+            }
+            if (state is MessageDeletedInDB) {
+              if (state.message.chat.targetId == widget.chat.id) {
+                context.read<MessagesBloc>().add(
+                  MessagesEvent.update(message: state.message),
+                );
+                context.read<SyncBloc>().add(SyncEvent.deleteMessages());
+              }
+            }
+            if (state is MessageDetailFailure) {
+              final snackBar = getSnackBar(
+                context: context,
+                message: state.error,
+                status: SnackBarStatus.failure,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
           },
         ),
@@ -317,8 +360,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       },
       document: _document,
       onContentInsertion: (imageFile) {
-        context.read<MessageCreateBloc>().add(
-          MessageCreateEvent.create(
+        context.read<MessageDetailBloc>().add(
+          MessageDetailEvent.create(
             author: widget.me,
             chat: _chat,
             text: '',
@@ -328,8 +371,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       },
       allowedMimeTypes: const <String>['image/png', 'image/gif'],
       onLocation: (point) {
-        context.read<MessageCreateBloc>().add(
-          MessageCreateEvent.create(
+        context.read<MessageDetailBloc>().add(
+          MessageDetailEvent.create(
             author: widget.me,
             chat: _chat,
             text: '',
@@ -340,8 +383,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       location: null,
       onRemoveLocation: null,
       onSectionSelection: (section) {
-        context.read<MessageCreateBloc>().add(
-          MessageCreateEvent.create(
+        context.read<MessageDetailBloc>().add(
+          MessageDetailEvent.create(
             author: widget.me,
             chat: _chat,
             text: '',
@@ -353,8 +396,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       onRemoveSection: null,
       recipient: widget.otherUser,
       onImageEditingComplete: (image) {
-        context.read<MessageCreateBloc>().add(
-          MessageCreateEvent.create(
+        context.read<MessageDetailBloc>().add(
+          MessageDetailEvent.create(
             author: widget.me,
             chat: _chat,
             text: _controller.text,
@@ -364,8 +407,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         reset();
       },
       onVideoEditingComplete: (videoPath) {
-        context.read<MessageCreateBloc>().add(
-          MessageCreateEvent.create(
+        context.read<MessageDetailBloc>().add(
+          MessageDetailEvent.create(
             author: widget.me,
             chat: _chat,
             text: _controller.text,
@@ -377,8 +420,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       onSend: _disableSendButton && _media.isEmpty && _document == null
           ? null
           : () {
-              context.read<MessageCreateBloc>().add(
-                MessageCreateEvent.create(
+              context.read<MessageDetailBloc>().add(
+                MessageDetailEvent.create(
                   author: widget.me,
                   chat: _chat,
                   text: _controller.text,
@@ -390,7 +433,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               );
               reset();
             },
-      showLoading: _showLoading,
     );
   }
 
@@ -400,7 +442,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       _document = null;
       _media = [];
       _disableSendButton = true;
-      _showLoading = false;
     });
   }
 }

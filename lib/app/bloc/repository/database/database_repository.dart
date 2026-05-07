@@ -109,7 +109,16 @@ class DatabaseRepository {
 
   Future<List<Message>> fetchMessages({required int chatId}) async {
     final box = store.box<Message>();
-    return box.getAll();
+
+    final query = box
+        .query(Message_.chat.equals(chatId))  // relation property
+        .order(Message_.createdAt, flags: Order.descending) // newest first
+        .build();
+
+    final messages = query.find();
+    query.close(); // Close queries to prevent memory leaks
+
+    return messages;
   }
 
   Future<Message> createMessage({
@@ -117,35 +126,124 @@ class DatabaseRepository {
     required Message message,
   }) async {
     final box = store.box<Message>();
+
+    Message? existing;
+    if (message.id != null && message.id! > 0) {
+      existing = box.query(Message_.id.equals(message.id!)).build().findFirst();
+    }
+    existing ??= box
+        .query(Message_.uuid.equals(message.uuid))
+        .build()
+        .findFirst();
+
+    if (existing != null) {
+      _mergeMessage(existing, message);
+      // Ensure chat link
+      if (existing.chat.targetId == 0) {
+        existing.chat.targetId = chatId;
+      }
+      box.put(existing);
+      return existing;
+    }
+
+    // New message
     message.chat.targetId = chatId;
     box.put(message);
     return message;
   }
 
+  // Updated saveMessageData (used by list/pagination/WS)
   Future<void> saveMessageData(List<dynamic> jsonData) async {
-    final boxMessage = store.box<Message>();
+    final box = store.box<Message>();
     for (var messageData in jsonData) {
       final message = Message.fromJson(messageData);
-      Message? existing = boxMessage
-          .query(Message_.id.equals(message.id!))
+
+      Message? existing;
+      if (message.id != null && message.id! > 0) {
+        existing = box
+            .query(Message_.id.equals(message.id!))
+            .build()
+            .findFirst();
+      }
+      existing ??= box
+          .query(Message_.uuid.equals(message.uuid))
           .build()
           .findFirst();
-      if (existing == null) {
-        message.chat.targetId = messageData['chat'];
-        boxMessage.put(message);
+
+      if (existing != null) {
+        _mergeMessage(existing, message);
+        // Ensure chat link
+        if (existing.chat.targetId == 0 && messageData['chat'] != null) {
+          existing.chat.targetId = messageData['chat'] as int;
+        }
+        box.put(existing);
       } else {
-        existing.text = message.text;
-        boxMessage.put(existing);
+        if (messageData['chat'] != null) {
+          message.chat.targetId = messageData['chat'] as int;
+        }
+        box.put(message);
       }
     }
   }
 
+  // Helper to merge server/local data
+  void _mergeMessage(Message target, Message source) {
+    if (source.id != null && source.id! > 0) {
+      target.id = source.id;
+    }
+    target.text = source.text;
+    target.createdAt = source.createdAt;
+    target.updatedAt = source.updatedAt;
+    target.assets = source.assets;
+    target.isRead = source.isRead;
+    target.isDeleted = source.isDeleted;
+    target.isEdited = source.isEdited;
+  }
+
   Future<void> updateMessage({required Message message}) async {
-    //   TODO
+    final messageBox = store.box<Message>();
+    messageBox.put(message);
   }
 
   Future<void> deleteMessage({required Message message}) async {
-    //   TODO
+    final messageBox = store.box<Message>();
+    messageBox.remove(message.targetId);
+  }
+
+  Future<List<Message>> getMessagesToPost() async {
+    final box = store.box<Message>();
+    List<Message> messages = box
+        .query(Message_.syncType.equals(SyncType.post))
+        .build()
+        .find();
+    return messages;
+  }
+
+  Future<List<Message>> getMessagesToUploadAssets() async {
+    final box = store.box<Message>();
+    List<Message> messages = box
+        .query(Message_.syncType.equals(SyncType.assets))
+        .build()
+        .find();
+    return messages;
+  }
+
+  Future<List<Message>> getMessagesToPatch() async {
+    final box = store.box<Message>();
+    List<Message> messages = box
+        .query(Message_.syncType.equals(SyncType.patch))
+        .build()
+        .find();
+    return messages;
+  }
+
+  Future<List<Message>> getMessagesToDelete() async {
+    final box = store.box<Message>();
+    List<Message> messages = box
+        .query(Message_.syncType.equals(SyncType.delete))
+        .build()
+        .find();
+    return messages;
   }
 
   Future<void> clear() async {

@@ -14,6 +14,20 @@ sealed class MessageDetailEvent with _$MessageDetailEvent {
     required Map<String, dynamic> payload,
   }) = _Deleted;
 
+  const factory MessageDetailEvent.create({
+    required User author,
+    required Chat chat,
+    required String text,
+    Post? post,
+    Ballot? ballot,
+    Survey? survey,
+    Petition? petition,
+    Meeting? meeting,
+    Section? section,
+    @Default([]) List<String> filePaths,
+    LatLng? location,
+  }) = _Create;
+
   const factory MessageDetailEvent.edit({
     required Message message,
     required String text,
