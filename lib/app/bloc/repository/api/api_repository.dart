@@ -107,6 +107,12 @@ class APIRepository {
     );
   }
 
+  Future<List<dynamic>> generateUploadUrl({
+    required Message message,
+  }) async {
+    return await apiProvider.generateUploadUrl(message: message);
+  }
+
   Future<String> uploadMessageAsset({
     required String name,
     required String url,
@@ -119,16 +125,20 @@ class APIRepository {
     );
   }
 
-  Future<List<Map>> generateUploadUrl({required Message message}) async {
-    return await apiProvider.generateUploadUrl(message: message);
-  }
-
   Future<List<Asset>> messageAssetUploadComplete({
     required List<String> assetIdList,
   }) async {
     return await apiProvider.messageAssetUploadComplete(
       assetIdList: assetIdList,
     );
+  }
+
+  Future patchMessage({required Message message}) async {
+    return await apiProvider.patchMessage(message: message);
+  }
+
+  Future deleteMessage({required Message message}) async {
+    return await apiProvider.deleteMessage(message: message);
   }
 
   Future<Map<String, dynamic>> createDirectMessage({

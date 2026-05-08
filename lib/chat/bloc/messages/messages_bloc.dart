@@ -30,7 +30,7 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
     on<_Get>((event, emit) async => await _onGet(event, emit));
     on<_Received>((event, emit) async => await _onReceived(event, emit));
     on<_Update>((event, emit) async => await _onUpdate(event, emit));
-    on<_Remove>((event, emit) async => await _onRemove(event, emit));
+    on<_Reload>((event, emit) async => await _onReload(event, emit));
   }
 
   Future _onGet(_Get event, Emitter<MessagesState> emit) async {
@@ -90,14 +90,16 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
     );
   }
 
-  Future _onRemove(_Remove event, Emitter<MessagesState> emit) async {
-    emit(state.copyWith(status: MessagesStatus.loading));
-    final updatedMessages = state.messages
-        .where((m) => m.id != event.messageId)
-        .toList();
-
+  Future _onReload(_Reload event, Emitter<MessagesState> emit) async {
+    final messages = await databaseRepository.fetchMessages(
+      chatId: state.chatId!,
+    );
     emit(
-      state.copyWith(messages: updatedMessages, status: MessagesStatus.success),
+      state.copyWith(
+        chatId: state.chatId,
+        messages: messages,
+        status: MessagesStatus.success,
+      ),
     );
   }
 

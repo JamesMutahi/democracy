@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/repository/api/api_repository.dart';
 import 'package:democracy/app/bloc/repository/database/database_repository.dart';
-import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -15,16 +14,11 @@ const String chatsStream = 'chats';
 const String messagesRequestId = 'messages';
 
 class SyncBloc extends Bloc<SyncEvent, SyncState> {
-  SyncBloc({
-    required this.webSocketService,
-    required this.databaseRepository,
-    required this.apiRepository,
-  }) : super(const SyncState.initial()) {
+  SyncBloc({required this.databaseRepository, required this.apiRepository})
+    : super(const SyncState.initial()) {
     on<_Start>((event, emit) {
-      emit(_Syncing());
       add(_PostDrafts());
       add(_PostMessages());
-      add(_UploadMessageAssets());
       add(_PatchMessages());
       add(_DeleteMessages());
     });
@@ -43,13 +37,18 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
     );
   }
 
-  Future _onPostDrafts(_PostDrafts event, Emitter<SyncState> emit) async {}
+  Future _onPostDrafts(_PostDrafts event, Emitter<SyncState> emit) async {
+    emit(_Syncing());
+  }
 
   Future _onPostMessages(_PostMessages event, Emitter<SyncState> emit) async {
-    try {
-      final forPost = await databaseRepository.getMessagesToPost();
-      for (Message message in forPost) {
-        final data = await apiRepository.createMessage(
+    emit(_Syncing());
+    final forPost = await databaseRepository.getMessagesToPost();
+    for (Message message in forPost) {
+      late Message msg;
+      late Map data;
+      try {
+        data = await apiRepository.createMessage(
           uuid: message.uuid,
           chat: message.chat.target!,
           text: message.text,
@@ -62,24 +61,28 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
           filePaths: message.filePaths,
           location: message.location,
         );
-        final msg = Message.fromJson(data['message']);
+        msg = Message.fromJson(data['message']);
         message.id = msg.id;
-        message.assets = msg.assets;
-        message.syncType = msg.assets.isNotEmpty ? SyncType.assets : null;
-        await databaseRepository.updateMessage(message: message);
-        if (message.assets.isNotEmpty) {
-          List<String> assetIdList = await getAssetIds(data['uploads']);
-          await apiRepository.messageAssetUploadComplete(
-            assetIdList: assetIdList,
-          );
+        if (msg.assets.isNotEmpty) {
+          message.assets = msg.assets;
+          message.syncType = SyncType.assets;
+          await databaseRepository.updateMessage(message: message);
+        } else {
+          await _onMessageSuccess(message: message);
         }
-        message.syncStatus = SyncStatus.synced;
-        message.syncType = null;
-        await databaseRepository.updateMessage(message: message);
+        if (msg.assets.isNotEmpty) {
+          add(_UploadMessageAssets());
+        }
+      } catch (e) {
+        await _onMessageFailure(
+          emit: emit,
+          message: message,
+          error: e.toString(),
+        );
+        return;
       }
-    } catch (e) {
-      emit(SyncFailure(error: e.toString()));
     }
+    emit(MessagesForPostSynced());
   }
 
   Future _onUploadMessageAssets(
@@ -87,40 +90,48 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
     Emitter<SyncState> emit,
   ) async {
     try {
+      emit(_Syncing());
       final forUpload = await databaseRepository.getMessagesToUploadAssets();
       for (Message message in forUpload) {
-        List<Map> data = await apiRepository.generateUploadUrl(
+        List<dynamic> data = await apiRepository.generateUploadUrl(
           message: message,
         );
-        List<String> assetIdList = await getAssetIds(data);
+        for (var upload in data) {
+          await apiRepository.uploadMessageAsset(
+            name: upload['name'],
+            url: upload['url'],
+            onSendProgress: (_, _) {},
+          );
+        }
+        List<String> assetIdList = await _getAssetIds(data);
         await apiRepository.messageAssetUploadComplete(
           assetIdList: assetIdList,
         );
-        message.syncStatus = SyncStatus.synced;
-        await databaseRepository.updateMessage(message: message);
+        await _onMessageSuccess(message: message);
       }
+      emit(MessagesForAssetUploadSynced());
     } catch (e) {
       emit(SyncFailure(error: e.toString()));
     }
   }
 
   Future _onPatchMessages(_PatchMessages event, Emitter<SyncState> emit) async {
-    try {
-      final forPatch = await databaseRepository.getMessagesToPatch();
-      for (Message message in forPatch) {
-        webSocketService.send({
-          'stream': chatsStream,
-          'payload': {
-            'action': 'edit_message',
-            'request_id': messagesRequestId,
-            'pk': message.id,
-            'data': {'text': message.text},
-          },
-        });
+    emit(_Syncing());
+    final forPatch = await databaseRepository.getMessagesToPatch();
+    for (Message message in forPatch) {
+      try {
+        await apiRepository.patchMessage(message: message);
+        await _onMessageSuccess(message: message);
+      } catch (e) {
+        await _onMessageFailure(
+          emit: emit,
+          message: message,
+          error: e.toString(),
+        );
+        return;
       }
-    } catch (e) {
-      emit(SyncFailure(error: e.toString()));
     }
+    emit(MessagesForPatchSynced());
   }
 
   Future _onDeleteMessages(
@@ -128,23 +139,19 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
     Emitter<SyncState> emit,
   ) async {
     try {
+      emit(_Syncing());
       final forDelete = await databaseRepository.getMessagesToDelete();
       for (Message message in forDelete) {
-        webSocketService.send({
-          'stream': chatsStream,
-          'payload': {
-            'action': 'delete_message',
-            'request_id': messagesRequestId,
-            'pk': message.id,
-          },
-        });
+        await apiRepository.deleteMessage(message: message);
+        await _onMessageSuccess(message: message);
       }
+      emit(MessagesForDeleteSynced());
     } catch (e) {
       emit(SyncFailure(error: e.toString()));
     }
   }
 
-  Future<List<String>> getAssetIds(List uploads) async {
+  Future<List<String>> _getAssetIds(List uploads) async {
     List<String> assetIdList = [];
     for (var upload in uploads) {
       assetIdList.add(upload['asset_id']);
@@ -157,7 +164,22 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
     return assetIdList;
   }
 
-  final WebSocketService webSocketService;
+  Future _onMessageSuccess({required Message message}) async {
+    message.syncStatus = SyncStatus.synced;
+    message.syncType = null;
+    await databaseRepository.updateMessage(message: message);
+  }
+
+  Future _onMessageFailure({
+    required Emitter<SyncState> emit,
+    required Message message,
+    required String error,
+  }) async {
+    message.syncStatus = SyncStatus.failed;
+    await databaseRepository.updateMessage(message: message);
+    emit(SyncFailure(error: error.toString()));
+  }
+
   final DatabaseRepository databaseRepository;
   final APIRepository apiRepository;
 }

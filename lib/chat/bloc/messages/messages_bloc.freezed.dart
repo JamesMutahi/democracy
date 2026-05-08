@@ -55,14 +55,14 @@ extension MessagesEventPatterns on MessagesEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Update value)?  update,TResult Function( _Remove value)?  remove,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Update value)?  update,TResult Function( _Reload value)?  reload,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
 return received(_that);case _Update() when update != null:
-return update(_that);case _Remove() when remove != null:
-return remove(_that);case _:
+return update(_that);case _Reload() when reload != null:
+return reload(_that);case _:
   return orElse();
 
 }
@@ -80,14 +80,14 @@ return remove(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Update value)  update,required TResult Function( _Remove value)  remove,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Update value)  update,required TResult Function( _Reload value)  reload,}){
 final _that = this;
 switch (_that) {
 case _Get():
 return get(_that);case _Received():
 return received(_that);case _Update():
-return update(_that);case _Remove():
-return remove(_that);}
+return update(_that);case _Reload():
+return reload(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -101,14 +101,14 @@ return remove(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Update value)?  update,TResult? Function( _Remove value)?  remove,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Update value)?  update,TResult? Function( _Reload value)?  reload,}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
 return received(_that);case _Update() when update != null:
-return update(_that);case _Remove() when remove != null:
-return remove(_that);case _:
+return update(_that);case _Reload() when reload != null:
+return reload(_that);case _:
   return null;
 
 }
@@ -125,13 +125,13 @@ return remove(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Message message)?  update,TResult Function( int messageId)?  remove,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Message message)?  update,TResult Function()?  reload,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.chat,_that.oldestMessage,_that.newestMessage);case _Received() when received != null:
 return received(_that.payload);case _Update() when update != null:
-return update(_that.message);case _Remove() when remove != null:
-return remove(_that.messageId);case _:
+return update(_that.message);case _Reload() when reload != null:
+return reload();case _:
   return orElse();
 
 }
@@ -149,13 +149,13 @@ return remove(_that.messageId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Message message)  update,required TResult Function( int messageId)  remove,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Message message)  update,required TResult Function()  reload,}) {final _that = this;
 switch (_that) {
 case _Get():
 return get(_that.chat,_that.oldestMessage,_that.newestMessage);case _Received():
 return received(_that.payload);case _Update():
-return update(_that.message);case _Remove():
-return remove(_that.messageId);}
+return update(_that.message);case _Reload():
+return reload();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -169,13 +169,13 @@ return remove(_that.messageId);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Message message)?  update,TResult? Function( int messageId)?  remove,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Message message)?  update,TResult? Function()?  reload,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.chat,_that.oldestMessage,_that.newestMessage);case _Received() when received != null:
 return received(_that.payload);case _Update() when update != null:
-return update(_that.message);case _Remove() when remove != null:
-return remove(_that.messageId);case _:
+return update(_that.message);case _Reload() when reload != null:
+return reload();case _:
   return null;
 
 }
@@ -394,67 +394,33 @@ as Message,
 /// @nodoc
 
 
-class _Remove implements MessagesEvent {
-  const _Remove({required this.messageId});
+class _Reload implements MessagesEvent {
+  const _Reload();
   
 
- final  int messageId;
 
-/// Create a copy of MessagesEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$RemoveCopyWith<_Remove> get copyWith => __$RemoveCopyWithImpl<_Remove>(this, _$identity);
+
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Remove&&(identical(other.messageId, messageId) || other.messageId == messageId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Reload);
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,messageId);
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'MessagesEvent.remove(messageId: $messageId)';
+  return 'MessagesEvent.reload()';
 }
 
 
 }
 
-/// @nodoc
-abstract mixin class _$RemoveCopyWith<$Res> implements $MessagesEventCopyWith<$Res> {
-  factory _$RemoveCopyWith(_Remove value, $Res Function(_Remove) _then) = __$RemoveCopyWithImpl;
-@useResult
-$Res call({
- int messageId
-});
 
 
-
-
-}
-/// @nodoc
-class __$RemoveCopyWithImpl<$Res>
-    implements _$RemoveCopyWith<$Res> {
-  __$RemoveCopyWithImpl(this._self, this._then);
-
-  final _Remove _self;
-  final $Res Function(_Remove) _then;
-
-/// Create a copy of MessagesEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? messageId = null,}) {
-  return _then(_Remove(
-messageId: null == messageId ? _self.messageId : messageId // ignore: cast_nullable_to_non_nullable
-as int,
-  ));
-}
-
-
-}
 
 // dart format on

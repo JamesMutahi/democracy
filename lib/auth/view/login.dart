@@ -1,4 +1,4 @@
-import 'package:democracy/app/shared/widgets/app_header_logo.dart';
+import 'package:democracy/app/shared/widgets/app_logo.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:flutter/material.dart';
@@ -37,16 +37,16 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: Scaffold(
         body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AppHeaderLogo(),
-              const SizedBox(height: 20),
-              BlocBuilder<LoginCubit, LoginState>(
-                builder: (context, state) {
-                  return SizedBox(
-                    width: 200,
-                    child: FilledButton.tonal(
+          child: IntrinsicWidth(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AppLogo(),
+                const SizedBox(height: 20),
+                BlocBuilder<LoginCubit, LoginState>(
+                  builder: (context, state) {
+                    return FilledButton.tonal(
                       onPressed: state is LoginLoading
                           ? null
                           : () {
@@ -67,21 +67,21 @@ class _LoginPageState extends State<LoginPage> {
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                       ),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Digital and direct democracy',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Theme.of(context).colorScheme.outline,
-                  fontStyle: FontStyle.italic,
+                    );
+                  },
                 ),
-                textAlign: TextAlign.center,
-              ),
-            ],
+                const SizedBox(height: 10),
+                Text(
+                  'Digital and direct democracy',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.outline,
+                    fontStyle: FontStyle.italic,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
           ),
         ),
       ),

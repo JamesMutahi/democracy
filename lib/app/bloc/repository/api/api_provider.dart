@@ -208,12 +208,14 @@ class APIProvider {
     }
   }
 
-  Future<List<Map>> generateUploadUrl({required Message message}) async {
+  Future<List<dynamic>> generateUploadUrl({
+    required Message message,
+  }) async {
     try {
       final data = {'message_id': message.id};
       Response response = await dio.post(
         'chat/generate-upload-urls/',
-        data: FormData.fromMap(data),
+        data: data,
       );
       if (response.statusCode == 200) {
         return response.data;
@@ -239,6 +241,36 @@ class APIProvider {
           response.data.map((e) => Asset.fromJson(e)),
         );
         return assets;
+      } else {
+        return Future.error(response.data.toString());
+      }
+    } on DioException catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
+  Future patchMessage({required Message message}) async {
+    try {
+      final data = {'text': message.text};
+      Response response = await dio.patch(
+        'chat/message/${message.id}/',
+        data: FormData.fromMap(data),
+      );
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        return Future.error(response.data.toString());
+      }
+    } on DioException catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
+  Future deleteMessage({required Message message}) async {
+    try {
+      Response response = await dio.delete('chat/message/${message.id}/');
+      if (response.statusCode == 204) {
+        return response.data;
       } else {
         return Future.error(response.data.toString());
       }

@@ -311,10 +311,10 @@ void main() async {
               BlocProvider(create: (context) => LocationCubit()),
               BlocProvider(
                 create: (context) => SyncBloc(
-                  webSocketService: context.read<WebSocketService>(),
                   apiRepository: context.read<APIRepository>(),
                   databaseRepository: context.read<DatabaseRepository>(),
-                ),
+                )..add(SyncEvent.start()),
+                lazy: false,
               ),
             ],
             child: const MyApp(),

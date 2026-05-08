@@ -11,5 +11,5 @@ sealed class MessagesEvent with _$MessagesEvent {
     required Map<String, dynamic> payload,
   }) = _Received;
   const factory MessagesEvent.update({required Message message}) = _Update;
-  const factory MessagesEvent.remove({required int messageId}) = _Remove;
+  const factory MessagesEvent.reload() = _Reload;
 }

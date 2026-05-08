@@ -198,6 +198,11 @@ class DatabaseRepository {
     target.isRead = source.isRead;
     target.isDeleted = source.isDeleted;
     target.isEdited = source.isEdited;
+    target.post = source.post;
+    target.ballot = source.ballot;
+    target.survey = source.survey;
+    target.petition = source.petition;
+    target.meeting = source.meeting;
   }
 
   Future<void> updateMessage({required Message message}) async {
@@ -206,8 +211,8 @@ class DatabaseRepository {
   }
 
   Future<void> deleteMessage({required Message message}) async {
-    final messageBox = store.box<Message>();
-    messageBox.remove(message.targetId);
+    final box = store.box<Message>();
+    box.remove(message.targetId);
   }
 
   Future<List<Message>> getMessagesToPost() async {

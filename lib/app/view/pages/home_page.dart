@@ -1,4 +1,4 @@
-import 'package:democracy/app/shared/constants/variables.dart';
+import 'package:democracy/app/shared/widgets/logo.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/post/bloc/following_posts/following_posts_bloc.dart';
 import 'package:democracy/post/bloc/for_you/for_you_bloc.dart';
@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage>
             CustomAppBar(
               user: widget.user,
               notifications: widget.notifications,
-              middle: Image.asset(logo, width: 50, height: 50),
+              middle: Logo(width: 130, height: 130),
               bottom: TabBar(
                 dividerColor: Theme.of(context).colorScheme.outlineVariant,
                 labelStyle: Theme.of(context).textTheme.titleMedium,

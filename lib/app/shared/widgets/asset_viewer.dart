@@ -22,7 +22,8 @@ class AssetViewer extends StatefulWidget {
   State<AssetViewer> createState() => _AssetViewerState();
 }
 
-class _AssetViewerState extends State<AssetViewer> {
+class _AssetViewerState extends State<AssetViewer>
+    with AutomaticKeepAliveClientMixin {
   late List<Asset> media = widget.assets
       .where((asset) => asset.contentType != ContentType.document)
       .toList();
@@ -32,7 +33,11 @@ class _AssetViewerState extends State<AssetViewer> {
       .toList();
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     bool isMobile = ResponsiveBreakpoints.of(context).isMobile;
 
     return BlocListener<MessageDetailBloc, MessageDetailState>(

@@ -3,7 +3,6 @@ import 'package:democracy/app/bloc/services/agora_service.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart'
     show WebsocketStatus;
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
-import 'package:democracy/app/core/app_logger.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
@@ -185,9 +184,6 @@ class _MeetingDetailState extends State<MeetingDetail> {
             switch (state) {
               case MeetingLoaded(:final meeting):
                 if (meeting.id == _meeting.id) {
-                  for (var p in state.meeting.participants) {
-                    AppLogger.info(p.name);
-                  }
                   setState(() {
                     _meeting = meeting;
                   });

@@ -22,6 +22,7 @@ import 'package:democracy/survey/view/widgets/survey_tile.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
@@ -373,7 +374,12 @@ class MessageTime extends StatelessWidget {
                     ),
                   )
                 : SizedBox.shrink(),
-            message.syncStatus == SyncStatus.failed
+            message.syncStatus == SyncStatus.pending
+                ? SpinKitThreeInOut(
+                    color: Theme.of(context).disabledColor,
+                    size: Theme.of(context).textTheme.labelSmall!.fontSize!,
+                  )
+                : message.syncStatus == SyncStatus.failed
                 ? Text(
                     'Not Delivered',
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
@@ -470,10 +476,7 @@ class _AlignmentContainerState extends State<AlignmentContainer> {
                   ? Alignment.topRight
                   : Alignment.topLeft,
               child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: messageWidth,
-                  minWidth: 60,
-                ),
+                constraints: BoxConstraints(maxWidth: messageWidth),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [

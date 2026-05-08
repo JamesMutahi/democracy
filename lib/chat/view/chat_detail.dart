@@ -126,9 +126,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               }
             }
             if (state is MessageDeleted) {
-              if (state.chatId == widget.chat.id) {
+              if (state.message.chat.targetId == widget.chat.id) {
                 context.read<MessagesBloc>().add(
-                  MessagesEvent.remove(messageId: state.messageId),
+                  MessagesEvent.update(message: state.message),
                 );
               }
             }
@@ -200,6 +200,18 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             }
           },
         ),
+        BlocListener<SyncBloc, SyncState>(
+          listener: (context, state) {
+            switch (state) {
+              case SyncFailure():
+              case MessagesForPostSynced():
+              case MessagesForAssetUploadSynced():
+              case MessagesForPatchSynced():
+              case MessagesForDeleteSynced():
+                context.read<MessagesBloc>().add(MessagesEvent.reload());
+            }
+          },
+        ),
       ],
       child: PopScope(
         canPop: !showMessageActions,
@@ -249,6 +261,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                 otherUser: _otherUser,
               ),
             ],
+            actionsPadding: EdgeInsets.only(right: 15),
           ),
           body: (hideChat && _otherUser.isBlocked)
               ? Center(
@@ -463,33 +476,44 @@ class ChatPopUpMenu extends StatelessWidget {
     List texts = currentUser.id == otherUser.id
         ? []
         : [otherUser.isBlocked ? 'Unblock' : 'Block'];
-    return PopupMenuButton<String>(
-      padding: EdgeInsets.zero,
-      menuPadding: EdgeInsets.zero,
-      onSelected: (selected) {
-        switch (selected) {
-          case 'Block':
-            context.read<UserDetailBloc>().add(
-              UserDetailEvent.block(user: otherUser),
-            );
-          case 'Unblock':
-            context.read<UserDetailBloc>().add(
-              UserDetailEvent.block(user: otherUser),
-            );
-        }
+    return MenuAnchor(
+      style: MenuStyle(padding: WidgetStateProperty.all(EdgeInsets.zero)),
+      builder: (context, controller, child) {
+        Color color = Theme.of(context).colorScheme.outline;
+        return SizedBox(
+          width: 35,
+          height: 35,
+          child: IconButton.outlined(
+            onPressed: () {
+              if (controller.isOpen) {
+                controller.close();
+              } else {
+                controller.open();
+              }
+            },
+            icon: Icon(
+              Symbols.more_horiz_rounded,
+              size: 20,
+              fill: 1,
+              weight: 700,
+              color: color,
+            ),
+            style: IconButton.styleFrom(
+              side: BorderSide(color: color, width: 2),
+            ),
+          ),
+        );
       },
-      itemBuilder: (BuildContext context) => [
+      menuChildren: [
         ...texts.map((text) {
-          return PopupMenuItem<String>(
-            value: text,
-            child: Text(text, textAlign: TextAlign.center),
+          return MenuItemButton(
+            onPressed: () => context.read<UserDetailBloc>().add(
+              UserDetailEvent.block(user: otherUser),
+            ),
+            child: Text(otherUser.isBlocked ? 'Unblock' : 'Block'),
           );
         }),
       ],
-      icon: Icon(
-        Symbols.more_vert_rounded,
-        color: Theme.of(context).colorScheme.outline,
-      ),
     );
   }
 }

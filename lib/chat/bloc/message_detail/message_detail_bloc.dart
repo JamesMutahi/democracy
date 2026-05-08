@@ -4,7 +4,6 @@ import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/repository/api/api_repository.dart';
 import 'package:democracy/app/bloc/repository/database/database_repository.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
-import 'package:democracy/app/core/app_logger.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/models/chat.dart';
@@ -72,7 +71,11 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
   Future _onUpdated(_Updated event, Emitter<MessageDetailState> emit) async {
     emit(MessageDetailLoading());
     if (event.payload['response_status'] == 200) {
-      Message message = Message.fromJson(event.payload['data']);
+      Message newMessage = Message.fromJson(event.payload['data']);
+      final message = await databaseRepository.createMessage(
+        chatId: event.payload['data']['chat'],
+        message: newMessage,
+      );
       emit(MessageUpdated(message: message));
     } else {
       emit(MessageDetailFailure(error: event.payload['errors'].toString()));
@@ -82,13 +85,10 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
   Future _onDeleted(_Deleted event, Emitter<MessageDetailState> emit) async {
     emit(MessageDetailLoading());
     if (event.payload['response_status'] == 204) {
-      AppLogger.info(event.payload.toString());
-      emit(
-        MessageDeleted(
-          messageId: event.payload['data']['pk'],
-          chatId: event.payload['data']['chat_id'],
-        ),
-      );
+      int id = event.payload['data']['pk'];
+      final message = await databaseRepository.getMessage(id: id);
+      await databaseRepository.deleteMessage(message: message!);
+      emit(MessageDeleted(message: message));
     } else {
       emit(MessageDetailFailure(error: event.payload['errors'].toString()));
     }
@@ -129,8 +129,11 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
     try {
       Message message = event.message;
       message.text = event.text;
-      message.syncStatus = SyncStatus.pending;
-      message.syncType = SyncType.patch;
+      message.isEdited = true;
+      if (message.syncStatus == SyncStatus.synced) {
+        message.syncStatus = SyncStatus.pending;
+        message.syncType = SyncType.patch;
+      }
       await databaseRepository.updateMessage(message: event.message);
       emit(MessageUpdatedInDB(message: message));
     } catch (e) {
@@ -143,8 +146,10 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
     try {
       for (Message message in event.messages) {
         message.isDeleted = true;
-        message.syncStatus = SyncStatus.pending;
-        message.syncType = SyncType.delete;
+        if (message.syncStatus == SyncStatus.synced) {
+          message.syncStatus = SyncStatus.pending;
+          message.syncType = SyncType.delete;
+        }
         await databaseRepository.updateMessage(message: message);
         emit(MessageDeletedInDB(message: message));
       }

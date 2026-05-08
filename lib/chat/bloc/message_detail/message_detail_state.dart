@@ -21,10 +21,8 @@ class MessageDetailState with _$MessageDetailState {
   const factory MessageDetailState.updated({required Message message}) =
       MessageUpdated;
 
-  const factory MessageDetailState.deleted({
-    required int messageId,
-    required int chatId,
-  }) = MessageDeleted;
+  const factory MessageDetailState.deleted({required Message message}) =
+      MessageDeleted;
 
   const factory MessageDetailState.failure({required String error}) =
       MessageDetailFailure;

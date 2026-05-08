@@ -236,13 +236,13 @@ class Message {
 
   factory Message.fromJson(Map<String, dynamic> json) {
     final message = Message(
-      id: json['id'] as int?,
+      id: json['id'],
       author: User.fromJson(json['author'] as Map<String, dynamic>),
       uuid: json['uuid'] as String,
-      text: json['text'] as String? ?? '',
-      isRead: json['is_read'] as bool? ?? false,
-      isEdited: json['is_edited'] as bool? ?? false,
-      isDeleted: json['is_deleted'] as bool? ?? false,
+      text: json['text'] as String,
+      isRead: json['is_read'] as bool,
+      isEdited: json['is_edited'] as bool,
+      isDeleted: json['is_deleted'] as bool,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );
