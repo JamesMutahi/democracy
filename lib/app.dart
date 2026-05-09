@@ -89,7 +89,6 @@ class MyApp extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               AppLogo(),
-              SizedBox(height: 10),
               Text(error, textAlign: TextAlign.center),
               SizedBox(height: 10),
               FailureRetryButton(

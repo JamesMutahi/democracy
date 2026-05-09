@@ -69,40 +69,58 @@ class _NotificationsState extends State<Notifications> {
         ],
         child: BlocBuilder<NotificationsBloc, NotificationsState>(
           builder: (context, state) {
-            switch (state.status) {
-              case NotificationsStatus.success:
-                final notifications = state.notifications;
-                return SmartRefresher(
-                  enablePullDown: true,
-                  enablePullUp: false,
-                  header: ClassicHeader(),
-                  controller: _refreshController,
-                  onRefresh: () {
-                    context.read<NotificationsBloc>().add(
-                      NotificationsEvent.get(),
-                    );
-                  },
-                  footer: ClassicFooter(),
-                  child: ListView.builder(
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-                    itemBuilder: (BuildContext context, int index) {
-                      n_.Notification notification = notifications[index];
-                      return NotificationTile(notification: notification);
-                    },
-                    itemCount: notifications.length,
+            final notifications = state.notifications;
+
+            if (state.status == NotificationsStatus.initial ||
+                (state.status == NotificationsStatus.loading &&
+                    notifications.isEmpty)) {
+              return const BottomLoader();
+            }
+
+            if (state.status == NotificationsStatus.success) {
+              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+                _refreshController.refreshCompleted();
+              }
+              if (_refreshController.footerStatus == LoadStatus.loading) {
+                _refreshController.loadComplete();
+              }
+            }
+
+            if (state.status == NotificationsStatus.failure) {
+              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+                _refreshController.refreshFailed();
+              }
+              if (_refreshController.footerStatus == LoadStatus.loading) {
+                _refreshController.loadFailed();
+              }
+
+              if (state.notifications.isEmpty) {
+                return FailureRetryButton(
+                  onPressed: () => context.read<NotificationsBloc>().add(
+                    NotificationsEvent.get(),
                   ),
                 );
-              case NotificationsStatus.failure:
-                return FailureRetryButton(
-                  onPressed: () {
-                    context.read<NotificationsBloc>().add(
-                      NotificationsEvent.get(),
-                    );
-                  },
-                );
-              default:
-                return BottomLoader();
+              }
             }
+
+            return SmartRefresher(
+              enablePullDown: true,
+              enablePullUp: false,
+              header: ClassicHeader(),
+              controller: _refreshController,
+              onRefresh: () {
+                context.read<NotificationsBloc>().add(NotificationsEvent.get());
+              },
+              footer: ClassicFooter(),
+              child: ListView.builder(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                itemBuilder: (BuildContext context, int index) {
+                  n_.Notification notification = notifications[index];
+                  return NotificationTile(notification: notification);
+                },
+                itemCount: notifications.length,
+              ),
+            );
           },
         ),
       ),

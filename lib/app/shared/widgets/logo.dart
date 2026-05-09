@@ -10,9 +10,11 @@ class Logo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SvgPicture.asset(
-      'assets/images/kenya.svg',
+      'assets/images/shield.svg',
       width: width,
       height: height,
+      fit: BoxFit.contain,
+      alignment: Alignment.center,
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/models/chat.dart';
+import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/meeting/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
@@ -25,6 +26,7 @@ sealed class Notification with _$Notification {
     required final Petition? petition,
     required final Meeting? meeting,
     @ChatConverter() required final Chat? chat,
+    @MessageConverter() required final Message? message,
     @JsonKey(name: 'is_read') required final bool isRead,
     @JsonKey(name: 'created_at') required final DateTime createdAt,
   }) = _Notification;
@@ -45,5 +47,20 @@ class ChatConverter implements JsonConverter<Chat?, Map<String, dynamic>?> {
   @override
   Map<String, dynamic>? toJson(Chat? chat) {
     return chat?.toJson();
+  }
+}
+
+class MessageConverter implements JsonConverter<Message?, Map<String, dynamic>?> {
+  const MessageConverter();
+
+  @override
+  Message? fromJson(Map<String, dynamic>? json) {
+    if (json == null) return null;
+    return Message.fromJson(json);
+  }
+
+  @override
+  Map<String, dynamic>? toJson(Message? message) {
+    return message?.toJson();
   }
 }

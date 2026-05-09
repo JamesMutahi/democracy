@@ -1,5 +1,4 @@
 import 'package:democracy/app/bloc/global/global_cubit.dart';
-import 'package:democracy/app/models/asset.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/no_results.dart';
@@ -12,7 +11,7 @@ import 'package:democracy/chat/bloc/direct_message/direct_message_bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/view/utils/chat_navigator.dart';
-import 'package:democracy/chat/view/utils/link_extractor.dart';
+import 'package:democracy/chat/view/utils/last_message.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
@@ -202,7 +201,7 @@ class ChatTile extends StatelessWidget {
     final isFromMe = lastMessage.author.id == currentUser.id;
     final lastMessagePrefix = isFromMe ? 'You: ' : '';
 
-    final subtitleText = _getLastMessageText(lastMessage, lastMessagePrefix);
+    final subtitleText = getLastMessageText(lastMessage, lastMessagePrefix);
 
     return ListTile(
       leading: ProfileImage(user: otherUser, navigateToProfile: true),
@@ -234,31 +233,6 @@ class ChatTile extends StatelessWidget {
         // TODO: Implement long press actions (delete, mute, block, etc.)
       },
     );
-  }
-
-  String _getLastMessageText(Message message, String prefix) {
-    final text = extractLinkFromMessage(message);
-
-    if (text.isNotEmpty) {
-      return '$prefix${message.text}';
-    }
-
-    if (message.post != null) return '${prefix}Shared a post';
-    if (message.ballot != null) return '${prefix}Shared a ballot';
-    if (message.survey != null) return '${prefix}Shared a survey';
-    if (message.petition != null) return '${prefix}Shared a petition';
-    if (message.section != null) return '${prefix}Shared the constitution';
-    if (message.assets.isNotEmpty) {
-      return message.assets.first.contentType == ContentType.image
-          ? '${prefix}Shared an image'
-          : message.assets.first.contentType == ContentType.video
-          ? '${prefix}Shared a video'
-          : '${prefix}Shared a document';
-    }
-
-    if (message.location != null) return '${prefix}Shared a location';
-
-    return '${prefix}Shared something';
   }
 }
 

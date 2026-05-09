@@ -43,7 +43,6 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 AppLogo(),
-                const SizedBox(height: 20),
                 BlocBuilder<LoginCubit, LoginState>(
                   builder: (context, state) {
                     return FilledButton.tonal(

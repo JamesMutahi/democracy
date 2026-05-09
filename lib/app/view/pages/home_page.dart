@@ -31,10 +31,36 @@ class _HomePageState extends State<HomePage>
       child: NestedScrollView(
         headerSliverBuilder: (context, bool innerBoxIsScrolled) {
           return [
-            CustomAppBar(
-              user: widget.user,
-              notifications: widget.notifications,
-              middle: Logo(width: 130, height: 130),
+            SliverAppBar(
+              floating: true,
+              snap: true,
+              automaticallyImplyLeading: false,
+              forceElevated: true,
+              flexibleSpace: Builder(
+                builder: (context) {
+                  return Stack(
+                    clipBehavior:
+                        Clip.none, // Allows children to go outside bounds
+                    alignment: Alignment.center,
+                    children: [
+                      SizedBox(
+                        height: 55,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            DrawerOpener(user: widget.user),
+                            NotificationButton(
+                              notifications: widget.notifications,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Positioned(top: 5, child: Logo(width: 75, height: 75)),
+                    ],
+                  );
+                },
+              ),
               bottom: TabBar(
                 dividerColor: Theme.of(context).colorScheme.outlineVariant,
                 labelStyle: Theme.of(context).textTheme.titleMedium,

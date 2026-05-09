@@ -8,8 +8,9 @@ class AppLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Logo(width: 130, height: 130),
+        Logo(width: 120, height: 120),
         SizedBox(width: 15),
         Text(
           'People \nOf \nKenya',

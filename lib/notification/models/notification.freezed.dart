@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Notification {
 
- int get id; String get text; List<User> get users;@JsonKey(name: 'is_like') bool get isLike;@JsonKey(name: 'is_follow') bool get isFollow;@JsonKey(name: 'is_support') bool get isSupport; Post? get post; Ballot? get ballot; Survey? get survey; Petition? get petition; Meeting? get meeting;@ChatConverter() Chat? get chat;@JsonKey(name: 'is_read') bool get isRead;@JsonKey(name: 'created_at') DateTime get createdAt;
+ int get id; String get text; List<User> get users;@JsonKey(name: 'is_like') bool get isLike;@JsonKey(name: 'is_follow') bool get isFollow;@JsonKey(name: 'is_support') bool get isSupport; Post? get post; Ballot? get ballot; Survey? get survey; Petition? get petition; Meeting? get meeting;@ChatConverter() Chat? get chat;@MessageConverter() Message? get message;@JsonKey(name: 'is_read') bool get isRead;@JsonKey(name: 'created_at') DateTime get createdAt;
 /// Create a copy of Notification
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $NotificationCopyWith<Notification> get copyWith => _$NotificationCopyWithImpl<N
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Notification&&(identical(other.id, id) || other.id == id)&&(identical(other.text, text) || other.text == text)&&const DeepCollectionEquality().equals(other.users, users)&&(identical(other.isLike, isLike) || other.isLike == isLike)&&(identical(other.isFollow, isFollow) || other.isFollow == isFollow)&&(identical(other.isSupport, isSupport) || other.isSupport == isSupport)&&(identical(other.post, post) || other.post == post)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.chat, chat) || other.chat == chat)&&(identical(other.isRead, isRead) || other.isRead == isRead)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Notification&&(identical(other.id, id) || other.id == id)&&(identical(other.text, text) || other.text == text)&&const DeepCollectionEquality().equals(other.users, users)&&(identical(other.isLike, isLike) || other.isLike == isLike)&&(identical(other.isFollow, isFollow) || other.isFollow == isFollow)&&(identical(other.isSupport, isSupport) || other.isSupport == isSupport)&&(identical(other.post, post) || other.post == post)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.chat, chat) || other.chat == chat)&&(identical(other.message, message) || other.message == message)&&(identical(other.isRead, isRead) || other.isRead == isRead)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,text,const DeepCollectionEquality().hash(users),isLike,isFollow,isSupport,post,ballot,survey,petition,meeting,chat,isRead,createdAt);
+int get hashCode => Object.hash(runtimeType,id,text,const DeepCollectionEquality().hash(users),isLike,isFollow,isSupport,post,ballot,survey,petition,meeting,chat,message,isRead,createdAt);
 
 @override
 String toString() {
-  return 'Notification(id: $id, text: $text, users: $users, isLike: $isLike, isFollow: $isFollow, isSupport: $isSupport, post: $post, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, chat: $chat, isRead: $isRead, createdAt: $createdAt)';
+  return 'Notification(id: $id, text: $text, users: $users, isLike: $isLike, isFollow: $isFollow, isSupport: $isSupport, post: $post, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, chat: $chat, message: $message, isRead: $isRead, createdAt: $createdAt)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $NotificationCopyWith<$Res>  {
   factory $NotificationCopyWith(Notification value, $Res Function(Notification) _then) = _$NotificationCopyWithImpl;
 @useResult
 $Res call({
- int id, String text, List<User> users,@JsonKey(name: 'is_like') bool isLike,@JsonKey(name: 'is_follow') bool isFollow,@JsonKey(name: 'is_support') bool isSupport, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting,@ChatConverter() Chat? chat,@JsonKey(name: 'is_read') bool isRead,@JsonKey(name: 'created_at') DateTime createdAt
+ int id, String text, List<User> users,@JsonKey(name: 'is_like') bool isLike,@JsonKey(name: 'is_follow') bool isFollow,@JsonKey(name: 'is_support') bool isSupport, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting,@ChatConverter() Chat? chat,@MessageConverter() Message? message,@JsonKey(name: 'is_read') bool isRead,@JsonKey(name: 'created_at') DateTime createdAt
 });
 
 
@@ -65,7 +65,7 @@ class _$NotificationCopyWithImpl<$Res>
 
 /// Create a copy of Notification
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? text = null,Object? users = null,Object? isLike = null,Object? isFollow = null,Object? isSupport = null,Object? post = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? meeting = freezed,Object? chat = freezed,Object? isRead = null,Object? createdAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? text = null,Object? users = null,Object? isLike = null,Object? isFollow = null,Object? isSupport = null,Object? post = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? meeting = freezed,Object? chat = freezed,Object? message = freezed,Object? isRead = null,Object? createdAt = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
@@ -79,7 +79,8 @@ as Ballot?,survey: freezed == survey ? _self.survey : survey // ignore: cast_nul
 as Survey?,petition: freezed == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
 as Petition?,meeting: freezed == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
 as Meeting?,chat: freezed == chat ? _self.chat : chat // ignore: cast_nullable_to_non_nullable
-as Chat?,isRead: null == isRead ? _self.isRead : isRead // ignore: cast_nullable_to_non_nullable
+as Chat?,message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as Message?,isRead: null == isRead ? _self.isRead : isRead // ignore: cast_nullable_to_non_nullable
 as bool,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,
   ));
@@ -223,10 +224,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String text,  List<User> users, @JsonKey(name: 'is_like')  bool isLike, @JsonKey(name: 'is_follow')  bool isFollow, @JsonKey(name: 'is_support')  bool isSupport,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting, @ChatConverter()  Chat? chat, @JsonKey(name: 'is_read')  bool isRead, @JsonKey(name: 'created_at')  DateTime createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String text,  List<User> users, @JsonKey(name: 'is_like')  bool isLike, @JsonKey(name: 'is_follow')  bool isFollow, @JsonKey(name: 'is_support')  bool isSupport,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting, @ChatConverter()  Chat? chat, @MessageConverter()  Message? message, @JsonKey(name: 'is_read')  bool isRead, @JsonKey(name: 'created_at')  DateTime createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Notification() when $default != null:
-return $default(_that.id,_that.text,_that.users,_that.isLike,_that.isFollow,_that.isSupport,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.chat,_that.isRead,_that.createdAt);case _:
+return $default(_that.id,_that.text,_that.users,_that.isLike,_that.isFollow,_that.isSupport,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.chat,_that.message,_that.isRead,_that.createdAt);case _:
   return orElse();
 
 }
@@ -244,10 +245,10 @@ return $default(_that.id,_that.text,_that.users,_that.isLike,_that.isFollow,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String text,  List<User> users, @JsonKey(name: 'is_like')  bool isLike, @JsonKey(name: 'is_follow')  bool isFollow, @JsonKey(name: 'is_support')  bool isSupport,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting, @ChatConverter()  Chat? chat, @JsonKey(name: 'is_read')  bool isRead, @JsonKey(name: 'created_at')  DateTime createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String text,  List<User> users, @JsonKey(name: 'is_like')  bool isLike, @JsonKey(name: 'is_follow')  bool isFollow, @JsonKey(name: 'is_support')  bool isSupport,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting, @ChatConverter()  Chat? chat, @MessageConverter()  Message? message, @JsonKey(name: 'is_read')  bool isRead, @JsonKey(name: 'created_at')  DateTime createdAt)  $default,) {final _that = this;
 switch (_that) {
 case _Notification():
-return $default(_that.id,_that.text,_that.users,_that.isLike,_that.isFollow,_that.isSupport,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.chat,_that.isRead,_that.createdAt);}
+return $default(_that.id,_that.text,_that.users,_that.isLike,_that.isFollow,_that.isSupport,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.chat,_that.message,_that.isRead,_that.createdAt);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -261,10 +262,10 @@ return $default(_that.id,_that.text,_that.users,_that.isLike,_that.isFollow,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String text,  List<User> users, @JsonKey(name: 'is_like')  bool isLike, @JsonKey(name: 'is_follow')  bool isFollow, @JsonKey(name: 'is_support')  bool isSupport,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting, @ChatConverter()  Chat? chat, @JsonKey(name: 'is_read')  bool isRead, @JsonKey(name: 'created_at')  DateTime createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String text,  List<User> users, @JsonKey(name: 'is_like')  bool isLike, @JsonKey(name: 'is_follow')  bool isFollow, @JsonKey(name: 'is_support')  bool isSupport,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting, @ChatConverter()  Chat? chat, @MessageConverter()  Message? message, @JsonKey(name: 'is_read')  bool isRead, @JsonKey(name: 'created_at')  DateTime createdAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Notification() when $default != null:
-return $default(_that.id,_that.text,_that.users,_that.isLike,_that.isFollow,_that.isSupport,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.chat,_that.isRead,_that.createdAt);case _:
+return $default(_that.id,_that.text,_that.users,_that.isLike,_that.isFollow,_that.isSupport,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.chat,_that.message,_that.isRead,_that.createdAt);case _:
   return null;
 
 }
@@ -276,7 +277,7 @@ return $default(_that.id,_that.text,_that.users,_that.isLike,_that.isFollow,_tha
 @JsonSerializable()
 
 class _Notification implements Notification {
-  const _Notification({required this.id, required this.text, required final  List<User> users, @JsonKey(name: 'is_like') required this.isLike, @JsonKey(name: 'is_follow') required this.isFollow, @JsonKey(name: 'is_support') required this.isSupport, required this.post, required this.ballot, required this.survey, required this.petition, required this.meeting, @ChatConverter() required this.chat, @JsonKey(name: 'is_read') required this.isRead, @JsonKey(name: 'created_at') required this.createdAt}): _users = users;
+  const _Notification({required this.id, required this.text, required final  List<User> users, @JsonKey(name: 'is_like') required this.isLike, @JsonKey(name: 'is_follow') required this.isFollow, @JsonKey(name: 'is_support') required this.isSupport, required this.post, required this.ballot, required this.survey, required this.petition, required this.meeting, @ChatConverter() required this.chat, @MessageConverter() required this.message, @JsonKey(name: 'is_read') required this.isRead, @JsonKey(name: 'created_at') required this.createdAt}): _users = users;
   factory _Notification.fromJson(Map<String, dynamic> json) => _$NotificationFromJson(json);
 
 @override final  int id;
@@ -297,6 +298,7 @@ class _Notification implements Notification {
 @override final  Petition? petition;
 @override final  Meeting? meeting;
 @override@ChatConverter() final  Chat? chat;
+@override@MessageConverter() final  Message? message;
 @override@JsonKey(name: 'is_read') final  bool isRead;
 @override@JsonKey(name: 'created_at') final  DateTime createdAt;
 
@@ -313,16 +315,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Notification&&(identical(other.id, id) || other.id == id)&&(identical(other.text, text) || other.text == text)&&const DeepCollectionEquality().equals(other._users, _users)&&(identical(other.isLike, isLike) || other.isLike == isLike)&&(identical(other.isFollow, isFollow) || other.isFollow == isFollow)&&(identical(other.isSupport, isSupport) || other.isSupport == isSupport)&&(identical(other.post, post) || other.post == post)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.chat, chat) || other.chat == chat)&&(identical(other.isRead, isRead) || other.isRead == isRead)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Notification&&(identical(other.id, id) || other.id == id)&&(identical(other.text, text) || other.text == text)&&const DeepCollectionEquality().equals(other._users, _users)&&(identical(other.isLike, isLike) || other.isLike == isLike)&&(identical(other.isFollow, isFollow) || other.isFollow == isFollow)&&(identical(other.isSupport, isSupport) || other.isSupport == isSupport)&&(identical(other.post, post) || other.post == post)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.chat, chat) || other.chat == chat)&&(identical(other.message, message) || other.message == message)&&(identical(other.isRead, isRead) || other.isRead == isRead)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,text,const DeepCollectionEquality().hash(_users),isLike,isFollow,isSupport,post,ballot,survey,petition,meeting,chat,isRead,createdAt);
+int get hashCode => Object.hash(runtimeType,id,text,const DeepCollectionEquality().hash(_users),isLike,isFollow,isSupport,post,ballot,survey,petition,meeting,chat,message,isRead,createdAt);
 
 @override
 String toString() {
-  return 'Notification(id: $id, text: $text, users: $users, isLike: $isLike, isFollow: $isFollow, isSupport: $isSupport, post: $post, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, chat: $chat, isRead: $isRead, createdAt: $createdAt)';
+  return 'Notification(id: $id, text: $text, users: $users, isLike: $isLike, isFollow: $isFollow, isSupport: $isSupport, post: $post, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, chat: $chat, message: $message, isRead: $isRead, createdAt: $createdAt)';
 }
 
 
@@ -333,7 +335,7 @@ abstract mixin class _$NotificationCopyWith<$Res> implements $NotificationCopyWi
   factory _$NotificationCopyWith(_Notification value, $Res Function(_Notification) _then) = __$NotificationCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String text, List<User> users,@JsonKey(name: 'is_like') bool isLike,@JsonKey(name: 'is_follow') bool isFollow,@JsonKey(name: 'is_support') bool isSupport, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting,@ChatConverter() Chat? chat,@JsonKey(name: 'is_read') bool isRead,@JsonKey(name: 'created_at') DateTime createdAt
+ int id, String text, List<User> users,@JsonKey(name: 'is_like') bool isLike,@JsonKey(name: 'is_follow') bool isFollow,@JsonKey(name: 'is_support') bool isSupport, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting,@ChatConverter() Chat? chat,@MessageConverter() Message? message,@JsonKey(name: 'is_read') bool isRead,@JsonKey(name: 'created_at') DateTime createdAt
 });
 
 
@@ -350,7 +352,7 @@ class __$NotificationCopyWithImpl<$Res>
 
 /// Create a copy of Notification
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? text = null,Object? users = null,Object? isLike = null,Object? isFollow = null,Object? isSupport = null,Object? post = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? meeting = freezed,Object? chat = freezed,Object? isRead = null,Object? createdAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? text = null,Object? users = null,Object? isLike = null,Object? isFollow = null,Object? isSupport = null,Object? post = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? meeting = freezed,Object? chat = freezed,Object? message = freezed,Object? isRead = null,Object? createdAt = null,}) {
   return _then(_Notification(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
@@ -364,7 +366,8 @@ as Ballot?,survey: freezed == survey ? _self.survey : survey // ignore: cast_nul
 as Survey?,petition: freezed == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
 as Petition?,meeting: freezed == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
 as Meeting?,chat: freezed == chat ? _self.chat : chat // ignore: cast_nullable_to_non_nullable
-as Chat?,isRead: null == isRead ? _self.isRead : isRead // ignore: cast_nullable_to_non_nullable
+as Chat?,message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as Message?,isRead: null == isRead ? _self.isRead : isRead // ignore: cast_nullable_to_non_nullable
 as bool,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,
   ));

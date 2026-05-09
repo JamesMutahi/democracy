@@ -34,6 +34,9 @@ _Notification _$NotificationFromJson(Map<String, dynamic> json) =>
       chat: const ChatConverter().fromJson(
         json['chat'] as Map<String, dynamic>?,
       ),
+      message: const MessageConverter().fromJson(
+        json['message'] as Map<String, dynamic>?,
+      ),
       isRead: json['is_read'] as bool,
       createdAt: DateTime.parse(json['created_at'] as String),
     );
@@ -52,6 +55,7 @@ Map<String, dynamic> _$NotificationToJson(_Notification instance) =>
       'petition': instance.petition,
       'meeting': instance.meeting,
       'chat': const ChatConverter().toJson(instance.chat),
+      'message': const MessageConverter().toJson(instance.message),
       'is_read': instance.isRead,
       'created_at': instance.createdAt.toIso8601String(),
     };

@@ -24,17 +24,7 @@ class CustomAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> widgets = [
-      Container(
-        margin: EdgeInsets.only(left: 15),
-        child: GestureDetector(
-          onTap: () {
-            Scaffold.of(context).openDrawer();
-          },
-          child: ProfileImage(user: user),
-        ),
-      ),
-    ];
+    List<Widget> widgets = [DrawerOpener(user: user)];
     widgets.add(middle);
     widgets.add(NotificationButton(notifications: notifications));
     return SliverAppBar(
@@ -55,6 +45,25 @@ class CustomAppBar extends StatelessWidget {
         },
       ),
       bottom: bottom,
+    );
+  }
+}
+
+class DrawerOpener extends StatelessWidget {
+  const DrawerOpener({super.key, required this.user});
+
+  final User user;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(left: 15),
+      child: GestureDetector(
+        onTap: () {
+          Scaffold.of(context).openDrawer();
+        },
+        child: ProfileImage(user: user),
+      ),
     );
   }
 }

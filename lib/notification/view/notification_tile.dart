@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/ballot/view/ballot_detail.dart';
 import 'package:democracy/chat/view/utils/chat_navigator.dart';
+import 'package:democracy/chat/view/utils/last_message.dart';
 import 'package:democracy/meeting/view/widgets/meeting_tile.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
@@ -192,7 +193,7 @@ class NotificationTile extends StatelessWidget {
       icon = Icon(Symbols.email_rounded);
       title = Text(notification.text);
       subtitle = Text(
-        notification.chat!.lastMessage.target!.text,
+        getLastMessageText(notification.message!, ''),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );
