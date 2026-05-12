@@ -1,27 +1,22 @@
-import 'package:democracy/app/bloc/services/websocket_service.dart';
+import 'package:democracy/app/shared/pages/search_results.dart';
+import 'package:democracy/app/shared/widgets/no_results.dart';
+import 'package:democracy/post/bloc/trending_topics/trending_topics_bloc.dart';
 import 'package:democracy/post/view/shared/add_post_view.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
-import 'package:democracy/app/view/widgets/filters_modal.dart';
-import 'package:democracy/app/view/widgets/results_search_bar.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/post/bloc/post_filter/post_filter_cubit.dart';
-import 'package:democracy/post/bloc/posts/posts_bloc.dart';
-import 'package:democracy/post/bloc/recent/recent_posts_bloc.dart';
 import 'package:democracy/post/bloc/trending_posts/trending_posts_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
-import 'package:democracy/post/view/widgets/post_listview.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/user/bloc/follow_recommendations/follow_recommendations_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
-import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/user/view/utils/follow_recommendations_navigator.dart';
+import 'package:democracy/user/view/pages/follow_recommendations.dart';
 import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:democracy/user/view/widgets/user_tile.dart';
-import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
@@ -46,9 +41,6 @@ class _ExplorePageState extends State<ExplorePage>
   bool get wantKeepAlive => true;
 
   final TextEditingController _controller = TextEditingController();
-  DateTime? startDate;
-  DateTime? endDate;
-  int filterCount = 0;
 
   @override
   void dispose() {
@@ -59,95 +51,98 @@ class _ExplorePageState extends State<ExplorePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return NestedScrollView(
-      headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-        return [
-          CustomAppBar(
-            user: widget.user,
-            notifications: widget.notifications,
-            middle: Text(
-              'Explore',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            bottom: PreferredSize(
-              preferredSize: Size.fromHeight(60.0),
-              child: BlocConsumer<PostFilterCubit, PostFilterState>(
-                listener: (context, state) {
-                  if (state.onExplorePage) {
-                    if (state.startDate != startDate ||
-                        state.endDate != endDate) {
-                      setState(() {
-                        startDate = state.startDate;
-                        endDate = state.endDate;
-                        filterCount = state.count;
-                      });
-                    }
-                  }
-                },
-                builder: (context, state) {
-                  return CustomSearchBar(
-                    controller: _controller,
-                    hintText: 'Search',
-                    filterCount: filterCount,
-                    onSubmitted: (value) {
-                      if (_controller.text.trim().isNotEmpty) {
-                        context.read<PostFilterCubit>().searchTermChanged(
-                          onExplorePage: true,
-                          searchTerm: _controller.text,
-                        );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => _ResultsPage(
-                              searchTerm: _controller.text,
-                              startDate: startDate,
-                              endDate: endDate,
-                              filterCount: filterCount,
-                            ),
-                          ),
-                        ).whenComplete(() {
-                          _controller.clear();
-                          setState(() {
-                            startDate = null;
-                            endDate = null;
-                            filterCount = 0;
-                          });
-                        });
-                      }
+    return BlocProvider(
+      create: (context) => PostFilterCubit(),
+      child: DefaultTabController(
+        length: 2,
+        child: NestedScrollView(
+          headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+            return [
+              CustomAppBar(
+                user: widget.user,
+                notifications: widget.notifications,
+                middle: Text(
+                  'Explore',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                bottom: PreferredSize(
+                  preferredSize: Size.fromHeight(100.0),
+                  child: BlocBuilder<PostFilterCubit, PostFilterState>(
+                    buildWhen: (previous, current) {
+                      return current.onExplorePage;
                     },
-                    onFilterTap: () {
-                      showGeneralDialog(
-                        context: context,
-                        transitionDuration: const Duration(milliseconds: 300),
-                        pageBuilder: (context, animation, secondaryAnimation) {
-                          return _FiltersModal(
-                            onExplorePage: true,
-                            startDate: startDate,
-                            endDate: endDate,
-                          );
-                        },
+                    builder: (context, state) {
+                      return Column(
+                        children: [
+                          CustomSearchBar(
+                            controller: _controller,
+                            hintText: 'Search',
+                            filterCount: state.count,
+                            onSubmitted: (value) {
+                              if (_controller.text.trim().isNotEmpty) {
+                                navigateToSearchResults(
+                                  context: context,
+                                  searchTerm: _controller.text,
+                                  startDate: state.startDate,
+                                  endDate: state.endDate,
+                                  filterCount: state.count,
+                                  whenComplete: () => _controller.clear(),
+                                );
+                              }
+                            },
+                            onFilterTap: () {
+                              final cubit = context.read<PostFilterCubit>();
+                              showGeneralDialog(
+                                context: context,
+                                transitionDuration: const Duration(
+                                  milliseconds: 300,
+                                ),
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) {
+                                      return SearchFilters(
+                                        onExplorePage: true,
+                                        startDate: state.startDate,
+                                        endDate: state.endDate,
+                                        cubit: cubit,
+                                      );
+                                    },
+                              );
+                            },
+                          ),
+                          TabBar(
+                            dividerColor: Colors.transparent,
+                            labelStyle: Theme.of(context).textTheme.titleMedium,
+                            tabs: [
+                              Tab(text: 'For You'),
+                              Tab(text: 'Trending'),
+                            ],
+                          ),
+                        ],
                       );
                     },
-                  );
-                },
+                  ),
+                ),
               ),
-            ),
+            ];
+          },
+          body: TabBarView(
+            physics: NeverScrollableScrollPhysics(),
+            children: [_ForYou(), _Trending()],
           ),
-        ];
-      },
-      body: _Explore(),
+        ),
+      ),
     );
   }
 }
 
-class _Explore extends StatefulWidget {
-  const _Explore();
+class _ForYou extends StatefulWidget {
+  const _ForYou();
 
   @override
-  State<_Explore> createState() => _ExploreState();
+  State<_ForYou> createState() => _ForYouState();
 }
 
-class _ExploreState extends State<_Explore> {
+class _ForYouState extends State<_ForYou> with AutomaticKeepAliveClientMixin {
   final RefreshController _refreshController = RefreshController();
 
   @override
@@ -164,7 +159,11 @@ class _ExploreState extends State<_Explore> {
   }
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BlocBuilder<TrendingPostsBloc, TrendingPostsState>(
       builder: (context, state) {
         final posts = state.posts.toList();
@@ -215,7 +214,7 @@ class _ExploreState extends State<_Explore> {
                   width: double.infinity,
                   decoration: BoxDecoration(
                     border: Border(
-                      bottom: BorderSide(
+                      top: BorderSide(
                         color: Theme.of(context).disabledColor.withAlpha(30),
                       ),
                     ),
@@ -249,16 +248,17 @@ class _ExploreState extends State<_Explore> {
               SliverToBoxAdapter(
                 child: Container(
                   width: double.infinity,
-                  padding: EdgeInsets.only(top: 20, left: 10, bottom: 10),
+                  margin: EdgeInsets.only(top: 10),
+                  padding: EdgeInsets.only(top: 10, left: 10, bottom: 10),
                   decoration: BoxDecoration(
                     border: Border(
-                      bottom: BorderSide(
+                      top: BorderSide(
                         color: Theme.of(context).disabledColor.withAlpha(30),
                       ),
                     ),
                   ),
                   child: Text(
-                    'Trending',
+                    'Posts',
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.outline,
                     ),
@@ -342,425 +342,39 @@ class _ExploreState extends State<_Explore> {
   }
 }
 
-class _ResultsPage extends StatefulWidget {
-  const _ResultsPage({
-    required this.searchTerm,
-    required this.startDate,
-    required this.endDate,
-    required this.filterCount,
-  });
-
-  final String searchTerm;
-  final DateTime? startDate;
-  final DateTime? endDate;
-  final int filterCount;
+class _Trending extends StatefulWidget {
+  const _Trending();
 
   @override
-  State<_ResultsPage> createState() => _ResultsPageState();
+  State<_Trending> createState() => _TrendingState();
 }
 
-class _ResultsPageState extends State<_ResultsPage>
+class _TrendingState extends State<_Trending>
     with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
-  final TextEditingController _controller = TextEditingController();
-  late DateTime? startDate = widget.startDate;
-  late DateTime? endDate = widget.endDate;
-  late int filterCount = widget.filterCount;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller.text = widget.searchTerm;
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        body: SafeArea(
-          child: BlocListener<PostFilterCubit, PostFilterState>(
-            listener: (context, state) {
-              if (state.searchTerm == widget.searchTerm) {
-                setState(() {
-                  startDate = state.startDate;
-                  endDate = state.endDate;
-                  filterCount = state.count;
-                });
-              }
-            },
-            child: NestedScrollView(
-              headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-                return [
-                  SliverAppBar(
-                    floating: true,
-                    snap: true,
-                    forceElevated: true,
-                    automaticallyImplyLeading: false,
-                    flexibleSpace: Builder(
-                      builder: (context) {
-                        return SizedBox(
-                          height: 50,
-                          child: Row(
-                            children: [BackButton(), _buildSearchBar()],
-                          ),
-                        );
-                      },
-                    ),
-                    bottom: TabBar(
-                      dividerColor: Theme.of(
-                        context,
-                      ).colorScheme.outlineVariant,
-                      labelStyle: Theme.of(context).textTheme.titleMedium,
-                      tabs: [
-                        Tab(text: 'Top'),
-                        Tab(text: 'Recent'),
-                        Tab(text: 'Profiles'),
-                      ],
-                    ),
-                  ),
-                ];
-              },
-              body: MultiBlocProvider(
-                providers: [
-                  BlocProvider(
-                    create: (context) => PostsBloc(
-                      webSocketService: context.read<WebSocketService>(),
-                    ),
-                  ),
-                  BlocProvider(
-                    create: (context) => RecentPostsBloc(
-                      webSocketService: context.read<WebSocketService>(),
-                    ),
-                  ),
-                  BlocProvider(
-                    create: (context) => UsersBloc(
-                      webSocketService: context.read<WebSocketService>(),
-                    ),
-                  ),
-                ],
-                child: TabBarView(
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    _TopPostsTab(
-                      searchTerm: widget.searchTerm,
-                      startDate: startDate,
-                      endDate: endDate,
-                    ),
-                    _RecentPostsTab(
-                      searchTerm: widget.searchTerm,
-                      startDate: startDate,
-                      endDate: endDate,
-                    ),
-                    _ProfilesTab(searchTerm: widget.searchTerm),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSearchBar() {
-    return ResultsSearchBar(
-      controller: _controller,
-      filterCount: filterCount,
-      filterModal: _FiltersModal(
-        onExplorePage: false,
-        startDate: startDate,
-        endDate: endDate,
-      ),
-      onSubmitted: (value) {
-        if (_controller.text.isNotEmpty &&
-            widget.searchTerm != _controller.text) {
-          context.read<PostFilterCubit>().searchTermChanged(
-            onExplorePage: false,
-            searchTerm: _controller.text,
-          );
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => _ResultsPage(
-                searchTerm: _controller.text,
-                startDate: startDate,
-                endDate: endDate,
-                filterCount: filterCount,
-              ),
-            ),
-          ).whenComplete(() {
-            _controller.text = widget.searchTerm;
-          });
-        }
-      },
-    );
-  }
-}
-
-class _TopPostsTab extends StatefulWidget {
-  const _TopPostsTab({
-    required this.searchTerm,
-    required this.startDate,
-    required this.endDate,
-  });
-
-  final String searchTerm;
-  final DateTime? startDate;
-  final DateTime? endDate;
-
-  @override
-  State<_TopPostsTab> createState() => _TopPostsState();
-}
-
-class _TopPostsState extends State<_TopPostsTab>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
   final RefreshController _refreshController = RefreshController();
 
   @override
   void initState() {
     super.initState();
-    _getPosts();
+    context.read<TrendingTopicsBloc>().add(TrendingTopicsEvent.get());
   }
 
-  void _getPosts({List<Post>? previousPosts}) {
-    context.read<PostsBloc>().add(
-      PostsEvent.get(
-        previousPosts: previousPosts,
-        searchTerm: widget.searchTerm,
-        startDate: widget.startDate,
-        endDate: widget.endDate,
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return BlocListener<PostFilterCubit, PostFilterState>(
-      listener: (context, state) {
-        if (state.searchTerm == widget.searchTerm) {
-          context.read<PostsBloc>().add(
-            PostsEvent.get(
-              searchTerm: widget.searchTerm,
-              startDate: state.startDate,
-              endDate: state.endDate,
-            ),
-          );
-        }
-      },
-      child: BlocBuilder<PostsBloc, PostsState>(
-        buildWhen: (previous, current) {
-          return widget.searchTerm == current.searchTerm;
-        },
-        builder: (context, state) {
-          final posts = state.posts.toList();
-
-          if (state.status == PostsStatus.success) {
-            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-              _refreshController.refreshCompleted();
-            }
-            if (_refreshController.footerStatus == LoadStatus.loading) {
-              _refreshController.loadComplete();
-            }
-          }
-
-          if (state.status == PostsStatus.failure) {
-            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-              _refreshController.refreshFailed();
-            }
-            if (_refreshController.footerStatus == LoadStatus.loading) {
-              _refreshController.loadFailed();
-            }
-          }
-
-          return PostListView(
-            posts: posts,
-            loading: state.status == PostsStatus.initial,
-            failure: posts.isNotEmpty
-                ? false
-                : state.status == PostsStatus.failure,
-            onPostsUpdated: (posts) {
-              context.read<PostsBloc>().add(PostsEvent.update(posts: posts));
-            },
-            refreshController: _refreshController,
-            enablePullDown: true,
-            enablePullUp: state.hasNext,
-            checkVisibility: true,
-            onRefresh: _getPosts,
-            onLoading: () {
-              _getPosts(previousPosts: posts);
-            },
-            onFailure: _getPosts,
-            origin: 'Top posts',
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _RecentPostsTab extends StatefulWidget {
-  const _RecentPostsTab({
-    required this.searchTerm,
-    this.startDate,
-    this.endDate,
-  });
-
-  final String searchTerm;
-  final DateTime? startDate;
-  final DateTime? endDate;
-
-  @override
-  State<_RecentPostsTab> createState() => _RecentPostsState();
-}
-
-class _RecentPostsState extends State<_RecentPostsTab>
-    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
-  final RefreshController _refreshController = RefreshController();
-  String sortBy = 'recent';
-
-  @override
-  void initState() {
-    super.initState();
-    _getPosts();
-  }
-
-  void _getPosts({List<Post>? previousPosts}) {
-    context.read<RecentPostsBloc>().add(
-      RecentPostsEvent.get(
-        previousPosts: previousPosts,
-        searchTerm: widget.searchTerm,
-        startDate: widget.startDate,
-        endDate: widget.endDate,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocListener<PostFilterCubit, PostFilterState>(
-      listener: (context, state) {
-        if (state.searchTerm == widget.searchTerm) {
-          context.read<RecentPostsBloc>().add(
-            RecentPostsEvent.get(
-              searchTerm: widget.searchTerm,
-              startDate: state.startDate,
-              endDate: state.endDate,
-            ),
-          );
-        }
-      },
-      child: BlocBuilder<RecentPostsBloc, RecentPostsState>(
-        buildWhen: (previous, current) {
-          return widget.searchTerm == current.searchTerm;
-        },
-        builder: (context, state) {
-          final posts = state.posts.toList();
-
-          if (state.status == RecentPostsStatus.success) {
-            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-              _refreshController.refreshCompleted();
-            }
-            if (_refreshController.footerStatus == LoadStatus.loading) {
-              _refreshController.loadComplete();
-            }
-          }
-
-          if (state.status == RecentPostsStatus.failure) {
-            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-              _refreshController.refreshFailed();
-            }
-            if (_refreshController.footerStatus == LoadStatus.loading) {
-              _refreshController.loadFailed();
-            }
-          }
-
-          return PostListView(
-            posts: posts,
-            loading: state.status == RecentPostsStatus.initial,
-            failure: state.posts.isNotEmpty
-                ? false
-                : state.status == RecentPostsStatus.failure,
-            onPostsUpdated: (posts) {
-              context.read<RecentPostsBloc>().add(
-                RecentPostsEvent.update(posts: posts),
-              );
-            },
-            refreshController: _refreshController,
-            enablePullDown: true,
-            enablePullUp: state.hasNext,
-            checkVisibility: true,
-            onRefresh: _getPosts,
-            onLoading: () {
-              _getPosts(previousPosts: posts);
-            },
-            onFailure: _getPosts,
-            origin: 'Recent posts',
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _ProfilesTab extends StatefulWidget {
-  const _ProfilesTab({required this.searchTerm});
-
-  final String searchTerm;
-
-  @override
-  State<_ProfilesTab> createState() => _ProfilesTabState();
-}
-
-class _ProfilesTabState extends State<_ProfilesTab>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
-  final RefreshController _refreshController = RefreshController();
-
-  @override
-  void initState() {
-    context.read<UsersBloc>().add(
-      UsersEvent.get(searchTerm: widget.searchTerm),
-    );
-    super.initState();
-  }
-
-  void _getUsers({User? lastUser}) {
-    context.read<UsersBloc>().add(
-      UsersEvent.get(searchTerm: widget.searchTerm, lastUser: lastUser),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return BlocBuilder<UsersBloc, UsersState>(
-      buildWhen: (previous, current) {
-        return widget.searchTerm == current.searchTerm;
-      },
+    return BlocBuilder<TrendingTopicsBloc, TrendingTopicsState>(
       builder: (context, state) {
-        final users = state.users.toList();
+        final topics = state.topics.toList();
 
-        if (state.status == UsersStatus.success) {
+        if (state.status == TrendingTopicsStatus.initial ||
+            (state.status == TrendingTopicsStatus.loading && topics.isEmpty)) {
+          return const BottomLoader();
+        }
+
+        if (state.status == TrendingTopicsStatus.success) {
           if (_refreshController.headerStatus == RefreshStatus.refreshing) {
             _refreshController.refreshCompleted();
           }
@@ -769,98 +383,51 @@ class _ProfilesTabState extends State<_ProfilesTab>
           }
         }
 
-        if (state.status == UsersStatus.failure) {
+        if (state.status == TrendingTopicsStatus.failure) {
           if (_refreshController.headerStatus == RefreshStatus.refreshing) {
             _refreshController.refreshFailed();
           }
           if (_refreshController.footerStatus == LoadStatus.loading) {
             _refreshController.loadFailed();
           }
+          if (state.topics.isEmpty) {
+            return FailureRetryButton(
+              onPressed: () => context.read<TrendingTopicsBloc>().add(
+                TrendingTopicsEvent.get(),
+              ),
+            );
+          }
         }
 
-        return UsersListView(
-          users: users,
-          loading: state.status == UsersStatus.initial,
-          failure: state.users.isNotEmpty
-              ? false
-              : state.status == UsersStatus.failure,
-          refreshController: _refreshController,
-          enablePullUp: state.hasNext,
-          showProfileButtons: true,
-          onUserTap: (user) {
-            navigateToProfilePage(context: context, user: user);
+        return SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: false,
+          header: ClassicHeader(),
+          controller: _refreshController,
+          onRefresh: () {
+            context.read<TrendingTopicsBloc>().add(TrendingTopicsEvent.get());
           },
-          onLoading: () {
-            _getUsers(lastUser: users.last);
-          },
-          onFailure: _getUsers,
-          onUsersUpdated: (users) {
-            context.read<UsersBloc>().add(UsersEvent.update(users: users));
-          },
+          child: topics.isEmpty
+              ? const NoResults(text: 'No topics')
+              : ListView.builder(
+                  itemCount: topics.length,
+                  itemBuilder: (context, index) {
+                    final topic = topics[index];
+                    return ListTile(
+                      key: ValueKey(topic),
+                      title: Text(topic),
+                      onTap: () {
+                        navigateToSearchResults(
+                          context: context,
+                          searchTerm: topic,
+                          filterCount: 0,
+                        );
+                      },
+                    );
+                  },
+                ),
         );
       },
     );
-  }
-}
-
-class _FiltersModal extends StatefulWidget {
-  const _FiltersModal({
-    required this.onExplorePage,
-    required this.startDate,
-    required this.endDate,
-  });
-
-  final bool onExplorePage;
-  final DateTime? startDate;
-  final DateTime? endDate;
-
-  @override
-  State<_FiltersModal> createState() => _FiltersModalState();
-}
-
-class _FiltersModalState extends State<_FiltersModal> {
-  late DateTime? _startDate = widget.startDate;
-  late DateTime? _endDate = widget.endDate;
-
-  bool get _isUnchanged =>
-      _startDate == widget.startDate && _endDate == widget.endDate;
-
-  bool get _isDefaultState => _startDate == null && _endDate == null;
-
-  @override
-  Widget build(BuildContext context) {
-    return FiltersModal(
-      applyButtonIsDisabled: _isUnchanged,
-      clearButtonIsDisabled: _isDefaultState,
-      onApply: _applyFilters,
-      onClear: _clearFilters,
-      widgets: [
-        DateRangeFilter(
-          value: [_startDate, _endDate],
-          onValueChanged: (dates) {
-            setState(() {
-              _startDate = dates.isNotEmpty ? dates[0] : null;
-              _endDate = dates.length == 2 ? dates[1] : null;
-            });
-          },
-        ),
-        const Divider(),
-      ],
-    );
-  }
-
-  void _applyFilters() {
-    context.read<PostFilterCubit>().datesChanged(
-      onExplorePage: widget.onExplorePage,
-      startDate: _startDate,
-      endDate: _endDate,
-    );
-  }
-
-  void _clearFilters() {
-    setState(() {
-      _startDate = null;
-      _endDate = null;
-    });
   }
 }

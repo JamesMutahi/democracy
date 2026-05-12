@@ -427,7 +427,7 @@ class _CommunityNoteState extends State<CommunityNote> {
                   navigateToProfilePage(
                     context: context,
                     user: widget.post.taggedUsers.firstWhere(
-                      (user) => user.id == int.parse(userId),
+                      (user) => user.id == userId,
                     ),
                   );
                 },

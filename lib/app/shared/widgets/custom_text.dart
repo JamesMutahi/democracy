@@ -15,7 +15,8 @@ class CustomText extends StatelessWidget {
   final String? parentText;
   final TextStyle? parentTextStyle;
   final VoidCallback? onParentPressed;
-  final Function(String)? onUserTagPressed;
+  final Function(int)? onUserTagPressed;
+  final Function(String)? onHashtagPressed;
 
   CustomText({
     super.key,
@@ -30,6 +31,7 @@ class CustomText extends StatelessWidget {
     this.parentTextStyle,
     this.onParentPressed,
     this.onUserTagPressed,
+    this.onHashtagPressed,
   }) : _suffix = suffix,
        _text = text.trim();
 
@@ -91,7 +93,38 @@ class CustomText extends StatelessWidget {
     return false;
   }
 
+  TextSpan _parseTextWithHighlights() {
+    final spans = <TextSpan>[];
+    final regex = RegExp(r'(<mark>(.*?)</mark>)|([^<]+)');
+
+    for (final match in regex.allMatches(_text)) {
+      final fullMatch = match.group(0)!;
+
+      if (fullMatch.startsWith('<mark>')) {
+        // Highlighted text
+        final content = match.group(2) ?? '';
+        spans.add(
+          TextSpan(
+            text: content,
+            style: style.copyWith(
+              backgroundColor: Colors.yellow.withAlpha(40),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        );
+      } else {
+        // Normal text → still parse hashtags, mentions, links
+        spans.add(TextSpan(text: fullMatch, style: style));
+      }
+    }
+    return TextSpan(children: spans);
+  }
+
   TextSpan get _parsedTextSpan {
+    if (_text.contains('<mark>')) {
+      return _parseTextWithHighlights();
+    }
+
     final elements = linkify(
       _text,
       options: const LinkifyOptions(removeWww: true, looseUrl: true),
@@ -109,29 +142,27 @@ class CustomText extends StatelessWidget {
           TextSpan(
             text: element.text,
             style: style.copyWith(color: Colors.blueAccent),
-            recognizer:
-                TapGestureRecognizer()
-                  ..onTap = () async {
-                    final isEmail = _isEmail(element.text);
+            recognizer: TapGestureRecognizer()
+              ..onTap = () async {
+                final isEmail = _isEmail(element.text);
 
-                    if (isEmail) {
-                      await launchUrl(Uri.parse("mailto:${element.text}"));
-                    } else {
-                      await launchUrl(Uri.parse(element.url));
-                    }
-                  },
+                if (isEmail) {
+                  await launchUrl(Uri.parse("mailto:${element.text}"));
+                } else {
+                  await launchUrl(Uri.parse(element.url));
+                }
+              },
           ),
         );
       } else if (element is CustomUserTagElement) {
         _addText(
           TextSpan(
             text: element.name,
-            style: style.copyWith(color: Colors.blueAccent),
-            recognizer:
-                TapGestureRecognizer()
-                  ..onTap = () {
-                    onUserTagPressed?.call(element.userId);
-                  },
+            style: style.copyWith(color: Colors.purpleAccent),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                onUserTagPressed?.call(int.parse(element.userId));
+              },
           ),
         );
       } else if (element is HashtagElement) {
@@ -139,11 +170,10 @@ class CustomText extends StatelessWidget {
           TextSpan(
             text: element.title,
             style: style.copyWith(color: Colors.blueAccent),
-            recognizer:
-                TapGestureRecognizer()
-                  ..onTap = () {
-                    onUserTagPressed?.call(element.title);
-                  },
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                onHashtagPressed?.call(element.title);
+              },
           ),
         );
       } else {

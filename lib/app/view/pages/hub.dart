@@ -47,222 +47,176 @@ class _HubState extends State<Hub> {
   final TextEditingController _controller = TextEditingController();
   double padding = 15;
 
-  bool filterByRegion = true;
-  String sortBy = 'recent';
-  DateTime? startDate;
-  DateTime? endDate;
-  int filterCount = 0;
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return NestedScrollView(
-      headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-        return [
-          CustomAppBar(
-            user: widget.user,
-            notifications: widget.notifications,
-            middle: Text('Hub', style: Theme.of(context).textTheme.titleLarge),
-            bottom: PreferredSize(
-              preferredSize: Size.fromHeight(60.0),
-              child: BlocConsumer<HubFilterCubit, HubFilterState>(
-                listener: (context, state) {
-                  if (state.onHubPage) {
-                    if (filterByRegion != state.filterByRegion ||
-                        sortBy != state.sortBy ||
-                        startDate != startDate ||
-                        state.endDate != endDate) {
-                      setState(() {
-                        filterByRegion = state.filterByRegion;
-                        sortBy = state.sortBy;
-                        startDate = state.startDate;
-                        endDate = state.endDate;
-                        filterCount = state.count;
-                      });
-                    }
-                  }
-                },
-                builder: (context, state) {
-                  return CustomSearchBar(
-                    controller: _controller,
-                    hintText: 'Search',
-                    filterCount: 0,
-                    onSubmitted: (value) {
-                      if (_controller.text.trim().isNotEmpty) {
-                        context.read<HubFilterCubit>().searchTermChanged(
-                          onHubPage: true,
-                          searchTerm: _controller.text,
-                        );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MultiBlocProvider(
-                              providers: [
-                                BlocProvider(
-                                  create: (context) => BallotsBloc(
-                                    webSocketService: context
-                                        .read<WebSocketService>(),
-                                  ),
-                                ),
-                                BlocProvider(
-                                  create: (context) => SurveysBloc(
-                                    webSocketService: context
-                                        .read<WebSocketService>(),
-                                  ),
-                                ),
-                                BlocProvider(
-                                  create: (context) => MeetingsBloc(
-                                    webSocketService: context
-                                        .read<WebSocketService>(),
-                                  ),
-                                ),
-                                BlocProvider(
-                                  create: (context) => PetitionsBloc(
-                                    webSocketService: context
-                                        .read<WebSocketService>(),
-                                  ),
-                                ),
-                              ],
-                              child: _ResultsPage(
-                                searchTerm: _controller.text,
-                                filterByRegion: filterByRegion,
-                                sortBy: sortBy,
-                                startDate: startDate,
-                                endDate: endDate,
-                                filterCount: filterCount,
-                              ),
-                            ),
-                          ),
-                        ).whenComplete(() {
-                          _controller.clear();
-                          setState(() {
-                            startDate = null;
-                            endDate = null;
-                            filterCount = 0;
-                          });
-                        });
-                      }
-                    },
-                    onFilterTap: () {
-                      final filterCubit = context.read<HubFilterCubit>();
-                      showGeneralDialog(
-                        context: context,
-                        transitionDuration: const Duration(milliseconds: 300),
-                        pageBuilder: (context, animation, secondaryAnimation) {
-                          return BlocProvider.value(
-                            value: filterCubit,
-                            child: _FiltersModal(
-                              onHubPage: true,
-                              filterByRegion: filterByRegion,
-                              sortBy: sortBy,
-                              startDate: startDate,
-                              endDate: endDate,
-                            ),
+    return BlocProvider(
+      create: (context) => HubFilterCubit(),
+      child: NestedScrollView(
+        headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+          return [
+            CustomAppBar(
+              user: widget.user,
+              notifications: widget.notifications,
+              middle: Text(
+                'Hub',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              bottom: PreferredSize(
+                preferredSize: Size.fromHeight(60.0),
+                child: BlocBuilder<HubFilterCubit, HubFilterState>(
+                  buildWhen: (previous, current) {
+                    return current.onHubPage;
+                  },
+                  builder: (context, state) {
+                    return CustomSearchBar(
+                      controller: _controller,
+                      hintText: 'Search',
+                      filterCount: state.count,
+                      onSubmitted: (value) {
+                        if (_controller.text.trim().isNotEmpty) {
+                          _navigateToResultsPage(
+                            context: context,
+                            searchTerm: _controller.text,
+                            filterByRegion: state.filterByRegion,
+                            sortBy: state.sortBy,
+                            startDate: state.startDate,
+                            endDate: state.endDate,
+                            filterCount: state.count,
+                            whenComplete: () => _controller.clear(),
                           );
-                        },
-                      );
-                    },
-                  );
-                },
+                        }
+                      },
+                      onFilterTap: () {
+                        final filterCubit = context.read<HubFilterCubit>();
+                        showGeneralDialog(
+                          context: context,
+                          transitionDuration: const Duration(milliseconds: 300),
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) {
+                                return BlocProvider.value(
+                                  value: filterCubit,
+                                  child: _FiltersModal(
+                                    onHubPage: true,
+                                    filterByRegion: state.filterByRegion,
+                                    sortBy: state.sortBy,
+                                    startDate: state.startDate,
+                                    endDate: state.endDate,
+                                  ),
+                                );
+                              },
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
             ),
-          ),
-        ];
-      },
-      body: GridView.count(
-        padding: EdgeInsets.all(padding),
-        crossAxisCount: 2,
-        mainAxisSpacing: padding,
-        crossAxisSpacing: padding,
-        children: [
-          _HubCard(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MultiBlocProvider(
-                    providers: [
-                      BlocProvider(
-                        create: (context) => BallotsBloc(
-                          webSocketService: context.read<WebSocketService>(),
+          ];
+        },
+        body: GridView.count(
+          padding: EdgeInsets.all(padding),
+          crossAxisCount: 2,
+          mainAxisSpacing: padding,
+          crossAxisSpacing: padding,
+          children: [
+            _HubCard(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MultiBlocProvider(
+                      providers: [
+                        BlocProvider(
+                          create: (context) => BallotsBloc(
+                            webSocketService: context.read<WebSocketService>(),
+                          ),
                         ),
-                      ),
-                      BlocProvider(create: (context) => BallotFilterCubit()),
-                    ],
-                    child: BallotPage(),
+                        BlocProvider(create: (context) => BallotFilterCubit()),
+                      ],
+                      child: BallotPage(),
+                    ),
                   ),
-                ),
-              );
-            },
-            asset: 'assets/icons/ballot-box.svg',
-            text: 'Ballots',
-          ),
-          _HubCard(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MultiBlocProvider(
-                    providers: [
-                      BlocProvider(
-                        create: (context) => SurveysBloc(
-                          webSocketService: context.read<WebSocketService>(),
+                );
+              },
+              asset: 'assets/icons/ballot-box.svg',
+              text: 'Ballots',
+            ),
+            _HubCard(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MultiBlocProvider(
+                      providers: [
+                        BlocProvider(
+                          create: (context) => SurveysBloc(
+                            webSocketService: context.read<WebSocketService>(),
+                          ),
                         ),
-                      ),
-                      BlocProvider(create: (context) => SurveyFilterCubit()),
-                    ],
-                    child: SurveyPage(),
+                        BlocProvider(create: (context) => SurveyFilterCubit()),
+                      ],
+                      child: SurveyPage(),
+                    ),
                   ),
-                ),
-              );
-            },
-            asset: 'assets/icons/question.svg',
-            text: 'Surveys',
-          ),
-          _HubCard(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MultiBlocProvider(
-                    providers: [
-                      BlocProvider(
-                        create: (context) => MeetingsBloc(
-                          webSocketService: context.read<WebSocketService>(),
+                );
+              },
+              asset: 'assets/icons/question.svg',
+              text: 'Surveys',
+            ),
+            _HubCard(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MultiBlocProvider(
+                      providers: [
+                        BlocProvider(
+                          create: (context) => MeetingsBloc(
+                            webSocketService: context.read<WebSocketService>(),
+                          ),
                         ),
-                      ),
-                      BlocProvider(create: (context) => MeetingFilterCubit()),
-                    ],
-                    child: MeetingPage(),
+                        BlocProvider(create: (context) => MeetingFilterCubit()),
+                      ],
+                      child: MeetingPage(),
+                    ),
                   ),
-                ),
-              );
-            },
-            asset: 'assets/icons/meeting.svg',
-            text: 'Meetings',
-          ),
-          _HubCard(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MultiBlocProvider(
-                    providers: [
-                      BlocProvider(
-                        create: (context) => PetitionsBloc(
-                          webSocketService: context.read<WebSocketService>(),
+                );
+              },
+              asset: 'assets/icons/meeting.svg',
+              text: 'Meetings',
+            ),
+            _HubCard(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MultiBlocProvider(
+                      providers: [
+                        BlocProvider(
+                          create: (context) => PetitionsBloc(
+                            webSocketService: context.read<WebSocketService>(),
+                          ),
                         ),
-                      ),
-                      BlocProvider(create: (context) => PetitionFilterCubit()),
-                    ],
-                    child: PetitionPage(),
+                        BlocProvider(
+                          create: (context) => PetitionFilterCubit(),
+                        ),
+                      ],
+                      child: PetitionPage(),
+                    ),
                   ),
-                ),
-              );
-            },
-            asset: 'assets/icons/signature.svg',
-            text: 'Petitions',
-          ),
-        ],
+                );
+              },
+              asset: 'assets/icons/signature.svg',
+              text: 'Petitions',
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -297,6 +251,54 @@ class _HubCard extends StatelessWidget {
   }
 }
 
+void _navigateToResultsPage({
+  required BuildContext context,
+  required String searchTerm,
+  required bool filterByRegion,
+  required String sortBy,
+  required DateTime? startDate,
+  required DateTime? endDate,
+  required int filterCount,
+  required VoidCallback whenComplete,
+}) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => HubFilterCubit()),
+          BlocProvider(
+            create: (context) =>
+                BallotsBloc(webSocketService: context.read<WebSocketService>()),
+          ),
+          BlocProvider(
+            create: (context) =>
+                SurveysBloc(webSocketService: context.read<WebSocketService>()),
+          ),
+          BlocProvider(
+            create: (context) => MeetingsBloc(
+              webSocketService: context.read<WebSocketService>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => PetitionsBloc(
+              webSocketService: context.read<WebSocketService>(),
+            ),
+          ),
+        ],
+        child: _ResultsPage(
+          searchTerm: searchTerm,
+          filterByRegion: filterByRegion,
+          sortBy: sortBy,
+          startDate: startDate,
+          endDate: endDate,
+          filterCount: filterCount,
+        ),
+      ),
+    ),
+  ).whenComplete(whenComplete);
+}
+
 class _ResultsPage extends StatefulWidget {
   const _ResultsPage({
     required this.searchTerm,
@@ -324,14 +326,17 @@ class _ResultsPageState extends State<_ResultsPage>
   bool get wantKeepAlive => true;
 
   final TextEditingController _controller = TextEditingController();
-  late bool filterByRegion = widget.filterByRegion;
-  late String sortBy = widget.sortBy;
-  late DateTime? startDate = widget.startDate;
-  late DateTime? endDate = widget.endDate;
-  late int filterCount = widget.filterCount;
 
   @override
   void initState() {
+    context.read<HubFilterCubit>().initialize(
+      onHubPage: false,
+      searchTerm: widget.searchTerm,
+      filterByRegion: widget.filterByRegion,
+      sortBy: widget.sortBy,
+      startDate: widget.startDate,
+      endDate: widget.endDate,
+    );
     super.initState();
     _controller.text = widget.searchTerm;
   }
@@ -349,116 +354,125 @@ class _ResultsPageState extends State<_ResultsPage>
       length: 4,
       child: Scaffold(
         body: SafeArea(
-          child: BlocListener<HubFilterCubit, HubFilterState>(
-            listener: (context, state) {
-              if (state.searchTerm == widget.searchTerm) {
-                setState(() {
-                  filterByRegion = state.filterByRegion;
-                  sortBy = state.sortBy;
-                  startDate = state.startDate;
-                  endDate = state.endDate;
-                  filterCount = state.count;
-                });
-              }
+          child: BlocBuilder<HubFilterCubit, HubFilterState>(
+            buildWhen: (previous, current) {
+              return current.searchTerm == widget.searchTerm;
             },
-            child: NestedScrollView(
-              headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-                return [
-                  SliverAppBar(
-                    floating: true,
-                    snap: true,
-                    forceElevated: true,
-                    automaticallyImplyLeading: false,
-                    flexibleSpace: Builder(
-                      builder: (context) {
-                        return SizedBox(
-                          height: 50,
-                          child: Row(
-                            children: [BackButton(), _buildSearchBar()],
-                          ),
-                        );
-                      },
+            builder: (context, state) {
+              return NestedScrollView(
+                headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+                  return [
+                    SliverAppBar(
+                      floating: true,
+                      snap: true,
+                      forceElevated: true,
+                      automaticallyImplyLeading: false,
+                      flexibleSpace: Builder(
+                        builder: (context) {
+                          return SizedBox(
+                            height: 50,
+                            child: Row(
+                              children: [
+                                BackButton(),
+                                _buildSearchBar(
+                                  filterByRegion: state.filterByRegion,
+                                  sortBy: state.sortBy,
+                                  startDate: state.startDate,
+                                  endDate: state.endDate,
+                                  filterCount: state.count,
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                      bottom: TabBar(
+                        dividerColor: Theme.of(
+                          context,
+                        ).colorScheme.outlineVariant,
+                        labelStyle: Theme.of(context).textTheme.titleMedium,
+                        tabs: [
+                          Tab(text: 'Ballots'),
+                          Tab(text: 'Surveys'),
+                          Tab(text: 'Meetings'),
+                          Tab(text: 'Petitions'),
+                        ],
+                      ),
                     ),
-                    bottom: TabBar(
-                      dividerColor: Theme.of(
-                        context,
-                      ).colorScheme.outlineVariant,
-                      labelStyle: Theme.of(context).textTheme.titleMedium,
-                      tabs: [
-                        Tab(text: 'Ballots'),
-                        Tab(text: 'Surveys'),
-                        Tab(text: 'Meetings'),
-                        Tab(text: 'Petitions'),
-                      ],
+                  ];
+                },
+                body: MultiBlocProvider(
+                  providers: [
+                    BlocProvider(
+                      create: (context) => BallotsBloc(
+                        webSocketService: context.read<WebSocketService>(),
+                      ),
                     ),
-                  ),
-                ];
-              },
-              body: MultiBlocProvider(
-                providers: [
-                  BlocProvider(
-                    create: (context) => BallotsBloc(
-                      webSocketService: context.read<WebSocketService>(),
+                    BlocProvider(
+                      create: (context) => SurveysBloc(
+                        webSocketService: context.read<WebSocketService>(),
+                      ),
                     ),
-                  ),
-                  BlocProvider(
-                    create: (context) => SurveysBloc(
-                      webSocketService: context.read<WebSocketService>(),
+                    BlocProvider(
+                      create: (context) => MeetingsBloc(
+                        webSocketService: context.read<WebSocketService>(),
+                      ),
                     ),
-                  ),
-                  BlocProvider(
-                    create: (context) => MeetingsBloc(
-                      webSocketService: context.read<WebSocketService>(),
-                    ),
-                  ),
-                  BlocProvider(
-                    create: (context) => PetitionsBloc(
-                      webSocketService: context.read<WebSocketService>(),
-                    ),
-                  ),
-                ],
-                child: TabBarView(
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    _BallotsTab(
-                      searchTerm: widget.searchTerm,
-                      filterByRegion: filterByRegion,
-                      sortBy: sortBy,
-                      startDate: startDate,
-                      endDate: endDate,
-                    ),
-                    _SurveysTab(
-                      searchTerm: widget.searchTerm,
-                      filterByRegion: filterByRegion,
-                      sortBy: sortBy,
-                      startDate: startDate,
-                      endDate: endDate,
-                    ),
-                    _MeetingsTab(
-                      searchTerm: widget.searchTerm,
-                      filterByRegion: filterByRegion,
-                      sortBy: sortBy,
-                      startDate: startDate,
-                      endDate: endDate,
-                    ),
-                    _PetitionsTab(
-                      searchTerm: widget.searchTerm,
-                      filterByRegion: filterByRegion,
-                      sortBy: sortBy,
-                      startDate: startDate,
-                      endDate: endDate,
+                    BlocProvider(
+                      create: (context) => PetitionsBloc(
+                        webSocketService: context.read<WebSocketService>(),
+                      ),
                     ),
                   ],
+                  child: TabBarView(
+                    physics: NeverScrollableScrollPhysics(),
+                    children: [
+                      _BallotsTab(
+                        searchTerm: widget.searchTerm,
+                        filterByRegion: state.filterByRegion,
+                        sortBy: state.sortBy,
+                        startDate: state.startDate,
+                        endDate: state.endDate,
+                      ),
+                      _SurveysTab(
+                        searchTerm: widget.searchTerm,
+                        filterByRegion: state.filterByRegion,
+                        sortBy: state.sortBy,
+                        startDate: state.startDate,
+                        endDate: state.endDate,
+                      ),
+                      _MeetingsTab(
+                        searchTerm: widget.searchTerm,
+                        filterByRegion: state.filterByRegion,
+                        sortBy: state.sortBy,
+                        startDate: state.startDate,
+                        endDate: state.endDate,
+                      ),
+                      _PetitionsTab(
+                        searchTerm: widget.searchTerm,
+                        filterByRegion: state.filterByRegion,
+                        sortBy: state.sortBy,
+                        startDate: state.startDate,
+                        endDate: state.endDate,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ),
       ),
     );
   }
 
-  Widget _buildSearchBar() {
+  Widget _buildSearchBar({
+    required bool filterByRegion,
+    required String sortBy,
+    required DateTime? startDate,
+    required DateTime? endDate,
+    required int filterCount,
+  }) {
     final filterCubit = context.read<HubFilterCubit>();
     return ResultsSearchBar(
       controller: _controller,
@@ -476,25 +490,16 @@ class _ResultsPageState extends State<_ResultsPage>
       onSubmitted: (value) {
         if (_controller.text.isNotEmpty &&
             widget.searchTerm != _controller.text) {
-          context.read<HubFilterCubit>().searchTermChanged(
-            onHubPage: false,
+          _navigateToResultsPage(
+            context: context,
             searchTerm: _controller.text,
+            filterByRegion: filterByRegion,
+            sortBy: sortBy,
+            startDate: startDate,
+            endDate: endDate,
+            filterCount: filterCount,
+            whenComplete: () => _controller.text = widget.searchTerm,
           );
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => _ResultsPage(
-                searchTerm: _controller.text,
-                filterByRegion: filterByRegion,
-                sortBy: sortBy,
-                startDate: startDate,
-                endDate: endDate,
-                filterCount: filterCount,
-              ),
-            ),
-          ).whenComplete(() {
-            _controller.text = widget.searchTerm;
-          });
         }
       },
     );
@@ -1115,9 +1120,10 @@ class _FiltersModalState extends State<_FiltersModal> {
         DateRangeFilter(
           value: [startDate, endDate],
           onValueChanged: (dates) {
+            DateTime? sD = dates.isNotEmpty ? dates[0] : null;
             setState(() {
-              startDate = dates.isNotEmpty ? dates[0] : null;
-              endDate = dates.length == 2 ? dates[1] : null;
+              startDate = sD;
+              endDate = dates.length == 2 ? dates[1] : sD;
             });
           },
         ),

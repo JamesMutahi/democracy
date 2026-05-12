@@ -1,14 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:democracy/app/shared/constants/regex.dart';
 import 'package:democracy/app/shared/widgets/extras_row.dart';
 import 'package:democracy/app/shared/widgets/tagging.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
-import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -127,9 +125,6 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
   late AnimationController _animationController;
   late Animation<Offset> _animation;
 
-  double overlayHeight = 1;
-  SearchResultView _view = SearchResultView.none;
-
   late StreamSubscription<bool> keyboardSubscription;
 
   @override
@@ -166,106 +161,47 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
     super.dispose();
   }
 
-  void changeOverlayHeight(int length) {
-    if (length == 0) {
-      overlayHeight = 1;
-    }
-    if (length == 1) {
-      overlayHeight = 75;
-    }
-    if (length == 2) {
-      overlayHeight = 150;
-    }
-    if (length == 3) {
-      overlayHeight = 225;
-    }
-    if (length > 3) {
-      overlayHeight = 300;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<UsersBloc, UsersState>(
-          listener: (context, state) {
-            if (state.status == UsersStatus.success) {
-              setState(() {
-                _view = SearchResultView.users;
-                changeOverlayHeight(state.users.length);
-              });
-            }
-          },
-        ),
-      ],
-      child: FlutterTagger(
-        searchRegex: searchRegex,
-        triggerStrategy: TriggerStrategy.eager,
-        controller: widget.controller,
-        animationController: _animationController,
-        onSearch: (query, triggerChar) {
-          if (triggerChar == "@") {
-            setState(() {
-              _view = SearchResultView.users;
-            });
-            context.read<UsersBloc>().add(UsersEvent.get(searchTerm: query));
-          }
-          if (triggerChar == "#") {
-            setState(() {
-              _view = SearchResultView.hashtag;
-            });
-          }
-        },
-        triggerCharacterAndStyles: const {
-          "@": TextStyle(color: Colors.blueAccent),
-        },
-        tagTextFormatter: (id, tag, triggerCharacter) {
-          return "$triggerCharacter$id#$tag#";
-        },
-        overlayHeight: overlayHeight,
-        overlay: _view == SearchResultView.users
-            ? UserListView(
-                tagController: widget.controller,
-                animation: _animation,
-              )
-            : SizedBox.shrink(),
-        builder: (context, containerKey) {
-          return Container(
-            key: containerKey,
-            color: Theme.of(context).canvasColor,
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 10,
-                  ),
-                  child: ExtrasRow(
-                    maxAssets: widget.maxAssets,
-                    showLiveButton: true,
-                    textEditingController: widget.controller,
-                    onMedia: widget.onNewMedia,
-                    onLocation: widget.onLocation,
-                    onDocument: widget.onNewDocument,
-                    onSection: widget.onNewSection,
-                    onImageEditingComplete: (file) {
-                      widget.onNewMedia([file]);
-                    },
-                    onVideoEditingComplete: (path) {
-                      widget.onNewMedia([File(path)]);
-                    },
-                  ),
+    return Tagging(
+      flutterTaggerController: widget.controller,
+      animationController: _animationController,
+      animation: _animation,
+      builder: (context, containerKey) {
+        return Container(
+          key: containerKey,
+          color: Theme.of(context).canvasColor,
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 10,
                 ),
-              ],
-            ),
-          );
-        },
-      ),
+                child: ExtrasRow(
+                  maxAssets: widget.maxAssets,
+                  showLiveButton: true,
+                  textEditingController: widget.controller,
+                  onMedia: widget.onNewMedia,
+                  onLocation: widget.onLocation,
+                  onDocument: widget.onNewDocument,
+                  onSection: widget.onNewSection,
+                  onImageEditingComplete: (file) {
+                    widget.onNewMedia([file]);
+                  },
+                  onVideoEditingComplete: (path) {
+                    widget.onNewMedia([File(path)]);
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

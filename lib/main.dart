@@ -1,7 +1,6 @@
 import 'package:democracy/app.dart';
 import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
-import 'package:democracy/app/bloc/hub_filter/hub_filter_cubit.dart';
 import 'package:democracy/app/bloc/location/location_cubit.dart';
 import 'package:democracy/app/bloc/repository/api/api_repository.dart';
 import 'package:democracy/app/bloc/global/global_cubit.dart';
@@ -34,9 +33,10 @@ import 'package:democracy/petition/bloc/supporters/supporters_bloc.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_bloc.dart';
 import 'package:democracy/post/bloc/draft_post/draft_post_bloc.dart';
 import 'package:democracy/post/bloc/draft_posts/draft_posts_bloc.dart';
+import 'package:democracy/post/bloc/hashtags/hashtags_bloc.dart';
 import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
-import 'package:democracy/post/bloc/post_filter/post_filter_cubit.dart';
+import 'package:democracy/post/bloc/trending_topics/trending_topics_bloc.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/page/page_bloc.dart';
@@ -169,8 +169,6 @@ void main() async {
                   webSocketService: context.read<WebSocketService>(),
                 ),
               ),
-              BlocProvider(create: (context) => PostFilterCubit()),
-              BlocProvider(create: (context) => HubFilterCubit()),
               BlocProvider(
                 create: (context) => PostDetailBloc(
                   webSocketService: context.read<WebSocketService>(),
@@ -315,6 +313,16 @@ void main() async {
                   databaseRepository: context.read<DatabaseRepository>(),
                 )..add(SyncEvent.start()),
                 lazy: false,
+              ),
+              BlocProvider(
+                create: (context) => HashtagsBloc(
+                  webSocketService: context.read<WebSocketService>(),
+                ),
+              ),
+              BlocProvider(
+                create: (context) => TrendingTopicsBloc(
+                  webSocketService: context.read<WebSocketService>(),
+                ),
               ),
             ],
             child: const MyApp(),

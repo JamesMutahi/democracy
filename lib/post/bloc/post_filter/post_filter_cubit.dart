@@ -1,34 +1,33 @@
 import 'package:bloc/bloc.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:equatable/equatable.dart';
 
-part 'post_filter_cubit.freezed.dart';
 part 'post_filter_state.dart';
 
 class PostFilterCubit extends Cubit<PostFilterState> {
-  PostFilterCubit()
-    : super(
-        const PostFilterState.changed(
-          onExplorePage: true,
-          searchTerm: '',
-          startDate: null,
-          endDate: null,
-          count: 0,
-        ),
-      );
+  PostFilterCubit() : super(const PostFilterState());
+
+  void initialize({
+    required bool onExplorePage,
+    required String searchTerm,
+    required DateTime? startDate,
+    required DateTime? endDate,
+  }) {
+    emit(
+      state.copyWith(
+        onExplorePage: onExplorePage,
+        searchTerm: searchTerm,
+        startDate: () => startDate,
+        endDate: () => endDate,
+        count: _countFilters(startDate, endDate),
+      ),
+    );
+  }
 
   void searchTermChanged({
     required bool onExplorePage,
     required String searchTerm,
   }) {
-    emit(
-      PostFilterState.changed(
-        onExplorePage: onExplorePage,
-        searchTerm: searchTerm,
-        startDate: state.startDate,
-        endDate: state.endDate,
-        count: countFilters(),
-      ),
-    );
+    emit(state.copyWith(onExplorePage: onExplorePage, searchTerm: searchTerm));
   }
 
   void datesChanged({
@@ -37,33 +36,20 @@ class PostFilterCubit extends Cubit<PostFilterState> {
     required DateTime? endDate,
   }) {
     emit(
-      PostFilterState.changed(
+      state.copyWith(
         onExplorePage: onExplorePage,
-        searchTerm: state.searchTerm,
-        startDate: startDate,
-        endDate: endDate,
-        count: countFilters(),
+        startDate: () => startDate,
+        endDate: () => endDate,
+        count: _countFilters(startDate, endDate),
       ),
     );
   }
 
   void clearFilters({required bool onExplorePage}) {
-    emit(
-      PostFilterState.changed(
-        onExplorePage: onExplorePage,
-        searchTerm: state.searchTerm,
-        startDate: null,
-        endDate: null,
-        count: 0,
-      ),
-    );
+    emit(PostFilterState(onExplorePage: onExplorePage));
   }
 
-  int countFilters() {
-    int count = 0;
-    if (state.startDate != null || state.endDate != null) {
-      count += 1;
-    }
-    return count;
+  int _countFilters(DateTime? start, DateTime? end) {
+    return (start != null || end != null) ? 1 : 0;
   }
 }

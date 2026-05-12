@@ -13,6 +13,19 @@ part 'sync_bloc.freezed.dart';
 const String chatsStream = 'chats';
 const String messagesRequestId = 'messages';
 
+class SyncStatus {
+  static const String pending = 'Pending';
+  static const String synced = 'Synced';
+  static const String failed = 'Failed';
+}
+
+class SyncType {
+  static const String post = 'Post';
+  static const String assets = 'Upload assets';
+  static const String patch = 'Patch';
+  static const String delete = 'Delete';
+}
+
 class SyncBloc extends Bloc<SyncEvent, SyncState> {
   SyncBloc({required this.databaseRepository, required this.apiRepository})
     : super(const SyncState.initial()) {

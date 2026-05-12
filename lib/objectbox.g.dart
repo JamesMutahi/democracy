@@ -67,7 +67,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
     id: const obx_int.IdUid(2, 5363977148625922115),
     name: 'DraftPost',
-    lastPropertyId: const obx_int.IdUid(15, 948205295835912004),
+    lastPropertyId: const obx_int.IdUid(18, 2677204174438582900),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
@@ -157,6 +157,24 @@ final _entities = <obx_int.ModelEntity>[
       obx_int.ModelProperty(
         id: const obx_int.IdUid(15, 948205295835912004),
         name: 'tagsJson',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(16, 3045778735640031622),
+        name: 'syncStatus',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(17, 6069036281623618004),
+        name: 'syncType',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(18, 2677204174438582900),
+        name: 'uuid',
         type: 9,
         flags: 0,
       ),
@@ -478,7 +496,14 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final tagsJsonOffset = object.tagsJson == null
             ? null
             : fbb.writeString(object.tagsJson!);
-        fbb.startTable(16);
+        final syncStatusOffset = object.syncStatus == null
+            ? null
+            : fbb.writeString(object.syncStatus!);
+        final syncTypeOffset = object.syncType == null
+            ? null
+            : fbb.writeString(object.syncType!);
+        final uuidOffset = fbb.writeString(object.uuid);
+        fbb.startTable(19);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, bodyOffset);
         fbb.addOffset(2, filePathsOffset);
@@ -494,6 +519,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
         fbb.addOffset(12, meetingJsonOffset);
         fbb.addOffset(13, sectionJsonOffset);
         fbb.addOffset(14, tagsJsonOffset);
+        fbb.addOffset(15, syncStatusOffset);
+        fbb.addOffset(16, syncTypeOffset);
+        fbb.addOffset(17, uuidOffset);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -506,6 +534,15 @@ obx_int.ModelDefinition getObjectBoxModel() {
           4,
           0,
         );
+        final syncStatusParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 34);
+        final syncTypeParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 36);
+        final uuidParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 38, '');
         final createdAtParam = DateTime.fromMillisecondsSinceEpoch(
           const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0),
         );
@@ -515,6 +552,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final object =
             DraftPost(
                 id: idParam,
+                syncStatus: syncStatusParam,
+                syncType: syncTypeParam,
+                uuid: uuidParam,
                 createdAt: createdAtParam,
                 updatedAt: updatedAtParam,
               )
@@ -849,6 +889,21 @@ class DraftPost_ {
   /// See [DraftPost.tagsJson].
   static final tagsJson = obx.QueryStringProperty<DraftPost>(
     _entities[1].properties[14],
+  );
+
+  /// See [DraftPost.syncStatus].
+  static final syncStatus = obx.QueryStringProperty<DraftPost>(
+    _entities[1].properties[15],
+  );
+
+  /// See [DraftPost.syncType].
+  static final syncType = obx.QueryStringProperty<DraftPost>(
+    _entities[1].properties[16],
+  );
+
+  /// See [DraftPost.uuid].
+  static final uuid = obx.QueryStringProperty<DraftPost>(
+    _entities[1].properties[17],
   );
 }
 

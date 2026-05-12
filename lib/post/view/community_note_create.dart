@@ -1,14 +1,14 @@
 import 'package:democracy/app/shared/widgets/dialogs.dart';
+import 'package:democracy/app/shared/widgets/loader_overlay_widgets.dart';
 import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_form_widgets.dart';
-import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/reply_tos.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertagger/fluttertagger.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class CommunityNoteCreate extends StatefulWidget {
@@ -21,24 +21,26 @@ class CommunityNoteCreate extends StatefulWidget {
 }
 
 class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
-  final _controller = FlutterTaggerController();
+  final _controller = TextEditingController();
+  final ValueKey _centerKey = const ValueKey('center');
+
   bool _disablePostButton = true;
-  List<Post> _replyTos = [];
-  ValueKey centerKey = ValueKey('Center');
 
   @override
   void initState() {
-    context.read<ReplyToBloc>().add(ReplyToEvent.get(post: widget.post));
     super.initState();
+    context.read<ReplyToBloc>().add(ReplyToEvent.get(post: widget.post));
+    context.read<ReplyToBloc>().add(ReplyToEvent.add(post: widget.post));
   }
 
   void _createPost() {
+    context.loaderOverlay.show();
+
     context.read<PostCreateBloc>().add(
       PostCreateEvent.create(
         body: _controller.text,
         status: PostStatus.published,
         communityNoteOf: widget.post,
-        tags: [],
       ),
     );
   }
@@ -50,24 +52,20 @@ class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
         BlocListener<PostCreateBloc, PostCreateState>(
           listener: (context, state) {
             if (state.status == PostCreateStatus.success) {
-              Navigator.pop(context);
-            }
-          },
-        ),
-        BlocListener<ReplyToBloc, ReplyToState>(
-          listener: (context, state) {
-            if (state.status == ReplyToStatus.success) {
-              if (widget.post.id == state.postId) {
-                setState(() {
-                  _replyTos.add(widget.post);
-                  _replyTos.addAll(state.posts.toList());
-                });
+              if (state.post?.communityNoteOf?.id == widget.post.id) {
+                Navigator.pop(context);
               }
             }
           },
@@ -81,82 +79,89 @@ class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
           }
           _closePage();
         },
-        child: Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              onPressed: _closePage,
-              icon: Icon(Symbols.close),
+        child: LoaderOverlay(
+          overlayWidgetBuilder: (_) {
+            return BlocBuilder<PostCreateBloc, PostCreateState>(
+              builder: (context, state) {
+                return state.status == PostCreateStatus.failure
+                    ? LoaderOverlayFailure(
+                        onRetry: () {
+                          context.read<PostCreateBloc>().add(
+                            PostCreateEvent.retry(),
+                          );
+                        },
+                      )
+                    : LoaderOverlayLoading(progress: state.progress);
+              },
+            );
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              leading: IconButton(
+                onPressed: _closePage,
+                icon: Icon(Symbols.close),
+              ),
+              actions: [
+                OutlinedButton(
+                  onPressed: _disablePostButton
+                      ? null
+                      : () {
+                          showDialog(
+                            context: context,
+                            builder: (context) =>
+                                _CreateDialog(onYesPressed: _createPost),
+                          );
+                        },
+                  child: Text('Post'),
+                ),
+              ],
+              actionsPadding: EdgeInsets.only(right: 15),
             ),
-            actions: [
-              OutlinedButton(
-                onPressed: _disablePostButton
-                    ? null
-                    : () {
-                        showDialog(
-                          context: context,
-                          builder: (context) =>
-                              _CreateDialog(onYesPressed: _createPost),
-                        );
-                      },
-                child: Text('Post'),
-              ),
-            ],
-            actionsPadding: EdgeInsets.only(right: 15),
-          ),
-          body: CustomScrollView(
-            center: centerKey,
-            slivers: <Widget>[
-              PostListener(
-                posts: _replyTos,
-                onPostsUpdated: (posts) {
-                  setState(() {
-                    _replyTos = posts;
-                  });
-                },
-                child: ReplyTos(post: widget.post),
-              ),
-              SliverToBoxAdapter(
-                key: centerKey,
-                child: Stack(
-                  children: [
-                    ThreadLine(showBottomThread: false, showTopThread: true),
-                    Container(
-                      padding: EdgeInsets.only(
-                        left: 10,
-                        right: 15,
-                        top: 10,
-                        bottom: 5,
-                      ),
-                      child: SingleChildScrollView(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            PostAuthor(),
-                            PostTextField(
-                              controller: _controller,
-                              hintText: "What's the note?",
-                              onChanged: (value) {
-                                if (value == '') {
+            body: CustomScrollView(
+              center: _centerKey,
+              slivers: <Widget>[
+                ReplyTos(post: widget.post),
+                SliverToBoxAdapter(
+                  key: _centerKey,
+                  child: Stack(
+                    children: [
+                      ThreadLine(showBottomThread: false, showTopThread: true),
+                      Container(
+                        padding: EdgeInsets.only(
+                          left: 10,
+                          right: 15,
+                          top: 10,
+                          bottom: 5,
+                        ),
+                        child: SingleChildScrollView(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const PostAuthor(),
+                              PostTextField(
+                                controller: _controller,
+                                hintText: "What's the note?",
+                                onChanged: (value) {
                                   setState(() {
-                                    _disablePostButton = true;
+                                    if (value == '') {
+                                      _disablePostButton = true;
+                                    } else {
+                                      _disablePostButton = false;
+                                    }
                                   });
-                                } else {
-                                  setState(() {
-                                    _disablePostButton = false;
-                                  });
-                                }
-                              },
-                              onContentInsertion: (imageFile) {},
-                            ),
-                          ],
+                                },
+                                onContentInsertion: (imageFile) {},
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

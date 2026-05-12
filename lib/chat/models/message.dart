@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:democracy/app/bloc/sync/sync_bloc.dart' show SyncStatus;
 
 import 'package:democracy/app/core/app_logger.dart';
 import 'package:democracy/app/models/asset.dart';
@@ -279,17 +280,4 @@ class Message {
       'assets': assets.map((e) => e.toJson()).toList(),
     };
   }
-}
-
-class SyncStatus {
-  static const String pending = 'Pending';
-  static const String synced = 'Synced';
-  static const String failed = 'Failed';
-}
-
-class SyncType {
-  static const String post = 'Post';
-  static const String assets = 'Upload assets';
-  static const String patch = 'Patch';
-  static const String delete = 'Delete';
 }

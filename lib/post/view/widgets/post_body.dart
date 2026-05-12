@@ -1,3 +1,4 @@
+import 'package:democracy/app/shared/pages/search_results.dart';
 import 'package:democracy/app/shared/widgets/custom_text.dart';
 import 'package:democracy/app/shared/constants/regex.dart';
 import 'package:democracy/post/models/post.dart';
@@ -67,8 +68,15 @@ class _PostBodyState extends State<PostBody> {
               navigateToProfilePage(
                 context: context,
                 user: widget.post.taggedUsers.firstWhere(
-                  (user) => user.id == int.parse(userId),
+                  (user) => user.id == userId,
                 ),
+              );
+            },
+            onHashtagPressed: (hashtag) {
+              navigateToSearchResults(
+                context: context,
+                searchTerm: hashtag,
+                filterCount: 0,
               );
             },
           );

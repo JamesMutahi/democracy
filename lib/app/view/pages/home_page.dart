@@ -39,8 +39,8 @@ class _HomePageState extends State<HomePage>
               flexibleSpace: Builder(
                 builder: (context) {
                   return Stack(
-                    clipBehavior:
-                        Clip.none, // Allows children to go outside bounds
+                    // Allows children to go outside bounds
+                    clipBehavior: Clip.none,
                     alignment: Alignment.center,
                     children: [
                       SizedBox(
@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage>
                           ],
                         ),
                       ),
-                      Positioned(top: 5, child: Logo(width: 75, height: 75)),
+                      Positioned(top: 5, child: Logo(width: 60, height: 60)),
                     ],
                   );
                 },

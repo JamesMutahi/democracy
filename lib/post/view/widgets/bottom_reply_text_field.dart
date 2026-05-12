@@ -1,14 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:democracy/app/shared/constants/regex.dart';
 import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart';
 import 'package:democracy/app/shared/widgets/tagging.dart';
-import 'package:democracy/constitution/bloc/sections/sections_bloc.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -33,9 +30,6 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
   File? _document;
   LatLng? _location;
   Section? _selectedSection;
-
-  double overlayHeight = 300;
-  SearchResultView _view = SearchResultView.none;
 
   final _controller = FlutterTaggerController();
   final _focusNode = FocusNode();
@@ -77,24 +71,6 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
     super.dispose();
   }
 
-  void changeOverlayHeight(int length) {
-    if (length == 0) {
-      overlayHeight = 1;
-    }
-    if (length == 1) {
-      overlayHeight = 75;
-    }
-    if (length == 2) {
-      overlayHeight = 150;
-    }
-    if (length == 3) {
-      overlayHeight = 225;
-    }
-    if (length > 3) {
-      overlayHeight = 300;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
@@ -115,59 +91,11 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>
             }
           },
         ),
-        BlocListener<UsersBloc, UsersState>(
-          listener: (context, state) {
-            if (state.status == UsersStatus.success) {
-              setState(() {
-                _view = SearchResultView.users;
-                changeOverlayHeight(state.users.length);
-              });
-            }
-          },
-        ),
-        BlocListener<SectionsBloc, SectionsState>(
-          listener: (context, state) {
-            if (state is SectionsLoaded) {
-              setState(() {
-                _view = SearchResultView.hashtag;
-                changeOverlayHeight(state.sections.length);
-              });
-            }
-          },
-        ),
       ],
-      child: FlutterTagger(
-        searchRegex: searchRegex,
-        triggerStrategy: TriggerStrategy.eager,
-        controller: _controller,
+      child: Tagging(
+        flutterTaggerController: _controller,
         animationController: _animationController,
-        onSearch: (query, triggerChar) {
-          if (triggerChar == "@") {
-            setState(() {
-              _view = SearchResultView.users;
-            });
-            context.read<UsersBloc>().add(UsersEvent.get(searchTerm: query));
-          }
-          if (triggerChar == "#") {
-            setState(() {
-              _view = SearchResultView.hashtag;
-            });
-            context.read<SectionsBloc>().add(
-              SectionsEvent.get(searchTerm: query),
-            );
-          }
-        },
-        triggerCharacterAndStyles: const {
-          "@": TextStyle(color: Colors.blueAccent),
-          "#": TextStyle(color: Colors.blueAccent),
-        },
-        tagTextFormatter: (id, tag, triggerCharacter) {
-          return "$triggerCharacter$id#$tag#";
-        },
-        overlayHeight: overlayHeight,
-        overlay: _view == SearchResultView.users
-            ? UserListView(tagController: _controller, animation: _animation)
-            : SizedBox.shrink(),
+        animation: _animation,
         builder: (context, containerKey) {
           return BottomTextFormField(
             containerKey: containerKey,

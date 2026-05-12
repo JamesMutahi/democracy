@@ -26,8 +26,8 @@ final class HubFilterState extends Equatable {
     String? searchTerm,
     bool? filterByRegion,
     String? sortBy,
-    DateTime? startDate,
-    DateTime? endDate,
+    DateTime? Function()? startDate,
+    DateTime? Function()? endDate,
     int? count,
   }) {
     return HubFilterState(
@@ -35,8 +35,8 @@ final class HubFilterState extends Equatable {
       searchTerm: searchTerm ?? this.searchTerm,
       filterByRegion: filterByRegion ?? this.filterByRegion,
       sortBy: sortBy ?? this.sortBy,
-      startDate: startDate ?? this.startDate,
-      endDate: endDate ?? this.endDate,
+      startDate: startDate != null ? startDate() : this.startDate,
+      endDate: endDate != null ? endDate() : this.endDate,
       count: count ?? this.count,
     );
   }

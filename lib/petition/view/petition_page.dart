@@ -218,9 +218,10 @@ class _FiltersModalState extends State<_FiltersModal> {
         DateRangeFilter(
           value: [startDate, endDate],
           onValueChanged: (dates) {
+            DateTime? sD = dates.isNotEmpty ? dates[0] : null;
             setState(() {
-              startDate = dates.isNotEmpty ? dates[0] : null;
-              endDate = dates.length == 2 ? dates[1] : null;
+              startDate = sD;
+              endDate = dates.length == 2 ? dates[1] : sD;
             });
           },
         ),

@@ -59,7 +59,7 @@ class ExtrasRow extends StatelessWidget {
     return Center(
       child: Wrap(
         alignment: WrapAlignment.center,
-        spacing: 10.0,
+        spacing: 15.0,
         runSpacing: 5.0,
         children: <Widget>[
           _ExtraCard(
@@ -107,9 +107,11 @@ class ExtrasRow extends StatelessWidget {
                 if (context.mounted) {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => MeetingCreate(
-                      textEditingController: textEditingController!,
-                    )),
+                    MaterialPageRoute(
+                      builder: (context) => MeetingCreate(
+                        textEditingController: textEditingController!,
+                      ),
+                    ),
                   );
                 }
               },
@@ -197,11 +199,7 @@ class _ExtraCard extends StatelessWidget {
       onPressed: onTap,
       tooltip: text,
       padding: EdgeInsets.all(10),
-      icon: Icon(
-        iconData,
-        size: 25,
-        color: Theme.of(context).colorScheme.outline,
-      ),
+      icon: Icon(iconData, size: 25),
     );
   }
 }

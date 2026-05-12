@@ -1,6 +1,8 @@
+import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/post/bloc/community_notes/community_notes_bloc.dart';
+import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/community_note_create.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
@@ -143,7 +145,12 @@ class _CommunityNotesState extends State<CommunityNotes> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => CommunityNoteCreate(post: widget.post),
+              builder: (context) => BlocProvider(
+                create: (context) => ReplyToBloc(
+                  webSocketService: context.read<WebSocketService>(),
+                ),
+                child: CommunityNoteCreate(post: widget.post),
+              ),
             ),
           );
         },
