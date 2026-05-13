@@ -112,7 +112,7 @@ class _PostCreatePageState extends State<PostCreatePage> {
         .toList();
 
     context.read<DraftPostBloc>().add(
-      DraftPostEvent.save(
+      DraftPostEvent.create(
         id: null,
         body: _controller.formattedText,
         replyTo: widget.replyTo,

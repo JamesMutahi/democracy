@@ -7,7 +7,6 @@ import 'package:democracy/app/shared/utils/media_tools.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/constitution/view/constitution.dart';
-import 'package:democracy/meeting/view/meeting_create.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +23,6 @@ class ExtrasRow extends StatelessWidget {
     this.recipient,
     this.textEditingController,
     required this.maxAssets,
-    this.showLiveButton = false,
     required this.onMedia,
     required this.onImageEditingComplete,
     required this.onVideoEditingComplete,
@@ -37,7 +35,6 @@ class ExtrasRow extends StatelessWidget {
   final User? recipient;
   final TextEditingController? textEditingController;
   final int maxAssets;
-  final bool showLiveButton;
   final void Function(List<File>) onMedia;
   final void Function(File) onImageEditingComplete;
   final void Function(String) onVideoEditingComplete;
@@ -100,24 +97,6 @@ class ExtrasRow extends StatelessWidget {
             iconData: Symbols.photo_library_rounded,
             text: 'Gallery',
           ),
-          if (showLiveButton)
-            _ExtraCard(
-              onTap: () async {
-                await controller?.reverse();
-                if (context.mounted) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MeetingCreate(
-                        textEditingController: textEditingController!,
-                      ),
-                    ),
-                  );
-                }
-              },
-              iconData: Symbols.videocam_rounded,
-              text: 'Live',
-            ),
           _ExtraCard(
             onTap: () async {
               await controller?.reverse();

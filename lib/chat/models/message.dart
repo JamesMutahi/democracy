@@ -50,7 +50,6 @@ class Message {
   String? meetingJson;
   String? sectionJson;
   String? assetsJson;
-  String? uploadsJson;
 
   // Relationship
   final chat = ToOne<Chat>();
@@ -171,16 +170,6 @@ class Message {
             .toList(),
       );
     }
-  }
-
-  @Transient()
-  List<Map<String, String>>? get uploads => uploadsJson != null
-      ? List<Map<String, String>>.from(jsonDecode(uploadsJson!))
-      : null;
-
-  @Transient()
-  set uploads(List<Map<String, String>>? value) {
-    uploadsJson = value != null && value.isNotEmpty ? jsonEncode(value) : null;
   }
 
   // ==================== CONSTRUCTORS ====================

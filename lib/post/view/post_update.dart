@@ -123,25 +123,23 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
         .map((tag) => {'id': tag.id, 'text': tag.text})
         .toList();
 
-    context.read<DraftPostBloc>().add(
-      DraftPostEvent.save(
-        id: widget.draft.id,
-        body: _controller.formattedText,
-        replyTo: widget.draft.replyTo,
-        repostOf: widget.draft.repostOf,
-        ballot: widget.draft.ballot,
-        survey: widget.draft.survey,
-        petition: widget.draft.petition,
-        meeting: widget.draft.meeting,
-        section: _selectedSection,
-        tags: tags,
-        filePaths: [
-          ..._media.map((m) => m.path),
-          if (_document != null) _document!.path,
-        ],
-        location: _selectedLocation,
-      ),
-    );
+    DraftPost draft = widget.draft;
+    draft.body = _controller.formattedText;
+    draft.replyTo = widget.draft.replyTo;
+    draft.repostOf = widget.draft.repostOf;
+    draft.ballot = widget.draft.ballot;
+    draft.survey = widget.draft.survey;
+    draft.petition = widget.draft.petition;
+    draft.meeting = widget.draft.meeting;
+    draft.section = _selectedSection;
+    draft.tags = tags;
+    draft.filePaths = [
+      ..._media.map((m) => m.path),
+      if (_document != null) _document!.path,
+    ];
+    draft.location = _selectedLocation;
+
+    context.read<DraftPostBloc>().add(DraftPostEvent.update(draft: draft));
   }
 
   void _updatePostButtonState(String text) {

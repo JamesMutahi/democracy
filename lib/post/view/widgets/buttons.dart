@@ -182,13 +182,20 @@ class LikeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isBlocked = post.author.hasBlocked;
+
     return _PostTileButton(
-      onTap: () =>
-          context.read<PostDetailBloc>().add(PostDetailEvent.like(post: post)),
+      onTap: isBlocked
+          ? () => _showBlockedSnackBar(context)
+          : () => context.read<PostDetailBloc>().add(
+              PostDetailEvent.like(post: post),
+            ),
       number: post.likes,
       icon: Icon(
         Symbols.favorite_rounded,
-        color: post.isLiked
+        color: isBlocked
+            ? Theme.of(context).disabledColor
+            : post.isLiked
             ? Colors.red
             : Theme.of(context).colorScheme.outline,
         fill: post.isLiked ? 1 : 0,
@@ -222,15 +229,6 @@ class RepostButton extends StatelessWidget {
         size: 20,
       ),
     );
-  }
-
-  void _showBlockedSnackBar(BuildContext context) {
-    final snackBar = getSnackBar(
-      context: context,
-      message: 'Blocked',
-      status: SnackBarStatus.failure,
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   void _showRepostBottomSheet(BuildContext context, Post post) {
@@ -317,15 +315,6 @@ class ReplyButton extends StatelessWidget {
     );
   }
 
-  void _showBlockedSnackBar(BuildContext context) {
-    final snackBar = getSnackBar(
-      context: context,
-      message: 'Blocked',
-      status: SnackBarStatus.failure,
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
   void _navigateToReply(BuildContext context, Post post) {
     navigateToPostCreate(context: context, replyTo: post);
   }
@@ -366,14 +355,20 @@ class BookmarkButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isBlocked = post.author.hasBlocked;
+
     return _PostTileButton(
-      onTap: () => context.read<PostDetailBloc>().add(
-        PostDetailEvent.bookmark(post: post),
-      ),
+      onTap: isBlocked
+          ? () => _showBlockedSnackBar(context)
+          : () => context.read<PostDetailBloc>().add(
+              PostDetailEvent.bookmark(post: post),
+            ),
       number: showTrailing ? post.bookmarks : 0,
       icon: Icon(
         Symbols.bookmark_rounded,
-        color: post.isBookmarked
+        color: isBlocked
+            ? Theme.of(context).disabledColor
+            : post.isBookmarked
             ? Colors.blue
             : Theme.of(context).colorScheme.outline,
         fill: post.isBookmarked ? 1 : 0,
@@ -415,4 +410,14 @@ class _PostTileButton extends StatelessWidget {
       ],
     );
   }
+}
+
+void _showBlockedSnackBar(BuildContext context) {
+  final snackBar = getSnackBar(
+    context: context,
+    message: 'Blocked',
+    status: SnackBarStatus.failure,
+  );
+  ScaffoldMessenger.of(context).clearSnackBars();
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }

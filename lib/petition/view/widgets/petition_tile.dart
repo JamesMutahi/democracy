@@ -74,7 +74,10 @@ class PetitionTile extends StatelessWidget {
                   topRight: Radius.circular(10),
                 ),
                 image: DecorationImage(
-                  image: CachedNetworkImageProvider(petition.image),
+                  image: CachedNetworkImageProvider(
+                    petition.image,
+                    cacheKey: petition.id.toString(),
+                  ),
                   fit: BoxFit.cover,
                 ),
               ),

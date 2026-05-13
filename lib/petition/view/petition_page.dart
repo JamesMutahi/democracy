@@ -93,10 +93,7 @@ class _PetitionPageState extends State<PetitionPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CreatePetition()),
-          );
+          navigateToPetitionCreationPage(context: context);
         },
         child: Icon(Symbols.create_rounded),
       ),

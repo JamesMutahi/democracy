@@ -59,6 +59,10 @@ class APIRepository {
     );
   }
 
+  Future<List<dynamic>> generatePostUploadUrl({required int id}) async {
+    return await apiProvider.generatePostUploadUrl(id: id);
+  }
+
   Future<String> uploadPostAsset({
     required String name,
     required String url,
@@ -107,10 +111,10 @@ class APIRepository {
     );
   }
 
-  Future<List<dynamic>> generateUploadUrl({
+  Future<List<dynamic>> generateMessageUploadUrl({
     required Message message,
   }) async {
-    return await apiProvider.generateUploadUrl(message: message);
+    return await apiProvider.generateMessageUploadUrl(message: message);
   }
 
   Future<String> uploadMessageAsset({

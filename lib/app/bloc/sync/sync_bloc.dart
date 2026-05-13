@@ -4,6 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/repository/api/api_repository.dart';
 import 'package:democracy/app/bloc/repository/database/database_repository.dart';
 import 'package:democracy/chat/models/message.dart';
+import 'package:democracy/post/models/draft_post.dart';
+import 'package:democracy/post/models/post.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'sync_event.dart';
@@ -36,6 +38,9 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
       add(_DeleteMessages());
     });
     on<_PostDrafts>((event, emit) async => await _onPostDrafts(event, emit));
+    on<_UploadPostAssets>(
+      (event, emit) async => await _onUploadPostAssets(event, emit),
+    );
     on<_PostMessages>(
       (event, emit) async => await _onPostMessages(event, emit),
     );
@@ -52,6 +57,88 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
 
   Future _onPostDrafts(_PostDrafts event, Emitter<SyncState> emit) async {
     emit(_Syncing());
+    List<DraftPost> forPost = await databaseRepository.getDraftsToPost();
+    for (var draft in forPost) {
+      try {
+        final data = await apiRepository.createPost(
+          body: draft.body,
+          status: PostStatus.published,
+          repostOf: draft.repostOf,
+          replyTo: draft.replyTo,
+          communityNoteOf: draft.communityNoteOf,
+          ballot: draft.ballot,
+          survey: draft.survey,
+          petition: draft.petition,
+          meeting: draft.meeting,
+          section: draft.section,
+          tags: draft.tags,
+          filePaths: draft.filePaths,
+          location: draft.location,
+        );
+        final Post post = Post.fromJson(data['post']);
+        if (post.assets.isNotEmpty) {
+          draft.serverID = post.id;
+          draft.assets = post.assets;
+          draft.syncType = SyncType.assets;
+          await databaseRepository.updateDraft(draft: draft);
+        } else {
+          await _onPostSuccess(draft: draft);
+        }
+        if (post.assets.isNotEmpty) {
+          add(_UploadPostAssets());
+        }
+      } catch (e) {
+        await _onPostFailure(emit: emit, draft: draft, error: e.toString());
+        return;
+      }
+    }
+    emit(DraftsForPostSynced());
+  }
+
+  Future _onUploadPostAssets(
+    _UploadPostAssets event,
+    Emitter<SyncState> emit,
+  ) async {
+    try {
+      emit(_Syncing());
+      final forUpload = await databaseRepository.getDraftsToUploadAssets();
+      for (DraftPost draft in forUpload) {
+        List<dynamic> data = await apiRepository.generatePostUploadUrl(
+          id: draft.serverID!,
+        );
+        for (var upload in data) {
+          await apiRepository.uploadMessageAsset(
+            name: upload['name'],
+            url: upload['url'],
+            onSendProgress: (_, _) {},
+          );
+        }
+        List<String> assetIdList = await _getAssetIds(data);
+        await apiRepository.messageAssetUploadComplete(
+          assetIdList: assetIdList,
+        );
+        await _onPostSuccess(draft: draft);
+      }
+      emit(MessagesForAssetUploadSynced());
+    } catch (e) {
+      emit(SyncFailure(error: e.toString()));
+    }
+  }
+
+  Future _onPostSuccess({required DraftPost draft}) async {
+    draft.syncStatus = SyncStatus.synced;
+    draft.syncType = null;
+    await databaseRepository.updateDraft(draft: draft);
+  }
+
+  Future _onPostFailure({
+    required Emitter<SyncState> emit,
+    required DraftPost draft,
+    required String error,
+  }) async {
+    draft.syncStatus = SyncStatus.failed;
+    await databaseRepository.updateDraft(draft: draft);
+    emit(SyncFailure(error: error.toString()));
   }
 
   Future _onPostMessages(_PostMessages event, Emitter<SyncState> emit) async {
@@ -106,7 +193,7 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
       emit(_Syncing());
       final forUpload = await databaseRepository.getMessagesToUploadAssets();
       for (Message message in forUpload) {
-        List<dynamic> data = await apiRepository.generateUploadUrl(
+        List<dynamic> data = await apiRepository.generateMessageUploadUrl(
           message: message,
         );
         for (var upload in data) {

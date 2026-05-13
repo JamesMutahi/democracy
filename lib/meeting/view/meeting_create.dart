@@ -1,22 +1,36 @@
 import 'package:democracy/app/shared/widgets/loader_overlay_widgets.dart';
 import 'package:democracy/meeting/bloc/meeting_detail/meeting_detail_bloc.dart';
 import 'package:democracy/meeting/view/live_stream.dart';
+import 'package:democracy/meeting/view/meeting_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 
-class MeetingCreate extends StatefulWidget {
-  const MeetingCreate({super.key, required this.textEditingController});
+void navigateToMeetingCreationPage({
+  required BuildContext context,
+  required bool isLiveStream,
+}) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => MeetingCreate(isLiveStream: isLiveStream),
+    ),
+  );
+}
 
-  final TextEditingController textEditingController;
+class MeetingCreate extends StatefulWidget {
+  const MeetingCreate({super.key, required this.isLiveStream});
+
+  final bool isLiveStream;
 
   @override
   State<MeetingCreate> createState() => _MeetingCreateState();
 }
 
 class _MeetingCreateState extends State<MeetingCreate> {
+  final _controller = TextEditingController();
   final _formKey = GlobalKey<FormBuilderState>();
 
   @override
@@ -24,11 +38,12 @@ class _MeetingCreateState extends State<MeetingCreate> {
     return BlocListener<MeetingDetailBloc, MeetingDetailState>(
       listener: (context, state) {
         if (state is MeetingCreated) {
-          Navigator.popUntil(context, (route) => route.isFirst);
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => LiveStream(meeting: state.meeting),
+              builder: (context) => state.meeting.isLiveStream
+                  ? LiveStream(meeting: state.meeting)
+                  : MeetingDetail(meeting: state.meeting),
             ),
           );
         }
@@ -40,23 +55,20 @@ class _MeetingCreateState extends State<MeetingCreate> {
         child: Scaffold(
           appBar: AppBar(
             titleSpacing: 0,
-            title: Text('Live Stream'),
-            actions: [
-              OutlinedButton(onPressed: _submitForm, child: Text('Start')),
-            ],
+            title: Text(widget.isLiveStream ? 'Live Stream' : 'Meeting'),
             actionsPadding: EdgeInsets.only(right: 15),
           ),
           body: Container(
             margin: EdgeInsets.only(left: 15, right: 15, top: 15),
             child: FormBuilder(
               key: _formKey,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Column(
                 children: [
                   FormBuilderTextField(
                     name: 'title',
-                    controller: widget.textEditingController,
+                    controller: _controller,
                     decoration: InputDecoration(label: Text('Title')),
+                    maxLength: 50,
                     validator: FormBuilderValidators.required(
                       errorText: 'Title is required',
                     ),
@@ -66,9 +78,48 @@ class _MeetingCreateState extends State<MeetingCreate> {
                     initialValue: '',
                     name: 'description',
                     decoration: InputDecoration(label: Text('Description')),
+                    maxLength: 100,
+                    maxLines: 2,
+                  ),
+                  SizedBox(height: 15),
+                  _MeetingSwitch(name: 'record', title: 'Record meeting'),
+                  SizedBox(height: 15),
+                  _MeetingSwitch(
+                    name: 'share',
+                    title: 'Share meeting as a post',
                   ),
                 ],
               ),
+            ),
+          ),
+          bottomNavigationBar: BottomAppBar(
+            height: 50,
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                FilledButton.tonal(
+                  onPressed: () {},
+                  child: Row(
+                    children: [
+                      Text('Schedule'),
+                      SizedBox(width: 5),
+                      Icon(Icons.access_time_rounded),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 20),
+                FilledButton.tonal(
+                  onPressed: _submitForm,
+                  child: Row(
+                    children: [
+                      Text('Start'),
+                      SizedBox(width: 10),
+                      Icon(Icons.start_rounded),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -86,9 +137,40 @@ class _MeetingCreateState extends State<MeetingCreate> {
         MeetingDetailEvent.create(
           title: formData['title'],
           description: formData['description'],
-          isLiveStream: true,
+          isLiveStream: widget.isLiveStream,
         ),
       );
     }
+  }
+}
+
+class _MeetingSwitch extends StatelessWidget {
+  const _MeetingSwitch({required this.name, required this.title});
+
+  final String name;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      data: Theme.of(context).copyWith(
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+      ),
+      child: FormBuilderSwitch(
+        name: name,
+        title: Text(title),
+        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.zero,
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          errorBorder: InputBorder.none,
+          disabledBorder: InputBorder.none,
+        ),
+      ),
+    );
   }
 }

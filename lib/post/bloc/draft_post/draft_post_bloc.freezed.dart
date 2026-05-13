@@ -55,11 +55,12 @@ extension DraftPostEventPatterns on DraftPostEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Save value)?  save,TResult Function( _Delete value)?  delete,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Create value)?  create,TResult Function( _Update value)?  update,TResult Function( _Delete value)?  delete,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _Save() when save != null:
-return save(_that);case _Delete() when delete != null:
+case _Create() when create != null:
+return create(_that);case _Update() when update != null:
+return update(_that);case _Delete() when delete != null:
 return delete(_that);case _:
   return orElse();
 
@@ -78,11 +79,12 @@ return delete(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Save value)  save,required TResult Function( _Delete value)  delete,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Create value)  create,required TResult Function( _Update value)  update,required TResult Function( _Delete value)  delete,}){
 final _that = this;
 switch (_that) {
-case _Save():
-return save(_that);case _Delete():
+case _Create():
+return create(_that);case _Update():
+return update(_that);case _Delete():
 return delete(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -97,11 +99,12 @@ return delete(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Save value)?  save,TResult? Function( _Delete value)?  delete,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Create value)?  create,TResult? Function( _Update value)?  update,TResult? Function( _Delete value)?  delete,}){
 final _that = this;
 switch (_that) {
-case _Save() when save != null:
-return save(_that);case _Delete() when delete != null:
+case _Create() when create != null:
+return create(_that);case _Update() when update != null:
+return update(_that);case _Delete() when delete != null:
 return delete(_that);case _:
   return null;
 
@@ -119,10 +122,11 @@ return delete(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int? id,  String body,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)?  save,TResult Function( DraftPost draft)?  delete,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int? id,  String body,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)?  create,TResult Function( DraftPost draft)?  update,TResult Function( DraftPost draft)?  delete,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _Save() when save != null:
-return save(_that.id,_that.body,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.filePaths,_that.location);case _Delete() when delete != null:
+case _Create() when create != null:
+return create(_that.id,_that.body,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.filePaths,_that.location);case _Update() when update != null:
+return update(_that.draft);case _Delete() when delete != null:
 return delete(_that.draft);case _:
   return orElse();
 
@@ -141,10 +145,11 @@ return delete(_that.draft);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int? id,  String body,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)  save,required TResult Function( DraftPost draft)  delete,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int? id,  String body,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)  create,required TResult Function( DraftPost draft)  update,required TResult Function( DraftPost draft)  delete,}) {final _that = this;
 switch (_that) {
-case _Save():
-return save(_that.id,_that.body,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.filePaths,_that.location);case _Delete():
+case _Create():
+return create(_that.id,_that.body,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.filePaths,_that.location);case _Update():
+return update(_that.draft);case _Delete():
 return delete(_that.draft);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -159,10 +164,11 @@ return delete(_that.draft);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int? id,  String body,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)?  save,TResult? Function( DraftPost draft)?  delete,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int? id,  String body,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)?  create,TResult? Function( DraftPost draft)?  update,TResult? Function( DraftPost draft)?  delete,}) {final _that = this;
 switch (_that) {
-case _Save() when save != null:
-return save(_that.id,_that.body,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.filePaths,_that.location);case _Delete() when delete != null:
+case _Create() when create != null:
+return create(_that.id,_that.body,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.filePaths,_that.location);case _Update() when update != null:
+return update(_that.draft);case _Delete() when delete != null:
 return delete(_that.draft);case _:
   return null;
 
@@ -174,8 +180,8 @@ return delete(_that.draft);case _:
 /// @nodoc
 
 
-class _Save implements DraftPostEvent {
-  const _Save({required this.id, required this.body, this.repostOf, this.replyTo, this.communityNoteOf, this.ballot, this.survey, this.petition, this.meeting, this.section, final  List<Map<String, String>> tags = const [], final  List<String> filePaths = const [], this.location}): _tags = tags,_filePaths = filePaths;
+class _Create implements DraftPostEvent {
+  const _Create({required this.id, required this.body, this.repostOf, this.replyTo, this.communityNoteOf, this.ballot, this.survey, this.petition, this.meeting, this.section, final  List<Map<String, String>> tags = const [], final  List<String> filePaths = const [], this.location}): _tags = tags,_filePaths = filePaths;
   
 
  final  int? id;
@@ -208,13 +214,13 @@ class _Save implements DraftPostEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$SaveCopyWith<_Save> get copyWith => __$SaveCopyWithImpl<_Save>(this, _$identity);
+_$CreateCopyWith<_Create> get copyWith => __$CreateCopyWithImpl<_Create>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Save&&(identical(other.id, id) || other.id == id)&&(identical(other.body, body) || other.body == body)&&(identical(other.repostOf, repostOf) || other.repostOf == repostOf)&&(identical(other.replyTo, replyTo) || other.replyTo == replyTo)&&(identical(other.communityNoteOf, communityNoteOf) || other.communityNoteOf == communityNoteOf)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.section, section) || other.section == section)&&const DeepCollectionEquality().equals(other._tags, _tags)&&const DeepCollectionEquality().equals(other._filePaths, _filePaths)&&(identical(other.location, location) || other.location == location));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Create&&(identical(other.id, id) || other.id == id)&&(identical(other.body, body) || other.body == body)&&(identical(other.repostOf, repostOf) || other.repostOf == repostOf)&&(identical(other.replyTo, replyTo) || other.replyTo == replyTo)&&(identical(other.communityNoteOf, communityNoteOf) || other.communityNoteOf == communityNoteOf)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.section, section) || other.section == section)&&const DeepCollectionEquality().equals(other._tags, _tags)&&const DeepCollectionEquality().equals(other._filePaths, _filePaths)&&(identical(other.location, location) || other.location == location));
 }
 
 
@@ -223,15 +229,15 @@ int get hashCode => Object.hash(runtimeType,id,body,repostOf,replyTo,communityNo
 
 @override
 String toString() {
-  return 'DraftPostEvent.save(id: $id, body: $body, repostOf: $repostOf, replyTo: $replyTo, communityNoteOf: $communityNoteOf, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, section: $section, tags: $tags, filePaths: $filePaths, location: $location)';
+  return 'DraftPostEvent.create(id: $id, body: $body, repostOf: $repostOf, replyTo: $replyTo, communityNoteOf: $communityNoteOf, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, section: $section, tags: $tags, filePaths: $filePaths, location: $location)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$SaveCopyWith<$Res> implements $DraftPostEventCopyWith<$Res> {
-  factory _$SaveCopyWith(_Save value, $Res Function(_Save) _then) = __$SaveCopyWithImpl;
+abstract mixin class _$CreateCopyWith<$Res> implements $DraftPostEventCopyWith<$Res> {
+  factory _$CreateCopyWith(_Create value, $Res Function(_Create) _then) = __$CreateCopyWithImpl;
 @useResult
 $Res call({
  int? id, String body, Post? repostOf, Post? replyTo, Post? communityNoteOf, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting, Section? section, List<Map<String, String>> tags, List<String> filePaths, LatLng? location
@@ -242,17 +248,17 @@ $PostCopyWith<$Res>? get repostOf;$PostCopyWith<$Res>? get replyTo;$PostCopyWith
 
 }
 /// @nodoc
-class __$SaveCopyWithImpl<$Res>
-    implements _$SaveCopyWith<$Res> {
-  __$SaveCopyWithImpl(this._self, this._then);
+class __$CreateCopyWithImpl<$Res>
+    implements _$CreateCopyWith<$Res> {
+  __$CreateCopyWithImpl(this._self, this._then);
 
-  final _Save _self;
-  final $Res Function(_Save) _then;
+  final _Create _self;
+  final $Res Function(_Create) _then;
 
 /// Create a copy of DraftPostEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? body = null,Object? repostOf = freezed,Object? replyTo = freezed,Object? communityNoteOf = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? meeting = freezed,Object? section = freezed,Object? tags = null,Object? filePaths = null,Object? location = freezed,}) {
-  return _then(_Save(
+  return _then(_Create(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int?,body: null == body ? _self.body : body // ignore: cast_nullable_to_non_nullable
 as String,repostOf: freezed == repostOf ? _self.repostOf : repostOf // ignore: cast_nullable_to_non_nullable
@@ -367,6 +373,72 @@ $SectionCopyWith<$Res>? get section {
     return _then(_self.copyWith(section: value));
   });
 }
+}
+
+/// @nodoc
+
+
+class _Update implements DraftPostEvent {
+  const _Update({required this.draft});
+  
+
+ final  DraftPost draft;
+
+/// Create a copy of DraftPostEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$UpdateCopyWith<_Update> get copyWith => __$UpdateCopyWithImpl<_Update>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Update&&(identical(other.draft, draft) || other.draft == draft));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,draft);
+
+@override
+String toString() {
+  return 'DraftPostEvent.update(draft: $draft)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$UpdateCopyWith<$Res> implements $DraftPostEventCopyWith<$Res> {
+  factory _$UpdateCopyWith(_Update value, $Res Function(_Update) _then) = __$UpdateCopyWithImpl;
+@useResult
+$Res call({
+ DraftPost draft
+});
+
+
+
+
+}
+/// @nodoc
+class __$UpdateCopyWithImpl<$Res>
+    implements _$UpdateCopyWith<$Res> {
+  __$UpdateCopyWithImpl(this._self, this._then);
+
+  final _Update _self;
+  final $Res Function(_Update) _then;
+
+/// Create a copy of DraftPostEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? draft = null,}) {
+  return _then(_Update(
+draft: null == draft ? _self.draft : draft // ignore: cast_nullable_to_non_nullable
+as DraftPost,
+  ));
+}
+
+
 }
 
 /// @nodoc

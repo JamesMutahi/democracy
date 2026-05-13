@@ -1,4 +1,6 @@
 import 'package:democracy/app/bloc/bottom_nav/bottom_navbar_cubit.dart';
+import 'package:democracy/meeting/view/meeting_create.dart';
+import 'package:democracy/petition/view/petition_create.dart';
 import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -56,7 +58,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
                     },
                   ),
                   NavBarItem(
-                    asset: 'assets/icons/chat-bubbles.svg',
+                    asset: 'assets/icons/dialog.svg',
+                    size: 28,
                     isActive: currentPage == 3,
                     onTap: () {
                       context.read<BottomNavBarCubit>().changePage(3);
@@ -66,12 +69,31 @@ class _BottomNavBarState extends State<BottomNavBar> {
               ),
               Align(
                 alignment: Alignment.center,
-                child: NavBarItem(
-                  asset: 'assets/icons/pen.svg',
-                  isActive: false,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(10),
                   onTap: () {
-                    navigateToPostCreate(context: context);
+                    showModalBottomSheet<void>(
+                      context: context,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      builder: (BuildContext context) {
+                        return CreationBottomSheet();
+                      },
+                    );
                   },
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: SvgPicture.asset(
+                      'assets/icons/add.svg',
+                      width: 40,
+                      height: 40,
+                      colorFilter: ColorFilter.mode(
+                        Theme.of(context).disabledColor,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -117,6 +139,91 @@ class NavBarItem extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class CreationBottomSheet extends StatelessWidget {
+  const CreationBottomSheet({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _CreationButton(
+              onTap: () {
+                navigateToPostCreate(context: context);
+              },
+              asset: 'assets/icons/document-add.svg',
+              text: 'Post',
+            ),
+            _CreationButton(
+              onTap: () {
+                navigateToMeetingCreationPage(
+                  context: context,
+                  isLiveStream: false,
+                );
+              },
+              asset: 'assets/icons/microphone.svg',
+              text: 'Meet',
+            ),
+            _CreationButton(
+              onTap: () {
+                navigateToMeetingCreationPage(
+                  context: context,
+                  isLiveStream: true,
+                );
+              },
+              asset: 'assets/icons/video.svg',
+              text: 'Go Live',
+            ),
+            _CreationButton(
+              onTap: () {
+                navigateToPetitionCreationPage(context: context);
+              },
+              asset: 'assets/icons/digital-signature.svg',
+              text: 'Petition',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CreationButton extends StatelessWidget {
+  const _CreationButton({
+    required this.onTap,
+    required this.asset,
+    required this.text,
+  });
+
+  final VoidCallback onTap;
+  final String asset;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      onTap: () {
+        Navigator.pop(context);
+        onTap();
+      },
+      leading: SvgPicture.asset(
+        asset,
+        width: 35,
+        height: 35,
+        colorFilter: ColorFilter.mode(
+          Theme.of(context).primaryColor,
+          BlendMode.srcIn,
+        ),
+      ),
+      title: Text(text, style: Theme.of(context).textTheme.titleMedium),
     );
   }
 }

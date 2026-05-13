@@ -55,12 +55,13 @@ extension SyncEventPatterns on SyncEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Start value)?  start,TResult Function( _PostDrafts value)?  postDrafts,TResult Function( _PostMessages value)?  postMessages,TResult Function( _UploadMessageAssets value)?  uploadMessageAssets,TResult Function( _PatchMessages value)?  patchMessages,TResult Function( _DeleteMessages value)?  deleteMessages,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Start value)?  start,TResult Function( _PostDrafts value)?  postDrafts,TResult Function( _UploadPostAssets value)?  uploadPostAssets,TResult Function( _PostMessages value)?  postMessages,TResult Function( _UploadMessageAssets value)?  uploadMessageAssets,TResult Function( _PatchMessages value)?  patchMessages,TResult Function( _DeleteMessages value)?  deleteMessages,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Start() when start != null:
 return start(_that);case _PostDrafts() when postDrafts != null:
-return postDrafts(_that);case _PostMessages() when postMessages != null:
+return postDrafts(_that);case _UploadPostAssets() when uploadPostAssets != null:
+return uploadPostAssets(_that);case _PostMessages() when postMessages != null:
 return postMessages(_that);case _UploadMessageAssets() when uploadMessageAssets != null:
 return uploadMessageAssets(_that);case _PatchMessages() when patchMessages != null:
 return patchMessages(_that);case _DeleteMessages() when deleteMessages != null:
@@ -82,12 +83,13 @@ return deleteMessages(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Start value)  start,required TResult Function( _PostDrafts value)  postDrafts,required TResult Function( _PostMessages value)  postMessages,required TResult Function( _UploadMessageAssets value)  uploadMessageAssets,required TResult Function( _PatchMessages value)  patchMessages,required TResult Function( _DeleteMessages value)  deleteMessages,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Start value)  start,required TResult Function( _PostDrafts value)  postDrafts,required TResult Function( _UploadPostAssets value)  uploadPostAssets,required TResult Function( _PostMessages value)  postMessages,required TResult Function( _UploadMessageAssets value)  uploadMessageAssets,required TResult Function( _PatchMessages value)  patchMessages,required TResult Function( _DeleteMessages value)  deleteMessages,}){
 final _that = this;
 switch (_that) {
 case _Start():
 return start(_that);case _PostDrafts():
-return postDrafts(_that);case _PostMessages():
+return postDrafts(_that);case _UploadPostAssets():
+return uploadPostAssets(_that);case _PostMessages():
 return postMessages(_that);case _UploadMessageAssets():
 return uploadMessageAssets(_that);case _PatchMessages():
 return patchMessages(_that);case _DeleteMessages():
@@ -108,12 +110,13 @@ return deleteMessages(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Start value)?  start,TResult? Function( _PostDrafts value)?  postDrafts,TResult? Function( _PostMessages value)?  postMessages,TResult? Function( _UploadMessageAssets value)?  uploadMessageAssets,TResult? Function( _PatchMessages value)?  patchMessages,TResult? Function( _DeleteMessages value)?  deleteMessages,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Start value)?  start,TResult? Function( _PostDrafts value)?  postDrafts,TResult? Function( _UploadPostAssets value)?  uploadPostAssets,TResult? Function( _PostMessages value)?  postMessages,TResult? Function( _UploadMessageAssets value)?  uploadMessageAssets,TResult? Function( _PatchMessages value)?  patchMessages,TResult? Function( _DeleteMessages value)?  deleteMessages,}){
 final _that = this;
 switch (_that) {
 case _Start() when start != null:
 return start(_that);case _PostDrafts() when postDrafts != null:
-return postDrafts(_that);case _PostMessages() when postMessages != null:
+return postDrafts(_that);case _UploadPostAssets() when uploadPostAssets != null:
+return uploadPostAssets(_that);case _PostMessages() when postMessages != null:
 return postMessages(_that);case _UploadMessageAssets() when uploadMessageAssets != null:
 return uploadMessageAssets(_that);case _PatchMessages() when patchMessages != null:
 return patchMessages(_that);case _DeleteMessages() when deleteMessages != null:
@@ -134,11 +137,12 @@ return deleteMessages(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  start,TResult Function()?  postDrafts,TResult Function()?  postMessages,TResult Function()?  uploadMessageAssets,TResult Function()?  patchMessages,TResult Function()?  deleteMessages,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  start,TResult Function()?  postDrafts,TResult Function()?  uploadPostAssets,TResult Function()?  postMessages,TResult Function()?  uploadMessageAssets,TResult Function()?  patchMessages,TResult Function()?  deleteMessages,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Start() when start != null:
 return start();case _PostDrafts() when postDrafts != null:
-return postDrafts();case _PostMessages() when postMessages != null:
+return postDrafts();case _UploadPostAssets() when uploadPostAssets != null:
+return uploadPostAssets();case _PostMessages() when postMessages != null:
 return postMessages();case _UploadMessageAssets() when uploadMessageAssets != null:
 return uploadMessageAssets();case _PatchMessages() when patchMessages != null:
 return patchMessages();case _DeleteMessages() when deleteMessages != null:
@@ -160,11 +164,12 @@ return deleteMessages();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  start,required TResult Function()  postDrafts,required TResult Function()  postMessages,required TResult Function()  uploadMessageAssets,required TResult Function()  patchMessages,required TResult Function()  deleteMessages,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  start,required TResult Function()  postDrafts,required TResult Function()  uploadPostAssets,required TResult Function()  postMessages,required TResult Function()  uploadMessageAssets,required TResult Function()  patchMessages,required TResult Function()  deleteMessages,}) {final _that = this;
 switch (_that) {
 case _Start():
 return start();case _PostDrafts():
-return postDrafts();case _PostMessages():
+return postDrafts();case _UploadPostAssets():
+return uploadPostAssets();case _PostMessages():
 return postMessages();case _UploadMessageAssets():
 return uploadMessageAssets();case _PatchMessages():
 return patchMessages();case _DeleteMessages():
@@ -185,11 +190,12 @@ return deleteMessages();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  start,TResult? Function()?  postDrafts,TResult? Function()?  postMessages,TResult? Function()?  uploadMessageAssets,TResult? Function()?  patchMessages,TResult? Function()?  deleteMessages,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  start,TResult? Function()?  postDrafts,TResult? Function()?  uploadPostAssets,TResult? Function()?  postMessages,TResult? Function()?  uploadMessageAssets,TResult? Function()?  patchMessages,TResult? Function()?  deleteMessages,}) {final _that = this;
 switch (_that) {
 case _Start() when start != null:
 return start();case _PostDrafts() when postDrafts != null:
-return postDrafts();case _PostMessages() when postMessages != null:
+return postDrafts();case _UploadPostAssets() when uploadPostAssets != null:
+return uploadPostAssets();case _PostMessages() when postMessages != null:
 return postMessages();case _UploadMessageAssets() when uploadMessageAssets != null:
 return uploadMessageAssets();case _PatchMessages() when patchMessages != null:
 return patchMessages();case _DeleteMessages() when deleteMessages != null:
@@ -257,6 +263,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'SyncEvent.postDrafts()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _UploadPostAssets implements SyncEvent {
+  const _UploadPostAssets();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UploadPostAssets);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'SyncEvent.uploadPostAssets()';
 }
 
 
@@ -437,13 +475,13 @@ extension SyncStatePatterns on SyncState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Syncing value)?  syncing,TResult Function( DraftsSynced value)?  draftsSynced,TResult Function( MessagesForPostSynced value)?  messagesForPostSynced,TResult Function( MessagesForAssetUploadSynced value)?  messagesForAssetUploadSynced,TResult Function( MessagesForPatchSynced value)?  messagesForPatchSynced,TResult Function( MessagesForDeleteSynced value)?  messagesForDeleteSynced,TResult Function( SyncFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Syncing value)?  syncing,TResult Function( DraftsForPostSynced value)?  draftsForPostSynced,TResult Function( MessagesForPostSynced value)?  messagesForPostSynced,TResult Function( MessagesForAssetUploadSynced value)?  messagesForAssetUploadSynced,TResult Function( MessagesForPatchSynced value)?  messagesForPatchSynced,TResult Function( MessagesForDeleteSynced value)?  messagesForDeleteSynced,TResult Function( SyncFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Syncing() when syncing != null:
-return syncing(_that);case DraftsSynced() when draftsSynced != null:
-return draftsSynced(_that);case MessagesForPostSynced() when messagesForPostSynced != null:
+return syncing(_that);case DraftsForPostSynced() when draftsForPostSynced != null:
+return draftsForPostSynced(_that);case MessagesForPostSynced() when messagesForPostSynced != null:
 return messagesForPostSynced(_that);case MessagesForAssetUploadSynced() when messagesForAssetUploadSynced != null:
 return messagesForAssetUploadSynced(_that);case MessagesForPatchSynced() when messagesForPatchSynced != null:
 return messagesForPatchSynced(_that);case MessagesForDeleteSynced() when messagesForDeleteSynced != null:
@@ -466,13 +504,13 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Syncing value)  syncing,required TResult Function( DraftsSynced value)  draftsSynced,required TResult Function( MessagesForPostSynced value)  messagesForPostSynced,required TResult Function( MessagesForAssetUploadSynced value)  messagesForAssetUploadSynced,required TResult Function( MessagesForPatchSynced value)  messagesForPatchSynced,required TResult Function( MessagesForDeleteSynced value)  messagesForDeleteSynced,required TResult Function( SyncFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Syncing value)  syncing,required TResult Function( DraftsForPostSynced value)  draftsForPostSynced,required TResult Function( MessagesForPostSynced value)  messagesForPostSynced,required TResult Function( MessagesForAssetUploadSynced value)  messagesForAssetUploadSynced,required TResult Function( MessagesForPatchSynced value)  messagesForPatchSynced,required TResult Function( MessagesForDeleteSynced value)  messagesForDeleteSynced,required TResult Function( SyncFailure value)  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial():
 return initial(_that);case _Syncing():
-return syncing(_that);case DraftsSynced():
-return draftsSynced(_that);case MessagesForPostSynced():
+return syncing(_that);case DraftsForPostSynced():
+return draftsForPostSynced(_that);case MessagesForPostSynced():
 return messagesForPostSynced(_that);case MessagesForAssetUploadSynced():
 return messagesForAssetUploadSynced(_that);case MessagesForPatchSynced():
 return messagesForPatchSynced(_that);case MessagesForDeleteSynced():
@@ -494,13 +532,13 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Syncing value)?  syncing,TResult? Function( DraftsSynced value)?  draftsSynced,TResult? Function( MessagesForPostSynced value)?  messagesForPostSynced,TResult? Function( MessagesForAssetUploadSynced value)?  messagesForAssetUploadSynced,TResult? Function( MessagesForPatchSynced value)?  messagesForPatchSynced,TResult? Function( MessagesForDeleteSynced value)?  messagesForDeleteSynced,TResult? Function( SyncFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Syncing value)?  syncing,TResult? Function( DraftsForPostSynced value)?  draftsForPostSynced,TResult? Function( MessagesForPostSynced value)?  messagesForPostSynced,TResult? Function( MessagesForAssetUploadSynced value)?  messagesForAssetUploadSynced,TResult? Function( MessagesForPatchSynced value)?  messagesForPatchSynced,TResult? Function( MessagesForDeleteSynced value)?  messagesForDeleteSynced,TResult? Function( SyncFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Syncing() when syncing != null:
-return syncing(_that);case DraftsSynced() when draftsSynced != null:
-return draftsSynced(_that);case MessagesForPostSynced() when messagesForPostSynced != null:
+return syncing(_that);case DraftsForPostSynced() when draftsForPostSynced != null:
+return draftsForPostSynced(_that);case MessagesForPostSynced() when messagesForPostSynced != null:
 return messagesForPostSynced(_that);case MessagesForAssetUploadSynced() when messagesForAssetUploadSynced != null:
 return messagesForAssetUploadSynced(_that);case MessagesForPatchSynced() when messagesForPatchSynced != null:
 return messagesForPatchSynced(_that);case MessagesForDeleteSynced() when messagesForDeleteSynced != null:
@@ -522,12 +560,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  syncing,TResult Function()?  draftsSynced,TResult Function()?  messagesForPostSynced,TResult Function()?  messagesForAssetUploadSynced,TResult Function()?  messagesForPatchSynced,TResult Function()?  messagesForDeleteSynced,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  syncing,TResult Function()?  draftsForPostSynced,TResult Function()?  messagesForPostSynced,TResult Function()?  messagesForAssetUploadSynced,TResult Function()?  messagesForPatchSynced,TResult Function()?  messagesForDeleteSynced,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Syncing() when syncing != null:
-return syncing();case DraftsSynced() when draftsSynced != null:
-return draftsSynced();case MessagesForPostSynced() when messagesForPostSynced != null:
+return syncing();case DraftsForPostSynced() when draftsForPostSynced != null:
+return draftsForPostSynced();case MessagesForPostSynced() when messagesForPostSynced != null:
 return messagesForPostSynced();case MessagesForAssetUploadSynced() when messagesForAssetUploadSynced != null:
 return messagesForAssetUploadSynced();case MessagesForPatchSynced() when messagesForPatchSynced != null:
 return messagesForPatchSynced();case MessagesForDeleteSynced() when messagesForDeleteSynced != null:
@@ -550,12 +588,12 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  syncing,required TResult Function()  draftsSynced,required TResult Function()  messagesForPostSynced,required TResult Function()  messagesForAssetUploadSynced,required TResult Function()  messagesForPatchSynced,required TResult Function()  messagesForDeleteSynced,required TResult Function( String error)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  syncing,required TResult Function()  draftsForPostSynced,required TResult Function()  messagesForPostSynced,required TResult Function()  messagesForAssetUploadSynced,required TResult Function()  messagesForPatchSynced,required TResult Function()  messagesForDeleteSynced,required TResult Function( String error)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Syncing():
-return syncing();case DraftsSynced():
-return draftsSynced();case MessagesForPostSynced():
+return syncing();case DraftsForPostSynced():
+return draftsForPostSynced();case MessagesForPostSynced():
 return messagesForPostSynced();case MessagesForAssetUploadSynced():
 return messagesForAssetUploadSynced();case MessagesForPatchSynced():
 return messagesForPatchSynced();case MessagesForDeleteSynced():
@@ -577,12 +615,12 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  syncing,TResult? Function()?  draftsSynced,TResult? Function()?  messagesForPostSynced,TResult? Function()?  messagesForAssetUploadSynced,TResult? Function()?  messagesForPatchSynced,TResult? Function()?  messagesForDeleteSynced,TResult? Function( String error)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  syncing,TResult? Function()?  draftsForPostSynced,TResult? Function()?  messagesForPostSynced,TResult? Function()?  messagesForAssetUploadSynced,TResult? Function()?  messagesForPatchSynced,TResult? Function()?  messagesForDeleteSynced,TResult? Function( String error)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Syncing() when syncing != null:
-return syncing();case DraftsSynced() when draftsSynced != null:
-return draftsSynced();case MessagesForPostSynced() when messagesForPostSynced != null:
+return syncing();case DraftsForPostSynced() when draftsForPostSynced != null:
+return draftsForPostSynced();case MessagesForPostSynced() when messagesForPostSynced != null:
 return messagesForPostSynced();case MessagesForAssetUploadSynced() when messagesForAssetUploadSynced != null:
 return messagesForAssetUploadSynced();case MessagesForPatchSynced() when messagesForPatchSynced != null:
 return messagesForPatchSynced();case MessagesForDeleteSynced() when messagesForDeleteSynced != null:
@@ -662,8 +700,8 @@ String toString() {
 /// @nodoc
 
 
-class DraftsSynced implements SyncState {
-  const DraftsSynced();
+class DraftsForPostSynced implements SyncState {
+  const DraftsForPostSynced();
   
 
 
@@ -673,7 +711,7 @@ class DraftsSynced implements SyncState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DraftsSynced);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DraftsForPostSynced);
 }
 
 
@@ -682,7 +720,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SyncState.draftsSynced()';
+  return 'SyncState.draftsForPostSynced()';
 }
 
 

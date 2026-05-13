@@ -106,6 +106,7 @@ class _PetitionDetailState extends State<PetitionDetail> {
                             image: DecorationImage(
                               image: CachedNetworkImageProvider(
                                 _petition.image,
+                                cacheKey: _petition.id.toString(),
                               ),
                               fit: BoxFit.cover,
                             ),

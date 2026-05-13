@@ -21,11 +21,7 @@ class MessagePage extends StatefulWidget {
   State<MessagePage> createState() => _MessagePageState();
 }
 
-class _MessagePageState extends State<MessagePage>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
+class _MessagePageState extends State<MessagePage> {
   final TextEditingController _controller = TextEditingController();
 
   @override
@@ -36,7 +32,6 @@ class _MessagePageState extends State<MessagePage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return NestedScrollView(
       headerSliverBuilder: (context, bool innerBoxIsScrolled) {
         return [

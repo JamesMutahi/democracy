@@ -65,6 +65,23 @@ class APIProvider {
     }
   }
 
+  Future<List<dynamic>> generatePostUploadUrl({required int id}) async {
+    try {
+      final data = {'id': id};
+      Response response = await dio.post(
+        'post/generate-upload-urls/',
+        data: data,
+      );
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        return Future.error(response.data.toString());
+      }
+    } on DioException catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
   Future<String> uploadPostAsset({
     required String name,
     required String url,
@@ -170,6 +187,25 @@ class APIProvider {
     }
   }
 
+  Future<List<dynamic>> generateMessageUploadUrl({
+    required Message message,
+  }) async {
+    try {
+      final data = {'message_id': message.id};
+      Response response = await dio.post(
+        'chat/generate-upload-urls/',
+        data: data,
+      );
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        return Future.error(response.data.toString());
+      }
+    } on DioException catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
   Future<String> uploadMessageAsset({
     required String name,
     required String url,
@@ -197,25 +233,6 @@ class APIProvider {
         ),
         // Track progress
         onSendProgress: onSendProgress,
-      );
-      if (response.statusCode == 200) {
-        return response.data;
-      } else {
-        return Future.error(response.data.toString());
-      }
-    } on DioException catch (e) {
-      return Future.error(e.toString());
-    }
-  }
-
-  Future<List<dynamic>> generateUploadUrl({
-    required Message message,
-  }) async {
-    try {
-      final data = {'message_id': message.id};
-      Response response = await dio.post(
-        'chat/generate-upload-urls/',
-        data: data,
       );
       if (response.statusCode == 200) {
         return response.data;

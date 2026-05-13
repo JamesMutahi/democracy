@@ -35,11 +35,7 @@ class ExplorePage extends StatefulWidget {
   State<ExplorePage> createState() => _ExplorePageState();
 }
 
-class _ExplorePageState extends State<ExplorePage>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
+class _ExplorePageState extends State<ExplorePage> {
   final TextEditingController _controller = TextEditingController();
 
   @override
@@ -50,7 +46,6 @@ class _ExplorePageState extends State<ExplorePage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return BlocProvider(
       create: (context) => PostFilterCubit(),
       child: DefaultTabController(

@@ -17,11 +17,12 @@ part 'draft_post_bloc.freezed.dart';
 class DraftPostBloc extends Bloc<DraftPostEvent, DraftPostState> {
   DraftPostBloc({required this.databaseRepository})
     : super(const DraftPostState.initial()) {
-    on<_Save>((event, emit) async => await _onSave(event, emit));
+    on<_Create>((event, emit) async => await _onCreate(event, emit));
+    on<_Update>((event, emit) async => await _onUpdate(event, emit));
     on<_Delete>((event, emit) async => await _onDelete(event, emit));
   }
 
-  Future _onSave(_Save event, Emitter<DraftPostState> emit) async {
+  Future _onCreate(_Create event, Emitter<DraftPostState> emit) async {
     emit(_Loading());
     try {
       final drafted = DraftPost()
@@ -40,6 +41,16 @@ class DraftPostBloc extends Bloc<DraftPostEvent, DraftPostState> {
       final id = await databaseRepository.saveDraft(draft: drafted);
       final draft = await databaseRepository.getDraft(id: id);
       emit(DraftPostSaved(draft: draft));
+    } catch (e) {
+      emit(DraftPostFailure(error: e.toString()));
+    }
+  }
+
+  Future _onUpdate(_Update event, Emitter<DraftPostState> emit) async {
+    emit(_Loading());
+    try {
+      await databaseRepository.saveDraft(draft: event.draft);
+      emit(DraftPostSaved(draft: event.draft));
     } catch (e) {
       emit(DraftPostFailure(error: e.toString()));
     }

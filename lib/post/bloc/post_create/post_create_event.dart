@@ -13,7 +13,7 @@ class PostCreateEvent with _$PostCreateEvent {
     Petition? petition,
     Meeting? meeting,
     Section? section,
-    @Default([]) List<Map<String, dynamic>> tags,
+    @Default([]) List<Map<String, String>> tags,
     @Default([]) List<String> filePaths,
     LatLng? location,
   }) = _Create;

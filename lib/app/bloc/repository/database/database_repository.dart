@@ -1,3 +1,4 @@
+import 'package:democracy/app/bloc/sync/sync_bloc.dart' show SyncType;
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/objectbox.g.dart';
@@ -25,6 +26,29 @@ class DatabaseRepository {
       throw Exception("Draft with ID $id not found.");
     }
     return draft;
+  }
+
+  Future<List<DraftPost>> getDraftsToPost() async {
+    final box = store.box<DraftPost>();
+    List<DraftPost> drafts = box
+        .query(DraftPost_.syncType.equals(SyncType.post))
+        .build()
+        .find();
+    return drafts;
+  }
+
+  Future<void> updateDraft({required DraftPost draft}) async {
+    final box = store.box<DraftPost>();
+    box.put(draft);
+  }
+
+  Future<List<DraftPost>> getDraftsToUploadAssets() async {
+    final box = store.box<DraftPost>();
+    List<DraftPost> drafts = box
+        .query(DraftPost_.syncType.equals(SyncType.assets))
+        .build()
+        .find();
+    return drafts;
   }
 
   Future<void> deleteDraft({required DraftPost draft}) async {
@@ -111,7 +135,7 @@ class DatabaseRepository {
     final box = store.box<Message>();
 
     final query = box
-        .query(Message_.chat.equals(chatId))  // relation property
+        .query(Message_.chat.equals(chatId)) // relation property
         .order(Message_.createdAt, flags: Order.descending) // newest first
         .build();
 

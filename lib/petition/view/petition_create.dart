@@ -16,6 +16,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
+void navigateToPetitionCreationPage({required BuildContext context}) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => CreatePetition()),
+  );
+}
+
 class CreatePetition extends StatefulWidget {
   const CreatePetition({super.key});
 
@@ -77,43 +84,40 @@ class _CreatePetitionState extends State<CreatePetition> {
         },
         child: Scaffold(
           appBar: AppBar(
-            automaticallyImplyLeading: false,
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(Symbols.close),
-                ),
-                OutlinedButton(
-                  onPressed:
-                      (image == null || title.isEmpty || description.isEmpty)
-                      ? null
-                      : () {
-                          showDialog(
-                            context: context,
-                            builder: (context) => PetitionCreateDialog(
-                              onYesPressed: () {
-                                context.read<PetitionDetailBloc>().add(
-                                  PetitionDetailEvent.create(
-                                    title: title,
-                                    imagePath: image!.path,
-                                    description: description,
-                                    county: county,
-                                    constituency: constituency,
-                                    ward: ward,
-                                  ),
-                                );
-                              },
-                            ),
-                          );
-                        },
-                  child: Text('Publish'),
-                ),
-              ],
+            leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(Symbols.close),
             ),
+            actionsPadding: EdgeInsets.only(right: 10),
+            actions: [
+              OutlinedButton(
+                onPressed:
+                    (image == null || title.isEmpty || description.isEmpty)
+                    ? null
+                    : () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => PetitionCreateDialog(
+                            onYesPressed: () {
+                              context.read<PetitionDetailBloc>().add(
+                                PetitionDetailEvent.create(
+                                  title: title,
+                                  imagePath: image!.path,
+                                  description: description,
+                                  county: county,
+                                  constituency: constituency,
+                                  ward: ward,
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                child: Text('Publish'),
+              ),
+            ],
           ),
           body: ListView(
             children: [

@@ -225,3 +225,25 @@ class _MainPageViewState extends State<MainPageView> {
     }
   }
 }
+
+
+class CreationBottomSheet extends StatelessWidget {
+  const CreationBottomSheet({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 200,
+      child: Center(
+        child: Column(
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [Icon(Icons.create), Text('Post')],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

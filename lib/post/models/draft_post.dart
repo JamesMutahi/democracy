@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:democracy/app/core/app_logger.dart';
+import 'package:democracy/app/models/asset.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/meeting/models/meeting.dart';
@@ -13,9 +15,13 @@ import 'package:objectbox/objectbox.dart';
 class DraftPost {
   @Id()
   int id = 0;
-
+  int? serverID;
   String body = '';
   List<String> filePaths = [];
+
+  String? syncStatus;
+  String? syncType;
+
   late DateTime updatedAt;
   late DateTime createdAt;
 
@@ -30,6 +36,7 @@ class DraftPost {
   String? meetingJson;
   String? sectionJson;
   String? tagsJson;
+  String? assetsJson;
 
   // ==================== TRANSIENT GETTERS & SETTERS ====================
 
@@ -58,10 +65,9 @@ class DraftPost {
       repostOfJson = value != null ? jsonEncode(value.toJson()) : null;
 
   @Transient()
-  Post? get communityNoteOf =>
-      communityNoteOfJson != null
-          ? Post.fromJson(jsonDecode(communityNoteOfJson!))
-          : null;
+  Post? get communityNoteOf => communityNoteOfJson != null
+      ? Post.fromJson(jsonDecode(communityNoteOfJson!))
+      : null;
 
   @Transient()
   set communityNoteOf(Post? value) =>
@@ -84,8 +90,9 @@ class DraftPost {
       surveyJson = value != null ? jsonEncode(value.toJson()) : null;
 
   @Transient()
-  Petition? get petition =>
-      petitionJson != null ? Petition.fromJson(jsonDecode(petitionJson!)) : null;
+  Petition? get petition => petitionJson != null
+      ? Petition.fromJson(jsonDecode(petitionJson!))
+      : null;
 
   @Transient()
   set petition(Petition? value) =>
@@ -108,23 +115,92 @@ class DraftPost {
       sectionJson = value != null ? jsonEncode(value.toJson()) : null;
 
   @Transient()
-  List<Map<String, String>>? get tags =>
-      tagsJson != null
-          ? List<Map<String, String>>.from(jsonDecode(tagsJson!))
-          : null;
+  List<Map<String, String>> get tags => tagsJson != null
+      ? List<Map<String, String>>.from(jsonDecode(tagsJson!))
+      : [];
 
   @Transient()
   set tags(List<Map<String, String>>? value) {
-    tagsJson = value != null && value.isNotEmpty
-        ? jsonEncode(value)
-        : null;
+    tagsJson = value != null && value.isNotEmpty ? jsonEncode(value) : null;
+  }
+
+  @Transient()
+  set assets(List<Asset>? value) {
+    if (value == null || value.isEmpty) {
+      assetsJson = null;
+      return;
+    }
+
+    try {
+      final jsonList = value.map((asset) => asset.toJson()).toList();
+      assetsJson = jsonEncode(jsonList);
+    } catch (e) {
+      AppLogger.error('Error encoding assets to JSON: $e');
+      // Safe fallback
+      assetsJson = jsonEncode(
+        value
+            .map(
+              (asset) => {
+                'id': asset.id,
+                'name': asset.name,
+                'file_key': asset.fileKey,
+                'file_size': asset.fileSize,
+                'content_type':
+                    asset.contentType.name, // or use converter if needed
+                'url': asset.url,
+                'is_completed': asset.isCompleted,
+                'created_at': asset.createdAt.toIso8601String(),
+              },
+            )
+            .toList(),
+      );
+    }
   }
 
   DraftPost({
     this.id = 0,
+    Post? replyTo,
+    Post? repostOf,
+    Post? communityNoteOf,
+    Survey? survey,
+    Ballot? ballot,
+    Meeting? meeting,
+    Petition? petition,
+    Section? section,
+    LatLng? location,
+    this.syncStatus,
+    this.syncType,
+    String? uuid,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
+    if (replyTo != null) {
+      this.replyTo = replyTo;
+    }
+    if (repostOf != null) {
+      this.repostOf = repostOf;
+    }
+    if (communityNoteOf != null) {
+      this.communityNoteOf = communityNoteOf;
+    }
+    if (survey != null) {
+      this.survey = survey;
+    }
+    if (ballot != null) {
+      this.ballot = ballot;
+    }
+    if (meeting != null) {
+      this.meeting = meeting;
+    }
+    if (petition != null) {
+      this.petition = petition;
+    }
+    if (section != null) {
+      this.section = section;
+    }
+    if (location != null) {
+      this.location = location;
+    }
     this.createdAt = createdAt ?? DateTime.now();
     this.updatedAt = updatedAt ?? DateTime.now();
   }

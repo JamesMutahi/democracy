@@ -4,7 +4,7 @@ part of 'sync_bloc.dart';
 class SyncState with _$SyncState {
   const factory SyncState.initial() = _Initial;
   const factory SyncState.syncing() = _Syncing;
-  const factory SyncState.draftsSynced() = DraftsSynced;
+  const factory SyncState.draftsForPostSynced() = DraftsForPostSynced;
   const factory SyncState.messagesForPostSynced() = MessagesForPostSynced;
   const factory SyncState.messagesForAssetUploadSynced() =
       MessagesForAssetUploadSynced;
