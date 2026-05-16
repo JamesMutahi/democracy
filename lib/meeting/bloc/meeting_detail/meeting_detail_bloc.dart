@@ -4,6 +4,7 @@ import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/repository/api/api_repository.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
+import 'package:democracy/app/core/app_logger.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/meeting/models/meeting.dart';
 import 'package:democracy/user/models/user.dart';
@@ -23,6 +24,7 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
   }) : super(const MeetingDetailState.initial()) {
     _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
+        AppLogger.info(message['payload']['action']);
         switch (message['payload']['action']) {
           case 'create':
             add(_Created(payload: message['payload']));
@@ -49,7 +51,7 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
 
   void _onCreated(_Created event, Emitter<MeetingDetailState> emit) {
     emit(MeetingDetailLoading());
-    if (event.payload['response_status'] == 201) {
+    if (event.payload['response_status'] == 200) {
       Meeting meeting = Meeting.fromJson(event.payload['data']);
       emit(MeetingCreated(meeting: meeting));
     } else {
@@ -79,7 +81,7 @@ class MeetingDetailBloc extends Bloc<MeetingDetailEvent, MeetingDetailState> {
 
   void _onDeleted(_Deleted event, Emitter<MeetingDetailState> emit) {
     emit(MeetingDetailLoading());
-    if (event.payload['response_status'] == 204) {
+    if (event.payload['response_status'] == 200) {
       emit(MeetingDeleted(meetingId: event.payload['pk']));
     } else {
       emit(MeetingDetailFailure(error: event.payload['errors'].toString()));

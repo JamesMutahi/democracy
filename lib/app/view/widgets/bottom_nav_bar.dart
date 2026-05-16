@@ -75,7 +75,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
                     showModalBottomSheet<void>(
                       context: context,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(15),
+                          topRight: Radius.circular(15),
+                        ),
                       ),
                       builder: (BuildContext context) {
                         return CreationBottomSheet();

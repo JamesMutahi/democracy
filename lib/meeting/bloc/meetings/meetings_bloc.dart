@@ -40,7 +40,7 @@ class MeetingsBloc extends Bloc<MeetingsEvent, MeetingsState> {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
-        'action': 'list',
+        'action': action,
         'request_id': event.searchTerm,
         'search_term': event.searchTerm,
         'previous_meetings': event.previousMeetings

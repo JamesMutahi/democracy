@@ -20,6 +20,7 @@ class UsersListView extends StatelessWidget {
     required this.refreshController,
     this.enablePullDown = false,
     required this.enablePullUp,
+    this.emptyListText = 'No results',
     this.showProfileButtons = false,
     this.onUsersUpdated,
     required this.onUserTap,
@@ -35,6 +36,7 @@ class UsersListView extends StatelessWidget {
   final RefreshController refreshController;
   final bool enablePullDown;
   final bool enablePullUp;
+  final String emptyListText;
   final bool showProfileButtons;
   final void Function(List<User>)? onUsersUpdated;
   final void Function(User) onUserTap;
@@ -79,7 +81,7 @@ class UsersListView extends StatelessWidget {
                     onLoading: onLoading,
                     footer: ClassicFooter(),
                     child: users.isEmpty
-                        ? NoResults(text: 'No results')
+                        ? NoResults(text: emptyListText)
                         : ListView.builder(
                             itemBuilder: (BuildContext context, int index) {
                               User user = users[index];

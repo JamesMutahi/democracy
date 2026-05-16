@@ -26,17 +26,15 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
   }) : super(const ChatDetailState.initial()) {
     _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
-        if (message['payload']['request_id'] != 'messages') {
-          switch (message['payload']['action']) {
-            case 'create':
-              add(_Created(payload: message['payload']));
-            case 'retrieve':
-              add(_Loaded(payload: message['payload']));
-            case 'update':
-              add(_Updated(payload: message['payload']));
-            case 'delete':
-              add(_Deleted(payload: message['payload']));
-          }
+        switch (message['payload']['action']) {
+          case 'create':
+            add(_Created(payload: message['payload']));
+          case 'retrieve':
+            add(_Loaded(payload: message['payload']));
+          case 'update':
+            add(_Updated(payload: message['payload']));
+          case 'delete':
+            add(_Deleted(payload: message['payload']));
         }
       }
     });

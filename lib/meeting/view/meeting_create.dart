@@ -38,14 +38,16 @@ class _MeetingCreateState extends State<MeetingCreate> {
     return BlocListener<MeetingDetailBloc, MeetingDetailState>(
       listener: (context, state) {
         if (state is MeetingCreated) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => state.meeting.isLiveStream
-                  ? LiveStream(meeting: state.meeting)
-                  : MeetingDetail(meeting: state.meeting),
-            ),
-          );
+          context.loaderOverlay.hide();
+          if  (state.meeting.isLiveStream) {
+            navigateToLiveStream(context: context, meeting: state.meeting);
+          }
+          else {
+            navigateToMeetingDetail(context: context, meeting: state.meeting);
+          }
+        }
+        if (state is MeetingDetailFailure) {
+          context.loaderOverlay.hide();
         }
       },
       child: LoaderOverlay(
@@ -140,6 +142,11 @@ class _MeetingCreateState extends State<MeetingCreate> {
           isLiveStream: widget.isLiveStream,
         ),
       );
+      Future.delayed(Duration(seconds: 10), () {
+        if (mounted) {
+          context.loaderOverlay.show();
+        }
+      });
     }
   }
 }

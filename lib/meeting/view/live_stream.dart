@@ -15,6 +15,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+void navigateToLiveStream({
+  required BuildContext context,
+  required Meeting meeting,
+}) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => LiveStream(meeting: meeting)),
+  );
+}
+
 class LiveStream extends StatefulWidget {
   const LiveStream({super.key, required this.meeting});
 
@@ -45,7 +55,7 @@ class _LiveStreamState extends State<LiveStream> {
   }
 
   Future<void> _initAgora() async {
-    if (_meeting.host.id == me.id) {
+    if (_isHost) {
       await [Permission.microphone, Permission.camera].request();
     }
     await AgoraService().joinLiveStream(

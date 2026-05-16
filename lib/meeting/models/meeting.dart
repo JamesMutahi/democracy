@@ -12,6 +12,7 @@ sealed class Meeting with _$Meeting {
   const factory Meeting({
     required final int id,
     required User host,
+    @JsonKey(name: 'co_hosts') required List<User> coHosts,
     required String title,
     required String description,
     required County? county,
@@ -20,6 +21,7 @@ sealed class Meeting with _$Meeting {
     required List<User> speakers,
     required List<User> participants,
     @JsonKey(name: 'participants_count') required int participantsCount,
+    @JsonKey(name: 'muted') required List<int> muted,
     @JsonKey(name: 'is_live_stream') required bool isLiveStream,
     @JsonKey(name: 'is_active') required bool isActive,
     @JsonKey(name: 'start_time') required DateTime? startTime,

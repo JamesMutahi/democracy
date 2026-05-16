@@ -9,6 +9,9 @@ part of 'meeting.dart';
 _Meeting _$MeetingFromJson(Map<String, dynamic> json) => _Meeting(
   id: (json['id'] as num).toInt(),
   host: User.fromJson(json['host'] as Map<String, dynamic>),
+  coHosts: (json['co_hosts'] as List<dynamic>)
+      .map((e) => User.fromJson(e as Map<String, dynamic>))
+      .toList(),
   title: json['title'] as String,
   description: json['description'] as String,
   county: json['county'] == null
@@ -27,6 +30,9 @@ _Meeting _$MeetingFromJson(Map<String, dynamic> json) => _Meeting(
       .map((e) => User.fromJson(e as Map<String, dynamic>))
       .toList(),
   participantsCount: (json['participants_count'] as num).toInt(),
+  muted: (json['muted'] as List<dynamic>)
+      .map((e) => (e as num).toInt())
+      .toList(),
   isLiveStream: json['is_live_stream'] as bool,
   isActive: json['is_active'] as bool,
   startTime: json['start_time'] == null
@@ -40,6 +46,7 @@ _Meeting _$MeetingFromJson(Map<String, dynamic> json) => _Meeting(
 Map<String, dynamic> _$MeetingToJson(_Meeting instance) => <String, dynamic>{
   'id': instance.id,
   'host': instance.host,
+  'co_hosts': instance.coHosts,
   'title': instance.title,
   'description': instance.description,
   'county': instance.county,
@@ -48,6 +55,7 @@ Map<String, dynamic> _$MeetingToJson(_Meeting instance) => <String, dynamic>{
   'speakers': instance.speakers,
   'participants': instance.participants,
   'participants_count': instance.participantsCount,
+  'muted': instance.muted,
   'is_live_stream': instance.isLiveStream,
   'is_active': instance.isActive,
   'start_time': instance.startTime?.toIso8601String(),

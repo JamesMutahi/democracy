@@ -22,7 +22,10 @@ class DraftPost {
   String? syncStatus;
   String? syncType;
 
+  @Property(type: PropertyType.date)
   late DateTime updatedAt;
+
+  @Property(type: PropertyType.date)
   late DateTime createdAt;
 
   // JSON storage fields

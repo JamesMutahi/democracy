@@ -205,12 +205,7 @@ class MeetingBottomSheet extends StatelessWidget {
       listener: (context, state) {
         if (state is MeetingLoaded) {
           Navigator.pop(context);
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MeetingDetail(meeting: state.meeting),
-            ),
-          );
+          navigateToMeetingDetail(context: context, meeting: state.meeting);
         }
         if (state is MeetingDetailFailure) {
           Navigator.pop(context);

@@ -91,94 +91,104 @@ class _LivePostTileState extends State<LivePostTile> {
           );
         }
       },
-      child: Container(
-        height: 220, // Fixed aspect ratio like Twitter
-        decoration: BoxDecoration(
-          color: Colors.black,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            // Live Video Preview
-            if (_isJoined && _hostUid != null && _engine != null)
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: AgoraVideoView(
-                  controller: VideoViewController.remote(
-                    rtcEngine: _engine!,
-                    canvas: VideoCanvas(uid: _hostUid!),
-                    connection: RtcConnection(
-                      channelId: widget.meeting.id.toString(),
+      child: Column(
+        children: [
+          Container(
+            height: 220, // Fixed aspect ratio like Twitter
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                // Live Video Preview
+                if (_isJoined && _hostUid != null && _engine != null)
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: AgoraVideoView(
+                      controller: VideoViewController.remote(
+                        rtcEngine: _engine!,
+                        canvas: VideoCanvas(uid: _hostUid!),
+                        connection: RtcConnection(
+                          channelId: widget.meeting.id.toString(),
+                        ),
+                      ),
+                    ),
+                  ),
+                if (_isPlaying && !_isJoined)
+                  const Center(
+                    child: CircularProgressIndicator(color: Colors.white),
+                  ),
+
+                // LIVE Badge
+                const Positioned(
+                  top: 12,
+                  left: 12,
+                  child: Row(
+                    children: [
+                      Icon(Icons.circle, color: Colors.red, size: 10),
+                      SizedBox(width: 6),
+                      Text(
+                        'LIVE',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Viewer count
+                Positioned(
+                  bottom: 12,
+                  left: 12,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.black54,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      '$_count watching',
+                      style: const TextStyle(color: Colors.white, fontSize: 13),
                     ),
                   ),
                 ),
-              ),
-            if (_isPlaying && !_isJoined)
-              const Center(
-                child: CircularProgressIndicator(color: Colors.white),
-              ),
 
-            // LIVE Badge
-            const Positioned(
-              top: 12,
-              left: 12,
-              child: Row(
-                children: [
-                  Icon(Icons.circle, color: Colors.red, size: 10),
-                  SizedBox(width: 6),
-                  Text(
-                    'LIVE',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
+                // Play icon overlay when not playing
+                if (!_isPlaying)
+                  Center(
+                    child: IconButton(
+                      onPressed: () {
+                        _startPreview();
+                        setState(() {
+                          _isPlaying = true;
+                        });
+                      },
+                      icon: Icon(
+                        Icons.play_circle_outline,
+                        size: 60,
+                        color: Colors.white70,
+                      ),
                     ),
                   ),
-                ],
-              ),
+              ],
             ),
+          ),
 
-            // Viewer count
-            Positioned(
-              bottom: 12,
-              left: 12,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.black54,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  '$_count watching',
-                  style: const TextStyle(color: Colors.white, fontSize: 13),
-                ),
-              ),
-            ),
-
-            // Play icon overlay when not playing
-            if (!_isPlaying)
-              Center(
-                child: IconButton(
-                  onPressed: () {
-                    _startPreview();
-                    setState(() {
-                      _isPlaying = true;
-                    });
-                  },
-                  icon: Icon(
-                    Icons.play_circle_outline,
-                    size: 60,
-                    color: Colors.white70,
-                  ),
-                ),
-              ),
-          ],
-        ),
+        ],
       ),
     );
+  }
+
+  Widget _buildLiveStreamInfo() {
+    // TODO:
+    return Container();
   }
 }
