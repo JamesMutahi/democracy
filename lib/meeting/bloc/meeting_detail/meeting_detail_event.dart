@@ -17,6 +17,8 @@ sealed class MeetingDetailEvent with _$MeetingDetailEvent {
   const factory MeetingDetailEvent.create({
     required String title,
     required String description,
+    DateTime? startTime,
+    required bool isRecorded,
     @Default(false) bool isLiveStream,
   }) = _Create;
   const factory MeetingDetailEvent.join({
@@ -26,8 +28,10 @@ sealed class MeetingDetailEvent with _$MeetingDetailEvent {
   }) = _Join;
   const factory MeetingDetailEvent.retrieve({required Meeting meeting}) =
       _Retrieve;
-  const factory MeetingDetailEvent.subscribe({required Meeting meeting}) =
-      _Subscribe;
+  const factory MeetingDetailEvent.subscribe({
+    required Meeting meeting,
+    required bool isMuted,
+  }) = _Subscribe;
   const factory MeetingDetailEvent.unsubscribe({required Meeting meeting}) =
       _Unsubscribe;
 }

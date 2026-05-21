@@ -36,14 +36,14 @@ class SpeakerDetailBloc extends Bloc<SpeakerDetailEvent, SpeakerDetailState> {
             add(_RequestToSpeakCompleted(payload: message['payload']));
           case 'speaker_request':
             add(SpeakerRequestReceived(payload: message['payload']));
-            break;
-          case 'speaker_decision':
-            add(SpeakerDecisionReceived(payload: message['payload']));
-            break;
           case 'mute':
             add(_MuteStatusReceived(payload: message['payload']));
-          case 'mute_command':
-            add(_MuteCommandReceived(payload: message['payload']));
+          case 'mute_everyone':
+            add(_MutedEveryoneReceived(payload: message['payload']));
+          case 'manage_co_host':
+            add(_ManageCoHostReceived(payload: message['payload']));
+          case 'manage_speaker':
+            add(_ManageSpeakerReceived(payload: message['payload']));
         }
       }
     });
@@ -54,11 +54,15 @@ class SpeakerDetailBloc extends Bloc<SpeakerDetailEvent, SpeakerDetailState> {
     on<RequestToSpeak>(_onRequestToSpeak);
     on<_RequestToSpeakCompleted>(_onRequestToSpeakCompleted);
     on<HandleSpeakerRequest>(_onHandleSpeakerRequest);
-    on<SpeakerDecisionReceived>(_onSpeakerDecisionReceived);
     on<ChangeMuteStatus>(_onChangeMuteStatus);
     on<_MuteStatusReceived>(_onMuteStatusReceived);
     on<MuteSpeaker>(_onMuteSpeaker);
-    on<_MuteCommandReceived>(_onMuteCommandReceived);
+    on<MuteEveryone>(_onMuteEveryone);
+    on<_MutedEveryoneReceived>(_onMutedEveryoneReceived);
+    on<ManageCoHost>(_onManageCoHost);
+    on<_ManageCoHostReceived>(_onManageCoHostReceived);
+    on<ManageSpeaker>(_onManageSpeaker);
+    on<_ManageSpeakerReceived>(_onManageSpeakerReceived);
   }
 
   void _onRequestCreated(
@@ -169,24 +173,6 @@ class SpeakerDetailBloc extends Bloc<SpeakerDetailEvent, SpeakerDetailState> {
     webSocketService.send(message);
   }
 
-  void _onSpeakerDecisionReceived(
-    SpeakerDecisionReceived event,
-    Emitter<SpeakerDetailState> emit,
-  ) {
-    emit(SpeakerDetailLoading());
-    if (event.payload['response_status'] == 200) {
-      emit(
-        SpeakerDecision(
-          userId: event.payload['data']['user_id'],
-          isApproved: event.payload['data']['is_approved'],
-          decidedBy: event.payload['data']['decided_by'],
-        ),
-      );
-    } else {
-      emit(SpeakerDetailFailure(error: event.payload['errors'].toString()));
-    }
-  }
-
   Future<void> _onChangeMuteStatus(
     ChangeMuteStatus event,
     Emitter<SpeakerDetailState> emit,
@@ -237,27 +223,109 @@ class SpeakerDetailBloc extends Bloc<SpeakerDetailEvent, SpeakerDetailState> {
         "action": 'mute_speaker',
         'request_id': requestId,
         'pk': event.meeting.id,
-        "data": {
-          'user_id': event.user.id,
-          'is_muted': event.isMuted,
-        },
+        "data": {'user_id': event.user.id},
       },
     };
     webSocketService.send(message);
   }
 
-  void _onMuteCommandReceived(
-    _MuteCommandReceived event,
+  Future<void> _onMuteEveryone(
+    MuteEveryone event,
+    Emitter<SpeakerDetailState> emit,
+  ) async {
+    emit(SpeakerDetailLoading());
+    if (!webSocketService.isConnected) {
+      emit(SpeakerDetailFailure(error: serverError));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        "action": 'mute_everyone',
+        'request_id': requestId,
+        'pk': event.meeting.id,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  Future<void> _onMutedEveryoneReceived(
+    _MutedEveryoneReceived event,
+    Emitter<SpeakerDetailState> emit,
+  ) async {
+    emit(SpeakerDetailLoading());
+    if (event.payload['response_status'] == 200) {
+      emit(MutedEveryone());
+    } else {
+      emit(SpeakerDetailFailure(error: event.payload['errors'].toString()));
+    }
+  }
+
+  Future<void> _onManageCoHost(
+    ManageCoHost event,
+    Emitter<SpeakerDetailState> emit,
+  ) async {
+    emit(SpeakerDetailLoading());
+    if (!webSocketService.isConnected) {
+      emit(SpeakerDetailFailure(error: serverError));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        "action": 'manage_co_host',
+        'request_id': requestId,
+        'pk': event.meeting.id,
+        'user_id': event.user.id,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  void _onManageCoHostReceived(
+    _ManageCoHostReceived event,
+    Emitter<SpeakerDetailState> emit,
+  ) {
+    emit(SpeakerDetailLoading());
+    if (event.payload['response_status'] == 200) {
+      emit(CoHostStatusChanged(isCoHost: event.payload['data']['is_co_host']));
+    } else {
+      emit(SpeakerDetailFailure(error: event.payload['errors'].toString()));
+    }
+  }
+
+  Future<void> _onManageSpeaker(
+    ManageSpeaker event,
+    Emitter<SpeakerDetailState> emit,
+  ) async {
+    emit(SpeakerDetailLoading());
+    if (!webSocketService.isConnected) {
+      emit(SpeakerDetailFailure(error: serverError));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        "action": 'manage_speaker',
+        'request_id': requestId,
+        'pk': event.meeting.id,
+        'user_id': event.user.id,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  void _onManageSpeakerReceived(
+    _ManageSpeakerReceived event,
     Emitter<SpeakerDetailState> emit,
   ) {
     emit(SpeakerDetailLoading());
     if (event.payload['response_status'] == 200) {
       emit(
-        MuteCommand(
-          userId: event.payload['data']['user_id'],
-          isMuted: event.payload['data']['is_muted'],
-          mutedBy: event.payload['data']['muted_by'],
-        ),
+        SpeakerStatusChanged(isSpeaker: event.payload['data']['is_speaker']),
       );
     } else {
       emit(SpeakerDetailFailure(error: event.payload['errors'].toString()));

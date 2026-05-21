@@ -43,6 +43,11 @@ class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
         communityNoteOf: widget.post,
       ),
     );
+    Future.delayed(Duration(seconds: 10), () {
+      if (mounted) {
+        context.loaderOverlay.hide();
+      }
+    });
   }
 
   void _closePage() {

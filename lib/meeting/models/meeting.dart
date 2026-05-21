@@ -22,9 +22,10 @@ sealed class Meeting with _$Meeting {
     required List<User> participants,
     @JsonKey(name: 'participants_count') required int participantsCount,
     @JsonKey(name: 'muted') required List<int> muted,
+    @JsonKey(name: 'is_recorded') required bool isRecorded,
     @JsonKey(name: 'is_live_stream') required bool isLiveStream,
     @JsonKey(name: 'is_active') required bool isActive,
-    @JsonKey(name: 'start_time') required DateTime? startTime,
+    @JsonKey(name: 'start_time') required DateTime startTime,
     @JsonKey(name: 'end_time') required DateTime? endTime,
   }) = _Meeting;
 

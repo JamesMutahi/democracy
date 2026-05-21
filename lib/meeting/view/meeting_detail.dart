@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/app/bloc/repository/api/api_repository.dart';
 import 'package:democracy/app/bloc/services/agora_service.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart'
@@ -7,8 +6,6 @@ import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
-import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
-import 'package:democracy/app/shared/widgets/no_results.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
@@ -20,20 +17,15 @@ import 'package:democracy/meeting/bloc/participants/participants_bloc.dart';
 import 'package:democracy/meeting/bloc/speaker_detail/speaker_detail_bloc.dart';
 import 'package:democracy/meeting/bloc/speaker_requests/speaker_requests_bloc.dart';
 import 'package:democracy/meeting/models/meeting.dart';
-import 'package:democracy/meeting/models/speaker_request.dart';
+import 'package:democracy/meeting/view/widgets/participant/tile.dart';
+import 'package:democracy/meeting/view/widgets/participant/tabs/index.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/user/view/utils/profile_navigator.dart';
-import 'package:democracy/user/view/widgets/profile_image.dart';
-import 'package:democracy/user/view/widgets/profile_name.dart';
-import 'package:democracy/user/view/widgets/user_tile.dart';
-import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 void navigateToMeetingDetail({
   required BuildContext context,
@@ -104,7 +96,10 @@ class _MeetingDetailState extends State<MeetingDetail> {
             onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
               setState(() => _isJoined = true);
               context.read<MeetingDetailBloc>().add(
-                MeetingDetailEvent.subscribe(meeting: widget.meeting),
+                MeetingDetailEvent.subscribe(
+                  meeting: widget.meeting,
+                  isMuted: _isHost || _isCoHost || _isSpeaker,
+                ),
               );
             },
             onRtcStats: (connection, stats) {
@@ -190,13 +185,16 @@ class _MeetingDetailState extends State<MeetingDetail> {
           listener: (context, state) {
             if (state.status == WebsocketStatus.connected) {
               context.read<MeetingDetailBloc>().add(
-                MeetingDetailEvent.subscribe(meeting: widget.meeting),
+                MeetingDetailEvent.subscribe(
+                  meeting: widget.meeting,
+                  isMuted: _isMuted,
+                ),
               );
             }
           },
         ),
         BlocListener<MeetingDetailBloc, MeetingDetailState>(
-          listener: (context, state) {
+          listener: (context, state) async {
             switch (state) {
               case MeetingLoaded(:final meeting):
                 if (meeting.id == _meeting.id) {
@@ -207,12 +205,53 @@ class _MeetingDetailState extends State<MeetingDetail> {
                 }
               case MeetingUpdated(:final meeting):
                 if (meeting.id == _meeting.id) {
+                  final isCoHost = state.meeting.coHosts.any(
+                    (c) => c.id == me.id,
+                  );
+                  final isSpeaker = state.meeting.speakers.any(
+                    (s) => s.id == me.id,
+                  );
+                  final isNewCoHost =
+                      (isCoHost == true) && (_isCoHost == false);
+                  final isNewSpeaker =
+                      (isSpeaker == true) && (_isSpeaker == false);
+                  final isBroadcaster = isCoHost || isSpeaker;
+                  if (isBroadcaster != (_isCoHost || _isSpeaker)) {
+                    await _engine.setClientRole(
+                      role: isBroadcaster
+                          ? ClientRoleType.clientRoleBroadcaster
+                          : ClientRoleType.clientRoleAudience,
+                    );
+                  }
+                  final isMuted = state.meeting.muted.any((m) => m == me.id);
+                  if (isMuted && !_isMuted) {
+                    await _engine.muteLocalAudioStream(isMuted);
+                  }
                   setState(() => _meeting = state.meeting);
+                  if (isNewCoHost || isNewSpeaker) {
+                    String message = 'You are now a co-host';
+                    if (isNewSpeaker) message = 'You are now a speaker';
+                    if (context.mounted) {
+                      final snackBar = getSnackBar(
+                        context: context,
+                        message: message,
+                        status: SnackBarStatus.info,
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }
+                  }
                 }
               case MeetingDeleted(:final meetingId):
                 if (meetingId == _meeting.id) {
                   setState(() => isDeleted = true);
                 }
+              case MeetingDetailFailure(:final error):
+                final snackBar = getSnackBar(
+                  context: context,
+                  message: error,
+                  status: SnackBarStatus.failure,
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
           },
         ),
@@ -244,19 +283,15 @@ class _MeetingDetailState extends State<MeetingDetail> {
                   );
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 }
-              case SpeakerDecision(:final userId):
-                if (me.id == userId) {
+              case SpeakerRequestUpdated(:final request):
+                if (request.user.id == me.id && request.isApproved != null) {
                   setState(() => _hasRequestedToSpeak = false);
                   await _engine.setClientRole(
-                    role: state.isApproved
+                    role: request.isApproved!
                         ? ClientRoleType.clientRoleBroadcaster
                         : ClientRoleType.clientRoleAudience,
                   );
                 }
-              case MuteStatusChanged(:final isMuted):
-                await _engine.muteLocalAudioStream(isMuted);
-              case MuteCommand(:final userId, :final isMuted):
-                await _engine.muteRemoteAudioStream(uid: userId, mute: isMuted);
             }
           },
         ),
@@ -303,9 +338,24 @@ class _MeetingDetailState extends State<MeetingDetail> {
                     ],
                   ),
                 ),
-          bottomNavigationBar: !_isJoined
-              ? SizedBox.shrink()
-              : _buildControls(),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.miniStartFloat,
+          floatingActionButton: _isJoined && (_isHost || _isCoHost)
+              ? FilledButton.tonal(
+                  style: FilledButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  onPressed: () {
+                    context.read<SpeakerDetailBloc>().add(
+                      MuteEveryone(meeting: _meeting),
+                    );
+                  },
+                  child: Text('Mute everyone'),
+                )
+              : null,
+          bottomNavigationBar: _buildControls(),
         ),
       ),
     );
@@ -326,220 +376,155 @@ class _MeetingDetailState extends State<MeetingDetail> {
         bool isSpeaker = _meeting.speakers.any((s) => s.id == user.id);
         bool isMuted = _muted.contains(user.id);
         bool isSpeaking = _activeSpeaker == user.id && !isMuted;
-        return _ParticipantTile(
+        return ParticipantTile(
           key: ValueKey(user.id),
-          isSpeaking: isSpeaking,
+          me: me,
           user: user,
-          meeting: _meeting,
-          isMuted: isMuted,
-          isHost: isHost || isCoHost,
-          isSpeaker: isSpeaker,
           engine: _engine,
+          meeting: _meeting,
+          canManageCoHosts: _isHost,
+          canManageSpeakers: _isHost || _isCoHost,
+          isMuted: isMuted,
+          isHost: isHost,
+          isCoHost: isCoHost,
+          isSpeaker: isSpeaker,
+          isSpeaking: isSpeaking,
         );
       }, childCount: _meeting.participants.length),
     );
   }
 
   Widget _buildControls() {
+    bool isBroadcaster = _isHost || _isCoHost || _isSpeaker;
     return BottomAppBar(
       height: 100,
       padding: EdgeInsets.symmetric(horizontal: 15),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 70,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+      child: !_isJoined
+          ? SizedBox.shrink()
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                IconButton.filledTonal(
-                  color: _isMuted ? Colors.red : null,
-                  iconSize: 30,
-                  icon: Icon(
-                    _isHost || _isCoHost || _isSpeaker
-                        ? _isMuted
-                              ? Symbols.mic_off_rounded
-                              : Symbols.mic_rounded
-                        : Symbols.mic_off_rounded,
-                  ),
-                  onPressed: _isHost || _isCoHost || _isSpeaker
-                      ? () async {
-                          context.read<SpeakerDetailBloc>().add(
-                            ChangeMuteStatus(
-                              meeting: _meeting,
-                              isMuted: !_isMuted,
-                            ),
-                          );
-                        }
-                      : _hasRequestedToSpeak
-                      ? null
-                      : () {
-                          context.read<SpeakerDetailBloc>().add(
-                            RequestToSpeak(meeting: _meeting),
-                          );
-                        },
-                ),
-                SizedBox(height: 5),
-                Text(
-                  _isHost || _isCoHost || _isSpeaker
-                      ? _isMuted
-                            ? 'Mic is off'
-                            : 'Mic is on'
-                      : _hasRequestedToSpeak
-                      ? 'Requested'
-                      : 'Request',
-                  style: Theme.of(context).textTheme.labelMedium,
-                ),
-              ],
-            ),
-          ),
-          Row(
-            children: [
-              IconButton.filledTonal(
-                iconSize: 20,
-                icon: Icon(Symbols.people_rounded),
-                onPressed: () {
-                  final bloc = context.read<SpeakerDetailBloc>();
-                  showModalBottomSheet<void>(
-                    context: context,
-                    isScrollControlled: true,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
-                      ),
-                    ),
-                    builder: (_) => BlocProvider.value(
-                      value: bloc,
-                      child: MultiBlocProvider(
-                        providers: [
-                          BlocProvider(
-                            create: (context) => ParticipantsBloc(
-                              webSocketService: context
-                                  .read<WebSocketService>(),
-                            ),
-                          ),
-                          BlocProvider(
-                            create: (context) => ListenersBloc(
-                              webSocketService: context
-                                  .read<WebSocketService>(),
-                            ),
-                          ),
-                        ],
-                        child: _ParticipantsBottomSheet(
-                          meeting: _meeting,
-                          isHost: _isHost || _isCoHost,
+                SizedBox(
+                  width: 70,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton.filledTonal(
+                        padding: EdgeInsets.all(10),
+                        color: isBroadcaster
+                            ? _isMuted
+                                  ? Colors.red
+                                  : Colors.green
+                            : Colors.amber,
+                        iconSize: 35,
+                        icon: Icon(
+                          isBroadcaster
+                              ? _isMuted
+                                    ? Symbols.mic_off_rounded
+                                    : Symbols.mic_rounded
+                              : Symbols.mic_rounded,
+                          fill: isBroadcaster
+                              ? _isMuted
+                                    ? 0
+                                    : 1
+                              : 0,
                         ),
+                        onPressed: isBroadcaster
+                            ? () async {
+                                context.read<SpeakerDetailBloc>().add(
+                                  ChangeMuteStatus(
+                                    meeting: _meeting,
+                                    isMuted: !_isMuted,
+                                  ),
+                                );
+                              }
+                            : _hasRequestedToSpeak
+                            ? null
+                            : () {
+                                context.read<SpeakerDetailBloc>().add(
+                                  RequestToSpeak(meeting: _meeting),
+                                );
+                              },
                       ),
-                    ),
-                  );
-                },
-              ),
-              SizedBox(width: 10),
-              IconButton.filledTonal(
-                iconSize: 20,
-                icon: Icon(Symbols.share_rounded),
-                onPressed: () {
-                  showModalBottomSheet<void>(
-                    context: context,
-                    isScrollControlled: true,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(15),
-                        topRight: Radius.circular(15),
+                      SizedBox(height: 5),
+                      Text(
+                        isBroadcaster
+                            ? _isMuted
+                                  ? 'Mic is off'
+                                  : 'Mic is on'
+                            : _hasRequestedToSpeak
+                            ? 'Requested'
+                            : 'Request',
+                        style: Theme.of(context).textTheme.labelMedium,
                       ),
-                    ),
-                    builder: (_) => ShareBottomSheet(meeting: _meeting),
-                  );
-                },
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ParticipantTile extends StatelessWidget {
-  const _ParticipantTile({
-    super.key,
-    required this.isSpeaking,
-    required this.user,
-    required this.meeting,
-    required this.isMuted,
-    required this.isHost,
-    required this.isSpeaker,
-    required this.engine,
-  });
-
-  final bool isSpeaking;
-  final User user;
-  final Meeting meeting;
-  final bool isMuted;
-  final bool isHost;
-  final bool isSpeaker;
-  final RtcEngine engine;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        showModalBottomSheet<void>(
-          context: context,
-          isScrollControlled: true,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(15),
-              topRight: Radius.circular(15),
-            ),
-          ),
-          builder: (_) => _Profile(
-            meeting: meeting,
-            user: user,
-            engine: engine,
-            isMuted: isMuted,
-          ),
-        );
-      },
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CircleAvatar(
-              radius: 42,
-              backgroundColor: isSpeaking ? Colors.blue : Colors.transparent,
-              child: ProfileImage(user: user, radius: 40),
-            ),
-            SizedBox(height: 5),
-            ProfileName(user: user),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (isHost)
-                  Container(
-                    margin: EdgeInsets.only(right: 2),
-                    child: Icon(
-                      isMuted ? Icons.mic_off_rounded : Icons.mic_rounded,
-                      color: isMuted ? Colors.red : Colors.blue,
-                      size: 17,
-                    ),
+                    ],
                   ),
-                Text(
-                  isHost
-                      ? "Host"
-                      : isSpeaker
-                      ? "Speaker"
-                      : "Listener",
-                  style: TextStyle(color: Theme.of(context).disabledColor),
+                ),
+                Row(
+                  children: [
+                    IconButton.filledTonal(
+                      iconSize: 20,
+                      icon: Icon(Symbols.people_rounded),
+                      onPressed: () {
+                        final bloc = context.read<SpeakerDetailBloc>();
+                        showModalBottomSheet<void>(
+                          context: context,
+                          isScrollControlled: true,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                            ),
+                          ),
+                          builder: (_) => BlocProvider.value(
+                            value: bloc,
+                            child: MultiBlocProvider(
+                              providers: [
+                                BlocProvider(
+                                  create: (context) => ParticipantsBloc(
+                                    webSocketService: context
+                                        .read<WebSocketService>(),
+                                  ),
+                                ),
+                                BlocProvider(
+                                  create: (context) => ListenersBloc(
+                                    webSocketService: context
+                                        .read<WebSocketService>(),
+                                  ),
+                                ),
+                              ],
+                              child: _ParticipantsBottomSheet(
+                                meeting: _meeting,
+                                isHost: _isHost || _isCoHost,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    SizedBox(width: 10),
+                    IconButton.filledTonal(
+                      iconSize: 20,
+                      icon: Icon(Symbols.share_rounded),
+                      onPressed: () {
+                        showModalBottomSheet<void>(
+                          context: context,
+                          isScrollControlled: true,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(15),
+                              topRight: Radius.circular(15),
+                            ),
+                          ),
+                          builder: (_) => ShareBottomSheet(meeting: _meeting),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -563,163 +548,6 @@ class ExitMeetingDialog extends StatelessWidget {
       onButton2Pressed: () {
         Navigator.pop(context);
       },
-    );
-  }
-}
-
-class _Profile extends StatelessWidget {
-  const _Profile({
-    required this.meeting,
-    required this.user,
-    required this.engine,
-    required this.isMuted,
-  });
-
-  final Meeting meeting;
-  final User user;
-  final RtcEngine engine;
-  final bool isMuted;
-
-  @override
-  Widget build(BuildContext context) {
-    double coverPhotoHeight = MediaQuery.of(context).size.height / 7;
-    double profilePicHeight = MediaQuery.of(context).size.height / 10;
-
-    return SafeArea(
-      child: Stack(
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                height: coverPhotoHeight,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: CachedNetworkImageProvider(
-                      user.coverPhoto,
-                      cacheKey: 'cover ${user.id}',
-                    ),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 100),
-                decoration: BoxDecoration(
-                  border: Border(
-                    top: BorderSide(
-                      color: Theme.of(context).disabledColor.withAlpha(30),
-                    ),
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    ListTile(
-                      onTap: () {
-                        context.read<ChatDetailBloc>().add(
-                          ChatDetailEvent.create(user: user),
-                        );
-                      },
-                      leading: Icon(Symbols.mail_rounded),
-                      title: Text('Send Direct Message'),
-                    ),
-                    ListTile(
-                      onTap: () async {
-                        //   TODO:
-                      },
-                      leading: Icon(Symbols.close_rounded),
-                      title: Text('Remove from speakers'),
-                    ),
-                    ListTile(
-                      onTap: () {
-                        context.read<SpeakerDetailBloc>().add(
-                          MuteSpeaker(
-                            meeting: meeting,
-                            user: user,
-                            isMuted: true,
-                          ),
-                        );
-                      },
-                      leading: Icon(
-                        isMuted ? Symbols.mic_off_rounded : Symbols.mic_rounded,
-                      ),
-                      title: Text(
-                        isMuted ? 'Unmute their mic' : 'Mute their mic',
-                      ),
-                    ),
-                    ListTile(
-                      onTap: () {
-                        //   TODO: Know when blocked
-                        context.read<UserDetailBloc>().add(
-                          UserDetailEvent.block(user: user),
-                        );
-                      },
-                      leading: Icon(Symbols.block_rounded, color: Colors.red),
-                      title: Text('Block', style: TextStyle(color: Colors.red)),
-                    ),
-                    ListTile(
-                      onTap: () {
-                        //   TODO:
-                      },
-                      leading: Icon(Symbols.report_rounded, color: Colors.red),
-                      title: Text(
-                        'Report',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          Positioned(
-            top: profilePicHeight,
-            left: 10,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CircleAvatar(
-                  radius: 45,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  child: CircleAvatar(
-                    radius: 42,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: CachedNetworkImageProvider(
-                            user.image,
-                            cacheKey: 'profile ${user.id}',
-                          ),
-                        ),
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 5),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        user.name,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      Text(
-                        '@${user.username}',
-                        style: TextStyle(
-                          color: Theme.of(context).disabledColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -760,10 +588,10 @@ class _ParticipantsBottomSheet extends StatelessWidget {
               Expanded(
                 child: TabBarView(
                   children: [
-                    _AllTab(meeting: meeting),
-                    if (isHost) _RequestsTab(meeting: meeting),
-                    _SpeakersTab(meeting: meeting),
-                    _ListenersTab(meeting: meeting),
+                    AllTab(meeting: meeting),
+                    if (isHost) RequestsTab(meeting: meeting),
+                    SpeakersTab(meeting: meeting),
+                    ListenersTab(meeting: meeting),
                   ],
                 ),
               ),
@@ -771,397 +599,6 @@ class _ParticipantsBottomSheet extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _AllTab extends StatefulWidget {
-  const _AllTab({required this.meeting});
-
-  final Meeting meeting;
-
-  @override
-  State<_AllTab> createState() => _AllTabState();
-}
-
-class _AllTabState extends State<_AllTab> with AutomaticKeepAliveClientMixin {
-  final RefreshController _refreshController = RefreshController();
-
-  @override
-  void initState() {
-    context.read<ParticipantsBloc>().add(
-      ParticipantsEvent.get(meeting: widget.meeting),
-    );
-    super.initState();
-  }
-
-  @override
-  bool get wantKeepAlive => true;
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return BlocBuilder<ParticipantsBloc, ParticipantsState>(
-      builder: (context, state) {
-        final users = state.users.toList();
-
-        if (state.status == ParticipantsStatus.success) {
-          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-            _refreshController.refreshCompleted();
-          }
-          if (_refreshController.footerStatus == LoadStatus.loading) {
-            _refreshController.loadComplete();
-          }
-        }
-
-        if (state.status == ParticipantsStatus.failure) {
-          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-            _refreshController.refreshFailed();
-          }
-          if (_refreshController.footerStatus == LoadStatus.loading) {
-            _refreshController.loadFailed();
-          }
-        }
-        return UsersListView(
-          users: users,
-          loading: state.status == ParticipantsStatus.initial,
-          failure: state.users.isNotEmpty
-              ? false
-              : state.status == ParticipantsStatus.failure,
-          refreshController: _refreshController,
-          enablePullDown: true,
-          enablePullUp: state.hasNext,
-          showProfileButtons: true,
-          onUsersUpdated: (users) {
-            context.read<ParticipantsBloc>().add(
-              ParticipantsEvent.update(users: users),
-            );
-          },
-          onUserTap: (user) {
-            navigateToProfilePage(context: context, user: user);
-          },
-          onRefresh: () {
-            context.read<ParticipantsBloc>().add(
-              ParticipantsEvent.get(meeting: widget.meeting),
-            );
-          },
-          onLoading: () {
-            context.read<ParticipantsBloc>().add(
-              ParticipantsEvent.get(
-                meeting: widget.meeting,
-                lastUser: users.last,
-              ),
-            );
-          },
-          onFailure: () {
-            context.read<ParticipantsBloc>().add(
-              ParticipantsEvent.get(meeting: widget.meeting),
-            );
-          },
-        );
-      },
-    );
-  }
-}
-
-class _RequestsTab extends StatefulWidget {
-  const _RequestsTab({required this.meeting});
-
-  final Meeting meeting;
-
-  @override
-  State<_RequestsTab> createState() => _RequestsTabState();
-}
-
-class _RequestsTabState extends State<_RequestsTab>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  void initState() {
-    _getRequests();
-    super.initState();
-  }
-
-  void _getRequests() {
-    context.read<SpeakerRequestsBloc>().add(
-      SpeakerRequestsEvent.get(meeting: widget.meeting),
-    );
-  }
-
-  @override
-  bool get wantKeepAlive => true;
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return BlocListener<SpeakerDetailBloc, SpeakerDetailState>(
-      listener: (context, state) {
-        if (state is SpeakerRequestCreated) {
-          context.read<SpeakerRequestsBloc>().add(
-            SpeakerRequestsEvent.add(request: state.request),
-          );
-        }
-        if (state is SpeakerRequestUpdated) {
-          context.read<SpeakerRequestsBloc>().add(
-            SpeakerRequestsEvent.update(request: state.request),
-          );
-        }
-        if (state is SpeakerRequestDeleted) {
-          context.read<SpeakerRequestsBloc>().add(
-            SpeakerRequestsEvent.remove(requestId: state.requestId),
-          );
-        }
-      },
-      child: BlocListener<WebsocketBloc, WebsocketState>(
-        listener: (context, state) {
-          if (state.status == WebsocketStatus.connected) {
-            _getRequests();
-          }
-        },
-        child: BlocBuilder<SpeakerRequestsBloc, SpeakerRequestsState>(
-          builder: (context, state) {
-            final requests = state.requests.toList();
-
-            if (state.status == SpeakerRequestsStatus.initial ||
-                (state.status == SpeakerRequestsStatus.loading &&
-                    requests.isEmpty)) {
-              return const BottomLoader();
-            }
-
-            if (state.status == SpeakerRequestsStatus.failure) {
-              return FailureRetryButton(
-                onPressed: () => context.read<SpeakerRequestsBloc>().add(
-                  SpeakerRequestsEvent.get(meeting: widget.meeting),
-                ),
-              );
-            }
-
-            return requests.isEmpty
-                ? NoResults(text: 'No requests')
-                : ListView.builder(
-                    itemCount: requests.length,
-                    itemBuilder: (context, index) {
-                      SpeakerRequest request = requests[index];
-                      return ListTile(
-                        key: ValueKey(request),
-                        leading: ProfileImage(user: request.user),
-                        title: Text(
-                          request.user.name,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        subtitle: Text(
-                          '@${request.user.username}',
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: Theme.of(context).disabledColor,
-                          ),
-                        ),
-                        trailing: request.isApproved == null
-                            ? Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton.outlined(
-                                    onPressed: () {
-                                      _handleRequest(request, true);
-                                    },
-                                    icon: Icon(Icons.check),
-                                    color: Colors.green,
-                                    style: IconButton.styleFrom(
-                                      side: BorderSide(color: Colors.green),
-                                    ),
-                                  ),
-                                  IconButton.outlined(
-                                    onPressed: () {
-                                      _handleRequest(request, false);
-                                    },
-                                    icon: Icon(Icons.close_rounded),
-                                    color: Colors.red,
-                                    style: IconButton.styleFrom(
-                                      side: const BorderSide(color: Colors.red),
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : request.isApproved!
-                            ? Text(
-                                'Approved',
-                                style: TextStyle(color: Colors.blue),
-                              )
-                            : Text(
-                                'Declined',
-                                style: TextStyle(color: Colors.red),
-                              ),
-                      );
-                    },
-                  );
-          },
-        ),
-      ),
-    );
-  }
-
-  void _handleRequest(SpeakerRequest request, bool isApproved) {
-    context.read<SpeakerDetailBloc>().add(
-      HandleSpeakerRequest(request: request, isApproved: isApproved),
-    );
-  }
-}
-
-class _SpeakersTab extends StatefulWidget {
-  const _SpeakersTab({required this.meeting});
-
-  final Meeting meeting;
-
-  @override
-  State<_SpeakersTab> createState() => _SpeakersTabState();
-}
-
-class _SpeakersTabState extends State<_SpeakersTab>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    final me = context.read<AuthBloc>().state.user!;
-    return CustomScrollView(
-      slivers: [
-        SliverToBoxAdapter(
-          child: UserTile(
-            user: widget.meeting.host,
-            me: me,
-            showProfileButtons: true,
-            selectedUsers: [],
-            onTap: () {
-              navigateToProfilePage(
-                context: context,
-                user: widget.meeting.host,
-              );
-            },
-          ),
-        ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate((
-            BuildContext context,
-            int index,
-          ) {
-            User user = widget.meeting.coHosts[index];
-            return UserTile(
-              user: user,
-              me: me,
-              showProfileButtons: true,
-              selectedUsers: [],
-              onTap: () {
-                navigateToProfilePage(context: context, user: user);
-              },
-            );
-          }, childCount: widget.meeting.coHosts.length),
-        ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate((
-            BuildContext context,
-            int index,
-          ) {
-            User user = widget.meeting.speakers[index];
-            return UserTile(
-              user: user,
-              me: me,
-              showProfileButtons: true,
-              selectedUsers: [],
-              onTap: () {
-                navigateToProfilePage(context: context, user: user);
-              },
-            );
-          }, childCount: widget.meeting.speakers.length),
-        ),
-      ],
-    );
-  }
-}
-
-class _ListenersTab extends StatefulWidget {
-  const _ListenersTab({required this.meeting});
-
-  final Meeting meeting;
-
-  @override
-  State<_ListenersTab> createState() => _ListenersTabState();
-}
-
-class _ListenersTabState extends State<_ListenersTab>
-    with AutomaticKeepAliveClientMixin {
-  final RefreshController _refreshController = RefreshController();
-
-  @override
-  void initState() {
-    context.read<ListenersBloc>().add(
-      ListenersEvent.get(meeting: widget.meeting),
-    );
-    super.initState();
-  }
-
-  @override
-  bool get wantKeepAlive => true;
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return BlocBuilder<ListenersBloc, ListenersState>(
-      builder: (context, state) {
-        final users = state.users.toList();
-
-        if (state.status == ListenersStatus.success) {
-          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-            _refreshController.refreshCompleted();
-          }
-          if (_refreshController.footerStatus == LoadStatus.loading) {
-            _refreshController.loadComplete();
-          }
-        }
-
-        if (state.status == ListenersStatus.failure) {
-          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-            _refreshController.refreshFailed();
-          }
-          if (_refreshController.footerStatus == LoadStatus.loading) {
-            _refreshController.loadFailed();
-          }
-        }
-        return UsersListView(
-          users: users,
-          loading: state.status == ListenersStatus.initial,
-          failure: state.users.isNotEmpty
-              ? false
-              : state.status == ListenersStatus.failure,
-          refreshController: _refreshController,
-          enablePullDown: true,
-          enablePullUp: state.hasNext,
-          emptyListText: 'No listeners',
-          showProfileButtons: true,
-          onUsersUpdated: (users) {
-            context.read<ListenersBloc>().add(
-              ListenersEvent.update(users: users),
-            );
-          },
-          onUserTap: (user) {
-            navigateToProfilePage(context: context, user: user);
-          },
-          onRefresh: () {
-            context.read<ListenersBloc>().add(
-              ListenersEvent.get(meeting: widget.meeting),
-            );
-          },
-          onLoading: () {
-            context.read<ListenersBloc>().add(
-              ListenersEvent.get(meeting: widget.meeting, lastUser: users.last),
-            );
-          },
-          onFailure: () {
-            context.read<ListenersBloc>().add(
-              ListenersEvent.get(meeting: widget.meeting),
-            );
-          },
-        );
-      },
     );
   }
 }

@@ -33,11 +33,10 @@ _Meeting _$MeetingFromJson(Map<String, dynamic> json) => _Meeting(
   muted: (json['muted'] as List<dynamic>)
       .map((e) => (e as num).toInt())
       .toList(),
+  isRecorded: json['is_recorded'] as bool,
   isLiveStream: json['is_live_stream'] as bool,
   isActive: json['is_active'] as bool,
-  startTime: json['start_time'] == null
-      ? null
-      : DateTime.parse(json['start_time'] as String),
+  startTime: DateTime.parse(json['start_time'] as String),
   endTime: json['end_time'] == null
       ? null
       : DateTime.parse(json['end_time'] as String),
@@ -56,8 +55,9 @@ Map<String, dynamic> _$MeetingToJson(_Meeting instance) => <String, dynamic>{
   'participants': instance.participants,
   'participants_count': instance.participantsCount,
   'muted': instance.muted,
+  'is_recorded': instance.isRecorded,
   'is_live_stream': instance.isLiveStream,
   'is_active': instance.isActive,
-  'start_time': instance.startTime?.toIso8601String(),
+  'start_time': instance.startTime.toIso8601String(),
   'end_time': instance.endTime?.toIso8601String(),
 };

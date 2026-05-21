@@ -55,7 +55,7 @@ extension SpeakerDetailEventPatterns on SpeakerDetailEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _RequestCreated value)?  requestCreated,TResult Function( _RequestLoaded value)?  requestLoaded,TResult Function( _RequestUpdated value)?  requestUpdated,TResult Function( _RequestDeleted value)?  requestDeleted,TResult Function( RequestToSpeak value)?  requestToSpeak,TResult Function( _RequestToSpeakCompleted value)?  requestToSpeakReceived,TResult Function( HandleSpeakerRequest value)?  handleSpeakerRequest,TResult Function( SpeakerRequestReceived value)?  speakerRequestReceived,TResult Function( SpeakerDecisionReceived value)?  speakerDecisionReceived,TResult Function( ChangeMuteStatus value)?  changeMuteStatus,TResult Function( _MuteStatusReceived value)?  muteStatusReceived,TResult Function( MuteSpeaker value)?  muteSpeaker,TResult Function( _MuteCommandReceived value)?  muteCommandReceived,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _RequestCreated value)?  requestCreated,TResult Function( _RequestLoaded value)?  requestLoaded,TResult Function( _RequestUpdated value)?  requestUpdated,TResult Function( _RequestDeleted value)?  requestDeleted,TResult Function( RequestToSpeak value)?  requestToSpeak,TResult Function( _RequestToSpeakCompleted value)?  requestToSpeakReceived,TResult Function( HandleSpeakerRequest value)?  handleSpeakerRequest,TResult Function( SpeakerRequestReceived value)?  speakerRequestReceived,TResult Function( ChangeMuteStatus value)?  changeMuteStatus,TResult Function( _MuteStatusReceived value)?  muteStatusReceived,TResult Function( MuteSpeaker value)?  muteSpeaker,TResult Function( MuteEveryone value)?  muteEveryone,TResult Function( _MutedEveryoneReceived value)?  mutedEveryoneReceived,TResult Function( ManageCoHost value)?  manageCoHost,TResult Function( _ManageCoHostReceived value)?  manageCoHostReceived,TResult Function( ManageSpeaker value)?  manageSpeaker,TResult Function( _ManageSpeakerReceived value)?  manageSpeakerReceived,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _RequestCreated() when requestCreated != null:
@@ -66,12 +66,16 @@ return requestDeleted(_that);case RequestToSpeak() when requestToSpeak != null:
 return requestToSpeak(_that);case _RequestToSpeakCompleted() when requestToSpeakReceived != null:
 return requestToSpeakReceived(_that);case HandleSpeakerRequest() when handleSpeakerRequest != null:
 return handleSpeakerRequest(_that);case SpeakerRequestReceived() when speakerRequestReceived != null:
-return speakerRequestReceived(_that);case SpeakerDecisionReceived() when speakerDecisionReceived != null:
-return speakerDecisionReceived(_that);case ChangeMuteStatus() when changeMuteStatus != null:
+return speakerRequestReceived(_that);case ChangeMuteStatus() when changeMuteStatus != null:
 return changeMuteStatus(_that);case _MuteStatusReceived() when muteStatusReceived != null:
 return muteStatusReceived(_that);case MuteSpeaker() when muteSpeaker != null:
-return muteSpeaker(_that);case _MuteCommandReceived() when muteCommandReceived != null:
-return muteCommandReceived(_that);case _:
+return muteSpeaker(_that);case MuteEveryone() when muteEveryone != null:
+return muteEveryone(_that);case _MutedEveryoneReceived() when mutedEveryoneReceived != null:
+return mutedEveryoneReceived(_that);case ManageCoHost() when manageCoHost != null:
+return manageCoHost(_that);case _ManageCoHostReceived() when manageCoHostReceived != null:
+return manageCoHostReceived(_that);case ManageSpeaker() when manageSpeaker != null:
+return manageSpeaker(_that);case _ManageSpeakerReceived() when manageSpeakerReceived != null:
+return manageSpeakerReceived(_that);case _:
   return orElse();
 
 }
@@ -89,7 +93,7 @@ return muteCommandReceived(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _RequestCreated value)  requestCreated,required TResult Function( _RequestLoaded value)  requestLoaded,required TResult Function( _RequestUpdated value)  requestUpdated,required TResult Function( _RequestDeleted value)  requestDeleted,required TResult Function( RequestToSpeak value)  requestToSpeak,required TResult Function( _RequestToSpeakCompleted value)  requestToSpeakReceived,required TResult Function( HandleSpeakerRequest value)  handleSpeakerRequest,required TResult Function( SpeakerRequestReceived value)  speakerRequestReceived,required TResult Function( SpeakerDecisionReceived value)  speakerDecisionReceived,required TResult Function( ChangeMuteStatus value)  changeMuteStatus,required TResult Function( _MuteStatusReceived value)  muteStatusReceived,required TResult Function( MuteSpeaker value)  muteSpeaker,required TResult Function( _MuteCommandReceived value)  muteCommandReceived,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _RequestCreated value)  requestCreated,required TResult Function( _RequestLoaded value)  requestLoaded,required TResult Function( _RequestUpdated value)  requestUpdated,required TResult Function( _RequestDeleted value)  requestDeleted,required TResult Function( RequestToSpeak value)  requestToSpeak,required TResult Function( _RequestToSpeakCompleted value)  requestToSpeakReceived,required TResult Function( HandleSpeakerRequest value)  handleSpeakerRequest,required TResult Function( SpeakerRequestReceived value)  speakerRequestReceived,required TResult Function( ChangeMuteStatus value)  changeMuteStatus,required TResult Function( _MuteStatusReceived value)  muteStatusReceived,required TResult Function( MuteSpeaker value)  muteSpeaker,required TResult Function( MuteEveryone value)  muteEveryone,required TResult Function( _MutedEveryoneReceived value)  mutedEveryoneReceived,required TResult Function( ManageCoHost value)  manageCoHost,required TResult Function( _ManageCoHostReceived value)  manageCoHostReceived,required TResult Function( ManageSpeaker value)  manageSpeaker,required TResult Function( _ManageSpeakerReceived value)  manageSpeakerReceived,}){
 final _that = this;
 switch (_that) {
 case _RequestCreated():
@@ -100,12 +104,16 @@ return requestDeleted(_that);case RequestToSpeak():
 return requestToSpeak(_that);case _RequestToSpeakCompleted():
 return requestToSpeakReceived(_that);case HandleSpeakerRequest():
 return handleSpeakerRequest(_that);case SpeakerRequestReceived():
-return speakerRequestReceived(_that);case SpeakerDecisionReceived():
-return speakerDecisionReceived(_that);case ChangeMuteStatus():
+return speakerRequestReceived(_that);case ChangeMuteStatus():
 return changeMuteStatus(_that);case _MuteStatusReceived():
 return muteStatusReceived(_that);case MuteSpeaker():
-return muteSpeaker(_that);case _MuteCommandReceived():
-return muteCommandReceived(_that);}
+return muteSpeaker(_that);case MuteEveryone():
+return muteEveryone(_that);case _MutedEveryoneReceived():
+return mutedEveryoneReceived(_that);case ManageCoHost():
+return manageCoHost(_that);case _ManageCoHostReceived():
+return manageCoHostReceived(_that);case ManageSpeaker():
+return manageSpeaker(_that);case _ManageSpeakerReceived():
+return manageSpeakerReceived(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -119,7 +127,7 @@ return muteCommandReceived(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _RequestCreated value)?  requestCreated,TResult? Function( _RequestLoaded value)?  requestLoaded,TResult? Function( _RequestUpdated value)?  requestUpdated,TResult? Function( _RequestDeleted value)?  requestDeleted,TResult? Function( RequestToSpeak value)?  requestToSpeak,TResult? Function( _RequestToSpeakCompleted value)?  requestToSpeakReceived,TResult? Function( HandleSpeakerRequest value)?  handleSpeakerRequest,TResult? Function( SpeakerRequestReceived value)?  speakerRequestReceived,TResult? Function( SpeakerDecisionReceived value)?  speakerDecisionReceived,TResult? Function( ChangeMuteStatus value)?  changeMuteStatus,TResult? Function( _MuteStatusReceived value)?  muteStatusReceived,TResult? Function( MuteSpeaker value)?  muteSpeaker,TResult? Function( _MuteCommandReceived value)?  muteCommandReceived,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _RequestCreated value)?  requestCreated,TResult? Function( _RequestLoaded value)?  requestLoaded,TResult? Function( _RequestUpdated value)?  requestUpdated,TResult? Function( _RequestDeleted value)?  requestDeleted,TResult? Function( RequestToSpeak value)?  requestToSpeak,TResult? Function( _RequestToSpeakCompleted value)?  requestToSpeakReceived,TResult? Function( HandleSpeakerRequest value)?  handleSpeakerRequest,TResult? Function( SpeakerRequestReceived value)?  speakerRequestReceived,TResult? Function( ChangeMuteStatus value)?  changeMuteStatus,TResult? Function( _MuteStatusReceived value)?  muteStatusReceived,TResult? Function( MuteSpeaker value)?  muteSpeaker,TResult? Function( MuteEveryone value)?  muteEveryone,TResult? Function( _MutedEveryoneReceived value)?  mutedEveryoneReceived,TResult? Function( ManageCoHost value)?  manageCoHost,TResult? Function( _ManageCoHostReceived value)?  manageCoHostReceived,TResult? Function( ManageSpeaker value)?  manageSpeaker,TResult? Function( _ManageSpeakerReceived value)?  manageSpeakerReceived,}){
 final _that = this;
 switch (_that) {
 case _RequestCreated() when requestCreated != null:
@@ -130,12 +138,16 @@ return requestDeleted(_that);case RequestToSpeak() when requestToSpeak != null:
 return requestToSpeak(_that);case _RequestToSpeakCompleted() when requestToSpeakReceived != null:
 return requestToSpeakReceived(_that);case HandleSpeakerRequest() when handleSpeakerRequest != null:
 return handleSpeakerRequest(_that);case SpeakerRequestReceived() when speakerRequestReceived != null:
-return speakerRequestReceived(_that);case SpeakerDecisionReceived() when speakerDecisionReceived != null:
-return speakerDecisionReceived(_that);case ChangeMuteStatus() when changeMuteStatus != null:
+return speakerRequestReceived(_that);case ChangeMuteStatus() when changeMuteStatus != null:
 return changeMuteStatus(_that);case _MuteStatusReceived() when muteStatusReceived != null:
 return muteStatusReceived(_that);case MuteSpeaker() when muteSpeaker != null:
-return muteSpeaker(_that);case _MuteCommandReceived() when muteCommandReceived != null:
-return muteCommandReceived(_that);case _:
+return muteSpeaker(_that);case MuteEveryone() when muteEveryone != null:
+return muteEveryone(_that);case _MutedEveryoneReceived() when mutedEveryoneReceived != null:
+return mutedEveryoneReceived(_that);case ManageCoHost() when manageCoHost != null:
+return manageCoHost(_that);case _ManageCoHostReceived() when manageCoHostReceived != null:
+return manageCoHostReceived(_that);case ManageSpeaker() when manageSpeaker != null:
+return manageSpeaker(_that);case _ManageSpeakerReceived() when manageSpeakerReceived != null:
+return manageSpeakerReceived(_that);case _:
   return null;
 
 }
@@ -152,7 +164,7 @@ return muteCommandReceived(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  requestCreated,TResult Function( Map<String, dynamic> payload)?  requestLoaded,TResult Function( Map<String, dynamic> payload)?  requestUpdated,TResult Function( Map<String, dynamic> payload)?  requestDeleted,TResult Function( Meeting meeting)?  requestToSpeak,TResult Function( Map<String, dynamic> payload)?  requestToSpeakReceived,TResult Function( SpeakerRequest request,  bool isApproved)?  handleSpeakerRequest,TResult Function( Map<String, dynamic> payload)?  speakerRequestReceived,TResult Function( Map<String, dynamic> payload)?  speakerDecisionReceived,TResult Function( Meeting meeting,  bool isMuted)?  changeMuteStatus,TResult Function( Map<String, dynamic> payload)?  muteStatusReceived,TResult Function( Meeting meeting,  User user,  bool isMuted)?  muteSpeaker,TResult Function( Map<String, dynamic> payload)?  muteCommandReceived,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  requestCreated,TResult Function( Map<String, dynamic> payload)?  requestLoaded,TResult Function( Map<String, dynamic> payload)?  requestUpdated,TResult Function( Map<String, dynamic> payload)?  requestDeleted,TResult Function( Meeting meeting)?  requestToSpeak,TResult Function( Map<String, dynamic> payload)?  requestToSpeakReceived,TResult Function( SpeakerRequest request,  bool isApproved)?  handleSpeakerRequest,TResult Function( Map<String, dynamic> payload)?  speakerRequestReceived,TResult Function( Meeting meeting,  bool isMuted)?  changeMuteStatus,TResult Function( Map<String, dynamic> payload)?  muteStatusReceived,TResult Function( Meeting meeting,  User user)?  muteSpeaker,TResult Function( Meeting meeting)?  muteEveryone,TResult Function( Map<String, dynamic> payload)?  mutedEveryoneReceived,TResult Function( Meeting meeting,  User user)?  manageCoHost,TResult Function( Map<String, dynamic> payload)?  manageCoHostReceived,TResult Function( Meeting meeting,  User user)?  manageSpeaker,TResult Function( Map<String, dynamic> payload)?  manageSpeakerReceived,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RequestCreated() when requestCreated != null:
 return requestCreated(_that.payload);case _RequestLoaded() when requestLoaded != null:
@@ -162,12 +174,16 @@ return requestDeleted(_that.payload);case RequestToSpeak() when requestToSpeak !
 return requestToSpeak(_that.meeting);case _RequestToSpeakCompleted() when requestToSpeakReceived != null:
 return requestToSpeakReceived(_that.payload);case HandleSpeakerRequest() when handleSpeakerRequest != null:
 return handleSpeakerRequest(_that.request,_that.isApproved);case SpeakerRequestReceived() when speakerRequestReceived != null:
-return speakerRequestReceived(_that.payload);case SpeakerDecisionReceived() when speakerDecisionReceived != null:
-return speakerDecisionReceived(_that.payload);case ChangeMuteStatus() when changeMuteStatus != null:
+return speakerRequestReceived(_that.payload);case ChangeMuteStatus() when changeMuteStatus != null:
 return changeMuteStatus(_that.meeting,_that.isMuted);case _MuteStatusReceived() when muteStatusReceived != null:
 return muteStatusReceived(_that.payload);case MuteSpeaker() when muteSpeaker != null:
-return muteSpeaker(_that.meeting,_that.user,_that.isMuted);case _MuteCommandReceived() when muteCommandReceived != null:
-return muteCommandReceived(_that.payload);case _:
+return muteSpeaker(_that.meeting,_that.user);case MuteEveryone() when muteEveryone != null:
+return muteEveryone(_that.meeting);case _MutedEveryoneReceived() when mutedEveryoneReceived != null:
+return mutedEveryoneReceived(_that.payload);case ManageCoHost() when manageCoHost != null:
+return manageCoHost(_that.meeting,_that.user);case _ManageCoHostReceived() when manageCoHostReceived != null:
+return manageCoHostReceived(_that.payload);case ManageSpeaker() when manageSpeaker != null:
+return manageSpeaker(_that.meeting,_that.user);case _ManageSpeakerReceived() when manageSpeakerReceived != null:
+return manageSpeakerReceived(_that.payload);case _:
   return orElse();
 
 }
@@ -185,7 +201,7 @@ return muteCommandReceived(_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  requestCreated,required TResult Function( Map<String, dynamic> payload)  requestLoaded,required TResult Function( Map<String, dynamic> payload)  requestUpdated,required TResult Function( Map<String, dynamic> payload)  requestDeleted,required TResult Function( Meeting meeting)  requestToSpeak,required TResult Function( Map<String, dynamic> payload)  requestToSpeakReceived,required TResult Function( SpeakerRequest request,  bool isApproved)  handleSpeakerRequest,required TResult Function( Map<String, dynamic> payload)  speakerRequestReceived,required TResult Function( Map<String, dynamic> payload)  speakerDecisionReceived,required TResult Function( Meeting meeting,  bool isMuted)  changeMuteStatus,required TResult Function( Map<String, dynamic> payload)  muteStatusReceived,required TResult Function( Meeting meeting,  User user,  bool isMuted)  muteSpeaker,required TResult Function( Map<String, dynamic> payload)  muteCommandReceived,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  requestCreated,required TResult Function( Map<String, dynamic> payload)  requestLoaded,required TResult Function( Map<String, dynamic> payload)  requestUpdated,required TResult Function( Map<String, dynamic> payload)  requestDeleted,required TResult Function( Meeting meeting)  requestToSpeak,required TResult Function( Map<String, dynamic> payload)  requestToSpeakReceived,required TResult Function( SpeakerRequest request,  bool isApproved)  handleSpeakerRequest,required TResult Function( Map<String, dynamic> payload)  speakerRequestReceived,required TResult Function( Meeting meeting,  bool isMuted)  changeMuteStatus,required TResult Function( Map<String, dynamic> payload)  muteStatusReceived,required TResult Function( Meeting meeting,  User user)  muteSpeaker,required TResult Function( Meeting meeting)  muteEveryone,required TResult Function( Map<String, dynamic> payload)  mutedEveryoneReceived,required TResult Function( Meeting meeting,  User user)  manageCoHost,required TResult Function( Map<String, dynamic> payload)  manageCoHostReceived,required TResult Function( Meeting meeting,  User user)  manageSpeaker,required TResult Function( Map<String, dynamic> payload)  manageSpeakerReceived,}) {final _that = this;
 switch (_that) {
 case _RequestCreated():
 return requestCreated(_that.payload);case _RequestLoaded():
@@ -195,12 +211,16 @@ return requestDeleted(_that.payload);case RequestToSpeak():
 return requestToSpeak(_that.meeting);case _RequestToSpeakCompleted():
 return requestToSpeakReceived(_that.payload);case HandleSpeakerRequest():
 return handleSpeakerRequest(_that.request,_that.isApproved);case SpeakerRequestReceived():
-return speakerRequestReceived(_that.payload);case SpeakerDecisionReceived():
-return speakerDecisionReceived(_that.payload);case ChangeMuteStatus():
+return speakerRequestReceived(_that.payload);case ChangeMuteStatus():
 return changeMuteStatus(_that.meeting,_that.isMuted);case _MuteStatusReceived():
 return muteStatusReceived(_that.payload);case MuteSpeaker():
-return muteSpeaker(_that.meeting,_that.user,_that.isMuted);case _MuteCommandReceived():
-return muteCommandReceived(_that.payload);}
+return muteSpeaker(_that.meeting,_that.user);case MuteEveryone():
+return muteEveryone(_that.meeting);case _MutedEveryoneReceived():
+return mutedEveryoneReceived(_that.payload);case ManageCoHost():
+return manageCoHost(_that.meeting,_that.user);case _ManageCoHostReceived():
+return manageCoHostReceived(_that.payload);case ManageSpeaker():
+return manageSpeaker(_that.meeting,_that.user);case _ManageSpeakerReceived():
+return manageSpeakerReceived(_that.payload);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -214,7 +234,7 @@ return muteCommandReceived(_that.payload);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  requestCreated,TResult? Function( Map<String, dynamic> payload)?  requestLoaded,TResult? Function( Map<String, dynamic> payload)?  requestUpdated,TResult? Function( Map<String, dynamic> payload)?  requestDeleted,TResult? Function( Meeting meeting)?  requestToSpeak,TResult? Function( Map<String, dynamic> payload)?  requestToSpeakReceived,TResult? Function( SpeakerRequest request,  bool isApproved)?  handleSpeakerRequest,TResult? Function( Map<String, dynamic> payload)?  speakerRequestReceived,TResult? Function( Map<String, dynamic> payload)?  speakerDecisionReceived,TResult? Function( Meeting meeting,  bool isMuted)?  changeMuteStatus,TResult? Function( Map<String, dynamic> payload)?  muteStatusReceived,TResult? Function( Meeting meeting,  User user,  bool isMuted)?  muteSpeaker,TResult? Function( Map<String, dynamic> payload)?  muteCommandReceived,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  requestCreated,TResult? Function( Map<String, dynamic> payload)?  requestLoaded,TResult? Function( Map<String, dynamic> payload)?  requestUpdated,TResult? Function( Map<String, dynamic> payload)?  requestDeleted,TResult? Function( Meeting meeting)?  requestToSpeak,TResult? Function( Map<String, dynamic> payload)?  requestToSpeakReceived,TResult? Function( SpeakerRequest request,  bool isApproved)?  handleSpeakerRequest,TResult? Function( Map<String, dynamic> payload)?  speakerRequestReceived,TResult? Function( Meeting meeting,  bool isMuted)?  changeMuteStatus,TResult? Function( Map<String, dynamic> payload)?  muteStatusReceived,TResult? Function( Meeting meeting,  User user)?  muteSpeaker,TResult? Function( Meeting meeting)?  muteEveryone,TResult? Function( Map<String, dynamic> payload)?  mutedEveryoneReceived,TResult? Function( Meeting meeting,  User user)?  manageCoHost,TResult? Function( Map<String, dynamic> payload)?  manageCoHostReceived,TResult? Function( Meeting meeting,  User user)?  manageSpeaker,TResult? Function( Map<String, dynamic> payload)?  manageSpeakerReceived,}) {final _that = this;
 switch (_that) {
 case _RequestCreated() when requestCreated != null:
 return requestCreated(_that.payload);case _RequestLoaded() when requestLoaded != null:
@@ -224,12 +244,16 @@ return requestDeleted(_that.payload);case RequestToSpeak() when requestToSpeak !
 return requestToSpeak(_that.meeting);case _RequestToSpeakCompleted() when requestToSpeakReceived != null:
 return requestToSpeakReceived(_that.payload);case HandleSpeakerRequest() when handleSpeakerRequest != null:
 return handleSpeakerRequest(_that.request,_that.isApproved);case SpeakerRequestReceived() when speakerRequestReceived != null:
-return speakerRequestReceived(_that.payload);case SpeakerDecisionReceived() when speakerDecisionReceived != null:
-return speakerDecisionReceived(_that.payload);case ChangeMuteStatus() when changeMuteStatus != null:
+return speakerRequestReceived(_that.payload);case ChangeMuteStatus() when changeMuteStatus != null:
 return changeMuteStatus(_that.meeting,_that.isMuted);case _MuteStatusReceived() when muteStatusReceived != null:
 return muteStatusReceived(_that.payload);case MuteSpeaker() when muteSpeaker != null:
-return muteSpeaker(_that.meeting,_that.user,_that.isMuted);case _MuteCommandReceived() when muteCommandReceived != null:
-return muteCommandReceived(_that.payload);case _:
+return muteSpeaker(_that.meeting,_that.user);case MuteEveryone() when muteEveryone != null:
+return muteEveryone(_that.meeting);case _MutedEveryoneReceived() when mutedEveryoneReceived != null:
+return mutedEveryoneReceived(_that.payload);case ManageCoHost() when manageCoHost != null:
+return manageCoHost(_that.meeting,_that.user);case _ManageCoHostReceived() when manageCoHostReceived != null:
+return manageCoHostReceived(_that.payload);case ManageSpeaker() when manageSpeaker != null:
+return manageSpeaker(_that.meeting,_that.user);case _ManageSpeakerReceived() when manageSpeakerReceived != null:
+return manageSpeakerReceived(_that.payload);case _:
   return null;
 
 }
@@ -824,78 +848,6 @@ as Map<String, dynamic>,
 /// @nodoc
 
 
-class SpeakerDecisionReceived implements SpeakerDetailEvent {
-  const SpeakerDecisionReceived({required final  Map<String, dynamic> payload}): _payload = payload;
-  
-
- final  Map<String, dynamic> _payload;
- Map<String, dynamic> get payload {
-  if (_payload is EqualUnmodifiableMapView) return _payload;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_payload);
-}
-
-
-/// Create a copy of SpeakerDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$SpeakerDecisionReceivedCopyWith<SpeakerDecisionReceived> get copyWith => _$SpeakerDecisionReceivedCopyWithImpl<SpeakerDecisionReceived>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SpeakerDecisionReceived&&const DeepCollectionEquality().equals(other._payload, _payload));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
-
-@override
-String toString() {
-  return 'SpeakerDetailEvent.speakerDecisionReceived(payload: $payload)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $SpeakerDecisionReceivedCopyWith<$Res> implements $SpeakerDetailEventCopyWith<$Res> {
-  factory $SpeakerDecisionReceivedCopyWith(SpeakerDecisionReceived value, $Res Function(SpeakerDecisionReceived) _then) = _$SpeakerDecisionReceivedCopyWithImpl;
-@useResult
-$Res call({
- Map<String, dynamic> payload
-});
-
-
-
-
-}
-/// @nodoc
-class _$SpeakerDecisionReceivedCopyWithImpl<$Res>
-    implements $SpeakerDecisionReceivedCopyWith<$Res> {
-  _$SpeakerDecisionReceivedCopyWithImpl(this._self, this._then);
-
-  final SpeakerDecisionReceived _self;
-  final $Res Function(SpeakerDecisionReceived) _then;
-
-/// Create a copy of SpeakerDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
-  return _then(SpeakerDecisionReceived(
-payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
 class ChangeMuteStatus implements SpeakerDetailEvent {
   const ChangeMuteStatus({required this.meeting, required this.isMuted});
   
@@ -1046,12 +998,11 @@ as Map<String, dynamic>,
 
 
 class MuteSpeaker implements SpeakerDetailEvent {
-  const MuteSpeaker({required this.meeting, required this.user, required this.isMuted});
+  const MuteSpeaker({required this.meeting, required this.user});
   
 
  final  Meeting meeting;
  final  User user;
- final  bool isMuted;
 
 /// Create a copy of SpeakerDetailEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -1063,16 +1014,16 @@ $MuteSpeakerCopyWith<MuteSpeaker> get copyWith => _$MuteSpeakerCopyWithImpl<Mute
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MuteSpeaker&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.user, user) || other.user == user)&&(identical(other.isMuted, isMuted) || other.isMuted == isMuted));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MuteSpeaker&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.user, user) || other.user == user));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meeting,user,isMuted);
+int get hashCode => Object.hash(runtimeType,meeting,user);
 
 @override
 String toString() {
-  return 'SpeakerDetailEvent.muteSpeaker(meeting: $meeting, user: $user, isMuted: $isMuted)';
+  return 'SpeakerDetailEvent.muteSpeaker(meeting: $meeting, user: $user)';
 }
 
 
@@ -1083,7 +1034,7 @@ abstract mixin class $MuteSpeakerCopyWith<$Res> implements $SpeakerDetailEventCo
   factory $MuteSpeakerCopyWith(MuteSpeaker value, $Res Function(MuteSpeaker) _then) = _$MuteSpeakerCopyWithImpl;
 @useResult
 $Res call({
- Meeting meeting, User user, bool isMuted
+ Meeting meeting, User user
 });
 
 
@@ -1100,12 +1051,11 @@ class _$MuteSpeakerCopyWithImpl<$Res>
 
 /// Create a copy of SpeakerDetailEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? meeting = null,Object? user = null,Object? isMuted = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? meeting = null,Object? user = null,}) {
   return _then(MuteSpeaker(
 meeting: null == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
 as Meeting,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as User,isMuted: null == isMuted ? _self.isMuted : isMuted // ignore: cast_nullable_to_non_nullable
-as bool,
+as User,
   ));
 }
 
@@ -1133,8 +1083,83 @@ $UserCopyWith<$Res> get user {
 /// @nodoc
 
 
-class _MuteCommandReceived implements SpeakerDetailEvent {
-  const _MuteCommandReceived({required final  Map<String, dynamic> payload}): _payload = payload;
+class MuteEveryone implements SpeakerDetailEvent {
+  const MuteEveryone({required this.meeting});
+  
+
+ final  Meeting meeting;
+
+/// Create a copy of SpeakerDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MuteEveryoneCopyWith<MuteEveryone> get copyWith => _$MuteEveryoneCopyWithImpl<MuteEveryone>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MuteEveryone&&(identical(other.meeting, meeting) || other.meeting == meeting));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,meeting);
+
+@override
+String toString() {
+  return 'SpeakerDetailEvent.muteEveryone(meeting: $meeting)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $MuteEveryoneCopyWith<$Res> implements $SpeakerDetailEventCopyWith<$Res> {
+  factory $MuteEveryoneCopyWith(MuteEveryone value, $Res Function(MuteEveryone) _then) = _$MuteEveryoneCopyWithImpl;
+@useResult
+$Res call({
+ Meeting meeting
+});
+
+
+$MeetingCopyWith<$Res> get meeting;
+
+}
+/// @nodoc
+class _$MuteEveryoneCopyWithImpl<$Res>
+    implements $MuteEveryoneCopyWith<$Res> {
+  _$MuteEveryoneCopyWithImpl(this._self, this._then);
+
+  final MuteEveryone _self;
+  final $Res Function(MuteEveryone) _then;
+
+/// Create a copy of SpeakerDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? meeting = null,}) {
+  return _then(MuteEveryone(
+meeting: null == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
+as Meeting,
+  ));
+}
+
+/// Create a copy of SpeakerDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MeetingCopyWith<$Res> get meeting {
+  
+  return $MeetingCopyWith<$Res>(_self.meeting, (value) {
+    return _then(_self.copyWith(meeting: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _MutedEveryoneReceived implements SpeakerDetailEvent {
+  const _MutedEveryoneReceived({required final  Map<String, dynamic> payload}): _payload = payload;
   
 
  final  Map<String, dynamic> _payload;
@@ -1149,13 +1174,13 @@ class _MuteCommandReceived implements SpeakerDetailEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$MuteCommandReceivedCopyWith<_MuteCommandReceived> get copyWith => __$MuteCommandReceivedCopyWithImpl<_MuteCommandReceived>(this, _$identity);
+_$MutedEveryoneReceivedCopyWith<_MutedEveryoneReceived> get copyWith => __$MutedEveryoneReceivedCopyWithImpl<_MutedEveryoneReceived>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MuteCommandReceived&&const DeepCollectionEquality().equals(other._payload, _payload));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MutedEveryoneReceived&&const DeepCollectionEquality().equals(other._payload, _payload));
 }
 
 
@@ -1164,15 +1189,15 @@ int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(
 
 @override
 String toString() {
-  return 'SpeakerDetailEvent.muteCommandReceived(payload: $payload)';
+  return 'SpeakerDetailEvent.mutedEveryoneReceived(payload: $payload)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$MuteCommandReceivedCopyWith<$Res> implements $SpeakerDetailEventCopyWith<$Res> {
-  factory _$MuteCommandReceivedCopyWith(_MuteCommandReceived value, $Res Function(_MuteCommandReceived) _then) = __$MuteCommandReceivedCopyWithImpl;
+abstract mixin class _$MutedEveryoneReceivedCopyWith<$Res> implements $SpeakerDetailEventCopyWith<$Res> {
+  factory _$MutedEveryoneReceivedCopyWith(_MutedEveryoneReceived value, $Res Function(_MutedEveryoneReceived) _then) = __$MutedEveryoneReceivedCopyWithImpl;
 @useResult
 $Res call({
  Map<String, dynamic> payload
@@ -1183,17 +1208,333 @@ $Res call({
 
 }
 /// @nodoc
-class __$MuteCommandReceivedCopyWithImpl<$Res>
-    implements _$MuteCommandReceivedCopyWith<$Res> {
-  __$MuteCommandReceivedCopyWithImpl(this._self, this._then);
+class __$MutedEveryoneReceivedCopyWithImpl<$Res>
+    implements _$MutedEveryoneReceivedCopyWith<$Res> {
+  __$MutedEveryoneReceivedCopyWithImpl(this._self, this._then);
 
-  final _MuteCommandReceived _self;
-  final $Res Function(_MuteCommandReceived) _then;
+  final _MutedEveryoneReceived _self;
+  final $Res Function(_MutedEveryoneReceived) _then;
 
 /// Create a copy of SpeakerDetailEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
-  return _then(_MuteCommandReceived(
+  return _then(_MutedEveryoneReceived(
+payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class ManageCoHost implements SpeakerDetailEvent {
+  const ManageCoHost({required this.meeting, required this.user});
+  
+
+ final  Meeting meeting;
+ final  User user;
+
+/// Create a copy of SpeakerDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ManageCoHostCopyWith<ManageCoHost> get copyWith => _$ManageCoHostCopyWithImpl<ManageCoHost>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ManageCoHost&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.user, user) || other.user == user));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,meeting,user);
+
+@override
+String toString() {
+  return 'SpeakerDetailEvent.manageCoHost(meeting: $meeting, user: $user)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ManageCoHostCopyWith<$Res> implements $SpeakerDetailEventCopyWith<$Res> {
+  factory $ManageCoHostCopyWith(ManageCoHost value, $Res Function(ManageCoHost) _then) = _$ManageCoHostCopyWithImpl;
+@useResult
+$Res call({
+ Meeting meeting, User user
+});
+
+
+$MeetingCopyWith<$Res> get meeting;$UserCopyWith<$Res> get user;
+
+}
+/// @nodoc
+class _$ManageCoHostCopyWithImpl<$Res>
+    implements $ManageCoHostCopyWith<$Res> {
+  _$ManageCoHostCopyWithImpl(this._self, this._then);
+
+  final ManageCoHost _self;
+  final $Res Function(ManageCoHost) _then;
+
+/// Create a copy of SpeakerDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? meeting = null,Object? user = null,}) {
+  return _then(ManageCoHost(
+meeting: null == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
+as Meeting,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as User,
+  ));
+}
+
+/// Create a copy of SpeakerDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MeetingCopyWith<$Res> get meeting {
+  
+  return $MeetingCopyWith<$Res>(_self.meeting, (value) {
+    return _then(_self.copyWith(meeting: value));
+  });
+}/// Create a copy of SpeakerDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$UserCopyWith<$Res> get user {
+  
+  return $UserCopyWith<$Res>(_self.user, (value) {
+    return _then(_self.copyWith(user: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _ManageCoHostReceived implements SpeakerDetailEvent {
+  const _ManageCoHostReceived({required final  Map<String, dynamic> payload}): _payload = payload;
+  
+
+ final  Map<String, dynamic> _payload;
+ Map<String, dynamic> get payload {
+  if (_payload is EqualUnmodifiableMapView) return _payload;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_payload);
+}
+
+
+/// Create a copy of SpeakerDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ManageCoHostReceivedCopyWith<_ManageCoHostReceived> get copyWith => __$ManageCoHostReceivedCopyWithImpl<_ManageCoHostReceived>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ManageCoHostReceived&&const DeepCollectionEquality().equals(other._payload, _payload));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
+
+@override
+String toString() {
+  return 'SpeakerDetailEvent.manageCoHostReceived(payload: $payload)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ManageCoHostReceivedCopyWith<$Res> implements $SpeakerDetailEventCopyWith<$Res> {
+  factory _$ManageCoHostReceivedCopyWith(_ManageCoHostReceived value, $Res Function(_ManageCoHostReceived) _then) = __$ManageCoHostReceivedCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, dynamic> payload
+});
+
+
+
+
+}
+/// @nodoc
+class __$ManageCoHostReceivedCopyWithImpl<$Res>
+    implements _$ManageCoHostReceivedCopyWith<$Res> {
+  __$ManageCoHostReceivedCopyWithImpl(this._self, this._then);
+
+  final _ManageCoHostReceived _self;
+  final $Res Function(_ManageCoHostReceived) _then;
+
+/// Create a copy of SpeakerDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
+  return _then(_ManageCoHostReceived(
+payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class ManageSpeaker implements SpeakerDetailEvent {
+  const ManageSpeaker({required this.meeting, required this.user});
+  
+
+ final  Meeting meeting;
+ final  User user;
+
+/// Create a copy of SpeakerDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ManageSpeakerCopyWith<ManageSpeaker> get copyWith => _$ManageSpeakerCopyWithImpl<ManageSpeaker>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ManageSpeaker&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.user, user) || other.user == user));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,meeting,user);
+
+@override
+String toString() {
+  return 'SpeakerDetailEvent.manageSpeaker(meeting: $meeting, user: $user)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ManageSpeakerCopyWith<$Res> implements $SpeakerDetailEventCopyWith<$Res> {
+  factory $ManageSpeakerCopyWith(ManageSpeaker value, $Res Function(ManageSpeaker) _then) = _$ManageSpeakerCopyWithImpl;
+@useResult
+$Res call({
+ Meeting meeting, User user
+});
+
+
+$MeetingCopyWith<$Res> get meeting;$UserCopyWith<$Res> get user;
+
+}
+/// @nodoc
+class _$ManageSpeakerCopyWithImpl<$Res>
+    implements $ManageSpeakerCopyWith<$Res> {
+  _$ManageSpeakerCopyWithImpl(this._self, this._then);
+
+  final ManageSpeaker _self;
+  final $Res Function(ManageSpeaker) _then;
+
+/// Create a copy of SpeakerDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? meeting = null,Object? user = null,}) {
+  return _then(ManageSpeaker(
+meeting: null == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
+as Meeting,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as User,
+  ));
+}
+
+/// Create a copy of SpeakerDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MeetingCopyWith<$Res> get meeting {
+  
+  return $MeetingCopyWith<$Res>(_self.meeting, (value) {
+    return _then(_self.copyWith(meeting: value));
+  });
+}/// Create a copy of SpeakerDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$UserCopyWith<$Res> get user {
+  
+  return $UserCopyWith<$Res>(_self.user, (value) {
+    return _then(_self.copyWith(user: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _ManageSpeakerReceived implements SpeakerDetailEvent {
+  const _ManageSpeakerReceived({required final  Map<String, dynamic> payload}): _payload = payload;
+  
+
+ final  Map<String, dynamic> _payload;
+ Map<String, dynamic> get payload {
+  if (_payload is EqualUnmodifiableMapView) return _payload;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_payload);
+}
+
+
+/// Create a copy of SpeakerDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ManageSpeakerReceivedCopyWith<_ManageSpeakerReceived> get copyWith => __$ManageSpeakerReceivedCopyWithImpl<_ManageSpeakerReceived>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ManageSpeakerReceived&&const DeepCollectionEquality().equals(other._payload, _payload));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
+
+@override
+String toString() {
+  return 'SpeakerDetailEvent.manageSpeakerReceived(payload: $payload)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ManageSpeakerReceivedCopyWith<$Res> implements $SpeakerDetailEventCopyWith<$Res> {
+  factory _$ManageSpeakerReceivedCopyWith(_ManageSpeakerReceived value, $Res Function(_ManageSpeakerReceived) _then) = __$ManageSpeakerReceivedCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, dynamic> payload
+});
+
+
+
+
+}
+/// @nodoc
+class __$ManageSpeakerReceivedCopyWithImpl<$Res>
+    implements _$ManageSpeakerReceivedCopyWith<$Res> {
+  __$ManageSpeakerReceivedCopyWithImpl(this._self, this._then);
+
+  final _ManageSpeakerReceived _self;
+  final $Res Function(_ManageSpeakerReceived) _then;
+
+/// Create a copy of SpeakerDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
+  return _then(_ManageSpeakerReceived(
 payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>,
   ));
@@ -1246,7 +1587,7 @@ extension SpeakerDetailStatePatterns on SpeakerDetailState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( SpeakerDetailInitial value)?  initial,TResult Function( SpeakerDetailLoading value)?  loading,TResult Function( SpeakerRequestCreated value)?  requestCreated,TResult Function( SpeakerRequestLoaded value)?  requestLoaded,TResult Function( SpeakerRequestUpdated value)?  updated,TResult Function( SpeakerRequestDeleted value)?  deleted,TResult Function( RequestedToSpeak value)?  requestedToSpeak,TResult Function( SpeakerDecision value)?  speakerDecision,TResult Function( MuteStatusChanged value)?  muteStatusChanged,TResult Function( MuteCommand value)?  muteCommand,TResult Function( SpeakerDetailFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( SpeakerDetailInitial value)?  initial,TResult Function( SpeakerDetailLoading value)?  loading,TResult Function( SpeakerRequestCreated value)?  requestCreated,TResult Function( SpeakerRequestLoaded value)?  requestLoaded,TResult Function( SpeakerRequestUpdated value)?  updated,TResult Function( SpeakerRequestDeleted value)?  deleted,TResult Function( RequestedToSpeak value)?  requestedToSpeak,TResult Function( MuteStatusChanged value)?  muteStatusChanged,TResult Function( MutedEveryone value)?  mutedEveryone,TResult Function( CoHostStatusChanged value)?  coHostStatusChanged,TResult Function( SpeakerStatusChanged value)?  speakerStatusChanged,TResult Function( SpeakerDetailFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case SpeakerDetailInitial() when initial != null:
@@ -1256,10 +1597,11 @@ return requestCreated(_that);case SpeakerRequestLoaded() when requestLoaded != n
 return requestLoaded(_that);case SpeakerRequestUpdated() when updated != null:
 return updated(_that);case SpeakerRequestDeleted() when deleted != null:
 return deleted(_that);case RequestedToSpeak() when requestedToSpeak != null:
-return requestedToSpeak(_that);case SpeakerDecision() when speakerDecision != null:
-return speakerDecision(_that);case MuteStatusChanged() when muteStatusChanged != null:
-return muteStatusChanged(_that);case MuteCommand() when muteCommand != null:
-return muteCommand(_that);case SpeakerDetailFailure() when failure != null:
+return requestedToSpeak(_that);case MuteStatusChanged() when muteStatusChanged != null:
+return muteStatusChanged(_that);case MutedEveryone() when mutedEveryone != null:
+return mutedEveryone(_that);case CoHostStatusChanged() when coHostStatusChanged != null:
+return coHostStatusChanged(_that);case SpeakerStatusChanged() when speakerStatusChanged != null:
+return speakerStatusChanged(_that);case SpeakerDetailFailure() when failure != null:
 return failure(_that);case _:
   return orElse();
 
@@ -1278,7 +1620,7 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( SpeakerDetailInitial value)  initial,required TResult Function( SpeakerDetailLoading value)  loading,required TResult Function( SpeakerRequestCreated value)  requestCreated,required TResult Function( SpeakerRequestLoaded value)  requestLoaded,required TResult Function( SpeakerRequestUpdated value)  updated,required TResult Function( SpeakerRequestDeleted value)  deleted,required TResult Function( RequestedToSpeak value)  requestedToSpeak,required TResult Function( SpeakerDecision value)  speakerDecision,required TResult Function( MuteStatusChanged value)  muteStatusChanged,required TResult Function( MuteCommand value)  muteCommand,required TResult Function( SpeakerDetailFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( SpeakerDetailInitial value)  initial,required TResult Function( SpeakerDetailLoading value)  loading,required TResult Function( SpeakerRequestCreated value)  requestCreated,required TResult Function( SpeakerRequestLoaded value)  requestLoaded,required TResult Function( SpeakerRequestUpdated value)  updated,required TResult Function( SpeakerRequestDeleted value)  deleted,required TResult Function( RequestedToSpeak value)  requestedToSpeak,required TResult Function( MuteStatusChanged value)  muteStatusChanged,required TResult Function( MutedEveryone value)  mutedEveryone,required TResult Function( CoHostStatusChanged value)  coHostStatusChanged,required TResult Function( SpeakerStatusChanged value)  speakerStatusChanged,required TResult Function( SpeakerDetailFailure value)  failure,}){
 final _that = this;
 switch (_that) {
 case SpeakerDetailInitial():
@@ -1288,10 +1630,11 @@ return requestCreated(_that);case SpeakerRequestLoaded():
 return requestLoaded(_that);case SpeakerRequestUpdated():
 return updated(_that);case SpeakerRequestDeleted():
 return deleted(_that);case RequestedToSpeak():
-return requestedToSpeak(_that);case SpeakerDecision():
-return speakerDecision(_that);case MuteStatusChanged():
-return muteStatusChanged(_that);case MuteCommand():
-return muteCommand(_that);case SpeakerDetailFailure():
+return requestedToSpeak(_that);case MuteStatusChanged():
+return muteStatusChanged(_that);case MutedEveryone():
+return mutedEveryone(_that);case CoHostStatusChanged():
+return coHostStatusChanged(_that);case SpeakerStatusChanged():
+return speakerStatusChanged(_that);case SpeakerDetailFailure():
 return failure(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -1309,7 +1652,7 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( SpeakerDetailInitial value)?  initial,TResult? Function( SpeakerDetailLoading value)?  loading,TResult? Function( SpeakerRequestCreated value)?  requestCreated,TResult? Function( SpeakerRequestLoaded value)?  requestLoaded,TResult? Function( SpeakerRequestUpdated value)?  updated,TResult? Function( SpeakerRequestDeleted value)?  deleted,TResult? Function( RequestedToSpeak value)?  requestedToSpeak,TResult? Function( SpeakerDecision value)?  speakerDecision,TResult? Function( MuteStatusChanged value)?  muteStatusChanged,TResult? Function( MuteCommand value)?  muteCommand,TResult? Function( SpeakerDetailFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( SpeakerDetailInitial value)?  initial,TResult? Function( SpeakerDetailLoading value)?  loading,TResult? Function( SpeakerRequestCreated value)?  requestCreated,TResult? Function( SpeakerRequestLoaded value)?  requestLoaded,TResult? Function( SpeakerRequestUpdated value)?  updated,TResult? Function( SpeakerRequestDeleted value)?  deleted,TResult? Function( RequestedToSpeak value)?  requestedToSpeak,TResult? Function( MuteStatusChanged value)?  muteStatusChanged,TResult? Function( MutedEveryone value)?  mutedEveryone,TResult? Function( CoHostStatusChanged value)?  coHostStatusChanged,TResult? Function( SpeakerStatusChanged value)?  speakerStatusChanged,TResult? Function( SpeakerDetailFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case SpeakerDetailInitial() when initial != null:
@@ -1319,10 +1662,11 @@ return requestCreated(_that);case SpeakerRequestLoaded() when requestLoaded != n
 return requestLoaded(_that);case SpeakerRequestUpdated() when updated != null:
 return updated(_that);case SpeakerRequestDeleted() when deleted != null:
 return deleted(_that);case RequestedToSpeak() when requestedToSpeak != null:
-return requestedToSpeak(_that);case SpeakerDecision() when speakerDecision != null:
-return speakerDecision(_that);case MuteStatusChanged() when muteStatusChanged != null:
-return muteStatusChanged(_that);case MuteCommand() when muteCommand != null:
-return muteCommand(_that);case SpeakerDetailFailure() when failure != null:
+return requestedToSpeak(_that);case MuteStatusChanged() when muteStatusChanged != null:
+return muteStatusChanged(_that);case MutedEveryone() when mutedEveryone != null:
+return mutedEveryone(_that);case CoHostStatusChanged() when coHostStatusChanged != null:
+return coHostStatusChanged(_that);case SpeakerStatusChanged() when speakerStatusChanged != null:
+return speakerStatusChanged(_that);case SpeakerDetailFailure() when failure != null:
 return failure(_that);case _:
   return null;
 
@@ -1340,7 +1684,7 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( SpeakerRequest request)?  requestCreated,TResult Function( SpeakerRequest request)?  requestLoaded,TResult Function( SpeakerRequest request)?  updated,TResult Function( int requestId)?  deleted,TResult Function()?  requestedToSpeak,TResult Function( int userId,  bool isApproved,  int decidedBy)?  speakerDecision,TResult Function( bool isMuted)?  muteStatusChanged,TResult Function( int userId,  bool isMuted,  int mutedBy)?  muteCommand,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( SpeakerRequest request)?  requestCreated,TResult Function( SpeakerRequest request)?  requestLoaded,TResult Function( SpeakerRequest request)?  updated,TResult Function( int requestId)?  deleted,TResult Function()?  requestedToSpeak,TResult Function( bool isMuted)?  muteStatusChanged,TResult Function()?  mutedEveryone,TResult Function( bool isCoHost)?  coHostStatusChanged,TResult Function( bool isSpeaker)?  speakerStatusChanged,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case SpeakerDetailInitial() when initial != null:
 return initial();case SpeakerDetailLoading() when loading != null:
@@ -1349,10 +1693,11 @@ return requestCreated(_that.request);case SpeakerRequestLoaded() when requestLoa
 return requestLoaded(_that.request);case SpeakerRequestUpdated() when updated != null:
 return updated(_that.request);case SpeakerRequestDeleted() when deleted != null:
 return deleted(_that.requestId);case RequestedToSpeak() when requestedToSpeak != null:
-return requestedToSpeak();case SpeakerDecision() when speakerDecision != null:
-return speakerDecision(_that.userId,_that.isApproved,_that.decidedBy);case MuteStatusChanged() when muteStatusChanged != null:
-return muteStatusChanged(_that.isMuted);case MuteCommand() when muteCommand != null:
-return muteCommand(_that.userId,_that.isMuted,_that.mutedBy);case SpeakerDetailFailure() when failure != null:
+return requestedToSpeak();case MuteStatusChanged() when muteStatusChanged != null:
+return muteStatusChanged(_that.isMuted);case MutedEveryone() when mutedEveryone != null:
+return mutedEveryone();case CoHostStatusChanged() when coHostStatusChanged != null:
+return coHostStatusChanged(_that.isCoHost);case SpeakerStatusChanged() when speakerStatusChanged != null:
+return speakerStatusChanged(_that.isSpeaker);case SpeakerDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return orElse();
 
@@ -1371,7 +1716,7 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( SpeakerRequest request)  requestCreated,required TResult Function( SpeakerRequest request)  requestLoaded,required TResult Function( SpeakerRequest request)  updated,required TResult Function( int requestId)  deleted,required TResult Function()  requestedToSpeak,required TResult Function( int userId,  bool isApproved,  int decidedBy)  speakerDecision,required TResult Function( bool isMuted)  muteStatusChanged,required TResult Function( int userId,  bool isMuted,  int mutedBy)  muteCommand,required TResult Function( String error)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( SpeakerRequest request)  requestCreated,required TResult Function( SpeakerRequest request)  requestLoaded,required TResult Function( SpeakerRequest request)  updated,required TResult Function( int requestId)  deleted,required TResult Function()  requestedToSpeak,required TResult Function( bool isMuted)  muteStatusChanged,required TResult Function()  mutedEveryone,required TResult Function( bool isCoHost)  coHostStatusChanged,required TResult Function( bool isSpeaker)  speakerStatusChanged,required TResult Function( String error)  failure,}) {final _that = this;
 switch (_that) {
 case SpeakerDetailInitial():
 return initial();case SpeakerDetailLoading():
@@ -1380,10 +1725,11 @@ return requestCreated(_that.request);case SpeakerRequestLoaded():
 return requestLoaded(_that.request);case SpeakerRequestUpdated():
 return updated(_that.request);case SpeakerRequestDeleted():
 return deleted(_that.requestId);case RequestedToSpeak():
-return requestedToSpeak();case SpeakerDecision():
-return speakerDecision(_that.userId,_that.isApproved,_that.decidedBy);case MuteStatusChanged():
-return muteStatusChanged(_that.isMuted);case MuteCommand():
-return muteCommand(_that.userId,_that.isMuted,_that.mutedBy);case SpeakerDetailFailure():
+return requestedToSpeak();case MuteStatusChanged():
+return muteStatusChanged(_that.isMuted);case MutedEveryone():
+return mutedEveryone();case CoHostStatusChanged():
+return coHostStatusChanged(_that.isCoHost);case SpeakerStatusChanged():
+return speakerStatusChanged(_that.isSpeaker);case SpeakerDetailFailure():
 return failure(_that.error);case _:
   throw StateError('Unexpected subclass');
 
@@ -1401,7 +1747,7 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( SpeakerRequest request)?  requestCreated,TResult? Function( SpeakerRequest request)?  requestLoaded,TResult? Function( SpeakerRequest request)?  updated,TResult? Function( int requestId)?  deleted,TResult? Function()?  requestedToSpeak,TResult? Function( int userId,  bool isApproved,  int decidedBy)?  speakerDecision,TResult? Function( bool isMuted)?  muteStatusChanged,TResult? Function( int userId,  bool isMuted,  int mutedBy)?  muteCommand,TResult? Function( String error)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( SpeakerRequest request)?  requestCreated,TResult? Function( SpeakerRequest request)?  requestLoaded,TResult? Function( SpeakerRequest request)?  updated,TResult? Function( int requestId)?  deleted,TResult? Function()?  requestedToSpeak,TResult? Function( bool isMuted)?  muteStatusChanged,TResult? Function()?  mutedEveryone,TResult? Function( bool isCoHost)?  coHostStatusChanged,TResult? Function( bool isSpeaker)?  speakerStatusChanged,TResult? Function( String error)?  failure,}) {final _that = this;
 switch (_that) {
 case SpeakerDetailInitial() when initial != null:
 return initial();case SpeakerDetailLoading() when loading != null:
@@ -1410,10 +1756,11 @@ return requestCreated(_that.request);case SpeakerRequestLoaded() when requestLoa
 return requestLoaded(_that.request);case SpeakerRequestUpdated() when updated != null:
 return updated(_that.request);case SpeakerRequestDeleted() when deleted != null:
 return deleted(_that.requestId);case RequestedToSpeak() when requestedToSpeak != null:
-return requestedToSpeak();case SpeakerDecision() when speakerDecision != null:
-return speakerDecision(_that.userId,_that.isApproved,_that.decidedBy);case MuteStatusChanged() when muteStatusChanged != null:
-return muteStatusChanged(_that.isMuted);case MuteCommand() when muteCommand != null:
-return muteCommand(_that.userId,_that.isMuted,_that.mutedBy);case SpeakerDetailFailure() when failure != null:
+return requestedToSpeak();case MuteStatusChanged() when muteStatusChanged != null:
+return muteStatusChanged(_that.isMuted);case MutedEveryone() when mutedEveryone != null:
+return mutedEveryone();case CoHostStatusChanged() when coHostStatusChanged != null:
+return coHostStatusChanged(_that.isCoHost);case SpeakerStatusChanged() when speakerStatusChanged != null:
+return speakerStatusChanged(_that.isSpeaker);case SpeakerDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return null;
 
@@ -1812,76 +2159,6 @@ String toString() {
 /// @nodoc
 
 
-class SpeakerDecision implements SpeakerDetailState {
-  const SpeakerDecision({required this.userId, required this.isApproved, required this.decidedBy});
-  
-
- final  int userId;
- final  bool isApproved;
- final  int decidedBy;
-
-/// Create a copy of SpeakerDetailState
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$SpeakerDecisionCopyWith<SpeakerDecision> get copyWith => _$SpeakerDecisionCopyWithImpl<SpeakerDecision>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SpeakerDecision&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.isApproved, isApproved) || other.isApproved == isApproved)&&(identical(other.decidedBy, decidedBy) || other.decidedBy == decidedBy));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,userId,isApproved,decidedBy);
-
-@override
-String toString() {
-  return 'SpeakerDetailState.speakerDecision(userId: $userId, isApproved: $isApproved, decidedBy: $decidedBy)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $SpeakerDecisionCopyWith<$Res> implements $SpeakerDetailStateCopyWith<$Res> {
-  factory $SpeakerDecisionCopyWith(SpeakerDecision value, $Res Function(SpeakerDecision) _then) = _$SpeakerDecisionCopyWithImpl;
-@useResult
-$Res call({
- int userId, bool isApproved, int decidedBy
-});
-
-
-
-
-}
-/// @nodoc
-class _$SpeakerDecisionCopyWithImpl<$Res>
-    implements $SpeakerDecisionCopyWith<$Res> {
-  _$SpeakerDecisionCopyWithImpl(this._self, this._then);
-
-  final SpeakerDecision _self;
-  final $Res Function(SpeakerDecision) _then;
-
-/// Create a copy of SpeakerDetailState
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? isApproved = null,Object? decidedBy = null,}) {
-  return _then(SpeakerDecision(
-userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
-as int,isApproved: null == isApproved ? _self.isApproved : isApproved // ignore: cast_nullable_to_non_nullable
-as bool,decidedBy: null == decidedBy ? _self.decidedBy : decidedBy // ignore: cast_nullable_to_non_nullable
-as int,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
 class MuteStatusChanged implements SpeakerDetailState {
   const MuteStatusChanged({required this.isMuted});
   
@@ -1948,45 +2225,75 @@ as bool,
 /// @nodoc
 
 
-class MuteCommand implements SpeakerDetailState {
-  const MuteCommand({required this.userId, required this.isMuted, required this.mutedBy});
+class MutedEveryone implements SpeakerDetailState {
+  const MutedEveryone();
   
 
- final  int userId;
- final  bool isMuted;
- final  int mutedBy;
 
-/// Create a copy of SpeakerDetailState
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$MuteCommandCopyWith<MuteCommand> get copyWith => _$MuteCommandCopyWithImpl<MuteCommand>(this, _$identity);
+
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MuteCommand&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.isMuted, isMuted) || other.isMuted == isMuted)&&(identical(other.mutedBy, mutedBy) || other.mutedBy == mutedBy));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MutedEveryone);
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,userId,isMuted,mutedBy);
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SpeakerDetailState.muteCommand(userId: $userId, isMuted: $isMuted, mutedBy: $mutedBy)';
+  return 'SpeakerDetailState.mutedEveryone()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class CoHostStatusChanged implements SpeakerDetailState {
+  const CoHostStatusChanged({required this.isCoHost});
+  
+
+ final  bool isCoHost;
+
+/// Create a copy of SpeakerDetailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CoHostStatusChangedCopyWith<CoHostStatusChanged> get copyWith => _$CoHostStatusChangedCopyWithImpl<CoHostStatusChanged>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CoHostStatusChanged&&(identical(other.isCoHost, isCoHost) || other.isCoHost == isCoHost));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,isCoHost);
+
+@override
+String toString() {
+  return 'SpeakerDetailState.coHostStatusChanged(isCoHost: $isCoHost)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $MuteCommandCopyWith<$Res> implements $SpeakerDetailStateCopyWith<$Res> {
-  factory $MuteCommandCopyWith(MuteCommand value, $Res Function(MuteCommand) _then) = _$MuteCommandCopyWithImpl;
+abstract mixin class $CoHostStatusChangedCopyWith<$Res> implements $SpeakerDetailStateCopyWith<$Res> {
+  factory $CoHostStatusChangedCopyWith(CoHostStatusChanged value, $Res Function(CoHostStatusChanged) _then) = _$CoHostStatusChangedCopyWithImpl;
 @useResult
 $Res call({
- int userId, bool isMuted, int mutedBy
+ bool isCoHost
 });
 
 
@@ -1994,21 +2301,85 @@ $Res call({
 
 }
 /// @nodoc
-class _$MuteCommandCopyWithImpl<$Res>
-    implements $MuteCommandCopyWith<$Res> {
-  _$MuteCommandCopyWithImpl(this._self, this._then);
+class _$CoHostStatusChangedCopyWithImpl<$Res>
+    implements $CoHostStatusChangedCopyWith<$Res> {
+  _$CoHostStatusChangedCopyWithImpl(this._self, this._then);
 
-  final MuteCommand _self;
-  final $Res Function(MuteCommand) _then;
+  final CoHostStatusChanged _self;
+  final $Res Function(CoHostStatusChanged) _then;
 
 /// Create a copy of SpeakerDetailState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? isMuted = null,Object? mutedBy = null,}) {
-  return _then(MuteCommand(
-userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
-as int,isMuted: null == isMuted ? _self.isMuted : isMuted // ignore: cast_nullable_to_non_nullable
-as bool,mutedBy: null == mutedBy ? _self.mutedBy : mutedBy // ignore: cast_nullable_to_non_nullable
-as int,
+@pragma('vm:prefer-inline') $Res call({Object? isCoHost = null,}) {
+  return _then(CoHostStatusChanged(
+isCoHost: null == isCoHost ? _self.isCoHost : isCoHost // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class SpeakerStatusChanged implements SpeakerDetailState {
+  const SpeakerStatusChanged({required this.isSpeaker});
+  
+
+ final  bool isSpeaker;
+
+/// Create a copy of SpeakerDetailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SpeakerStatusChangedCopyWith<SpeakerStatusChanged> get copyWith => _$SpeakerStatusChangedCopyWithImpl<SpeakerStatusChanged>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SpeakerStatusChanged&&(identical(other.isSpeaker, isSpeaker) || other.isSpeaker == isSpeaker));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,isSpeaker);
+
+@override
+String toString() {
+  return 'SpeakerDetailState.speakerStatusChanged(isSpeaker: $isSpeaker)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SpeakerStatusChangedCopyWith<$Res> implements $SpeakerDetailStateCopyWith<$Res> {
+  factory $SpeakerStatusChangedCopyWith(SpeakerStatusChanged value, $Res Function(SpeakerStatusChanged) _then) = _$SpeakerStatusChangedCopyWithImpl;
+@useResult
+$Res call({
+ bool isSpeaker
+});
+
+
+
+
+}
+/// @nodoc
+class _$SpeakerStatusChangedCopyWithImpl<$Res>
+    implements $SpeakerStatusChangedCopyWith<$Res> {
+  _$SpeakerStatusChangedCopyWithImpl(this._self, this._then);
+
+  final SpeakerStatusChanged _self;
+  final $Res Function(SpeakerStatusChanged) _then;
+
+/// Create a copy of SpeakerDetailState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? isSpeaker = null,}) {
+  return _then(SpeakerStatusChanged(
+isSpeaker: null == isSpeaker ? _self.isSpeaker : isSpeaker // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

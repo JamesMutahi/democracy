@@ -12,6 +12,7 @@ _SpeakerRequest _$SpeakerRequestFromJson(Map<String, dynamic> json) =>
       meeting: (json['meeting'] as num).toInt(),
       user: User.fromJson(json['user'] as Map<String, dynamic>),
       isApproved: json['is_approved'] as bool?,
+      decidedBy: json['decided_by'] as String?,
     );
 
 Map<String, dynamic> _$SpeakerRequestToJson(_SpeakerRequest instance) =>
@@ -20,4 +21,5 @@ Map<String, dynamic> _$SpeakerRequestToJson(_SpeakerRequest instance) =>
       'meeting': instance.meeting,
       'user': instance.user,
       'is_approved': instance.isApproved,
+      'decided_by': instance.decidedBy,
     };

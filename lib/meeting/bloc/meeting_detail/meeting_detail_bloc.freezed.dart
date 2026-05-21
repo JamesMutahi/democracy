@@ -140,17 +140,17 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( String title,  String description,  bool isLiveStream)?  create,TResult Function( RtcEngine engine,  Meeting meeting,  User user)?  join,TResult Function( Meeting meeting)?  retrieve,TResult Function( Meeting meeting)?  subscribe,TResult Function( Meeting meeting)?  unsubscribe,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( String title,  String description,  DateTime? startTime,  bool isRecorded,  bool isLiveStream)?  create,TResult Function( RtcEngine engine,  Meeting meeting,  User user)?  join,TResult Function( Meeting meeting)?  retrieve,TResult Function( Meeting meeting,  bool isMuted)?  subscribe,TResult Function( Meeting meeting)?  unsubscribe,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
 return loaded(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Create() when create != null:
-return create(_that.title,_that.description,_that.isLiveStream);case _Join() when join != null:
+return create(_that.title,_that.description,_that.startTime,_that.isRecorded,_that.isLiveStream);case _Join() when join != null:
 return join(_that.engine,_that.meeting,_that.user);case _Retrieve() when retrieve != null:
 return retrieve(_that.meeting);case _Subscribe() when subscribe != null:
-return subscribe(_that.meeting);case _Unsubscribe() when unsubscribe != null:
+return subscribe(_that.meeting,_that.isMuted);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that.meeting);case _:
   return orElse();
 
@@ -169,17 +169,17 @@ return unsubscribe(_that.meeting);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( String title,  String description,  bool isLiveStream)  create,required TResult Function( RtcEngine engine,  Meeting meeting,  User user)  join,required TResult Function( Meeting meeting)  retrieve,required TResult Function( Meeting meeting)  subscribe,required TResult Function( Meeting meeting)  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( String title,  String description,  DateTime? startTime,  bool isRecorded,  bool isLiveStream)  create,required TResult Function( RtcEngine engine,  Meeting meeting,  User user)  join,required TResult Function( Meeting meeting)  retrieve,required TResult Function( Meeting meeting,  bool isMuted)  subscribe,required TResult Function( Meeting meeting)  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Loaded():
 return loaded(_that.payload);case _Updated():
 return updated(_that.payload);case _Deleted():
 return deleted(_that.payload);case _Create():
-return create(_that.title,_that.description,_that.isLiveStream);case _Join():
+return create(_that.title,_that.description,_that.startTime,_that.isRecorded,_that.isLiveStream);case _Join():
 return join(_that.engine,_that.meeting,_that.user);case _Retrieve():
 return retrieve(_that.meeting);case _Subscribe():
-return subscribe(_that.meeting);case _Unsubscribe():
+return subscribe(_that.meeting,_that.isMuted);case _Unsubscribe():
 return unsubscribe(_that.meeting);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -194,17 +194,17 @@ return unsubscribe(_that.meeting);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( String title,  String description,  bool isLiveStream)?  create,TResult? Function( RtcEngine engine,  Meeting meeting,  User user)?  join,TResult? Function( Meeting meeting)?  retrieve,TResult? Function( Meeting meeting)?  subscribe,TResult? Function( Meeting meeting)?  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( String title,  String description,  DateTime? startTime,  bool isRecorded,  bool isLiveStream)?  create,TResult? Function( RtcEngine engine,  Meeting meeting,  User user)?  join,TResult? Function( Meeting meeting)?  retrieve,TResult? Function( Meeting meeting,  bool isMuted)?  subscribe,TResult? Function( Meeting meeting)?  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
 return loaded(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Create() when create != null:
-return create(_that.title,_that.description,_that.isLiveStream);case _Join() when join != null:
+return create(_that.title,_that.description,_that.startTime,_that.isRecorded,_that.isLiveStream);case _Join() when join != null:
 return join(_that.engine,_that.meeting,_that.user);case _Retrieve() when retrieve != null:
 return retrieve(_that.meeting);case _Subscribe() when subscribe != null:
-return subscribe(_that.meeting);case _Unsubscribe() when unsubscribe != null:
+return subscribe(_that.meeting,_that.isMuted);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that.meeting);case _:
   return null;
 
@@ -505,11 +505,13 @@ as Map<String, dynamic>,
 
 
 class _Create implements MeetingDetailEvent {
-  const _Create({required this.title, required this.description, this.isLiveStream = false});
+  const _Create({required this.title, required this.description, this.startTime, required this.isRecorded, this.isLiveStream = false});
   
 
  final  String title;
  final  String description;
+ final  DateTime? startTime;
+ final  bool isRecorded;
 @JsonKey() final  bool isLiveStream;
 
 /// Create a copy of MeetingDetailEvent
@@ -522,16 +524,16 @@ _$CreateCopyWith<_Create> get copyWith => __$CreateCopyWithImpl<_Create>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Create&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.isLiveStream, isLiveStream) || other.isLiveStream == isLiveStream));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Create&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.isRecorded, isRecorded) || other.isRecorded == isRecorded)&&(identical(other.isLiveStream, isLiveStream) || other.isLiveStream == isLiveStream));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,title,description,isLiveStream);
+int get hashCode => Object.hash(runtimeType,title,description,startTime,isRecorded,isLiveStream);
 
 @override
 String toString() {
-  return 'MeetingDetailEvent.create(title: $title, description: $description, isLiveStream: $isLiveStream)';
+  return 'MeetingDetailEvent.create(title: $title, description: $description, startTime: $startTime, isRecorded: $isRecorded, isLiveStream: $isLiveStream)';
 }
 
 
@@ -542,7 +544,7 @@ abstract mixin class _$CreateCopyWith<$Res> implements $MeetingDetailEventCopyWi
   factory _$CreateCopyWith(_Create value, $Res Function(_Create) _then) = __$CreateCopyWithImpl;
 @useResult
 $Res call({
- String title, String description, bool isLiveStream
+ String title, String description, DateTime? startTime, bool isRecorded, bool isLiveStream
 });
 
 
@@ -559,11 +561,13 @@ class __$CreateCopyWithImpl<$Res>
 
 /// Create a copy of MeetingDetailEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? title = null,Object? description = null,Object? isLiveStream = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? title = null,Object? description = null,Object? startTime = freezed,Object? isRecorded = null,Object? isLiveStream = null,}) {
   return _then(_Create(
 title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String,isLiveStream: null == isLiveStream ? _self.isLiveStream : isLiveStream // ignore: cast_nullable_to_non_nullable
+as String,startTime: freezed == startTime ? _self.startTime : startTime // ignore: cast_nullable_to_non_nullable
+as DateTime?,isRecorded: null == isRecorded ? _self.isRecorded : isRecorded // ignore: cast_nullable_to_non_nullable
+as bool,isLiveStream: null == isLiveStream ? _self.isLiveStream : isLiveStream // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -738,10 +742,11 @@ $MeetingCopyWith<$Res> get meeting {
 
 
 class _Subscribe implements MeetingDetailEvent {
-  const _Subscribe({required this.meeting});
+  const _Subscribe({required this.meeting, required this.isMuted});
   
 
  final  Meeting meeting;
+ final  bool isMuted;
 
 /// Create a copy of MeetingDetailEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -753,16 +758,16 @@ _$SubscribeCopyWith<_Subscribe> get copyWith => __$SubscribeCopyWithImpl<_Subscr
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Subscribe&&(identical(other.meeting, meeting) || other.meeting == meeting));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Subscribe&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.isMuted, isMuted) || other.isMuted == isMuted));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meeting);
+int get hashCode => Object.hash(runtimeType,meeting,isMuted);
 
 @override
 String toString() {
-  return 'MeetingDetailEvent.subscribe(meeting: $meeting)';
+  return 'MeetingDetailEvent.subscribe(meeting: $meeting, isMuted: $isMuted)';
 }
 
 
@@ -773,7 +778,7 @@ abstract mixin class _$SubscribeCopyWith<$Res> implements $MeetingDetailEventCop
   factory _$SubscribeCopyWith(_Subscribe value, $Res Function(_Subscribe) _then) = __$SubscribeCopyWithImpl;
 @useResult
 $Res call({
- Meeting meeting
+ Meeting meeting, bool isMuted
 });
 
 
@@ -790,10 +795,11 @@ class __$SubscribeCopyWithImpl<$Res>
 
 /// Create a copy of MeetingDetailEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? meeting = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? meeting = null,Object? isMuted = null,}) {
   return _then(_Subscribe(
 meeting: null == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
-as Meeting,
+as Meeting,isMuted: null == isMuted ? _self.isMuted : isMuted // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

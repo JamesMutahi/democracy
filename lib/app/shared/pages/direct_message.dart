@@ -328,6 +328,11 @@ class _DirectMessageState extends State<DirectMessage> {
                         location: _location,
                       ),
                     );
+                    Future.delayed(Duration(seconds: 10), () {
+                      if (context.mounted) {
+                        context.loaderOverlay.hide();
+                      }
+                    });
                   },
           ),
         ),

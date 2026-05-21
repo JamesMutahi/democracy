@@ -4,6 +4,7 @@ import 'package:democracy/app/bloc/services/websocket_service.dart'
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
+import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/meeting/bloc/meeting_detail/meeting_detail_bloc.dart';
 import 'package:democracy/meeting/models/meeting.dart';
@@ -74,7 +75,7 @@ class _LiveStreamState extends State<LiveStream> {
                 _engine.startPreview(); // Important for host
               }
               context.read<MeetingDetailBloc>().add(
-                MeetingDetailEvent.subscribe(meeting: _meeting),
+                MeetingDetailEvent.subscribe(meeting: _meeting, isMuted: false),
               );
             },
             onUserJoined: (RtcConnection connection, int uid, int elapsed) {
@@ -142,7 +143,10 @@ class _LiveStreamState extends State<LiveStream> {
           listener: (context, state) {
             if (state.status == WebsocketStatus.connected) {
               context.read<MeetingDetailBloc>().add(
-                MeetingDetailEvent.subscribe(meeting: widget.meeting),
+                MeetingDetailEvent.subscribe(
+                  meeting: widget.meeting,
+                  isMuted: _isMuted,
+                ),
               );
             }
           },
@@ -162,6 +166,13 @@ class _LiveStreamState extends State<LiveStream> {
                 if (meetingId == _meeting.id) {
                   setState(() => isDeleted = true);
                 }
+              case MeetingDetailFailure(:final error):
+                final snackBar = getSnackBar(
+                  context: context,
+                  message: error,
+                  status: SnackBarStatus.failure,
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
           },
         ),

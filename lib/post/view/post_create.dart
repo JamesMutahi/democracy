@@ -102,6 +102,11 @@ class _PostCreatePageState extends State<PostCreatePage> {
         location: _selectedLocation,
       ),
     );
+    Future.delayed(Duration(seconds: 10), () {
+      if (mounted) {
+        context.loaderOverlay.hide();
+      }
+    });
   }
 
   void _saveDraft() {
@@ -130,6 +135,11 @@ class _PostCreatePageState extends State<PostCreatePage> {
         location: _selectedLocation,
       ),
     );
+    Future.delayed(Duration(seconds: 10), () {
+      if (mounted) {
+        context.loaderOverlay.hide();
+      }
+    });
   }
 
   void _updatePostButtonState(String text) {

@@ -1,4 +1,5 @@
 import 'package:democracy/app/shared/widgets/loader_overlay_widgets.dart';
+import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/meeting/bloc/meeting_detail/meeting_detail_bloc.dart';
 import 'package:democracy/meeting/view/live_stream.dart';
 import 'package:democracy/meeting/view/meeting_detail.dart';
@@ -32,6 +33,7 @@ class MeetingCreate extends StatefulWidget {
 class _MeetingCreateState extends State<MeetingCreate> {
   final _controller = TextEditingController();
   final _formKey = GlobalKey<FormBuilderState>();
+  bool _setStartTime = false;
 
   @override
   Widget build(BuildContext context) {
@@ -39,15 +41,24 @@ class _MeetingCreateState extends State<MeetingCreate> {
       listener: (context, state) {
         if (state is MeetingCreated) {
           context.loaderOverlay.hide();
-          if  (state.meeting.isLiveStream) {
-            navigateToLiveStream(context: context, meeting: state.meeting);
-          }
-          else {
-            navigateToMeetingDetail(context: context, meeting: state.meeting);
+          if (_setStartTime) {
+            Navigator.pop(context);
+          } else {
+            if (state.meeting.isLiveStream) {
+              navigateToLiveStream(context: context, meeting: state.meeting);
+            } else {
+              navigateToMeetingDetail(context: context, meeting: state.meeting);
+            }
           }
         }
         if (state is MeetingDetailFailure) {
           context.loaderOverlay.hide();
+          final snackBar = getSnackBar(
+            context: context,
+            message: state.error,
+            status: SnackBarStatus.failure,
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
       },
       child: LoaderOverlay(
@@ -84,12 +95,46 @@ class _MeetingCreateState extends State<MeetingCreate> {
                     maxLines: 2,
                   ),
                   SizedBox(height: 15),
-                  _MeetingSwitch(name: 'record', title: 'Record meeting'),
-                  SizedBox(height: 15),
                   _MeetingSwitch(
-                    name: 'share',
-                    title: 'Share meeting as a post',
+                    name: 'record',
+                    title: widget.isLiveStream
+                        ? 'Record stream'
+                        : 'Record meeting',
                   ),
+                  SizedBox(height: 15),
+                  if (_setStartTime && !widget.isLiveStream)
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () {
+                          setState(() => _setStartTime = false);
+                        },
+                        child: Text(
+                          'Remove',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ),
+                  if (!widget.isLiveStream)
+                    _setStartTime
+                        ? FormBuilderDateTimePicker(
+                            name: 'start time',
+                            initialValue: DateTime.now(),
+                            decoration: InputDecoration(prefixText: 'Start:  '),
+                          )
+                        : OutlinedButton(
+                            onPressed: () {
+                              setState(() => _setStartTime = true);
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.access_time_rounded),
+                                SizedBox(width: 10),
+                                Text('Schedule'),
+                              ],
+                            ),
+                          ),
                 ],
               ),
             ),
@@ -97,31 +142,9 @@ class _MeetingCreateState extends State<MeetingCreate> {
           bottomNavigationBar: BottomAppBar(
             height: 50,
             padding: EdgeInsets.symmetric(horizontal: 15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                FilledButton.tonal(
-                  onPressed: () {},
-                  child: Row(
-                    children: [
-                      Text('Schedule'),
-                      SizedBox(width: 5),
-                      Icon(Icons.access_time_rounded),
-                    ],
-                  ),
-                ),
-                SizedBox(width: 20),
-                FilledButton.tonal(
-                  onPressed: _submitForm,
-                  child: Row(
-                    children: [
-                      Text('Start'),
-                      SizedBox(width: 10),
-                      Icon(Icons.start_rounded),
-                    ],
-                  ),
-                ),
-              ],
+            child: FilledButton.tonal(
+              onPressed: _submitForm,
+              child: Text('Submit'),
             ),
           ),
         ),
@@ -139,12 +162,14 @@ class _MeetingCreateState extends State<MeetingCreate> {
         MeetingDetailEvent.create(
           title: formData['title'],
           description: formData['description'],
+          isRecorded: formData['record'] ?? false,
+          startTime: formData['start time'],
           isLiveStream: widget.isLiveStream,
         ),
       );
       Future.delayed(Duration(seconds: 10), () {
         if (mounted) {
-          context.loaderOverlay.show();
+          context.loaderOverlay.hide();
         }
       });
     }

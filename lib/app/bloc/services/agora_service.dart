@@ -45,6 +45,7 @@ class AgoraService {
           ? ClientRoleType.clientRoleBroadcaster
           : ClientRoleType.clientRoleAudience,
     );
+    if (isBroadcaster) await engine.muteLocalAudioStream(true);
 
     onEngineReady(engine);
 

@@ -10,7 +10,8 @@ sealed class SpeakerRequest with _$SpeakerRequest {
     required final int id,
     required int meeting,
     required User user,
-    @JsonKey(name: 'is_approved') required bool? isApproved
+    @JsonKey(name: 'is_approved') required bool? isApproved,
+    @JsonKey(name: 'decided_by') required String? decidedBy,
   }) = _SpeakerRequest;
 
   factory SpeakerRequest.fromJson(Map<String, Object?> json) =>

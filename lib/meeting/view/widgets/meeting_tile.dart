@@ -48,6 +48,7 @@ class MeetingTile extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Container(
+                        width: double.infinity,
                         padding: EdgeInsets.only(
                           left: 15,
                           right: 15,
@@ -75,17 +76,6 @@ class MeetingTile extends StatelessWidget {
                                   ward: meeting.ward,
                                 ),
                               ),
-                            Row(
-                              children: [
-                                Icon(Icons.mic_rounded),
-                                SizedBox(width: 5),
-                                Text(
-                                  'LIVE',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 10),
                             Text(
                               meeting.title,
                               style: Theme.of(context).textTheme.titleLarge,

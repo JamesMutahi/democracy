@@ -108,6 +108,11 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
         location: _selectedLocation,
       ),
     );
+    Future.delayed(Duration(seconds: 10), () {
+      if (mounted) {
+        context.loaderOverlay.hide();
+      }
+    });
   }
 
   void _deleteDraft() {
@@ -140,6 +145,11 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
     draft.location = _selectedLocation;
 
     context.read<DraftPostBloc>().add(DraftPostEvent.update(draft: draft));
+    Future.delayed(Duration(seconds: 10), () {
+      if (mounted) {
+        context.loaderOverlay.hide();
+      }
+    });
   }
 
   void _updatePostButtonState(String text) {

@@ -80,6 +80,11 @@ class _EditProfileState extends State<EditProfile> {
                                     coverPhotoPath: coverPhoto?.path,
                                   ),
                                 );
+                                Future.delayed(Duration(seconds: 10), () {
+                                  if (context.mounted) {
+                                    context.loaderOverlay.hide();
+                                  }
+                                });
                               },
                             ),
                           );
