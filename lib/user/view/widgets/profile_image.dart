@@ -1,7 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:democracy/app/view/router/router.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfileImage extends StatelessWidget {
   const ProfileImage({
@@ -20,7 +21,7 @@ class ProfileImage extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.all(Radius.circular(20)),
       onTap: navigateToProfile
-          ? () => navigateToProfilePage(context: context, user: user)
+          ? () => context.push(ProfileRoute(userId: user.id).location)
           : null,
       child: CircleAvatar(
         radius: radius,

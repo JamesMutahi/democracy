@@ -4,15 +4,16 @@ import 'package:democracy/app/bloc/services/websocket_service.dart'
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/custom_text.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
+import 'package:democracy/app/view/router/router.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart'
     show PetitionSupportersRow, PetitionPopUpMenu, PetitionAuthorInfo;
 import 'package:democracy/petition/view/widgets/supporters.dart';
-import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class PetitionDetail extends StatefulWidget {
   const PetitionDetail({super.key, required this.petition});
@@ -160,9 +161,10 @@ class _PetitionDetailState extends State<PetitionDetail> {
                           SizedBox(height: 10),
                           GestureDetector(
                             onTap: () {
-                              navigateToProfilePage(
-                                context: context,
-                                user: _petition.author,
+                              context.push(
+                                ProfileRoute(
+                                  userId: _petition.author.id,
+                                ).location,
                               );
                             },
                             child: PetitionAuthorInfo(petition: _petition),

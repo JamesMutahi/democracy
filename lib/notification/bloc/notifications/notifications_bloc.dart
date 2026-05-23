@@ -31,6 +31,9 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     on<_Add>((event, emit) => _onAdd(event, emit));
     on<_Update>((event, emit) => _onUpdate(event, emit));
     on<_Remove>((event, emit) => _onRemove(event, emit));
+    on<_OpenedChat>((event, emit) {
+      emit(state.copyWith(openChatId: event.chatId));
+    });
   }
 
   void _onGet(_Get event, Emitter<NotificationsState> emit) {
@@ -62,6 +65,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
         state.copyWith(
           status: NotificationsStatus.success,
           notifications: notifications,
+          unreadCount: _getUnreadCount(notifications),
         ),
       );
     } else {
@@ -79,6 +83,10 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
         state.copyWith(
           notifications: [event.notification, ...state.notifications],
           status: NotificationsStatus.success,
+          unreadCount: _getUnreadCount([
+            event.notification,
+            ...state.notifications,
+          ]),
         ),
       );
     }
@@ -95,8 +103,9 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
 
     emit(
       state.copyWith(
-        notifications: updatedNotifications,
         status: NotificationsStatus.success,
+        notifications: updatedNotifications,
+        unreadCount: _getUnreadCount(updatedNotifications),
       ),
     );
   }
@@ -108,10 +117,26 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
 
     emit(
       state.copyWith(
-        notifications: updatedNotifications,
         status: NotificationsStatus.success,
+        notifications: updatedNotifications,
+        unreadCount: _getUnreadCount(updatedNotifications),
       ),
     );
+  }
+
+  int _getUnreadCount(List<Notification> notifications) {
+    return notifications.where((n) {
+      // It must be unread
+      if (n.isRead) return false;
+
+      // If it is a chat notification, exclude it if it matches the open chat
+      if (n.chat != null) {
+        return n.chat!.id != state.openChatId;
+      }
+
+      // Always count unread non-chat notifications (where n.chat is null)
+      return true;
+    }).length;
   }
 
   @override

@@ -10,6 +10,7 @@ class UserTile extends StatelessWidget {
     required this.user,
     required this.me,
     required this.showProfileButtons,
+    this.hideOverflow = false,
     required this.selectedUsers,
     this.onTap,
   });
@@ -17,6 +18,7 @@ class UserTile extends StatelessWidget {
   final User user;
   final User me;
   final bool showProfileButtons;
+  final bool hideOverflow;
   final List<User> selectedUsers;
   final void Function()? onTap;
 
@@ -26,8 +28,14 @@ class UserTile extends StatelessWidget {
       selectedTileColor: Theme.of(context).highlightColor,
       selected: selectedUsers.contains(user),
       leading: ProfileImage(user: user),
-      title: Text(user.name),
-      subtitle: Text("@${user.username}"),
+      title: Text(
+        user.name,
+        overflow: hideOverflow ? TextOverflow.ellipsis : null,
+      ),
+      subtitle: Text(
+        "@${user.username}",
+        overflow: hideOverflow ? TextOverflow.ellipsis : null,
+      ),
       trailing: showProfileButtons
           ? me.id == user.id
                 ? SizedBox.shrink()

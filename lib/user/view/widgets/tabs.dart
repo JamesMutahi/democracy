@@ -67,9 +67,7 @@ class _UserPostsState extends State<UserPosts> {
 
         return PostListView(
           posts: posts,
-          loading:
-              state.status == UserPostsStatus.initial ||
-              (state.status == UserPostsStatus.loading && posts.isEmpty),
+          loading: state.status == UserPostsStatus.initial,
           failure: state.posts.isNotEmpty
               ? false
               : state.status == UserPostsStatus.failure,
@@ -133,8 +131,7 @@ class _UserRepliesState extends State<UserReplies> {
       builder: (context, state) {
         final posts = state.posts.toList();
 
-        if (state.status == UserRepliesStatus.initial ||
-            (state.status == UserRepliesStatus.loading && posts.isEmpty)) {
+        if (state.status == UserRepliesStatus.initial) {
           return const BottomLoader();
         }
 
@@ -330,9 +327,7 @@ class _UserCommunityNotesState extends State<UserCommunityNotes> {
       builder: (context, state) {
         final posts = state.posts.toList();
 
-        if (state.status == UserCommunityNotesStatus.initial ||
-            (state.status == UserCommunityNotesStatus.loading &&
-                posts.isEmpty)) {
+        if (state.status == UserCommunityNotesStatus.initial) {
           return const BottomLoader();
         }
 
@@ -451,9 +446,7 @@ class _UserPetitionsState extends State<UserPetitions> {
         builder: (context, state) {
           final petitions = state.petitions.toList();
 
-          if (state.status == UserPetitionsStatus.initial ||
-              (state.status == UserPetitionsStatus.initial &&
-                  petitions.isEmpty)) {
+          if (state.status == UserPetitionsStatus.initial) {
             return const BottomLoader();
           }
 

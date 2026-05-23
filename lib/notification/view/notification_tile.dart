@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:democracy/app/view/router/router.dart';
 import 'package:democracy/ballot/view/ballot_detail.dart';
 import 'package:democracy/chat/view/utils/chat_navigator.dart';
 import 'package:democracy/chat/view/utils/last_message.dart';
@@ -11,9 +12,9 @@ import 'package:democracy/post/view/widgets/post_body.dart';
 import 'package:democracy/survey/view/widgets/survey_tile.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/pages/users.dart';
-import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 class NotificationTile extends StatelessWidget {
@@ -67,9 +68,8 @@ class NotificationTile extends StatelessWidget {
       subtitle = SizedBox.shrink();
       onTap = () {
         if (notification.users.length == 1) {
-          navigateToProfilePage(
-            context: context,
-            user: notification.users.first,
+          context.push(
+            ProfileRoute(userId: notification.users.first.id).location,
           );
         } else {
           Navigator.of(context).push(
@@ -94,9 +94,8 @@ class NotificationTile extends StatelessWidget {
       subtitle = SizedBox.shrink();
       onTap = () {
         if (notification.users.length == 1) {
-          navigateToProfilePage(
-            context: context,
-            user: notification.users.first,
+          context.push(
+            ProfileRoute(userId: notification.users.first.id).location,
           );
         } else {
           Navigator.of(context).push(

@@ -1,10 +1,11 @@
+import 'package:democracy/app/view/router/router.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/meeting/models/meeting.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:democracy/user/view/widgets/user_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class SpeakersTab extends StatefulWidget {
   const SpeakersTab({super.key, required this.meeting});
@@ -32,9 +33,8 @@ class _SpeakersTabState extends State<SpeakersTab>
             showProfileButtons: true,
             selectedUsers: [],
             onTap: () {
-              navigateToProfilePage(
-                context: context,
-                user: widget.meeting.host,
+              context.push(
+                ProfileRoute(userId: widget.meeting.host.id).location,
               );
             },
           ),
@@ -51,7 +51,7 @@ class _SpeakersTabState extends State<SpeakersTab>
               showProfileButtons: true,
               selectedUsers: [],
               onTap: () {
-                navigateToProfilePage(context: context, user: user);
+                context.push(ProfileRoute(userId: user.id).location);
               },
             );
           }, childCount: widget.meeting.coHosts.length),
@@ -68,7 +68,7 @@ class _SpeakersTabState extends State<SpeakersTab>
               showProfileButtons: true,
               selectedUsers: [],
               onTap: () {
-                navigateToProfilePage(context: context, user: user);
+                context.push(ProfileRoute(userId: user.id).location);
               },
             );
           }, childCount: widget.meeting.speakers.length),

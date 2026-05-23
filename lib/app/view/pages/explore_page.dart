@@ -1,5 +1,6 @@
 import 'package:democracy/app/shared/pages/search_results.dart';
 import 'package:democracy/app/shared/widgets/no_results.dart';
+import 'package:democracy/app/view/router/router.dart';
 import 'package:democracy/post/bloc/trending_topics/trending_topics_bloc.dart';
 import 'package:democracy/post/view/shared/add_post_view.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
@@ -15,21 +16,15 @@ import 'package:democracy/user/bloc/follow_recommendations/follow_recommendation
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/pages/follow_recommendations.dart';
-import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:democracy/user/view/widgets/user_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 class ExplorePage extends StatefulWidget {
-  const ExplorePage({
-    super.key,
-    required this.user,
-    required this.notifications,
-  });
-
-  final User user;
-  final int notifications;
+  const ExplorePage({super.key});
 
   @override
   State<ExplorePage> createState() => _ExplorePageState();
@@ -46,86 +41,107 @@ class _ExplorePageState extends State<ExplorePage> {
 
   @override
   Widget build(BuildContext context) {
+    final responsive = ResponsiveBreakpoints.of(context);
+
     return BlocProvider(
       create: (context) => PostFilterCubit(),
-      child: DefaultTabController(
-        length: 2,
-        child: NestedScrollView(
-          headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-            return [
-              CustomAppBar(
-                user: widget.user,
-                notifications: widget.notifications,
-                middle: Text(
-                  'Explore',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                bottom: PreferredSize(
-                  preferredSize: Size.fromHeight(100.0),
-                  child: BlocBuilder<PostFilterCubit, PostFilterState>(
-                    buildWhen: (previous, current) {
-                      return current.onExplorePage;
-                    },
-                    builder: (context, state) {
-                      return Column(
-                        children: [
-                          CustomSearchBar(
-                            controller: _controller,
-                            hintText: 'Search',
-                            filterCount: state.count,
-                            onSubmitted: (value) {
-                              if (_controller.text.trim().isNotEmpty) {
-                                navigateToSearchResults(
-                                  context: context,
-                                  searchTerm: _controller.text,
-                                  startDate: state.startDate,
-                                  endDate: state.endDate,
-                                  filterCount: state.count,
-                                  whenComplete: () => _controller.clear(),
-                                );
-                              }
-                            },
-                            onFilterTap: () {
-                              final cubit = context.read<PostFilterCubit>();
-                              showGeneralDialog(
-                                context: context,
-                                transitionDuration: const Duration(
-                                  milliseconds: 300,
-                                ),
-                                pageBuilder:
-                                    (context, animation, secondaryAnimation) {
-                                      return SearchFilters(
-                                        onExplorePage: true,
-                                        startDate: state.startDate,
-                                        endDate: state.endDate,
-                                        cubit: cubit,
-                                      );
-                                    },
-                              );
-                            },
+      child: Scaffold(
+        body: DefaultTabController(
+          length: 2,
+          child: BlocBuilder<PostFilterCubit, PostFilterState>(
+            buildWhen: (previous, current) {
+              return current.onExplorePage;
+            },
+            builder: (context, state) {
+              return NestedScrollView(
+                headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+                  return [
+                    if (responsive.isMobile)
+                      CustomAppBar(
+                        middle: Text(
+                          'Explore',
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        bottom: PreferredSize(
+                          preferredSize: Size.fromHeight(100.0),
+                          child: Column(
+                            children: [_buildSearchBar(state), _buildTabBar()],
                           ),
-                          TabBar(
-                            dividerColor: Colors.transparent,
-                            labelStyle: Theme.of(context).textTheme.titleMedium,
-                            tabs: [
-                              Tab(text: 'For You'),
-                              Tab(text: 'Trending'),
-                            ],
-                          ),
-                        ],
-                      );
-                    },
-                  ),
+                        ),
+                      )
+                    else
+                      SliverAppBar(
+                        pinned: true,
+                        floating: true,
+                        snap: true,
+                        automaticallyImplyLeading: false,
+                        flexibleSpace: Builder(
+                          builder: (context) {
+                            return SizedBox(
+                              height: 60,
+                              child: _buildSearchBar(state),
+                            );
+                          },
+                        ),
+                        bottom: _buildTabBar(),
+                      ),
+                  ];
+                },
+                body: TabBarView(
+                  physics: NeverScrollableScrollPhysics(),
+                  children: [_ForYou(), _Trending()],
                 ),
-              ),
-            ];
-          },
-          body: TabBarView(
-            physics: NeverScrollableScrollPhysics(),
-            children: [_ForYou(), _Trending()],
+              );
+            },
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildSearchBar(PostFilterState state) {
+    return CustomSearchBar(
+      controller: _controller,
+      hintText: 'Search',
+      filterCount: state.count,
+      onSubmitted: (value) {
+        if (_controller.text.trim().isNotEmpty) {
+          navigateToSearchResults(
+            context: context,
+            searchTerm: _controller.text,
+            startDate: state.startDate,
+            endDate: state.endDate,
+            filterCount: state.count,
+            whenComplete: () => _controller.clear(),
+          );
+        }
+      },
+      onFilterTap: () {
+        final cubit = context.read<PostFilterCubit>();
+        showGeneralDialog(
+          context: context,
+          transitionDuration: const Duration(milliseconds: 300),
+          pageBuilder: (context, animation, secondaryAnimation) {
+            return SearchFilters(
+              onExplorePage: true,
+              startDate: state.startDate,
+              endDate: state.endDate,
+              cubit: cubit,
+            );
+          },
+        );
+      },
+    );
+  }
+
+  PreferredSizeWidget _buildTabBar() {
+    return TabBar(
+      dividerColor: Colors.transparent,
+      labelStyle: Theme.of(context).textTheme.titleMedium,
+      tabs: [
+        Tab(text: 'For You'),
+        Tab(text: 'Trending'),
+      ],
     );
   }
 }
@@ -326,7 +342,7 @@ class _ForYouState extends State<_ForYou> with AutomaticKeepAliveClientMixin {
                 showProfileButtons: true,
                 selectedUsers: [],
                 onTap: () {
-                  navigateToProfilePage(context: context, user: user);
+                  context.push(ProfileRoute(userId: user.id).location);
                 },
               );
             }, childCount: users.length),

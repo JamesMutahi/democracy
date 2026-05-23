@@ -1,4 +1,4 @@
-import 'package:democracy/app.dart' show navigatorKey;
+import 'package:democracy/app/view/router/router.dart' show navigatorKey;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';

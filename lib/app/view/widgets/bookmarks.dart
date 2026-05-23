@@ -1,14 +1,11 @@
 import 'package:democracy/post/bloc/bookmarks/bookmarks_bloc.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
-import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class Bookmarks extends StatefulWidget {
-  const Bookmarks({super.key, required this.user});
-
-  final User user;
+  const Bookmarks({super.key});
 
   @override
   State<Bookmarks> createState() => _BookmarksState();

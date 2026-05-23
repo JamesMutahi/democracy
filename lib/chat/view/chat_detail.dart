@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart'
     show WebsocketStatus;
 import 'package:democracy/app/bloc/sync/sync_bloc.dart';
@@ -17,6 +16,7 @@ import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/view/edit_message.dart';
 import 'package:democracy/chat/view/messages.dart';
+import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
@@ -56,7 +56,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   @override
   void initState() {
-    context.read<GlobalCubit>().holdChatId(chatId: widget.chat.id);
+    context.read<NotificationsBloc>().add(
+      NotificationsEvent.openedChat(chatId: widget.chat.id),
+    );
     _getData();
     super.initState();
   }
@@ -219,7 +221,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           if (showMessageActions) {
             context.read<MessageActionsCubit>().closeActionButtons();
           } else {
-            context.read<GlobalCubit>().holdChatId(chatId: null);
+            context.read<NotificationsBloc>().add(
+              NotificationsEvent.openedChat(chatId: null),
+            );
             context.read<UserDetailBloc>().add(
               UserDetailEvent.unsubscribe(user: _otherUser),
             );

@@ -20,10 +20,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required this.tokenStorage,
     required this.tokenInterceptor,
   }) : super(const AuthState()) {
+    _tokenExpiredSubscription = tokenInterceptor.onTokenExpired.listen((_) {
+      add(_TokenExpired());
+    });
+
     on<_Authenticate>((event, emit) async {
       await _authenticate(emit);
     });
-    on<_TokenExpired>(_onTokenExpired);
+    on<_TokenExpired>((event, emit) {
+      emit(AuthState());
+    });
     on<_UpdateUser>((event, emit) {
       emit(state.copyWith(user: event.user));
     });
@@ -42,18 +48,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } catch (e) {
       emit(state.copyWith(status: AuthStatus.failure, error: e.toString()));
     }
-
-    _listenToTokenExpired();
-  }
-
-  void _listenToTokenExpired() {
-    _tokenExpiredSubscription = tokenInterceptor.onTokenExpired.listen((_) {
-      add(_TokenExpired());
-    });
-  }
-
-  void _onTokenExpired(_TokenExpired event, Emitter<AuthState> emit) {
-    emit(AuthState());
   }
 
   @override

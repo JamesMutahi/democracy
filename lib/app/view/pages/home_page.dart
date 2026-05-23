@@ -3,16 +3,13 @@ import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/post/bloc/following_posts/following_posts_bloc.dart';
 import 'package:democracy/post/bloc/for_you/for_you_bloc.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
-import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.user, required this.notifications});
-
-  final User user;
-  final int notifications;
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -26,50 +23,72 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final responsive = ResponsiveBreakpoints.of(context);
+
     return DefaultTabController(
       length: 2,
       child: NestedScrollView(
         headerSliverBuilder: (context, bool innerBoxIsScrolled) {
           return [
-            SliverAppBar(
-              floating: true,
-              snap: true,
-              automaticallyImplyLeading: false,
-              forceElevated: true,
-              flexibleSpace: Builder(
-                builder: (context) {
-                  return Stack(
-                    // Allows children to go outside bounds
-                    clipBehavior: Clip.none,
-                    alignment: Alignment.center,
-                    children: [
-                      SizedBox(
-                        height: 55,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            DrawerOpener(user: widget.user),
-                            NotificationButton(
-                              notifications: widget.notifications,
-                            ),
-                          ],
+            if (responsive.isMobile)
+              SliverAppBar(
+                floating: true,
+                snap: true,
+                automaticallyImplyLeading: false,
+                forceElevated: true,
+                flexibleSpace: Builder(
+                  builder: (context) {
+                    return Stack(
+                      // Allows children to go outside bounds
+                      clipBehavior: Clip.none,
+                      alignment: Alignment.center,
+                      children: [
+                        SizedBox(
+                          height: 55,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              if (responsive.isMobile) DrawerOpener(),
+                              NotificationButton(),
+                            ],
+                          ),
                         ),
-                      ),
-                      Positioned(top: 5, child: Logo(width: 60, height: 60)),
-                    ],
-                  );
-                },
+                        Positioned(top: 5, child: Logo(width: 60, height: 60)),
+                      ],
+                    );
+                  },
+                ),
+                bottom: TabBar(
+                  dividerColor: Theme.of(context).colorScheme.outlineVariant,
+                  labelStyle: Theme.of(context).textTheme.titleMedium,
+                  tabs: [
+                    Tab(text: 'For You'),
+                    Tab(text: 'Following'),
+                  ],
+                ),
+              )
+            else
+              SliverAppBar(
+                pinned: true,
+                floating: true,
+                snap: true,
+                automaticallyImplyLeading: false,
+                flexibleSpace: Builder(
+                  builder: (context) {
+                    return TabBar(
+                      dividerColor: Theme.of(
+                        context,
+                      ).colorScheme.outlineVariant,
+                      labelStyle: Theme.of(context).textTheme.titleMedium,
+                      tabs: [
+                        Tab(text: 'For You'),
+                        Tab(text: 'Following'),
+                      ],
+                    );
+                  },
+                ),
               ),
-              bottom: TabBar(
-                dividerColor: Theme.of(context).colorScheme.outlineVariant,
-                labelStyle: Theme.of(context).textTheme.titleMedium,
-                tabs: [
-                  Tab(text: 'For You'),
-                  Tab(text: 'Following'),
-                ],
-              ),
-            ),
           ];
         },
         body: TabBarView(
@@ -97,64 +116,69 @@ class _ForYouTabState extends State<ForYouTab>
 
   @override
   void initState() {
-    context.read<ForYouBloc>().add(ForYouEvent.get());
+    final posts = context.read<ForYouBloc>().state.posts;
+    if (posts.isEmpty) {
+      context.read<ForYouBloc>().add(ForYouEvent.get());
+    }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocBuilder<ForYouBloc, ForYouState>(
-      builder: (context, state) {
-        final posts = state.posts.toList();
+    return Scaffold(
+      body: BlocBuilder<ForYouBloc, ForYouState>(
+        builder: (context, state) {
+          final posts = state.posts.toList();
 
-        if (state.status == ForYouStatus.success) {
-          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-            _refreshController.refreshCompleted();
+          if (state.status == ForYouStatus.success) {
+            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+              _refreshController.refreshCompleted();
+            }
+            if (_refreshController.footerStatus == LoadStatus.loading) {
+              _refreshController.loadComplete();
+            }
           }
-          if (_refreshController.footerStatus == LoadStatus.loading) {
-            _refreshController.loadComplete();
-          }
-        }
 
-        if (state.status == ForYouStatus.failure) {
-          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-            _refreshController.refreshFailed();
+          if (state.status == ForYouStatus.failure) {
+            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+              _refreshController.refreshFailed();
+            }
+            if (_refreshController.footerStatus == LoadStatus.loading) {
+              _refreshController.loadFailed();
+            }
           }
-          if (_refreshController.footerStatus == LoadStatus.loading) {
-            _refreshController.loadFailed();
-          }
-        }
 
-        return PostListView(
-          posts: posts,
-          loading:
-              state.status == ForYouStatus.initial ||
-              (state.status == ForYouStatus.loading && posts.isEmpty),
-          failure: state.posts.isNotEmpty
-              ? false
-              : state.status == ForYouStatus.failure,
-          onPostsUpdated: (posts) {
-            context.read<ForYouBloc>().add(ForYouEvent.update(posts: posts));
-          },
-          refreshController: _refreshController,
-          enablePullDown: true,
-          enablePullUp: state.hasNext,
-          checkVisibility: true,
-          onRefresh: () {
-            context.read<ForYouBloc>().add(ForYouEvent.get());
-          },
-          onLoading: () {
-            context.read<ForYouBloc>().add(
-              ForYouEvent.get(previousPosts: posts),
-            );
-          },
-          onFailure: () {
-            context.read<ForYouBloc>().add(ForYouEvent.get());
-          },
-          origin: 'For You',
-        );
-      },
+          return PostListView(
+            posts: posts,
+            loading:
+                state.status == ForYouStatus.initial ||
+                (state.status == ForYouStatus.loading && posts.isEmpty),
+            failure: state.posts.isNotEmpty
+                ? false
+                : state.status == ForYouStatus.failure,
+            onPostsUpdated: (posts) {
+              context.read<ForYouBloc>().add(ForYouEvent.update(posts: posts));
+            },
+            refreshController: _refreshController,
+            enablePullDown: true,
+            enablePullUp: state.hasNext,
+            checkVisibility: true,
+            onRefresh: () {
+              context.read<ForYouBloc>().add(ForYouEvent.get());
+            },
+            onLoading: () {
+              context.read<ForYouBloc>().add(
+                ForYouEvent.get(previousPosts: posts),
+              );
+            },
+            onFailure: () {
+              context.read<ForYouBloc>().add(ForYouEvent.get());
+            },
+            origin: 'For You',
+          );
+        },
+      ),
     );
   }
 }
@@ -173,7 +197,10 @@ class _FollowingTabState extends State<FollowingTab> {
 
   @override
   void initState() {
-    context.read<FollowingPostsBloc>().add(FollowingPostsEvent.get());
+    final posts = context.read<FollowingPostsBloc>().state.posts;
+    if (posts.isEmpty) {
+      context.read<FollowingPostsBloc>().add(FollowingPostsEvent.get());
+    }
     super.initState();
   }
 

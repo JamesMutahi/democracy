@@ -55,7 +55,7 @@ extension NotificationsEventPatterns on NotificationsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Add value)?  add,TResult Function( _Update value)?  update,TResult Function( _Remove value)?  remove,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Add value)?  add,TResult Function( _Update value)?  update,TResult Function( _Remove value)?  remove,TResult Function( _OpenedChat value)?  openedChat,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
@@ -63,7 +63,8 @@ return get(_that);case _Received() when received != null:
 return received(_that);case _Add() when add != null:
 return add(_that);case _Update() when update != null:
 return update(_that);case _Remove() when remove != null:
-return remove(_that);case _:
+return remove(_that);case _OpenedChat() when openedChat != null:
+return openedChat(_that);case _:
   return orElse();
 
 }
@@ -81,7 +82,7 @@ return remove(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Add value)  add,required TResult Function( _Update value)  update,required TResult Function( _Remove value)  remove,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Add value)  add,required TResult Function( _Update value)  update,required TResult Function( _Remove value)  remove,required TResult Function( _OpenedChat value)  openedChat,}){
 final _that = this;
 switch (_that) {
 case _Get():
@@ -89,7 +90,8 @@ return get(_that);case _Received():
 return received(_that);case _Add():
 return add(_that);case _Update():
 return update(_that);case _Remove():
-return remove(_that);}
+return remove(_that);case _OpenedChat():
+return openedChat(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -103,7 +105,7 @@ return remove(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Add value)?  add,TResult? Function( _Update value)?  update,TResult? Function( _Remove value)?  remove,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Add value)?  add,TResult? Function( _Update value)?  update,TResult? Function( _Remove value)?  remove,TResult? Function( _OpenedChat value)?  openedChat,}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
@@ -111,7 +113,8 @@ return get(_that);case _Received() when received != null:
 return received(_that);case _Add() when add != null:
 return add(_that);case _Update() when update != null:
 return update(_that);case _Remove() when remove != null:
-return remove(_that);case _:
+return remove(_that);case _OpenedChat() when openedChat != null:
+return openedChat(_that);case _:
   return null;
 
 }
@@ -128,14 +131,15 @@ return remove(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Notification notification)?  add,TResult Function( Notification notification)?  update,TResult Function( int notificationId)?  remove,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Notification notification)?  add,TResult Function( Notification notification)?  update,TResult Function( int notificationId)?  remove,TResult Function( int? chatId)?  openedChat,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get();case _Received() when received != null:
 return received(_that.payload);case _Add() when add != null:
 return add(_that.notification);case _Update() when update != null:
 return update(_that.notification);case _Remove() when remove != null:
-return remove(_that.notificationId);case _:
+return remove(_that.notificationId);case _OpenedChat() when openedChat != null:
+return openedChat(_that.chatId);case _:
   return orElse();
 
 }
@@ -153,14 +157,15 @@ return remove(_that.notificationId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Notification notification)  add,required TResult Function( Notification notification)  update,required TResult Function( int notificationId)  remove,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Notification notification)  add,required TResult Function( Notification notification)  update,required TResult Function( int notificationId)  remove,required TResult Function( int? chatId)  openedChat,}) {final _that = this;
 switch (_that) {
 case _Get():
 return get();case _Received():
 return received(_that.payload);case _Add():
 return add(_that.notification);case _Update():
 return update(_that.notification);case _Remove():
-return remove(_that.notificationId);}
+return remove(_that.notificationId);case _OpenedChat():
+return openedChat(_that.chatId);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -174,14 +179,15 @@ return remove(_that.notificationId);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Notification notification)?  add,TResult? Function( Notification notification)?  update,TResult? Function( int notificationId)?  remove,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Notification notification)?  add,TResult? Function( Notification notification)?  update,TResult? Function( int notificationId)?  remove,TResult? Function( int? chatId)?  openedChat,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get();case _Received() when received != null:
 return received(_that.payload);case _Add() when add != null:
 return add(_that.notification);case _Update() when update != null:
 return update(_that.notification);case _Remove() when remove != null:
-return remove(_that.notificationId);case _:
+return remove(_that.notificationId);case _OpenedChat() when openedChat != null:
+return openedChat(_that.chatId);case _:
   return null;
 
 }
@@ -503,6 +509,72 @@ class __$RemoveCopyWithImpl<$Res>
   return _then(_Remove(
 notificationId: null == notificationId ? _self.notificationId : notificationId // ignore: cast_nullable_to_non_nullable
 as int,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _OpenedChat implements NotificationsEvent {
+  const _OpenedChat({required this.chatId});
+  
+
+ final  int? chatId;
+
+/// Create a copy of NotificationsEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$OpenedChatCopyWith<_OpenedChat> get copyWith => __$OpenedChatCopyWithImpl<_OpenedChat>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OpenedChat&&(identical(other.chatId, chatId) || other.chatId == chatId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,chatId);
+
+@override
+String toString() {
+  return 'NotificationsEvent.openedChat(chatId: $chatId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$OpenedChatCopyWith<$Res> implements $NotificationsEventCopyWith<$Res> {
+  factory _$OpenedChatCopyWith(_OpenedChat value, $Res Function(_OpenedChat) _then) = __$OpenedChatCopyWithImpl;
+@useResult
+$Res call({
+ int? chatId
+});
+
+
+
+
+}
+/// @nodoc
+class __$OpenedChatCopyWithImpl<$Res>
+    implements _$OpenedChatCopyWith<$Res> {
+  __$OpenedChatCopyWithImpl(this._self, this._then);
+
+  final _OpenedChat _self;
+  final $Res Function(_OpenedChat) _then;
+
+/// Create a copy of NotificationsEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? chatId = freezed,}) {
+  return _then(_OpenedChat(
+chatId: freezed == chatId ? _self.chatId : chatId // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 

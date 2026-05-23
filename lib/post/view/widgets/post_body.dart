@@ -1,11 +1,12 @@
 import 'package:democracy/app/shared/pages/search_results.dart';
 import 'package:democracy/app/shared/widgets/custom_text.dart';
 import 'package:democracy/app/shared/constants/regex.dart';
+import 'package:democracy/app/view/router/router.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/shared/post_navigator.dart';
-import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:go_router/go_router.dart';
 
 class PostBody extends StatefulWidget {
   const PostBody({
@@ -65,12 +66,9 @@ class _PostBodyState extends State<PostBody> {
               }
             },
             onUserTagPressed: (userId) {
-              navigateToProfilePage(
-                context: context,
-                user: widget.post.taggedUsers.firstWhere(
-                  (user) => user.id == userId,
-                ),
-              );
+              context.push(ProfileRoute(userId: widget.post.taggedUsers.firstWhere(
+                    (user) => user.id == userId,
+              ).id).location);
             },
             onHashtagPressed: (hashtag) {
               navigateToSearchResults(

@@ -417,7 +417,7 @@ class _MeetingDetailState extends State<MeetingDetail> {
                                   ? Colors.red
                                   : Colors.green
                             : Colors.amber,
-                        iconSize: 35,
+                        iconSize: 30,
                         icon: Icon(
                           isBroadcaster
                               ? _isMuted

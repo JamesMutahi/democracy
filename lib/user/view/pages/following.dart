@@ -1,10 +1,11 @@
+import 'package:democracy/app/view/router/router.dart';
 import 'package:democracy/user/bloc/followers/followers_bloc.dart';
 import 'package:democracy/user/bloc/following/following_bloc.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class FollowingPage extends StatelessWidget {
@@ -107,7 +108,7 @@ class _FollowersTabState extends State<_FollowersTab> {
             );
           },
           onUserTap: (user) {
-            navigateToProfilePage(context: context, user: user);
+            context.push(ProfileRoute(userId: user.id).location);
           },
           onRefresh: () {
             context.read<FollowersBloc>().add(
@@ -192,7 +193,7 @@ class _FollowingTabState extends State<_FollowingTab> {
             );
           },
           onUserTap: (user) {
-            navigateToProfilePage(context: context, user: user);
+            context.push(ProfileRoute(userId: user.id).location);
           },
           onRefresh: () {
             context.read<FollowingBloc>().add(

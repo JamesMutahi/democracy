@@ -13,4 +13,6 @@ sealed class NotificationsEvent with _$NotificationsEvent {
   }) = _Update;
   const factory NotificationsEvent.remove({required int notificationId}) =
       _Remove;
+  const factory NotificationsEvent.openedChat({required int? chatId}) =
+      _OpenedChat;
 }

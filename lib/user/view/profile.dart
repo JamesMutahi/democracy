@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart'
-    show WebsocketStatus;
+    show WebsocketStatus, WebSocketService;
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
@@ -8,6 +8,11 @@ import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/view/utils/chat_navigator.dart';
+import 'package:democracy/petition/bloc/user_petitions/user_petitions_bloc.dart';
+import 'package:democracy/post/bloc/likes/likes_bloc.dart';
+import 'package:democracy/post/bloc/user_community_notes/user_community_notes_bloc.dart';
+import 'package:democracy/post/bloc/user_posts/user_posts_bloc.dart';
+import 'package:democracy/post/bloc/user_replies/user_replies_bloc.dart';
 import 'package:democracy/post/view/draft_posts.dart';
 import 'package:democracy/user/bloc/profile/profile_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
@@ -37,18 +42,54 @@ const List<Tab> userTabs = <Tab>[
   Tab(text: 'Petitions'),
 ];
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key, required this.user});
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key, required this.userId});
+
+  final int userId;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>
+          ProfileBloc(webSocketService: context.read<WebSocketService>())
+            ..add(ProfileEvent.load(userId: userId)),
+      child: Scaffold(
+        body: BlocBuilder<ProfileBloc, ProfileState>(
+          buildWhen: (previous, current) => current.userId == userId,
+          builder: (context, state) {
+            if (state.status == ProfileStatus.initial ||
+                (state.status == ProfileStatus.loading &&
+                    state.user == null)) {
+              return BottomLoader();
+            }
+            if (state.status == ProfileStatus.failure && state.user == null) {
+              return FailureRetryButton(
+                onPressed: () {
+                  context.read<ProfileBloc>().add(
+                    ProfileEvent.load(userId: userId),
+                  );
+                },
+              );
+            }
+            return _Profile(user: state.user!);
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _Profile extends StatefulWidget {
+  const _Profile({required this.user});
 
   final User user;
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  State<_Profile> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends State<_Profile> {
   final ScrollController _scrollController = ScrollController();
-  late User _user = widget.user;
   bool _nameIsScrolled = false;
   final double _expandedHeight = 200;
   bool _hideTabs = true;
@@ -56,17 +97,18 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    _subscribe();
     final me = context.read<AuthBloc>().state.user!;
-    if (me.id != _user.id) {
-      context.read<UserDetailBloc>().add(UserDetailEvent.addVisit(user: _user));
+    if (me.id != widget.user.id) {
+      context.read<UserDetailBloc>().add(
+        UserDetailEvent.addVisit(user: widget.user),
+      );
     }
     _scrollController.addListener(_handleScrolling);
   }
 
-  void _subscribe() {
+  void _loadUser() {
     // subscribe and get user
-    context.read<ProfileBloc>().add(ProfileEvent.load(userId: _user.id));
+    context.read<ProfileBloc>().add(ProfileEvent.load(userId: widget.user.id));
   }
 
   @override
@@ -92,65 +134,94 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     User currentUser = context.read<AuthBloc>().state.user!;
-    bool isCurrentUser = currentUser.id == _user.id;
+    bool isCurrentUser = currentUser.id == widget.user.id;
 
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<UserDetailBloc, UserDetailState>(
-          listener: (context, state) {
-            if (state is UserSubscribed) {
-              if (widget.user.id == state.user.id) {
-                setState(() {
-                  _user = state.user;
-                  if (state.user.isBlocked) {
-                    if (_hideTabs == false) {
-                      _hideTabs = true;
-                    }
-                  } else {
-                    _hideTabs = false;
-                  }
-                });
-              }
-            }
-            if (state is UserUpdated) {
-              if (widget.user.id == state.user.id) {
-                setState(() {
-                  _user = state.user;
-                  if (state.user.isBlocked) {
-                    if (_hideTabs == false) {
-                      _hideTabs = true;
-                    }
-                  } else {
-                    _hideTabs = false;
-                  }
-                });
-              }
-            }
-          },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              UserPostsBloc(webSocketService: context.read<WebSocketService>()),
         ),
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state.status == WebsocketStatus.connected) {
-              _subscribe();
-            }
-          },
+        BlocProvider(
+          create: (context) => UserRepliesBloc(
+            webSocketService: context.read<WebSocketService>(),
+          ),
         ),
-        BlocListener<ChatDetailBloc, ChatDetailState>(
-          listener: (context, state) {
-            if (state is ChatCreated) {
-              if (state.userId == _user.id) {
-                navigateToChatDetail(context: context, chat: state.chat);
-              }
-            }
-          },
+        BlocProvider(
+          create: (context) =>
+              LikesBloc(webSocketService: context.read<WebSocketService>()),
+        ),
+        BlocProvider(
+          create: (context) => UserCommunityNotesBloc(
+            webSocketService: context.read<WebSocketService>(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => UserPetitionsBloc(
+            webSocketService: context.read<WebSocketService>(),
+          ),
         ),
       ],
-      child: Scaffold(
-        body: PopScope(
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<UserDetailBloc, UserDetailState>(
+            listener: (context, state) {
+              if (state is UserSubscribed) {
+                if (widget.user.id == state.user.id) {
+                  context.read<ProfileBloc>().add(
+                    ProfileEvent.updated(user: state.user),
+                  );
+                  setState(() {
+                    if (state.user.isBlocked) {
+                      if (_hideTabs == false) {
+                        _hideTabs = true;
+                      }
+                    } else {
+                      _hideTabs = false;
+                    }
+                  });
+                }
+              }
+              if (state is UserUpdated) {
+                if (widget.user.id == state.user.id) {
+                  context.read<ProfileBloc>().add(
+                    ProfileEvent.updated(user: state.user),
+                  );
+                  setState(() {
+                    if (state.user.isBlocked) {
+                      if (_hideTabs == false) {
+                        _hideTabs = true;
+                      }
+                    } else {
+                      _hideTabs = false;
+                    }
+                  });
+                }
+              }
+            },
+          ),
+          BlocListener<WebsocketBloc, WebsocketState>(
+            listener: (context, state) {
+              if (state.status == WebsocketStatus.connected) {
+                _loadUser();
+              }
+            },
+          ),
+          BlocListener<ChatDetailBloc, ChatDetailState>(
+            listener: (context, state) {
+              if (state is ChatCreated) {
+                if (state.userId == widget.user.id) {
+                  navigateToChatDetail(context: context, chat: state.chat);
+                }
+              }
+            },
+          ),
+        ],
+        child: PopScope(
           canPop: true,
           onPopInvokedWithResult: (_, _) {
             context.read<UserDetailBloc>().add(
-              UserDetailEvent.unsubscribe(user: _user),
+              UserDetailEvent.unsubscribe(user: widget.user),
             );
           },
           child: SafeArea(
@@ -165,16 +236,16 @@ class _ProfilePageState extends State<ProfilePage> {
                       pinned: true,
                       floating: true,
                       delegate: ProfileAppBarDelegate(
-                        user: _user,
+                        user: widget.user,
                         isCurrentUser: isCurrentUser,
                         nameIsScrolled: _nameIsScrolled,
                         expandedHeight: _expandedHeight,
                       ),
                     ),
                     SliverToBoxAdapter(
-                      child: _UserDetails(_user, isCurrentUser),
+                      child: _UserDetails(widget.user, isCurrentUser),
                     ),
-                    if (!_hideTabs || !_user.isBlocked)
+                    if (!_hideTabs || !widget.user.isBlocked)
                       SliverPersistentHeader(
                         delegate: _TabBarAppBarDelegate(
                           TabBar(
@@ -193,20 +264,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                   ];
                 },
-                body: BlocBuilder<ProfileBloc, ProfileState>(
-                  buildWhen: (previous, current) =>
-                      current.user?.id == widget.user.id,
-                  builder: (context, state) {
-                    switch (state.status) {
-                      case ProfileStatus.success:
-                        return _buildProfile(isCurrentUser);
-                      case ProfileStatus.failure:
-                        return FailureRetryButton(onPressed: _subscribe);
-                      default:
-                        return BottomLoader();
-                    }
-                  },
-                ),
+                body: _buildProfile(isCurrentUser),
               ),
             ),
           ),
@@ -216,14 +274,14 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildProfile(bool isCurrentUser) {
-    return (_hideTabs && _user.isBlocked)
+    return (_hideTabs && widget.user.isBlocked)
         ? Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  '@${_user.username} is blocked',
+                  '@${widget.user.username} is blocked',
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 SizedBox(height: 10),
@@ -248,11 +306,15 @@ class _ProfilePageState extends State<ProfilePage> {
         : TabBarView(
             physics: const NeverScrollableScrollPhysics(),
             children: [
-              UserPosts(key: ValueKey(_user.id), user: _user),
-              UserReplies(key: ValueKey(_user.id), user: _user),
-              if (isCurrentUser) Likes(key: ValueKey(_user.id), user: _user),
-              UserCommunityNotes(key: ValueKey(_user.id), user: _user),
-              UserPetitions(key: ValueKey(_user.id), user: _user),
+              UserPosts(key: ValueKey(widget.user.id), user: widget.user),
+              UserReplies(key: ValueKey(widget.user.id), user: widget.user),
+              if (isCurrentUser)
+                Likes(key: ValueKey(widget.user.id), user: widget.user),
+              UserCommunityNotes(
+                key: ValueKey(widget.user.id),
+                user: widget.user,
+              ),
+              UserPetitions(key: ValueKey(widget.user.id), user: widget.user),
             ],
           );
   }

@@ -5,6 +5,7 @@ import 'package:democracy/app/shared/widgets/asset_viewer.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
+import 'package:democracy/app/view/router/router.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
@@ -27,9 +28,9 @@ import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
 import 'package:democracy/survey/view/widgets/survey_tile.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
@@ -455,9 +456,8 @@ class _PostContainer extends StatelessWidget {
                   children: [
                     InkWell(
                       onTap: () {
-                        navigateToProfilePage(
-                          context: context,
-                          user: post.author,
+                        context.push(
+                          ProfileRoute(userId: post.author.id).location,
                         );
                       },
                       child: Container(

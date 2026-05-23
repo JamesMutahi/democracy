@@ -1,9 +1,10 @@
+import 'package:democracy/app/view/router/router.dart';
 import 'package:democracy/meeting/bloc/participants/participants_bloc.dart';
 import 'package:democracy/meeting/models/meeting.dart';
-import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class AllTab extends StatefulWidget {
@@ -71,7 +72,7 @@ class _AllTabState extends State<AllTab> with AutomaticKeepAliveClientMixin {
             );
           },
           onUserTap: (user) {
-            navigateToProfilePage(context: context, user: user);
+            context.push(ProfileRoute(userId: user.id).location);
           },
           onRefresh: () {
             context.read<ParticipantsBloc>().add(

@@ -1,4 +1,5 @@
 import 'package:democracy/app/bloc/services/websocket_service.dart';
+import 'package:democracy/app/view/router/router.dart';
 import 'package:democracy/app/view/widgets/filters_modal.dart';
 import 'package:democracy/app/view/widgets/results_search_bar.dart';
 import 'package:democracy/post/bloc/post_filter/post_filter_cubit.dart';
@@ -8,10 +9,10 @@ import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 void navigateToSearchResults({
@@ -21,21 +22,18 @@ void navigateToSearchResults({
   DateTime? endDate,
   required int filterCount,
   VoidCallback? whenComplete,
-}) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => BlocProvider(
-        create: (context) => PostFilterCubit(),
-        child: SearchResults(
-          searchTerm: searchTerm,
-          startDate: startDate,
-          endDate: endDate,
-          filterCount: filterCount,
-        ),
-      ),
-    ),
-  ).whenComplete(() => whenComplete?.call());
+}) async {
+  // Construct the type-safe class layout with your existing data arguments
+  final route = SearchResultsRoute(
+    searchTerm: searchTerm,
+    startDate: startDate,
+    endDate: endDate,
+    filterCount: filterCount,
+  );
+
+  await route.push(context);
+
+  whenComplete?.call();
 }
 
 class SearchResults extends StatefulWidget {
@@ -65,12 +63,6 @@ class _SearchResultsState extends State<SearchResults>
 
   @override
   void initState() {
-    context.read<PostFilterCubit>().initialize(
-      onExplorePage: false,
-      searchTerm: widget.searchTerm,
-      startDate: widget.startDate,
-      endDate: widget.endDate,
-    );
     super.initState();
     _controller.text = widget.searchTerm;
   }
@@ -84,91 +76,101 @@ class _SearchResultsState extends State<SearchResults>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        body: SafeArea(
-          child: BlocBuilder<PostFilterCubit, PostFilterState>(
-            buildWhen: (previous, current) {
-              return current.searchTerm == widget.searchTerm;
-            },
-            builder: (context, state) {
-              return NestedScrollView(
-                headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-                  return [
-                    SliverAppBar(
-                      floating: true,
-                      snap: true,
-                      forceElevated: true,
-                      automaticallyImplyLeading: false,
-                      flexibleSpace: Builder(
-                        builder: (context) {
-                          return SizedBox(
-                            height: 50,
-                            child: Row(
-                              children: [
-                                BackButton(),
-                                _buildSearchBar(
-                                  startDate: state.startDate,
-                                  endDate: state.endDate,
-                                  filterCount: state.count,
-                                ),
-                              ],
-                            ),
-                          );
-                        },
+    return BlocProvider(
+      create: (context) => PostFilterCubit()
+        ..initialize(
+          onExplorePage: false,
+          searchTerm: widget.searchTerm,
+          startDate: widget.startDate,
+          endDate: widget.endDate,
+        ),
+      child: DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          body: SafeArea(
+            child: BlocBuilder<PostFilterCubit, PostFilterState>(
+              buildWhen: (previous, current) {
+                return current.searchTerm == widget.searchTerm;
+              },
+              builder: (context, state) {
+                return NestedScrollView(
+                  headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+                    return [
+                      SliverAppBar(
+                        floating: true,
+                        snap: true,
+                        forceElevated: true,
+                        automaticallyImplyLeading: false,
+                        flexibleSpace: Builder(
+                          builder: (context) {
+                            return SizedBox(
+                              height: 50,
+                              child: Row(
+                                children: [
+                                  BackButton(),
+                                  _buildSearchBar(
+                                    cubit: context.read<PostFilterCubit>(),
+                                    startDate: state.startDate,
+                                    endDate: state.endDate,
+                                    filterCount: state.count,
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                        bottom: TabBar(
+                          dividerColor: Theme.of(
+                            context,
+                          ).colorScheme.outlineVariant,
+                          labelStyle: Theme.of(context).textTheme.titleMedium,
+                          tabs: [
+                            Tab(text: 'Top'),
+                            Tab(text: 'Recent'),
+                            Tab(text: 'Profiles'),
+                          ],
+                        ),
                       ),
-                      bottom: TabBar(
-                        dividerColor: Theme.of(
-                          context,
-                        ).colorScheme.outlineVariant,
-                        labelStyle: Theme.of(context).textTheme.titleMedium,
-                        tabs: [
-                          Tab(text: 'Top'),
-                          Tab(text: 'Recent'),
-                          Tab(text: 'Profiles'),
-                        ],
+                    ];
+                  },
+                  body: MultiBlocProvider(
+                    providers: [
+                      BlocProvider(
+                        create: (context) => PostsBloc(
+                          webSocketService: context.read<WebSocketService>(),
+                        ),
                       ),
-                    ),
-                  ];
-                },
-                body: MultiBlocProvider(
-                  providers: [
-                    BlocProvider(
-                      create: (context) => PostsBloc(
-                        webSocketService: context.read<WebSocketService>(),
+                      BlocProvider(
+                        create: (context) => RecentPostsBloc(
+                          webSocketService: context.read<WebSocketService>(),
+                        ),
                       ),
-                    ),
-                    BlocProvider(
-                      create: (context) => RecentPostsBloc(
-                        webSocketService: context.read<WebSocketService>(),
+                      BlocProvider(
+                        create: (context) => UsersBloc(
+                          webSocketService: context.read<WebSocketService>(),
+                        ),
                       ),
-                    ),
-                    BlocProvider(
-                      create: (context) => UsersBloc(
-                        webSocketService: context.read<WebSocketService>(),
-                      ),
-                    ),
-                  ],
-                  child: TabBarView(
-                    physics: NeverScrollableScrollPhysics(),
-                    children: [
-                      _TopPostsTab(
-                        searchTerm: widget.searchTerm,
-                        startDate: state.startDate,
-                        endDate: state.endDate,
-                      ),
-                      _RecentPostsTab(
-                        searchTerm: widget.searchTerm,
-                        startDate: state.startDate,
-                        endDate: state.endDate,
-                      ),
-                      _ProfilesTab(searchTerm: widget.searchTerm),
                     ],
+                    child: TabBarView(
+                      physics: NeverScrollableScrollPhysics(),
+                      children: [
+                        _TopPostsTab(
+                          searchTerm: widget.searchTerm,
+                          startDate: state.startDate,
+                          endDate: state.endDate,
+                        ),
+                        _RecentPostsTab(
+                          searchTerm: widget.searchTerm,
+                          startDate: state.startDate,
+                          endDate: state.endDate,
+                        ),
+                        _ProfilesTab(searchTerm: widget.searchTerm),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
       ),
@@ -176,11 +178,11 @@ class _SearchResultsState extends State<SearchResults>
   }
 
   Widget _buildSearchBar({
+    required PostFilterCubit cubit,
     required DateTime? startDate,
     required DateTime? endDate,
     required int filterCount,
   }) {
-    final cubit = context.read<PostFilterCubit>();
     return ResultsSearchBar(
       controller: _controller,
       filterCount: filterCount,
@@ -488,7 +490,7 @@ class _ProfilesTabState extends State<_ProfilesTab>
           enablePullUp: state.hasNext,
           showProfileButtons: true,
           onUserTap: (user) {
-            navigateToProfilePage(context: context, user: user);
+            context.push(ProfileRoute(userId: user.id).location);
           },
           onLoading: () {
             _getUsers(lastUser: users.last);

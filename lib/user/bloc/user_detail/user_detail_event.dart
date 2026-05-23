@@ -14,8 +14,6 @@ sealed class UserDetailEvent with _$UserDetailEvent {
     required Map<String, dynamic> payload,
   }) = _Updated;
 
-  const factory UserDetailEvent.retrieve({required int userId}) = _Retrieve;
-
   const factory UserDetailEvent.subscribe({required int userId}) = _Subscribe;
 
   const factory UserDetailEvent.patch({

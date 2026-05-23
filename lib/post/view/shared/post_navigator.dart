@@ -1,4 +1,5 @@
 import 'package:democracy/app/bloc/services/websocket_service.dart';
+import 'package:democracy/app/view/router/router.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/meeting/models/meeting.dart';
@@ -10,12 +11,12 @@ import 'package:democracy/post/models/draft_post.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/community_note_detail.dart';
 import 'package:democracy/post/view/community_notes.dart';
-import 'package:democracy/post/view/post_create.dart';
 import 'package:democracy/post/view/post_detail.dart';
 import 'package:democracy/post/view/post_update.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 void navigateToPostDetail({
   required BuildContext context,
@@ -104,42 +105,17 @@ void navigateToPostCreate({
   Meeting? meeting,
   Section? section,
 }) {
-  Navigator.of(context).push(
-    PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) =>
-          MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (context) => RepliesBloc(
-                  webSocketService: context.read<WebSocketService>(),
-                ),
-              ),
-              BlocProvider(
-                create: (context) => ReplyToBloc(
-                  webSocketService: context.read<WebSocketService>(),
-                ),
-              ),
-            ],
-            child: PostCreatePage(
-              replyTo: replyTo,
-              repostOf: repostOf,
-              ballot: ballot,
-              survey: survey,
-              petition: petition,
-              meeting: meeting,
-              section: section,
-            ),
-          ),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        const begin = Offset(0.0, 1.0);
-        const end = Offset.zero;
-        final tween = Tween(
-          begin: begin,
-          end: end,
-        ).chain(CurveTween(curve: Curves.ease));
-        return SlideTransition(position: animation.drive(tween), child: child);
-      },
-    ),
+  context.push(
+    const CreatePostRoute().location,
+    extra: {
+      'replyTo': replyTo,
+      'repostOf': repostOf,
+      'ballot': ballot,
+      'survey': survey,
+      'petition': petition,
+      'meeting': meeting,
+      'section': section,
+    },
   );
 }
 

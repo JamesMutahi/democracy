@@ -158,7 +158,9 @@ class _ParticipantProfileState extends State<ParticipantProfile> {
                           leading: Icon(Symbols.mail_rounded),
                           title: Text('Send Direct Message'),
                         ),
-                        if (widget.canManageCoHosts && !_isSpeaker)
+                        if (!widget.isHost &&
+                            widget.canManageCoHosts &&
+                            !_isSpeaker)
                           ListTile(
                             onTap: () async {
                               context.read<SpeakerDetailBloc>().add(
@@ -179,7 +181,9 @@ class _ParticipantProfileState extends State<ParticipantProfile> {
                                   : 'Add to co-hosts',
                             ),
                           ),
-                        if (widget.canManageSpeakers && !_isCoHost)
+                        if (!widget.isHost &&
+                            widget.canManageSpeakers &&
+                            !_isCoHost)
                           ListTile(
                             onTap: () async {
                               context.read<SpeakerDetailBloc>().add(
@@ -201,7 +205,7 @@ class _ParticipantProfileState extends State<ParticipantProfile> {
                             ),
                           ),
                         if (widget.canManageSpeakers &&
-                            (widget.isHost || _isCoHost || _isSpeaker))
+                            (_isCoHost || _isSpeaker))
                           ListTile(
                             onTap: _isMuted
                                 ? null

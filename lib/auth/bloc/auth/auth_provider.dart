@@ -60,11 +60,7 @@ class AuthProvider {
   Future<User> getUserFromAPI() async {
     try {
       Response response = await dio.get('user/');
-      if (response.statusCode == 200) {
-        return User.fromJson(response.data);
-      } else {
-        return Future.error(response.data);
-      }
+      return User.fromJson(response.data);
     } on DioException {
       return Future.error(
         'Unable to login at this time. \nPlease try again later',

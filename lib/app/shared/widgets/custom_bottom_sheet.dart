@@ -104,34 +104,11 @@ class ShareBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    late String className;
-    late int objectId;
-    if (post != null) {
-      className = 'post';
-      objectId = post!.id;
-    }
-    if (ballot != null) {
-      className = 'ballot';
-      objectId = ballot!.id;
-    }
-    if (survey != null) {
-      className = 'survey';
-      objectId = survey!.id;
-    }
-    if (meeting != null) {
-      className = 'meeting';
-      objectId = meeting!.id;
-    }
-    if (petition != null) {
-      className = 'petition';
-      objectId = petition!.id;
-    }
-    if (section != null) {
-      className = 'section';
-      objectId = section!.id;
-    }
+    final String name = _getShareableName();
+    final int id = _getShareableId();
+
     return CustomBottomSheet(
-      title: 'Share $className',
+      title: 'Share $name',
       children: [
         CustomBottomSheetContainer(
           text: 'Send via Direct Message',
@@ -164,7 +141,7 @@ class ShareBottomSheet extends StatelessWidget {
               splashColor: Colors.transparent,
               onTap: () async {
                 Navigator.pop(context);
-                copyLink(className, objectId);
+                copyLink(name, id);
               },
               child: Column(
                 children: [
@@ -210,6 +187,26 @@ class ShareBottomSheet extends StatelessWidget {
         ),
       ],
     );
+  }
+
+String _getShareableName() {
+    if (post != null) return 'post';
+    if (ballot != null) return 'ballot';
+    if (survey != null) return 'survey';
+    if (meeting != null) return 'meeting';
+    if (petition != null) return 'petition';
+    if (section != null) return 'section';
+    throw StateError('ShareBottomSheet: No shareable item provided');
+  }
+
+  int _getShareableId() {
+    if (post != null) return post!.id;
+    if (ballot != null) return ballot!.id;
+    if (survey != null) return survey!.id;
+    if (meeting != null) return meeting!.id;
+    if (petition != null) return petition!.id;
+    if (section != null) return section!.id;
+    throw StateError('ShareBottomSheet: No shareable item provided');
   }
 }
 

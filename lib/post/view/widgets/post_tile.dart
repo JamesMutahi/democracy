@@ -1,6 +1,7 @@
 import 'package:democracy/app/shared/widgets/asset_viewer.dart';
 import 'package:democracy/app/shared/widgets/custom_text.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
+import 'package:democracy/app/view/router/router.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
@@ -17,10 +18,10 @@ import 'package:democracy/post/view/widgets/thread.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
 import 'package:democracy/survey/view/widgets/survey_tile.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/user/view/utils/profile_navigator.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -424,11 +425,12 @@ class _CommunityNoteState extends State<CommunityNote> {
                   });
                 },
                 onUserTagPressed: (userId) {
-                  navigateToProfilePage(
-                    context: context,
-                    user: widget.post.taggedUsers.firstWhere(
-                      (user) => user.id == userId,
-                    ),
+                  context.push(
+                    ProfileRoute(
+                      userId: widget.post.taggedUsers
+                          .firstWhere((user) => user.id == userId)
+                          .id,
+                    ).location,
                   );
                 },
               ),

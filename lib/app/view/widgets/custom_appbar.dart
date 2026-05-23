@@ -1,32 +1,25 @@
+import 'package:democracy/app/bloc/menu_controller/menu_controller_cubit.dart';
+import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/notification/view/notifications.dart';
-import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class CustomAppBar extends StatelessWidget {
-  const CustomAppBar({
-    super.key,
-    required this.user,
-    required this.notifications,
-    required this.middle,
-    this.bottom,
-  });
+  const CustomAppBar({super.key, required this.middle, this.bottom});
 
-  final User user;
-  final int notifications;
   final Widget middle;
   final PreferredSizeWidget? bottom;
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> widgets = [DrawerOpener(user: user)];
+    List<Widget> widgets = [DrawerOpener()];
     widgets.add(middle);
-    widgets.add(NotificationButton(notifications: notifications));
+    widgets.add(NotificationButton());
     return SliverAppBar(
       floating: true,
       snap: true,
@@ -50,17 +43,17 @@ class CustomAppBar extends StatelessWidget {
 }
 
 class DrawerOpener extends StatelessWidget {
-  const DrawerOpener({super.key, required this.user});
-
-  final User user;
+  const DrawerOpener({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final user = context.read<AuthBloc>().state.user!;
+
     return Container(
       margin: EdgeInsets.only(left: 15),
       child: GestureDetector(
         onTap: () {
-          Scaffold.of(context).openDrawer();
+          context.read<MenuControllerCubit>().openDrawer();
         },
         child: ProfileImage(user: user),
       ),
@@ -133,54 +126,60 @@ class CustomSearchBar extends StatelessWidget {
 }
 
 class NotificationButton extends StatelessWidget {
-  const NotificationButton({super.key, required this.notifications});
-
-  final int notifications;
+  const NotificationButton({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Notifications()),
-        );
-      },
-      child: Stack(
-        children: [
-          Container(
-            margin: EdgeInsets.only(right: 15),
-            padding: EdgeInsets.all(8.5),
-            decoration: BoxDecoration(
-              border: Border.all(color: Theme.of(context).colorScheme.outline),
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-            ),
-            child: Icon(
-              Icons.notifications_rounded,
-              color: Theme.of(context).colorScheme.outline,
-              size: 20,
-            ),
-          ),
-          if (notifications > 0)
-            Positioned(
-              right: 10,
-              top: 0,
-              child: Container(
-                padding: EdgeInsets.all(1),
+    return BlocBuilder<NotificationsBloc, NotificationsState>(
+      builder: (context, state) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Notifications()),
+            );
+          },
+          child: Stack(
+            children: [
+              Container(
+                margin: EdgeInsets.only(right: 15),
+                padding: EdgeInsets.all(8.5),
                 decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(10), // Makes it a circle
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
                 ),
-                constraints: BoxConstraints(minWidth: 18, minHeight: 18),
-                child: Text(
-                  notifications.toString(),
-                  style: TextStyle(color: Colors.white, fontSize: 10),
-                  textAlign: TextAlign.center,
+                child: Icon(
+                  Icons.notifications_rounded,
+                  color: Theme.of(context).colorScheme.outline,
+                  size: 20,
                 ),
               ),
-            ),
-        ],
-      ),
+              if (state.unreadCount > 0)
+                Positioned(
+                  right: 10,
+                  top: 0,
+                  child: Container(
+                    padding: EdgeInsets.all(1),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(
+                        10,
+                      ), // Makes it a circle
+                    ),
+                    constraints: BoxConstraints(minWidth: 18, minHeight: 18),
+                    child: Text(
+                      state.unreadCount.toString(),
+                      style: TextStyle(color: Colors.white, fontSize: 10),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

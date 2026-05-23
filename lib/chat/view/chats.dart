@@ -1,4 +1,3 @@
-import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/no_results.dart';
@@ -13,6 +12,7 @@ import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/chat/view/utils/chat_navigator.dart';
 import 'package:democracy/chat/view/utils/last_message.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
+import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
@@ -76,7 +76,10 @@ class _ChatsState extends State<Chats> {
           listener: (context, state) {
             if (state is NotificationCreated) {
               if (state.notification.chat != null) {
-                final openChatId = context.read<GlobalCubit>().state.openChatId;
+                final openChatId = context
+                    .read<NotificationsBloc>()
+                    .state
+                    .openChatId;
                 if (openChatId != state.notification.chat!.id) {
                   context.read<ChatsBloc>().add(ChatsEvent.update());
                 }

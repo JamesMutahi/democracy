@@ -38,7 +38,6 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
     on<_Retrieved>((event, emit) => _onRetrieved(event, emit));
     on<_Subscribed>((event, emit) => _onSubscribed(event, emit));
     on<_Updated>((event, emit) => _onUpdated(event, emit));
-    on<_Retrieve>((event, emit) => _onRetrieve(event, emit));
     on<_Subscribe>((event, emit) => _onSubscribe(event, emit));
     on<_Patch>((event, emit) async => await _onPatch(event, emit));
     on<_Follow>((event, emit) => _onFollow(event, emit));
@@ -80,24 +79,6 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
     } else {
       emit(UserDetailFailure(error: event.payload['errors'].toString()));
     }
-  }
-
-  void _onRetrieve(_Retrieve event, Emitter<UserDetailState> emit) async {
-    emit(_Loading());
-    if (!webSocketService.isConnected) {
-      emit(UserDetailFailure(error: serverError));
-      return;
-    }
-
-    Map<String, dynamic> message = {
-      'stream': stream,
-      'payload': {
-        'action': 'retrieve',
-        'request_id': requestId,
-        'pk': event.userId,
-      },
-    };
-    webSocketService.send(message);
   }
 
   void _onSubscribe(_Subscribe event, Emitter<UserDetailState> emit) async {

@@ -144,7 +144,9 @@ class MyNetworkClient {
         baseUrl: dotenv.env['BASE_URL'] ?? 'https://example.com',
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
-        validateStatus: (status) => status! < 520,
+        validateStatus: (status) {
+          return status != null && status >= 200 && status < 300;
+        },
       ),
     );
 

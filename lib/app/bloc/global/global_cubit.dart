@@ -39,10 +39,6 @@ class GlobalCubit extends Cubit<GlobalState> {
     }
   }
 
-  void holdChatId({required int? chatId}) {
-    emit(state.copyWith(openChatId: chatId));
-  }
-
   void addViewedPost({required Map<String, int> viewedPost}) {
     emit(state.copyWith(viewedPosts: {...state.viewedPosts, viewedPost}));
   }

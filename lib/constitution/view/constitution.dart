@@ -58,11 +58,7 @@ class _ConstitutionState extends State<Constitution> {
                         builder: (BuildContext context) {
                           return ShareBottomSheet(section: _selectedSection);
                         },
-                      ).then((_) {
-                        setState(() {
-                          _selectedSection = null;
-                        });
-                      });
+                      );
                     },
                     child: Text('Share'),
                   )
