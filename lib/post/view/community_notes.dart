@@ -204,42 +204,45 @@ class _SortByDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 15.0, top: 15),
-            child: Text(
-              'Sorted by:',
-              style: Theme.of(context).textTheme.titleLarge,
+      child: SizedBox(
+        width: 250,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 15.0, top: 15),
+              child: Text(
+                'Sorted by:',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
             ),
-          ),
-          FormBuilderRadioGroup<String>(
-            name: 'sort by',
-            initialValue: selected ?? 'score',
-            orientation: OptionsOrientation.vertical,
-            decoration: InputDecoration(border: InputBorder.none),
-            options: [
-              FormBuilderFieldOption<String>(
-                value: 'score',
-                child: Text('Highest score (default)'),
-              ),
-              FormBuilderFieldOption<String>(
-                value: 'recent',
-                child: Text('Newest first'),
-              ),
-              FormBuilderFieldOption<String>(
-                value: 'oldest',
-                child: Text('Oldest first'),
-              ),
-            ],
-            onChanged: (value) {
-              Navigator.pop(context, value);
-            },
-            separator: const VerticalDivider(width: 10, thickness: 5),
-          ),
-        ],
+            FormBuilderRadioGroup<String>(
+              name: 'sort by',
+              initialValue: selected ?? 'score',
+              orientation: OptionsOrientation.vertical,
+              decoration: InputDecoration(border: InputBorder.none),
+              options: [
+                FormBuilderFieldOption<String>(
+                  value: 'score',
+                  child: Text('Highest score (default)'),
+                ),
+                FormBuilderFieldOption<String>(
+                  value: 'recent',
+                  child: Text('Newest first'),
+                ),
+                FormBuilderFieldOption<String>(
+                  value: 'oldest',
+                  child: Text('Oldest first'),
+                ),
+              ],
+              onChanged: (value) {
+                Navigator.pop(context, value);
+              },
+              separator: const VerticalDivider(width: 10, thickness: 5),
+            ),
+          ],
+        ),
       ),
     );
   }

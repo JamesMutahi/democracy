@@ -3,6 +3,7 @@ import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/post/bloc/following_posts/following_posts_bloc.dart';
 import 'package:democracy/post/bloc/for_you/for_you_bloc.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
@@ -30,7 +31,7 @@ class _HomePageState extends State<HomePage>
       child: NestedScrollView(
         headerSliverBuilder: (context, bool innerBoxIsScrolled) {
           return [
-            if (responsive.isMobile)
+            if (!kIsWeb)
               SliverAppBar(
                 floating: true,
                 snap: true,

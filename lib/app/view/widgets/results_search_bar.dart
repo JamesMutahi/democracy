@@ -17,14 +17,19 @@ class ResultsSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color color = Theme.of(context).disabledColor;
+    Color color = Theme.of(context).colorScheme.outline;
     return Expanded(
       child: Container(
         margin: EdgeInsets.only(right: 15),
+        height: 50,
         child: SearchBar(
           controller: controller,
           padding: WidgetStateProperty.all(EdgeInsets.only(left: 15)),
-          leading: Icon(Symbols.search_rounded, color: color),
+          leading: Icon(
+            Symbols.search_rounded,
+            color: Theme.of(context).colorScheme.outline,
+            size: 20,
+          ),
           trailing: [
             Stack(
               children: [
@@ -38,7 +43,7 @@ class ResultsSearchBar extends StatelessWidget {
                       },
                     );
                   },
-                  icon: Icon(Icons.tune_rounded, color: color),
+                  icon: Icon(Symbols.tune_rounded, color: color),
                 ),
                 filterCount == 0
                     ? SizedBox.shrink()

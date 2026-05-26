@@ -65,10 +65,11 @@ class _MyAppState extends State<MyApp> {
 }
 
 List<Breakpoint> breakpoints = [
-  const Breakpoint(start: 0, end: 850, name: MOBILE),
-  const Breakpoint(start: 850, end: 1100, name: TABLET),
+  const Breakpoint(start: 0, end: 500, name: MOBILE),
+  const Breakpoint(start: 500, end: 1100, name: TABLET),
   const Breakpoint(start: 1100, end: double.infinity, name: DESKTOP),
-  const Breakpoint(start: 1400, end: 1400, name: expandSidePanel),
+  const Breakpoint(start: 1280, end: 1280, name: expandSideMenu),
+  const Breakpoint(start: 1010, end: 1010, name: expandSidePanel),
   const Breakpoint(start: 2600, end: double.infinity, name: centerMainPage),
 ];
 

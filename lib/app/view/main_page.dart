@@ -19,6 +19,7 @@ import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/trending_posts/trending_posts_bloc.dart';
 import 'package:democracy/user/bloc/follow_recommendations/follow_recommendations_bloc.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -115,7 +116,7 @@ class _MainPageState extends State<MainPage> {
       child: Scaffold(
         key: _scaffoldKey,
         resizeToAvoidBottomInset: false,
-        drawer: responsive.isMobile ? SideMenu() : null,
+        drawer: SideMenu(),
         body: SafeArea(
           child: PopScope(
             canPop: _canPopNow,
@@ -222,21 +223,22 @@ class _MainPageState extends State<MainPage> {
                 ),
               ],
               child: Row(
-                mainAxisAlignment: responsive.equals(centerMainPage)
+                mainAxisAlignment: kIsWeb
                     ? MainAxisAlignment.center
                     : MainAxisAlignment.start,
                 children: [
-                  if (responsive.largerThan(MOBILE))
+                  if (kIsWeb)
                     Flexible(
-                      flex: 3,
+                      flex: responsive.largerOrEqualTo(expandSideMenu) ? 3 : 1,
                       child: ConstrainedBox(
-                        constraints: BoxConstraints(maxWidth: 400),
+                        constraints: BoxConstraints(maxWidth: 300),
                         child: SideMenu(),
                       ),
                     ),
                   Flexible(
-                    flex: 5,
+                    flex: responsive.largerOrEqualTo(expandSideMenu) ? 5 : 6,
                     child: Container(
+                      constraints: BoxConstraints(maxWidth: 600),
                       decoration: BoxDecoration(
                         border: Border(
                           left: BorderSide(
@@ -247,17 +249,20 @@ class _MainPageState extends State<MainPage> {
                           ),
                         ),
                       ),
-                      child: widget.navigationShell,
+                      child: Container(
+                        margin: EdgeInsets.only(top: 10),
+                        child: widget.navigationShell,
+                      ),
                     ),
                   ),
-                  if (responsive.largerThan(TABLET))
+                  if (responsive.largerOrEqualTo(expandSidePanel))
                     Flexible(flex: 3, child: SidePanel()),
                 ],
               ),
             ),
           ),
         ),
-        bottomNavigationBar: responsive.isMobile
+        bottomNavigationBar: !kIsWeb && responsive.isMobile
             ? const BottomNavBar()
             : SizedBox.shrink(),
       ),

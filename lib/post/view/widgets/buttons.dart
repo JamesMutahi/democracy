@@ -18,6 +18,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
+final double iconSize = 18;
+
 class PostAuthorProfile extends StatelessWidget {
   const PostAuthorProfile({
     super.key,
@@ -199,7 +201,7 @@ class LikeButton extends StatelessWidget {
             ? Colors.red
             : Theme.of(context).colorScheme.outline,
         fill: post.isLiked ? 1 : 0,
-        size: 20,
+        size: iconSize,
       ),
     );
   }
@@ -226,7 +228,7 @@ class RepostButton extends StatelessWidget {
             : (post.isReposted || post.isQuoted)
             ? Colors.green
             : Theme.of(context).colorScheme.outline,
-        size: 20,
+        size: iconSize,
       ),
     );
   }
@@ -302,8 +304,8 @@ class ReplyButton extends StatelessWidget {
         flipX: true,
         child: SvgPicture.asset(
           'assets/icons/chat.svg',
-          width: 20,
-          height: 20,
+          width: iconSize,
+          height: iconSize,
           colorFilter: ColorFilter.mode(
             isBlocked
                 ? Theme.of(context).disabledColor
@@ -332,8 +334,8 @@ class ViewsButton extends StatelessWidget {
       number: post.views,
       icon: SvgPicture.asset(
         'assets/icons/bar-graph.svg',
-        width: 20,
-        height: 20,
+        width: iconSize,
+        height: iconSize,
         colorFilter: ColorFilter.mode(
           Theme.of(context).colorScheme.outline,
           BlendMode.srcIn,
@@ -372,7 +374,7 @@ class BookmarkButton extends StatelessWidget {
             ? Colors.blue
             : Theme.of(context).colorScheme.outline,
         fill: post.isBookmarked ? 1 : 0,
-        size: 20,
+        size: iconSize,
       ),
     );
   }
@@ -405,7 +407,9 @@ class _PostTileButton extends StatelessWidget {
         if (number > 0)
           Text(
             numberFormat.format(number),
-            style: TextStyle(color: Theme.of(context).colorScheme.outline),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.outline,
+            ),
           ),
       ],
     );

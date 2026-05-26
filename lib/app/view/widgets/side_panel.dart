@@ -8,15 +8,62 @@ import 'package:democracy/user/view/widgets/user_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 class SidePanel extends StatelessWidget {
   const SidePanel({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final String currentPath = GoRouterState.of(context).uri.toString();
     return Container(
       constraints: BoxConstraints(maxWidth: 400),
-      child: CustomScrollView(slivers: [_Trending(), _WhoToFollow()]),
+      margin: EdgeInsets.only(top: 10),
+      child: CustomScrollView(
+        slivers: [
+          if (!currentPath.startsWith('/search-results')) _SearchBar(),
+          _Trending(),
+          _WhoToFollow(),
+        ],
+      ),
+    );
+  }
+}
+
+class _SearchBar extends StatelessWidget {
+  const _SearchBar();
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: EdgeInsets.only(left: 20, bottom: 20),
+        height: 50,
+        child: SearchBar(
+          padding: WidgetStateProperty.all(EdgeInsets.only(left: 15)),
+          leading: Icon(
+            Symbols.search_rounded,
+            color: Theme.of(context).colorScheme.outline,
+            size: 20,
+          ),
+          hintText: 'Search',
+          hintStyle: WidgetStateProperty.all(
+            TextStyle(color: Theme.of(context).colorScheme.outline),
+          ),
+          onChanged: (value) {
+            //   TODO: Search trending and users
+          },
+          onSubmitted: (value) {
+            navigateToSearchResults(
+              context: context,
+              searchTerm: value,
+              startDate: null,
+              endDate: null,
+              filterCount: 0,
+            );
+          },
+        ),
+      ),
     );
   }
 }
@@ -42,16 +89,18 @@ class _TrendingState extends State<_Trending> {
         builder: (context, state) {
           final topics = state.topics.toList();
 
-          return Container(
-            margin: EdgeInsets.only(top: 30, left: 15, right: 15),
+          return _Container(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Trending',
-                  style: Theme.of(context).textTheme.titleMedium,
+                Container(
+                  margin: EdgeInsets.only(left: 15, bottom: 5),
+                  child: Text(
+                    'Trending',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                 ),
                 ...topics.map(
                   (topic) => Container(
@@ -64,10 +113,7 @@ class _TrendingState extends State<_Trending> {
                           filterCount: 0,
                         );
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(topic),
-                      ),
+                      child: ListTile(title: Text(topic)),
                     ),
                   ),
                 ),
@@ -120,15 +166,14 @@ class _WhoToFollowState extends State<_WhoToFollow> {
             }
           },
           child: SliverToBoxAdapter(
-            child: Container(
-              margin: EdgeInsets.only(top: 30),
+            child: _Container(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    margin: EdgeInsets.only(left: 15),
+                    margin: EdgeInsets.only(left: 15, bottom: 5),
                     child: Text(
                       'Who to follow',
                       style: Theme.of(context).textTheme.titleMedium,
@@ -152,6 +197,25 @@ class _WhoToFollowState extends State<_WhoToFollow> {
           ),
         );
       },
+    );
+  }
+}
+
+class _Container extends StatelessWidget {
+  const _Container({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 20, left: 20),
+      padding: EdgeInsets.only(top: 15, bottom: 10),
+      decoration: BoxDecoration(
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: child,
     );
   }
 }
