@@ -59,7 +59,6 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
     if (event.payload['response_status'] == 201) {
       Message newMessage = Message.fromJson(event.payload['data']);
       final message = await databaseRepository.createMessage(
-        chatId: event.payload['data']['chat'],
         message: newMessage,
       );
       emit(MessageCreated(message: message));
@@ -73,7 +72,6 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
     if (event.payload['response_status'] == 200) {
       Message newMessage = Message.fromJson(event.payload['data']);
       final message = await databaseRepository.createMessage(
-        chatId: event.payload['data']['chat'],
         message: newMessage,
       );
       emit(MessageUpdated(message: message));
@@ -98,6 +96,7 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
     emit(MessageDetailLoading());
     try {
       final newMessage = Message(
+        chatId: event.chat.id,
         author: event.author,
         text: event.text,
         post: event.post,
@@ -115,7 +114,6 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
         updatedAt: DateTime.now(),
       );
       final message = await databaseRepository.createMessage(
-        chatId: event.chat.id,
         message: newMessage,
       );
       emit(MessageCreatedInDB(message: message));

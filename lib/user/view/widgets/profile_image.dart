@@ -25,18 +25,36 @@ class ProfileImage extends StatelessWidget {
           : null,
       child: CircleAvatar(
         radius: radius,
-        child: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: CachedNetworkImageProvider(
-                user.image,
-                cacheKey: 'profile ${user.id}',
-              ),
-              fit: BoxFit.cover,
-            ),
-            borderRadius: BorderRadius.circular(100),
+        child: ClipOval(
+          child: CachedNetworkImage(
+            imageUrl: user.image,
+            cacheKey: 'profile_${user.id}',
+            fit: BoxFit.cover,
+            width: radius * 2,
+            height: radius * 2,
+            placeholder: (context, url) => _buildPlaceholder(),
+            errorWidget: (context, url, error) => _buildErrorWidget(),
+            fadeInDuration: const Duration(milliseconds: 200),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildPlaceholder() {
+    return Container(
+      color: Colors.grey[300],
+      child: Icon(Icons.person, size: 24, color: Colors.grey[600]),
+    );
+  }
+
+  Widget _buildErrorWidget() {
+    return Container(
+      color: Colors.grey[300],
+      child: Icon(
+        Icons.broken_image_rounded,
+        size: 24,
+        color: Colors.grey[600],
       ),
     );
   }

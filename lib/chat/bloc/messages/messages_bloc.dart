@@ -36,7 +36,10 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
   Future _onGet(_Get event, Emitter<MessagesState> emit) async {
     emit(state.copyWith(status: MessagesStatus.loading, chatId: event.chat.id));
     if (event.oldestMessage == null && event.newestMessage == null) {
-      emit(state.copyWith(messages: event.chat.messages.toList()));
+      final messages = await databaseRepository.fetchMessages(
+        chatId: event.chat.id,
+      );
+      emit(state.copyWith(messages: messages));
     }
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: MessagesStatus.failure));
@@ -49,8 +52,8 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
         'action': action,
         'request_id': requestId,
         'chat_id': event.chat.id,
-        'oldest_message': event.oldestMessage?.id!, // get old messages
-        'newest_message': event.newestMessage?.id!, // get new messages
+        'oldest_message': event.oldestMessage?.id, // get old messages
+        'newest_message': event.newestMessage?.id, // get new messages
       },
     };
     webSocketService.send(message);
@@ -79,11 +82,11 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
 
   Future _onUpdate(_Update event, Emitter<MessagesState> emit) async {
     final messages = await databaseRepository.fetchMessages(
-      chatId: event.message.chat.targetId,
+      chatId: event.message.chatId,
     );
     emit(
       state.copyWith(
-        chatId: event.message.chat.targetId,
+        chatId: event.message.chatId,
         messages: messages,
         status: MessagesStatus.success,
       ),

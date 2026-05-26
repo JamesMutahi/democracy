@@ -150,7 +150,7 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
       try {
         data = await apiRepository.createMessage(
           uuid: message.uuid,
-          chat: message.chat.target!,
+          chatId: message.chatId,
           text: message.text,
           post: message.post,
           ballot: message.ballot,

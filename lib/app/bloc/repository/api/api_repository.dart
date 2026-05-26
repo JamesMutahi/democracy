@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:democracy/app/models/asset.dart';
 import 'package:democracy/ballot/models/ballot.dart';
-import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/geo/models/constituency.dart';
@@ -83,7 +82,7 @@ class APIRepository {
 
   Future<Map<String, dynamic>> createMessage({
     required String uuid,
-    required Chat chat,
+    required int chatId,
     required String text,
     Post? post,
     Ballot? ballot,
@@ -98,7 +97,7 @@ class APIRepository {
 
     return await apiProvider.createMessage(
       uuid: uuid,
-      chat: chat,
+      chatId: chatId,
       text: text,
       post: post,
       ballot: ballot,

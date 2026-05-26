@@ -194,7 +194,7 @@ class ChatTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lastMessage = chat.lastMessage.target;
+    final lastMessage = chat.lastMessage;
     if (lastMessage == null) {
       return const SizedBox.shrink(); // Hide chats without last message
     }

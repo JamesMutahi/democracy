@@ -1,16 +1,17 @@
 import 'package:democracy/app/bloc/services/token_storage.dart';
-import 'package:democracy/objectbox.g.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:path/path.dart' as p;
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:talker/talker.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger_settings.dart';
 import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 import 'package:talker_dio_logger/talker_dio_logger_settings.dart';
+import 'package:democracy/chat/models/chat.dart';
+import 'package:democracy/chat/models/message.dart';
+import 'package:democracy/post/models/draft_post.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 
 Future<String> getRelease() async {
   final info = await PackageInfo.fromPlatform();
@@ -122,19 +123,11 @@ bool _isNoisyBloc(String blocName) {
   return noisyBlocs.contains(blocName);
 }
 
-class ObjectBox {
-  /// The Store of this app.
-  late final Store store;
-
-  ObjectBox._create(this.store) {
-    // Add any additional setup code, e.g. build queries.
-  }
-
-  static Future<ObjectBox> create() async {
-    final docsDir = await getApplicationDocumentsDirectory();
-    final store = await openStore(directory: p.join(docsDir.path, "democracy"));
-    return ObjectBox._create(store);
-  }
+Future<void> initializeHive() async {
+  await Hive.initFlutter();
+  Hive.registerAdapter(DraftPostAdapter());
+  Hive.registerAdapter(ChatAdapter());
+  Hive.registerAdapter(MessageAdapter());
 }
 
 class MyNetworkClient {

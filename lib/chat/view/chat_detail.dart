@@ -109,7 +109,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         BlocListener<MessageDetailBloc, MessageDetailState>(
           listener: (context, state) {
             if (state is MessageCreated) {
-              if (state.message.chat.targetId == widget.chat.id) {
+              if (state.message.chatId == widget.chat.id) {
                 context.read<MessagesBloc>().add(
                   MessagesEvent.update(message: state.message),
                 );
@@ -121,21 +121,21 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               }
             }
             if (state is MessageUpdated) {
-              if (state.message.chat.targetId == widget.chat.id) {
+              if (state.message.chatId == widget.chat.id) {
                 context.read<MessagesBloc>().add(
                   MessagesEvent.update(message: state.message),
                 );
               }
             }
             if (state is MessageDeleted) {
-              if (state.message.chat.targetId == widget.chat.id) {
+              if (state.message.chatId == widget.chat.id) {
                 context.read<MessagesBloc>().add(
                   MessagesEvent.update(message: state.message),
                 );
               }
             }
             if (state is MessageCreatedInDB) {
-              if (state.message.chat.targetId == widget.chat.id) {
+              if (state.message.chatId == widget.chat.id) {
                 reset();
                 context.read<MessagesBloc>().add(
                   MessagesEvent.update(message: state.message),
@@ -144,7 +144,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               }
             }
             if (state is MessageUpdatedInDB) {
-              if (state.message.chat.targetId == widget.chat.id) {
+              if (state.message.chatId == widget.chat.id) {
                 context.read<MessagesBloc>().add(
                   MessagesEvent.update(message: state.message),
                 );
@@ -152,7 +152,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               }
             }
             if (state is MessageDeletedInDB) {
-              if (state.message.chat.targetId == widget.chat.id) {
+              if (state.message.chatId == widget.chat.id) {
                 context.read<MessagesBloc>().add(
                   MessagesEvent.update(message: state.message),
                 );

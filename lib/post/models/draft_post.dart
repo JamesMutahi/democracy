@@ -8,126 +8,138 @@ import 'package:democracy/meeting/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
+import 'package:hive_ce/hive_ce.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:objectbox/objectbox.dart';
 
-@Entity()
-class DraftPost {
-  @Id()
+part 'draft_post.g.dart';
+
+@HiveType(typeId: 50)
+class DraftPost extends HiveObject {
+  @HiveField(0)
   int id = 0;
+
+  @HiveField(1)
   int? serverID;
+
+  @HiveField(2)
   String body = '';
+
+  @HiveField(3)
   List<String> filePaths = [];
 
+  @HiveField(4)
   String? syncStatus;
+
+  @HiveField(5)
   String? syncType;
 
-  @Property(type: PropertyType.date)
-  late DateTime updatedAt;
+  @HiveField(6)
+  DateTime updatedAt = DateTime.now();
 
-  @Property(type: PropertyType.date)
-  late DateTime createdAt;
+  @HiveField(7)
+  DateTime createdAt = DateTime.now();
 
-  // JSON storage fields
+  // JSON storage fields (these are persisted)
+  @HiveField(8)
   String? locationJson;
+
+  @HiveField(9)
   String? replyToJson;
+
+  @HiveField(10)
   String? repostOfJson;
+
+  @HiveField(11)
   String? communityNoteOfJson;
+
+  @HiveField(12)
   String? ballotJson;
+
+  @HiveField(13)
   String? surveyJson;
+
+  @HiveField(14)
   String? petitionJson;
+
+  @HiveField(15)
   String? meetingJson;
+
+  @HiveField(16)
   String? sectionJson;
+
+  @HiveField(17)
   String? tagsJson;
+
+  @HiveField(18)
   String? assetsJson;
 
-  // ==================== TRANSIENT GETTERS & SETTERS ====================
+  // ==================== COMPUTED / TRANSIENT PROPERTIES ====================
+  // These are NOT persisted (no @HiveField)
 
-  @Transient()
   LatLng? get location =>
       locationJson != null ? LatLng.fromJson(jsonDecode(locationJson!)) : null;
 
-  @Transient()
   set location(LatLng? value) =>
       locationJson = value != null ? jsonEncode(value.toJson()) : null;
 
-  @Transient()
   Post? get replyTo =>
       replyToJson != null ? Post.fromJson(jsonDecode(replyToJson!)) : null;
 
-  @Transient()
   set replyTo(Post? value) =>
       replyToJson = value != null ? jsonEncode(value.toJson()) : null;
 
-  @Transient()
   Post? get repostOf =>
       repostOfJson != null ? Post.fromJson(jsonDecode(repostOfJson!)) : null;
 
-  @Transient()
   set repostOf(Post? value) =>
       repostOfJson = value != null ? jsonEncode(value.toJson()) : null;
 
-  @Transient()
   Post? get communityNoteOf => communityNoteOfJson != null
       ? Post.fromJson(jsonDecode(communityNoteOfJson!))
       : null;
 
-  @Transient()
   set communityNoteOf(Post? value) =>
       communityNoteOfJson = value != null ? jsonEncode(value.toJson()) : null;
 
-  @Transient()
   Ballot? get ballot =>
       ballotJson != null ? Ballot.fromJson(jsonDecode(ballotJson!)) : null;
 
-  @Transient()
   set ballot(Ballot? value) =>
       ballotJson = value != null ? jsonEncode(value.toJson()) : null;
 
-  @Transient()
   Survey? get survey =>
       surveyJson != null ? Survey.fromJson(jsonDecode(surveyJson!)) : null;
 
-  @Transient()
   set survey(Survey? value) =>
       surveyJson = value != null ? jsonEncode(value.toJson()) : null;
 
-  @Transient()
   Petition? get petition => petitionJson != null
       ? Petition.fromJson(jsonDecode(petitionJson!))
       : null;
 
-  @Transient()
   set petition(Petition? value) =>
       petitionJson = value != null ? jsonEncode(value.toJson()) : null;
 
-  @Transient()
   Meeting? get meeting =>
       meetingJson != null ? Meeting.fromJson(jsonDecode(meetingJson!)) : null;
 
-  @Transient()
   set meeting(Meeting? value) =>
       meetingJson = value != null ? jsonEncode(value.toJson()) : null;
 
-  @Transient()
   Section? get section =>
       sectionJson != null ? Section.fromJson(jsonDecode(sectionJson!)) : null;
 
-  @Transient()
   set section(Section? value) =>
       sectionJson = value != null ? jsonEncode(value.toJson()) : null;
 
-  @Transient()
   List<Map<String, String>> get tags => tagsJson != null
       ? List<Map<String, String>>.from(jsonDecode(tagsJson!))
       : [];
 
-  @Transient()
   set tags(List<Map<String, String>>? value) {
     tagsJson = value != null && value.isNotEmpty ? jsonEncode(value) : null;
   }
 
-  @Transient()
   set assets(List<Asset>? value) {
     if (value == null || value.isEmpty) {
       assetsJson = null;
@@ -139,22 +151,20 @@ class DraftPost {
       assetsJson = jsonEncode(jsonList);
     } catch (e) {
       AppLogger.error('Error encoding assets to JSON: $e');
-      // Safe fallback
       assetsJson = jsonEncode(
         value
             .map(
               (asset) => {
-                'id': asset.id,
-                'name': asset.name,
-                'file_key': asset.fileKey,
-                'file_size': asset.fileSize,
-                'content_type':
-                    asset.contentType.name, // or use converter if needed
-                'url': asset.url,
-                'is_completed': asset.isCompleted,
-                'created_at': asset.createdAt.toIso8601String(),
-              },
-            )
+            'id': asset.id,
+            'name': asset.name,
+            'file_key': asset.fileKey,
+            'file_size': asset.fileSize,
+            'content_type': asset.contentType.name,
+            'url': asset.url,
+            'is_completed': asset.isCompleted,
+            'created_at': asset.createdAt.toIso8601String(),
+          },
+        )
             .toList(),
       );
     }
@@ -162,49 +172,35 @@ class DraftPost {
 
   DraftPost({
     this.id = 0,
+    this.serverID,
+    this.body = '',
+    List<String>? filePaths,
+    this.syncStatus,
+    this.syncType,
     Post? replyTo,
     Post? repostOf,
     Post? communityNoteOf,
-    Survey? survey,
     Ballot? ballot,
-    Meeting? meeting,
+    Survey? survey,
     Petition? petition,
+    Meeting? meeting,
     Section? section,
     LatLng? location,
-    this.syncStatus,
-    this.syncType,
-    String? uuid,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
-    if (replyTo != null) {
-      this.replyTo = replyTo;
-    }
-    if (repostOf != null) {
-      this.repostOf = repostOf;
-    }
-    if (communityNoteOf != null) {
-      this.communityNoteOf = communityNoteOf;
-    }
-    if (survey != null) {
-      this.survey = survey;
-    }
-    if (ballot != null) {
-      this.ballot = ballot;
-    }
-    if (meeting != null) {
-      this.meeting = meeting;
-    }
-    if (petition != null) {
-      this.petition = petition;
-    }
-    if (section != null) {
-      this.section = section;
-    }
-    if (location != null) {
-      this.location = location;
-    }
+    this.filePaths = filePaths ?? [];
     this.createdAt = createdAt ?? DateTime.now();
     this.updatedAt = updatedAt ?? DateTime.now();
+
+    if (replyTo != null) this.replyTo = replyTo;
+    if (repostOf != null) this.repostOf = repostOf;
+    if (communityNoteOf != null) this.communityNoteOf = communityNoteOf;
+    if (ballot != null) this.ballot = ballot;
+    if (survey != null) this.survey = survey;
+    if (petition != null) this.petition = petition;
+    if (meeting != null) this.meeting = meeting;
+    if (section != null) this.section = section;
+    if (location != null) this.location = location;
   }
 }

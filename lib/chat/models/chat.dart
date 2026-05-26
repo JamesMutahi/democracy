@@ -2,47 +2,74 @@ import 'dart:convert';
 
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:objectbox/objectbox.dart';
+import 'package:hive_ce/hive_ce.dart';
 
-@Entity()
-class Chat {
-  @Id(assignable: true)
+part 'chat.g.dart';
+
+@HiveType(typeId: 60)
+class Chat extends HiveObject {
+  @HiveField(0)
   int id = 0;
+
+  @HiveField(1)
   String? usersJson;
+
+  @HiveField(2)
   int unreadMessages = 0;
-  final lastMessage = ToOne<Message>();
 
-  // One-to-many relationship with all messages
-  final messages = ToMany<Message>();
+  @HiveField(3)
+  String? lastMessageJson;
 
-  @Transient()
+  // ==================== COMPUTED PROPERTIES ====================
+
   List<User> get users => usersJson != null
       ? (jsonDecode(usersJson!) as List<dynamic>)
-            .map((e) => User.fromJson(e as Map<String, dynamic>))
-            .toList()
+      .map((e) => User.fromJson(e as Map<String, dynamic>))
+      .toList()
       : [];
 
-  @Transient()
   set users(List<User> value) {
     usersJson = jsonEncode(value.map((e) => e.toJson()).toList());
   }
 
-  Chat({required this.id, required this.unreadMessages, List<User>? users}) {
+  Message? get lastMessage {
+    if (lastMessageJson == null) return null;
+    try {
+      return Message.fromJson(jsonDecode(lastMessageJson!));
+    } catch (e) {
+      return null;
+    }
+  }
+
+  set lastMessage(Message? value) {
+    lastMessageJson = value != null ? jsonEncode(value.toJson()) : null;
+  }
+
+  Chat({
+    required this.id,
+    required this.unreadMessages,
+    List<User>? users,
+    Message? lastMessage,
+  }) {
     if (users != null) this.users = users;
+    if (lastMessage != null) this.lastMessage = lastMessage;
   }
 
   // ==================== JSON SERIALIZATION ====================
 
   factory Chat.fromJson(Map<String, dynamic> json) {
     final chat = Chat(
-      id: json['id'],
-      unreadMessages: json['unread_messages'] as int,
+      id: json['id'] ?? 0,
+      unreadMessages: json['unread_messages'] ?? 0,
       users: (json['users'] as List<dynamic>?)
           ?.map((e) => User.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-    // Note: lastMessage is a relation, so we usually don't restore it here
+    if (json['last_message'] != null) {
+      chat.lastMessage = Message.fromJson(json['last_message']);
+    }
+
     return chat;
   }
 
@@ -51,7 +78,7 @@ class Chat {
       'id': id,
       'unread_messages': unreadMessages,
       'users': users.map((user) => user.toJson()).toList(),
-      'last_message': lastMessage.target?.toJson(),
+      'last_message': lastMessage?.toJson(),
     };
   }
 }

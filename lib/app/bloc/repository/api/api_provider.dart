@@ -141,7 +141,7 @@ class APIProvider {
 
   Future<Map<String, dynamic>> createMessage({
     required String uuid,
-    required Chat chat,
+    required int chatId,
     required String text,
     Post? post,
     Ballot? ballot,
@@ -155,7 +155,7 @@ class APIProvider {
     try {
       final data = {
         'uuid': uuid,
-        'chat': chat.id,
+        'chat': chatId,
         'text': text,
         'post_id': post?.id,
         'ballot_id': ballot?.id,
