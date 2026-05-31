@@ -1,5 +1,5 @@
-import 'package:democracy/app/shared/pages/search_results.dart';
-import 'package:democracy/app/view/router/router.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/post/bloc/trending_topics/trending_topics_bloc.dart';
 import 'package:democracy/user/bloc/follow_recommendations/follow_recommendations_bloc.dart';
@@ -7,7 +7,6 @@ import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/view/widgets/user_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 class SidePanel extends StatelessWidget {
@@ -15,7 +14,7 @@ class SidePanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String currentPath = GoRouterState.of(context).uri.toString();
+    final String currentPath = context.router.current.path;
     return Container(
       constraints: BoxConstraints(maxWidth: 400),
       margin: EdgeInsets.only(top: 10),
@@ -54,12 +53,13 @@ class _SearchBar extends StatelessWidget {
             //   TODO: Search trending and users
           },
           onSubmitted: (value) {
-            navigateToSearchResults(
-              context: context,
-              searchTerm: value,
-              startDate: null,
-              endDate: null,
-              filterCount: 0,
+            context.router.push(
+              SearchResults(
+                searchTerm: value,
+                startDate: null,
+                endDate: null,
+                filterCount: 0,
+              ),
             );
           },
         ),
@@ -107,10 +107,13 @@ class _TrendingState extends State<_Trending> {
                     key: ValueKey(topic),
                     child: InkWell(
                       onTap: () {
-                        navigateToSearchResults(
-                          context: context,
-                          searchTerm: topic,
-                          filterCount: 0,
+                        context.router.push(
+                          SearchResults(
+                            searchTerm: topic,
+                            startDate: null,
+                            endDate: null,
+                            filterCount: 0,
+                          ),
                         );
                       },
                       child: ListTile(title: Text(topic)),
@@ -187,7 +190,10 @@ class _WhoToFollowState extends State<_WhoToFollow> {
                       hideOverflow: true,
                       selectedUsers: [],
                       onTap: () {
-                        context.push(ProfileRoute(userId: user.id).location);
+                        String currentPath = context.router.currentPath;
+                        if (!currentPath.contains('profile/${user.id}')) {
+                          context.router.push(ProfileRoute(userId: user.id));
+                        }
                       },
                     ),
                   ),

@@ -248,8 +248,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       'stream': stream,
       'payload': {
         'action': 'retrieve',
-        'request_id': event.post.id,
-        'pk': event.post.id,
+        'request_id': event.postId,
+        'pk': event.postId,
       },
     };
     webSocketService.send(message);
@@ -447,8 +447,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       'stream': stream,
       'payload': {
         'action': 'unsubscribe',
-        'request_id': event.post.id,
-        'pk': event.post.id,
+        'request_id': event.postId,
+        'pk': event.postId,
       },
     };
     webSocketService.send(message);

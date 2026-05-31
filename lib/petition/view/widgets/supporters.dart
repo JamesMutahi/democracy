@@ -1,12 +1,13 @@
-import 'package:democracy/app/view/router/router.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/petition/bloc/supporters/supporters_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
+@RoutePage()
 class Supporters extends StatefulWidget {
   const Supporters({super.key, required this.petition});
 
@@ -68,7 +69,7 @@ class _SupportersState extends State<Supporters> {
               );
             },
             onUserTap: (user) {
-              context.push(ProfileRoute(userId: user.id).location);
+              context.router.push(ProfileRoute(userId: user.id));
             },
             onRefresh: () {
               context.read<SupportersBloc>().add(

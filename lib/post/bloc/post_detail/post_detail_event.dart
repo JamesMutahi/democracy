@@ -52,7 +52,7 @@ sealed class PostDetailEvent with _$PostDetailEvent {
   const factory PostDetailEvent.muted({required Map<String, dynamic> payload}) =
       _Muted;
 
-  const factory PostDetailEvent.get({required Post post}) = _Get;
+  const factory PostDetailEvent.get({required int postId}) = _Get;
 
   const factory PostDetailEvent.addView({required Post post}) = _AddView;
 
@@ -78,6 +78,6 @@ sealed class PostDetailEvent with _$PostDetailEvent {
     required Post post,
   }) = _Report;
 
-  const factory PostDetailEvent.unsubscribe({required Post post}) =
+  const factory PostDetailEvent.unsubscribe({required int postId}) =
       _Unsubscribe;
 }

@@ -1,12 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/more_pop_up.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/meeting/bloc/meeting_detail/meeting_detail_bloc.dart';
 import 'package:democracy/meeting/models/meeting.dart';
-import 'package:democracy/meeting/view/meeting_detail.dart';
 import 'package:democracy/meeting/view/widgets/live_tile.dart';
-import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
@@ -128,7 +128,7 @@ class MeetingPopUp extends StatelessWidget {
       onSelected: (selected) {
         switch (selected) {
           case 'Post':
-            navigateToPostCreate(context: context, meeting: meeting);
+            context.router.push(PostCreateRoute(meeting: meeting));
           case 'Share':
             showModalBottomSheet<void>(
               context: context,
@@ -195,7 +195,7 @@ class MeetingBottomSheet extends StatelessWidget {
       listener: (context, state) {
         if (state is MeetingLoaded) {
           Navigator.pop(context);
-          navigateToMeetingDetail(context: context, meeting: state.meeting);
+          context.router.push(MeetingDetail(meetingId: state.meeting.id));
         }
         if (state is MeetingDetailFailure) {
           Navigator.pop(context);

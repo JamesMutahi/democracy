@@ -1,5 +1,6 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
-import 'package:democracy/chat/view/utils/chat_navigator.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
+@RoutePage()
 class CreateMessage extends StatefulWidget {
   const CreateMessage({super.key});
 
@@ -30,7 +32,7 @@ class _CreateMessageState extends State<CreateMessage> {
       listener: (context, state) {
         if (state is ChatCreated) {
           Navigator.pop(context);
-          navigateToChatDetail(context: context, chat: state.chat);
+          context.router.push(ChatDetail(chatId: state.chat.id));
         }
       },
       child: Scaffold(

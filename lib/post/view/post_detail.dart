@@ -1,22 +1,23 @@
-import 'package:democracy/app/bloc/services/websocket_service.dart'
-    show WebsocketStatus;
+import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/asset_viewer.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
-import 'package:democracy/app/view/router/router.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
 import 'package:democracy/meeting/view/widgets/meeting_tile.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart';
+import 'package:democracy/post/bloc/post/post_bloc.dart';
 import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/replies/replies_bloc.dart';
 import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
-import 'package:democracy/post/models/post.dart';
+import 'package:democracy/post/models/post.dart' hide PostStatus;
 import 'package:democracy/post/view/widgets/bottom_reply_text_field.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/post/view/widgets/post_body.dart';
@@ -30,33 +31,58 @@ import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
-class PostDetailPage extends StatefulWidget {
-  const PostDetailPage({
-    super.key,
-    required this.post,
-    required this.showAsRepost,
-    required this.repost,
-  });
+@RoutePage()
+class PostDetail extends StatelessWidget {
+  const PostDetail({super.key, @PathParam('id') required this.postId});
 
-  final Post post;
-  final bool showAsRepost;
-  final Post repost;
+  final int postId;
 
   @override
-  State<PostDetailPage> createState() => _PostDetailPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>
+          PostBloc(webSocketService: context.read<WebSocketService>())
+            ..add(PostEvent.load(postId: postId)),
+      child: Scaffold(
+        body: BlocBuilder<PostBloc, PostState>(
+          buildWhen: (previous, current) => current.postId == postId,
+          builder: (context, state) {
+            if (state.status == PostStatus.initial ||
+                (state.status == PostStatus.loading && state.post == null)) {
+              return BottomLoader();
+            }
+            if (state.status == PostStatus.failure && state.post == null) {
+              return FailureRetryButton(
+                onPressed: () {
+                  context.read<PostBloc>().add(PostEvent.load(postId: postId));
+                },
+              );
+            }
+            return _PostDetail(post: state.post!);
+          },
+        ),
+      ),
+    );
+  }
 }
 
-class _PostDetailPageState extends State<PostDetailPage>
+class _PostDetail extends StatefulWidget {
+  const _PostDetail({required this.post});
+
+  final Post post;
+
+  @override
+  State<_PostDetail> createState() => _PostDetailState();
+}
+
+class _PostDetailState extends State<_PostDetail>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-
-  late Post _post = widget.post;
   final RefreshController _refreshController = RefreshController();
   final ValueKey _centerKey = ValueKey('Center');
   bool _isDeleted = false;
@@ -65,15 +91,6 @@ class _PostDetailPageState extends State<PostDetailPage>
   @override
   void initState() {
     super.initState();
-    _getData();
-  }
-
-  void _getData() {
-    context.read<PostDetailBloc>().add(PostDetailEvent.get(post: widget.post));
-    context.read<RepliesBloc>().add(RepliesEvent.get(post: widget.post));
-    if (widget.post.replyTo != null) {
-      context.read<ReplyToBloc>().add(ReplyToEvent.get(post: widget.post));
-    }
     context.read<PostDetailBloc>().add(
       PostDetailEvent.addClick(post: widget.post),
     );
@@ -82,51 +99,68 @@ class _PostDetailPageState extends State<PostDetailPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return PopScope(
-      canPop: true,
-      onPopInvokedWithResult: (_, _) {
-        context.read<PostDetailBloc>().add(
-          PostDetailEvent.unsubscribe(post: widget.post),
-        );
-      },
-      child: MultiBlocListener(
-        listeners: [
-          BlocListener<WebsocketBloc, WebsocketState>(
-            listener: (context, state) {
-              if (state.status == WebsocketStatus.connected) {
-                context.read<PostDetailBloc>().add(
-                  PostDetailEvent.get(post: widget.post),
-                );
-              }
-            },
-          ),
-          BlocListener<PostCreateBloc, PostCreateState>(
-            listener: (context, state) {
-              if (state.status == PostCreateStatus.success) {
-                final post = state.post!;
-                if (widget.post.id == post.replyTo?.id) {
-                  context.read<RepliesBloc>().add(
-                    RepliesEvent.add(postId: _post.id, reply: post),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              RepliesBloc(webSocketService: context.read<WebSocketService>())
+                ..add(RepliesEvent.get(postId: widget.post.id)),
+        ),
+        BlocProvider(
+          create: (context) {
+            final bloc = ReplyToBloc(
+              webSocketService: context.read<WebSocketService>(),
+            );
+            if (widget.post.replyTo != null) {
+              bloc.add(ReplyToEvent.get(postId: widget.post.replyTo!.id));
+            }
+            return bloc;
+          },
+        ),
+        BlocProvider(
+          create: (context) =>
+              ReplyToBloc(webSocketService: context.read<WebSocketService>())
+                ..add(ReplyToEvent.get(postId: widget.post.id)),
+        ),
+      ],
+      child: PopScope(
+        canPop: true,
+        onPopInvokedWithResult: (_, _) {
+          context.read<PostDetailBloc>().add(
+            PostDetailEvent.unsubscribe(postId: widget.post.id),
+          );
+        },
+        child: MultiBlocListener(
+          listeners: [
+            BlocListener<WebsocketBloc, WebsocketState>(
+              listener: (context, state) {
+                if (state.status == WebsocketStatus.connected) {
+                  context.read<PostBloc>().add(
+                    PostEvent.load(postId: widget.post.id),
                   );
                 }
-              }
-            },
-          ),
-          BlocListener<PostDetailBloc, PostDetailState>(
-            listener: (context, state) {
-              switch (state) {
-                case PostLoaded(:final post):
-                  if (_post.id == post.id) {
-                    setState(() {
-                      _post = post;
-                    });
+              },
+            ),
+            BlocListener<PostCreateBloc, PostCreateState>(
+              listener: (context, state) {
+                if (state.status == PostCreateStatus.success) {
+                  final post = state.post!;
+                  if (widget.post.id == post.replyTo?.id) {
+                    context.read<RepliesBloc>().add(
+                      RepliesEvent.add(postId: widget.post.id, reply: post),
+                    );
                   }
-
-                case PostUpdated():
-                  // update post
-                  if (_post.id == state.postId) {
-                    setState(() {
-                      _post = _post.copyWith(
+                }
+              },
+            ),
+            BlocListener<PostDetailBloc, PostDetailState>(
+              listener: (context, state) {
+                switch (state) {
+                  case PostUpdated():
+                    // update post
+                    if (widget.post.id == state.postId) {
+                      var updatedPost = widget.post;
+                      updatedPost = updatedPost.copyWith(
                         body: state.body,
                         likes: state.likes,
                         isLiked: state.isLiked,
@@ -145,212 +179,245 @@ class _PostDetailPageState extends State<PostDetailPage>
                         isDeleted: state.isDeleted,
                         isActive: state.isActive,
                       );
-                    });
-                  }
-                  // update post's repost_of
-                  if (_post.repostOf?.id == state.postId) {
-                    Post repostOf = _post.repostOf!.copyWith(
-                      body: state.body,
-                      likes: state.likes,
-                      isLiked: state.isLiked,
-                      bookmarks: state.bookmarks,
-                      isBookmarked: state.isBookmarked,
-                      views: state.views,
-                      replies: state.replies,
-                      reposts: state.reposts,
-                      isReposted: state.isReposted,
-                      isQuoted: state.isQuoted,
-                      communityNote: state.communityNote,
-                      isUpvoted: state.isUpvoted,
-                      isDownvoted: state.isDownvoted,
-                      upvotes: state.upvotes,
-                      downvotes: state.downvotes,
-                      isDeleted: state.isDeleted,
-                      isActive: state.isActive,
-                    );
-                    setState(() {
-                      _post = _post.copyWith(repostOf: repostOf);
-                    });
-                  }
+                      context.read<PostBloc>().add(
+                        PostEvent.updated(post: updatedPost),
+                      );
+                    }
+                    // update post's repost_of
+                    if (widget.post.repostOf?.id == state.postId) {
+                      var updatedPost = widget.post;
+                      Post repostOf = updatedPost.repostOf!.copyWith(
+                        body: state.body,
+                        likes: state.likes,
+                        isLiked: state.isLiked,
+                        bookmarks: state.bookmarks,
+                        isBookmarked: state.isBookmarked,
+                        views: state.views,
+                        replies: state.replies,
+                        reposts: state.reposts,
+                        isReposted: state.isReposted,
+                        isQuoted: state.isQuoted,
+                        communityNote: state.communityNote,
+                        isUpvoted: state.isUpvoted,
+                        isDownvoted: state.isDownvoted,
+                        upvotes: state.upvotes,
+                        downvotes: state.downvotes,
+                        isDeleted: state.isDeleted,
+                        isActive: state.isActive,
+                      );
+                      updatedPost = updatedPost.copyWith(repostOf: repostOf);
+                      context.read<PostBloc>().add(
+                        PostEvent.updated(post: updatedPost),
+                      );
+                    }
 
-                case PostDeleted(:final postId):
-                  if (_post.id == postId || widget.repost.id == postId) {
-                    setState(() {
-                      _isDeleted = true;
-                    });
+                  case PostDeleted(:final postId):
+                    if (widget.post.id == postId) {
+                      setState(() {
+                        _isDeleted = true;
+                      });
+                    }
+                }
+              },
+            ),
+            BlocListener<UserDetailBloc, UserDetailState>(
+              listener: (context, state) {
+                if (state is UserUpdated) {
+                  // post
+                  if (widget.post.author.id == state.user.id) {
+                    var updatedPost = widget.post;
+                    updatedPost = updatedPost.copyWith(author: state.user);
+                    context.read<PostBloc>().add(
+                      PostEvent.updated(post: updatedPost),
+                    );
                   }
-              }
-            },
-          ),
-          BlocListener<UserDetailBloc, UserDetailState>(
-            listener: (context, state) {
-              if (state is UserUpdated) {
-                // post
-                if (_post.author.id == state.user.id) {
-                  setState(() {
-                    _post = _post.copyWith(author: state.user);
-                  });
+                  // repost
+                  if (widget.post.repostOf?.author.id == state.user.id) {
+                    var updatedPost = widget.post;
+                    Post repostOf = updatedPost.repostOf!.copyWith(
+                      author: state.user,
+                    );
+                    updatedPost = updatedPost.copyWith(repostOf: repostOf);
+                    context.read<PostBloc>().add(
+                      PostEvent.updated(post: updatedPost),
+                    );
+                  }
                 }
-                // repost
-                if (_post.repostOf?.author.id == state.user.id) {
-                  Post repostOf = _post.repostOf!.copyWith(author: state.user);
-                  setState(() {
-                    _post = _post.copyWith(repostOf: repostOf);
-                  });
-                }
-              }
-            },
-          ),
-          BlocListener<BallotDetailBloc, BallotDetailState>(
-            listener: (context, state) {
-              if (state is BallotUpdated) {
-                // post
-                if (_post.ballot?.id == state.ballot.id) {
-                  setState(() {
-                    _post = _post.copyWith(ballot: state.ballot);
-                  });
-                }
-                // repost
-                if (_post.repostOf?.ballot?.id == state.ballot.id) {
-                  setState(() {
-                    Post repostOf = _post.repostOf!.copyWith(
+              },
+            ),
+            BlocListener<BallotDetailBloc, BallotDetailState>(
+              listener: (context, state) {
+                if (state is BallotUpdated) {
+                  // post
+                  if (widget.post.ballot?.id == state.ballot.id) {
+                    var updatedPost = widget.post;
+                    updatedPost = updatedPost.copyWith(ballot: state.ballot);
+                    context.read<PostBloc>().add(
+                      PostEvent.updated(post: updatedPost),
+                    );
+                  }
+                  // repost
+                  if (widget.post.repostOf?.ballot?.id == state.ballot.id) {
+                    var updatedPost = widget.post;
+                    Post repostOf = updatedPost.repostOf!.copyWith(
                       ballot: state.ballot,
                     );
-                    _post = _post.copyWith(repostOf: repostOf);
-                  });
+                    updatedPost = updatedPost.copyWith(repostOf: repostOf);
+                    context.read<PostBloc>().add(
+                      PostEvent.updated(post: updatedPost),
+                    );
+                  }
                 }
-              }
-            },
-          ),
-          BlocListener<SurveyDetailBloc, SurveyDetailState>(
-            listener: (context, state) {
-              if (state is SurveyUpdated) {
-                // post
-                if (_post.survey?.id == state.survey.id) {
-                  setState(() {
-                    _post = _post.copyWith(survey: state.survey);
-                  });
-                }
-                // repost
-                if (_post.repostOf?.survey?.id == state.survey.id) {
-                  setState(() {
-                    Post repostOf = _post.repostOf!.copyWith(
+              },
+            ),
+            BlocListener<SurveyDetailBloc, SurveyDetailState>(
+              listener: (context, state) {
+                if (state is SurveyUpdated) {
+                  // post
+                  if (widget.post.survey?.id == state.survey.id) {
+                    var updatedPost = widget.post;
+                    updatedPost = updatedPost.copyWith(survey: state.survey);
+                    context.read<PostBloc>().add(
+                      PostEvent.updated(post: updatedPost),
+                    );
+                  }
+                  // repost
+                  if (widget.post.repostOf?.survey?.id == state.survey.id) {
+                    var updatedPost = widget.post;
+                    Post repostOf = updatedPost.repostOf!.copyWith(
                       survey: state.survey,
                     );
-                    _post = _post.copyWith(repostOf: repostOf);
-                  });
+                    updatedPost = updatedPost.copyWith(repostOf: repostOf);
+                    context.read<PostBloc>().add(
+                      PostEvent.updated(post: updatedPost),
+                    );
+                  }
                 }
-              }
-            },
-          ),
-        ],
-        child: Scaffold(
-          appBar: AppBar(title: Text('Post')),
-          body: BlocBuilder<RepliesBloc, RepliesState>(
-            buildWhen: (previous, current) {
-              return widget.post.id == current.postId;
-            },
-            builder: (context, state) {
-              final replies = state.posts.toList();
+              },
+            ),
+          ],
+          child: Scaffold(
+            appBar: AppBar(title: Text('Post')),
+            body: BlocBuilder<RepliesBloc, RepliesState>(
+              buildWhen: (previous, current) {
+                return widget.post.id == current.postId;
+              },
+              builder: (context, state) {
+                final replies = state.posts.toList();
 
-              if (state.status == RepliesStatus.success) {
-                if (_refreshController.headerStatus ==
-                    RefreshStatus.refreshing) {
-                  _refreshController.refreshCompleted();
+                if (state.status == RepliesStatus.success) {
+                  if (_refreshController.headerStatus ==
+                      RefreshStatus.refreshing) {
+                    _refreshController.refreshCompleted();
+                  }
+                  if (_refreshController.footerStatus == LoadStatus.loading) {
+                    _refreshController.loadComplete();
+                  }
                 }
-                if (_refreshController.footerStatus == LoadStatus.loading) {
-                  _refreshController.loadComplete();
-                }
-              }
 
-              if (state.status == RepliesStatus.failure) {
-                if (_refreshController.headerStatus ==
-                    RefreshStatus.refreshing) {
-                  _refreshController.refreshFailed();
+                if (state.status == RepliesStatus.failure) {
+                  if (_refreshController.headerStatus ==
+                      RefreshStatus.refreshing) {
+                    _refreshController.refreshFailed();
+                  }
+                  if (_refreshController.footerStatus == LoadStatus.loading) {
+                    _refreshController.loadFailed();
+                  }
                 }
-                if (_refreshController.footerStatus == LoadStatus.loading) {
-                  _refreshController.loadFailed();
-                }
-              }
 
-              return SmartRefresher(
-                enablePullDown: false,
-                enablePullUp: state.hasNext,
-                header: ClassicHeader(),
-                footer: ClassicFooter(),
-                controller: _refreshController,
-                onLoading: () {
-                  context.read<RepliesBloc>().add(
-                    RepliesEvent.get(post: _post, previousPosts: replies),
-                  );
-                },
-                child: CustomScrollView(
-                  center: _centerKey,
-                  slivers: <Widget>[
-                    if (widget.post.replyTo != null)
-                      ReplyTos(post: widget.post),
-                    _buildMainPost(),
-                    if (state.status == RepliesStatus.initial)
-                      SliverToBoxAdapter(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 50),
-                          child: BottomLoader(),
-                        ),
-                      )
-                    else if (state.status == RepliesStatus.failure &&
-                        replies.isEmpty)
-                      SliverToBoxAdapter(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 50),
-                          child: FailureRetryButton(onPressed: _getData),
-                        ),
-                      )
-                    else
-                      Replies(
-                        replies: replies,
-                        expandedReplies: expandedReplies,
-                        onExpand: (post) {
-                          setState(() {
-                            expandedReplies.add(post.id);
-                          });
-                        },
-                        onRepliesUpdated: (replies) {
-                          context.read<RepliesBloc>().add(
-                            RepliesEvent.update(
-                              postId: _post.id,
-                              replies: replies,
-                            ),
-                          );
-                        },
-                        onThreadUpdated: (reply) {
-                          int index = replies.indexWhere(
-                            (r) => r.id == reply.id,
-                          );
-                          replies[index] = reply;
-                          context.read<RepliesBloc>().add(
-                            RepliesEvent.update(
-                              postId: _post.id,
-                              replies: replies,
-                            ),
-                          );
-                        },
+                return SmartRefresher(
+                  enablePullDown: false,
+                  enablePullUp: state.hasNext,
+                  header: ClassicHeader(),
+                  footer: ClassicFooter(),
+                  controller: _refreshController,
+                  onLoading: () {
+                    context.read<RepliesBloc>().add(
+                      RepliesEvent.get(
+                        postId: widget.post.id,
+                        previousPosts: replies,
                       ),
-                  ],
-                ),
-              );
-            },
-          ),
-          bottomNavigationBar: _post.isDeleted
-              ? SizedBox.shrink()
-              : _post.author.hasBlocked
-              ? Container(
-                  margin: const EdgeInsets.only(bottom: 8.0),
-                  child: Text(
-                    'You have been blocked',
-                    textAlign: TextAlign.center,
+                    );
+                  },
+                  child: CustomScrollView(
+                    center: _centerKey,
+                    slivers: <Widget>[
+                      if (widget.post.replyTo != null)
+                        ReplyTos(post: widget.post),
+                      _buildMainPost(),
+                      if (state.status == RepliesStatus.initial)
+                        SliverToBoxAdapter(
+                          child: Container(
+                            margin: EdgeInsets.only(top: 50),
+                            child: BottomLoader(),
+                          ),
+                        )
+                      else if (state.status == RepliesStatus.failure &&
+                          replies.isEmpty)
+                        SliverToBoxAdapter(
+                          child: Container(
+                            margin: EdgeInsets.only(top: 50),
+                            child: FailureRetryButton(
+                              onPressed: () {
+                                context.read<RepliesBloc>().add(
+                                  RepliesEvent.get(postId: widget.post.id),
+                                );
+                                if (widget.post.replyTo != null) {
+                                  context.read<ReplyToBloc>().add(
+                                    ReplyToEvent.get(postId: widget.post.id),
+                                  );
+                                }
+                              },
+                            ),
+                          ),
+                        )
+                      else
+                        Replies(
+                          replies: replies,
+                          expandedReplies: expandedReplies,
+                          onExpand: (post) {
+                            setState(() {
+                              expandedReplies.add(post.id);
+                            });
+                          },
+                          onRepliesUpdated: (replies) {
+                            context.read<RepliesBloc>().add(
+                              RepliesEvent.update(
+                                postId: widget.post.id,
+                                replies: replies,
+                              ),
+                            );
+                          },
+                          onThreadUpdated: (reply) {
+                            int index = replies.indexWhere(
+                              (r) => r.id == reply.id,
+                            );
+                            replies[index] = reply;
+                            context.read<RepliesBloc>().add(
+                              RepliesEvent.update(
+                                postId: widget.post.id,
+                                replies: replies,
+                              ),
+                            );
+                          },
+                        ),
+                    ],
                   ),
-                )
-              : BottomReplyTextField(post: _post),
+                );
+              },
+            ),
+            bottomNavigationBar: widget.post.isDeleted
+                ? SizedBox.shrink()
+                : widget.post.author.hasBlocked
+                ? Container(
+                    margin: const EdgeInsets.only(bottom: 8.0),
+                    child: Text(
+                      'You have been blocked',
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                : BottomReplyTextField(post: widget.post),
+          ),
         ),
       ),
     );
@@ -361,17 +428,18 @@ class _PostDetailPageState extends State<PostDetailPage>
       key: _centerKey,
       child: Column(
         children: [
-          if (_post.replyTo == null)
+          if (widget.post.replyTo == null)
             Column(
               children: [
-                if (widget.showAsRepost) _repostBanner(),
-                _PostContainer(post: _post, isDeleted: _isDeleted),
+                if (widget.post.repostType == RepostType.repost)
+                  _repostBanner(),
+                _PostContainer(post: widget.post, isDeleted: _isDeleted),
               ],
             )
           else
             Column(
               children: [
-                if (widget.showAsRepost)
+                if (widget.post.repostType == RepostType.repost)
                   Stack(
                     children: [
                       ThreadLine(showBottomThread: true, showTopThread: true),
@@ -384,7 +452,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                 Stack(
                   children: [
                     ThreadLine(showBottomThread: false, showTopThread: true),
-                    _PostContainer(post: _post, isDeleted: _isDeleted),
+                    _PostContainer(post: widget.post, isDeleted: _isDeleted),
                   ],
                 ),
               ],
@@ -398,10 +466,10 @@ class _PostDetailPageState extends State<PostDetailPage>
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         User user = state.user!;
-        String text = user.id == widget.repost.author.id
+        String text = user.id == widget.post.author.id
             ? 'You reposted'
-            : '${widget.repost.author.name} reposted';
-        if (widget.repost.repostOf!.communityNoteOf != null) {
+            : '${widget.post.author.name} reposted';
+        if (widget.post.repostOf!.communityNoteOf != null) {
           text = '$text a community note';
         }
         return Container(
@@ -456,8 +524,8 @@ class _PostContainer extends StatelessWidget {
                   children: [
                     InkWell(
                       onTap: () {
-                        context.push(
-                          ProfileRoute(userId: post.author.id).location,
+                        context.router.push(
+                          ProfileRoute(userId: post.author.id),
                         );
                       },
                       child: Container(

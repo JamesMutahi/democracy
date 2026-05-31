@@ -1,20 +1,15 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:democracy/app/view/router/router.dart';
-import 'package:democracy/ballot/view/ballot_detail.dart';
-import 'package:democracy/chat/view/utils/chat_navigator.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/chat/view/utils/last_message.dart';
 import 'package:democracy/meeting/view/widgets/meeting_tile.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
-import 'package:democracy/petition/view/petition_detail.dart';
-import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/post/view/widgets/post_body.dart';
 import 'package:democracy/survey/view/widgets/survey_tile.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/user/view/pages/users.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 class NotificationTile extends StatelessWidget {
@@ -47,12 +42,7 @@ class NotificationTile extends StatelessWidget {
       );
       subtitle = PostBody(post: notification.post!);
       onTap = () {
-        navigateToPostDetail(
-          context: context,
-          post: notification.post!,
-          showAsRepost: false,
-          repost: notification.post!,
-        );
+        context.router.push(PostDetail(postId: notification.post!.id));
       };
     } else if (notification.isFollow) {
       icon = Icon(Symbols.person);
@@ -68,15 +58,12 @@ class NotificationTile extends StatelessWidget {
       subtitle = SizedBox.shrink();
       onTap = () {
         if (notification.users.length == 1) {
-          context.push(
-            ProfileRoute(userId: notification.users.first.id).location,
+          context.router.push(
+            ProfileRoute(userId: notification.users.first.id),
           );
         } else {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) =>
-                  UsersPage(title: 'New followers', users: notification.users),
-            ),
+          context.router.push(
+            UsersRoute(title: 'New followers', users: notification.users),
           );
         }
       };
@@ -94,15 +81,12 @@ class NotificationTile extends StatelessWidget {
       subtitle = SizedBox.shrink();
       onTap = () {
         if (notification.users.length == 1) {
-          context.push(
-            ProfileRoute(userId: notification.users.first.id).location,
+          context.router.push(
+            ProfileRoute(userId: notification.users.first.id),
           );
         } else {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) =>
-                  UsersPage(title: 'New supporters', users: notification.users),
-            ),
+          context.router.push(
+            UsersRoute(title: 'New supporters', users: notification.users),
           );
         }
       };
@@ -111,17 +95,7 @@ class NotificationTile extends StatelessWidget {
       title = Text(notification.text);
       subtitle = PostBody(post: notification.post!);
       onTap = () {
-        bool showAsRepost =
-            notification.post!.body.isEmpty &&
-            notification.post!.repostOf != null;
-        navigateToPostDetail(
-          context: context,
-          post: showAsRepost
-              ? notification.post!.repostOf!
-              : notification.post!,
-          showAsRepost: showAsRepost,
-          repost: notification.post!,
-        );
+        context.router.push(PostDetail(postId: notification.post!.id));
       };
     } else if (notification.ballot != null) {
       icon = Icon(Symbols.how_to_vote);
@@ -132,11 +106,7 @@ class NotificationTile extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
       );
       onTap = () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => BallotDetail(ballot: notification.ballot!),
-          ),
-        );
+        context.router.push(BallotDetail(ballotId: notification.ballot!.id));
       };
     } else if (notification.meeting != null) {
       icon = Icon(Symbols.meeting_room);
@@ -181,11 +151,8 @@ class NotificationTile extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
       );
       onTap = () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) =>
-                PetitionDetail(petition: notification.petition!),
-          ),
+        context.router.push(
+          PetitionDetail(petitionId: notification.petition!.id),
         );
       };
     } else if (notification.chat != null) {
@@ -197,7 +164,7 @@ class NotificationTile extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
       );
       onTap = () {
-        navigateToChatDetail(context: context, chat: notification.chat!);
+        context.router.push(ChatDetail(chatId: notification.chat!.id));
       };
     } else {
       icon = Icon(Symbols.info_i_rounded);

@@ -1,8 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart'
-    show WebsocketStatus;
+    show WebsocketStatus, WebSocketService;
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
+import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
+import 'package:democracy/ballot/bloc/ballot/ballot_bloc.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/models/option.dart';
@@ -11,17 +15,51 @@ import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class BallotDetail extends StatefulWidget {
-  const BallotDetail({super.key, required this.ballot});
+@RoutePage()
+class BallotDetail extends StatelessWidget {
+  const BallotDetail({super.key, @PathParam('id') required this.ballotId});
+
+  final int ballotId;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>
+          BallotBloc(webSocketService: context.read<WebSocketService>())
+            ..add(BallotEvent.load(ballotId: ballotId)),
+      child: BlocBuilder<BallotBloc, BallotState>(
+        buildWhen: (previous, current) => current.ballotId == ballotId,
+        builder: (context, state) {
+          if (state.status == BallotStatus.initial ||
+              (state.status == BallotStatus.loading && state.ballot == null)) {
+            return BottomLoader();
+          }
+          if (state.status == BallotStatus.failure && state.ballot == null) {
+            return FailureRetryButton(
+              onPressed: () {
+                context.read<BallotBloc>().add(
+                  BallotEvent.load(ballotId: ballotId),
+                );
+              },
+            );
+          }
+          return _BallotDetail(ballot: state.ballot!);
+        },
+      ),
+    );
+  }
+}
+
+class _BallotDetail extends StatefulWidget {
+  const _BallotDetail({required this.ballot});
 
   final Ballot ballot;
 
   @override
-  State<BallotDetail> createState() => _BallotDetailState();
+  State<_BallotDetail> createState() => _BallotDetailState();
 }
 
-class _BallotDetailState extends State<BallotDetail> {
-  late Ballot _ballot = widget.ballot;
+class _BallotDetailState extends State<_BallotDetail> {
   bool changingVote = false;
   late final TextEditingController _textEditingController =
       TextEditingController(
@@ -29,16 +67,8 @@ class _BallotDetailState extends State<BallotDetail> {
       );
 
   @override
-  void initState() {
-    context.read<BallotDetailBloc>().add(
-      BallotDetailEvent.retrieve(ballot: widget.ballot),
-    );
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    bool userHasVoted = _ballot.votedOption != null;
+    bool userHasVoted = widget.ballot.votedOption != null;
     return MultiBlocListener(
       listeners: [
         BlocListener<WebsocketBloc, WebsocketState>(
@@ -53,8 +83,8 @@ class _BallotDetailState extends State<BallotDetail> {
         BlocListener<BallotDetailBloc, BallotDetailState>(
           listener: (context, state) {
             if (state is BallotUpdated) {
-              if (_ballot.id == state.ballot.id) {
-                if (state.ballot.reason?.text != _ballot.reason?.text) {
+              if (widget.ballot.id == state.ballot.id) {
+                if (state.ballot.reason?.text != widget.ballot.reason?.text) {
                   final snackBar = getSnackBar(
                     context: context,
                     message: 'Submitted',
@@ -62,9 +92,9 @@ class _BallotDetailState extends State<BallotDetail> {
                   );
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 }
-                setState(() {
-                  _ballot = state.ballot;
-                });
+                context.read<BallotBloc>().add(
+                  BallotEvent.updated(ballot: state.ballot),
+                );
                 if (state.ballot.reason == null) {
                   _textEditingController.clear();
                 }
@@ -86,7 +116,7 @@ class _BallotDetailState extends State<BallotDetail> {
         canPop: true,
         onPopInvokedWithResult: (_, _) {
           context.read<BallotDetailBloc>().add(
-            BallotDetailEvent.unsubscribe(ballot: _ballot),
+            BallotDetailEvent.unsubscribe(ballot: widget.ballot),
           );
         },
         child: Scaffold(
@@ -95,7 +125,7 @@ class _BallotDetailState extends State<BallotDetail> {
             actions: [
               Container(
                 margin: EdgeInsets.only(right: 15),
-                child: BallotPopUp(ballot: _ballot),
+                child: BallotPopUp(ballot: widget.ballot),
               ),
             ],
           ),
@@ -106,31 +136,31 @@ class _BallotDetailState extends State<BallotDetail> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (_ballot.county != null)
+                  if (widget.ballot.county != null)
                     Container(
                       margin: EdgeInsets.only(bottom: 10),
                       child: GeoChipRow(
-                        county: _ballot.county,
-                        constituency: _ballot.constituency,
-                        ward: _ballot.ward,
+                        county: widget.ballot.county,
+                        constituency: widget.ballot.constituency,
+                        ward: widget.ballot.ward,
                       ),
                     ),
                   Text(
-                    _ballot.title,
+                    widget.ballot.title,
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   SizedBox(height: 5),
-                  Text(_ballot.description),
+                  Text(widget.ballot.description),
                   SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       TimeLeft(
-                        startTime: _ballot.startTime,
-                        endTime: _ballot.endTime,
+                        startTime: widget.ballot.startTime,
+                        endTime: widget.ballot.endTime,
                       ),
                       Text(
-                        '${_ballot.totalVotes} ${_ballot.totalVotes == 1 ? 'vote' : 'votes'}',
+                        '${widget.ballot.totalVotes} ${widget.ballot.totalVotes == 1 ? 'vote' : 'votes'}',
                         style: TextStyle(
                           color: Theme.of(context).disabledColor,
                         ),
@@ -151,22 +181,22 @@ class _BallotDetailState extends State<BallotDetail> {
                     ),
                     child: Column(
                       children: [
-                        ..._ballot.options.map((option) {
+                        ...widget.ballot.options.map((option) {
                           return AnimatedSwitcher(
                             duration: const Duration(milliseconds: 300),
                             child:
-                                (!_ballot.isActive ||
+                                (!widget.ballot.isActive ||
                                     (userHasVoted && !changingVote))
                                 ? BallotPercentIndicator(
                                     key: ValueKey(option.id),
-                                    ballot: _ballot,
+                                    ballot: widget.ballot,
                                     option: option,
                                     animateToInitialPercent: true,
                                   )
                                 : OptionTile(
                                     option: option,
                                     onTap: () {
-                                      if (_ballot.isActive) {
+                                      if (widget.ballot.isActive) {
                                         context.read<BallotDetailBloc>().add(
                                           BallotDetailEvent.vote(
                                             option: option,
@@ -196,7 +226,7 @@ class _BallotDetailState extends State<BallotDetail> {
                     ),
                   ),
                   SizedBox(height: 10),
-                  userHasVoted && _ballot.isActive
+                  userHasVoted && widget.ballot.isActive
                       ? changingVote
                             ? SizedBox.shrink()
                             : Align(
@@ -214,7 +244,7 @@ class _BallotDetailState extends State<BallotDetail> {
                   SizedBox(height: 20),
                   !changingVote
                       ? ReasonWidget(
-                          ballot: _ballot,
+                          ballot: widget.ballot,
                           controller: _textEditingController,
                         )
                       : SizedBox.shrink(),

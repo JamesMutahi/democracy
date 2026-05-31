@@ -1,11 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/menu_controller/menu_controller_cubit.dart';
+import 'package:democracy/app/bloc/route/route_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/logo.dart';
-import 'package:democracy/app/view/router/router.dart';
-import 'package:democracy/app/view/widgets/bottom_nav_bar.dart'
-    show CreationBottomSheet;
+import 'package:democracy/app/view/router/router.gr.dart';
+import 'package:democracy/app/view/widgets/creation_bottom_sheet.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/user/models/user.dart';
@@ -14,7 +15,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
@@ -26,175 +26,201 @@ class SideMenu extends StatelessWidget {
     final responsive = ResponsiveBreakpoints.of(context);
     final menuController = context.read<MenuControllerCubit>();
     final user = context.read<AuthBloc>().state.user!;
-    final String currentPath = GoRouterState.of(context).uri.toString();
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          return CustomScrollView(
-            // Prevents bounce physics from breaking layout constraints
-            physics: const ClampingScrollPhysics(),
-            slivers: [
-              SliverFillRemaining(
-                hasScrollBody: false, // Allows content to define its own height
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (kIsWeb)
-                            Container(
-                              margin: const EdgeInsets.only(left: 11, top: 5),
-                              child: const Logo(width: 40, height: 40),
-                            )
-                          else
-                            DrawerHeader(
-                              child: ProfileImage(user: user, radius: 65),
-                            ),
-                          if (kIsWeb) ...[
-                            DrawerListTile(
-                              onTap: () {
-                                menuController.closeDrawer();
-                                context.go(const HomeRoute().location);
-                              },
-                              iconData: Symbols.home_rounded,
-                              title: 'Home',
-                              selected: currentPath == '/',
-                            ),
-                            DrawerListTile(
-                              onTap: () {
-                                menuController.closeDrawer();
-                                context.go(const ExploreRoute().location);
-                              },
-                              iconData: Symbols.search_rounded,
-                              title: 'Explore',
-                              selected: currentPath == '/explore',
-                            ),
-                            DrawerListTile(
-                              onTap: () {
-                                menuController.closeDrawer();
-                                context.go(const HubRoute().location);
-                              },
-                              iconData: Symbols.dashboard_rounded,
-                              title: 'Hub',
-                              selected: currentPath == '/hub',
-                            ),
-                            DrawerListTile(
-                              onTap: () {
-                                menuController.closeDrawer();
-                                context.go(const ChatRoute().location);
-                              },
-                              iconData: Symbols.chat_bubble_rounded,
-                              title: 'Chat',
-                              selected: currentPath == '/chat',
-                            ),
-                          ],
-                          DrawerListTile(
-                            onTap: () {
-                              menuController.closeDrawer();
-                              context.push(const NotificationsRoute().location);
-                            },
-                            iconData: Symbols.notifications_rounded,
-                            title: 'Notifications',
-                            selected: currentPath.startsWith('/notifications'),
-                          ),
-                          DrawerListTile(
-                            onTap: () {
-                              menuController.closeDrawer();
-                              context.push(const BookmarksRoute().location);
-                            },
-                            iconData: Symbols.bookmark_rounded,
-                            title: 'Bookmarks',
-                            selected: currentPath.startsWith('/bookmarks'),
-                          ),
-                          DrawerListTile(
-                            onTap: () {
-                              menuController.closeDrawer();
-                              context.push(const ConstitutionRoute().location);
-                            },
-                            iconData: Symbols.book_rounded,
-                            title: 'Constitution',
-                            selected: currentPath.startsWith('/constitution'),
-                          ),
-                          DrawerListTile(
-                            onTap: () {
-                              menuController.closeDrawer();
-                              context.push(const SettingsRoute().location);
-                            },
-                            iconData: Symbols.settings_rounded,
-                            title: 'Settings',
-                            selected: currentPath.startsWith('/settings'),
-                          ),
-                          if (kIsWeb)
-                            responsive.smallerThan(expandSideMenu)
-                                ? IconButton.filledTonal(
-                                    onPressed: () {
-                                      _showCreateDialog(context);
-                                    },
-                                    padding: const EdgeInsets.all(10),
-                                    icon: _buildCreateIcon(
-                                      context,
-                                      Theme.of(context).primaryColor,
-                                    ),
-                                  )
-                                : Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 0.0,
-                                    ),
-                                    child: ListTile(
-                                      onTap: () {
-                                        menuController.closeDrawer();
-                                        _showCreateDialog(context);
-                                      },
-                                      leading: _buildCreateIcon(
-                                        context,
-                                        currentPath.contains('/create')
-                                            ? Theme.of(context).primaryColor
-                                            : Theme.of(
-                                                context,
-                                              ).colorScheme.outline,
-                                      ),
-                                      title: Text(
-                                        'Create',
-                                        style: TextStyle(
-                                          color: currentPath.contains('/create')
-                                              ? Theme.of(context).primaryColor
-                                              : Theme.of(
-                                                  context,
-                                                ).colorScheme.outline,
+    return BlocBuilder<RouteCubit, String>(
+      builder: (context, currentRoute) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return CustomScrollView(
+                // Prevents bounce physics from breaking layout constraints
+                physics: const ClampingScrollPhysics(),
+                slivers: [
+                  SliverFillRemaining(
+                    hasScrollBody:
+                        false, // Allows content to define its own height
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (kIsWeb)
+                                Container(
+                                  margin: const EdgeInsets.only(
+                                    left: 11,
+                                    top: 5,
+                                  ),
+                                  child: const Logo(width: 40, height: 40),
+                                )
+                              else
+                                DrawerHeader(
+                                  child: ProfileImage(user: user, radius: 65),
+                                ),
+                              if (kIsWeb) ...[
+                                DrawerListTile(
+                                  onTap: () {
+                                    menuController.closeDrawer();
+                                    context.navigateTo(const HomeRoute());
+                                  },
+                                  iconData: Symbols.home_rounded,
+                                  title: 'Home',
+                                  selected: currentRoute == HomeRoute.name,
+                                ),
+                                DrawerListTile(
+                                  onTap: () {
+                                    menuController.closeDrawer();
+                                    context.navigateTo(const ExploreRoute());
+                                  },
+                                  iconData: Symbols.search_rounded,
+                                  title: 'Explore',
+                                  selected: currentRoute == ExploreRoute.name,
+                                ),
+                                DrawerListTile(
+                                  onTap: () {
+                                    menuController.closeDrawer();
+                                    context.navigateTo(const Hub());
+                                  },
+                                  iconData: Symbols.dashboard_rounded,
+                                  title: 'Hub',
+                                  selected: currentRoute == Hub.name,
+                                ),
+                                DrawerListTile(
+                                  onTap: () {
+                                    menuController.closeDrawer();
+                                    context.navigateTo(const ChatRoute());
+                                  },
+                                  iconData: Symbols.chat_bubble_rounded,
+                                  title: 'Chat',
+                                  selected: currentRoute == ChatRoute.name,
+                                ),
+                              ],
+                              DrawerListTile(
+                                onTap: () {
+                                  menuController.closeDrawer();
+                                  if (currentRoute != Notifications.name) {
+                                    context.router.push(const Notifications());
+                                  }
+                                },
+                                iconData: Symbols.notifications_rounded,
+                                title: 'Notifications',
+                                selected: currentRoute == Notifications.name,
+                              ),
+                              DrawerListTile(
+                                onTap: () {
+                                  menuController.closeDrawer();
+                                  if (currentRoute != Bookmarks.name) {
+                                    context.router.push(const Bookmarks());
+                                  }
+                                },
+                                iconData: Symbols.bookmark_rounded,
+                                title: 'Bookmarks',
+                                selected: currentRoute == Bookmarks.name,
+                              ),
+                              DrawerListTile(
+                                onTap: () {
+                                  menuController.closeDrawer();
+                                  if (currentRoute != Constitution.name) {
+                                    context.router.push(
+                                      Constitution(selectionMode: false),
+                                    );
+                                  }
+                                },
+                                iconData: Symbols.book_rounded,
+                                title: 'Constitution',
+                                selected: currentRoute == Constitution.name,
+                              ),
+                              DrawerListTile(
+                                onTap: () {
+                                  menuController.closeDrawer();
+                                  if (currentRoute != Settings.name) {
+                                    context.router.push(const Settings());
+                                  }
+                                },
+                                iconData: Symbols.settings_rounded,
+                                title: 'Settings',
+                                selected: currentRoute == Settings.name,
+                              ),
+                              if (kIsWeb)
+                                responsive.smallerThan(expandSideMenu)
+                                    ? IconButton.filledTonal(
+                                        onPressed: () {
+                                          _showCreateDialog(context);
+                                        },
+                                        padding: const EdgeInsets.all(10),
+                                        icon: _buildCreateIcon(
+                                          context,
+                                          Theme.of(context).primaryColor,
+                                        ),
+                                      )
+                                    : Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 0.0,
+                                        ),
+                                        child: ListTile(
+                                          onTap: () {
+                                            menuController.closeDrawer();
+                                            _showCreateDialog(context);
+                                          },
+                                          leading: _buildCreateIcon(
+                                            context,
+                                            currentRoute.toLowerCase().contains(
+                                                  'create',
+                                                )
+                                                ? Theme.of(context).primaryColor
+                                                : Theme.of(
+                                                    context,
+                                                  ).colorScheme.outline,
+                                          ),
+                                          title: Text(
+                                            'Create',
+                                            style: TextStyle(
+                                              color:
+                                                  currentRoute
+                                                      .toLowerCase()
+                                                      .contains('create')
+                                                  ? Theme.of(
+                                                      context,
+                                                    ).primaryColor
+                                                  : Theme.of(
+                                                      context,
+                                                    ).colorScheme.outline,
+                                            ),
+                                          ),
+                                          tileColor: Theme.of(
+                                            context,
+                                          ).colorScheme.primaryContainer,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                      tileColor: Theme.of(
-                                        context,
-                                      ).colorScheme.primaryContainer,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                    ),
-                                  ),
-                        ],
-                      ),
+                            ],
+                          ),
+                        ),
+                        // Adds a buffer above the profile button when scrolling kicks in
+                        const SizedBox(height: 20),
+                        _ProfileButton(
+                          menuController: menuController,
+                          user: user,
+                          currentPath: currentRoute,
+                        ),
+                      ],
                     ),
-                    // Adds a buffer above the profile button when scrolling kicks in
-                    const SizedBox(height: 20),
-                    _ProfileButton(
-                      menuController: menuController,
-                      user: user,
-                      currentPath: currentPath,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          );
-        },
-      ),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -202,7 +228,7 @@ class SideMenu extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) =>
-          Dialog(child: SizedBox(width: 250, child: CreationBottomSheet())),
+          Dialog(child: SizedBox(width: 250, child: CreationButtons())),
     );
   }
 
@@ -346,7 +372,7 @@ class _ProfileButtonState extends State<_ProfileButton>
         if (!kIsWeb) {
           widget.menuController.closeDrawer();
         }
-        context.push(ProfileRoute(userId: widget.user.id).location);
+        context.router.push(ProfileRoute(userId: widget.user.id));
       },
       leading: Icon(Symbols.person_2_rounded),
       title: Text('Profile'),
@@ -389,7 +415,7 @@ class DrawerListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final responsive = ResponsiveBreakpoints.of(context);
 
-    return responsive.smallerThan(expandSideMenu)
+    return kIsWeb && responsive.smallerThan(expandSideMenu)
         ? Container(
             margin: EdgeInsets.only(bottom: 5),
             child: IconButton(

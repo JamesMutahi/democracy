@@ -1,30 +1,24 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/hub_filter/hub_filter_cubit.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/no_results.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/filters_modal.dart';
 import 'package:democracy/app/view/widgets/results_search_bar.dart';
-import 'package:democracy/ballot/bloc/ballot_filter/ballot_filter_cubit.dart';
 import 'package:democracy/ballot/bloc/ballots/ballots_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
-import 'package:democracy/ballot/view/ballot_page.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
-import 'package:democracy/meeting/bloc/meeting_filter/meeting_filter_cubit.dart';
 import 'package:democracy/meeting/bloc/meetings/meetings_bloc.dart';
 import 'package:democracy/meeting/models/meeting.dart';
-import 'package:democracy/meeting/view/meeting_page.dart';
 import 'package:democracy/meeting/view/widgets/meeting_tile.dart';
-import 'package:democracy/petition/bloc/petition_filter/petition_filter_cubit.dart';
 import 'package:democracy/petition/bloc/petitions/petitions_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
-import 'package:democracy/petition/view/petition_page.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart';
-import 'package:democracy/survey/bloc/survey_filter/survey_filter_cubit.dart';
 import 'package:democracy/survey/bloc/surveys/surveys_bloc.dart';
 import 'package:democracy/survey/models/survey.dart';
-import 'package:democracy/survey/view/survey_page.dart';
 import 'package:democracy/survey/view/widgets/survey_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,6 +27,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
+@RoutePage()
 class Hub extends StatefulWidget {
   const Hub({super.key});
 
@@ -101,100 +96,28 @@ class _HubState extends State<Hub> {
                 children: [
                   _HubCard(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MultiBlocProvider(
-                            providers: [
-                              BlocProvider(
-                                create: (context) => BallotsBloc(
-                                  webSocketService: context
-                                      .read<WebSocketService>(),
-                                ),
-                              ),
-                              BlocProvider(
-                                create: (context) => BallotFilterCubit(),
-                              ),
-                            ],
-                            child: BallotPage(),
-                          ),
-                        ),
-                      );
+                      context.router.push(const BallotRoute());
                     },
                     asset: 'assets/icons/ballot-box.svg',
                     text: 'Ballots',
                   ),
                   _HubCard(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MultiBlocProvider(
-                            providers: [
-                              BlocProvider(
-                                create: (context) => SurveysBloc(
-                                  webSocketService: context
-                                      .read<WebSocketService>(),
-                                ),
-                              ),
-                              BlocProvider(
-                                create: (context) => SurveyFilterCubit(),
-                              ),
-                            ],
-                            child: SurveyPage(),
-                          ),
-                        ),
-                      );
+                      context.router.push(const SurveyRoute());
                     },
                     asset: 'assets/icons/question.svg',
                     text: 'Surveys',
                   ),
                   _HubCard(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MultiBlocProvider(
-                            providers: [
-                              BlocProvider(
-                                create: (context) => MeetingsBloc(
-                                  webSocketService: context
-                                      .read<WebSocketService>(),
-                                ),
-                              ),
-                              BlocProvider(
-                                create: (context) => MeetingFilterCubit(),
-                              ),
-                            ],
-                            child: MeetingPage(),
-                          ),
-                        ),
-                      );
+                      context.router.push(const MeetingRoute());
                     },
                     asset: 'assets/icons/meeting.svg',
                     text: 'Meetings',
                   ),
                   _HubCard(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MultiBlocProvider(
-                            providers: [
-                              BlocProvider(
-                                create: (context) => PetitionsBloc(
-                                  webSocketService: context
-                                      .read<WebSocketService>(),
-                                ),
-                              ),
-                              BlocProvider(
-                                create: (context) => PetitionFilterCubit(),
-                              ),
-                            ],
-                            child: PetitionPage(),
-                          ),
-                        ),
-                      );
+                      context.router.push(const PetitionRoute());
                     },
                     asset: 'assets/icons/signature.svg',
                     text: 'Petitions',
@@ -213,18 +136,18 @@ class _HubState extends State<Hub> {
       controller: _controller,
       hintText: 'Search',
       filterCount: state.count,
-      onSubmitted: (value) {
+      onSubmitted: (value) async {
         if (_controller.text.trim().isNotEmpty) {
-          _navigateToResultsPage(
-            context: context,
+          final route = ResultsRoute(
             searchTerm: _controller.text,
             filterByRegion: state.filterByRegion,
             sortBy: state.sortBy,
             startDate: state.startDate,
             endDate: state.endDate,
             filterCount: state.count,
-            whenComplete: () => _controller.clear(),
           );
+          await context.router.push(route);
+          _controller.clear();
         }
       },
       onFilterTap: () {
@@ -279,56 +202,10 @@ class _HubCard extends StatelessWidget {
   }
 }
 
-void _navigateToResultsPage({
-  required BuildContext context,
-  required String searchTerm,
-  required bool filterByRegion,
-  required String sortBy,
-  required DateTime? startDate,
-  required DateTime? endDate,
-  required int filterCount,
-  required VoidCallback whenComplete,
-}) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (context) => HubFilterCubit()),
-          BlocProvider(
-            create: (context) =>
-                BallotsBloc(webSocketService: context.read<WebSocketService>()),
-          ),
-          BlocProvider(
-            create: (context) =>
-                SurveysBloc(webSocketService: context.read<WebSocketService>()),
-          ),
-          BlocProvider(
-            create: (context) => MeetingsBloc(
-              webSocketService: context.read<WebSocketService>(),
-            ),
-          ),
-          BlocProvider(
-            create: (context) => PetitionsBloc(
-              webSocketService: context.read<WebSocketService>(),
-            ),
-          ),
-        ],
-        child: _ResultsPage(
-          searchTerm: searchTerm,
-          filterByRegion: filterByRegion,
-          sortBy: sortBy,
-          startDate: startDate,
-          endDate: endDate,
-          filterCount: filterCount,
-        ),
-      ),
-    ),
-  ).whenComplete(whenComplete);
-}
-
-class _ResultsPage extends StatefulWidget {
-  const _ResultsPage({
+@RoutePage()
+class ResultsPage extends StatefulWidget {
+  const ResultsPage({
+    super.key,
     required this.searchTerm,
     required this.filterByRegion,
     required this.sortBy,
@@ -345,10 +222,10 @@ class _ResultsPage extends StatefulWidget {
   final int filterCount;
 
   @override
-  State<_ResultsPage> createState() => _ResultsPageState();
+  State<ResultsPage> createState() => _ResultsPageState();
 }
 
-class _ResultsPageState extends State<_ResultsPage>
+class _ResultsPageState extends State<ResultsPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
@@ -378,116 +255,137 @@ class _ResultsPageState extends State<_ResultsPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return DefaultTabController(
-      length: 4,
-      child: Scaffold(
-        body: SafeArea(
-          child: BlocBuilder<HubFilterCubit, HubFilterState>(
-            buildWhen: (previous, current) {
-              return current.searchTerm == widget.searchTerm;
-            },
-            builder: (context, state) {
-              return NestedScrollView(
-                headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-                  return [
-                    SliverAppBar(
-                      floating: true,
-                      snap: true,
-                      forceElevated: true,
-                      automaticallyImplyLeading: false,
-                      flexibleSpace: Builder(
-                        builder: (context) {
-                          return SizedBox(
-                            height: 50,
-                            child: Row(
-                              children: [
-                                BackButton(),
-                                _buildSearchBar(
-                                  filterByRegion: state.filterByRegion,
-                                  sortBy: state.sortBy,
-                                  startDate: state.startDate,
-                                  endDate: state.endDate,
-                                  filterCount: state.count,
-                                ),
-                              ],
-                            ),
-                          );
-                        },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => HubFilterCubit()),
+        BlocProvider(
+          create: (context) =>
+              BallotsBloc(webSocketService: context.read<WebSocketService>()),
+        ),
+        BlocProvider(
+          create: (context) =>
+              SurveysBloc(webSocketService: context.read<WebSocketService>()),
+        ),
+        BlocProvider(
+          create: (context) =>
+              MeetingsBloc(webSocketService: context.read<WebSocketService>()),
+        ),
+        BlocProvider(
+          create: (context) =>
+              PetitionsBloc(webSocketService: context.read<WebSocketService>()),
+        ),
+      ],
+      child: DefaultTabController(
+        length: 4,
+        child: Scaffold(
+          body: SafeArea(
+            child: BlocBuilder<HubFilterCubit, HubFilterState>(
+              buildWhen: (previous, current) {
+                return current.searchTerm == widget.searchTerm;
+              },
+              builder: (context, state) {
+                return NestedScrollView(
+                  headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+                    return [
+                      SliverAppBar(
+                        floating: true,
+                        snap: true,
+                        forceElevated: true,
+                        automaticallyImplyLeading: false,
+                        flexibleSpace: Builder(
+                          builder: (context) {
+                            return SizedBox(
+                              height: 50,
+                              child: Row(
+                                children: [
+                                  BackButton(),
+                                  _buildSearchBar(
+                                    filterByRegion: state.filterByRegion,
+                                    sortBy: state.sortBy,
+                                    startDate: state.startDate,
+                                    endDate: state.endDate,
+                                    filterCount: state.count,
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                        bottom: TabBar(
+                          dividerColor: Theme.of(
+                            context,
+                          ).colorScheme.outlineVariant,
+                          labelStyle: Theme.of(context).textTheme.titleMedium,
+                          tabs: [
+                            Tab(text: 'Ballots'),
+                            Tab(text: 'Surveys'),
+                            Tab(text: 'Meetings'),
+                            Tab(text: 'Petitions'),
+                          ],
+                        ),
                       ),
-                      bottom: TabBar(
-                        dividerColor: Theme.of(
-                          context,
-                        ).colorScheme.outlineVariant,
-                        labelStyle: Theme.of(context).textTheme.titleMedium,
-                        tabs: [
-                          Tab(text: 'Ballots'),
-                          Tab(text: 'Surveys'),
-                          Tab(text: 'Meetings'),
-                          Tab(text: 'Petitions'),
-                        ],
+                    ];
+                  },
+                  body: MultiBlocProvider(
+                    providers: [
+                      BlocProvider(
+                        create: (context) => BallotsBloc(
+                          webSocketService: context.read<WebSocketService>(),
+                        ),
                       ),
-                    ),
-                  ];
-                },
-                body: MultiBlocProvider(
-                  providers: [
-                    BlocProvider(
-                      create: (context) => BallotsBloc(
-                        webSocketService: context.read<WebSocketService>(),
+                      BlocProvider(
+                        create: (context) => SurveysBloc(
+                          webSocketService: context.read<WebSocketService>(),
+                        ),
                       ),
-                    ),
-                    BlocProvider(
-                      create: (context) => SurveysBloc(
-                        webSocketService: context.read<WebSocketService>(),
+                      BlocProvider(
+                        create: (context) => MeetingsBloc(
+                          webSocketService: context.read<WebSocketService>(),
+                        ),
                       ),
-                    ),
-                    BlocProvider(
-                      create: (context) => MeetingsBloc(
-                        webSocketService: context.read<WebSocketService>(),
-                      ),
-                    ),
-                    BlocProvider(
-                      create: (context) => PetitionsBloc(
-                        webSocketService: context.read<WebSocketService>(),
-                      ),
-                    ),
-                  ],
-                  child: TabBarView(
-                    physics: NeverScrollableScrollPhysics(),
-                    children: [
-                      _BallotsTab(
-                        searchTerm: widget.searchTerm,
-                        filterByRegion: state.filterByRegion,
-                        sortBy: state.sortBy,
-                        startDate: state.startDate,
-                        endDate: state.endDate,
-                      ),
-                      _SurveysTab(
-                        searchTerm: widget.searchTerm,
-                        filterByRegion: state.filterByRegion,
-                        sortBy: state.sortBy,
-                        startDate: state.startDate,
-                        endDate: state.endDate,
-                      ),
-                      _MeetingsTab(
-                        searchTerm: widget.searchTerm,
-                        filterByRegion: state.filterByRegion,
-                        sortBy: state.sortBy,
-                        startDate: state.startDate,
-                        endDate: state.endDate,
-                      ),
-                      _PetitionsTab(
-                        searchTerm: widget.searchTerm,
-                        filterByRegion: state.filterByRegion,
-                        sortBy: state.sortBy,
-                        startDate: state.startDate,
-                        endDate: state.endDate,
+                      BlocProvider(
+                        create: (context) => PetitionsBloc(
+                          webSocketService: context.read<WebSocketService>(),
+                        ),
                       ),
                     ],
+                    child: TabBarView(
+                      physics: NeverScrollableScrollPhysics(),
+                      children: [
+                        _BallotsTab(
+                          searchTerm: widget.searchTerm,
+                          filterByRegion: state.filterByRegion,
+                          sortBy: state.sortBy,
+                          startDate: state.startDate,
+                          endDate: state.endDate,
+                        ),
+                        _SurveysTab(
+                          searchTerm: widget.searchTerm,
+                          filterByRegion: state.filterByRegion,
+                          sortBy: state.sortBy,
+                          startDate: state.startDate,
+                          endDate: state.endDate,
+                        ),
+                        _MeetingsTab(
+                          searchTerm: widget.searchTerm,
+                          filterByRegion: state.filterByRegion,
+                          sortBy: state.sortBy,
+                          startDate: state.startDate,
+                          endDate: state.endDate,
+                        ),
+                        _PetitionsTab(
+                          searchTerm: widget.searchTerm,
+                          filterByRegion: state.filterByRegion,
+                          sortBy: state.sortBy,
+                          startDate: state.startDate,
+                          endDate: state.endDate,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
       ),
@@ -515,19 +413,19 @@ class _ResultsPageState extends State<_ResultsPage>
           endDate: endDate,
         ),
       ),
-      onSubmitted: (value) {
+      onSubmitted: (value) async {
         if (_controller.text.isNotEmpty &&
             widget.searchTerm != _controller.text) {
-          _navigateToResultsPage(
-            context: context,
+          final route = ResultsRoute(
             searchTerm: _controller.text,
             filterByRegion: filterByRegion,
             sortBy: sortBy,
             startDate: startDate,
             endDate: endDate,
             filterCount: filterCount,
-            whenComplete: () => _controller.text = widget.searchTerm,
           );
+          await context.router.push(route);
+          _controller.text = widget.searchTerm;
         }
       },
     );

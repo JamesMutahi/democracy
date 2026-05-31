@@ -1,11 +1,14 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/agora_service.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart'
-    show WebsocketStatus;
+    show WebsocketStatus, WebSocketService;
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
+import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/meeting/bloc/meeting/meeting_bloc.dart';
 import 'package:democracy/meeting/bloc/meeting_detail/meeting_detail_bloc.dart';
 import 'package:democracy/meeting/models/meeting.dart';
 import 'package:democracy/meeting/view/widgets/meeting_pop_up_menu.dart';
@@ -16,33 +19,58 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-void navigateToLiveStream({
-  required BuildContext context,
-  required Meeting meeting,
-}) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => LiveStream(meeting: meeting)),
-  );
+@RoutePage()
+class LiveStream extends StatelessWidget {
+  const LiveStream({super.key, @PathParam('id') required this.meetingId});
+
+  final int meetingId;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>
+          MeetingBloc(webSocketService: context.read<WebSocketService>())
+            ..add(MeetingEvent.load(meetingId: meetingId)),
+      child: BlocBuilder<MeetingBloc, MeetingState>(
+        buildWhen: (previous, current) => current.meetingId == meetingId,
+        builder: (context, state) {
+          if (state.status == MeetingStatus.initial ||
+              (state.status == MeetingStatus.loading &&
+                  state.meeting == null)) {
+            return BottomLoader();
+          }
+          if (state.status == MeetingStatus.failure && state.meeting == null) {
+            return FailureRetryButton(
+              onPressed: () {
+                context.read<MeetingBloc>().add(
+                  MeetingEvent.load(meetingId: meetingId),
+                );
+              },
+            );
+          }
+          return _LiveStream(meeting: state.meeting!);
+        },
+      ),
+    );
+  }
 }
 
-class LiveStream extends StatefulWidget {
-  const LiveStream({super.key, required this.meeting});
+class _LiveStream extends StatefulWidget {
+  const _LiveStream({required this.meeting});
 
   final Meeting meeting;
 
   @override
-  State<LiveStream> createState() => _LiveStreamState();
+  State<_LiveStream> createState() => _LiveStreamState();
 }
 
-class _LiveStreamState extends State<LiveStream> {
-  late Meeting _meeting = widget.meeting;
+class _LiveStreamState extends State<_LiveStream> {
   bool isDeleted = false;
   late RtcEngine _engine;
   bool _isJoined = false;
   bool _isMuted = false;
   late User me = context.read<AuthBloc>().state.user!;
-  late final bool _isHost = me.id == _meeting.host.id;
+  late final bool _isHost = me.id == widget.meeting.host.id;
 
   // Track remote users (especially the host for audience)
   int? _hostUid; // or main broadcaster UID
@@ -61,7 +89,7 @@ class _LiveStreamState extends State<LiveStream> {
     }
     await AgoraService().joinLiveStream(
       isHost: _isHost,
-      meeting: _meeting,
+      meeting: widget.meeting,
       onEngineReady: (engine) {
         setState(() {
           _engine = engine;
@@ -75,14 +103,17 @@ class _LiveStreamState extends State<LiveStream> {
                 _engine.startPreview(); // Important for host
               }
               context.read<MeetingDetailBloc>().add(
-                MeetingDetailEvent.subscribe(meeting: _meeting, isMuted: false),
+                MeetingDetailEvent.subscribe(
+                  meeting: widget.meeting,
+                  isMuted: false,
+                ),
               );
             },
             onUserJoined: (RtcConnection connection, int uid, int elapsed) {
               // Primarily tracks broadcasters
               setState(() {
                 _remoteUids.add(uid);
-                if (_meeting.host.id == uid) {
+                if (widget.meeting.host.id == uid) {
                   setState(() => _hostUid = uid);
                 }
               });
@@ -105,7 +136,11 @@ class _LiveStreamState extends State<LiveStream> {
         );
 
         context.read<MeetingDetailBloc>().add(
-          MeetingDetailEvent.join(engine: _engine, meeting: _meeting, user: me),
+          MeetingDetailEvent.join(
+            engine: _engine,
+            meeting: widget.meeting,
+            user: me,
+          ),
         );
       },
     );
@@ -122,7 +157,7 @@ class _LiveStreamState extends State<LiveStream> {
     await AgoraService().dispose();
     if (mounted) {
       context.read<MeetingDetailBloc>().add(
-        MeetingDetailEvent.unsubscribe(meeting: _meeting),
+        MeetingDetailEvent.unsubscribe(meeting: widget.meeting),
       );
       Navigator.pop(context);
     }
@@ -155,15 +190,19 @@ class _LiveStreamState extends State<LiveStream> {
           listener: (context, state) {
             switch (state) {
               case MeetingLoaded(:final meeting):
-                if (meeting.id == _meeting.id) {
-                  setState(() => _meeting = meeting);
+                if (meeting.id == widget.meeting.id) {
+                  context.read<MeetingBloc>().add(
+                    MeetingEvent.updated(meeting: state.meeting),
+                  );
                 }
               case MeetingUpdated():
-                if (state.meeting.id == _meeting.id) {
-                  setState(() => _meeting = state.meeting);
+                if (state.meeting.id == widget.meeting.id) {
+                  context.read<MeetingBloc>().add(
+                    MeetingEvent.updated(meeting: state.meeting),
+                  );
                 }
               case MeetingDeleted(:final meetingId):
-                if (meetingId == _meeting.id) {
+                if (meetingId == widget.meeting.id) {
                   setState(() => isDeleted = true);
                 }
               case MeetingDetailFailure(:final error):
@@ -194,10 +233,10 @@ class _LiveStreamState extends State<LiveStream> {
         },
         child: Scaffold(
           appBar: AppBar(
-            leading: MeetingPopUpMenu(meeting: _meeting),
+            leading: MeetingPopUpMenu(meeting: widget.meeting),
             centerTitle: true,
             title: Text(
-              _meeting.title,
+              widget.meeting.title,
               style: TextStyle(overflow: TextOverflow.fade),
             ),
             actions: [
@@ -208,10 +247,10 @@ class _LiveStreamState extends State<LiveStream> {
             ],
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(10.0),
-              child: Text(_meeting.description),
+              child: Text(widget.meeting.description),
             ),
           ),
-          body: isDeleted || !_meeting.isActive
+          body: isDeleted || !widget.meeting.isActive
               ? Center(child: Text('This meeting has been closed'))
               : !_isJoined
               ? BottomLoader()
@@ -252,7 +291,7 @@ class _LiveStreamState extends State<LiveStream> {
         controller: VideoViewController.remote(
           rtcEngine: _engine,
           canvas: VideoCanvas(uid: _hostUid!),
-          connection: RtcConnection(channelId: _meeting.id.toString()),
+          connection: RtcConnection(channelId: widget.meeting.id.toString()),
         ),
       );
     }

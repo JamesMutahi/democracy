@@ -1,13 +1,14 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/more_pop_up.dart';
 import 'package:democracy/app/shared/pages/report.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/post/view/widgets/post_widget_selector.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
@@ -152,7 +153,7 @@ class PostPopUp extends StatelessWidget {
         break;
 
       case 'Community notes':
-        navigateToCommunityNotes(context: context, post: post);
+        context.router.push(CommunityNotes(post: post));
         break;
     }
   }
@@ -248,7 +249,7 @@ class RepostButton extends StatelessWidget {
             iconData: Icons.format_quote_rounded,
             onTap: () {
               Navigator.pop(context);
-              navigateToPostCreate(context: context, repostOf: post);
+              context.router.push(PostCreateRoute(repostOf: post));
             },
           ),
           if (post.isReposted)
@@ -272,9 +273,12 @@ class RepostButton extends StatelessWidget {
                   PostCreateEvent.create(
                     body: '',
                     status: PostStatus.published,
-                    repostOf: post.body.isEmpty && post.repostOf != null
+                    repostOf:
+                        post.repostType == RepostType.repost &&
+                            post.repostOf != null
                         ? post.repostOf
                         : post,
+                    repostType: RepostType.repost,
                     tags: [],
                   ),
                 );
@@ -298,7 +302,7 @@ class ReplyButton extends StatelessWidget {
     return _PostTileButton(
       onTap: isBlocked
           ? () => _showBlockedSnackBar(context)
-          : () => _navigateToReply(context, post),
+          : () => context.router.push(PostCreateRoute(replyTo: post)),
       number: post.replies,
       icon: Transform.flip(
         flipX: true,
@@ -315,10 +319,6 @@ class ReplyButton extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _navigateToReply(BuildContext context, Post post) {
-    navigateToPostCreate(context: context, replyTo: post);
   }
 }
 

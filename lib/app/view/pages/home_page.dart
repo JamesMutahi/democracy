@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/logo.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/post/bloc/following_posts/following_posts_bloc.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
+@RoutePage()
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -26,75 +28,77 @@ class _HomePageState extends State<HomePage>
     super.build(context);
     final responsive = ResponsiveBreakpoints.of(context);
 
-    return DefaultTabController(
-      length: 2,
-      child: NestedScrollView(
-        headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-          return [
-            if (!kIsWeb)
-              SliverAppBar(
-                floating: true,
-                snap: true,
-                automaticallyImplyLeading: false,
-                forceElevated: true,
-                flexibleSpace: Builder(
-                  builder: (context) {
-                    return Stack(
-                      // Allows children to go outside bounds
-                      clipBehavior: Clip.none,
-                      alignment: Alignment.center,
-                      children: [
-                        SizedBox(
-                          height: 55,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              if (responsive.isMobile) DrawerOpener(),
-                              NotificationButton(),
-                            ],
+    return Scaffold(
+      body: DefaultTabController(
+        length: 2,
+        child: NestedScrollView(
+          headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+            return [
+              if (!kIsWeb)
+                SliverAppBar(
+                  floating: true,
+                  snap: true,
+                  automaticallyImplyLeading: false,
+                  forceElevated: true,
+                  flexibleSpace: Builder(
+                    builder: (context) {
+                      return Stack(
+                        // Allows children to go outside bounds
+                        clipBehavior: Clip.none,
+                        alignment: Alignment.center,
+                        children: [
+                          SizedBox(
+                            height: 55,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                if (responsive.isMobile) DrawerOpener(),
+                                NotificationButton(),
+                              ],
+                            ),
                           ),
-                        ),
-                        Positioned(top: 5, child: Logo(width: 60, height: 60)),
-                      ],
-                    );
-                  },
+                          Positioned(top: 5, child: Logo(width: 60, height: 60)),
+                        ],
+                      );
+                    },
+                  ),
+                  bottom: TabBar(
+                    dividerColor: Theme.of(context).colorScheme.outlineVariant,
+                    labelStyle: Theme.of(context).textTheme.titleMedium,
+                    tabs: [
+                      Tab(text: 'For You'),
+                      Tab(text: 'Following'),
+                    ],
+                  ),
+                )
+              else
+                SliverAppBar(
+                  pinned: true,
+                  floating: true,
+                  snap: true,
+                  automaticallyImplyLeading: false,
+                  flexibleSpace: Builder(
+                    builder: (context) {
+                      return TabBar(
+                        dividerColor: Theme.of(
+                          context,
+                        ).colorScheme.outlineVariant,
+                        labelStyle: Theme.of(context).textTheme.titleMedium,
+                        tabs: [
+                          Tab(text: 'For You'),
+                          Tab(text: 'Following'),
+                        ],
+                      );
+                    },
+                  ),
                 ),
-                bottom: TabBar(
-                  dividerColor: Theme.of(context).colorScheme.outlineVariant,
-                  labelStyle: Theme.of(context).textTheme.titleMedium,
-                  tabs: [
-                    Tab(text: 'For You'),
-                    Tab(text: 'Following'),
-                  ],
-                ),
-              )
-            else
-              SliverAppBar(
-                pinned: true,
-                floating: true,
-                snap: true,
-                automaticallyImplyLeading: false,
-                flexibleSpace: Builder(
-                  builder: (context) {
-                    return TabBar(
-                      dividerColor: Theme.of(
-                        context,
-                      ).colorScheme.outlineVariant,
-                      labelStyle: Theme.of(context).textTheme.titleMedium,
-                      tabs: [
-                        Tab(text: 'For You'),
-                        Tab(text: 'Following'),
-                      ],
-                    );
-                  },
-                ),
-              ),
-          ];
-        },
-        body: TabBarView(
-          physics: NeverScrollableScrollPhysics(),
-          children: [ForYouTab(), FollowingTab()],
+            ];
+          },
+          body: TabBarView(
+            physics: NeverScrollableScrollPhysics(),
+            children: [ForYouTab(), FollowingTab()],
+          ),
         ),
       ),
     );

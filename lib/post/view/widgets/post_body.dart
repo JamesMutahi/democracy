@@ -1,12 +1,10 @@
-import 'package:democracy/app/shared/pages/search_results.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/custom_text.dart';
 import 'package:democracy/app/shared/constants/regex.dart';
-import 'package:democracy/app/view/router/router.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:go_router/go_router.dart';
 
 class PostBody extends StatefulWidget {
   const PostBody({
@@ -41,17 +39,9 @@ class _PostBodyState extends State<PostBody> {
             onSuffixPressed: () {
               if (widget.isDependency) {
                 widget.post.communityNoteOf == null
-                    ? navigateToPostDetail(
-                        context: context,
-                        post: widget.post,
-                        showAsRepost: false,
-                        repost: widget.post,
-                      )
-                    : navigateToCommunityNoteDetail(
-                        context: context,
-                        post: widget.post,
-                        showAsRepost: false,
-                        repost: widget.post,
+                    ? context.router.push(PostDetail(postId: widget.post.id))
+                    : context.router.push(
+                        CommunityNoteDetail(postId: widget.post.id),
                       );
               } else {
                 setState(() {
@@ -66,15 +56,22 @@ class _PostBodyState extends State<PostBody> {
               }
             },
             onUserTagPressed: (userId) {
-              context.push(ProfileRoute(userId: widget.post.taggedUsers.firstWhere(
-                    (user) => user.id == userId,
-              ).id).location);
+              context.router.push(
+                ProfileRoute(
+                  userId: widget.post.taggedUsers
+                      .firstWhere((user) => user.id == userId)
+                      .id,
+                ),
+              );
             },
             onHashtagPressed: (hashtag) {
-              navigateToSearchResults(
-                context: context,
-                searchTerm: hashtag,
-                filterCount: 0,
+              context.router.push(
+                SearchResults(
+                  searchTerm: hashtag,
+                  startDate: null,
+                  endDate: null,
+                  filterCount: 0,
+                ),
               );
             },
           );

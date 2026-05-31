@@ -1,44 +1,63 @@
-import 'package:democracy/app/view/router/router.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/bloc/services/websocket_service.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/user/bloc/followers/followers_bloc.dart';
 import 'package:democracy/user/bloc/following/following_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
+@RoutePage()
 class FollowingPage extends StatelessWidget {
-  const FollowingPage({super.key, required this.user});
+  const FollowingPage({
+    super.key,
+    required this.userId,
+    required this.userName,
+  });
 
-  final User user;
+  final int userId;
+  final String userName;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: DefaultTabController(
-        length: 2,
-        child: NestedScrollView(
-          headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-            return [
-              SliverAppBar(
-                floating: true,
-                snap: true,
-                title: Text(user.name),
-                bottom: TabBar(
-                  dividerColor: Theme.of(context).colorScheme.outlineVariant,
-                  labelStyle: Theme.of(context).textTheme.titleMedium,
-                  tabs: [
-                    Tab(text: 'Followers'),
-                    Tab(text: 'Following'),
-                  ],
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              FollowingBloc(webSocketService: context.read<WebSocketService>()),
+        ),
+        BlocProvider(
+          create: (context) =>
+              FollowersBloc(webSocketService: context.read<WebSocketService>()),
+        ),
+      ],
+      child: Scaffold(
+        body: DefaultTabController(
+          length: 2,
+          child: NestedScrollView(
+            headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  floating: true,
+                  snap: true,
+                  title: Text(userName),
+                  bottom: TabBar(
+                    dividerColor: Theme.of(context).colorScheme.outlineVariant,
+                    labelStyle: Theme.of(context).textTheme.titleMedium,
+                    tabs: [
+                      Tab(text: 'Followers'),
+                      Tab(text: 'Following'),
+                    ],
+                  ),
                 ),
-              ),
-            ];
-          },
-          body: TabBarView(
-            physics: NeverScrollableScrollPhysics(),
-            children: [_FollowersTab(user), _FollowingTab(user)],
+              ];
+            },
+            body: TabBarView(
+              physics: NeverScrollableScrollPhysics(),
+              children: [_FollowersTab(userId), _FollowingTab(userId)],
+            ),
           ),
         ),
       ),
@@ -47,9 +66,9 @@ class FollowingPage extends StatelessWidget {
 }
 
 class _FollowersTab extends StatefulWidget {
-  const _FollowersTab(this.user);
+  const _FollowersTab(this.userId);
 
-  final User user;
+  final int userId;
 
   @override
   State<_FollowersTab> createState() => _FollowersTabState();
@@ -61,7 +80,9 @@ class _FollowersTabState extends State<_FollowersTab> {
 
   @override
   void initState() {
-    context.read<FollowersBloc>().add(FollowersEvent.get(user: widget.user));
+    context.read<FollowersBloc>().add(
+      FollowersEvent.get(userId: widget.userId),
+    );
     super.initState();
   }
 
@@ -69,7 +90,7 @@ class _FollowersTabState extends State<_FollowersTab> {
   Widget build(BuildContext context) {
     return BlocBuilder<FollowersBloc, FollowersState>(
       buildWhen: (previous, current) {
-        return widget.user.id == current.userId;
+        return widget.userId == current.userId;
       },
       builder: (context, state) {
         final users = state.users.toList();
@@ -108,21 +129,21 @@ class _FollowersTabState extends State<_FollowersTab> {
             );
           },
           onUserTap: (user) {
-            context.push(ProfileRoute(userId: user.id).location);
+            context.router.push(ProfileRoute(userId: user.id));
           },
           onRefresh: () {
             context.read<FollowersBloc>().add(
-              FollowersEvent.get(user: widget.user),
+              FollowersEvent.get(userId: widget.userId),
             );
           },
           onLoading: () {
             context.read<FollowersBloc>().add(
-              FollowersEvent.get(user: widget.user, lastUser: users.last),
+              FollowersEvent.get(userId: widget.userId, lastUser: users.last),
             );
           },
           onFailure: () {
             context.read<FollowersBloc>().add(
-              FollowersEvent.get(user: widget.user),
+              FollowersEvent.get(userId: widget.userId),
             );
           },
         );
@@ -132,9 +153,9 @@ class _FollowersTabState extends State<_FollowersTab> {
 }
 
 class _FollowingTab extends StatefulWidget {
-  const _FollowingTab(this.user);
+  const _FollowingTab(this.userId);
 
-  final User user;
+  final int userId;
 
   @override
   State<_FollowingTab> createState() => _FollowingTabState();
@@ -146,7 +167,9 @@ class _FollowingTabState extends State<_FollowingTab> {
 
   @override
   void initState() {
-    context.read<FollowingBloc>().add(FollowingEvent.get(user: widget.user));
+    context.read<FollowingBloc>().add(
+      FollowingEvent.get(userId: widget.userId),
+    );
     super.initState();
   }
 
@@ -154,7 +177,7 @@ class _FollowingTabState extends State<_FollowingTab> {
   Widget build(BuildContext context) {
     return BlocBuilder<FollowingBloc, FollowingState>(
       buildWhen: (previous, current) {
-        return widget.user.id == current.userId;
+        return widget.userId == current.userId;
       },
       builder: (context, state) {
         final users = state.users.toList();
@@ -193,21 +216,21 @@ class _FollowingTabState extends State<_FollowingTab> {
             );
           },
           onUserTap: (user) {
-            context.push(ProfileRoute(userId: user.id).location);
+            context.router.push(ProfileRoute(userId: user.id));
           },
           onRefresh: () {
             context.read<FollowingBloc>().add(
-              FollowingEvent.get(user: widget.user),
+              FollowingEvent.get(userId: widget.userId),
             );
           },
           onLoading: () {
             context.read<FollowingBloc>().add(
-              FollowingEvent.get(user: widget.user, lastUser: users.last),
+              FollowingEvent.get(userId: widget.userId, lastUser: users.last),
             );
           },
           onFailure: () {
             context.read<FollowingBloc>().add(
-              FollowingEvent.get(user: widget.user),
+              FollowingEvent.get(userId: widget.userId),
             );
           },
         );

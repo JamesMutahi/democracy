@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/app/shared/camera/camera.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
@@ -15,6 +16,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 
+@RoutePage()
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key, required this.user});
 

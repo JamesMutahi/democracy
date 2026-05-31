@@ -1,38 +1,75 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart'
-    show WebsocketStatus;
+    show WebsocketStatus, WebSocketService;
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/custom_text.dart';
+import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
-import 'package:democracy/app/view/router/router.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
+import 'package:democracy/petition/bloc/petition/petition_bloc.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart'
     show PetitionSupportersRow, PetitionPopUpMenu, PetitionAuthorInfo;
-import 'package:democracy/petition/view/widgets/supporters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
-class PetitionDetail extends StatefulWidget {
-  const PetitionDetail({super.key, required this.petition});
+@RoutePage()
+class PetitionDetail extends StatelessWidget {
+  const PetitionDetail({super.key, @PathParam('id') required this.petitionId});
+
+  final int petitionId;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>
+          PetitionBloc(webSocketService: context.read<WebSocketService>())
+            ..add(PetitionEvent.load(petitionId: petitionId)),
+      child: Scaffold(
+        body: BlocBuilder<PetitionBloc, PetitionState>(
+          buildWhen: (previous, current) => current.petitionId == petitionId,
+          builder: (context, state) {
+            if (state.status == PetitionStatus.initial ||
+                (state.status == PetitionStatus.loading &&
+                    state.petition == null)) {
+              return BottomLoader();
+            }
+            if (state.status == PetitionStatus.failure &&
+                state.petition == null) {
+              return FailureRetryButton(
+                onPressed: () {
+                  context.read<PetitionBloc>().add(
+                    PetitionEvent.load(petitionId: petitionId),
+                  );
+                },
+              );
+            }
+            return _PetitionDetail(petition: state.petition!);
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _PetitionDetail extends StatefulWidget {
+  const _PetitionDetail({required this.petition});
 
   final Petition petition;
 
   @override
-  State<PetitionDetail> createState() => _PetitionDetailState();
+  State<_PetitionDetail> createState() => _PetitionDetailState();
 }
 
-class _PetitionDetailState extends State<PetitionDetail> {
-  late Petition _petition = widget.petition;
+class _PetitionDetailState extends State<_PetitionDetail> {
   bool isDeleted = false;
 
   @override
   void initState() {
-    context.read<PetitionDetailBloc>().add(
-      PetitionDetailEvent.retrieve(petition: widget.petition),
-    );
     context.read<PetitionDetailBloc>().add(
       PetitionDetailEvent.addClick(petition: widget.petition),
     );
@@ -55,14 +92,14 @@ class _PetitionDetailState extends State<PetitionDetail> {
         BlocListener<PetitionDetailBloc, PetitionDetailState>(
           listener: (context, state) {
             if (state is PetitionUpdated) {
-              if (_petition.id == state.petition.id) {
-                setState(() {
-                  _petition = state.petition;
-                });
+              if (widget.petition.id == state.petition.id) {
+                context.read<PetitionBloc>().add(
+                  PetitionEvent.updated(petition: state.petition),
+                );
               }
             }
             if (state is PetitionDeleted) {
-              if (_petition.id == state.petitionId) {
+              if (widget.petition.id == state.petitionId) {
                 setState(() {
                   isDeleted = true;
                 });
@@ -84,13 +121,13 @@ class _PetitionDetailState extends State<PetitionDetail> {
         canPop: true,
         onPopInvokedWithResult: (_, _) {
           context.read<PetitionDetailBloc>().add(
-            PetitionDetailEvent.unsubscribe(petition: _petition),
+            PetitionDetailEvent.unsubscribe(petition: widget.petition),
           );
         },
         child: Scaffold(
           appBar: AppBar(
             title: Text('Petition'),
-            actions: [PetitionPopUpMenu(petition: _petition)],
+            actions: [PetitionPopUpMenu(petition: widget.petition)],
           ),
           body: isDeleted
               ? Center(
@@ -106,14 +143,14 @@ class _PetitionDetailState extends State<PetitionDetail> {
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               image: CachedNetworkImageProvider(
-                                _petition.image,
-                                cacheKey: _petition.id.toString(),
+                                widget.petition.image,
+                                cacheKey: widget.petition.id.toString(),
                               ),
                               fit: BoxFit.cover,
                             ),
                           ),
                         ),
-                        if (_petition.views > 0)
+                        if (widget.petition.views > 0)
                           Positioned(
                             right: 0,
                             bottom: 0,
@@ -128,7 +165,7 @@ class _PetitionDetailState extends State<PetitionDetail> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    '${_petition.views} ${_petition.views > 1 ? 'views' : 'view'}',
+                                    '${widget.petition.views} ${widget.petition.views > 1 ? 'views' : 'view'}',
                                     style: TextStyle(
                                       color: Colors.black.withAlpha(75),
                                     ),
@@ -145,49 +182,45 @@ class _PetitionDetailState extends State<PetitionDetail> {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (_petition.county != null)
+                          if (widget.petition.county != null)
                             Container(
                               margin: EdgeInsets.only(bottom: 10),
                               child: GeoChipRow(
-                                county: _petition.county,
-                                constituency: _petition.constituency,
-                                ward: _petition.ward,
+                                county: widget.petition.county,
+                                constituency: widget.petition.constituency,
+                                ward: widget.petition.ward,
                               ),
                             ),
                           Text(
-                            _petition.title,
+                            widget.petition.title,
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                           SizedBox(height: 10),
                           GestureDetector(
                             onTap: () {
-                              context.push(
-                                ProfileRoute(
-                                  userId: _petition.author.id,
-                                ).location,
+                              context.router.push(
+                                ProfileRoute(userId: widget.petition.author.id),
                               );
                             },
-                            child: PetitionAuthorInfo(petition: _petition),
+                            child: PetitionAuthorInfo(
+                              petition: widget.petition,
+                            ),
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          Supporters(petition: _petition),
-                                    ),
+                                  context.router.push(
+                                    Supporters(petition: widget.petition),
                                   );
                                 },
                                 child: PetitionSupportersRow(
-                                  petition: _petition,
+                                  petition: widget.petition,
                                 ),
                               ),
-                              _petition.isOpen
-                                  ? SupportButton(petition: _petition)
+                              widget.petition.isOpen
+                                  ? SupportButton(petition: widget.petition)
                                   : Card.outlined(
                                       child: Padding(
                                         padding: const EdgeInsets.all(10.0),
@@ -209,7 +242,7 @@ class _PetitionDetailState extends State<PetitionDetail> {
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                           CustomText(
-                            text: _petition.description,
+                            text: widget.petition.description,
                             style: Theme.of(context).textTheme.bodyMedium!,
                             showAllText: true,
                             suffix: '',

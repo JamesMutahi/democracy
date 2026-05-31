@@ -1,5 +1,5 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
-import 'package:democracy/app/view/router/router.dart';
 import 'package:democracy/app/view/widgets/filters_modal.dart';
 import 'package:democracy/app/view/widgets/results_search_bar.dart';
 import 'package:democracy/post/bloc/post_filter/post_filter_cubit.dart';
@@ -12,30 +12,10 @@ import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:democracy/app/view/router/router.gr.dart' as router_gr;
 
-void navigateToSearchResults({
-  required BuildContext context,
-  required String searchTerm,
-  DateTime? startDate,
-  DateTime? endDate,
-  required int filterCount,
-  VoidCallback? whenComplete,
-}) async {
-  // Construct the type-safe class layout with your existing data arguments
-  final route = SearchResultsRoute(
-    searchTerm: searchTerm,
-    startDate: startDate,
-    endDate: endDate,
-    filterCount: filterCount,
-  );
-
-  await route.push(context);
-
-  whenComplete?.call();
-}
-
+@RoutePage()
 class SearchResults extends StatefulWidget {
   const SearchResults({
     super.key,
@@ -192,17 +172,19 @@ class _SearchResultsState extends State<SearchResults>
         endDate: endDate,
         cubit: cubit,
       ),
-      onSubmitted: (value) {
+      onSubmitted: (value) async {
         if (_controller.text.isNotEmpty &&
             widget.searchTerm != _controller.text) {
-          navigateToSearchResults(
-            context: context,
+          final route = router_gr.SearchResults(
             searchTerm: _controller.text,
             startDate: startDate,
             endDate: endDate,
             filterCount: filterCount,
-            whenComplete: () => _controller.text = widget.searchTerm,
           );
+
+          await route.push(context);
+
+          _controller.text = widget.searchTerm;
         }
       },
     );
@@ -490,7 +472,7 @@ class _ProfilesTabState extends State<_ProfilesTab>
           enablePullUp: state.hasNext,
           showProfileButtons: true,
           onUserTap: (user) {
-            context.push(ProfileRoute(userId: user.id).location);
+            context.router.push(router_gr.ProfileRoute(userId: user.id));
           },
           onLoading: () {
             _getUsers(lastUser: users.last);

@@ -1,11 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/more_pop_up.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart' show TimeLeft;
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
-import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/survey/models/survey.dart';
-import 'package:democracy/survey/view/survey_process/page.dart';
-import 'package:democracy/survey/view/survey_process/response_page.dart';
 import 'package:flutter/material.dart';
 
 class SurveyTile extends StatelessWidget {
@@ -103,7 +102,7 @@ class SurveyPopUpMenu extends StatelessWidget {
       onSelected: (selected) {
         switch (selected) {
           case 'Post':
-            navigateToPostCreate(context: context, survey: survey);
+            context.router.push(PostCreateRoute(survey: survey));
           case 'Share':
             showModalBottomSheet<void>(
               context: context,
@@ -163,12 +162,7 @@ class SurveyBottomSheet extends StatelessWidget {
               OutlinedButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SurveyProcessPage(survey: survey),
-                    ),
-                  );
+                  context.router.push(SurveyProcess(surveyId: survey.id));
                 },
                 child: Text('Submit response'),
               ),
@@ -176,12 +170,7 @@ class SurveyBottomSheet extends StatelessWidget {
               OutlinedButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ResponsePage(survey: survey),
-                    ),
-                  );
+                  context.router.push(ResponseRoute(surveyId: survey.id));
                 },
                 child: Text('View response'),
               ),

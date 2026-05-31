@@ -1,36 +1,31 @@
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/camera/camera.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/utils/media_tools.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/geo/bloc/geo/geo_bloc.dart';
 import 'package:democracy/geo/models/constituency.dart';
 import 'package:democracy/geo/models/county.dart';
 import 'package:democracy/geo/models/ward.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
-import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-void navigateToPetitionCreationPage({required BuildContext context}) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => CreatePetition()),
-  );
-}
-
-class CreatePetition extends StatefulWidget {
-  const CreatePetition({super.key});
+@RoutePage()
+class PetitionCreate extends StatefulWidget {
+  const PetitionCreate({super.key});
 
   @override
-  State<CreatePetition> createState() => _CreatePetitionState();
+  State<PetitionCreate> createState() => _PetitionCreateState();
 }
 
-class _CreatePetitionState extends State<CreatePetition> {
+class _PetitionCreateState extends State<PetitionCreate> {
   File? image;
   String title = '';
   String description = '';
@@ -65,10 +60,7 @@ class _CreatePetitionState extends State<CreatePetition> {
             context: context,
             builder: (context) => PostPetitionDialog(
               onYesPressed: () {
-                navigateToPostCreate(
-                  context: context,
-                  petition: state.petition,
-                );
+                context.router.push(PostCreateRoute(petition: state.petition));
               },
             ),
           );

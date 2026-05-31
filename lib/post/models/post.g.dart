@@ -36,6 +36,10 @@ _Post _$PostFromJson(Map<String, dynamic> json) => _Post(
   repostOf: json['repost_of'] == null
       ? null
       : Post.fromJson(json['repost_of'] as Map<String, dynamic>),
+  repostType: _$JsonConverterFromJson<String, RepostType>(
+    json['repost_type'],
+    const RepostTypeConverter().fromJson,
+  ),
   communityNoteOf: json['community_note_of'] == null
       ? null
       : Post.fromJson(json['community_note_of'] as Map<String, dynamic>),
@@ -91,6 +95,10 @@ Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
   'published_at': instance.publishedAt.toIso8601String(),
   'reply_to': instance.replyTo,
   'repost_of': instance.repostOf,
+  'repost_type': _$JsonConverterToJson<String, RepostType>(
+    instance.repostType,
+    const RepostTypeConverter().toJson,
+  ),
   'community_note_of': instance.communityNoteOf,
   'ballot': instance.ballot,
   'survey': instance.survey,
@@ -105,3 +113,13 @@ Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
   'thread': instance.thread,
   'community_note': instance.communityNote,
 };
+
+Value? _$JsonConverterFromJson<Json, Value>(
+  Object? json,
+  Value? Function(Json json) fromJson,
+) => json == null ? null : fromJson(json as Json);
+
+Json? _$JsonConverterToJson<Json, Value>(
+  Value? value,
+  Json? Function(Value value) toJson,
+) => value == null ? null : toJson(value);

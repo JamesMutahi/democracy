@@ -1,7 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/asset_viewer.dart';
 import 'package:democracy/app/shared/widgets/custom_text.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
-import 'package:democracy/app/view/router/router.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
@@ -9,7 +10,6 @@ import 'package:democracy/meeting/view/widgets/meeting_tile.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/post/view/widgets/post_body.dart';
 import 'package:democracy/post/view/widgets/post_widget_selector.dart';
@@ -21,7 +21,6 @@ import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -55,7 +54,6 @@ class PostTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool showAsRepost = post.body.isEmpty && post.repostOf != null;
     bool visible = true;
     if (checkVisibility && !isDependency) {
       if (post.author.isBlocked || post.author.isMuted) {
@@ -79,20 +77,10 @@ class PostTile extends StatelessWidget {
             InkWell(
               onTap: () {
                 post.repostOf?.communityNoteOf == null
-                    ? navigateToPostDetail(
-                        context: context,
-                        post: showAsRepost ? post.repostOf! : post,
-                        showAsRepost: showAsRepost,
-                        repost: post,
-                      )
-                    : navigateToCommunityNoteDetail(
-                        context: context,
-                        post: showAsRepost ? post.repostOf! : post,
-                        showAsRepost: showAsRepost,
-                        repost: post,
-                      );
+                    ? context.router.push(PostDetail(postId: post.id))
+                    : context.router.push(CommunityNoteDetail(postId: post.id));
               },
-              child: showAsRepost
+              child: post.repostType == RepostType.repost
                   ? Column(
                       children: [
                         _repostBanner(),
@@ -389,7 +377,7 @@ class _CommunityNoteState extends State<CommunityNote> {
       ),
       child: InkWell(
         onTap: () {
-          navigateToCommunityNotes(context: context, post: widget.post);
+          context.router.push(CommunityNotes(post: widget.post));
         },
         child: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -425,12 +413,12 @@ class _CommunityNoteState extends State<CommunityNote> {
                   });
                 },
                 onUserTagPressed: (userId) {
-                  context.push(
+                  context.router.push(
                     ProfileRoute(
                       userId: widget.post.taggedUsers
                           .firstWhere((user) => user.id == userId)
                           .id,
-                    ).location,
+                    ),
                   );
                 },
               ),

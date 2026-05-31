@@ -113,6 +113,7 @@ class _AssetViewerState extends State<AssetViewer>
   }
 
   void _openCarousel({required Asset asset, required List<Asset> media}) {
+    // TODO: context.router.push(route);
     Navigator.push(
       context,
       MaterialPageRoute(

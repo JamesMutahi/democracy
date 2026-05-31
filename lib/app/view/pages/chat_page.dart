@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/chat/bloc/chat_filter/chat_filter_cubit.dart';
 import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
+@RoutePage()
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
 

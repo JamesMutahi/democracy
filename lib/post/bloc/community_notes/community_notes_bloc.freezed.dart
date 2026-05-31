@@ -128,11 +128,11 @@ return update(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Post post)?  initialize,TResult Function( Post post,  String? searchTerm,  String? sortBy,  List<Post>? previousPosts)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( List<Post> posts)?  update,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Post post)?  initialize,TResult Function( int postId,  String? searchTerm,  String? sortBy,  List<Post>? previousPosts)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( List<Post> posts)?  update,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initialize() when initialize != null:
 return initialize(_that.post);case _Get() when get != null:
-return get(_that.post,_that.searchTerm,_that.sortBy,_that.previousPosts);case _Received() when received != null:
+return get(_that.postId,_that.searchTerm,_that.sortBy,_that.previousPosts);case _Received() when received != null:
 return received(_that.payload);case _Update() when update != null:
 return update(_that.posts);case _:
   return orElse();
@@ -152,11 +152,11 @@ return update(_that.posts);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Post post)  initialize,required TResult Function( Post post,  String? searchTerm,  String? sortBy,  List<Post>? previousPosts)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( List<Post> posts)  update,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Post post)  initialize,required TResult Function( int postId,  String? searchTerm,  String? sortBy,  List<Post>? previousPosts)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( List<Post> posts)  update,}) {final _that = this;
 switch (_that) {
 case _Initialize():
 return initialize(_that.post);case _Get():
-return get(_that.post,_that.searchTerm,_that.sortBy,_that.previousPosts);case _Received():
+return get(_that.postId,_that.searchTerm,_that.sortBy,_that.previousPosts);case _Received():
 return received(_that.payload);case _Update():
 return update(_that.posts);case _:
   throw StateError('Unexpected subclass');
@@ -175,11 +175,11 @@ return update(_that.posts);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Post post)?  initialize,TResult? Function( Post post,  String? searchTerm,  String? sortBy,  List<Post>? previousPosts)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( List<Post> posts)?  update,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Post post)?  initialize,TResult? Function( int postId,  String? searchTerm,  String? sortBy,  List<Post>? previousPosts)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( List<Post> posts)?  update,}) {final _that = this;
 switch (_that) {
 case _Initialize() when initialize != null:
 return initialize(_that.post);case _Get() when get != null:
-return get(_that.post,_that.searchTerm,_that.sortBy,_that.previousPosts);case _Received() when received != null:
+return get(_that.postId,_that.searchTerm,_that.sortBy,_that.previousPosts);case _Received() when received != null:
 return received(_that.payload);case _Update() when update != null:
 return update(_that.posts);case _:
   return null;
@@ -268,10 +268,10 @@ $PostCopyWith<$Res> get post {
 
 
 class _Get implements CommunityNotesEvent {
-  const _Get({required this.post, this.searchTerm, this.sortBy, final  List<Post>? previousPosts}): _previousPosts = previousPosts;
+  const _Get({required this.postId, this.searchTerm, this.sortBy, final  List<Post>? previousPosts}): _previousPosts = previousPosts;
   
 
- final  Post post;
+ final  int postId;
  final  String? searchTerm;
  final  String? sortBy;
  final  List<Post>? _previousPosts;
@@ -294,16 +294,16 @@ _$GetCopyWith<_Get> get copyWith => __$GetCopyWithImpl<_Get>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.post, post) || other.post == post)&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&(identical(other.sortBy, sortBy) || other.sortBy == sortBy)&&const DeepCollectionEquality().equals(other._previousPosts, _previousPosts));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.postId, postId) || other.postId == postId)&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&(identical(other.sortBy, sortBy) || other.sortBy == sortBy)&&const DeepCollectionEquality().equals(other._previousPosts, _previousPosts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,post,searchTerm,sortBy,const DeepCollectionEquality().hash(_previousPosts));
+int get hashCode => Object.hash(runtimeType,postId,searchTerm,sortBy,const DeepCollectionEquality().hash(_previousPosts));
 
 @override
 String toString() {
-  return 'CommunityNotesEvent.get(post: $post, searchTerm: $searchTerm, sortBy: $sortBy, previousPosts: $previousPosts)';
+  return 'CommunityNotesEvent.get(postId: $postId, searchTerm: $searchTerm, sortBy: $sortBy, previousPosts: $previousPosts)';
 }
 
 
@@ -314,11 +314,11 @@ abstract mixin class _$GetCopyWith<$Res> implements $CommunityNotesEventCopyWith
   factory _$GetCopyWith(_Get value, $Res Function(_Get) _then) = __$GetCopyWithImpl;
 @useResult
 $Res call({
- Post post, String? searchTerm, String? sortBy, List<Post>? previousPosts
+ int postId, String? searchTerm, String? sortBy, List<Post>? previousPosts
 });
 
 
-$PostCopyWith<$Res> get post;
+
 
 }
 /// @nodoc
@@ -331,26 +331,17 @@ class __$GetCopyWithImpl<$Res>
 
 /// Create a copy of CommunityNotesEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? post = null,Object? searchTerm = freezed,Object? sortBy = freezed,Object? previousPosts = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? postId = null,Object? searchTerm = freezed,Object? sortBy = freezed,Object? previousPosts = freezed,}) {
   return _then(_Get(
-post: null == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
-as Post,searchTerm: freezed == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
+postId: null == postId ? _self.postId : postId // ignore: cast_nullable_to_non_nullable
+as int,searchTerm: freezed == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
 as String?,sortBy: freezed == sortBy ? _self.sortBy : sortBy // ignore: cast_nullable_to_non_nullable
 as String?,previousPosts: freezed == previousPosts ? _self._previousPosts : previousPosts // ignore: cast_nullable_to_non_nullable
 as List<Post>?,
   ));
 }
 
-/// Create a copy of CommunityNotesEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$PostCopyWith<$Res> get post {
-  
-  return $PostCopyWith<$Res>(_self.post, (value) {
-    return _then(_self.copyWith(post: value));
-  });
-}
+
 }
 
 /// @nodoc

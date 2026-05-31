@@ -1,12 +1,12 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/more_pop_up.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/models/option.dart';
-import 'package:democracy/ballot/view/ballot_detail.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
-import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -27,10 +27,7 @@ class BallotTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => BallotDetail(ballot: ballot)),
-        );
+        context.router.push(BallotDetail(ballotId: ballot.id));
       },
       child: Stack(
         children: [
@@ -114,7 +111,7 @@ class BallotPopUp extends StatelessWidget {
       onSelected: (selected) {
         switch (selected) {
           case 'Post':
-            navigateToPostCreate(context: context, ballot: ballot);
+            context.router.push(PostCreateRoute(ballot: ballot));
           case 'Share':
             showModalBottomSheet<void>(
               context: context,

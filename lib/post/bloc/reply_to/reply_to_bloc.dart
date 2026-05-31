@@ -28,7 +28,7 @@ class ReplyToBloc extends Bloc<ReplyToEvent, ReplyToState> {
   }
 
   void _onGet(_Get event, Emitter<ReplyToState> emit) {
-    emit(state.copyWith(status: ReplyToStatus.loading, postId: event.post.id));
+    emit(state.copyWith(status: ReplyToStatus.loading, postId: event.postId));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: ReplyToStatus.failure));
       return;
@@ -38,8 +38,8 @@ class ReplyToBloc extends Bloc<ReplyToEvent, ReplyToState> {
       'stream': stream,
       'payload': {
         'action': 'reply_to',
-        'request_id': event.post.id,
-        'pk': event.post.id,
+        'request_id': event.postId,
+        'pk': event.postId,
       },
     };
     webSocketService.send(message);

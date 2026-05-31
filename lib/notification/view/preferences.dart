@@ -1,8 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/notification/bloc/preferences/preferences_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+@RoutePage()
 class PreferencesPage extends StatefulWidget {
   const PreferencesPage({super.key});
 

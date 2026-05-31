@@ -125,10 +125,10 @@ return update(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Post post)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Post post)?  add,TResult Function( List<Post> posts)?  update,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int postId)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Post post)?  add,TResult Function( List<Post> posts)?  update,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.post);case _Received() when received != null:
+return get(_that.postId);case _Received() when received != null:
 return received(_that.payload);case _Add() when add != null:
 return add(_that.post);case _Update() when update != null:
 return update(_that.posts);case _:
@@ -149,10 +149,10 @@ return update(_that.posts);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Post post)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Post post)  add,required TResult Function( List<Post> posts)  update,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int postId)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Post post)  add,required TResult Function( List<Post> posts)  update,}) {final _that = this;
 switch (_that) {
 case _Get():
-return get(_that.post);case _Received():
+return get(_that.postId);case _Received():
 return received(_that.payload);case _Add():
 return add(_that.post);case _Update():
 return update(_that.posts);}
@@ -169,10 +169,10 @@ return update(_that.posts);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Post post)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Post post)?  add,TResult? Function( List<Post> posts)?  update,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int postId)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Post post)?  add,TResult? Function( List<Post> posts)?  update,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.post);case _Received() when received != null:
+return get(_that.postId);case _Received() when received != null:
 return received(_that.payload);case _Add() when add != null:
 return add(_that.post);case _Update() when update != null:
 return update(_that.posts);case _:
@@ -187,10 +187,10 @@ return update(_that.posts);case _:
 
 
 class _Get implements ReplyToEvent {
-  const _Get({required this.post});
+  const _Get({required this.postId});
   
 
- final  Post post;
+ final  int postId;
 
 /// Create a copy of ReplyToEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -202,16 +202,16 @@ _$GetCopyWith<_Get> get copyWith => __$GetCopyWithImpl<_Get>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.post, post) || other.post == post));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.postId, postId) || other.postId == postId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,post);
+int get hashCode => Object.hash(runtimeType,postId);
 
 @override
 String toString() {
-  return 'ReplyToEvent.get(post: $post)';
+  return 'ReplyToEvent.get(postId: $postId)';
 }
 
 
@@ -222,11 +222,11 @@ abstract mixin class _$GetCopyWith<$Res> implements $ReplyToEventCopyWith<$Res> 
   factory _$GetCopyWith(_Get value, $Res Function(_Get) _then) = __$GetCopyWithImpl;
 @useResult
 $Res call({
- Post post
+ int postId
 });
 
 
-$PostCopyWith<$Res> get post;
+
 
 }
 /// @nodoc
@@ -239,23 +239,14 @@ class __$GetCopyWithImpl<$Res>
 
 /// Create a copy of ReplyToEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? post = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? postId = null,}) {
   return _then(_Get(
-post: null == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
-as Post,
+postId: null == postId ? _self.postId : postId // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
-/// Create a copy of ReplyToEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$PostCopyWith<$Res> get post {
-  
-  return $PostCopyWith<$Res>(_self.post, (value) {
-    return _then(_self.copyWith(post: value));
-  });
-}
+
 }
 
 /// @nodoc

@@ -1,24 +1,21 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:democracy/app/bloc/services/websocket_service.dart'
-    show WebsocketStatus, WebSocketService;
+import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
-import 'package:democracy/chat/view/utils/chat_navigator.dart';
 import 'package:democracy/petition/bloc/user_petitions/user_petitions_bloc.dart';
 import 'package:democracy/post/bloc/likes/likes_bloc.dart';
 import 'package:democracy/post/bloc/user_community_notes/user_community_notes_bloc.dart';
 import 'package:democracy/post/bloc/user_posts/user_posts_bloc.dart';
 import 'package:democracy/post/bloc/user_replies/user_replies_bloc.dart';
-import 'package:democracy/post/view/draft_posts.dart';
 import 'package:democracy/user/bloc/profile/profile_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/user/view/edit_profile.dart';
-import 'package:democracy/user/view/utils/following_navigator.dart';
 import 'package:democracy/user/view/widgets/profile_buttons.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/tabs.dart';
@@ -42,8 +39,9 @@ const List<Tab> userTabs = <Tab>[
   Tab(text: 'Petitions'),
 ];
 
+@RoutePage()
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key, required this.userId});
+  const ProfilePage({super.key, @PathParam('id') required this.userId});
 
   final int userId;
 
@@ -58,8 +56,7 @@ class ProfilePage extends StatelessWidget {
           buildWhen: (previous, current) => current.userId == userId,
           builder: (context, state) {
             if (state.status == ProfileStatus.initial ||
-                (state.status == ProfileStatus.loading &&
-                    state.user == null)) {
+                (state.status == ProfileStatus.loading && state.user == null)) {
               return BottomLoader();
             }
             if (state.status == ProfileStatus.failure && state.user == null) {
@@ -211,7 +208,7 @@ class _ProfilePageState extends State<_Profile> {
             listener: (context, state) {
               if (state is ChatCreated) {
                 if (state.userId == widget.user.id) {
-                  navigateToChatDetail(context: context, chat: state.chat);
+                  context.router.push(ChatDetail(chatId: state.chat.id));
                 }
               }
             },
@@ -420,12 +417,7 @@ class ProfileAppBarDelegate extends SliverPersistentHeaderDelegate {
                   isCurrentUser
                       ? OutlinedButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => EditProfile(user: user),
-                              ),
-                            );
+                            context.router.push(EditProfile(user: user));
                           },
                           child: Text('Edit profile'),
                         )
@@ -546,10 +538,7 @@ class _ProfilePopUpMenu extends StatelessWidget {
             //   TODO: Create link for sharing
             break;
           case 'Drafts':
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => DraftPosts()),
-            );
+            context.router.push(DraftPosts());
           case 'Mute':
             showDialog(
               context: context,
@@ -630,7 +619,9 @@ class _UserDetails extends StatelessWidget {
           SizedBox(height: 5),
           GestureDetector(
             onTap: () {
-              navigateToFollowingPage(context: context, user: user);
+              context.router.push(
+                FollowingRoute(userId: user.id, userName: user.name),
+              );
             },
             child: Row(
               children: [

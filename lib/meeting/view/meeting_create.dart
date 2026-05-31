@@ -1,26 +1,15 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/loader_overlay_widgets.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/meeting/bloc/meeting_detail/meeting_detail_bloc.dart';
-import 'package:democracy/meeting/view/live_stream.dart';
-import 'package:democracy/meeting/view/meeting_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 
-void navigateToMeetingCreationPage({
-  required BuildContext context,
-  required bool isLiveStream,
-}) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => MeetingCreate(isLiveStream: isLiveStream),
-    ),
-  );
-}
-
+@RoutePage()
 class MeetingCreate extends StatefulWidget {
   const MeetingCreate({super.key, required this.isLiveStream});
 
@@ -45,9 +34,9 @@ class _MeetingCreateState extends State<MeetingCreate> {
             Navigator.pop(context);
           } else {
             if (state.meeting.isLiveStream) {
-              navigateToLiveStream(context: context, meeting: state.meeting);
+              context.router.push(LiveStream(meetingId: state.meeting.id));
             } else {
-              navigateToMeetingDetail(context: context, meeting: state.meeting);
+              context.router.push(MeetingDetail(meetingId: state.meeting.id));
             }
           }
         }

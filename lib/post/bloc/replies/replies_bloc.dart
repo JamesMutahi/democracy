@@ -28,7 +28,7 @@ class RepliesBloc extends Bloc<RepliesEvent, RepliesState> {
   }
 
   void _onGet(_Get event, Emitter<RepliesState> emit) async {
-    emit(state.copyWith(status: RepliesStatus.loading, postId: event.post.id));
+    emit(state.copyWith(status: RepliesStatus.loading, postId: event.postId));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: RepliesStatus.failure));
       return;
@@ -38,8 +38,8 @@ class RepliesBloc extends Bloc<RepliesEvent, RepliesState> {
       'stream': stream,
       'payload': {
         'action': 'replies',
-        'request_id': event.post.id,
-        'pk': event.post.id,
+        'request_id': event.postId,
+        'pk': event.postId,
         'previous_posts': event.previousPosts?.map((post) => post.id).toList(),
       },
     };

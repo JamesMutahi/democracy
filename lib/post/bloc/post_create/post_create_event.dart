@@ -6,6 +6,7 @@ class PostCreateEvent with _$PostCreateEvent {
     required String body,
     required PostStatus status,
     Post? repostOf,
+    RepostType? repostType,
     Post? replyTo,
     Post? communityNoteOf,
     Ballot? ballot,

@@ -1,6 +1,8 @@
-import 'package:democracy/app/shared/pages/search_results.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/shared/pages/search_results.dart'
+    show SearchFilters;
 import 'package:democracy/app/shared/widgets/no_results.dart';
-import 'package:democracy/app/view/router/router.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/post/bloc/trending_topics/trending_topics_bloc.dart';
 import 'package:democracy/post/view/shared/add_post_view.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
@@ -15,14 +17,13 @@ import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/user/bloc/follow_recommendations/follow_recommendations_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
-import 'package:democracy/user/view/pages/follow_recommendations.dart';
 import 'package:democracy/user/view/widgets/user_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
+@RoutePage()
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
 
@@ -104,16 +105,16 @@ class _ExplorePageState extends State<ExplorePage> {
       controller: _controller,
       hintText: 'Search',
       filterCount: state.count,
-      onSubmitted: (value) {
+      onSubmitted: (value) async {
         if (_controller.text.trim().isNotEmpty) {
-          navigateToSearchResults(
-            context: context,
+          final route = SearchResults(
             searchTerm: _controller.text,
             startDate: state.startDate,
             endDate: state.endDate,
             filterCount: state.count,
-            whenComplete: () => _controller.clear(),
           );
+          await context.router.push(route);
+          _controller.clear();
         }
       },
       onFilterTap: () {
@@ -232,7 +233,7 @@ class _ForYouState extends State<_ForYou> with AutomaticKeepAliveClientMixin {
                   ),
                   child: InkWell(
                     onTap: () {
-                      navigateToFollowRecommendations(context: context);
+                      context.router.push(FollowRecommendations());
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
@@ -342,7 +343,7 @@ class _ForYouState extends State<_ForYou> with AutomaticKeepAliveClientMixin {
                 showProfileButtons: true,
                 selectedUsers: [],
                 onTap: () {
-                  context.push(ProfileRoute(userId: user.id).location);
+                  context.router.push(ProfileRoute(userId: user.id));
                 },
               );
             }, childCount: users.length),
@@ -428,10 +429,13 @@ class _TrendingState extends State<_Trending>
                       key: ValueKey(topic),
                       title: Text(topic),
                       onTap: () {
-                        navigateToSearchResults(
-                          context: context,
-                          searchTerm: topic,
-                          filterCount: 0,
+                        context.router.push(
+                          SearchResults(
+                            searchTerm: topic,
+                            startDate: null,
+                            endDate: null,
+                            filterCount: 0,
+                          ),
                         );
                       },
                     );

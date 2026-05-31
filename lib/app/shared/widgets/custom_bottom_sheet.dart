@@ -1,11 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/utils/copy.dart';
 import 'package:democracy/app/shared/pages/direct_message.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/meeting/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -139,9 +140,14 @@ class ShareBottomSheet extends StatelessWidget {
             InkWell(
               highlightColor: Colors.transparent,
               splashColor: Colors.transparent,
+              hoverColor: Colors.transparent,
               onTap: () async {
                 Navigator.pop(context);
-                copyLink(name, id);
+                copyLink(
+                  navigatorKey: context.router.navigatorKey,
+                  className: name,
+                  objectId: id,
+                );
               },
               child: Column(
                 children: [
@@ -159,16 +165,17 @@ class ShareBottomSheet extends StatelessWidget {
             InkWell(
               highlightColor: Colors.transparent,
               splashColor: Colors.transparent,
+              hoverColor: Colors.transparent,
               onTap: () async {
                 Navigator.pop(context);
-                navigateToPostCreate(
-                  context: context,
-                  repostOf: post,
-                  ballot: ballot,
-                  survey: survey,
-                  petition: petition,
-                  meeting: meeting,
-                  section: section,
+                context.router.push(
+                  PostCreateRoute(
+                    ballot: ballot,
+                    survey: survey,
+                    petition: petition,
+                    meeting: meeting,
+                    section: section,
+                  ),
                 );
               },
               child: Column(
@@ -189,7 +196,7 @@ class ShareBottomSheet extends StatelessWidget {
     );
   }
 
-String _getShareableName() {
+  String _getShareableName() {
     if (post != null) return 'post';
     if (ballot != null) return 'ballot';
     if (survey != null) return 'survey';

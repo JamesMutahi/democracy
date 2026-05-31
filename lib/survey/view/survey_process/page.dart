@@ -1,8 +1,12 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
+import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/no_results.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart' show TimeLeft;
+import 'package:democracy/survey/bloc/survey/survey_bloc.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
 import 'package:democracy/survey/bloc/survey_process/page/page_bloc.dart';
@@ -13,24 +17,57 @@ import 'package:democracy/survey/view/survey_process/widgets/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SurveyProcessPage extends StatefulWidget {
-  const SurveyProcessPage({super.key, required this.survey});
+@RoutePage()
+class SurveyProcess extends StatelessWidget {
+  const SurveyProcess({super.key, @PathParam('id') required this.surveyId});
+
+  final int surveyId;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>
+          SurveyBloc(webSocketService: context.read<WebSocketService>())
+            ..add(SurveyEvent.load(surveyId: surveyId)),
+      child: BlocBuilder<SurveyBloc, SurveyState>(
+        buildWhen: (previous, current) => current.surveyId == surveyId,
+        builder: (context, state) {
+          if (state.status == SurveyStatus.initial ||
+              (state.status == SurveyStatus.loading && state.survey == null)) {
+            return BottomLoader();
+          }
+          if (state.status == SurveyStatus.failure && state.survey == null) {
+            return FailureRetryButton(
+              onPressed: () {
+                context.read<SurveyBloc>().add(
+                  SurveyEvent.load(surveyId: surveyId),
+                );
+              },
+            );
+          }
+          return _SurveyProcess(survey: state.survey!);
+        },
+      ),
+    );
+  }
+}
+
+class _SurveyProcess extends StatefulWidget {
+  const _SurveyProcess({required this.survey});
 
   final Survey survey;
 
   @override
-  State<SurveyProcessPage> createState() => _SurveyProcessPageState();
+  State<_SurveyProcess> createState() => _SurveyProcessState();
 }
 
-class _SurveyProcessPageState extends State<SurveyProcessPage> {
-  late Survey _survey = widget.survey;
-
+class _SurveyProcessState extends State<_SurveyProcess> {
   @override
   void initState() {
     context.read<SurveyBottomNavigationBloc>().add(
-      SurveyBottomNavigationEvent.started(survey: _survey),
+      SurveyBottomNavigationEvent.started(survey: widget.survey),
     );
-    context.read<AnswerBloc>().add(AnswerEvent.started(survey: _survey));
+    context.read<AnswerBloc>().add(AnswerEvent.started(survey: widget.survey));
     super.initState();
   }
 
@@ -41,10 +78,10 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
         BlocListener<SurveyDetailBloc, SurveyDetailState>(
           listener: (context, state) {
             if (state is SurveyUpdated) {
-              if (_survey.id == state.survey.id) {
-                setState(() {
-                  _survey = state.survey;
-                });
+              if (widget.survey.id == state.survey.id) {
+                context.read<SurveyBloc>().add(
+                  SurveyEvent.updated(survey: state.survey),
+                );
               }
             }
           },
@@ -53,7 +90,7 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
           listener: (context, state) {
             if (state.status == SurveyBottomNavigationStatus.loaded) {
               context.read<PageBloc>().add(
-                PageEvent.pageLoaded(survey: _survey, page: state.page),
+                PageEvent.pageLoaded(survey: widget.survey, page: state.page),
               );
             }
             if (state.status == SurveyBottomNavigationStatus.completed) {
@@ -109,7 +146,7 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
           );
         },
         child: Scaffold(
-          appBar: AppBar(title: Text(_survey.title)),
+          appBar: AppBar(title: Text(widget.survey.title)),
           body: BlocBuilder<PageBloc, PageState>(
             builder: (context, state) {
               switch (state) {
@@ -117,25 +154,25 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
                   List<Question> questions = state.page.questions;
                   return (questions.isNotEmpty)
                       ? ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        padding: const EdgeInsets.only(
-                          left: 20.0,
-                          right: 20.0,
-                          top: 20.0,
-                          bottom: 160,
-                        ),
-                        itemBuilder: (BuildContext context, int index) {
-                          return QuestionTile(
-                            key: ValueKey(questions[index].id),
-                            questions: state.page.questions,
-                            question: questions[index],
-                          );
-                        },
-                        itemCount: questions.length,
-                      )
+                          scrollDirection: Axis.vertical,
+                          padding: const EdgeInsets.only(
+                            left: 20.0,
+                            right: 20.0,
+                            top: 20.0,
+                            bottom: 160,
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            return QuestionTile(
+                              key: ValueKey(questions[index].id),
+                              questions: state.page.questions,
+                              question: questions[index],
+                            );
+                          },
+                          itemCount: questions.length,
+                        )
                       : NoResults(
-                        text: "Oops...questions for this page are missing",
-                      );
+                          text: "Oops...questions for this page are missing",
+                        );
                 case PageComplete():
                   return Center(
                     child: Column(
@@ -147,15 +184,15 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
                         TimeLeft(
                           key: UniqueKey(),
                           alignCenter: true,
-                          startTime: _survey.startTime,
-                          endTime: _survey.endTime,
+                          startTime: widget.survey.startTime,
+                          endTime: widget.survey.endTime,
                         ),
                         SizedBox(height: 10),
                         BlocBuilder<AnswerBloc, AnswerState>(
                           builder: (context, answerState) {
                             return ElevatedButton(
                               onPressed: () {
-                                if (_survey.isActive) {
+                                if (widget.survey.isActive) {
                                   context.read<AnswerBloc>().add(
                                     AnswerEvent.submit(
                                       survey: answerState.survey!,
@@ -180,12 +217,11 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    _survey.isActive
-                                        ? Theme.of(
-                                          context,
-                                        ).colorScheme.tertiaryContainer
-                                        : Theme.of(context).disabledColor,
+                                backgroundColor: widget.survey.isActive
+                                    ? Theme.of(
+                                        context,
+                                      ).colorScheme.tertiaryContainer
+                                    : Theme.of(context).disabledColor,
                                 shape: BeveledRectangleBorder(
                                   borderRadius: BorderRadius.circular(2),
                                 ),
@@ -202,7 +238,7 @@ class _SurveyProcessPageState extends State<SurveyProcessPage> {
               }
             },
           ),
-          bottomNavigationBar: BottomNavBar(survey: _survey),
+          bottomNavigationBar: BottomNavBar(survey: widget.survey),
         ),
       ),
     );
@@ -246,56 +282,52 @@ class QuestionTile extends StatelessWidget {
         return hideDependencyQuestion
             ? SizedBox.shrink()
             : Container(
-              margin: EdgeInsets.only(bottom: 20),
-              child: switch (question.type) {
-                QuestionType.number => NumberWidget(
-                  key: ValueKey(question),
-                  question: question,
-                  textAnswer:
-                      (textAnswerExists)
-                          ? state.textAnswers?.firstWhere(
+                margin: EdgeInsets.only(bottom: 20),
+                child: switch (question.type) {
+                  QuestionType.number => NumberWidget(
+                    key: ValueKey(question),
+                    question: question,
+                    textAnswer: (textAnswerExists)
+                        ? state.textAnswers?.firstWhere(
                             (textAnswer) =>
                                 textAnswer.question.id == question.id,
                           )
-                          : null,
-                ),
-                QuestionType.text => TextWidget(
-                  key: ValueKey(question),
-                  question: question,
-                  textAnswer:
-                      (textAnswerExists)
-                          ? state.textAnswers?.firstWhere(
+                        : null,
+                  ),
+                  QuestionType.text => TextWidget(
+                    key: ValueKey(question),
+                    question: question,
+                    textAnswer: (textAnswerExists)
+                        ? state.textAnswers?.firstWhere(
                             (textAnswer) =>
                                 textAnswer.question.id == question.id,
                           )
-                          : null,
-                ),
-                QuestionType.singleChoice => SingleChoiceWidget(
-                  key: ValueKey(question),
-                  question: question,
-                  choiceAnswer:
-                      (choiceAnswerExists)
-                          ? state.choiceAnswers!.firstWhere(
+                        : null,
+                  ),
+                  QuestionType.singleChoice => SingleChoiceWidget(
+                    key: ValueKey(question),
+                    question: question,
+                    choiceAnswer: (choiceAnswerExists)
+                        ? state.choiceAnswers!.firstWhere(
                             (choiceAnswer) =>
                                 choiceAnswer.question.id == question.id,
                           )
-                          : null,
-                ),
-                QuestionType.multipleChoice => MultipleChoiceWidget(
-                  key: ValueKey(question),
-                  question: question,
-                  choiceAnswers:
-                      (choiceAnswerExists)
-                          ? state.choiceAnswers!
+                        : null,
+                  ),
+                  QuestionType.multipleChoice => MultipleChoiceWidget(
+                    key: ValueKey(question),
+                    question: question,
+                    choiceAnswers: (choiceAnswerExists)
+                        ? state.choiceAnswers!
                               .where(
                                 (choiceAnswer) =>
                                     choiceAnswer.question.id == question.id,
                               )
                               .toList()
-                          : [],
-                ),
-              },
-            );
+                        : [],
+                  ),
+                },
+              );
       },
     );
   }

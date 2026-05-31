@@ -1,10 +1,11 @@
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/agora_service.dart';
 import 'package:democracy/app/core/app_logger.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/meeting/bloc/meeting_detail/meeting_detail_bloc.dart';
 import 'package:democracy/meeting/models/meeting.dart';
-import 'package:democracy/meeting/view/live_stream.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -83,12 +84,7 @@ class _LivePostTileState extends State<LivePostTile> {
         });
         await _leaveChannel();
         if (context.mounted) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => LiveStream(meeting: widget.meeting),
-            ),
-          );
+          context.router.push(LiveStream(meetingId: widget.meeting.id));
         }
       },
       child: Column(

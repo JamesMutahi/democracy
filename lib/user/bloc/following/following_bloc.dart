@@ -31,7 +31,7 @@ class FollowingBloc extends Bloc<FollowingEvent, FollowingState> {
 
   void _onGet(_Get event, Emitter<FollowingState> emit) {
     emit(
-      state.copyWith(status: FollowingStatus.loading, userId: event.user.id),
+      state.copyWith(status: FollowingStatus.loading, userId: event.userId),
     );
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: FollowingStatus.failure));
@@ -42,8 +42,8 @@ class FollowingBloc extends Bloc<FollowingEvent, FollowingState> {
       'stream': stream,
       'payload': {
         'action': 'following',
-        'request_id': event.user.id,
-        'pk': event.user.id,
+        'request_id': event.userId,
+        'pk': event.userId,
         'last_user': event.lastUser?.id,
       },
     };

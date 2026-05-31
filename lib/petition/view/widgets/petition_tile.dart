@@ -1,15 +1,15 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
 import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/more_pop_up.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
-import 'package:democracy/petition/view/petition_detail.dart';
-import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
@@ -32,11 +32,7 @@ class PetitionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => PetitionDetail(petition: petition),
-          ),
-        );
+        context.router.push(PetitionDetail(petitionId: petition.id));
       },
       child: VisibilityDetector(
         key: Key('${petition.id}'),
@@ -189,7 +185,7 @@ class PetitionPopUpMenu extends StatelessWidget {
           onSelected: (selected) {
             switch (selected) {
               case 'Post':
-                navigateToPostCreate(context: context, petition: petition);
+                context.router.push(PostCreateRoute(petition: petition));
               case 'Share':
                 showModalBottomSheet<void>(
                   context: context,

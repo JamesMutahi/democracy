@@ -125,10 +125,10 @@ return update(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Post post,  List<Post>? previousPosts)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( int postId,  Post reply)?  add,TResult Function( int postId,  List<Post> replies)?  update,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int postId,  List<Post>? previousPosts)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( int postId,  Post reply)?  add,TResult Function( int postId,  List<Post> replies)?  update,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.post,_that.previousPosts);case _Received() when received != null:
+return get(_that.postId,_that.previousPosts);case _Received() when received != null:
 return received(_that.payload);case _Add() when add != null:
 return add(_that.postId,_that.reply);case _Update() when update != null:
 return update(_that.postId,_that.replies);case _:
@@ -149,10 +149,10 @@ return update(_that.postId,_that.replies);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Post post,  List<Post>? previousPosts)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( int postId,  Post reply)  add,required TResult Function( int postId,  List<Post> replies)  update,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int postId,  List<Post>? previousPosts)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( int postId,  Post reply)  add,required TResult Function( int postId,  List<Post> replies)  update,}) {final _that = this;
 switch (_that) {
 case _Get():
-return get(_that.post,_that.previousPosts);case _Received():
+return get(_that.postId,_that.previousPosts);case _Received():
 return received(_that.payload);case _Add():
 return add(_that.postId,_that.reply);case _Update():
 return update(_that.postId,_that.replies);}
@@ -169,10 +169,10 @@ return update(_that.postId,_that.replies);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Post post,  List<Post>? previousPosts)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( int postId,  Post reply)?  add,TResult? Function( int postId,  List<Post> replies)?  update,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int postId,  List<Post>? previousPosts)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( int postId,  Post reply)?  add,TResult? Function( int postId,  List<Post> replies)?  update,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.post,_that.previousPosts);case _Received() when received != null:
+return get(_that.postId,_that.previousPosts);case _Received() when received != null:
 return received(_that.payload);case _Add() when add != null:
 return add(_that.postId,_that.reply);case _Update() when update != null:
 return update(_that.postId,_that.replies);case _:
@@ -187,10 +187,10 @@ return update(_that.postId,_that.replies);case _:
 
 
 class _Get implements RepliesEvent {
-  const _Get({required this.post, final  List<Post>? previousPosts}): _previousPosts = previousPosts;
+  const _Get({required this.postId, final  List<Post>? previousPosts}): _previousPosts = previousPosts;
   
 
- final  Post post;
+ final  int postId;
  final  List<Post>? _previousPosts;
  List<Post>? get previousPosts {
   final value = _previousPosts;
@@ -211,16 +211,16 @@ _$GetCopyWith<_Get> get copyWith => __$GetCopyWithImpl<_Get>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.post, post) || other.post == post)&&const DeepCollectionEquality().equals(other._previousPosts, _previousPosts));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.postId, postId) || other.postId == postId)&&const DeepCollectionEquality().equals(other._previousPosts, _previousPosts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,post,const DeepCollectionEquality().hash(_previousPosts));
+int get hashCode => Object.hash(runtimeType,postId,const DeepCollectionEquality().hash(_previousPosts));
 
 @override
 String toString() {
-  return 'RepliesEvent.get(post: $post, previousPosts: $previousPosts)';
+  return 'RepliesEvent.get(postId: $postId, previousPosts: $previousPosts)';
 }
 
 
@@ -231,11 +231,11 @@ abstract mixin class _$GetCopyWith<$Res> implements $RepliesEventCopyWith<$Res> 
   factory _$GetCopyWith(_Get value, $Res Function(_Get) _then) = __$GetCopyWithImpl;
 @useResult
 $Res call({
- Post post, List<Post>? previousPosts
+ int postId, List<Post>? previousPosts
 });
 
 
-$PostCopyWith<$Res> get post;
+
 
 }
 /// @nodoc
@@ -248,24 +248,15 @@ class __$GetCopyWithImpl<$Res>
 
 /// Create a copy of RepliesEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? post = null,Object? previousPosts = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? postId = null,Object? previousPosts = freezed,}) {
   return _then(_Get(
-post: null == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
-as Post,previousPosts: freezed == previousPosts ? _self._previousPosts : previousPosts // ignore: cast_nullable_to_non_nullable
+postId: null == postId ? _self.postId : postId // ignore: cast_nullable_to_non_nullable
+as int,previousPosts: freezed == previousPosts ? _self._previousPosts : previousPosts // ignore: cast_nullable_to_non_nullable
 as List<Post>?,
   ));
 }
 
-/// Create a copy of RepliesEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$PostCopyWith<$Res> get post {
-  
-  return $PostCopyWith<$Res>(_self.post, (value) {
-    return _then(_self.copyWith(post: value));
-  });
-}
+
 }
 
 /// @nodoc

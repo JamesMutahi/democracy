@@ -26,7 +26,7 @@ class ReplyTos extends StatelessWidget {
             return SliverToBoxAdapter(
               child: FailureRetryButton(
                 onPressed: () => context.read<ReplyToBloc>().add(
-                  ReplyToEvent.get(post: post),
+                  ReplyToEvent.get(postId: post.id),
                 ),
               ),
             );

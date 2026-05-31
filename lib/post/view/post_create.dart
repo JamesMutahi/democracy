@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart'
@@ -18,7 +19,6 @@ import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart';
 import 'package:democracy/post/bloc/draft_post/draft_post_bloc.dart';
 import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
-import 'package:democracy/post/bloc/replies/replies_bloc.dart';
 import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_form_widgets.dart';
@@ -30,12 +30,13 @@ import 'package:democracy/survey/view/widgets/survey_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertagger/fluttertagger.dart';
-import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:path/path.dart' as p;
 
+
+@RoutePage()
 class PostCreatePage extends StatefulWidget {
   const PostCreatePage({
     super.key,
@@ -152,27 +153,12 @@ class _PostCreatePageState extends State<PostCreatePage> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) =>
-              RepliesBloc(webSocketService: context.read<WebSocketService>()),
-        ),
-        BlocProvider(
           create: (context) {
             final bloc = ReplyToBloc(
               webSocketService: context.read<WebSocketService>(),
             );
             if (widget.replyTo != null) {
-              bloc.add(ReplyToEvent.get(post: widget.replyTo!));
-            }
-            return bloc;
-          },
-        ),
-        BlocProvider(
-          create: (context) {
-            final bloc = ReplyToBloc(
-              webSocketService: context.read<WebSocketService>(),
-            );
-            if (widget.replyTo != null) {
-              bloc.add(ReplyToEvent.get(post: widget.replyTo!));
+              bloc.add(ReplyToEvent.get(postId: widget.replyTo!.id));
             }
             return bloc;
           },

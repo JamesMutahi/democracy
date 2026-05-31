@@ -1,12 +1,12 @@
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/camera/camera.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
-import 'package:democracy/app/shared/pages/location.dart';
 import 'package:democracy/app/shared/utils/media_tools.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/constitution/models/section.dart';
-import 'package:democracy/constitution/view/constitution.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -105,12 +105,7 @@ class ExtrasRow extends StatelessWidget {
                 await Permission.storage.request();
               }
               if (context.mounted) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Location(onLocation: onLocation),
-                  ),
-                );
+                context.router.push(Location(onLocation: onLocation));
               }
             },
             iconData: Symbols.location_on_rounded,
@@ -144,12 +139,10 @@ class ExtrasRow extends StatelessWidget {
             onTap: () async {
               await controller?.reverse();
               if (context.mounted) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Constitution(onSelection: onSection),
-                  ),
+                Section? section = await context.router.push(
+                  Constitution(selectionMode: true),
                 );
+                if (section != null) onSection(section);
               }
             },
             iconData: Symbols.book_rounded,

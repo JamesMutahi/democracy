@@ -7,6 +7,7 @@ import 'package:democracy/app/bloc/menu_controller/menu_controller_cubit.dart';
 import 'package:democracy/app/bloc/repository/api/api_repository.dart';
 import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/bloc/repository/database/database_repository.dart';
+import 'package:democracy/app/bloc/route/route_cubit.dart';
 import 'package:democracy/app/bloc/sync/sync_bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
@@ -51,7 +52,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:talker/talker.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger_observer.dart';
@@ -122,8 +122,6 @@ void main() {
           // Initialize Database
           await initializeHive();
 
-          GoRouter.optionURLReflectsImperativeAPIs = true;
-
           // Finally run the app
           runApp(
             MultiRepositoryProvider(
@@ -177,6 +175,7 @@ void main() {
                       webSocketService: context.read<WebSocketService>(),
                     ),
                   ),
+                  BlocProvider(create: (context) => RouteCubit()),
                   BlocProvider(create: (context) => MenuControllerCubit()),
                   BlocProvider(
                     create: (context) => BallotDetailBloc(

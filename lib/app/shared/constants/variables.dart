@@ -11,3 +11,5 @@ const String expandSidePanel = 'EXPAND_SIDE_MENU';
 const String expandSideMenu = 'EXPAND_SIDE_PANEL';
 
 const String centerMainPage = 'CENTER_MAIN_PAGE';
+
+const String navigationCache = 'navigation_cache';

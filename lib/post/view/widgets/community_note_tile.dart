@@ -1,6 +1,7 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/post/view/widgets/buttons.dart';
 import 'package:democracy/post/view/widgets/post_body.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
@@ -43,9 +44,8 @@ class CommunityNoteTile extends StatelessWidget {
       onTap: !navigateToDetailPage
           ? null
           : () {
-              navigateToCommunityNoteDetail(
-                context: context,
-                post: communityNote,
+              context.router.push(
+                CommunityNoteDetail(postId: communityNote.id),
               );
             },
       child: VisibilityDetector(

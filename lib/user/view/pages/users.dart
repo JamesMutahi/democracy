@@ -1,12 +1,13 @@
-import 'package:democracy/app/view/router/router.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/user_listener.dart';
 import 'package:democracy/user/view/widgets/user_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
+@RoutePage()
 class UsersPage extends StatefulWidget {
   const UsersPage({super.key, required this.title, required this.users});
 
@@ -44,7 +45,7 @@ class _UsersPageState extends State<UsersPage> {
               showProfileButtons: true,
               selectedUsers: [],
               onTap: () {
-                context.push(ProfileRoute(userId: user.id).location);
+                context.router.push(ProfileRoute(userId: user.id));
               },
             );
           },

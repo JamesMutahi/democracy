@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/location/location_cubit.dart';
 import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
@@ -8,6 +9,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+@RoutePage()
 class Location extends StatelessWidget {
   const Location({super.key, required this.onLocation});
 

@@ -11,7 +11,6 @@ part 'profile_state.dart';
 part 'profile_bloc.freezed.dart';
 
 const String stream = 'users';
-const String requestId = 'profile';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ProfileBloc({required this.webSocketService}) : super(const ProfileState()) {

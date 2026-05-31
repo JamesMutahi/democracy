@@ -1,3 +1,5 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/loader_overlay_widgets.dart';
 import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
@@ -11,6 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
+@RoutePage()
 class CommunityNoteCreate extends StatefulWidget {
   const CommunityNoteCreate({super.key, required this.post});
 
@@ -25,13 +28,6 @@ class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
   final ValueKey _centerKey = const ValueKey('center');
 
   bool _disablePostButton = true;
-
-  @override
-  void initState() {
-    super.initState();
-    context.read<ReplyToBloc>().add(ReplyToEvent.get(post: widget.post));
-    context.read<ReplyToBloc>().add(ReplyToEvent.add(post: widget.post));
-  }
 
   void _createPost() {
     context.loaderOverlay.show();
@@ -64,108 +60,129 @@ class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<PostCreateBloc, PostCreateState>(
-          listener: (context, state) {
-            if (state.status == PostCreateStatus.success) {
-              if (state.post?.communityNoteOf?.id == widget.post.id) {
-                Navigator.pop(context);
+    return BlocProvider(
+      create: (context) {
+        final bloc = ReplyToBloc(
+          webSocketService: context.read<WebSocketService>(),
+        );
+        bloc.add(ReplyToEvent.get(postId: widget.post.id));
+        return bloc;
+      },
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<PostCreateBloc, PostCreateState>(
+            listener: (context, state) {
+              if (state.status == PostCreateStatus.success) {
+                if (state.post?.communityNoteOf?.id == widget.post.id) {
+                  Navigator.pop(context);
+                }
               }
+            },
+          ),
+          BlocListener<ReplyToBloc, ReplyToState>(
+            listener: (context, state) {
+              if (state.status == ReplyToStatus.success) {
+                context.read<ReplyToBloc>().add(
+                  ReplyToEvent.add(post: widget.post),
+                );
+              }
+            },
+          ),
+        ],
+        child: PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) {
+            if (didPop) {
+              return;
             }
+            _closePage();
           },
-        ),
-      ],
-      child: PopScope(
-        canPop: false,
-        onPopInvokedWithResult: (didPop, result) {
-          if (didPop) {
-            return;
-          }
-          _closePage();
-        },
-        child: LoaderOverlay(
-          overlayWidgetBuilder: (_) {
-            return BlocBuilder<PostCreateBloc, PostCreateState>(
-              builder: (context, state) {
-                return state.status == PostCreateStatus.failure
-                    ? LoaderOverlayFailure(
-                        onRetry: () {
-                          context.read<PostCreateBloc>().add(
-                            PostCreateEvent.retry(),
-                          );
-                        },
-                      )
-                    : LoaderOverlayLoading(progress: state.progress);
-              },
-            );
-          },
-          child: Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                onPressed: _closePage,
-                icon: Icon(Symbols.close),
-              ),
-              actions: [
-                OutlinedButton(
-                  onPressed: _disablePostButton
-                      ? null
-                      : () {
-                          showDialog(
-                            context: context,
-                            builder: (context) =>
-                                _CreateDialog(onYesPressed: _createPost),
-                          );
-                        },
-                  child: Text('Post'),
+          child: LoaderOverlay(
+            overlayWidgetBuilder: (_) {
+              return BlocBuilder<PostCreateBloc, PostCreateState>(
+                builder: (context, state) {
+                  return state.status == PostCreateStatus.failure
+                      ? LoaderOverlayFailure(
+                          onRetry: () {
+                            context.read<PostCreateBloc>().add(
+                              PostCreateEvent.retry(),
+                            );
+                          },
+                        )
+                      : LoaderOverlayLoading(progress: state.progress);
+                },
+              );
+            },
+            child: Scaffold(
+              appBar: AppBar(
+                leading: IconButton(
+                  onPressed: _closePage,
+                  icon: Icon(Symbols.close),
                 ),
-              ],
-              actionsPadding: EdgeInsets.only(right: 15),
-            ),
-            body: CustomScrollView(
-              center: _centerKey,
-              slivers: <Widget>[
-                ReplyTos(post: widget.post),
-                SliverToBoxAdapter(
-                  key: _centerKey,
-                  child: Stack(
-                    children: [
-                      ThreadLine(showBottomThread: false, showTopThread: true),
-                      Container(
-                        padding: EdgeInsets.only(
-                          left: 10,
-                          right: 15,
-                          top: 10,
-                          bottom: 5,
+                actions: [
+                  OutlinedButton(
+                    onPressed: _disablePostButton
+                        ? null
+                        : () {
+                            showDialog(
+                              context: context,
+                              builder: (context) =>
+                                  _CreateDialog(onYesPressed: _createPost),
+                            );
+                          },
+                    child: Text('Post'),
+                  ),
+                ],
+                actionsPadding: EdgeInsets.only(right: 15),
+              ),
+              body: CustomScrollView(
+                center: _centerKey,
+                slivers: <Widget>[
+                  ReplyTos(post: widget.post),
+                  SliverToBoxAdapter(
+                    key: _centerKey,
+                    child: Stack(
+                      children: [
+                        ThreadLine(
+                          showBottomThread: false,
+                          showTopThread: true,
                         ),
-                        child: SingleChildScrollView(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const PostAuthor(),
-                              PostTextField(
-                                controller: _controller,
-                                hintText: "What's the note?",
-                                onChanged: (value) {
-                                  setState(() {
-                                    if (value == '') {
-                                      _disablePostButton = true;
-                                    } else {
-                                      _disablePostButton = false;
-                                    }
-                                  });
-                                },
-                                onContentInsertion: (imageFile) {},
-                              ),
-                            ],
+                        Container(
+                          padding: EdgeInsets.only(
+                            left: 10,
+                            right: 15,
+                            top: 10,
+                            bottom: 5,
+                          ),
+                          child: SingleChildScrollView(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const PostAuthor(),
+                                PostTextField(
+                                  controller: _controller,
+                                  hintText: "What's the note?",
+                                  onChanged: (value) {
+                                    setState(() {
+                                      if (value == '') {
+                                        _disablePostButton = true;
+                                      } else {
+                                        _disablePostButton = false;
+                                      }
+                                    });
+                                  },
+                                  onContentInsertion: (imageFile) {},
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

@@ -1,8 +1,9 @@
 import 'package:democracy/app/bloc/global/global_cubit.dart';
+import 'package:democracy/app/bloc/route/route_cubit.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/core/app_theme.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
-import 'package:democracy/app/view/router/refresh_stream.dart';
+import 'package:democracy/app/view/router/route_observer.dart';
 import 'package:democracy/app/view/router/router.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
@@ -19,30 +20,19 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  GoRouterRefreshStream? _refreshListenable;
-
-  @override
-  void dispose() {
-    _refreshListenable?.dispose();
-    super.dispose();
-  }
+  final _appRouter = AppRouter();
 
   @override
   Widget build(BuildContext context) {
     return _Listeners(
       child: Builder(
         builder: (context) {
-          _refreshListenable ??= GoRouterRefreshStream([
-            context.read<AuthBloc>().stream,
-            context.read<WebsocketBloc>().stream,
-          ]);
-
           return BlocBuilder<GlobalCubit, GlobalState>(
             builder: (context, state) {
               final themeMode = state.index != null
                   ? ThemeMode.values[state.index!]
                   : ThemeMode.system;
-
+              final routeCubit = context.read<RouteCubit>();
               return MaterialApp.router(
                 builder: (context, child) => ResponsiveBreakpoints.builder(
                   child: FToastBuilder()(context, child),
@@ -52,8 +42,10 @@ class _MyAppState extends State<MyApp> {
                 theme: AppTheme.light,
                 darkTheme: AppTheme.dark,
                 themeMode: themeMode,
-                routerConfig: createAppRouter(
-                  refreshListenable: _refreshListenable,
+                routerConfig: _appRouter.config(
+                  navigatorObservers: () => [
+                    AppRouteObserver(routeCubit: routeCubit),
+                  ],
                 ),
               );
             },

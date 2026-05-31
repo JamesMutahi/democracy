@@ -1,23 +1,78 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/constitution/bloc/constitution/constitution_bloc.dart';
+import 'package:democracy/constitution/bloc/section/section_bloc.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class Constitution extends StatefulWidget {
-  const Constitution({super.key, this.centeredSection, this.onSelection});
+@RoutePage()
+class Constitution extends StatelessWidget {
+  const Constitution({
+    super.key,
+    @QueryParam('id') this.sectionId,
+    @QueryParam('select') this.selectionMode = false,
+  });
 
-  final Section? centeredSection;
-  final Function(Section)? onSelection;
+  final int? sectionId;
+  final bool selectionMode;
 
   @override
-  State<Constitution> createState() => _ConstitutionState();
+  Widget build(BuildContext context) {
+    return sectionId == null
+        ? _Constitution(selectionMode: selectionMode)
+        : BlocProvider(
+            create: (context) {
+              final bloc = SectionBloc(
+                webSocketService: context.read<WebSocketService>(),
+              );
+              bloc.add(SectionEvent.load(sectionId: sectionId!));
+              return bloc;
+            },
+
+            child: BlocBuilder<SectionBloc, SectionState>(
+              buildWhen: (previous, current) => current.sectionId == sectionId,
+              builder: (context, state) {
+                if (state.status == SectionStatus.initial ||
+                    (state.status == SectionStatus.loading &&
+                        state.section == null)) {
+                  return BottomLoader();
+                }
+                if (state.status == SectionStatus.failure &&
+                    state.section == null) {
+                  return FailureRetryButton(
+                    onPressed: () {
+                      context.read<SectionBloc>().add(
+                        SectionEvent.load(sectionId: sectionId!),
+                      );
+                    },
+                  );
+                }
+                return _Constitution(
+                  centeredSection: state.section!,
+                  selectionMode: selectionMode,
+                );
+              },
+            ),
+          );
+  }
 }
 
-class _ConstitutionState extends State<Constitution> {
+class _Constitution extends StatefulWidget {
+  const _Constitution({this.centeredSection, required this.selectionMode});
+
+  final Section? centeredSection;
+  final bool selectionMode;
+
+  @override
+  State<_Constitution> createState() => _ConstitutionState();
+}
+
+class _ConstitutionState extends State<_Constitution> {
   final GlobalKey _centerKey = GlobalKey();
   Section? _selectedSection;
 
@@ -49,8 +104,14 @@ class _ConstitutionState extends State<Constitution> {
             opacity: _selectedSection != null ? 1.0 : 0.0,
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
-            child: widget.onSelection == null
-                ? FilledButton.tonal(
+            child: widget.selectionMode
+                ? TextButton(
+                    onPressed: () {
+                      context.router.pop(_selectedSection);
+                    },
+                    child: Text('Select'),
+                  )
+                : FilledButton.tonal(
                     onPressed: () {
                       showModalBottomSheet<void>(
                         context: context,
@@ -61,13 +122,6 @@ class _ConstitutionState extends State<Constitution> {
                       );
                     },
                     child: Text('Share'),
-                  )
-                : TextButton(
-                    onPressed: () {
-                      widget.onSelection!(_selectedSection!);
-                      Navigator.pop(context);
-                    },
-                    child: Text('Select'),
                   ),
           ),
         ],

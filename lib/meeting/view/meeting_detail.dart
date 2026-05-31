@@ -1,17 +1,19 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/repository/api/api_repository.dart';
 import 'package:democracy/app/bloc/services/agora_service.dart';
-import 'package:democracy/app/bloc/services/websocket_service.dart'
-    show WebsocketStatus, WebSocketService;
+import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
+import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
-import 'package:democracy/chat/view/utils/chat_navigator.dart';
 import 'package:democracy/meeting/bloc/listeners/listeners_bloc.dart';
+import 'package:democracy/meeting/bloc/meeting/meeting_bloc.dart';
 import 'package:democracy/meeting/bloc/meeting_detail/meeting_detail_bloc.dart';
 import 'package:democracy/meeting/bloc/participants/participants_bloc.dart';
 import 'package:democracy/meeting/bloc/speaker_detail/speaker_detail_bloc.dart';
@@ -27,35 +29,52 @@ import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-void navigateToMeetingDetail({
-  required BuildContext context,
-  required Meeting meeting,
-}) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => BlocProvider(
-        create: (context) => SpeakerDetailBloc(
-          webSocketService: context.read<WebSocketService>(),
-          apiRepository: context.read<APIRepository>(),
-        ),
-        child: MeetingDetail(meeting: meeting),
+@RoutePage()
+class MeetingDetail extends StatelessWidget {
+  const MeetingDetail({super.key, @PathParam('id') required this.meetingId});
+
+  final int meetingId;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>
+          MeetingBloc(webSocketService: context.read<WebSocketService>())
+            ..add(MeetingEvent.load(meetingId: meetingId)),
+      child: BlocBuilder<MeetingBloc, MeetingState>(
+        buildWhen: (previous, current) => current.meetingId == meetingId,
+        builder: (context, state) {
+          if (state.status == MeetingStatus.initial ||
+              (state.status == MeetingStatus.loading &&
+                  state.meeting == null)) {
+            return BottomLoader();
+          }
+          if (state.status == MeetingStatus.failure && state.meeting == null) {
+            return FailureRetryButton(
+              onPressed: () {
+                context.read<MeetingBloc>().add(
+                  MeetingEvent.load(meetingId: meetingId),
+                );
+              },
+            );
+          }
+          return _MeetingDetail(meeting: state.meeting!);
+        },
       ),
-    ),
-  );
+    );
+  }
 }
 
-class MeetingDetail extends StatefulWidget {
-  const MeetingDetail({super.key, required this.meeting});
+class _MeetingDetail extends StatefulWidget {
+  const _MeetingDetail({required this.meeting});
 
   final Meeting meeting;
 
   @override
-  State<MeetingDetail> createState() => _MeetingDetailState();
+  State<_MeetingDetail> createState() => _MeetingDetailState();
 }
 
-class _MeetingDetailState extends State<MeetingDetail> {
-  late Meeting _meeting = widget.meeting;
+class _MeetingDetailState extends State<_MeetingDetail> {
   late RtcEngine _engine;
   late int? _count = widget.meeting.participantsCount;
   bool _isJoined = false;
@@ -64,15 +83,15 @@ class _MeetingDetailState extends State<MeetingDetail> {
   bool isDeleted = false;
 
   // Reactively synced via Getters (Evaluated fresh on every UI rebuild)
-  List<int> get _speakers => _meeting.speakers.map((s) => s.id).toList();
-  List<int> get _muted => _meeting.muted;
+  List<int> get _speakers => widget.meeting.speakers.map((s) => s.id).toList();
+  List<int> get _muted => widget.meeting.muted;
 
   // User & Role Getters (Instantly react when _meeting changes)
   User get me => context.read<AuthBloc>().state.user!;
-  bool get _isHost => me.id == _meeting.host.id;
-  bool get _isCoHost => _meeting.coHosts.any((c) => c.id == me.id);
-  bool get _isSpeaker => _meeting.speakers.any((s) => s.id == me.id);
-  bool get _isMuted => _meeting.muted.any((id) => id == me.id);
+  bool get _isHost => me.id == widget.meeting.host.id;
+  bool get _isCoHost => widget.meeting.coHosts.any((c) => c.id == me.id);
+  bool get _isSpeaker => widget.meeting.speakers.any((s) => s.id == me.id);
+  bool get _isMuted => widget.meeting.muted.any((id) => id == me.id);
 
   @override
   void initState() {
@@ -85,7 +104,7 @@ class _MeetingDetailState extends State<MeetingDetail> {
 
     await AgoraService().joinAudioMeeting(
       isBroadcaster: _isHost || _isCoHost || _isSpeaker,
-      meeting: _meeting,
+      meeting: widget.meeting,
       onEngineReady: (engine) {
         setState(() {
           _engine = engine;
@@ -147,7 +166,11 @@ class _MeetingDetailState extends State<MeetingDetail> {
         );
 
         context.read<MeetingDetailBloc>().add(
-          MeetingDetailEvent.join(engine: _engine, meeting: _meeting, user: me),
+          MeetingDetailEvent.join(
+            engine: _engine,
+            meeting: widget.meeting,
+            user: me,
+          ),
         );
       },
     );
@@ -164,7 +187,7 @@ class _MeetingDetailState extends State<MeetingDetail> {
     await AgoraService().dispose();
     if (mounted) {
       context.read<MeetingDetailBloc>().add(
-        MeetingDetailEvent.unsubscribe(meeting: _meeting),
+        MeetingDetailEvent.unsubscribe(meeting: widget.meeting),
       );
       Navigator.pop(context);
     }
@@ -179,183 +202,199 @@ class _MeetingDetailState extends State<MeetingDetail> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state.status == WebsocketStatus.connected) {
-              context.read<MeetingDetailBloc>().add(
-                MeetingDetailEvent.subscribe(
-                  meeting: widget.meeting,
-                  isMuted: _isMuted,
-                ),
-              );
-            }
-          },
-        ),
-        BlocListener<MeetingDetailBloc, MeetingDetailState>(
-          listener: (context, state) async {
-            switch (state) {
-              case MeetingLoaded(:final meeting):
-                if (meeting.id == _meeting.id) {
-                  setState(() {
-                    _meeting = meeting;
-                    _count = meeting.participantsCount;
-                  });
-                }
-              case MeetingUpdated(:final meeting):
-                if (meeting.id == _meeting.id) {
-                  final isCoHost = state.meeting.coHosts.any(
-                    (c) => c.id == me.id,
+    return BlocProvider(
+      create: (context) => SpeakerDetailBloc(
+        webSocketService: context.read<WebSocketService>(),
+        apiRepository: context.read<APIRepository>(),
+      ),
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<WebsocketBloc, WebsocketState>(
+            listener: (context, state) {
+              if (state.status == WebsocketStatus.connected) {
+                context.read<MeetingDetailBloc>().add(
+                  MeetingDetailEvent.subscribe(
+                    meeting: widget.meeting,
+                    isMuted: _isMuted,
+                  ),
+                );
+              }
+            },
+          ),
+          BlocListener<MeetingDetailBloc, MeetingDetailState>(
+            listener: (context, state) async {
+              switch (state) {
+                case MeetingLoaded(:final meeting):
+                  if (meeting.id == widget.meeting.id) {
+                    context.read<MeetingBloc>().add(
+                      MeetingEvent.updated(meeting: state.meeting),
+                    );
+                    setState(() {
+                      _count = meeting.participantsCount;
+                    });
+                  }
+                case MeetingUpdated(:final meeting):
+                  if (meeting.id == widget.meeting.id) {
+                    final isCoHost = state.meeting.coHosts.any(
+                      (c) => c.id == me.id,
+                    );
+                    final isSpeaker = state.meeting.speakers.any(
+                      (s) => s.id == me.id,
+                    );
+                    final isNewCoHost =
+                        (isCoHost == true) && (_isCoHost == false);
+                    final isNewSpeaker =
+                        (isSpeaker == true) && (_isSpeaker == false);
+                    final isBroadcaster = isCoHost || isSpeaker;
+                    if (isBroadcaster != (_isCoHost || _isSpeaker)) {
+                      await _engine.setClientRole(
+                        role: isBroadcaster
+                            ? ClientRoleType.clientRoleBroadcaster
+                            : ClientRoleType.clientRoleAudience,
+                      );
+                    }
+                    final isMuted = state.meeting.muted.any((m) => m == me.id);
+                    if (isMuted && !_isMuted) {
+                      await _engine.muteLocalAudioStream(isMuted);
+                    }
+
+                    if (context.mounted) {
+                      context.read<MeetingBloc>().add(
+                        MeetingEvent.updated(meeting: state.meeting),
+                      );
+                    }
+
+                    if (isNewCoHost || isNewSpeaker) {
+                      String message = 'You are now a co-host';
+                      if (isNewSpeaker) message = 'You are now a speaker';
+                      if (context.mounted) {
+                        final snackBar = getSnackBar(
+                          context: context,
+                          message: message,
+                          status: SnackBarStatus.info,
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      }
+                    }
+                  }
+                case MeetingDeleted(:final meetingId):
+                  if (meetingId == widget.meeting.id) {
+                    setState(() => isDeleted = true);
+                  }
+                case MeetingDetailFailure(:final error):
+                  final snackBar = getSnackBar(
+                    context: context,
+                    message: error,
+                    status: SnackBarStatus.failure,
                   );
-                  final isSpeaker = state.meeting.speakers.any(
-                    (s) => s.id == me.id,
-                  );
-                  final isNewCoHost =
-                      (isCoHost == true) && (_isCoHost == false);
-                  final isNewSpeaker =
-                      (isSpeaker == true) && (_isSpeaker == false);
-                  final isBroadcaster = isCoHost || isSpeaker;
-                  if (isBroadcaster != (_isCoHost || _isSpeaker)) {
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              }
+            },
+          ),
+          BlocListener<UserDetailBloc, UserDetailState>(
+            listener: (context, state) {
+              if (state is UserRetrieved) {
+                //
+              }
+            },
+          ),
+          BlocListener<ChatDetailBloc, ChatDetailState>(
+            listener: (context, state) {
+              if (state is ChatCreated) {
+                context.router.push(ChatDetail(chatId: state.chat.id));
+              }
+            },
+          ),
+          BlocListener<SpeakerDetailBloc, SpeakerDetailState>(
+            listener: (context, state) async {
+              switch (state) {
+                case RequestedToSpeak():
+                  setState(() => _hasRequestedToSpeak = true);
+                case SpeakerRequestCreated(:final request):
+                  if (_isHost || _isCoHost) {
+                    final snackBar = getSnackBar(
+                      context: context,
+                      message: '${request.user.name} requests to speak',
+                      status: SnackBarStatus.info,
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
+                case SpeakerRequestUpdated(:final request):
+                  if (request.user.id == me.id && request.isApproved != null) {
+                    setState(() => _hasRequestedToSpeak = false);
                     await _engine.setClientRole(
-                      role: isBroadcaster
+                      role: request.isApproved!
                           ? ClientRoleType.clientRoleBroadcaster
                           : ClientRoleType.clientRoleAudience,
                     );
                   }
-                  final isMuted = state.meeting.muted.any((m) => m == me.id);
-                  if (isMuted && !_isMuted) {
-                    await _engine.muteLocalAudioStream(isMuted);
-                  }
-                  setState(() => _meeting = state.meeting);
-                  if (isNewCoHost || isNewSpeaker) {
-                    String message = 'You are now a co-host';
-                    if (isNewSpeaker) message = 'You are now a speaker';
-                    if (context.mounted) {
-                      final snackBar = getSnackBar(
-                        context: context,
-                        message: message,
-                        status: SnackBarStatus.info,
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    }
-                  }
-                }
-              case MeetingDeleted(:final meetingId):
-                if (meetingId == _meeting.id) {
-                  setState(() => isDeleted = true);
-                }
-              case MeetingDetailFailure(:final error):
-                final snackBar = getSnackBar(
-                  context: context,
-                  message: error,
-                  status: SnackBarStatus.failure,
-                );
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            }
-          },
-        ),
-        BlocListener<UserDetailBloc, UserDetailState>(
-          listener: (context, state) {
-            if (state is UserRetrieved) {
-              //
-            }
-          },
-        ),
-        BlocListener<ChatDetailBloc, ChatDetailState>(
-          listener: (context, state) {
-            if (state is ChatCreated) {
-              navigateToChatDetail(context: context, chat: state.chat);
-            }
-          },
-        ),
-        BlocListener<SpeakerDetailBloc, SpeakerDetailState>(
-          listener: (context, state) async {
-            switch (state) {
-              case RequestedToSpeak():
-                setState(() => _hasRequestedToSpeak = true);
-              case SpeakerRequestCreated(:final request):
-                if (_isHost || _isCoHost) {
-                  final snackBar = getSnackBar(
-                    context: context,
-                    message: '${request.user.name} requests to speak',
-                    status: SnackBarStatus.info,
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                }
-              case SpeakerRequestUpdated(:final request):
-                if (request.user.id == me.id && request.isApproved != null) {
-                  setState(() => _hasRequestedToSpeak = false);
-                  await _engine.setClientRole(
-                    role: request.isApproved!
-                        ? ClientRoleType.clientRoleBroadcaster
-                        : ClientRoleType.clientRoleAudience,
-                  );
-                }
-            }
-          },
-        ),
-      ],
-      child: PopScope(
-        canPop: false,
-        onPopInvokedWithResult: (didPop, result) {
-          if (didPop) {
-            return;
-          }
-          _showExitDialog();
-        },
-        child: Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              onPressed: () {
-                //  TODO: Minimize
-              },
-              icon: Icon(Icons.keyboard_arrow_down_rounded),
-            ),
-            actions: [
-              TextButton(
-                onPressed: _showExitDialog,
-                child: Text('Leave', style: TextStyle(color: Colors.red)),
-              ),
-            ],
+              }
+            },
           ),
-          body: isDeleted || !_meeting.isActive
-              ? Center(child: Text('This meeting has been closed'))
-              : Container(
-                  margin: EdgeInsets.symmetric(horizontal: 15),
-                  child: CustomScrollView(
-                    slivers: [
-                      SliverToBoxAdapter(
-                        child: Text(
-                          _meeting.title,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                      ),
-                      SliverToBoxAdapter(child: Text(_meeting.description)),
-                      !_isJoined
-                          ? SliverToBoxAdapter(child: BottomLoader())
-                          : _buildParticipantsList(),
-                    ],
-                  ),
+        ],
+        child: PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) {
+            if (didPop) {
+              return;
+            }
+            _showExitDialog();
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              leading: IconButton(
+                onPressed: () {
+                  //  TODO: Minimize
+                },
+                icon: Icon(Icons.keyboard_arrow_down_rounded),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: _showExitDialog,
+                  child: Text('Leave', style: TextStyle(color: Colors.red)),
                 ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.miniStartFloat,
-          floatingActionButton: _isJoined && (_isHost || _isCoHost)
-              ? FilledButton.tonal(
-                  style: FilledButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+              ],
+            ),
+            body: isDeleted || !widget.meeting.isActive
+                ? Center(child: Text('This meeting has been closed'))
+                : Container(
+                    margin: EdgeInsets.symmetric(horizontal: 15),
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverToBoxAdapter(
+                          child: Text(
+                            widget.meeting.title,
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                        ),
+                        SliverToBoxAdapter(
+                          child: Text(widget.meeting.description),
+                        ),
+                        !_isJoined
+                            ? SliverToBoxAdapter(child: BottomLoader())
+                            : _buildParticipantsList(),
+                      ],
                     ),
                   ),
-                  onPressed: () {
-                    context.read<SpeakerDetailBloc>().add(
-                      MuteEveryone(meeting: _meeting),
-                    );
-                  },
-                  child: Text('Mute everyone'),
-                )
-              : null,
-          bottomNavigationBar: _buildControls(),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.miniStartFloat,
+            floatingActionButton: _isJoined && (_isHost || _isCoHost)
+                ? FilledButton.tonal(
+                    style: FilledButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    onPressed: () {
+                      context.read<SpeakerDetailBloc>().add(
+                        MuteEveryone(meeting: widget.meeting),
+                      );
+                    },
+                    child: Text('Mute everyone'),
+                  )
+                : null,
+            bottomNavigationBar: _buildControls(),
+          ),
         ),
       ),
     );
@@ -370,10 +409,10 @@ class _MeetingDetailState extends State<MeetingDetail> {
         childAspectRatio: 0.6,
       ),
       delegate: SliverChildBuilderDelegate((context, index) {
-        final user = _meeting.participants.toList()[index];
-        bool isHost = user.id == _meeting.host.id;
-        bool isCoHost = _meeting.coHosts.any((c) => c.id == user.id);
-        bool isSpeaker = _meeting.speakers.any((s) => s.id == user.id);
+        final user = widget.meeting.participants.toList()[index];
+        bool isHost = user.id == widget.meeting.host.id;
+        bool isCoHost = widget.meeting.coHosts.any((c) => c.id == user.id);
+        bool isSpeaker = widget.meeting.speakers.any((s) => s.id == user.id);
         bool isMuted = _muted.contains(user.id);
         bool isSpeaking = _activeSpeaker == user.id && !isMuted;
         return ParticipantTile(
@@ -381,7 +420,7 @@ class _MeetingDetailState extends State<MeetingDetail> {
           me: me,
           user: user,
           engine: _engine,
-          meeting: _meeting,
+          meeting: widget.meeting,
           canManageCoHosts: _isHost,
           canManageSpeakers: _isHost || _isCoHost,
           isMuted: isMuted,
@@ -390,7 +429,7 @@ class _MeetingDetailState extends State<MeetingDetail> {
           isSpeaker: isSpeaker,
           isSpeaking: isSpeaking,
         );
-      }, childCount: _meeting.participants.length),
+      }, childCount: widget.meeting.participants.length),
     );
   }
 
@@ -434,7 +473,7 @@ class _MeetingDetailState extends State<MeetingDetail> {
                             ? () async {
                                 context.read<SpeakerDetailBloc>().add(
                                   ChangeMuteStatus(
-                                    meeting: _meeting,
+                                    meeting: widget.meeting,
                                     isMuted: !_isMuted,
                                   ),
                                 );
@@ -443,7 +482,7 @@ class _MeetingDetailState extends State<MeetingDetail> {
                             ? null
                             : () {
                                 context.read<SpeakerDetailBloc>().add(
-                                  RequestToSpeak(meeting: _meeting),
+                                  RequestToSpeak(meeting: widget.meeting),
                                 );
                               },
                       ),
@@ -495,7 +534,7 @@ class _MeetingDetailState extends State<MeetingDetail> {
                                 ),
                               ],
                               child: _ParticipantsBottomSheet(
-                                meeting: _meeting,
+                                meeting: widget.meeting,
                                 isHost: _isHost || _isCoHost,
                               ),
                             ),
@@ -517,7 +556,8 @@ class _MeetingDetailState extends State<MeetingDetail> {
                               topRight: Radius.circular(15),
                             ),
                           ),
-                          builder: (_) => ShareBottomSheet(meeting: _meeting),
+                          builder: (_) =>
+                              ShareBottomSheet(meeting: widget.meeting),
                         );
                       },
                     ),

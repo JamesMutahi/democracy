@@ -1,6 +1,6 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/meeting/models/meeting.dart';
-import 'package:democracy/post/view/shared/post_navigator.dart'
-    show navigateToPostCreate;
 import 'package:flutter/material.dart';
 
 class MeetingPopUpMenu extends StatelessWidget {
@@ -16,7 +16,7 @@ class MeetingPopUpMenu extends StatelessWidget {
       onSelected: (selected) {
         switch (selected) {
           case 'Post':
-            navigateToPostCreate(context: context, meeting: meeting);
+            context.router.push(PostCreateRoute(meeting: meeting));
         }
       },
       borderRadius: BorderRadius.circular(50),

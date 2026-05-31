@@ -13,6 +13,8 @@ part 'post.g.dart';
 
 enum PostStatus { draft, published }
 
+enum RepostType { repost, quote }
+
 @freezed
 sealed class Post with _$Post {
   const factory Post({
@@ -37,6 +39,9 @@ sealed class Post with _$Post {
     @JsonKey(name: 'published_at') required DateTime publishedAt,
     @JsonKey(name: 'reply_to') required Post? replyTo,
     @JsonKey(name: 'repost_of') required Post? repostOf,
+    @JsonKey(name: 'repost_type')
+    @RepostTypeConverter()
+    required RepostType? repostType,
     @JsonKey(name: 'community_note_of') required Post? communityNoteOf,
     required Ballot? ballot,
     required Survey? survey,
@@ -77,6 +82,32 @@ class PostStatusConverter implements JsonConverter<PostStatus, String> {
         return 'published';
       case PostStatus.draft:
         return 'draft';
+    }
+  }
+}
+
+class RepostTypeConverter implements JsonConverter<RepostType, String> {
+  const RepostTypeConverter();
+
+  @override
+  RepostType fromJson(String data) {
+    late RepostType type;
+    switch (data) {
+      case 'repost':
+        type = RepostType.repost;
+      case 'quote':
+        type = RepostType.quote;
+    }
+    return type;
+  }
+
+  @override
+  String toJson(RepostType object) {
+    switch (object) {
+      case RepostType.repost:
+        return 'repost';
+      case RepostType.quote:
+        return 'quote';
     }
   }
 }

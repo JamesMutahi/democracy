@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
@@ -8,6 +9,7 @@ import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/file_widget.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
 import 'package:democracy/app/shared/widgets/video_viewer.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
 import 'package:democracy/meeting/view/widgets/meeting_tile.dart';
@@ -15,7 +17,6 @@ import 'package:democracy/petition/view/widgets/petition_tile.dart';
 import 'package:democracy/post/bloc/draft_post/draft_post_bloc.dart';
 import 'package:democracy/post/bloc/draft_posts/draft_posts_bloc.dart';
 import 'package:democracy/post/models/draft_post.dart';
-import 'package:democracy/post/view/shared/post_navigator.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/survey/view/widgets/survey_tile.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ import 'package:path/path.dart' as p;
 import 'package:photo_view/photo_view.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
+@RoutePage()
 class DraftPosts extends StatefulWidget {
   const DraftPosts({super.key});
 
@@ -97,7 +99,7 @@ class DraftTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        navigateToPostUpdate(context: context, draft: draft);
+        context.router.push(PostUpdateRoute(draft: draft));
       },
       child: Container(
         margin: EdgeInsets.only(top: 10),
@@ -283,6 +285,7 @@ class DraftAssetViewer extends StatelessWidget {
     required File file,
     required List<File> media,
   }) {
+    // TODO: context.router.push(route);
     Navigator.push(
       context,
       MaterialPageRoute(

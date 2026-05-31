@@ -1,13 +1,15 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/notification/view/notification_tile.dart';
-import 'package:democracy/notification/view/preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
+@RoutePage()
 class Notifications extends StatefulWidget {
   const Notifications({super.key});
 
@@ -33,10 +35,7 @@ class _NotificationsState extends State<Notifications> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => PreferencesPage()),
-              );
+              context.router.push(PreferencesRoute());
             },
             icon: Icon(Icons.tune_rounded),
           ),

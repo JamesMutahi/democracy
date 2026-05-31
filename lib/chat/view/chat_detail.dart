@@ -1,20 +1,26 @@
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/bloc/repository/database/database_repository.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart'
-    show WebsocketStatus;
+    show WebsocketStatus, WebSocketService;
 import 'package:democracy/app/bloc/sync/sync_bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart';
 import 'package:democracy/app/shared/utils/copy.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
+import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
+import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/chat/bloc/chat/chat_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
 import 'package:democracy/chat/bloc/messages/messages_bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
-import 'package:democracy/chat/view/edit_message.dart';
 import 'package:democracy/chat/view/messages.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
@@ -26,9 +32,49 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-class ChatDetailPage extends StatefulWidget {
-  const ChatDetailPage({
-    super.key,
+@RoutePage()
+class ChatDetail extends StatelessWidget {
+  const ChatDetail({super.key, @PathParam('id') required this.chatId});
+
+  final int chatId;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>
+          ChatBloc(webSocketService: context.read<WebSocketService>())
+            ..add(ChatEvent.load(chatId: chatId)),
+      child: BlocBuilder<ChatBloc, ChatState>(
+        buildWhen: (previous, current) => current.chatId == chatId,
+        builder: (context, state) {
+          if (state.status == ChatStatus.initial ||
+              (state.status == ChatStatus.loading && state.chat == null)) {
+            return BottomLoader();
+          }
+          if (state.status == ChatStatus.failure && state.chat == null) {
+            return FailureRetryButton(
+              onPressed: () {
+                context.read<ChatBloc>().add(ChatEvent.load(chatId: chatId));
+              },
+            );
+          }
+
+          final me = context.read<AuthBloc>().state.user!;
+
+          User otherUser = me;
+          if (state.chat!.users.length > 1) {
+            otherUser = state.chat!.users.firstWhere((u) => u.id != me.id);
+          }
+
+          return _ChatDetail(chat: state.chat!, me: me, otherUser: otherUser);
+        },
+      ),
+    );
+  }
+}
+
+class _ChatDetail extends StatefulWidget {
+  const _ChatDetail({
     required this.chat,
     required this.me,
     required this.otherUser,
@@ -39,11 +85,10 @@ class ChatDetailPage extends StatefulWidget {
   final User otherUser;
 
   @override
-  State<ChatDetailPage> createState() => _ChatDetailPageState();
+  State<_ChatDetail> createState() => _ChatDetailState();
 }
 
-class _ChatDetailPageState extends State<ChatDetailPage> {
-  late Chat _chat = widget.chat;
+class _ChatDetailState extends State<_ChatDetail> {
   late User _otherUser = widget.otherUser;
   final _controller = TextEditingController();
   final _focusNode = FocusNode();
@@ -64,7 +109,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   }
 
   void _getData() {
-    context.read<ChatDetailBloc>().add(ChatDetailEvent.get(chat: widget.chat));
     context.read<UserDetailBloc>().add(
       UserDetailEvent.subscribe(userId: _otherUser.id),
     );
@@ -95,214 +139,223 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<ChatDetailBloc, ChatDetailState>(
-          listener: (context, state) {
-            if (state is ChatLoaded) {
-              setState(() {
-                _chat = state.chat;
-              });
-            }
-          },
-        ),
-        BlocListener<MessageDetailBloc, MessageDetailState>(
-          listener: (context, state) {
-            if (state is MessageCreated) {
-              if (state.message.chatId == widget.chat.id) {
-                context.read<MessagesBloc>().add(
-                  MessagesEvent.update(message: state.message),
+    return BlocProvider(
+      create: (context) => MessagesBloc(
+        webSocketService: context.read<WebSocketService>(),
+        databaseRepository: context.read<DatabaseRepository>(),
+      ),
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<ChatDetailBloc, ChatDetailState>(
+            listener: (context, state) {
+              if (state is ChatLoaded) {
+                context.read<ChatBloc>().add(
+                  ChatEvent.updated(chat: state.chat),
                 );
-                if (widget.me.id != state.message.author.id) {
-                  context.read<ChatDetailBloc>().add(
-                    ChatDetailEvent.markAsRead(chat: widget.chat),
+              }
+            },
+          ),
+          BlocListener<MessageDetailBloc, MessageDetailState>(
+            listener: (context, state) {
+              if (state is MessageCreated) {
+                if (state.message.chatId == widget.chat.id) {
+                  context.read<MessagesBloc>().add(
+                    MessagesEvent.update(message: state.message),
+                  );
+                  if (widget.me.id != state.message.author.id) {
+                    context.read<ChatDetailBloc>().add(
+                      ChatDetailEvent.markAsRead(chat: widget.chat),
+                    );
+                  }
+                }
+              }
+              if (state is MessageUpdated) {
+                if (state.message.chatId == widget.chat.id) {
+                  context.read<MessagesBloc>().add(
+                    MessagesEvent.update(message: state.message),
                   );
                 }
               }
-            }
-            if (state is MessageUpdated) {
-              if (state.message.chatId == widget.chat.id) {
-                context.read<MessagesBloc>().add(
-                  MessagesEvent.update(message: state.message),
-                );
+              if (state is MessageDeleted) {
+                if (state.message.chatId == widget.chat.id) {
+                  context.read<MessagesBloc>().add(
+                    MessagesEvent.update(message: state.message),
+                  );
+                }
               }
-            }
-            if (state is MessageDeleted) {
-              if (state.message.chatId == widget.chat.id) {
-                context.read<MessagesBloc>().add(
-                  MessagesEvent.update(message: state.message),
-                );
+              if (state is MessageCreatedInDB) {
+                if (state.message.chatId == widget.chat.id) {
+                  reset();
+                  context.read<MessagesBloc>().add(
+                    MessagesEvent.update(message: state.message),
+                  );
+                  context.read<SyncBloc>().add(SyncEvent.postMessages());
+                }
               }
-            }
-            if (state is MessageCreatedInDB) {
-              if (state.message.chatId == widget.chat.id) {
-                reset();
-                context.read<MessagesBloc>().add(
-                  MessagesEvent.update(message: state.message),
-                );
-                context.read<SyncBloc>().add(SyncEvent.postMessages());
+              if (state is MessageUpdatedInDB) {
+                if (state.message.chatId == widget.chat.id) {
+                  context.read<MessagesBloc>().add(
+                    MessagesEvent.update(message: state.message),
+                  );
+                  context.read<SyncBloc>().add(SyncEvent.patchMessages());
+                }
               }
-            }
-            if (state is MessageUpdatedInDB) {
-              if (state.message.chatId == widget.chat.id) {
-                context.read<MessagesBloc>().add(
-                  MessagesEvent.update(message: state.message),
-                );
-                context.read<SyncBloc>().add(SyncEvent.patchMessages());
+              if (state is MessageDeletedInDB) {
+                if (state.message.chatId == widget.chat.id) {
+                  context.read<MessagesBloc>().add(
+                    MessagesEvent.update(message: state.message),
+                  );
+                  context.read<SyncBloc>().add(SyncEvent.deleteMessages());
+                }
               }
-            }
-            if (state is MessageDeletedInDB) {
-              if (state.message.chatId == widget.chat.id) {
-                context.read<MessagesBloc>().add(
-                  MessagesEvent.update(message: state.message),
+              if (state is MessageDetailFailure) {
+                final snackBar = getSnackBar(
+                  context: context,
+                  message: state.error,
+                  status: SnackBarStatus.failure,
                 );
-                context.read<SyncBloc>().add(SyncEvent.deleteMessages());
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
               }
-            }
-            if (state is MessageDetailFailure) {
-              final snackBar = getSnackBar(
-                context: context,
-                message: state.error,
-                status: SnackBarStatus.failure,
-              );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            }
-          },
-        ),
-        BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, state) {
-            if (state.status == WebsocketStatus.connected) {
-              _getData();
-            }
-          },
-        ),
-        BlocListener<MessageActionsCubit, MessageActionsState>(
-          listener: (context, state) {
-            if (state.status == MessageActionsStatus.actionButtonsOpened) {
-              setState(() {
-                showMessageActions = true;
-                messages = state.messages;
-              });
-            }
-            if (state.status == MessageActionsStatus.actionButtonsClosed) {
-              setState(() {
-                showMessageActions = false;
-                messages = {};
-              });
-            }
-          },
-        ),
-        BlocListener<UserDetailBloc, UserDetailState>(
-          listener: (context, state) {
-            if (state is UserSubscribed) {
-              _handleBlockedStatus(state.user);
-            }
-            if (state is UserUpdated) {
-              _handleBlockedStatus(state.user);
-            }
-          },
-        ),
-        BlocListener<SyncBloc, SyncState>(
-          listener: (context, state) {
-            switch (state) {
-              case SyncFailure():
-              case MessagesForPostSynced():
-              case MessagesForAssetUploadSynced():
-              case MessagesForPatchSynced():
-              case MessagesForDeleteSynced():
-                context.read<MessagesBloc>().add(MessagesEvent.reload());
-            }
-          },
-        ),
-      ],
-      child: PopScope(
-        canPop: !showMessageActions,
-        onPopInvokedWithResult: (didPop, _) {
-          if (showMessageActions) {
-            context.read<MessageActionsCubit>().closeActionButtons();
-          } else {
-            context.read<NotificationsBloc>().add(
-              NotificationsEvent.openedChat(chatId: null),
-            );
-            context.read<UserDetailBloc>().add(
-              UserDetailEvent.unsubscribe(user: _otherUser),
-            );
-            context.read<ChatDetailBloc>().add(
-              ChatDetailEvent.unsubscribe(chat: _chat),
-            );
-          }
-        },
-        child: Scaffold(
-          appBar: AppBar(
-            titleSpacing: 0,
-            title: showMessageActions
-                ? SizedBox.shrink()
-                : Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ProfileImage(user: _otherUser, navigateToProfile: true),
-                      SizedBox(width: 10),
-                      Flexible(
-                        child: Text(
-                          _otherUser.name,
-                          maxLines: 1,
-                          style: TextStyle(overflow: TextOverflow.ellipsis),
-                        ),
-                      ),
-                    ],
-                  ),
-            actions: [
-              showMessageActions
-                  ? _MessageActions(
-                      chat: _chat,
-                      messages: messages,
-                      currentUser: widget.me,
-                    )
-                  : SizedBox.shrink(),
-              ChatPopUpMenu(
-                chat: _chat,
-                currentUser: widget.me,
-                otherUser: _otherUser,
-              ),
-            ],
-            actionsPadding: EdgeInsets.only(right: 15),
+            },
           ),
-          body: (hideChat && _otherUser.isBlocked)
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        '@${_otherUser.username} is blocked',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      SizedBox(height: 10),
-                      OutlinedButton(
-                        onPressed: () {
-                          setState(() {
-                            hideChat = false;
-                          });
-                        },
-                        child: Text('View messages'),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        'Will not unblock them',
-                        style: Theme.of(context).textTheme.labelMedium
-                            ?.copyWith(
-                              color: Theme.of(context).colorScheme.outline,
-                            ),
-                      ),
-                    ],
-                  ),
-                )
-              : Messages(chat: _chat, me: widget.me),
-          bottomNavigationBar: hideChat
-              ? SizedBox.shrink()
-              : _otherUser.isBlocked || _otherUser.hasBlocked
-              ? _buildBlockedWidget()
-              : _buildBottomNavigationBar(),
+          BlocListener<WebsocketBloc, WebsocketState>(
+            listener: (context, state) {
+              if (state.status == WebsocketStatus.connected) {
+                context.read<ChatDetailBloc>().add(
+                  ChatDetailEvent.get(chat: widget.chat),
+                );
+                _getData();
+              }
+            },
+          ),
+          BlocListener<MessageActionsCubit, MessageActionsState>(
+            listener: (context, state) {
+              if (state.status == MessageActionsStatus.actionButtonsOpened) {
+                setState(() {
+                  showMessageActions = true;
+                  messages = state.messages;
+                });
+              }
+              if (state.status == MessageActionsStatus.actionButtonsClosed) {
+                setState(() {
+                  showMessageActions = false;
+                  messages = {};
+                });
+              }
+            },
+          ),
+          BlocListener<UserDetailBloc, UserDetailState>(
+            listener: (context, state) {
+              if (state is UserSubscribed) {
+                _handleBlockedStatus(state.user);
+              }
+              if (state is UserUpdated) {
+                _handleBlockedStatus(state.user);
+              }
+            },
+          ),
+          BlocListener<SyncBloc, SyncState>(
+            listener: (context, state) {
+              switch (state) {
+                case SyncFailure():
+                case MessagesForPostSynced():
+                case MessagesForAssetUploadSynced():
+                case MessagesForPatchSynced():
+                case MessagesForDeleteSynced():
+                  context.read<MessagesBloc>().add(MessagesEvent.reload());
+              }
+            },
+          ),
+        ],
+        child: PopScope(
+          canPop: !showMessageActions,
+          onPopInvokedWithResult: (didPop, _) {
+            if (showMessageActions) {
+              context.read<MessageActionsCubit>().closeActionButtons();
+            } else {
+              context.read<NotificationsBloc>().add(
+                NotificationsEvent.openedChat(chatId: null),
+              );
+              context.read<UserDetailBloc>().add(
+                UserDetailEvent.unsubscribe(user: _otherUser),
+              );
+              context.read<ChatDetailBloc>().add(
+                ChatDetailEvent.unsubscribe(chat: widget.chat),
+              );
+            }
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              titleSpacing: 0,
+              title: showMessageActions
+                  ? SizedBox.shrink()
+                  : Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ProfileImage(user: _otherUser, navigateToProfile: true),
+                        SizedBox(width: 10),
+                        Flexible(
+                          child: Text(
+                            _otherUser.name,
+                            maxLines: 1,
+                            style: TextStyle(overflow: TextOverflow.ellipsis),
+                          ),
+                        ),
+                      ],
+                    ),
+              actions: [
+                showMessageActions
+                    ? _MessageActions(
+                        chat: widget.chat,
+                        messages: messages,
+                        currentUser: widget.me,
+                      )
+                    : SizedBox.shrink(),
+                ChatPopUpMenu(
+                  chat: widget.chat,
+                  currentUser: widget.me,
+                  otherUser: _otherUser,
+                ),
+              ],
+              actionsPadding: EdgeInsets.only(right: 15),
+            ),
+            body: (hideChat && _otherUser.isBlocked)
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          '@${_otherUser.username} is blocked',
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        SizedBox(height: 10),
+                        OutlinedButton(
+                          onPressed: () {
+                            setState(() {
+                              hideChat = false;
+                            });
+                          },
+                          child: Text('View messages'),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          'Will not unblock them',
+                          style: Theme.of(context).textTheme.labelMedium
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.outline,
+                              ),
+                        ),
+                      ],
+                    ),
+                  )
+                : Messages(chat: widget.chat, me: widget.me),
+            bottomNavigationBar: hideChat
+                ? SizedBox.shrink()
+                : _otherUser.isBlocked || _otherUser.hasBlocked
+                ? _buildBlockedWidget()
+                : _buildBottomNavigationBar(),
+          ),
         ),
       ),
     );
@@ -380,7 +433,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         context.read<MessageDetailBloc>().add(
           MessageDetailEvent.create(
             author: widget.me,
-            chat: _chat,
+            chat: widget.chat,
             text: '',
             filePaths: [imageFile.path],
           ),
@@ -391,7 +444,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         context.read<MessageDetailBloc>().add(
           MessageDetailEvent.create(
             author: widget.me,
-            chat: _chat,
+            chat: widget.chat,
             text: '',
             location: point,
           ),
@@ -403,7 +456,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         context.read<MessageDetailBloc>().add(
           MessageDetailEvent.create(
             author: widget.me,
-            chat: _chat,
+            chat: widget.chat,
             text: '',
             section: section,
           ),
@@ -416,7 +469,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         context.read<MessageDetailBloc>().add(
           MessageDetailEvent.create(
             author: widget.me,
-            chat: _chat,
+            chat: widget.chat,
             text: _controller.text,
             filePaths: [image.path],
           ),
@@ -427,7 +480,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         context.read<MessageDetailBloc>().add(
           MessageDetailEvent.create(
             author: widget.me,
-            chat: _chat,
+            chat: widget.chat,
             text: _controller.text,
             filePaths: [videoPath],
           ),
@@ -440,7 +493,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               context.read<MessageDetailBloc>().add(
                 MessageDetailEvent.create(
                   author: widget.me,
-                  chat: _chat,
+                  chat: widget.chat,
                   text: _controller.text,
                   filePaths: [
                     ..._media.map((m) => m.path),
@@ -544,20 +597,27 @@ class _MessageActions extends StatelessWidget {
                 Duration(minutes: 15))
               IconButton(
                 onPressed: () {
-                  Navigator.of(context).push(
-                    PageRouteBuilder(
-                      opaque: false,
-                      pageBuilder: (_, _, _) =>
-                          EditMessage(chat: chat, message: messages.first),
-                    ),
+                  // TODO: How to do page route builder
+                  context.router.push(
+                    EditMessage(chat: chat, message: messages.first),
                   );
+                  // Navigator.of(context).push(
+                  //   PageRouteBuilder(
+                  //     opaque: false,
+                  //     pageBuilder: (_, _, _) =>
+                  //         EditMessage(chat: chat, message: messages.first),
+                  //   ),
+                  // );
                 },
                 icon: Icon(Symbols.edit_rounded),
               ),
         IconButton(
           onPressed: () async {
             context.read<MessageActionsCubit>().closeActionButtons();
-            _copy(messages: messages);
+            _copy(
+              navigatorKey: context.router.navigatorKey,
+              messages: messages,
+            );
           },
           icon: Icon(Symbols.content_copy),
         ),
@@ -598,7 +658,10 @@ class _MessageActions extends StatelessWidget {
   }
 }
 
-void _copy({required Set<Message> messages}) async {
+void _copy({
+  required GlobalKey<NavigatorState> navigatorKey,
+  required Set<Message> messages,
+}) async {
   try {
     await Clipboard.setData(
       ClipboardData(
@@ -607,9 +670,9 @@ void _copy({required Set<Message> messages}) async {
             : copyMultiple(forCopy: messages),
       ),
     );
-    showSuccessToast('Copied');
+    showSuccessToast(navigatorKey: navigatorKey, text: 'Copied');
   } catch (e) {
-    showFailureToast('Failed to copy');
+    showFailureToast(navigatorKey: navigatorKey, text: 'Failed to copy');
   }
 }
 

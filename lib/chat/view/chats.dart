@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/no_results.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/bloc/chat_filter/chat_filter_cubit.dart';
@@ -9,7 +11,6 @@ import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
 import 'package:democracy/chat/bloc/direct_message/direct_message_bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
-import 'package:democracy/chat/view/utils/chat_navigator.dart';
 import 'package:democracy/chat/view/utils/last_message.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
@@ -228,7 +229,7 @@ class ChatTile extends StatelessWidget {
         ],
       ),
       onTap: () {
-        navigateToChatDetail(context: context, chat: chat);
+        context.router.push(ChatDetail(chatId: chat.id));
       },
       onLongPress: () {
         // TODO: Implement long press actions (delete, mute, block, etc.)

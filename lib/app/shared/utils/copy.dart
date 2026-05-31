@@ -1,22 +1,28 @@
-import 'package:democracy/app/view/router/router.dart' show navigatorKey;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 
-void copyLink(String className, int objectId) async {
+void copyLink({
+  required GlobalKey<NavigatorState> navigatorKey,
+  required String className,
+  required int objectId,
+}) async {
   try {
     String baseUrl = dotenv.env['BASE_URL']!;
     String text = '$baseUrl$className/$objectId/';
     await Clipboard.setData(ClipboardData(text: text));
-    showSuccessToast('Copied');
+    showSuccessToast(navigatorKey: navigatorKey, text: 'Copied');
   } catch (e) {
-    showFailureToast('Failed to copy link');
+    showFailureToast(navigatorKey: navigatorKey, text: 'Failed to copy link');
   }
 }
 
-void showSuccessToast(String text) {
+void showSuccessToast({
+  required GlobalKey<NavigatorState> navigatorKey,
+  required String text,
+}) {
   if (navigatorKey.currentContext != null) {
     FToast fToast = FToast();
     fToast.init(navigatorKey.currentContext!);
@@ -43,7 +49,10 @@ void showSuccessToast(String text) {
   }
 }
 
-void showFailureToast(String text) {
+void showFailureToast({
+  required GlobalKey<NavigatorState> navigatorKey,
+  required String text,
+}) {
   if (navigatorKey.currentContext != null) {
     FToast()
         .init(navigatorKey.currentContext!)

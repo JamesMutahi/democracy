@@ -1,3 +1,5 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/filters_modal.dart';
 import 'package:democracy/ballot/bloc/ballot_filter/ballot_filter_cubit.dart';
@@ -7,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
+@RoutePage()
 class BallotPage extends StatefulWidget {
   const BallotPage({super.key});
 
@@ -25,69 +28,80 @@ class _BallotPageState extends State<BallotPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-          return [
-            SliverAppBar(
-              floating: true,
-              snap: true,
-              forceElevated: true,
-              titleSpacing: 0,
-              title: Text('Ballots'),
-              bottom: PreferredSize(
-                preferredSize: Size.fromHeight(60.0),
-                child: BlocConsumer<BallotFilterCubit, BallotFilterState>(
-                  listener: (context, state) {
-                    context.read<BallotsBloc>().add(
-                      BallotsEvent.get(
-                        searchTerm: state.searchTerm,
-                        isActive: state.isActive,
-                        sortBy: state.sortBy,
-                        filterByRegion: state.filterByRegion,
-                        startDate: state.startDate,
-                        endDate: state.endDate,
-                      ),
-                    );
-                  },
-                  builder: (context, state) {
-                    return CustomSearchBar(
-                      controller: _controller,
-                      hintText: 'Search',
-                      filterCount: state.count,
-                      onChanged: (value) {
-                        context.read<BallotFilterCubit>().searchTermChanged(
-                          searchTerm: value,
-                        );
-                      },
-                      onFilterTap: () {
-                        final filterCubit = context.read<BallotFilterCubit>();
-                        showGeneralDialog(
-                          context: context,
-                          transitionDuration: const Duration(milliseconds: 300),
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) {
-                            return BlocProvider.value(
-                              value: filterCubit,
-                              child: _FiltersModal(
-                                isActive: state.isActive,
-                                filterByRegion: state.filterByRegion,
-                                sortBy: state.sortBy,
-                                startDate: state.startDate,
-                                endDate: state.endDate,
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              BallotsBloc(webSocketService: context.read<WebSocketService>()),
+        ),
+        BlocProvider(create: (context) => BallotFilterCubit()),
+      ],
+      child: Scaffold(
+        body: NestedScrollView(
+          headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+            return [
+              SliverAppBar(
+                floating: true,
+                snap: true,
+                forceElevated: true,
+                titleSpacing: 0,
+                title: Text('Ballots'),
+                bottom: PreferredSize(
+                  preferredSize: Size.fromHeight(60.0),
+                  child: BlocConsumer<BallotFilterCubit, BallotFilterState>(
+                    listener: (context, state) {
+                      context.read<BallotsBloc>().add(
+                        BallotsEvent.get(
+                          searchTerm: state.searchTerm,
+                          isActive: state.isActive,
+                          sortBy: state.sortBy,
+                          filterByRegion: state.filterByRegion,
+                          startDate: state.startDate,
+                          endDate: state.endDate,
+                        ),
+                      );
+                    },
+                    builder: (context, state) {
+                      return CustomSearchBar(
+                        controller: _controller,
+                        hintText: 'Search',
+                        filterCount: state.count,
+                        onChanged: (value) {
+                          context.read<BallotFilterCubit>().searchTermChanged(
+                            searchTerm: value,
+                          );
+                        },
+                        onFilterTap: () {
+                          final filterCubit = context.read<BallotFilterCubit>();
+                          showGeneralDialog(
+                            context: context,
+                            transitionDuration: const Duration(
+                              milliseconds: 300,
+                            ),
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) {
+                                  return BlocProvider.value(
+                                    value: filterCubit,
+                                    child: _FiltersModal(
+                                      isActive: state.isActive,
+                                      filterByRegion: state.filterByRegion,
+                                      sortBy: state.sortBy,
+                                      startDate: state.startDate,
+                                      endDate: state.endDate,
+                                    ),
+                                  );
+                                },
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-          ];
-        },
-        body: Ballots(),
+            ];
+          },
+          body: Ballots(),
+        ),
       ),
     );
   }
@@ -121,17 +135,17 @@ class _FiltersModalState extends State<_FiltersModal> {
 
   bool get _isUnchanged =>
       isActive == widget.isActive &&
-          filterByRegion == widget.filterByRegion &&
-          sortBy == widget.sortBy &&
-          startDate == widget.startDate &&
-          endDate == widget.endDate;
+      filterByRegion == widget.filterByRegion &&
+      sortBy == widget.sortBy &&
+      startDate == widget.startDate &&
+      endDate == widget.endDate;
 
   bool get _isDefaultState =>
       isActive == true &&
-          sortBy == 'recent' &&
-          filterByRegion == true &&
-          startDate == null &&
-          endDate == null;
+      sortBy == 'recent' &&
+      filterByRegion == true &&
+      startDate == null &&
+      endDate == null;
 
   @override
   Widget build(BuildContext context) {

@@ -195,6 +195,7 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
                         color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
+                    hoverColor: Colors.transparent,
                   ),
                   controller: widget.controller,
                   onTap: widget.onTap,

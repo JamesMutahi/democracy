@@ -1,10 +1,13 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
 import 'package:democracy/app/bloc/menu_controller/menu_controller_cubit.dart';
 import 'package:democracy/app/bloc/repository/database/database_repository.dart';
+import 'package:democracy/app/bloc/route/route_cubit.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/bloc/sync/sync_bloc.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/app/view/widgets/bottom_nav_bar.dart';
 import 'package:democracy/app/view/widgets/side_menu.dart';
 import 'package:democracy/app/view/widgets/side_panel.dart';
@@ -22,13 +25,10 @@ import 'package:democracy/user/bloc/follow_recommendations/follow_recommendation
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key, required this.navigationShell});
-
-  final StatefulNavigationShell navigationShell;
+  const MainPage({super.key});
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -116,7 +116,7 @@ class _MainPageState extends State<MainPage> {
       child: Scaffold(
         key: _scaffoldKey,
         resizeToAvoidBottomInset: false,
-        drawer: SideMenu(),
+        drawer: Drawer(child: SideMenu()),
         body: SafeArea(
           child: PopScope(
             canPop: _canPopNow,
@@ -242,16 +242,20 @@ class _MainPageState extends State<MainPage> {
                       decoration: BoxDecoration(
                         border: Border(
                           left: BorderSide(
-                            color: Theme.of(context).colorScheme.outlineVariant,
+                            color: responsive.isMobile
+                                ? Colors.transparent
+                                : Theme.of(context).colorScheme.outlineVariant,
                           ),
                           right: BorderSide(
-                            color: Theme.of(context).colorScheme.outlineVariant,
+                            color: responsive.isMobile
+                                ? Colors.transparent
+                                : Theme.of(context).colorScheme.outlineVariant,
                           ),
                         ),
                       ),
                       child: Container(
                         margin: EdgeInsets.only(top: 10),
-                        child: widget.navigationShell,
+                        child: AutoRouter(),
                       ),
                     ),
                   ),
@@ -263,7 +267,22 @@ class _MainPageState extends State<MainPage> {
           ),
         ),
         bottomNavigationBar: !kIsWeb && responsive.isMobile
-            ? const BottomNavBar()
+            ? BlocBuilder<RouteCubit, String>(
+                builder: (context, currentRoute) {
+                  List routes = [
+                    HomeRoute.name,
+                    ExploreRoute.name,
+                    CreationBottomSheet.name,
+                    Hub.name,
+                    ChatRoute.name,
+                  ];
+                  if (routes.contains(currentRoute)) {
+                    return BottomNavBar();
+                  } else {
+                    return SizedBox.shrink();
+                  }
+                },
+              )
             : SizedBox.shrink(),
       ),
     );

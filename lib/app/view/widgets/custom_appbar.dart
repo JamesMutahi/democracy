@@ -1,9 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/menu_controller/menu_controller_cubit.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
-import 'package:democracy/notification/view/notifications.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -134,10 +135,7 @@ class NotificationButton extends StatelessWidget {
       builder: (context, state) {
         return GestureDetector(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Notifications()),
-            );
+            context.router.push(Notifications());
           },
           child: Stack(
             children: [

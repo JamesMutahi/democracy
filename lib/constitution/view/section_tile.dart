@@ -1,5 +1,6 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/constitution/models/section.dart';
-import 'package:democracy/constitution/view/constitution.dart';
 import 'package:flutter/material.dart';
 
 class SectionTile extends StatelessWidget {
@@ -34,12 +35,7 @@ class SectionTile extends StatelessWidget {
         ),
         onTap: () {
           if (isDependency) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Constitution(centeredSection: section),
-              ),
-            );
+            context.router.push(Constitution(sectionId: section.id));
           } else {
             onRemoveSelection!(section);
           }
@@ -54,7 +50,9 @@ class SectionTile extends StatelessWidget {
           duration: Duration(milliseconds: 300),
           padding: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(
-            color: isHighlighted || section.id == selectedSection?.id
+            color: isHighlighted
+                ? Theme.of(context).colorScheme.secondaryContainer
+                : section.id == selectedSection?.id
                 ? Theme.of(context).colorScheme.primaryContainer
                 : null,
             borderRadius: BorderRadius.circular(10),

@@ -33,7 +33,7 @@ class CommunityNotesBloc
     emit(
       state.copyWith(
         status: CommunityNotesStatus.loading,
-        postId: event.post.id,
+        postId: event.postId,
       ),
     );
     if (!webSocketService.isConnected) {
@@ -45,8 +45,8 @@ class CommunityNotesBloc
       'stream': stream,
       'payload': {
         'action': 'community_notes',
-        'request_id': event.post.id,
-        'pk': event.post.id,
+        'request_id': event.postId,
+        'pk': event.postId,
         'search_term': event.searchTerm,
         'sort_by': event.sortBy,
         'previous_posts': event.previousPosts?.map((post) => post.id).toList(),

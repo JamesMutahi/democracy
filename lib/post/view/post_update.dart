@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/camera/camera.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart';
@@ -31,6 +33,7 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:path/path.dart' as p;
 
+@RoutePage()
 class PostUpdatePage extends StatefulWidget {
   const PostUpdatePage({super.key, required this.draft});
 
@@ -74,7 +77,7 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
   void _getData() {
     if (widget.draft.replyTo != null) {
       context.read<ReplyToBloc>().add(
-        ReplyToEvent.get(post: widget.draft.replyTo!),
+        ReplyToEvent.get(postId: widget.draft.replyTo!.id),
       );
       context.read<ReplyToBloc>().add(
         ReplyToEvent.add(post: widget.draft.replyTo!),
@@ -168,146 +171,169 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, _) {
-        if (didPop) return;
-
-        if (!_canPost) {
-          Navigator.pop(context);
-        } else {
-          showDialog(
-            context: context,
-            builder: (context) => _SaveDraftDialog(onYesPressed: _saveDraft),
-          );
+    return BlocProvider(
+      create: (context) {
+        final bloc = ReplyToBloc(
+          webSocketService: context.read<WebSocketService>(),
+        );
+        if (widget.draft.replyTo != null) {
+          bloc.add(ReplyToEvent.get(postId: widget.draft.replyTo!.id));
         }
+        return bloc;
       },
-      child: MultiBlocListener(
-        listeners: [
-          BlocListener<PostCreateBloc, PostCreateState>(
-            listener: (context, state) {
-              if (state.status == PostCreateStatus.success) {
-                final post = state.post!;
+      child: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, _) {
+          if (didPop) return;
 
-                // Handle repost case and normal post (not a reply)
-                if (widget.draft.repostOf != null ||
-                    widget.draft.replyTo == null) {
-                  _deleteDraft();
-                  Navigator.pop(context);
-                  return;
-                }
-
-                // Handle reply case - only pop if the replied-to post is NOT in the ReplyToBloc
-                final replyTos = context.read<ReplyToBloc>().state.posts;
-                final isReplyingToPostInReplyTos = replyTos.any(
-                  (p) => p.id == post.repostOf?.id,
-                );
-
-                if (!isReplyingToPostInReplyTos) {
-                  _deleteDraft();
-                  Navigator.pop(context);
-                }
-              }
-            },
-          ),
-          BlocListener<DraftPostBloc, DraftPostState>(
-            listener: (context, state) {
-              if (state is DraftPostSaved) {
-                Navigator.pop(context);
-              }
-            },
-          ),
-        ],
-        child: LoaderOverlay(
-          overlayWidgetBuilder: (_) {
-            return BlocBuilder<DraftPostBloc, DraftPostState>(
-              builder: (context, draftPostState) {
-                return BlocBuilder<PostCreateBloc, PostCreateState>(
-                  builder: (context, postCreateState) {
-                    return postCreateState.status == PostCreateStatus.failure ||
-                            draftPostState is DraftPostFailure
-                        ? LoaderOverlayFailure(
-                            onRetry: () {
-                              if (draftPostState is DraftPostFailure) {
-                                _saveDraft();
-                              } else {
-                                context.read<PostCreateBloc>().add(
-                                  PostCreateEvent.retry(),
-                                );
-                              }
-                            },
-                          )
-                        : LoaderOverlayLoading(
-                            progress: postCreateState.progress,
-                          );
-                  },
-                );
-              },
+          if (!_canPost) {
+            Navigator.pop(context);
+          } else {
+            showDialog(
+              context: context,
+              builder: (context) => _SaveDraftDialog(onYesPressed: _saveDraft),
             );
-          },
-          child: Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                onPressed: _canPost
-                    ? () {
-                        showDialog(
-                          context: context,
-                          builder: (context) =>
-                              _SaveDraftDialog(onYesPressed: _saveDraft),
-                        );
-                      }
-                    : null,
-                icon: Icon(Symbols.close),
-              ),
-              title: Text('Edit post'),
-              actions: [
-                OutlinedButton(
+          }
+        },
+        child: MultiBlocListener(
+          listeners: [
+            BlocListener<PostCreateBloc, PostCreateState>(
+              listener: (context, state) {
+                if (state.status == PostCreateStatus.success) {
+                  final post = state.post!;
+
+                  // Handle repost case and normal post (not a reply)
+                  if (widget.draft.repostOf != null ||
+                      widget.draft.replyTo == null) {
+                    _deleteDraft();
+                    Navigator.pop(context);
+                    return;
+                  }
+
+                  // Handle reply case - only pop if the replied-to post is NOT in the ReplyToBloc
+                  final replyTos = context.read<ReplyToBloc>().state.posts;
+                  final isReplyingToPostInReplyTos = replyTos.any(
+                    (p) => p.id == post.repostOf?.id,
+                  );
+
+                  if (!isReplyingToPostInReplyTos) {
+                    _deleteDraft();
+                    Navigator.pop(context);
+                  }
+                }
+              },
+            ),
+            BlocListener<DraftPostBloc, DraftPostState>(
+              listener: (context, state) {
+                if (state is DraftPostSaved) {
+                  Navigator.pop(context);
+                }
+              },
+            ),
+            BlocListener<ReplyToBloc, ReplyToState>(
+              listener: (context, state) {
+                if (state.status == ReplyToStatus.success) {
+                  if (widget.draft.replyTo != null) {
+                    context.read<ReplyToBloc>().add(
+                      ReplyToEvent.add(post: widget.draft.replyTo!),
+                    );
+                  }
+                }
+              },
+            ),
+          ],
+          child: LoaderOverlay(
+            overlayWidgetBuilder: (_) {
+              return BlocBuilder<DraftPostBloc, DraftPostState>(
+                builder: (context, draftPostState) {
+                  return BlocBuilder<PostCreateBloc, PostCreateState>(
+                    builder: (context, postCreateState) {
+                      return postCreateState.status ==
+                                  PostCreateStatus.failure ||
+                              draftPostState is DraftPostFailure
+                          ? LoaderOverlayFailure(
+                              onRetry: () {
+                                if (draftPostState is DraftPostFailure) {
+                                  _saveDraft();
+                                } else {
+                                  context.read<PostCreateBloc>().add(
+                                    PostCreateEvent.retry(),
+                                  );
+                                }
+                              },
+                            )
+                          : LoaderOverlayLoading(
+                              progress: postCreateState.progress,
+                            );
+                    },
+                  );
+                },
+              );
+            },
+            child: Scaffold(
+              appBar: AppBar(
+                leading: IconButton(
                   onPressed: _canPost
                       ? () {
                           showDialog(
                             context: context,
                             builder: (context) =>
-                                PostUpdateDialog(onYesPressed: _createPost),
+                                _SaveDraftDialog(onYesPressed: _saveDraft),
                           );
                         }
                       : null,
-                  child: Text('Post'),
+                  icon: Icon(Symbols.close),
                 ),
-              ],
-              actionsPadding: EdgeInsets.only(right: 15),
-            ),
-            body: CustomScrollView(
-              center: _centerKey,
-              slivers: [
-                if (widget.draft.replyTo != null)
-                  ReplyTos(post: widget.draft.replyTo!),
-                SliverToBoxAdapter(key: _centerKey, child: _buildPostForm()),
-              ],
-            ),
-            bottomNavigationBar: PostBottomNavBar(
-              controller: _controller,
-              reply: widget.draft.replyTo,
-              maxAssets: maxMediaAssetsAllowed - _media.length,
-              onNewMedia: (files) {
-                setState(() {
-                  for (var file in files) {
-                    _media.add(file);
-                  }
-                });
-                _updatePostButtonState(_controller.formattedText);
-              },
-              onNewDocument: (file) {
-                setState(() => _document = file);
-                _updatePostButtonState(_controller.formattedText);
-              },
-              onLocation: (point) {
-                setState(() => _selectedLocation = point);
-                _updatePostButtonState(_controller.formattedText);
-              },
-              onNewSection: (section) {
-                setState(() => _selectedSection = section);
-                _updatePostButtonState(_controller.formattedText);
-              },
+                title: Text('Edit post'),
+                actions: [
+                  OutlinedButton(
+                    onPressed: _canPost
+                        ? () {
+                            showDialog(
+                              context: context,
+                              builder: (context) =>
+                                  PostUpdateDialog(onYesPressed: _createPost),
+                            );
+                          }
+                        : null,
+                    child: Text('Post'),
+                  ),
+                ],
+                actionsPadding: EdgeInsets.only(right: 15),
+              ),
+              body: CustomScrollView(
+                center: _centerKey,
+                slivers: [
+                  if (widget.draft.replyTo != null)
+                    ReplyTos(post: widget.draft.replyTo!),
+                  SliverToBoxAdapter(key: _centerKey, child: _buildPostForm()),
+                ],
+              ),
+              bottomNavigationBar: PostBottomNavBar(
+                controller: _controller,
+                reply: widget.draft.replyTo,
+                maxAssets: maxMediaAssetsAllowed - _media.length,
+                onNewMedia: (files) {
+                  setState(() {
+                    for (var file in files) {
+                      _media.add(file);
+                    }
+                  });
+                  _updatePostButtonState(_controller.formattedText);
+                },
+                onNewDocument: (file) {
+                  setState(() => _document = file);
+                  _updatePostButtonState(_controller.formattedText);
+                },
+                onLocation: (point) {
+                  setState(() => _selectedLocation = point);
+                  _updatePostButtonState(_controller.formattedText);
+                },
+                onNewSection: (section) {
+                  setState(() => _selectedSection = section);
+                  _updatePostButtonState(_controller.formattedText);
+                },
+              ),
             ),
           ),
         ),

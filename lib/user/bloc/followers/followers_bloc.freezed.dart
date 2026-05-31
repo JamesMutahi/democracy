@@ -122,10 +122,10 @@ return update(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( User user,  User? lastUser)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( List<User> users)?  update,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int userId,  User? lastUser)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( List<User> users)?  update,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.user,_that.lastUser);case _Received() when received != null:
+return get(_that.userId,_that.lastUser);case _Received() when received != null:
 return received(_that.payload);case _Update() when update != null:
 return update(_that.users);case _:
   return orElse();
@@ -145,10 +145,10 @@ return update(_that.users);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( User user,  User? lastUser)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( List<User> users)  update,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int userId,  User? lastUser)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( List<User> users)  update,}) {final _that = this;
 switch (_that) {
 case _Get():
-return get(_that.user,_that.lastUser);case _Received():
+return get(_that.userId,_that.lastUser);case _Received():
 return received(_that.payload);case _Update():
 return update(_that.users);}
 }
@@ -164,10 +164,10 @@ return update(_that.users);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( User user,  User? lastUser)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( List<User> users)?  update,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int userId,  User? lastUser)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( List<User> users)?  update,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.user,_that.lastUser);case _Received() when received != null:
+return get(_that.userId,_that.lastUser);case _Received() when received != null:
 return received(_that.payload);case _Update() when update != null:
 return update(_that.users);case _:
   return null;
@@ -181,10 +181,10 @@ return update(_that.users);case _:
 
 
 class _Get implements FollowersEvent {
-  const _Get({required this.user, this.lastUser});
+  const _Get({required this.userId, this.lastUser});
   
 
- final  User user;
+ final  int userId;
  final  User? lastUser;
 
 /// Create a copy of FollowersEvent
@@ -197,16 +197,16 @@ _$GetCopyWith<_Get> get copyWith => __$GetCopyWithImpl<_Get>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.user, user) || other.user == user)&&(identical(other.lastUser, lastUser) || other.lastUser == lastUser));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.lastUser, lastUser) || other.lastUser == lastUser));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,user,lastUser);
+int get hashCode => Object.hash(runtimeType,userId,lastUser);
 
 @override
 String toString() {
-  return 'FollowersEvent.get(user: $user, lastUser: $lastUser)';
+  return 'FollowersEvent.get(userId: $userId, lastUser: $lastUser)';
 }
 
 
@@ -217,11 +217,11 @@ abstract mixin class _$GetCopyWith<$Res> implements $FollowersEventCopyWith<$Res
   factory _$GetCopyWith(_Get value, $Res Function(_Get) _then) = __$GetCopyWithImpl;
 @useResult
 $Res call({
- User user, User? lastUser
+ int userId, User? lastUser
 });
 
 
-$UserCopyWith<$Res> get user;$UserCopyWith<$Res>? get lastUser;
+$UserCopyWith<$Res>? get lastUser;
 
 }
 /// @nodoc
@@ -234,24 +234,15 @@ class __$GetCopyWithImpl<$Res>
 
 /// Create a copy of FollowersEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? user = null,Object? lastUser = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? lastUser = freezed,}) {
   return _then(_Get(
-user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as User,lastUser: freezed == lastUser ? _self.lastUser : lastUser // ignore: cast_nullable_to_non_nullable
+userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as int,lastUser: freezed == lastUser ? _self.lastUser : lastUser // ignore: cast_nullable_to_non_nullable
 as User?,
   ));
 }
 
 /// Create a copy of FollowersEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UserCopyWith<$Res> get user {
-  
-  return $UserCopyWith<$Res>(_self.user, (value) {
-    return _then(_self.copyWith(user: value));
-  });
-}/// Create a copy of FollowersEvent
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')

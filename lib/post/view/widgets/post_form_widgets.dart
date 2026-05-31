@@ -72,6 +72,7 @@ class PostTextField extends StatelessWidget {
             prefixStyle: TextStyle(color: Theme.of(context).primaryColor),
             contentPadding: const EdgeInsets.all(15),
             border: InputBorder.none,
+            hoverColor: Colors.transparent,
           ),
           contentInsertionConfiguration: ContentInsertionConfiguration(
             allowedMimeTypes: const <String>['image/gif'],

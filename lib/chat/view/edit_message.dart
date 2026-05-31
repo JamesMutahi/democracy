@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:democracy/chat/view/messages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+@RoutePage()
 class EditMessage extends StatefulWidget {
   const EditMessage({super.key, required this.chat, required this.message});
 

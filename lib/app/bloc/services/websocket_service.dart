@@ -3,9 +3,7 @@ import 'dart:convert';
 
 import 'package:democracy/app/core/app_logger.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
-import 'package:flutter/foundation.dart'; // For kIsWeb
-import 'package:web_socket_channel/io.dart';
-import 'package:web_socket_channel/html.dart';
+import 'websocket_mobile.dart' if (dart.library.html) 'websocket_web.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 enum WebsocketStatus { initial, loading, connected, disconnected, failure }
@@ -23,13 +21,7 @@ class WebSocketService {
 
   Future<void> connect({required String url, required String ticket}) async {
     try {
-      final uri = Uri.parse(url);
-
-      if (kIsWeb) {
-        _channel = HtmlWebSocketChannel.connect(uri);
-      } else {
-        _channel = IOWebSocketChannel.connect(uri, headers: {'Origin': url});
-      }
+      _channel = createWebSocketChannel(url);
 
       await _channel.ready;
       isConnected = true;
