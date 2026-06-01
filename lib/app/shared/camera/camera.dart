@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:camera/camera.dart';
 import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/shared/camera/video_editor/video_editor.dart';
@@ -208,7 +209,7 @@ class _CameraPageState extends State<CameraPage>
                                   child: _CameraButton(
                                     iconData: Icons.close_rounded,
                                     onPressed: () {
-                                      Navigator.pop(context);
+                                      context.router.popTop();
                                     },
                                     turns: turns,
                                     child: null,

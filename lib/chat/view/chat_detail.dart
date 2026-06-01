@@ -634,7 +634,7 @@ class _MessageActions extends StatelessWidget {
                           'The message will be permanently deleted',
                       button1Text: 'Yes',
                       onButton1Pressed: () {
-                        Navigator.pop(context);
+                        context.router.popTop();
                         context.read<MessageDetailBloc>().add(
                           MessageDetailEvent.delete(
                             messages: messages.toList(),
@@ -646,7 +646,7 @@ class _MessageActions extends StatelessWidget {
                       },
                       button2Text: 'No',
                       onButton2Pressed: () {
-                        Navigator.pop(context);
+                        context.router.popTop();
                       },
                     ),
                   );

@@ -110,7 +110,7 @@ class _EditMessageState extends State<EditMessage> {
                     text: _controller.text,
                   ),
                 );
-                Navigator.pop(context);
+                context.router.popTop();
               },
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
@@ -57,7 +58,7 @@ class _ReportModalState extends State<ReportModal> {
               status: SnackBarStatus.info,
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            Navigator.pop(context);
+            context.router.popTop();
           case PostDetailFailure(:final error):
             final snackBar = getSnackBar(
               context: context,

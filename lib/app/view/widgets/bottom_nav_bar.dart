@@ -50,7 +50,28 @@ class _BottomNavBarState extends State<BottomNavBar> {
                             context.navigateTo(const ExploreRoute());
                           },
                         ),
-                        SizedBox(width: 60),
+                        IconButton.filledTonal(
+                          onPressed: () {
+                            if (currentRoute == CreationBottomSheet.name) {
+                              context.router.popTop();
+                            } else {
+                              context.pushRoute(const CreationBottomSheet());
+                            }
+                          },
+                          style: IconButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                            ),
+                          ),
+                          color: currentRoute == CreationBottomSheet.name
+                              ? Theme.of(context).primaryColor
+                              : Theme.of(context).disabledColor,
+                          icon: Icon(
+                            Symbols.add_rounded,
+                            size: 35,
+                            weight: 500,
+                          ),
+                        ),
                         NavBarItem(
                           asset: 'assets/icons/widgets.svg',
                           isActive: currentRoute == Hub.name,
@@ -66,25 +87,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
                           },
                         ),
                       ],
-                    ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: IconButton.filledTonal(
-                        onPressed: () {
-                          if (currentRoute != CreationBottomSheet.name) {
-                            context.pushRoute(const CreationBottomSheet());
-                          }
-                        },
-                        style: IconButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                        ),
-                        color: currentRoute == CreationBottomSheet.name
-                            ? Theme.of(context).primaryColor
-                            : Theme.of(context).disabledColor,
-                        icon: Icon(Symbols.add_rounded, size: 35, weight: 500),
-                      ),
                     ),
                   ],
                 ),

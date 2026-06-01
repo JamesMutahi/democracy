@@ -40,7 +40,7 @@ class _EditProfileState extends State<EditProfile> {
     return BlocListener<UserDetailBloc, UserDetailState>(
       listener: (context, state) {
         if (state is UserPatched) {
-          Navigator.pop(context);
+          context.router.popTop();
           context.read<AuthBloc>().add(AuthEvent.updateUser(user: state.user));
           final snackBar = getSnackBar(
             context: context,
@@ -351,12 +351,12 @@ class _SaveDialog extends StatelessWidget {
       content: 'Are you sure you want to update this?',
       button1Text: 'Yes',
       onButton1Pressed: () {
-        Navigator.pop(context);
+        context.router.popTop();
         onYesPressed();
       },
       button2Text: 'No',
       onButton2Pressed: () {
-        Navigator.pop(context);
+        context.router.popTop();
       },
     );
   }

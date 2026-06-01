@@ -74,7 +74,7 @@ class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
             listener: (context, state) {
               if (state.status == PostCreateStatus.success) {
                 if (state.post?.communityNoteOf?.id == widget.post.id) {
-                  Navigator.pop(context);
+                  context.router.popTop();
                 }
               }
             },
@@ -203,12 +203,12 @@ class _CreateDialog extends StatelessWidget {
       content: 'Are you sure you want to post this?',
       button1Text: 'Yes',
       onButton1Pressed: () {
-        Navigator.pop(context);
+        context.router.popTop();
         onYesPressed();
       },
       button2Text: 'No',
       onButton2Pressed: () {
-        Navigator.pop(context);
+        context.router.popTop();
       },
     );
   }
@@ -226,12 +226,12 @@ class _CloseDialog extends StatelessWidget {
           'Progress is not saved',
       button1Text: 'Yes',
       onButton1Pressed: () {
-        Navigator.pop(context);
-        Navigator.pop(context);
+        context.router.popTop();
+        context.router.popTop();
       },
       button2Text: 'No',
       onButton2Pressed: () {
-        Navigator.pop(context);
+        context.router.popTop();
       },
     );
   }

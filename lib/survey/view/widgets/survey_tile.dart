@@ -161,7 +161,7 @@ class SurveyBottomSheet extends StatelessWidget {
             if (survey.isActive)
               OutlinedButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  context.router.popTop();
                   context.router.push(SurveyProcess(surveyId: survey.id));
                 },
                 child: Text('Submit response'),
@@ -169,7 +169,7 @@ class SurveyBottomSheet extends StatelessWidget {
             if (alreadyResponded)
               OutlinedButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  context.router.popTop();
                   context.router.push(ResponseRoute(surveyId: survey.id));
                 },
                 child: Text('View response'),

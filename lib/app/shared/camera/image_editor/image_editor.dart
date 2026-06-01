@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 // Flutter imports:
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/shared/camera/camera.dart';
 import 'package:democracy/app/shared/camera/widgets/stickers.dart';
@@ -321,12 +322,12 @@ class _ImageEditorState extends State<ImageEditor> {
   /// Unified back navigation (used by system back button and close button)
   void _handleBackToCamera([EditorMode? editorMode]) {
     if (editorMode != null && editorMode != EditorMode.main) {
-      Navigator.pop(context); // Close sub-editors normally
+      context.router.popTop(); // Close sub-editors normally
       return;
     }
 
     if (canPop) {
-      Navigator.pop(context);
+      context.router.popTop();
     } else {
       // Push replacement
       final cameras = context.read<GlobalCubit>().state.cameras;

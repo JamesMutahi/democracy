@@ -1,5 +1,5 @@
 import 'package:democracy/post/models/post.dart';
-import 'package:democracy/post/view/shared/add_post_view.dart';
+import 'package:democracy/post/view/utils/add_post_view.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:flutter/material.dart';

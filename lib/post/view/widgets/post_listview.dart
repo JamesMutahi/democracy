@@ -2,7 +2,7 @@ import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/no_results.dart';
 import 'package:democracy/post/models/post.dart';
-import 'package:democracy/post/view/shared/add_post_view.dart';
+import 'package:democracy/post/view/utils/add_post_view.dart';
 import 'package:democracy/post/view/widgets/post_listener.dart';
 import 'package:democracy/post/view/widgets/post_widget_selector.dart';
 import 'package:flutter/material.dart';

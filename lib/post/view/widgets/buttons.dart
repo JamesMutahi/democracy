@@ -166,13 +166,13 @@ class PostPopUp extends StatelessWidget {
         content: 'Are you sure you want to delete this post?',
         button1Text: 'Yes',
         onButton1Pressed: () {
-          Navigator.pop(context);
+          context.router.popTop();
           context.read<PostDetailBloc>().add(
             PostDetailEvent.delete(post: post),
           );
         },
         button2Text: 'No',
-        onButton2Pressed: () => Navigator.pop(context),
+        onButton2Pressed: () => context.router.popTop(),
       ),
     );
   }
@@ -248,7 +248,7 @@ class RepostButton extends StatelessWidget {
             text: 'Quote',
             iconData: Icons.format_quote_rounded,
             onTap: () {
-              Navigator.pop(context);
+              context.router.popTop();
               context.router.push(PostCreateRoute(repostOf: post));
             },
           ),
@@ -257,7 +257,7 @@ class RepostButton extends StatelessWidget {
               text: 'Undo repost',
               iconData: Icons.repeat_rounded,
               onTap: () {
-                Navigator.pop(context);
+                context.router.popTop();
                 context.read<PostDetailBloc>().add(
                   PostDetailEvent.deleteRepost(post: post),
                 );
@@ -268,7 +268,7 @@ class RepostButton extends StatelessWidget {
               text: 'Repost',
               iconData: Icons.repeat_rounded,
               onTap: () {
-                Navigator.pop(context);
+                context.router.popTop();
                 context.read<PostCreateBloc>().add(
                   PostCreateEvent.create(
                     body: '',
@@ -394,24 +394,27 @@ class _PostTileButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var numberFormat = NumberFormat.compact(locale: "en_UK");
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        InkWell(
-          onTap: onTap,
-          customBorder: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50),
-          ),
-          child: Padding(padding: const EdgeInsets.all(7.5), child: icon),
-        ),
-        if (number > 0)
-          Text(
-            numberFormat.format(number),
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.outline,
+    return ConstrainedBox(
+      constraints: BoxConstraints(minWidth: 60),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          InkWell(
+            onTap: onTap,
+            customBorder: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(50),
             ),
+            child: Padding(padding: const EdgeInsets.all(7.5), child: icon),
           ),
-      ],
+          if (number > 0)
+            Text(
+              numberFormat.format(number),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.outline,
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

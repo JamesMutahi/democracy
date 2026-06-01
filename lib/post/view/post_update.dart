@@ -187,7 +187,7 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
           if (didPop) return;
 
           if (!_canPost) {
-            Navigator.pop(context);
+            context.router.popTop();
           } else {
             showDialog(
               context: context,
@@ -206,7 +206,7 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
                   if (widget.draft.repostOf != null ||
                       widget.draft.replyTo == null) {
                     _deleteDraft();
-                    Navigator.pop(context);
+                    context.router.popTop();
                     return;
                   }
 
@@ -218,7 +218,7 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
 
                   if (!isReplyingToPostInReplyTos) {
                     _deleteDraft();
-                    Navigator.pop(context);
+                    context.router.popTop();
                   }
                 }
               },
@@ -226,7 +226,7 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
             BlocListener<DraftPostBloc, DraftPostState>(
               listener: (context, state) {
                 if (state is DraftPostSaved) {
-                  Navigator.pop(context);
+                  context.router.popTop();
                 }
               },
             ),
@@ -462,12 +462,12 @@ class PostUpdateDialog extends StatelessWidget {
       content: 'Are you sure you want to post this?',
       button1Text: 'Yes',
       onButton1Pressed: () {
-        Navigator.pop(context);
+        context.router.popTop();
         onYesPressed();
       },
       button2Text: 'No',
       onButton2Pressed: () {
-        Navigator.pop(context);
+        context.router.popTop();
       },
     );
   }
@@ -487,13 +487,13 @@ class _SaveDraftDialog extends StatelessWidget {
           'You can still post at a later time.',
       button1Text: 'Yes',
       onButton1Pressed: () {
-        Navigator.pop(context);
+        context.router.popTop();
         onYesPressed();
       },
       button2Text: 'No',
       onButton2Pressed: () {
-        Navigator.pop(context);
-        Navigator.pop(context);
+        context.router.popTop();
+        context.router.popTop();
       },
     );
   }

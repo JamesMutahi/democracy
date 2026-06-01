@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:dio/dio.dart';
 import 'package:docx_viewer/docx_viewer.dart';
@@ -86,7 +87,7 @@ class FileWidget extends StatelessWidget {
                         actions: [
                           OutlinedButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              context.router.popTop();
                             },
                             child: Text('OK'),
                           ),

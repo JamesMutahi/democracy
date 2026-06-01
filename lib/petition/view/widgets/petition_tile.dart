@@ -207,11 +207,11 @@ class PetitionPopUpMenu extends StatelessWidget {
                       context.read<PetitionDetailBloc>().add(
                         PetitionDetailEvent.changeStatus(petition: petition),
                       );
-                      Navigator.pop(context);
+                      context.router.popTop();
                     },
                     button2Text: 'No',
                     onButton2Pressed: () {
-                      Navigator.pop(context);
+                      context.router.popTop();
                     },
                   ),
                 );
@@ -228,11 +228,11 @@ class PetitionPopUpMenu extends StatelessWidget {
                       context.read<PetitionDetailBloc>().add(
                         PetitionDetailEvent.changeStatus(petition: petition),
                       );
-                      Navigator.pop(context);
+                      context.router.popTop();
                     },
                     button2Text: 'No',
                     onButton2Pressed: () {
-                      Navigator.pop(context);
+                      context.router.popTop();
                     },
                   ),
                 );

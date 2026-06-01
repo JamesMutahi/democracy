@@ -194,11 +194,11 @@ class MeetingBottomSheet extends StatelessWidget {
     return BlocListener<MeetingDetailBloc, MeetingDetailState>(
       listener: (context, state) {
         if (state is MeetingLoaded) {
-          Navigator.pop(context);
+          context.router.popTop();
           context.router.push(MeetingDetail(meetingId: state.meeting.id));
         }
         if (state is MeetingDetailFailure) {
-          Navigator.pop(context);
+          context.router.popTop();
           final snackBar = getSnackBar(
             context: context,
             message: state.error,

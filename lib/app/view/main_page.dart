@@ -37,50 +37,6 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  DateTime? _lastBackPressTime;
-  bool _canPopNow = false;
-  final int _backPressTimeout = 2; // seconds
-
-  // Handle double back press to exit
-  void _onPopInvoked(bool didPop) {
-    if (_scaffoldKey.currentState?.isDrawerOpen ?? false) {
-      _scaffoldKey.currentState?.closeDrawer();
-      return;
-    }
-
-    final now = DateTime.now();
-    final isDoublePress =
-        _lastBackPressTime != null &&
-        now.difference(_lastBackPressTime!) <
-            Duration(seconds: _backPressTimeout);
-
-    if (isDoublePress) {
-      // Allow app to exit
-      setState(() => _canPopNow = true);
-    } else {
-      _lastBackPressTime = now;
-      setState(() => _canPopNow = true);
-
-      final snackBar = getSnackBar(
-        context: context,
-        message: 'Press back again to close',
-        status: SnackBarStatus.info,
-      );
-
-      final controller = ScaffoldMessenger.of(context)
-        ..clearSnackBars()
-        ..showSnackBar(snackBar);
-
-      // Auto-dismiss snackbar and reset after timeout
-      Future.delayed(Duration(seconds: _backPressTimeout), () {
-        if (mounted) {
-          controller.clearSnackBars();
-          setState(() => _canPopNow = false);
-        }
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final responsive = ResponsiveBreakpoints.of(context);
@@ -118,151 +74,145 @@ class _MainPageState extends State<MainPage> {
         resizeToAvoidBottomInset: false,
         drawer: Drawer(child: SideMenu()),
         body: SafeArea(
-          child: PopScope(
-            canPop: _canPopNow,
-            onPopInvokedWithResult: (didPop, _) => _onPopInvoked(didPop),
-            child: MultiBlocListener(
-              listeners: [
-                BlocListener<MenuControllerCubit, MenuControllerState>(
-                  listener: (context, state) {
-                    if (state.status == DrawerStatus.leftOpen) {
-                      _scaffoldKey.currentState?.openDrawer();
-                    } else if (state.status == DrawerStatus.rightOpen) {
-                      _scaffoldKey.currentState?.openEndDrawer();
-                    } else if (state.status == DrawerStatus.closed) {
-                      _scaffoldKey.currentState?.closeDrawer();
-                    }
-                  },
-                ),
-                BlocListener<NotificationDetailBloc, NotificationDetailState>(
-                  listener: (context, state) {
-                    final bloc = context.read<NotificationsBloc>();
+          child: MultiBlocListener(
+            listeners: [
+              BlocListener<MenuControllerCubit, MenuControllerState>(
+                listener: (context, state) {
+                  if (state.status == DrawerStatus.leftOpen) {
+                    _scaffoldKey.currentState?.openDrawer();
+                  } else if (state.status == DrawerStatus.rightOpen) {
+                    _scaffoldKey.currentState?.openEndDrawer();
+                  } else if (state.status == DrawerStatus.closed) {
+                    _scaffoldKey.currentState?.closeDrawer();
+                  }
+                },
+              ),
+              BlocListener<NotificationDetailBloc, NotificationDetailState>(
+                listener: (context, state) {
+                  final bloc = context.read<NotificationsBloc>();
 
-                    if (state is NotificationCreated) {
-                      bloc.add(
-                        NotificationsEvent.add(
-                          notification: state.notification,
-                        ),
-                      );
-                    } else if (state is NotificationUpdated) {
-                      bloc.add(
-                        NotificationsEvent.update(
-                          notification: state.notification,
-                        ),
-                      );
-                    } else if (state is NotificationDeleted) {
-                      bloc.add(
-                        NotificationsEvent.remove(
-                          notificationId: state.notificationId,
-                        ),
-                      );
-                    }
-                  },
-                ),
-                BlocListener<PostDetailBloc, PostDetailState>(
-                  listener: (context, state) {
-                    if (state is PostDetailFailure) {
-                      final snackBar = getSnackBar(
-                        context: context,
-                        message: state.error,
-                        status: SnackBarStatus.failure,
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    }
-                  },
-                ),
-                BlocListener<PostCreateBloc, PostCreateState>(
-                  listener: (context, state) {
-                    if (state.status == PostCreateStatus.success) {
-                      String message = state.post!.replyTo == null
-                          ? 'Posted'
-                          : 'Reply sent';
-                      final snackBar = getSnackBar(
-                        context: context,
-                        message: message,
-                        status: SnackBarStatus.success,
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    }
-                  },
-                ),
-                BlocListener<DraftPostBloc, DraftPostState>(
-                  listener: (context, state) {
-                    if (state is DraftPostSaved) {
-                      String message = 'Post saved as draft';
-                      final snackBar = getSnackBar(
-                        context: context,
-                        message: message,
-                        status: SnackBarStatus.success,
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    }
-                  },
-                ),
-                BlocListener<MeetingDetailBloc, MeetingDetailState>(
-                  listener: (context, state) {
-                    if (state is MeetingCreated) {
-                      String message = state.meeting.isLiveStream
-                          ? 'Starting live stream'
-                          : 'Meeting created';
-                      final snackBar = getSnackBar(
-                        context: context,
-                        message: message,
-                        status: SnackBarStatus.success,
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    }
-                  },
-                ),
-                BlocListener<ConnectivityBloc, ConnectivityState>(
-                  listener: (context, state) {
-                    if (state is ConnectivitySuccess) {
-                      context.read<SyncBloc>().add(SyncEvent.start());
-                    }
-                  },
-                ),
-              ],
-              child: Row(
-                mainAxisAlignment: kIsWeb
-                    ? MainAxisAlignment.center
-                    : MainAxisAlignment.start,
-                children: [
-                  if (kIsWeb)
-                    Flexible(
-                      flex: responsive.largerOrEqualTo(expandSideMenu) ? 3 : 1,
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(maxWidth: 300),
-                        child: SideMenu(),
+                  if (state is NotificationCreated) {
+                    bloc.add(
+                      NotificationsEvent.add(notification: state.notification),
+                    );
+                  } else if (state is NotificationUpdated) {
+                    bloc.add(
+                      NotificationsEvent.update(
+                        notification: state.notification,
                       ),
-                    ),
+                    );
+                  } else if (state is NotificationDeleted) {
+                    bloc.add(
+                      NotificationsEvent.remove(
+                        notificationId: state.notificationId,
+                      ),
+                    );
+                  }
+                },
+              ),
+              BlocListener<PostDetailBloc, PostDetailState>(
+                listener: (context, state) {
+                  if (state is PostDetailFailure) {
+                    final snackBar = getSnackBar(
+                      context: context,
+                      message: state.error,
+                      status: SnackBarStatus.failure,
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
+                },
+              ),
+              BlocListener<PostCreateBloc, PostCreateState>(
+                listener: (context, state) {
+                  if (state.status == PostCreateStatus.success) {
+                    String message = state.post!.replyTo == null
+                        ? 'Posted'
+                        : 'Reply sent';
+                    final snackBar = getSnackBar(
+                      context: context,
+                      message: message,
+                      status: SnackBarStatus.success,
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
+                },
+              ),
+              BlocListener<DraftPostBloc, DraftPostState>(
+                listener: (context, state) {
+                  if (state is DraftPostSaved) {
+                    String message = 'Post saved as draft';
+                    final snackBar = getSnackBar(
+                      context: context,
+                      message: message,
+                      status: SnackBarStatus.success,
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
+                },
+              ),
+              BlocListener<MeetingDetailBloc, MeetingDetailState>(
+                listener: (context, state) {
+                  if (state is MeetingCreated) {
+                    String message = state.meeting.isLiveStream
+                        ? 'Starting live stream'
+                        : 'Meeting created';
+                    final snackBar = getSnackBar(
+                      context: context,
+                      message: message,
+                      status: SnackBarStatus.success,
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
+                },
+              ),
+              BlocListener<ConnectivityBloc, ConnectivityState>(
+                listener: (context, state) {
+                  if (state is ConnectivitySuccess) {
+                    context.read<SyncBloc>().add(SyncEvent.start());
+                  }
+                },
+              ),
+            ],
+            child: Row(
+              mainAxisAlignment: kIsWeb
+                  ? MainAxisAlignment.center
+                  : MainAxisAlignment.start,
+              children: [
+                if (kIsWeb)
                   Flexible(
-                    flex: responsive.largerOrEqualTo(expandSideMenu) ? 5 : 6,
-                    child: Container(
-                      constraints: BoxConstraints(maxWidth: 600),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          left: BorderSide(
-                            color: responsive.isMobile
-                                ? Colors.transparent
-                                : Theme.of(context).colorScheme.outlineVariant,
-                          ),
-                          right: BorderSide(
-                            color: responsive.isMobile
-                                ? Colors.transparent
-                                : Theme.of(context).colorScheme.outlineVariant,
-                          ),
-                        ),
-                      ),
-                      child: Container(
-                        margin: EdgeInsets.only(top: 10),
-                        child: AutoRouter(),
-                      ),
+                    flex: responsive.largerOrEqualTo(expandSideMenu) ? 3 : 1,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 300),
+                      child: SideMenu(),
                     ),
                   ),
-                  if (responsive.largerOrEqualTo(expandSidePanel))
-                    Flexible(flex: 3, child: SidePanel()),
-                ],
-              ),
+                Flexible(
+                  flex: responsive.largerOrEqualTo(expandSideMenu) ? 5 : 6,
+                  child: Container(
+                    constraints: BoxConstraints(maxWidth: 600),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        left: BorderSide(
+                          color: responsive.isMobile
+                              ? Colors.transparent
+                              : Theme.of(context).colorScheme.outlineVariant,
+                        ),
+                        right: BorderSide(
+                          color: responsive.isMobile
+                              ? Colors.transparent
+                              : Theme.of(context).colorScheme.outlineVariant,
+                        ),
+                      ),
+                    ),
+                    child: Container(
+                      margin: EdgeInsets.only(top: 10),
+                      child: AutoRouter(),
+                    ),
+                  ),
+                ),
+                if (responsive.largerOrEqualTo(expandSidePanel))
+                  Flexible(flex: 3, child: SidePanel()),
+              ],
             ),
           ),
         ),

@@ -31,7 +31,7 @@ class _MeetingCreateState extends State<MeetingCreate> {
         if (state is MeetingCreated) {
           context.loaderOverlay.hide();
           if (_setStartTime) {
-            Navigator.pop(context);
+            context.router.popTop();
           } else {
             if (state.meeting.isLiveStream) {
               context.router.push(LiveStream(meetingId: state.meeting.id));

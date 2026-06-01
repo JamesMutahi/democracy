@@ -38,8 +38,8 @@ class SideMenu extends StatelessWidget {
                 physics: const ClampingScrollPhysics(),
                 slivers: [
                   SliverFillRemaining(
-                    hasScrollBody:
-                        false, // Allows content to define its own height
+                    // Allows content to define its own height
+                    hasScrollBody: false,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -60,7 +60,9 @@ class SideMenu extends StatelessWidget {
                                 )
                               else
                                 DrawerHeader(
-                                  child: ProfileImage(user: user, radius: 65),
+                                  child: Center(
+                                    child: Logo(width: 250, height: 250),
+                                  ),
                                 ),
                               if (kIsWeb) ...[
                                 DrawerListTile(
@@ -461,14 +463,14 @@ class LogoutDialog extends StatelessWidget {
       content: 'Are you sure you want to log out?',
       button1Text: 'Yes',
       onButton1Pressed: () {
-        Navigator.pop(context);
+        context.router.popTop();
         context.read<MenuControllerCubit>().closeDrawer();
         context.read<WebsocketBloc>().add(WebsocketEvent.disconnect());
         context.read<LoginCubit>().logout();
       },
       button2Text: 'No',
       onButton2Pressed: () {
-        Navigator.pop(context);
+        context.router.popTop();
       },
     );
   }

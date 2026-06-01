@@ -19,7 +19,7 @@ class CreationButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15),
+      padding: const EdgeInsets.only(left: 10.0, right: 10.0,top: 15, bottom: 5),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,7 +70,7 @@ class _CreationButton extends StatelessWidget {
     return ListTile(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       onTap: () {
-        Navigator.pop(context);
+        context.router.popTop();
         onTap();
       },
       leading: SvgPicture.asset(

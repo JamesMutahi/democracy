@@ -159,7 +159,7 @@ class _LiveStreamState extends State<_LiveStream> {
       context.read<MeetingDetailBloc>().add(
         MeetingDetailEvent.unsubscribe(meeting: widget.meeting),
       );
-      Navigator.pop(context);
+      context.router.popTop();
     }
   }
 
@@ -347,12 +347,12 @@ class ExitMeetingDialog extends StatelessWidget {
       content: 'Are you sure you want to leave the meeting?',
       button1Text: 'Yes',
       onButton1Pressed: () {
-        Navigator.pop(context);
+        context.router.popTop();
         onYesPressed();
       },
       button2Text: 'No',
       onButton2Pressed: () {
-        Navigator.pop(context);
+        context.router.popTop();
       },
     );
   }

@@ -420,12 +420,12 @@ class SubmissionDialog extends StatelessWidget {
       content: 'Are you sure you want to submit this?',
       button1Text: 'Yes',
       onButton1Pressed: () {
-        Navigator.pop(context);
+        context.router.popTop();
         onYesPressed();
       },
       button2Text: 'No',
       onButton2Pressed: () {
-        Navigator.pop(context);
+        context.router.popTop();
       },
     );
   }

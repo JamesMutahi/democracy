@@ -31,7 +31,7 @@ class _CreateMessageState extends State<CreateMessage> {
     return BlocListener<ChatDetailBloc, ChatDetailState>(
       listener: (context, state) {
         if (state is ChatCreated) {
-          Navigator.pop(context);
+          context.router.popTop();
           context.router.push(ChatDetail(chatId: state.chat.id));
         }
       },

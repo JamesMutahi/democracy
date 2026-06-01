@@ -101,7 +101,7 @@ class _SurveyProcessState extends State<_SurveyProcess> {
         BlocListener<AnswerBloc, AnswerState>(
           listener: (context, state) {
             if (state.status == AnswerStatus.submitted) {
-              Navigator.pop(context);
+              context.router.popTop();
               final snackBar = getSnackBar(
                 context: context,
                 message: 'Submitted',
@@ -134,12 +134,12 @@ class _SurveyProcessState extends State<_SurveyProcess> {
                 content: 'Progress is not saved',
                 button1Text: 'Yes',
                 onButton1Pressed: () {
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                  context.router.popTop();
+                  context.router.popTop();
                 },
                 button2Text: 'No',
                 onButton2Pressed: () {
-                  Navigator.pop(context);
+                  context.router.popTop();
                 },
               );
             },

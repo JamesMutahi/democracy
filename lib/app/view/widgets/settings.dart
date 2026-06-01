@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
-import 'package:democracy/notification/view/preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -30,11 +29,7 @@ class Settings extends StatelessWidget {
             title: const Text('Preferences'),
             subtitle: const Text("Manage your notification preferences"),
             onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const PreferencesPage(),
-                ),
-              );
+              context.pushRoute(PreferencesRoute());
             },
           ),
         ],

@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
@@ -21,11 +22,11 @@ class BlockDialog extends StatelessWidget {
       button1Text: 'Yes',
       onButton1Pressed: () {
         context.read<UserDetailBloc>().add(UserDetailEvent.block(user: user));
-        Navigator.pop(context);
+        context.router.popTop();
       },
       button2Text: 'No',
       onButton2Pressed: () {
-        Navigator.pop(context);
+        context.router.popTop();
       },
     );
   }
@@ -47,11 +48,11 @@ class MuteDialog extends StatelessWidget {
       button1Text: 'Yes',
       onButton1Pressed: () {
         context.read<UserDetailBloc>().add(UserDetailEvent.mute(user: user));
-        Navigator.pop(context);
+        context.router.popTop();
       },
       button2Text: 'No',
       onButton2Pressed: () {
-        Navigator.pop(context);
+        context.router.popTop();
       },
     );
   }
@@ -70,11 +71,11 @@ class MutePostDialog extends StatelessWidget {
       button1Text: 'Yes',
       onButton1Pressed: () {
         context.read<PostDetailBloc>().add(PostDetailEvent.mute(post: post));
-        Navigator.pop(context);
+        context.router.popTop();
       },
       button2Text: 'No',
       onButton2Pressed: () {
-        Navigator.pop(context);
+        context.router.popTop();
       },
     );
   }

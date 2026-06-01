@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -59,7 +60,7 @@ class MediaDialog extends StatelessWidget {
         children: [
           ListTile(
             onTap: () {
-              Navigator.pop(context);
+              context.router.popTop();
               onCameraPressed();
             },
             leading: Icon(Icons.photo_camera_outlined, size: 30),
@@ -67,7 +68,7 @@ class MediaDialog extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              Navigator.pop(context);
+              context.router.popTop();
               onGalleryPressed();
             },
             leading: Icon(Icons.photo_library_outlined, size: 30),

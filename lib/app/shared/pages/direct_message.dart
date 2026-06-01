@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart';
 import 'package:democracy/app/shared/widgets/loader_overlay_widgets.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
@@ -68,7 +69,7 @@ class _DirectMessageState extends State<DirectMessage> {
     return BlocListener<DirectMessageBloc, DirectMessageState>(
       listener: (context, state) {
         if (state.status == DirectMessageStatus.success) {
-          Navigator.pop(context);
+          context.router.popTop();
           final snackBar = getSnackBar(
             context: context,
             message: 'Direct message sent',

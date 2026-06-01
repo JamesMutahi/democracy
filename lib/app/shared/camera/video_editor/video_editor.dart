@@ -3,6 +3,7 @@ import 'dart:io' as io;
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/shared/camera/camera.dart';
 import 'package:democracy/app/shared/camera/widgets/stickers.dart';
@@ -525,13 +526,13 @@ class _VideoEditorState extends State<VideoEditor> {
   /// If [_outputPath] is available, it performs the function [onVideoEditingComplete].
   /// Afterwards, it pops the current editor page.
   void _handleCloseEditor(EditorMode editorMode) async {
-    if (editorMode != EditorMode.main) return Navigator.pop(context);
+    if (editorMode != EditorMode.main) return context.router.popTop();
     await _handleBackToCamera();
   }
 
   Future<void> _handleBackToCamera() async {
     if (canPop) {
-      if (mounted) Navigator.pop(context);
+      if (mounted) context.router.popTop();
       return;
     }
 

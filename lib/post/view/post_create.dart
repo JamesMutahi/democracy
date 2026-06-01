@@ -173,7 +173,7 @@ class _PostCreatePageState extends State<PostCreatePage> {
 
                 // Handle repost case and normal post (not a reply)
                 if (widget.repostOf != null || widget.replyTo == null) {
-                  context.pop();
+                  context.router.popTop();
                   return;
                 }
 
@@ -184,7 +184,7 @@ class _PostCreatePageState extends State<PostCreatePage> {
                 );
 
                 if (!isReplyingToPostInReplyTos) {
-                  context.pop();
+                  context.router.popTop();
                 }
               }
             },
@@ -192,7 +192,7 @@ class _PostCreatePageState extends State<PostCreatePage> {
           BlocListener<DraftPostBloc, DraftPostState>(
             listener: (context, state) {
               if (state is DraftPostSaved) {
-                context.pop();
+                context.router.popTop();
               }
             },
           ),
@@ -214,7 +214,7 @@ class _PostCreatePageState extends State<PostCreatePage> {
             if (didPop) return;
 
             if (!_canPost) {
-              context.pop();
+              context.router.popTop();
             } else {
               showDialog(
                 context: context,
@@ -245,7 +245,7 @@ class _PostCreatePageState extends State<PostCreatePage> {
                   icon: const Icon(Symbols.close),
                   onPressed: () {
                     if (!_canPost) {
-                      context.pop();
+                      context.router.popTop();
                     } else {
                       showDialog(
                         context: context,
@@ -438,11 +438,11 @@ class PostCreateDialog extends StatelessWidget {
       content: 'Are you sure you want to post this?',
       button1Text: 'Yes',
       onButton1Pressed: () {
-        Navigator.pop(context);
+        context.router.popTop();
         onYesPressed();
       },
       button2Text: 'No',
-      onButton2Pressed: () => Navigator.pop(context),
+      onButton2Pressed: () => context.router.popTop(),
     );
   }
 }
@@ -460,12 +460,12 @@ class _SaveDraftDialog extends StatelessWidget {
           'Do you want to save this post as a draft?\nYou can post it later.',
       button1Text: 'Delete',
       onButton1Pressed: () {
-        Navigator.pop(context);
-        context.pop();
+        context.router.popTop();
+        context.router.popTop();
       },
       button2Text: 'Save',
       onButton2Pressed: () {
-        Navigator.pop(context);
+        context.router.popTop();
         onYesPressed();
       },
     );

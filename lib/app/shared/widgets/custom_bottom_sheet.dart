@@ -115,7 +115,7 @@ class ShareBottomSheet extends StatelessWidget {
           text: 'Send via Direct Message',
           iconData: Symbols.email_rounded,
           onTap: () {
-            Navigator.pop(context);
+            context.router.popTop();
             showModalBottomSheet(
               context: context,
               showDragHandle: true,
@@ -142,7 +142,7 @@ class ShareBottomSheet extends StatelessWidget {
               splashColor: Colors.transparent,
               hoverColor: Colors.transparent,
               onTap: () async {
-                Navigator.pop(context);
+                context.router.popTop();
                 copyLink(
                   navigatorKey: context.router.navigatorKey,
                   className: name,
@@ -167,7 +167,7 @@ class ShareBottomSheet extends StatelessWidget {
               splashColor: Colors.transparent,
               hoverColor: Colors.transparent,
               onTap: () async {
-                Navigator.pop(context);
+                context.router.popTop();
                 context.router.push(
                   PostCreateRoute(
                     ballot: ballot,

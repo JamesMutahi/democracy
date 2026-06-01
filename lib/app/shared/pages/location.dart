@@ -142,7 +142,7 @@ class _LocationState extends State<_Location>
                   ListTile(
                     onTap: () {
                       widget.onLocation(state.point);
-                      Navigator.pop(context);
+                      context.router.popTop();
                     },
                     minVerticalPadding: 20,
                     leading: Icon(

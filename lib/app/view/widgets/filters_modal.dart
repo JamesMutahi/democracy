@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -61,7 +62,7 @@ class FiltersModal extends StatelessWidget {
                 text: 'Apply',
                 isDisabled: applyButtonIsDisabled,
                 onPressed: () {
-                  Navigator.pop(context);
+                  context.router.popTop();
                   onApply();
                 },
               ),
