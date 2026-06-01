@@ -19,10 +19,10 @@ import 'package:democracy/app/view/router/router.gr.dart' as router_gr;
 class SearchResults extends StatefulWidget {
   const SearchResults({
     super.key,
-    required this.searchTerm,
-    required this.startDate,
-    required this.endDate,
-    required this.filterCount,
+    @QueryParam() this.searchTerm = '',
+    @QueryParam() this.startDate,
+    @QueryParam() this.endDate,
+    @QueryParam() this.filterCount = 0,
   });
 
   final String searchTerm;
@@ -523,12 +523,13 @@ class _SearchFiltersState extends State<SearchFilters> {
       onClear: _clearFilters,
       widgets: [
         DateRangeFilter(
-          value: [_startDate, _endDate],
-          onValueChanged: (dates) {
-            DateTime? sD = dates.isNotEmpty ? dates[0] : null;
+          initialValue: _startDate == null || _endDate == null
+              ? null
+              : DateTimeRange(start: _startDate!, end: _endDate!),
+          onChanged: (value) {
             setState(() {
-              _startDate = sD;
-              _endDate = dates.length == 2 ? dates[1] : sD;
+              _startDate = value?.start;
+              _endDate = value?.end;
             });
           },
         ),

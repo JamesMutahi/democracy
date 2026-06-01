@@ -27,6 +27,12 @@ class _CreateMessageState extends State<CreateMessage> {
   }
 
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocListener<ChatDetailBloc, ChatDetailState>(
       listener: (context, state) {

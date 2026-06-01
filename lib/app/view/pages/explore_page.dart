@@ -18,6 +18,7 @@ import 'package:democracy/user/bloc/follow_recommendations/follow_recommendation
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/user_tile.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
@@ -56,6 +57,7 @@ class _ExplorePageState extends State<ExplorePage> {
             builder: (context, state) {
               return NestedScrollView(
                 headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+                  final cubit = context.read<PostFilterCubit>();
                   return [
                     if (responsive.isMobile)
                       CustomAppBar(
@@ -66,7 +68,10 @@ class _ExplorePageState extends State<ExplorePage> {
                         bottom: PreferredSize(
                           preferredSize: Size.fromHeight(100.0),
                           child: Column(
-                            children: [_buildSearchBar(state), _buildTabBar()],
+                            children: [
+                              _buildSearchBar(cubit, state),
+                              _buildTabBar(),
+                            ],
                           ),
                         ),
                       )
@@ -80,7 +85,7 @@ class _ExplorePageState extends State<ExplorePage> {
                           builder: (context) {
                             return SizedBox(
                               height: 60,
-                              child: _buildSearchBar(state),
+                              child: _buildSearchBar(cubit, state),
                             );
                           },
                         ),
@@ -100,7 +105,7 @@ class _ExplorePageState extends State<ExplorePage> {
     );
   }
 
-  Widget _buildSearchBar(PostFilterState state) {
+  Widget _buildSearchBar(PostFilterCubit cubit, PostFilterState state) {
     return CustomSearchBar(
       controller: _controller,
       hintText: 'Search',
@@ -118,19 +123,29 @@ class _ExplorePageState extends State<ExplorePage> {
         }
       },
       onFilterTap: () {
-        final cubit = context.read<PostFilterCubit>();
-        showGeneralDialog(
-          context: context,
-          transitionDuration: const Duration(milliseconds: 300),
-          pageBuilder: (context, animation, secondaryAnimation) {
-            return SearchFilters(
-              onExplorePage: true,
-              startDate: state.startDate,
-              endDate: state.endDate,
-              cubit: cubit,
-            );
-          },
+        final filters = SearchFilters(
+          onExplorePage: true,
+          startDate: state.startDate,
+          endDate: state.endDate,
+          cubit: cubit,
         );
+        kIsWeb
+            ? showModalBottomSheet<void>(
+                context: context,
+                isScrollControlled: true,
+                shape: const BeveledRectangleBorder(),
+                useSafeArea: true,
+                builder: (context) {
+                  return filters;
+                },
+              )
+            : showGeneralDialog(
+                context: context,
+                transitionDuration: const Duration(milliseconds: 300),
+                pageBuilder: (context, animation, secondaryAnimation) {
+                  return filters;
+                },
+              );
       },
     );
   }

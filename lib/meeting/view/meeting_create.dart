@@ -25,6 +25,12 @@ class _MeetingCreateState extends State<MeetingCreate> {
   bool _setStartTime = false;
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocListener<MeetingDetailBloc, MeetingDetailState>(
       listener: (context, state) {
@@ -128,13 +134,9 @@ class _MeetingCreateState extends State<MeetingCreate> {
               ),
             ),
           ),
-          bottomNavigationBar: BottomAppBar(
-            height: 50,
-            padding: EdgeInsets.symmetric(horizontal: 15),
-            child: FilledButton.tonal(
-              onPressed: _submitForm,
-              child: Text('Submit'),
-            ),
+          bottomNavigationBar: FilledButton.tonal(
+            onPressed: _submitForm,
+            child: Text('Submit'),
           ),
         ),
       ),

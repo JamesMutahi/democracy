@@ -34,6 +34,7 @@ class _EditMessageState extends State<EditMessage> {
   @override
   void dispose() {
     _focusNode.dispose();
+    _controller.dispose();
     super.dispose();
   }
 

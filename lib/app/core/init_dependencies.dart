@@ -117,9 +117,9 @@ TalkerBlocLoggerSettings getBlocLogSettings() {
   );
 }
 
-// Helper to define noisy blocs (easy to maintain)
+// Helper to define noisy blocs
 bool _isNoisyBloc(String blocName) {
-  const noisyBlocs = ['BottomNavBarCubit', 'ConnectivityBloc'];
+  const noisyBlocs = ['ConnectivityBloc'];
   return noisyBlocs.contains(blocName);
 }
 

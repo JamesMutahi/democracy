@@ -35,10 +35,12 @@ class ResultsSearchBar extends StatelessWidget {
               children: [
                 IconButton(
                   onPressed: () {
-                    showGeneralDialog(
+                    showModalBottomSheet<void>(
                       context: context,
-                      transitionDuration: const Duration(milliseconds: 300),
-                      pageBuilder: (context, animation, secondaryAnimation) {
+                      isScrollControlled: true,
+                      shape: const BeveledRectangleBorder(),
+                      useSafeArea: true,
+                      builder: (context) {
                         return filterModal;
                       },
                     );

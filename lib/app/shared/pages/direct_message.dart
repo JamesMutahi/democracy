@@ -55,6 +55,7 @@ class _DirectMessageState extends State<DirectMessage> {
   @override
   void dispose() {
     focusNode.dispose();
+    controller.dispose();
     super.dispose();
   }
 

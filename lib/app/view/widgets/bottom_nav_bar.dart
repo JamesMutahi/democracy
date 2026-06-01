@@ -68,7 +68,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                               : Theme.of(context).disabledColor,
                           icon: Icon(
                             Symbols.add_rounded,
-                            size: 35,
+                            size: 30,
                             weight: 500,
                           ),
                         ),

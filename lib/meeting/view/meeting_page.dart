@@ -74,24 +74,23 @@ class _MeetingsPageState extends State<MeetingPage> {
                         onFilterTap: () {
                           final filterCubit = context
                               .read<MeetingFilterCubit>();
-                          showGeneralDialog(
+                          showModalBottomSheet<void>(
                             context: context,
-                            transitionDuration: const Duration(
-                              milliseconds: 300,
-                            ),
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) {
-                                  return BlocProvider.value(
-                                    value: filterCubit,
-                                    child: _FiltersModal(
-                                      isActive: state.isActive,
-                                      filterByRegion: state.filterByRegion,
-                                      sortBy: state.sortBy,
-                                      startDate: state.startDate,
-                                      endDate: state.endDate,
-                                    ),
-                                  );
-                                },
+                            isScrollControlled: true,
+                            shape: const BeveledRectangleBorder(),
+                            useSafeArea: true,
+                            builder: (context) {
+                              return BlocProvider.value(
+                                value: filterCubit,
+                                child: _FiltersModal(
+                                  isActive: state.isActive,
+                                  filterByRegion: state.filterByRegion,
+                                  sortBy: state.sortBy,
+                                  startDate: state.startDate,
+                                  endDate: state.endDate,
+                                ),
+                              );
+                            },
                           );
                         },
                       );
@@ -218,12 +217,13 @@ class _FiltersModalState extends State<_FiltersModal> {
           },
         ),
         DateRangeFilter(
-          value: [startDate, endDate],
-          onValueChanged: (dates) {
-            DateTime? sD = dates.isNotEmpty ? dates[0] : null;
+          initialValue: startDate == null || endDate == null
+              ? null
+              : DateTimeRange(start: startDate!, end: endDate!),
+          onChanged: (value) {
             setState(() {
-              startDate = sD;
-              endDate = dates.length == 2 ? dates[1] : sD;
+              startDate = value?.start;
+              endDate = value?.end;
             });
           },
         ),

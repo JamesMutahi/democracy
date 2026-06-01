@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class FiltersModal extends StatelessWidget {
@@ -93,26 +93,47 @@ class FilterHeader extends StatelessWidget {
 class DateRangeFilter extends StatelessWidget {
   const DateRangeFilter({
     super.key,
-    required this.value,
-    required this.onValueChanged,
+    required this.initialValue,
+    required this.onChanged,
   });
 
-  final List<DateTime?> value;
-  final void Function(List<DateTime>) onValueChanged;
+  final DateTimeRange<DateTime>? initialValue;
+  final void Function(DateTimeRange<DateTime>?) onChanged;
 
   @override
   Widget build(BuildContext context) {
+    DateTime now = DateTime.now();
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        FilterHeader(text: 'Date range'),
-        CalendarDatePicker2(
-          config: CalendarDatePicker2Config(
-            calendarType: CalendarDatePicker2Type.range,
+        FormBuilderDateRangePicker(
+          name: 'Date range',
+          initialValue: initialValue,
+          onChanged: onChanged,
+          decoration: const InputDecoration(labelText: 'Select Date Range'),
+          firstDate: now,
+          lastDate: DateTime(
+            now.year + 1,
+            now.month,
+            now.day,
+            now.hour,
+            now.minute,
+            now.second,
+            now.millisecond,
+            now.microsecond,
           ),
-          value: value,
-          onValueChanged: onValueChanged,
+          pickerBuilder: (context, child) {
+            return Dialog(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: 500,
+                  maxHeight: 600,
+                ),
+                child: child,
+              ),
+            );
+          },
         ),
       ],
     );

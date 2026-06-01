@@ -25,6 +25,7 @@ class AppRouter extends RootStackRouter {
         AutoRoute(path: 'settings', page: Settings.page, children: []),
         AutoRoute(path: 'location', page: Location.page),
         AutoRoute(path: 'search-results', page: SearchResults.page),
+        AutoRoute(path: 'hub-results', page: HubResults.page),
 
         AutoRoute(path: 'ballots', page: BallotRoute.page),
         AutoRoute(path: 'ballot/:id', page: BallotDetail.page),

@@ -205,7 +205,7 @@ class _MainPageState extends State<MainPage> {
                       ),
                     ),
                     child: Container(
-                      margin: EdgeInsets.only(top: 10),
+                      padding: EdgeInsets.only(top: 10),
                       child: AutoRouter(),
                     ),
                   ),

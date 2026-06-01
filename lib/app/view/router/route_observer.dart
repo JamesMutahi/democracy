@@ -9,6 +9,8 @@ class AppRouteObserver extends AutoRouterObserver {
 
   @override
   void didChangeTop(Route topRoute, Route? previousTopRoute) {
-    routeCubit.updateRoute(topRoute.settings.name ?? '');
+    routeCubit.updateRoute(
+      topRoute.settings.name ?? previousTopRoute?.settings.name ?? '',
+    );
   }
 }
