@@ -47,16 +47,21 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   void _onLoaded(_Loaded event, Emitter<ChatState> emit) async {
     emit(state.copyWith(status: ChatStatus.loading));
-    if (event.payload['response_status'] == 200) {
-      final chat = Chat.fromJson(event.payload['data']);
-      emit(
-        state.copyWith(
-          status: ChatStatus.success,
-          chat: chat,
-          chatId: event.payload['request_id'],
-        ),
-      );
-    } else {
+    try {
+      if (event.payload['response_status'] == 200) {
+        final chat = Chat.fromJson(event.payload['data']);
+        emit(
+          state.copyWith(
+            status: ChatStatus.success,
+            chat: chat,
+            chatId: event.payload['request_id'],
+          ),
+        );
+      } else {
+        emit(state.copyWith(status: ChatStatus.failure));
+      }
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
       emit(state.copyWith(status: ChatStatus.failure));
     }
   }

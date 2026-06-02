@@ -58,24 +58,36 @@ class ChatsBloc extends Bloc<ChatsEvent, ChatsState> {
 
   Future _onReceived(_Received event, Emitter<ChatsState> emit) async {
     emit(state.copyWith(status: ChatsStatus.loading));
-    if (event.payload['response_status'] == 200) {
-      await databaseRepository.saveChatsData(event.payload['data']['results']);
-      List<Chat> chats = await databaseRepository.fetchChats();
-      emit(
-        state.copyWith(
-          status: ChatsStatus.success,
-          chats: chats,
-          hasNext: event.payload['data']['has_next'],
-        ),
-      );
-    } else {
+    try {
+      if (event.payload['response_status'] == 200) {
+        for (var data in event.payload['data']['results']) {
+          await databaseRepository.saveChat(data: data);
+        }
+        List<Chat> chats = await databaseRepository.fetchChats();
+        emit(
+          state.copyWith(
+            status: ChatsStatus.success,
+            chats: chats,
+            hasNext: event.payload['data']['has_next'],
+          ),
+        );
+      } else {
+        emit(state.copyWith(status: ChatsStatus.failure));
+      }
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
       emit(state.copyWith(status: ChatsStatus.failure));
     }
   }
 
   Future _onUpdate(_Update event, Emitter<ChatsState> emit) async {
-    List<Chat> chats = await databaseRepository.fetchChats();
-    emit(state.copyWith(chats: chats, status: ChatsStatus.success));
+    try {
+      List<Chat> chats = await databaseRepository.fetchChats();
+      emit(state.copyWith(chats: chats, status: ChatsStatus.success));
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(state.copyWith(status: ChatsStatus.failure));
+    }
   }
 
   @override

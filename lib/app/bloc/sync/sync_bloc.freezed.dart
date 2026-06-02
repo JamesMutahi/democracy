@@ -475,17 +475,14 @@ extension SyncStatePatterns on SyncState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Syncing value)?  syncing,TResult Function( DraftsForPostSynced value)?  draftsForPostSynced,TResult Function( MessagesForPostSynced value)?  messagesForPostSynced,TResult Function( MessagesForAssetUploadSynced value)?  messagesForAssetUploadSynced,TResult Function( MessagesForPatchSynced value)?  messagesForPatchSynced,TResult Function( MessagesForDeleteSynced value)?  messagesForDeleteSynced,TResult Function( SyncFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Syncing value)?  syncing,TResult Function( DraftSynced value)?  draftSynced,TResult Function( MessageSynced value)?  messageSynced,TResult Function( SyncFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Syncing() when syncing != null:
-return syncing(_that);case DraftsForPostSynced() when draftsForPostSynced != null:
-return draftsForPostSynced(_that);case MessagesForPostSynced() when messagesForPostSynced != null:
-return messagesForPostSynced(_that);case MessagesForAssetUploadSynced() when messagesForAssetUploadSynced != null:
-return messagesForAssetUploadSynced(_that);case MessagesForPatchSynced() when messagesForPatchSynced != null:
-return messagesForPatchSynced(_that);case MessagesForDeleteSynced() when messagesForDeleteSynced != null:
-return messagesForDeleteSynced(_that);case SyncFailure() when failure != null:
+return syncing(_that);case DraftSynced() when draftSynced != null:
+return draftSynced(_that);case MessageSynced() when messageSynced != null:
+return messageSynced(_that);case SyncFailure() when failure != null:
 return failure(_that);case _:
   return orElse();
 
@@ -504,17 +501,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Syncing value)  syncing,required TResult Function( DraftsForPostSynced value)  draftsForPostSynced,required TResult Function( MessagesForPostSynced value)  messagesForPostSynced,required TResult Function( MessagesForAssetUploadSynced value)  messagesForAssetUploadSynced,required TResult Function( MessagesForPatchSynced value)  messagesForPatchSynced,required TResult Function( MessagesForDeleteSynced value)  messagesForDeleteSynced,required TResult Function( SyncFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Syncing value)  syncing,required TResult Function( DraftSynced value)  draftSynced,required TResult Function( MessageSynced value)  messageSynced,required TResult Function( SyncFailure value)  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial():
 return initial(_that);case _Syncing():
-return syncing(_that);case DraftsForPostSynced():
-return draftsForPostSynced(_that);case MessagesForPostSynced():
-return messagesForPostSynced(_that);case MessagesForAssetUploadSynced():
-return messagesForAssetUploadSynced(_that);case MessagesForPatchSynced():
-return messagesForPatchSynced(_that);case MessagesForDeleteSynced():
-return messagesForDeleteSynced(_that);case SyncFailure():
+return syncing(_that);case DraftSynced():
+return draftSynced(_that);case MessageSynced():
+return messageSynced(_that);case SyncFailure():
 return failure(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -532,17 +526,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Syncing value)?  syncing,TResult? Function( DraftsForPostSynced value)?  draftsForPostSynced,TResult? Function( MessagesForPostSynced value)?  messagesForPostSynced,TResult? Function( MessagesForAssetUploadSynced value)?  messagesForAssetUploadSynced,TResult? Function( MessagesForPatchSynced value)?  messagesForPatchSynced,TResult? Function( MessagesForDeleteSynced value)?  messagesForDeleteSynced,TResult? Function( SyncFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Syncing value)?  syncing,TResult? Function( DraftSynced value)?  draftSynced,TResult? Function( MessageSynced value)?  messageSynced,TResult? Function( SyncFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Syncing() when syncing != null:
-return syncing(_that);case DraftsForPostSynced() when draftsForPostSynced != null:
-return draftsForPostSynced(_that);case MessagesForPostSynced() when messagesForPostSynced != null:
-return messagesForPostSynced(_that);case MessagesForAssetUploadSynced() when messagesForAssetUploadSynced != null:
-return messagesForAssetUploadSynced(_that);case MessagesForPatchSynced() when messagesForPatchSynced != null:
-return messagesForPatchSynced(_that);case MessagesForDeleteSynced() when messagesForDeleteSynced != null:
-return messagesForDeleteSynced(_that);case SyncFailure() when failure != null:
+return syncing(_that);case DraftSynced() when draftSynced != null:
+return draftSynced(_that);case MessageSynced() when messageSynced != null:
+return messageSynced(_that);case SyncFailure() when failure != null:
 return failure(_that);case _:
   return null;
 
@@ -560,16 +551,13 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  syncing,TResult Function()?  draftsForPostSynced,TResult Function()?  messagesForPostSynced,TResult Function()?  messagesForAssetUploadSynced,TResult Function()?  messagesForPatchSynced,TResult Function()?  messagesForDeleteSynced,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  syncing,TResult Function( DraftPost draft)?  draftSynced,TResult Function( Message message)?  messageSynced,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Syncing() when syncing != null:
-return syncing();case DraftsForPostSynced() when draftsForPostSynced != null:
-return draftsForPostSynced();case MessagesForPostSynced() when messagesForPostSynced != null:
-return messagesForPostSynced();case MessagesForAssetUploadSynced() when messagesForAssetUploadSynced != null:
-return messagesForAssetUploadSynced();case MessagesForPatchSynced() when messagesForPatchSynced != null:
-return messagesForPatchSynced();case MessagesForDeleteSynced() when messagesForDeleteSynced != null:
-return messagesForDeleteSynced();case SyncFailure() when failure != null:
+return syncing();case DraftSynced() when draftSynced != null:
+return draftSynced(_that.draft);case MessageSynced() when messageSynced != null:
+return messageSynced(_that.message);case SyncFailure() when failure != null:
 return failure(_that.error);case _:
   return orElse();
 
@@ -588,16 +576,13 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  syncing,required TResult Function()  draftsForPostSynced,required TResult Function()  messagesForPostSynced,required TResult Function()  messagesForAssetUploadSynced,required TResult Function()  messagesForPatchSynced,required TResult Function()  messagesForDeleteSynced,required TResult Function( String error)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  syncing,required TResult Function( DraftPost draft)  draftSynced,required TResult Function( Message message)  messageSynced,required TResult Function( String error)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Syncing():
-return syncing();case DraftsForPostSynced():
-return draftsForPostSynced();case MessagesForPostSynced():
-return messagesForPostSynced();case MessagesForAssetUploadSynced():
-return messagesForAssetUploadSynced();case MessagesForPatchSynced():
-return messagesForPatchSynced();case MessagesForDeleteSynced():
-return messagesForDeleteSynced();case SyncFailure():
+return syncing();case DraftSynced():
+return draftSynced(_that.draft);case MessageSynced():
+return messageSynced(_that.message);case SyncFailure():
 return failure(_that.error);case _:
   throw StateError('Unexpected subclass');
 
@@ -615,16 +600,13 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  syncing,TResult? Function()?  draftsForPostSynced,TResult? Function()?  messagesForPostSynced,TResult? Function()?  messagesForAssetUploadSynced,TResult? Function()?  messagesForPatchSynced,TResult? Function()?  messagesForDeleteSynced,TResult? Function( String error)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  syncing,TResult? Function( DraftPost draft)?  draftSynced,TResult? Function( Message message)?  messageSynced,TResult? Function( String error)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Syncing() when syncing != null:
-return syncing();case DraftsForPostSynced() when draftsForPostSynced != null:
-return draftsForPostSynced();case MessagesForPostSynced() when messagesForPostSynced != null:
-return messagesForPostSynced();case MessagesForAssetUploadSynced() when messagesForAssetUploadSynced != null:
-return messagesForAssetUploadSynced();case MessagesForPatchSynced() when messagesForPatchSynced != null:
-return messagesForPatchSynced();case MessagesForDeleteSynced() when messagesForDeleteSynced != null:
-return messagesForDeleteSynced();case SyncFailure() when failure != null:
+return syncing();case DraftSynced() when draftSynced != null:
+return draftSynced(_that.draft);case MessageSynced() when messageSynced != null:
+return messageSynced(_that.message);case SyncFailure() when failure != null:
 return failure(_that.error);case _:
   return null;
 
@@ -700,162 +682,134 @@ String toString() {
 /// @nodoc
 
 
-class DraftsForPostSynced implements SyncState {
-  const DraftsForPostSynced();
+class DraftSynced implements SyncState {
+  const DraftSynced({required this.draft});
   
 
+ final  DraftPost draft;
 
-
+/// Create a copy of SyncState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$DraftSyncedCopyWith<DraftSynced> get copyWith => _$DraftSyncedCopyWithImpl<DraftSynced>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DraftsForPostSynced);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DraftSynced&&(identical(other.draft, draft) || other.draft == draft));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,draft);
 
 @override
 String toString() {
-  return 'SyncState.draftsForPostSynced()';
+  return 'SyncState.draftSynced(draft: $draft)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $DraftSyncedCopyWith<$Res> implements $SyncStateCopyWith<$Res> {
+  factory $DraftSyncedCopyWith(DraftSynced value, $Res Function(DraftSynced) _then) = _$DraftSyncedCopyWithImpl;
+@useResult
+$Res call({
+ DraftPost draft
+});
 
 
+
+
+}
+/// @nodoc
+class _$DraftSyncedCopyWithImpl<$Res>
+    implements $DraftSyncedCopyWith<$Res> {
+  _$DraftSyncedCopyWithImpl(this._self, this._then);
+
+  final DraftSynced _self;
+  final $Res Function(DraftSynced) _then;
+
+/// Create a copy of SyncState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? draft = null,}) {
+  return _then(DraftSynced(
+draft: null == draft ? _self.draft : draft // ignore: cast_nullable_to_non_nullable
+as DraftPost,
+  ));
+}
+
+
+}
 
 /// @nodoc
 
 
-class MessagesForPostSynced implements SyncState {
-  const MessagesForPostSynced();
+class MessageSynced implements SyncState {
+  const MessageSynced({required this.message});
   
 
+ final  Message message;
 
-
+/// Create a copy of SyncState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$MessageSyncedCopyWith<MessageSynced> get copyWith => _$MessageSyncedCopyWithImpl<MessageSynced>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MessagesForPostSynced);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MessageSynced&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,message);
 
 @override
 String toString() {
-  return 'SyncState.messagesForPostSynced()';
+  return 'SyncState.messageSynced(message: $message)';
 }
 
 
 }
-
-
-
 
 /// @nodoc
+abstract mixin class $MessageSyncedCopyWith<$Res> implements $SyncStateCopyWith<$Res> {
+  factory $MessageSyncedCopyWith(MessageSynced value, $Res Function(MessageSynced) _then) = _$MessageSyncedCopyWithImpl;
+@useResult
+$Res call({
+ Message message
+});
 
 
-class MessagesForAssetUploadSynced implements SyncState {
-  const MessagesForAssetUploadSynced();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MessagesForAssetUploadSynced);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'SyncState.messagesForAssetUploadSynced()';
-}
 
 
 }
-
-
-
-
 /// @nodoc
+class _$MessageSyncedCopyWithImpl<$Res>
+    implements $MessageSyncedCopyWith<$Res> {
+  _$MessageSyncedCopyWithImpl(this._self, this._then);
 
+  final MessageSynced _self;
+  final $Res Function(MessageSynced) _then;
 
-class MessagesForPatchSynced implements SyncState {
-  const MessagesForPatchSynced();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MessagesForPatchSynced);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'SyncState.messagesForPatchSynced()';
+/// Create a copy of SyncState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(MessageSynced(
+message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as Message,
+  ));
 }
 
 
 }
-
-
-
-
-/// @nodoc
-
-
-class MessagesForDeleteSynced implements SyncState {
-  const MessagesForDeleteSynced();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MessagesForDeleteSynced);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'SyncState.messagesForDeleteSynced()';
-}
-
-
-}
-
-
-
 
 /// @nodoc
 

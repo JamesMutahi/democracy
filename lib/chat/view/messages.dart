@@ -271,19 +271,34 @@ class _MessagesState extends State<Messages> {
           widgets.add(SizedBox(height: messageMargin));
         });
 
-        return BlocListener<WebsocketBloc, WebsocketState>(
-          listener: (context, websocketState) {
-            if (websocketState.status == WebsocketStatus.connected) {
-              context.read<MessagesBloc>().add(
-                MessagesEvent.get(
-                  chat: widget.chat,
-                  newestMessage: messages
-                      .where((m) => m.syncStatus == SyncStatus.synced)
-                      .first,
-                ),
-              );
-            }
-          },
+        return MultiBlocListener(
+          listeners: [
+            BlocListener<WebsocketBloc, WebsocketState>(
+              listener: (context, websocketState) {
+                if (websocketState.status == WebsocketStatus.connected) {
+                  context.read<MessagesBloc>().add(
+                    MessagesEvent.get(
+                      chat: widget.chat,
+                      newestMessage: messages
+                          .where((m) => m.syncStatus == SyncStatus.synced)
+                          .first,
+                    ),
+                  );
+                }
+              },
+            ),
+            BlocListener<SyncBloc, SyncState>(
+              listener: (context, state) {
+                if (state is MessageSynced) {
+                  if (state.message.chatId == widget.chat.id) {
+                    context.read<MessagesBloc>().add(
+                      MessagesEvent.update(message: state.message),
+                    );
+                  }
+                }
+              },
+            ),
+          ],
           child: SmartRefresher(
             // Messages are listed in reverse, down is up and up is down...lol
             enablePullDown: false,

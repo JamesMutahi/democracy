@@ -17,80 +17,77 @@ class MessageAdapter extends TypeAdapter<Message> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Message(
-        id: fields[0] == null ? 0 : (fields[0] as num).toInt(),
-        serverId: (fields[1] as num?)?.toInt(),
-        chatId: (fields[2] as num).toInt(),
-        text: fields[3] == null ? '' : fields[3] as String,
-        filePaths: fields[10] == null
+        id: (fields[0] as num?)?.toInt(),
+        chatId: (fields[1] as num).toInt(),
+        text: fields[2] == null ? '' : fields[2] as String,
+        filePaths: fields[9] == null
             ? const []
-            : (fields[10] as List).cast<String>(),
-        isRead: fields[4] == null ? false : fields[4] as bool,
-        isEdited: fields[5] == null ? false : fields[5] as bool,
-        isDeleted: fields[6] == null ? false : fields[6] as bool,
-        syncStatus: fields[7] == null ? SyncStatus.synced : fields[7] as String,
-        syncType: fields[8] as String?,
-        uuid: fields[9] as String,
-        createdAt: fields[11] as DateTime,
-        updatedAt: fields[12] as DateTime,
+            : (fields[9] as List).cast<String>(),
+        isRead: fields[3] == null ? false : fields[3] as bool,
+        isEdited: fields[4] == null ? false : fields[4] as bool,
+        isDeleted: fields[5] == null ? false : fields[5] as bool,
+        syncStatus: fields[6] == null ? SyncStatus.synced : fields[6] as String,
+        syncType: fields[7] as String?,
+        uuid: fields[8] as String,
+        createdAt: fields[10] as DateTime,
+        updatedAt: fields[11] as DateTime,
       )
-      ..authorJson = fields[13] as String?
-      ..locationJson = fields[14] as String?
-      ..postJson = fields[15] as String?
-      ..ballotJson = fields[16] as String?
-      ..surveyJson = fields[17] as String?
-      ..petitionJson = fields[18] as String?
-      ..meetingJson = fields[19] as String?
-      ..sectionJson = fields[20] as String?
-      ..assetsJson = fields[21] as String?;
+      ..authorJson = fields[12] as String?
+      ..locationJson = fields[13] as String?
+      ..postJson = fields[14] as String?
+      ..ballotJson = fields[15] as String?
+      ..surveyJson = fields[16] as String?
+      ..petitionJson = fields[17] as String?
+      ..meetingJson = fields[18] as String?
+      ..sectionJson = fields[19] as String?
+      ..assetsJson = fields[20] as String?;
   }
 
   @override
   void write(BinaryWriter writer, Message obj) {
     writer
-      ..writeByte(22)
+      ..writeByte(21)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.serverId)
-      ..writeByte(2)
       ..write(obj.chatId)
-      ..writeByte(3)
+      ..writeByte(2)
       ..write(obj.text)
-      ..writeByte(4)
+      ..writeByte(3)
       ..write(obj.isRead)
-      ..writeByte(5)
+      ..writeByte(4)
       ..write(obj.isEdited)
-      ..writeByte(6)
+      ..writeByte(5)
       ..write(obj.isDeleted)
-      ..writeByte(7)
+      ..writeByte(6)
       ..write(obj.syncStatus)
-      ..writeByte(8)
+      ..writeByte(7)
       ..write(obj.syncType)
-      ..writeByte(9)
+      ..writeByte(8)
       ..write(obj.uuid)
-      ..writeByte(10)
+      ..writeByte(9)
       ..write(obj.filePaths)
-      ..writeByte(11)
+      ..writeByte(10)
       ..write(obj.createdAt)
-      ..writeByte(12)
+      ..writeByte(11)
       ..write(obj.updatedAt)
-      ..writeByte(13)
+      ..writeByte(12)
       ..write(obj.authorJson)
-      ..writeByte(14)
+      ..writeByte(13)
       ..write(obj.locationJson)
-      ..writeByte(15)
+      ..writeByte(14)
       ..write(obj.postJson)
-      ..writeByte(16)
+      ..writeByte(15)
       ..write(obj.ballotJson)
-      ..writeByte(17)
+      ..writeByte(16)
       ..write(obj.surveyJson)
-      ..writeByte(18)
+      ..writeByte(17)
       ..write(obj.petitionJson)
-      ..writeByte(19)
+      ..writeByte(18)
       ..write(obj.meetingJson)
-      ..writeByte(20)
+      ..writeByte(19)
       ..write(obj.sectionJson)
-      ..writeByte(21)
+      ..writeByte(20)
       ..write(obj.assetsJson);
   }
 

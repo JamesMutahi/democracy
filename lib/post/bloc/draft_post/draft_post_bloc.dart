@@ -41,8 +41,9 @@ class DraftPostBloc extends Bloc<DraftPostEvent, DraftPostState> {
       final id = await databaseRepository.saveDraft(draft: drafted);
       final draft = await databaseRepository.getDraft(id: id);
       emit(DraftPostSaved(draft: draft));
-    } catch (e) {
-      emit(DraftPostFailure(error: e.toString()));
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(DraftPostFailure(error: error.toString()));
     }
   }
 
@@ -51,8 +52,9 @@ class DraftPostBloc extends Bloc<DraftPostEvent, DraftPostState> {
     try {
       await databaseRepository.saveDraft(draft: event.draft);
       emit(DraftPostSaved(draft: event.draft));
-    } catch (e) {
-      emit(DraftPostFailure(error: e.toString()));
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(DraftPostFailure(error: error.toString()));
     }
   }
 
@@ -61,8 +63,9 @@ class DraftPostBloc extends Bloc<DraftPostEvent, DraftPostState> {
     try {
       await databaseRepository.deleteDraft(draft: event.draft);
       emit(DraftPostDeleted(draft: event.draft));
-    } catch (e) {
-      emit(DraftPostFailure(error: e.toString()));
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(DraftPostFailure(error: error.toString()));
     }
   }
 

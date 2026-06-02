@@ -3,8 +3,8 @@ import 'package:democracy/app/view/widgets/filters_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class HubFiltersModal extends StatefulWidget {
-  const HubFiltersModal({
+class HubFilters extends StatefulWidget {
+  const HubFilters({
     super.key,
     required this.onHubPage,
     required this.filterByRegion,
@@ -22,10 +22,10 @@ class HubFiltersModal extends StatefulWidget {
   final HubFilterCubit cubit;
 
   @override
-  State<HubFiltersModal> createState() => _HubFiltersModalState();
+  State<HubFilters> createState() => _HubFiltersState();
 }
 
-class _HubFiltersModalState extends State<HubFiltersModal> {
+class _HubFiltersState extends State<HubFilters> {
   late bool filterByRegion = widget.filterByRegion;
   late String sortBy = widget.sortBy;
   late DateTime? startDate = widget.startDate;

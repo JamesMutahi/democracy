@@ -47,7 +47,7 @@ class NotificationDetailBloc
       final data = event.payload['data'];
       Notification notification = Notification.fromJson(data);
       if (data['chat'] != null) {
-        await databaseRepository.saveChat(data['chat']);
+        await databaseRepository.saveChat(data: data['chat']);
       }
       emit(NotificationCreated(notification: notification));
     } else {

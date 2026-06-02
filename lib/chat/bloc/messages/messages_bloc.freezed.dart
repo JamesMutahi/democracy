@@ -55,14 +55,13 @@ extension MessagesEventPatterns on MessagesEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Update value)?  update,TResult Function( _Reload value)?  reload,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Update value)?  update,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
 return received(_that);case _Update() when update != null:
-return update(_that);case _Reload() when reload != null:
-return reload(_that);case _:
+return update(_that);case _:
   return orElse();
 
 }
@@ -80,14 +79,13 @@ return reload(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Update value)  update,required TResult Function( _Reload value)  reload,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Update value)  update,}){
 final _that = this;
 switch (_that) {
 case _Get():
 return get(_that);case _Received():
 return received(_that);case _Update():
-return update(_that);case _Reload():
-return reload(_that);}
+return update(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -101,14 +99,13 @@ return reload(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Update value)?  update,TResult? Function( _Reload value)?  reload,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Update value)?  update,}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
 return received(_that);case _Update() when update != null:
-return update(_that);case _Reload() when reload != null:
-return reload(_that);case _:
+return update(_that);case _:
   return null;
 
 }
@@ -125,13 +122,12 @@ return reload(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Message message)?  update,TResult Function()?  reload,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Message message)?  update,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.chat,_that.oldestMessage,_that.newestMessage);case _Received() when received != null:
 return received(_that.payload);case _Update() when update != null:
-return update(_that.message);case _Reload() when reload != null:
-return reload();case _:
+return update(_that.message);case _:
   return orElse();
 
 }
@@ -149,13 +145,12 @@ return reload();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Message message)  update,required TResult Function()  reload,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Message message)  update,}) {final _that = this;
 switch (_that) {
 case _Get():
 return get(_that.chat,_that.oldestMessage,_that.newestMessage);case _Received():
 return received(_that.payload);case _Update():
-return update(_that.message);case _Reload():
-return reload();}
+return update(_that.message);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -169,13 +164,12 @@ return reload();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Message message)?  update,TResult? Function()?  reload,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Chat chat,  Message? oldestMessage,  Message? newestMessage)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Message message)?  update,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.chat,_that.oldestMessage,_that.newestMessage);case _Received() when received != null:
 return received(_that.payload);case _Update() when update != null:
-return update(_that.message);case _Reload() when reload != null:
-return reload();case _:
+return update(_that.message);case _:
   return null;
 
 }
@@ -390,37 +384,5 @@ as Message,
 
 
 }
-
-/// @nodoc
-
-
-class _Reload implements MessagesEvent {
-  const _Reload();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Reload);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'MessagesEvent.reload()';
-}
-
-
-}
-
-
-
 
 // dart format on

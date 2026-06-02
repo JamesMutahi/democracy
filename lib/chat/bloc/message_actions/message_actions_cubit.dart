@@ -9,28 +9,32 @@ class MessageActionsCubit extends Cubit<MessageActionsState> {
 
   void messageHighlighted({required Message message}) {
     emit(state.copyWith(status: MessageActionsStatus.loading));
-    if (!state.messages.contains(message)) {
-      emit(
-        state.copyWith(
-          status: MessageActionsStatus.actionButtonsOpened,
-          messages: {
-            ...state.messages,
-            ...{message},
-          },
-        ),
-      );
-    } else {
-      Set<Message> messages = state.messages;
-      messages.remove(message);
-      emit(
-        state.copyWith(
-          status:
-              messages.isEmpty
-                  ? MessageActionsStatus.actionButtonsClosed
-                  : MessageActionsStatus.actionButtonsOpened,
-          messages: messages,
-        ),
-      );
+    try {
+      if (!state.messages.contains(message)) {
+        emit(
+          state.copyWith(
+            status: MessageActionsStatus.actionButtonsOpened,
+            messages: {
+              ...state.messages,
+              ...{message},
+            },
+          ),
+        );
+      } else {
+        Set<Message> messages = state.messages;
+        messages.remove(message);
+        emit(
+          state.copyWith(
+            status:
+            messages.isEmpty
+                ? MessageActionsStatus.actionButtonsClosed
+                : MessageActionsStatus.actionButtonsOpened,
+            messages: messages,
+          ),
+        );
+      }
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
     }
   }
 

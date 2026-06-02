@@ -17,11 +17,10 @@ class ChatAdapter extends TypeAdapter<Chat> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Chat(
-        id: (fields[0] as num).toInt(),
-        unreadMessages: (fields[2] as num).toInt(),
-      )
-      ..usersJson = fields[1] as String?
-      ..lastMessageJson = fields[3] as String?;
+      id: (fields[0] as num).toInt(),
+      unreadMessages: (fields[2] as num).toInt(),
+      lastMessage: fields[3] as Message?,
+    )..usersJson = fields[1] as String?;
   }
 
   @override
@@ -35,7 +34,7 @@ class ChatAdapter extends TypeAdapter<Chat> {
       ..writeByte(2)
       ..write(obj.unreadMessages)
       ..writeByte(3)
-      ..write(obj.lastMessageJson);
+      ..write(obj.lastMessage);
   }
 
   @override

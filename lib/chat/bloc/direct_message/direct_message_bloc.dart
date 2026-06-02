@@ -65,11 +65,12 @@ class DirectMessageBloc extends Bloc<DirectMessageEvent, DirectMessageState> {
       } else {
         emit(state.copyWith(status: DirectMessageStatus.success, chats: chats));
       }
-    } catch (e) {
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
       emit(
         state.copyWith(
           status: DirectMessageStatus.failure,
-          error: e.toString(),
+          error: error.toString(),
         ),
       );
     }
@@ -110,11 +111,12 @@ class DirectMessageBloc extends Bloc<DirectMessageEvent, DirectMessageState> {
       await apiRepository.messageAssetUploadComplete(assetIdList: assetIdList);
 
       emit(state.copyWith(status: DirectMessageStatus.success));
-    } catch (e) {
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
       emit(
         state.copyWith(
           status: DirectMessageStatus.failure,
-          error: e.toString(),
+          error: error.toString(),
         ),
       );
     }

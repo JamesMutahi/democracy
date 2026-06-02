@@ -58,7 +58,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
       );
       for (var data in event.payload['data']) {
         if (data['chat'] != null) {
-          await databaseRepository.saveChat(data['chat']);
+          await databaseRepository.saveChat(data: data['chat']);
         }
       }
       emit(

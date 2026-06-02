@@ -1,3 +1,4 @@
+import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/services/token_storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:dio/dio.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:talker/talker.dart';
+import 'package:talker_bloc_logger/talker_bloc_logger_observer.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger_settings.dart';
 import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 import 'package:talker_dio_logger/talker_dio_logger_settings.dart';
@@ -85,7 +87,31 @@ TalkerSettings getTalkerSettings() {
   );
 }
 
-// lib/app/shared/utils/init_dependencies.dart
+class SentryTalkerBlocObserver extends TalkerBlocObserver {
+  SentryTalkerBlocObserver({
+    required super.talker,
+    required super.settings,
+  });
+
+  @override
+  void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
+    // 1. Maintain local logging via Talker
+    super.onError(bloc, error, stackTrace);
+
+    // 2. Filter out noisy blocs from Sentry (reusing your logic)
+    final blocName = bloc.runtimeType.toString();
+    if (_isNoisyBloc(blocName)) return;
+
+    // 3. Automatically send unhandled errors to Sentry
+    Sentry.captureException(
+      error,
+      stackTrace: stackTrace,
+      withScope: (scope) {
+        scope.setTag('bloc', blocName);
+      },
+    );
+  }
+}
 
 TalkerBlocLoggerSettings getBlocLogSettings() {
   return TalkerBlocLoggerSettings(

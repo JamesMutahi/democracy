@@ -50,42 +50,68 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
 
   Future _onCreated(_Created event, Emitter<ChatDetailState> emit) async {
     emit(ChatDetailLoading());
-    if (event.payload['response_status'] == 201) {
-      final chat = await databaseRepository.saveChat(event.payload['data']);
-      emit(ChatCreated(chat: chat, userId: event.payload['request_id']));
-    } else {
-      emit(ChatDetailFailure(error: event.payload['errors'].toString()));
+    try {
+      if (event.payload['response_status'] == 201) {
+        final chat = await databaseRepository.saveChat(
+          data: event.payload['data'],
+        );
+        emit(ChatCreated(chat: chat, userId: event.payload['request_id']));
+      } else {
+        emit(ChatDetailFailure(error: event.payload['errors'].toString()));
+      }
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(ChatDetailFailure(error: error.toString()));
     }
   }
 
   Future _onLoaded(_Loaded event, Emitter<ChatDetailState> emit) async {
     emit(ChatDetailLoading());
-    if (event.payload['response_status'] == 200) {
-      final chat = await databaseRepository.saveChat(event.payload['data']);
-      emit(ChatLoaded(chat: chat));
-    } else {
-      emit(ChatDetailFailure(error: event.payload['errors'].toString()));
+    try {
+      if (event.payload['response_status'] == 200) {
+        final chat = await databaseRepository.saveChat(
+          data: event.payload['data'],
+        );
+        emit(ChatLoaded(chat: chat));
+      } else {
+        emit(ChatDetailFailure(error: event.payload['errors'].toString()));
+      }
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(ChatDetailFailure(error: error.toString()));
     }
   }
 
   Future _onUpdated(_Updated event, Emitter<ChatDetailState> emit) async {
     emit(ChatDetailLoading());
-    if (event.payload['response_status'] == 200) {
-      final chat = await databaseRepository.saveChat(event.payload['data']);
-      emit(ChatUpdated(chat: chat));
-    } else {
-      emit(ChatDetailFailure(error: event.payload['errors'].toString()));
+    try {
+      if (event.payload['response_status'] == 200) {
+        final chat = await databaseRepository.saveChat(
+          data: event.payload['data'],
+        );
+        emit(ChatUpdated(chat: chat));
+      } else {
+        emit(ChatDetailFailure(error: event.payload['errors'].toString()));
+      }
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(ChatDetailFailure(error: error.toString()));
     }
   }
 
   Future _onDeleted(_Deleted event, Emitter<ChatDetailState> emit) async {
     emit(ChatDetailLoading());
-    if (event.payload['response_status'] == 204) {
-      int id = event.payload['pk'];
-      await databaseRepository.deleteChat(id: id);
-      emit(ChatDeleted(chatId: id));
-    } else {
-      emit(ChatDetailFailure(error: event.payload['errors'].toString()));
+    try {
+      if (event.payload['response_status'] == 204) {
+        int id = event.payload['pk'];
+        await databaseRepository.deleteChat(id: id);
+        emit(ChatDeleted(chatId: id));
+      } else {
+        emit(ChatDetailFailure(error: event.payload['errors'].toString()));
+      }
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(ChatDetailFailure(error: error.toString()));
     }
   }
 

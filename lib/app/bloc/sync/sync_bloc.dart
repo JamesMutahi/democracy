@@ -82,17 +82,17 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
           draft.syncType = SyncType.assets;
           await databaseRepository.updateDraft(draft: draft);
         } else {
-          await _onPostSuccess(draft: draft);
+          await _onPostSuccess(emit: emit, draft: draft);
         }
         if (post.assets.isNotEmpty) {
           add(_UploadPostAssets());
         }
-      } catch (e) {
-        await _onPostFailure(emit: emit, draft: draft, error: e.toString());
-        return;
+      } catch (error) {
+        draft.syncStatus = SyncStatus.failed;
+        await databaseRepository.updateDraft(draft: draft);
+        emit(SyncFailure(error: error.toString()));
       }
     }
-    emit(DraftsForPostSynced());
   }
 
   Future _onUploadPostAssets(
@@ -117,28 +117,21 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
         await apiRepository.messageAssetUploadComplete(
           assetIdList: assetIdList,
         );
-        await _onPostSuccess(draft: draft);
+        await _onPostSuccess(emit: emit, draft: draft);
       }
-      emit(MessagesForAssetUploadSynced());
     } catch (e) {
       emit(SyncFailure(error: e.toString()));
     }
   }
 
-  Future _onPostSuccess({required DraftPost draft}) async {
+  Future _onPostSuccess({
+    required Emitter<SyncState> emit,
+    required DraftPost draft,
+  }) async {
     draft.syncStatus = SyncStatus.synced;
     draft.syncType = null;
     await databaseRepository.updateDraft(draft: draft);
-  }
-
-  Future _onPostFailure({
-    required Emitter<SyncState> emit,
-    required DraftPost draft,
-    required String error,
-  }) async {
-    draft.syncStatus = SyncStatus.failed;
-    await databaseRepository.updateDraft(draft: draft);
-    emit(SyncFailure(error: error.toString()));
+    emit(DraftSynced(draft: draft));
   }
 
   Future _onPostMessages(_PostMessages event, Emitter<SyncState> emit) async {
@@ -168,7 +161,7 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
           message.syncType = SyncType.assets;
           await databaseRepository.updateMessage(message: message);
         } else {
-          await _onMessageSuccess(message: message);
+          await _onMessageSuccess(emit: emit, message: message);
         }
         if (msg.assets.isNotEmpty) {
           add(_UploadMessageAssets());
@@ -179,10 +172,8 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
           message: message,
           error: e.toString(),
         );
-        return;
       }
     }
-    emit(MessagesForPostSynced());
   }
 
   Future _onUploadMessageAssets(
@@ -207,9 +198,8 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
         await apiRepository.messageAssetUploadComplete(
           assetIdList: assetIdList,
         );
-        await _onMessageSuccess(message: message);
+        await _onMessageSuccess(emit: emit, message: message);
       }
-      emit(MessagesForAssetUploadSynced());
     } catch (e) {
       emit(SyncFailure(error: e.toString()));
     }
@@ -221,17 +211,16 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
     for (Message message in forPatch) {
       try {
         await apiRepository.patchMessage(message: message);
-        await _onMessageSuccess(message: message);
+        await _onMessageSuccess(emit: emit, message: message);
+        emit(MessageSynced(message: message));
       } catch (e) {
         await _onMessageFailure(
           emit: emit,
           message: message,
           error: e.toString(),
         );
-        return;
       }
     }
-    emit(MessagesForPatchSynced());
   }
 
   Future _onDeleteMessages(
@@ -243,9 +232,8 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
       final forDelete = await databaseRepository.getMessagesToDelete();
       for (Message message in forDelete) {
         await apiRepository.deleteMessage(message: message);
-        await _onMessageSuccess(message: message);
+        await _onMessageSuccess(emit: emit, message: message);
       }
-      emit(MessagesForDeleteSynced());
     } catch (e) {
       emit(SyncFailure(error: e.toString()));
     }
@@ -264,10 +252,14 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
     return assetIdList;
   }
 
-  Future _onMessageSuccess({required Message message}) async {
+  Future _onMessageSuccess({
+    required Emitter<SyncState> emit,
+    required Message message,
+  }) async {
     message.syncStatus = SyncStatus.synced;
     message.syncType = null;
     await databaseRepository.updateMessage(message: message);
+    emit(MessageSynced(message: message));
   }
 
   Future _onMessageFailure({

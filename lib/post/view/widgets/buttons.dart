@@ -19,7 +19,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-final double iconSize = 18;
+final double iconSize = 19;
 
 class PostAuthorProfile extends StatelessWidget {
   const PostAuthorProfile({

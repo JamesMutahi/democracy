@@ -254,18 +254,6 @@ class _ChatDetailState extends State<_ChatDetail> {
               }
             },
           ),
-          BlocListener<SyncBloc, SyncState>(
-            listener: (context, state) {
-              switch (state) {
-                case SyncFailure():
-                case MessagesForPostSynced():
-                case MessagesForAssetUploadSynced():
-                case MessagesForPatchSynced():
-                case MessagesForDeleteSynced():
-                  context.read<MessagesBloc>().add(MessagesEvent.reload());
-              }
-            },
-          ),
         ],
         child: PopScope(
           canPop: !showMessageActions,

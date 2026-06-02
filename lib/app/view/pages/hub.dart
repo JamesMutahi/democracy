@@ -3,7 +3,6 @@ import 'package:democracy/app/bloc/hub_filter/hub_filter_cubit.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/app/view/widgets/hub_filter.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -134,32 +133,22 @@ class _HubState extends State<Hub> {
         }
       },
       onFilterTap: () {
-        final filters = HubFiltersModal(
-          onHubPage: true,
-          filterByRegion: state.filterByRegion,
-          sortBy: state.sortBy,
-          startDate: state.startDate,
-          endDate: state.endDate,
-          cubit: cubit,
+        showModalBottomSheet<void>(
+          context: context,
+          isScrollControlled: true,
+          shape: const BeveledRectangleBorder(),
+          useSafeArea: true,
+          builder: (context) {
+            return HubFilters(
+              onHubPage: true,
+              filterByRegion: state.filterByRegion,
+              sortBy: state.sortBy,
+              startDate: state.startDate,
+              endDate: state.endDate,
+              cubit: cubit,
+            );
+          },
         );
-
-        kIsWeb
-            ? showModalBottomSheet<void>(
-                context: context,
-                isScrollControlled: true,
-                shape: const BeveledRectangleBorder(),
-                useSafeArea: true,
-                builder: (context) {
-                  return filters;
-                },
-              )
-            : showGeneralDialog(
-                context: context,
-                transitionDuration: const Duration(milliseconds: 300),
-                pageBuilder: (context, animation, secondaryAnimation) {
-                  return filters;
-                },
-              );
       },
     );
   }

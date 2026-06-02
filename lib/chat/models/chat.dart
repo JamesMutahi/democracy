@@ -18,7 +18,7 @@ class Chat extends HiveObject {
   int unreadMessages = 0;
 
   @HiveField(3)
-  String? lastMessageJson;
+  Message? lastMessage;
 
   // ==================== COMPUTED PROPERTIES ====================
 
@@ -30,19 +30,6 @@ class Chat extends HiveObject {
 
   set users(List<User> value) {
     usersJson = jsonEncode(value.map((e) => e.toJson()).toList());
-  }
-
-  Message? get lastMessage {
-    if (lastMessageJson == null) return null;
-    try {
-      return Message.fromJson(jsonDecode(lastMessageJson!));
-    } catch (e) {
-      return null;
-    }
-  }
-
-  set lastMessage(Message? value) {
-    lastMessageJson = value != null ? jsonEncode(value.toJson()) : null;
   }
 
   Chat({
@@ -59,16 +46,12 @@ class Chat extends HiveObject {
 
   factory Chat.fromJson(Map<String, dynamic> json) {
     final chat = Chat(
-      id: json['id'] ?? 0,
+      id: json['id'],
       unreadMessages: json['unread_messages'] ?? 0,
       users: (json['users'] as List<dynamic>?)
           ?.map((e) => User.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
-
-    if (json['last_message'] != null) {
-      chat.lastMessage = Message.fromJson(json['last_message']);
-    }
 
     return chat;
   }

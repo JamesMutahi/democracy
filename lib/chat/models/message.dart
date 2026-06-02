@@ -18,70 +18,67 @@ part 'message.g.dart';
 @HiveType(typeId: 61)
 class Message extends HiveObject {
   @HiveField(0)
-  int id = 0;                    // Hive key + local ID
+  int? id;
 
   @HiveField(1)
-  int? serverId;                 // Original server ID
+  int chatId;
 
   @HiveField(2)
-  int chatId;                   // Important: Replaced ToOne<Chat>
-
-  @HiveField(3)
   String text = '';
 
-  @HiveField(4)
+  @HiveField(3)
   bool isRead = false;
 
-  @HiveField(5)
+  @HiveField(4)
   bool isEdited = false;
 
-  @HiveField(6)
+  @HiveField(5)
   bool isDeleted = false;
 
-  @HiveField(7)
+  @HiveField(6)
   String syncStatus = SyncStatus.synced;
 
-  @HiveField(8)
+  @HiveField(7)
   String? syncType;
 
-  @HiveField(9)
+  @HiveField(8)
   String uuid = '';
 
-  @HiveField(10)
+  @HiveField(9)
   List<String> filePaths = [];
 
-  @HiveField(11)
+  @HiveField(10)
   DateTime createdAt = DateTime.now();
 
-  @HiveField(12)
+  @HiveField(11)
   DateTime updatedAt = DateTime.now();
 
   // JSON storage fields
-  @HiveField(13)
+  @HiveField(12)
   String? authorJson;
 
-  @HiveField(14)
+  @HiveField(13)
   String? locationJson;
 
-  @HiveField(15)
+  @HiveField(14)
   String? postJson;
 
-  @HiveField(16)
+  @HiveField(15)
   String? ballotJson;
 
-  @HiveField(17)
+  @HiveField(16)
   String? surveyJson;
 
-  @HiveField(18)
+  @HiveField(17)
   String? petitionJson;
 
-  @HiveField(19)
+  @HiveField(18)
   String? meetingJson;
 
-  @HiveField(20)
+  @HiveField(19)
   String? sectionJson;
 
-  @HiveField(21)
+  @HiveField(20)
   String? assetsJson;
 
   // ==================== TRANSIENT GETTERS & SETTERS ====================
@@ -165,16 +162,16 @@ class Message extends HiveObject {
         value
             .map(
               (asset) => {
-            'id': asset.id,
-            'name': asset.name,
-            'file_key': asset.fileKey,
-            'file_size': asset.fileSize,
-            'content_type': asset.contentType.name,
-            'url': asset.url,
-            'is_completed': asset.isCompleted,
-            'created_at': asset.createdAt.toIso8601String(),
-          },
-        )
+                'id': asset.id,
+                'name': asset.name,
+                'file_key': asset.fileKey,
+                'file_size': asset.fileSize,
+                'content_type': asset.contentType.name,
+                'url': asset.url,
+                'is_completed': asset.isCompleted,
+                'created_at': asset.createdAt.toIso8601String(),
+              },
+            )
             .toList(),
       );
     }
@@ -183,8 +180,7 @@ class Message extends HiveObject {
   // ==================== CONSTRUCTORS ====================
 
   Message({
-    this.id = 0,
-    this.serverId,
+    this.id,
     required this.chatId,
     User? author,
     this.text = '',
@@ -219,9 +215,8 @@ class Message extends HiveObject {
 
   factory Message.fromJson(Map<String, dynamic> json) {
     final message = Message(
-      id: json['id'] ?? 0,
-      serverId: json['server_id'],
-      chatId: json['chat_id'],
+      id: json['id'],
+      chatId: json['chat'],
       author: User.fromJson(json['author'] as Map<String, dynamic>),
       uuid: json['uuid'] as String,
       text: json['text'] as String,
@@ -236,7 +231,9 @@ class Message extends HiveObject {
       message.post = Post.fromJson(json['post'] as Map<String, dynamic>);
     }
     if (json['location'] != null) {
-      message.location = LatLng.fromJson(json['location'] as Map<String, dynamic>);
+      message.location = LatLng.fromJson(
+        json['location'] as Map<String, dynamic>,
+      );
     }
     if (json['assets'] != null) {
       message.assets = (json['assets'] as List<dynamic>)
@@ -250,7 +247,6 @@ class Message extends HiveObject {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'server_id': serverId,
       'chat_id': chatId,
       'author': author.toJson(),
       'text': text,

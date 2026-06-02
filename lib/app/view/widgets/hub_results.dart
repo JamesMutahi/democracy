@@ -230,7 +230,7 @@ class _HubResultsState extends State<HubResults>
       filterCount: filterCount,
       filterModal: BlocProvider.value(
         value: cubit,
-        child: HubFiltersModal(
+        child: HubFilters(
           onHubPage: false,
           filterByRegion: filterByRegion,
           sortBy: sortBy,

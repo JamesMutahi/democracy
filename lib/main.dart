@@ -54,7 +54,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:talker/talker.dart';
-import 'package:talker_bloc_logger/talker_bloc_logger_observer.dart';
 
 void main() {
   // Force zone errors to be fatal immediately
@@ -105,7 +104,7 @@ void main() {
           };
 
           // Setup Bloc observer
-          Bloc.observer = TalkerBlocObserver(
+          Bloc.observer = SentryTalkerBlocObserver(
             talker: talker,
             settings: getBlocLogSettings(),
           );

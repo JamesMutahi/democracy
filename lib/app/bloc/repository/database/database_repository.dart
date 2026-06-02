@@ -70,40 +70,32 @@ class DatabaseRepository {
     return box.values.toList();
   }
 
-  Future<void> saveChatsData(List<dynamic> jsonData) async {
-    final boxChat = await _chatBox;
-    final boxMessage = await _messageBox;
+  Future<Chat> saveChat({required Map<String, dynamic> data}) async {
+    final box = await _chatBox;
 
-    for (var chatData in jsonData) {
-      final chat = Chat.fromJson(chatData);
+    final chat = Chat.fromJson(data);
 
-      // Handle last_message if present
-      if (chatData['last_message'] != null) {
-        final lastMsg = Message.fromJson(chatData['last_message']);
-        lastMsg.chatId = chat.id;
-        await boxMessage.put(lastMsg.id, lastMsg);
-        chat.lastMessage = lastMsg;
-      }
-
-      await boxChat.put(chat.id, chat);
+    if (data['last_message'] != null) {
+      await saveMessageData(data: data['last_message']);
+      final lastMessage = await getMessage(id: data['last_message']['id']);
+      chat.lastMessage = lastMessage;
     }
+
+    Chat? existing = box.values.firstWhereOrNull((m) => m.id == chat.id);
+
+    if (existing != null) {
+      _mergeChat(existing, chat);
+      await box.put(existing.key, existing);
+      return existing;
+    }
+
+    await box.add(chat);
+    return chat;
   }
 
-  Future<Chat> saveChat(Map<String, dynamic> jsonData) async {
-    final boxChat = await _chatBox;
-    final boxMessage = await _messageBox;
-
-    final chat = Chat.fromJson(jsonData);
-
-    if (jsonData['last_message'] != null) {
-      final lastMsg = Message.fromJson(jsonData['last_message']);
-      lastMsg.chatId = chat.id;
-      await boxMessage.put(lastMsg.id, lastMsg);
-      chat.lastMessage = lastMsg;
-    }
-
-    await boxChat.put(chat.id, chat);
-    return chat;
+  void _mergeChat(Chat target, Chat source) {
+    target.unreadMessages = source.unreadMessages;
+    target.lastMessage = source.lastMessage;
   }
 
   Future<void> deleteChat({required int id}) async {
@@ -124,7 +116,7 @@ class DatabaseRepository {
 
   Future<Message?> getMessage({required int id}) async {
     final box = await _messageBox;
-    return box.get(id);
+    return box.values.firstWhereOrNull((m) => m.id == id);
   }
 
   Future<List<Message>> fetchMessages({required int chatId}) async {
@@ -144,7 +136,7 @@ class DatabaseRepository {
 
     if (existing != null) {
       _mergeMessage(existing, message);
-      await box.put(existing.id, existing);
+      await box.put(existing.key, existing);
       return existing;
     }
 
@@ -152,37 +144,32 @@ class DatabaseRepository {
     if (message.id == 0) {
       message.id = DateTime.now().millisecondsSinceEpoch;
     }
-    await box.put(message.id, message);
+    await box.add(message);
     return message;
   }
 
-  Future<void> saveMessageData(List<dynamic> jsonData) async {
+  Future<void> saveMessageData({required Map<String, dynamic> data}) async {
     final box = await _messageBox;
 
-    for (var data in jsonData) {
-      final message = Message.fromJson(data);
-      if (data['chat_id'] != null || data['chat'] != null) {
-        message.chatId = data['chat_id'] ?? data['chat'];
-      }
+    final message = Message.fromJson(data);
 
-      Message? existing = box.values.firstWhereOrNull(
-        (m) => m.id == message.id || m.uuid == message.uuid,
-      );
+    Message? existing = box.values.firstWhereOrNull(
+      (m) => m.id == message.id || m.uuid == message.uuid,
+    );
 
-      if (existing != null) {
-        _mergeMessage(existing, message);
-        await box.put(existing.id, existing);
-      } else {
-        if (message.id == 0) {
-          message.id = DateTime.now().millisecondsSinceEpoch;
-        }
-        await box.put(message.id, message);
+    if (existing != null) {
+      _mergeMessage(existing, message);
+      await box.put(existing.key, existing);
+    } else {
+      if (message.id == 0) {
+        message.id = DateTime.now().millisecondsSinceEpoch;
       }
+      await box.add(message);
     }
   }
 
   void _mergeMessage(Message target, Message source) {
-    target.serverId = source.serverId;
+    target.id = source.id;
     target.text = source.text;
     target.createdAt = source.createdAt;
     target.updatedAt = source.updatedAt;
@@ -200,12 +187,12 @@ class DatabaseRepository {
 
   Future<void> updateMessage({required Message message}) async {
     final box = await _messageBox;
-    await box.put(message.id, message);
+    await box.put(message.key, message);
   }
 
   Future<void> deleteMessage({required Message message}) async {
     final box = await _messageBox;
-    await box.delete(message.id);
+    await box.delete(message.key);
   }
 
   Future<List<Message>> getMessagesToPost() async {

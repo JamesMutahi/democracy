@@ -56,39 +56,54 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
 
   Future _onCreated(_Created event, Emitter<MessageDetailState> emit) async {
     emit(MessageDetailLoading());
-    if (event.payload['response_status'] == 201) {
-      Message newMessage = Message.fromJson(event.payload['data']);
-      final message = await databaseRepository.createMessage(
-        message: newMessage,
-      );
-      emit(MessageCreated(message: message));
-    } else {
-      emit(MessageDetailFailure(error: event.payload['errors'].toString()));
+    try {
+      if (event.payload['response_status'] == 201) {
+        Message newMessage = Message.fromJson(event.payload['data']);
+        final message = await databaseRepository.createMessage(
+          message: newMessage,
+        );
+        emit(MessageCreated(message: message));
+      } else {
+        emit(MessageDetailFailure(error: event.payload['errors'].toString()));
+      }
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(MessageDetailFailure(error: error.toString()));
     }
   }
 
   Future _onUpdated(_Updated event, Emitter<MessageDetailState> emit) async {
     emit(MessageDetailLoading());
-    if (event.payload['response_status'] == 200) {
-      Message newMessage = Message.fromJson(event.payload['data']);
-      final message = await databaseRepository.createMessage(
-        message: newMessage,
-      );
-      emit(MessageUpdated(message: message));
-    } else {
-      emit(MessageDetailFailure(error: event.payload['errors'].toString()));
+    try {
+      if (event.payload['response_status'] == 200) {
+        Message newMessage = Message.fromJson(event.payload['data']);
+        final message = await databaseRepository.createMessage(
+          message: newMessage,
+        );
+        emit(MessageUpdated(message: message));
+      } else {
+        emit(MessageDetailFailure(error: event.payload['errors'].toString()));
+      }
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(MessageDetailFailure(error: error.toString()));
     }
   }
 
   Future _onDeleted(_Deleted event, Emitter<MessageDetailState> emit) async {
     emit(MessageDetailLoading());
-    if (event.payload['response_status'] == 204) {
-      int id = event.payload['data']['pk'];
-      final message = await databaseRepository.getMessage(id: id);
-      await databaseRepository.deleteMessage(message: message!);
-      emit(MessageDeleted(message: message));
-    } else {
-      emit(MessageDetailFailure(error: event.payload['errors'].toString()));
+    try {
+      if (event.payload['response_status'] == 204) {
+        int id = event.payload['data']['pk'];
+        final message = await databaseRepository.getMessage(id: id);
+        await databaseRepository.deleteMessage(message: message!);
+        emit(MessageDeleted(message: message));
+      } else {
+        emit(MessageDetailFailure(error: event.payload['errors'].toString()));
+      }
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(MessageDetailFailure(error: error.toString()));
     }
   }
 
@@ -117,8 +132,9 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
         message: newMessage,
       );
       emit(MessageCreatedInDB(message: message));
-    } catch (e) {
-      emit(MessageDetailFailure(error: e.toString()));
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(MessageDetailFailure(error: error.toString()));
     }
   }
 
@@ -134,8 +150,9 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
       }
       await databaseRepository.updateMessage(message: event.message);
       emit(MessageUpdatedInDB(message: message));
-    } catch (e) {
-      emit(MessageDetailFailure(error: e.toString()));
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(MessageDetailFailure(error: error.toString()));
     }
   }
 
@@ -151,8 +168,9 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
         await databaseRepository.updateMessage(message: message);
         emit(MessageDeletedInDB(message: message));
       }
-    } catch (e) {
-      emit(MessageDetailFailure(error: e.toString()));
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(MessageDetailFailure(error: error.toString()));
     }
   }
 
