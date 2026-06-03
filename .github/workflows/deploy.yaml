@@ -34,8 +34,7 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: bluefireteam/flutter-gh-pages@v9
         with:
-          baseHref: /${{ github.event.repository.name }}/
-          customDomain: peopleofkenya.com
+          baseHref: /
           webRenderer: auto
           customArgs: >-
             --dart-define=BASE_URL=${{ vars.BASE_URL }}
