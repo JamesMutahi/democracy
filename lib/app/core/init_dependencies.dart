@@ -3,7 +3,6 @@ import 'package:democracy/app/bloc/services/token_storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:talker/talker.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger_observer.dart';
@@ -160,11 +159,11 @@ class MyNetworkClient {
   static Dio create(Talker talker, TokenStorage tokenStorage) {
     final dio = Dio(
       BaseOptions(
-        baseUrl: dotenv.env['BASE_URL'] ?? 'https://example.com',
+        baseUrl: const String.fromEnvironment('BASE_URL'),
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
         validateStatus: (status) {
-          return status != null && status >= 200 && status < 300;
+          return status != null && status >= 200 && status <= 400;
         },
       ),
     );

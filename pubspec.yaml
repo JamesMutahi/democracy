@@ -41,9 +41,6 @@ dependencies:
   form_builder_validators: ^11.3.0
   flutter_form_builder: ^10.1.0
   bloc: ^9.0.0
-  pin_code_fields: ^9.3.0
-  flutter_dotenv: ^6.0.0
-  mocktail: ^1.0.4
   material_symbols_icons: ^4.2928.1
   responsive_framework: ^1.5.1
   flutter_secure_storage: ^10.0.0
@@ -131,7 +128,6 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
-    - .env
 
   fonts:
     - family: NotoSans

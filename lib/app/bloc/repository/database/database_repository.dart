@@ -21,13 +21,14 @@ class DatabaseRepository {
     return box.values.toList();
   }
 
-  Future<int> saveDraft({required DraftPost draft}) async {
+  Future<int> createDraft({required DraftPost draft}) async {
     final box = await _draftBox;
-    if (draft.id == 0) {
-      draft.id = DateTime.now().millisecondsSinceEpoch; // Ensure unique ID
-    }
-    await box.put(draft.id, draft);
-    return draft.id;
+    return await box.add(draft);
+  }
+
+  Future<void> updateDraft({required DraftPost draft}) async {
+    final box = await _draftBox;
+    await box.put(draft.key, draft);
   }
 
   Future<DraftPost> getDraft({required int id}) async {
@@ -53,14 +54,9 @@ class DatabaseRepository {
         .toList();
   }
 
-  Future<void> updateDraft({required DraftPost draft}) async {
-    final box = await _draftBox;
-    await box.put(draft.id, draft);
-  }
-
   Future<void> deleteDraft({required DraftPost draft}) async {
     final box = await _draftBox;
-    await box.delete(draft.id);
+    await box.delete(draft.key);
   }
 
   // ==================== CHATS ====================

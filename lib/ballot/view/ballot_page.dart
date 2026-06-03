@@ -44,7 +44,6 @@ class _BallotPageState extends State<BallotPage> {
                 floating: true,
                 snap: true,
                 forceElevated: true,
-                titleSpacing: 0,
                 title: Text('Ballots'),
                 bottom: PreferredSize(
                   preferredSize: Size.fromHeight(60.0),

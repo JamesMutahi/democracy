@@ -16,61 +16,58 @@ part 'draft_post.g.dart';
 @HiveType(typeId: 50)
 class DraftPost extends HiveObject {
   @HiveField(0)
-  int id = 0;
-
-  @HiveField(1)
   int? serverID;
 
-  @HiveField(2)
+  @HiveField(1)
   String body = '';
 
-  @HiveField(3)
+  @HiveField(2)
   List<String> filePaths = [];
 
-  @HiveField(4)
+  @HiveField(3)
   String? syncStatus;
 
-  @HiveField(5)
+  @HiveField(4)
   String? syncType;
 
-  @HiveField(6)
+  @HiveField(5)
   DateTime updatedAt = DateTime.now();
 
-  @HiveField(7)
+  @HiveField(6)
   DateTime createdAt = DateTime.now();
 
   // JSON storage fields (these are persisted)
-  @HiveField(8)
+  @HiveField(7)
   String? locationJson;
 
-  @HiveField(9)
+  @HiveField(8)
   String? replyToJson;
 
-  @HiveField(10)
+  @HiveField(9)
   String? repostOfJson;
 
-  @HiveField(11)
+  @HiveField(10)
   String? communityNoteOfJson;
 
-  @HiveField(12)
+  @HiveField(11)
   String? ballotJson;
 
-  @HiveField(13)
+  @HiveField(12)
   String? surveyJson;
 
-  @HiveField(14)
+  @HiveField(13)
   String? petitionJson;
 
-  @HiveField(15)
+  @HiveField(14)
   String? meetingJson;
 
-  @HiveField(16)
+  @HiveField(15)
   String? sectionJson;
 
-  @HiveField(17)
+  @HiveField(16)
   String? tagsJson;
 
-  @HiveField(18)
+  @HiveField(17)
   String? assetsJson;
 
   // ==================== COMPUTED / TRANSIENT PROPERTIES ====================
@@ -171,7 +168,6 @@ class DraftPost extends HiveObject {
   }
 
   DraftPost({
-    this.id = 0,
     this.serverID,
     this.body = '',
     List<String>? filePaths,

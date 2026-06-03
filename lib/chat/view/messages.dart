@@ -441,7 +441,6 @@ class _AlignmentContainerState extends State<AlignmentContainer> {
 
   @override
   Widget build(BuildContext context) {
-    double messageWidth = 0.75 * MediaQuery.of(context).size.width;
     return BlocListener<MessageActionsCubit, MessageActionsState>(
       listener: (context, state) {
         if (state.status == MessageActionsStatus.actionButtonsOpened) {
@@ -491,7 +490,7 @@ class _AlignmentContainerState extends State<AlignmentContainer> {
                   ? Alignment.topRight
                   : Alignment.topLeft,
               child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: messageWidth),
+                constraints: BoxConstraints(maxWidth: 400),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [

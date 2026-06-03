@@ -52,8 +52,8 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
   // Media state
   List<File> _media = [];
   File? _document;
-  LatLng? _selectedLocation;
-  Section? _selectedSection;
+  late LatLng? _selectedLocation = widget.draft.location;
+  late Section? _selectedSection = widget.draft.section;
 
   @override
   void initState() {
@@ -436,11 +436,6 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
                     meeting: widget.draft.meeting!,
                     isDependency: true,
                   ),
-                ),
-              if (widget.draft.section != null)
-                SectionView(
-                  section: widget.draft.section!,
-                  onRemoveSection: null,
                 ),
             ],
           ),

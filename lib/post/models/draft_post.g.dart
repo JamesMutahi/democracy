@@ -17,69 +17,66 @@ class DraftPostAdapter extends TypeAdapter<DraftPost> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return DraftPost(
-        id: fields[0] == null ? 0 : (fields[0] as num).toInt(),
-        serverID: (fields[1] as num?)?.toInt(),
-        body: fields[2] == null ? '' : fields[2] as String,
-        filePaths: (fields[3] as List?)?.cast<String>(),
-        syncStatus: fields[4] as String?,
-        syncType: fields[5] as String?,
-        createdAt: fields[7] as DateTime?,
-        updatedAt: fields[6] as DateTime?,
+        serverID: (fields[0] as num?)?.toInt(),
+        body: fields[1] == null ? '' : fields[1] as String,
+        filePaths: (fields[2] as List?)?.cast<String>(),
+        syncStatus: fields[3] as String?,
+        syncType: fields[4] as String?,
+        createdAt: fields[6] as DateTime?,
+        updatedAt: fields[5] as DateTime?,
       )
-      ..locationJson = fields[8] as String?
-      ..replyToJson = fields[9] as String?
-      ..repostOfJson = fields[10] as String?
-      ..communityNoteOfJson = fields[11] as String?
-      ..ballotJson = fields[12] as String?
-      ..surveyJson = fields[13] as String?
-      ..petitionJson = fields[14] as String?
-      ..meetingJson = fields[15] as String?
-      ..sectionJson = fields[16] as String?
-      ..tagsJson = fields[17] as String?
-      ..assetsJson = fields[18] as String?;
+      ..locationJson = fields[7] as String?
+      ..replyToJson = fields[8] as String?
+      ..repostOfJson = fields[9] as String?
+      ..communityNoteOfJson = fields[10] as String?
+      ..ballotJson = fields[11] as String?
+      ..surveyJson = fields[12] as String?
+      ..petitionJson = fields[13] as String?
+      ..meetingJson = fields[14] as String?
+      ..sectionJson = fields[15] as String?
+      ..tagsJson = fields[16] as String?
+      ..assetsJson = fields[17] as String?;
   }
 
   @override
   void write(BinaryWriter writer, DraftPost obj) {
     writer
-      ..writeByte(19)
-      ..writeByte(0)
-      ..write(obj.id)
-      ..writeByte(1)
-      ..write(obj.serverID)
-      ..writeByte(2)
-      ..write(obj.body)
-      ..writeByte(3)
-      ..write(obj.filePaths)
-      ..writeByte(4)
-      ..write(obj.syncStatus)
-      ..writeByte(5)
-      ..write(obj.syncType)
-      ..writeByte(6)
-      ..write(obj.updatedAt)
-      ..writeByte(7)
-      ..write(obj.createdAt)
-      ..writeByte(8)
-      ..write(obj.locationJson)
-      ..writeByte(9)
-      ..write(obj.replyToJson)
-      ..writeByte(10)
-      ..write(obj.repostOfJson)
-      ..writeByte(11)
-      ..write(obj.communityNoteOfJson)
-      ..writeByte(12)
-      ..write(obj.ballotJson)
-      ..writeByte(13)
-      ..write(obj.surveyJson)
-      ..writeByte(14)
-      ..write(obj.petitionJson)
-      ..writeByte(15)
-      ..write(obj.meetingJson)
-      ..writeByte(16)
-      ..write(obj.sectionJson)
-      ..writeByte(17)
-      ..write(obj.tagsJson)
       ..writeByte(18)
+      ..writeByte(0)
+      ..write(obj.serverID)
+      ..writeByte(1)
+      ..write(obj.body)
+      ..writeByte(2)
+      ..write(obj.filePaths)
+      ..writeByte(3)
+      ..write(obj.syncStatus)
+      ..writeByte(4)
+      ..write(obj.syncType)
+      ..writeByte(5)
+      ..write(obj.updatedAt)
+      ..writeByte(6)
+      ..write(obj.createdAt)
+      ..writeByte(7)
+      ..write(obj.locationJson)
+      ..writeByte(8)
+      ..write(obj.replyToJson)
+      ..writeByte(9)
+      ..write(obj.repostOfJson)
+      ..writeByte(10)
+      ..write(obj.communityNoteOfJson)
+      ..writeByte(11)
+      ..write(obj.ballotJson)
+      ..writeByte(12)
+      ..write(obj.surveyJson)
+      ..writeByte(13)
+      ..write(obj.petitionJson)
+      ..writeByte(14)
+      ..write(obj.meetingJson)
+      ..writeByte(15)
+      ..write(obj.sectionJson)
+      ..writeByte(16)
+      ..write(obj.tagsJson)
+      ..writeByte(17)
       ..write(obj.assetsJson);
   }
 

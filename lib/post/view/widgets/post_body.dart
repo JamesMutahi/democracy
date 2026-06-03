@@ -4,7 +4,6 @@ import 'package:democracy/app/shared/constants/regex.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class PostBody extends StatefulWidget {
   const PostBody({
@@ -90,7 +89,7 @@ String extractLinkFromPost(Post post) {
       .toList();
 
   // Get all links using base url
-  String baseUrl = dotenv.env['BASE_URL']!;
+  String baseUrl = const String.fromEnvironment('BASE_URL');
   List<String> matchingLinks = [];
   for (String url in urls) {
     if (url.contains(baseUrl)) {

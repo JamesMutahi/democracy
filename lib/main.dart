@@ -51,7 +51,6 @@ import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:talker/talker.dart';
 
@@ -62,12 +61,11 @@ void main() {
   runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
-      await dotenv.load(fileName: ".env");
 
       // Initialize Sentry
       await SentryFlutter.init(
         (options) async {
-          options.dsn = dotenv.env['SENTRY_DSN'];
+          options.dsn = const String.fromEnvironment('SENTRY_DSN');
           options.environment = kDebugMode ? 'development' : 'production';
           options.release = await getRelease();
           options.tracesSampleRate = kDebugMode ? 1.0 : 0.2;

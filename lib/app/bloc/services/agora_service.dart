@@ -1,6 +1,5 @@
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:democracy/meeting/models/meeting.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AgoraService {
   static final AgoraService _instance = AgoraService._internal();
@@ -14,7 +13,7 @@ class AgoraService {
     if (_engine == null) {
       _engine = createAgoraRtcEngine();
       await _engine!.initialize(
-        RtcEngineContext(appId: dotenv.env['AGORA_ID']!),
+        RtcEngineContext(appId: const String.fromEnvironment('AGORA_ID')),
       );
     }
     return _engine!;

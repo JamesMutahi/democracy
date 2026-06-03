@@ -125,13 +125,13 @@ return remove(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  get,TResult Function( DraftPost draft)?  add,TResult Function( DraftPost draft)?  update,TResult Function( int id)?  remove,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  get,TResult Function( DraftPost draft)?  add,TResult Function( DraftPost draft)?  update,TResult Function( int key)?  remove,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get();case _Add() when add != null:
 return add(_that.draft);case _Update() when update != null:
 return update(_that.draft);case _Remove() when remove != null:
-return remove(_that.id);case _:
+return remove(_that.key);case _:
   return orElse();
 
 }
@@ -149,13 +149,13 @@ return remove(_that.id);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  get,required TResult Function( DraftPost draft)  add,required TResult Function( DraftPost draft)  update,required TResult Function( int id)  remove,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  get,required TResult Function( DraftPost draft)  add,required TResult Function( DraftPost draft)  update,required TResult Function( int key)  remove,}) {final _that = this;
 switch (_that) {
 case _Get():
 return get();case _Add():
 return add(_that.draft);case _Update():
 return update(_that.draft);case _Remove():
-return remove(_that.id);}
+return remove(_that.key);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -169,13 +169,13 @@ return remove(_that.id);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  get,TResult? Function( DraftPost draft)?  add,TResult? Function( DraftPost draft)?  update,TResult? Function( int id)?  remove,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  get,TResult? Function( DraftPost draft)?  add,TResult? Function( DraftPost draft)?  update,TResult? Function( int key)?  remove,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get();case _Add() when add != null:
 return add(_that.draft);case _Update() when update != null:
 return update(_that.draft);case _Remove() when remove != null:
-return remove(_that.id);case _:
+return remove(_that.key);case _:
   return null;
 
 }
@@ -351,10 +351,10 @@ as DraftPost,
 
 
 class _Remove implements DraftPostsEvent {
-  const _Remove({required this.id});
+  const _Remove({required this.key});
   
 
- final  int id;
+ final  int key;
 
 /// Create a copy of DraftPostsEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -366,16 +366,16 @@ _$RemoveCopyWith<_Remove> get copyWith => __$RemoveCopyWithImpl<_Remove>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Remove&&(identical(other.id, id) || other.id == id));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Remove&&(identical(other.key, key) || other.key == key));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id);
+int get hashCode => Object.hash(runtimeType,key);
 
 @override
 String toString() {
-  return 'DraftPostsEvent.remove(id: $id)';
+  return 'DraftPostsEvent.remove(key: $key)';
 }
 
 
@@ -386,7 +386,7 @@ abstract mixin class _$RemoveCopyWith<$Res> implements $DraftPostsEventCopyWith<
   factory _$RemoveCopyWith(_Remove value, $Res Function(_Remove) _then) = __$RemoveCopyWithImpl;
 @useResult
 $Res call({
- int id
+ int key
 });
 
 
@@ -403,9 +403,9 @@ class __$RemoveCopyWithImpl<$Res>
 
 /// Create a copy of DraftPostsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? id = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? key = null,}) {
   return _then(_Remove(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+key: null == key ? _self.key : key // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }

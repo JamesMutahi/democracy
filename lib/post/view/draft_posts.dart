@@ -51,7 +51,7 @@ class _DraftsPostsState extends State<DraftPosts> {
           draftPostsBloc.add(DraftPostsEvent.update(draft: state.draft));
         }
         if (state is DraftPostDeleted) {
-          draftPostsBloc.add(DraftPostsEvent.remove(id: state.draft.id));
+          draftPostsBloc.add(DraftPostsEvent.remove(key: state.draft.key));
         }
         if (state is DraftPostSaved) {
           draftPostsBloc.add(DraftPostsEvent.update(draft: state.draft));
@@ -79,7 +79,7 @@ class _DraftsPostsState extends State<DraftPosts> {
               padding: EdgeInsets.only(bottom: 50),
               itemBuilder: (BuildContext context, int index) {
                 DraftPost draft = drafts[index];
-                return DraftTile(key: ValueKey(draft.id), draft: draft);
+                return DraftTile(key: ValueKey(draft.key), draft: draft);
               },
               itemCount: drafts.length,
             );
@@ -119,7 +119,7 @@ class DraftTile extends StatelessWidget {
               Container(
                 margin: EdgeInsets.only(top: 10),
                 child: DraftAssetViewer(
-                  key: ValueKey(draft.id),
+                  key: ValueKey(draft.key),
                   filePaths: draft.filePaths,
                 ),
               ),

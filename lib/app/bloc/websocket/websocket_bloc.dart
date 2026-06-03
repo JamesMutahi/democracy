@@ -7,7 +7,6 @@ import 'package:democracy/app/core/app_logger.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:stream_transform/stream_transform.dart';
 
@@ -45,7 +44,7 @@ class WebsocketBloc extends Bloc<WebsocketEvent, WebsocketState> {
     emit(state.copyWith(status: WebsocketStatus.loading));
     try {
       String ticket = await authRepository.getTicket();
-      String url = '${dotenv.env['WEBSOCKET_URL']!}?uuid=$ticket';
+      String url = '${const String.fromEnvironment('WEBSOCKET_URL')}?uuid=$ticket';
       _subscription = webSocketService.messages.listen((message) {
         if (message.containsKey(websocket)) {
           switch (message[websocket]) {

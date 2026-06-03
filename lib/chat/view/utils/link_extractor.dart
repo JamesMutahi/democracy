@@ -1,6 +1,5 @@
 import 'package:democracy/app/shared/constants/regex.dart';
 import 'package:democracy/chat/models/message.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 String extractLinkFromMessage(Message message) {
   String text = message.text;
@@ -13,7 +12,7 @@ String extractLinkFromMessage(Message message) {
       .toList();
 
   // Get all links using base url
-  String baseUrl = dotenv.env['BASE_URL']!;
+  String baseUrl = const String.fromEnvironment('BASE_URL');
   List<String> matchingLinks = [];
   for (String url in urls) {
     if (url.contains(baseUrl)) {

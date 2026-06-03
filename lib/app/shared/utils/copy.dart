@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 
@@ -10,7 +9,7 @@ void copyLink({
   required int objectId,
 }) async {
   try {
-    String baseUrl = dotenv.env['BASE_URL']!;
+    String baseUrl = const String.fromEnvironment('BASE_URL');
     String text = '$baseUrl$className/$objectId/';
     await Clipboard.setData(ClipboardData(text: text));
     showSuccessToast(navigatorKey: navigatorKey, text: 'Copied');

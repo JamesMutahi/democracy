@@ -1,0 +1,46 @@
+name: Deploy Flutter Web
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      BASE_URL: ${{ vars.BASE_URL }}
+      WEBSOCKET_URL: ${{ vars.WEBSOCKET_URL }}
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      AGORA_ID: ${{ secrets.AGORA_ID }}
+      FAKE_USERNAME: ${{ secrets.FAKE_USERNAME }}
+      FAKE_PASSWORD: ${{ secrets.FAKE_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.44.x"
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+
+      - name: Deploy to GitHub Pages
+        uses: bluefireteam/flutter-gh-pages@v9
+        with:
+          baseHref: /${{ github.event.repository.name }}/
+          customDomain: peopleofkenya.com
+          webRenderer: auto
+          customArgs: >-
+            --dart-define=BASE_URL=${{ vars.BASE_URL }}
+            --dart-define=WEBSOCKET_URL=${{ vars.WEBSOCKET_URL }}
+            --dart-define=SENTRY_DSN=${{ vars.SENTRY_DSN }}
+            --dart-define=AGORA_ID=${{ vars.AGORA_ID }}
+            --dart-define=FAKE_USERNAME=${{ vars.FAKE_USERNAME }}
+            --dart-define=FAKE_PASSWORD=${{ vars.FAKE_PASSWORD }}

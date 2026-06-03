@@ -38,7 +38,7 @@ class DraftPostBloc extends Bloc<DraftPostEvent, DraftPostState> {
         ..filePaths = event.filePaths
         ..location = event.location
         ..updatedAt = DateTime.now();
-      final id = await databaseRepository.saveDraft(draft: drafted);
+      final id = await databaseRepository.createDraft(draft: drafted);
       final draft = await databaseRepository.getDraft(id: id);
       emit(DraftPostSaved(draft: draft));
     } catch (error, stackTrace) {
@@ -50,7 +50,7 @@ class DraftPostBloc extends Bloc<DraftPostEvent, DraftPostState> {
   Future _onUpdate(_Update event, Emitter<DraftPostState> emit) async {
     emit(_Loading());
     try {
-      await databaseRepository.saveDraft(draft: event.draft);
+      await databaseRepository.updateDraft(draft: event.draft);
       emit(DraftPostSaved(draft: event.draft));
     } catch (error, stackTrace) {
       addError(error, stackTrace);

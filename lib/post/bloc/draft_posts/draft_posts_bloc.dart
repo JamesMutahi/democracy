@@ -49,9 +49,9 @@ class DraftPostsBloc extends Bloc<DraftPostsEvent, DraftPostsState> {
 
   void _onUpdate(_Update event, Emitter<DraftPostsState> emit) {
     emit(state.copyWith(status: DraftPostsStatus.loading));
-    final exists = state.drafts.any((d) => d.id == event.draft.id);
+    final exists = state.drafts.any((d) => d.key == event.draft.key);
     if (exists) {
-      final index = state.drafts.indexWhere((d) => d.id == event.draft.id);
+      final index = state.drafts.indexWhere((d) => d.key == event.draft.key);
       if (index == -1) return;
 
       final updatedDrafts = List<DraftPost>.from(state.drafts);
@@ -73,7 +73,7 @@ class DraftPostsBloc extends Bloc<DraftPostsEvent, DraftPostsState> {
   void _onRemove(_Remove event, Emitter<DraftPostsState> emit) {
     emit(state.copyWith(status: DraftPostsStatus.loading));
     final updatedDrafts = state.drafts
-        .where((draft) => draft.id != event.id)
+        .where((draft) => draft.key != event.key)
         .toList();
     emit(
       state.copyWith(drafts: updatedDrafts, status: DraftPostsStatus.success),
