@@ -2,13 +2,13 @@
 
 A true democracy means that the power lies solely with the people and that the people alone are entitled to it and thus, parties, rulers, the powerful, the hierarchical and other rulers are not allowed to decide on any matters independently or even to make propaganda for their ideas.
 
-<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/8aaa9191-6d19-43a3-a716-11f3852d462a" />
-<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/d68b6e17-687b-456d-8554-1cde0c637802" />
-<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/55991cc6-21aa-4f4b-899c-eb5809921eb1" />
-<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/6f2f5b6a-ea84-484c-8eee-df64abedbcae" />
-<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/2c7ee265-3121-4c76-be69-64ea9e1a9879" />
-<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/08851d33-c1d7-4b77-b144-800b3237357a" />
-<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/d1fdc9e7-0c50-4018-b936-2843d428fb35" />
+<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/31c7ada3-1ac6-4cdb-8545-ece613e2132a" />
+<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/673911db-3f64-46d0-8ee5-ab1a84069ff6" />
+<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/c17fc7f5-cac3-4ad6-933d-b33e5bf5028b" />
+<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/8cdffda3-47f6-4861-8d63-211cffe0388a" />
+<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/14a39507-b192-4383-a4d2-f63ee2013d70" />
+<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/0108425b-7f42-4217-8089-31b7b0859900" />
+<img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/a187467a-7bb9-4bf0-88b5-2fc0b94325c3" />
 <img width="320" height="714" alt="Image" src="https://github.com/user-attachments/assets/90f62ccc-1f2f-441a-b104-f41a152a68bb" />
 
 
