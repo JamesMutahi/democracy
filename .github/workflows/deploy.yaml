@@ -37,9 +37,9 @@ jobs:
           baseHref: /
           webRenderer: auto
           customArgs: >-
-            --dart-define=BASE_URL=${{ vars.BASE_URL }}
-            --dart-define=WEBSOCKET_URL=${{ vars.WEBSOCKET_URL }}
-            --dart-define=SENTRY_DSN=${{ vars.SENTRY_DSN }}
-            --dart-define=AGORA_ID=${{ vars.AGORA_ID }}
-            --dart-define=FAKE_USERNAME=${{ vars.FAKE_USERNAME }}
-            --dart-define=FAKE_PASSWORD=${{ vars.FAKE_PASSWORD }}
+            --dart-define=BASE_URL="${{ env.BASE_URL }}"
+            --dart-define=WEBSOCKET_URL="${{ env.WEBSOCKET_URL }}"
+            --dart-define=SENTRY_DSN="${{ env.SENTRY_DSN }}"
+            --dart-define=AGORA_ID="${{ env.AGORA_ID }}"
+            --dart-define=FAKE_USERNAME="${{ env.FAKE_USERNAME }}"
+            --dart-define=FAKE_PASSWORD="${{ env.FAKE_PASSWORD }}"
