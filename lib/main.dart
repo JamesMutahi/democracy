@@ -118,6 +118,8 @@ void main() {
           // Initialize Database
           await initializeHive();
 
+          print("API Base: ${const String.fromEnvironment('BASE_URL')}");
+
           // Finally run the app
           runApp(
             MultiRepositoryProvider(
