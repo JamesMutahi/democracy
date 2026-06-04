@@ -8,7 +8,6 @@ import 'package:democracy/app/bloc/repository/api/api_repository.dart';
 import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/bloc/repository/database/database_repository.dart';
 import 'package:democracy/app/bloc/route/route_cubit.dart';
-import 'package:democracy/app/bloc/sync/sync_bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/bloc/services/token_interceptor.dart';
@@ -320,13 +319,6 @@ void main() {
                     ),
                   ),
                   BlocProvider(create: (context) => LocationCubit()),
-                  BlocProvider(
-                    create: (context) => SyncBloc(
-                      apiRepository: context.read<APIRepository>(),
-                      databaseRepository: context.read<DatabaseRepository>(),
-                    )..add(SyncEvent.start()),
-                    lazy: false,
-                  ),
                   BlocProvider(
                     create: (context) => HashtagsBloc(
                       webSocketService: context.read<WebSocketService>(),

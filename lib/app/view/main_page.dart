@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
 import 'package:democracy/app/bloc/menu_controller/menu_controller_cubit.dart';
+import 'package:democracy/app/bloc/repository/api/api_repository.dart';
 import 'package:democracy/app/bloc/repository/database/database_repository.dart';
 import 'package:democracy/app/bloc/route/route_cubit.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
@@ -43,6 +44,13 @@ class _MainPageState extends State<MainPage> {
 
     return MultiBlocProvider(
       providers: [
+        BlocProvider(
+          create: (context) => SyncBloc(
+            apiRepository: context.read<APIRepository>(),
+            databaseRepository: context.read<DatabaseRepository>(),
+          )..add(SyncEvent.start()),
+          lazy: false,
+        ),
         BlocProvider(
           create: (context) =>
               ForYouBloc(webSocketService: context.read<WebSocketService>()),

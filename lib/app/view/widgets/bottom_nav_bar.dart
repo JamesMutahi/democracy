@@ -64,7 +64,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                             ),
                           ),
                           color: currentRoute == CreationBottomSheet.name
-                              ? Theme.of(context).primaryColor
+                              ? null
                               : Theme.of(context).disabledColor,
                           icon: Icon(
                             Symbols.add_rounded,

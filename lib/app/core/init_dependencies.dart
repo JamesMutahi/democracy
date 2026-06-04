@@ -162,8 +162,12 @@ class MyNetworkClient {
         baseUrl: const String.fromEnvironment('BASE_URL'),
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
         validateStatus: (status) {
-          return status != null && status >= 200 && status <= 400;
+          return status != null && status >= 200 && status < 300;
         },
       ),
     );
