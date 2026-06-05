@@ -9,8 +9,8 @@ void copyLink({
   required int objectId,
 }) async {
   try {
-    String baseUrl = const String.fromEnvironment('BASE_URL');
-    String text = '$baseUrl$className/$objectId/';
+    String linkUrl = const String.fromEnvironment('LINK_URL');
+    String text = '$linkUrl$className/$objectId/';
     await Clipboard.setData(ClipboardData(text: text));
     showSuccessToast(navigatorKey: navigatorKey, text: 'Copied');
   } catch (e) {

@@ -52,6 +52,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:talker/talker.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 
 void main() {
   // Force zone errors to be fatal immediately
@@ -118,7 +119,7 @@ void main() {
           // Initialize Database
           await initializeHive();
 
-          print("API Base: ${const String.fromEnvironment('BASE_URL')}");
+          usePathUrlStrategy();
 
           // Finally run the app
           runApp(
