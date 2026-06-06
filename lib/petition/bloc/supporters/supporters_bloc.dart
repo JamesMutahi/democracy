@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
-import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -40,7 +39,7 @@ class SupportersBloc extends Bloc<SupportersEvent, SupportersState> {
       'payload': {
         'action': action,
         'request_id': requestId,
-        'pk': event.petition.id,
+        'pk': event.petitionId,
         'last_user': event.lastUser?.id,
       },
     };

@@ -377,7 +377,7 @@ class _CommunityNoteState extends State<CommunityNote> {
       ),
       child: InkWell(
         onTap: () {
-          context.router.push(CommunityNotes(post: widget.post));
+          context.router.push(CommunityNotes(postId: widget.post.id));
         },
         child: Padding(
           padding: const EdgeInsets.all(10.0),

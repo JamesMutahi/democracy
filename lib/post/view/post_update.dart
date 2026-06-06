@@ -1,11 +1,14 @@
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/bloc/repository/database/database_repository.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/camera/camera.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
+import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
+import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/file_widget.dart';
 import 'package:democracy/app/shared/widgets/loader_overlay_widgets.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
@@ -14,7 +17,8 @@ import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/meeting/view/widgets/meeting_tile.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart';
-import 'package:democracy/post/bloc/draft_post/draft_post_bloc.dart';
+import 'package:democracy/post/bloc/draft/draft_bloc.dart';
+import 'package:democracy/post/bloc/draft_detail/draft_detail_bloc.dart';
 import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
 import 'package:democracy/post/models/draft_post.dart';
@@ -34,16 +38,58 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:path/path.dart' as p;
 
 @RoutePage()
-class PostUpdatePage extends StatefulWidget {
-  const PostUpdatePage({super.key, required this.draft});
+class PostUpdate extends StatelessWidget {
+  const PostUpdate({super.key, @PathParam('id') required this.draftId});
+
+  final int draftId;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>
+          DraftBloc(databaseRepository: context.read<DatabaseRepository>())
+            ..add(DraftEvent.load(draftId: draftId)),
+      child: Scaffold(
+        body: BlocBuilder<DraftBloc, DraftState>(
+          buildWhen: (previous, current) => current.draftId == draftId,
+          builder: (context, state) {
+            if (state.status == DraftStatus.initial ||
+                (state.status == DraftStatus.loading && state.draft == null)) {
+              return BottomLoader();
+            }
+            if (state.status == DraftStatus.failure && state.draft == null) {
+              return FailureRetryButton(
+                onPressed: () {
+                  context.read<DraftBloc>().add(
+                    DraftEvent.load(draftId: draftId),
+                  );
+                },
+              );
+            }
+            if (state.status == DraftStatus.notFound) {
+              return Scaffold(
+                appBar: AppBar(title: Text('Edit post')),
+                body: Center(child: Text('Draft not found')),
+              );
+            }
+            return _PostUpdate(draft: state.draft!);
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _PostUpdate extends StatefulWidget {
+  const _PostUpdate({required this.draft});
 
   final DraftPost draft;
 
   @override
-  State<PostUpdatePage> createState() => _PostUpdatePageState();
+  State<_PostUpdate> createState() => _PostUpdateState();
 }
 
-class _PostUpdatePageState extends State<PostUpdatePage> {
+class _PostUpdateState extends State<_PostUpdate> {
   late final _controller = FlutterTaggerController();
   final ValueKey _centerKey = ValueKey('Center');
 
@@ -78,9 +124,6 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
     if (widget.draft.replyTo != null) {
       context.read<ReplyToBloc>().add(
         ReplyToEvent.get(postId: widget.draft.replyTo!.id),
-      );
-      context.read<ReplyToBloc>().add(
-        ReplyToEvent.add(post: widget.draft.replyTo!),
       );
     }
   }
@@ -119,8 +162,8 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
   }
 
   void _deleteDraft() {
-    context.read<DraftPostBloc>().add(
-      DraftPostEvent.delete(draft: widget.draft),
+    context.read<DraftDetailBloc>().add(
+      DraftDetailEvent.delete(draft: widget.draft),
     );
   }
 
@@ -147,7 +190,7 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
     ];
     draft.location = _selectedLocation;
 
-    context.read<DraftPostBloc>().add(DraftPostEvent.update(draft: draft));
+    context.read<DraftDetailBloc>().add(DraftDetailEvent.update(draft: draft));
     Future.delayed(Duration(seconds: 10), () {
       if (mounted) {
         context.loaderOverlay.hide();
@@ -223,37 +266,26 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
                 }
               },
             ),
-            BlocListener<DraftPostBloc, DraftPostState>(
+            BlocListener<DraftDetailBloc, DraftDetailState>(
               listener: (context, state) {
-                if (state is DraftPostSaved) {
+                if (state is DraftSaved) {
                   context.router.popTop();
-                }
-              },
-            ),
-            BlocListener<ReplyToBloc, ReplyToState>(
-              listener: (context, state) {
-                if (state.status == ReplyToStatus.success) {
-                  if (widget.draft.replyTo != null) {
-                    context.read<ReplyToBloc>().add(
-                      ReplyToEvent.add(post: widget.draft.replyTo!),
-                    );
-                  }
                 }
               },
             ),
           ],
           child: LoaderOverlay(
             overlayWidgetBuilder: (_) {
-              return BlocBuilder<DraftPostBloc, DraftPostState>(
+              return BlocBuilder<DraftDetailBloc, DraftDetailState>(
                 builder: (context, draftPostState) {
                   return BlocBuilder<PostCreateBloc, PostCreateState>(
                     builder: (context, postCreateState) {
                       return postCreateState.status ==
                                   PostCreateStatus.failure ||
-                              draftPostState is DraftPostFailure
+                              draftPostState is DraftDetailFailure
                           ? LoaderOverlayFailure(
                               onRetry: () {
-                                if (draftPostState is DraftPostFailure) {
+                                if (draftPostState is DraftDetailFailure) {
                                   _saveDraft();
                                 } else {
                                   context.read<PostCreateBloc>().add(
@@ -305,7 +337,7 @@ class _PostUpdatePageState extends State<PostUpdatePage> {
                 center: _centerKey,
                 slivers: [
                   if (widget.draft.replyTo != null)
-                    ReplyTos(post: widget.draft.replyTo!),
+                    ReplyTos(postId: widget.draft.replyTo!.id),
                   SliverToBoxAdapter(key: _centerKey, child: _buildPostForm()),
                 ],
               ),

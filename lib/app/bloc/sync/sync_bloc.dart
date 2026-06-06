@@ -65,7 +65,7 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
           status: PostStatus.published,
           repostOf: draft.repostOf,
           replyTo: draft.replyTo,
-          communityNoteOf: draft.communityNoteOf,
+          communityNoteOfId: draft.communityNoteOf?.id,
           ballot: draft.ballot,
           survey: draft.survey,
           petition: draft.petition,

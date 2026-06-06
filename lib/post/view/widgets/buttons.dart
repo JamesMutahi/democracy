@@ -153,7 +153,7 @@ class PostPopUp extends StatelessWidget {
         break;
 
       case 'Community notes':
-        context.router.push(CommunityNotes(post: post));
+        context.router.push(CommunityNotes(postId: post.id));
         break;
     }
   }

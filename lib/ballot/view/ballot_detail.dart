@@ -359,6 +359,7 @@ class _ReasonWidgetState extends State<ReasonWidget> {
                   minWidth: 0,
                   minHeight: 0,
                 ),
+                hoverColor: Colors.transparent,
                 border: InputBorder.none,
                 focusedBorder: UnderlineInputBorder(
                   borderRadius: BorderRadius.circular(0),

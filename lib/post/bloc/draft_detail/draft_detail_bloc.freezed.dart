@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'draft_post_bloc.dart';
+part of 'draft_detail_bloc.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -12,7 +12,7 @@ part of 'draft_post_bloc.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$DraftPostEvent {
+mixin _$DraftDetailEvent {
 
 
 
@@ -20,7 +20,7 @@ mixin _$DraftPostEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DraftPostEvent);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DraftDetailEvent);
 }
 
 
@@ -29,20 +29,20 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'DraftPostEvent()';
+  return 'DraftDetailEvent()';
 }
 
 
 }
 
 /// @nodoc
-class $DraftPostEventCopyWith<$Res>  {
-$DraftPostEventCopyWith(DraftPostEvent _, $Res Function(DraftPostEvent) __);
+class $DraftDetailEventCopyWith<$Res>  {
+$DraftDetailEventCopyWith(DraftDetailEvent _, $Res Function(DraftDetailEvent) __);
 }
 
 
-/// Adds pattern-matching-related methods to [DraftPostEvent].
-extension DraftPostEventPatterns on DraftPostEvent {
+/// Adds pattern-matching-related methods to [DraftDetailEvent].
+extension DraftDetailEventPatterns on DraftDetailEvent {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -180,7 +180,7 @@ return delete(_that.draft);case _:
 /// @nodoc
 
 
-class _Create implements DraftPostEvent {
+class _Create implements DraftDetailEvent {
   const _Create({required this.id, required this.body, this.repostOf, this.replyTo, this.communityNoteOf, this.ballot, this.survey, this.petition, this.meeting, this.section, final  List<Map<String, String>> tags = const [], final  List<String> filePaths = const [], this.location}): _tags = tags,_filePaths = filePaths;
   
 
@@ -210,7 +210,7 @@ class _Create implements DraftPostEvent {
 
  final  LatLng? location;
 
-/// Create a copy of DraftPostEvent
+/// Create a copy of DraftDetailEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -229,14 +229,14 @@ int get hashCode => Object.hash(runtimeType,id,body,repostOf,replyTo,communityNo
 
 @override
 String toString() {
-  return 'DraftPostEvent.create(id: $id, body: $body, repostOf: $repostOf, replyTo: $replyTo, communityNoteOf: $communityNoteOf, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, section: $section, tags: $tags, filePaths: $filePaths, location: $location)';
+  return 'DraftDetailEvent.create(id: $id, body: $body, repostOf: $repostOf, replyTo: $replyTo, communityNoteOf: $communityNoteOf, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, section: $section, tags: $tags, filePaths: $filePaths, location: $location)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$CreateCopyWith<$Res> implements $DraftPostEventCopyWith<$Res> {
+abstract mixin class _$CreateCopyWith<$Res> implements $DraftDetailEventCopyWith<$Res> {
   factory _$CreateCopyWith(_Create value, $Res Function(_Create) _then) = __$CreateCopyWithImpl;
 @useResult
 $Res call({
@@ -255,7 +255,7 @@ class __$CreateCopyWithImpl<$Res>
   final _Create _self;
   final $Res Function(_Create) _then;
 
-/// Create a copy of DraftPostEvent
+/// Create a copy of DraftDetailEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? body = null,Object? repostOf = freezed,Object? replyTo = freezed,Object? communityNoteOf = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? meeting = freezed,Object? section = freezed,Object? tags = null,Object? filePaths = null,Object? location = freezed,}) {
   return _then(_Create(
@@ -276,7 +276,7 @@ as LatLng?,
   ));
 }
 
-/// Create a copy of DraftPostEvent
+/// Create a copy of DraftDetailEvent
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -288,7 +288,7 @@ $PostCopyWith<$Res>? get repostOf {
   return $PostCopyWith<$Res>(_self.repostOf!, (value) {
     return _then(_self.copyWith(repostOf: value));
   });
-}/// Create a copy of DraftPostEvent
+}/// Create a copy of DraftDetailEvent
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -300,7 +300,7 @@ $PostCopyWith<$Res>? get replyTo {
   return $PostCopyWith<$Res>(_self.replyTo!, (value) {
     return _then(_self.copyWith(replyTo: value));
   });
-}/// Create a copy of DraftPostEvent
+}/// Create a copy of DraftDetailEvent
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -312,7 +312,7 @@ $PostCopyWith<$Res>? get communityNoteOf {
   return $PostCopyWith<$Res>(_self.communityNoteOf!, (value) {
     return _then(_self.copyWith(communityNoteOf: value));
   });
-}/// Create a copy of DraftPostEvent
+}/// Create a copy of DraftDetailEvent
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -324,7 +324,7 @@ $BallotCopyWith<$Res>? get ballot {
   return $BallotCopyWith<$Res>(_self.ballot!, (value) {
     return _then(_self.copyWith(ballot: value));
   });
-}/// Create a copy of DraftPostEvent
+}/// Create a copy of DraftDetailEvent
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -336,7 +336,7 @@ $SurveyCopyWith<$Res>? get survey {
   return $SurveyCopyWith<$Res>(_self.survey!, (value) {
     return _then(_self.copyWith(survey: value));
   });
-}/// Create a copy of DraftPostEvent
+}/// Create a copy of DraftDetailEvent
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -348,7 +348,7 @@ $PetitionCopyWith<$Res>? get petition {
   return $PetitionCopyWith<$Res>(_self.petition!, (value) {
     return _then(_self.copyWith(petition: value));
   });
-}/// Create a copy of DraftPostEvent
+}/// Create a copy of DraftDetailEvent
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -360,7 +360,7 @@ $MeetingCopyWith<$Res>? get meeting {
   return $MeetingCopyWith<$Res>(_self.meeting!, (value) {
     return _then(_self.copyWith(meeting: value));
   });
-}/// Create a copy of DraftPostEvent
+}/// Create a copy of DraftDetailEvent
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -378,13 +378,13 @@ $SectionCopyWith<$Res>? get section {
 /// @nodoc
 
 
-class _Update implements DraftPostEvent {
+class _Update implements DraftDetailEvent {
   const _Update({required this.draft});
   
 
  final  DraftPost draft;
 
-/// Create a copy of DraftPostEvent
+/// Create a copy of DraftDetailEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -403,14 +403,14 @@ int get hashCode => Object.hash(runtimeType,draft);
 
 @override
 String toString() {
-  return 'DraftPostEvent.update(draft: $draft)';
+  return 'DraftDetailEvent.update(draft: $draft)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$UpdateCopyWith<$Res> implements $DraftPostEventCopyWith<$Res> {
+abstract mixin class _$UpdateCopyWith<$Res> implements $DraftDetailEventCopyWith<$Res> {
   factory _$UpdateCopyWith(_Update value, $Res Function(_Update) _then) = __$UpdateCopyWithImpl;
 @useResult
 $Res call({
@@ -429,7 +429,7 @@ class __$UpdateCopyWithImpl<$Res>
   final _Update _self;
   final $Res Function(_Update) _then;
 
-/// Create a copy of DraftPostEvent
+/// Create a copy of DraftDetailEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? draft = null,}) {
   return _then(_Update(
@@ -444,13 +444,13 @@ as DraftPost,
 /// @nodoc
 
 
-class _Delete implements DraftPostEvent {
+class _Delete implements DraftDetailEvent {
   const _Delete({required this.draft});
   
 
  final  DraftPost draft;
 
-/// Create a copy of DraftPostEvent
+/// Create a copy of DraftDetailEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -469,14 +469,14 @@ int get hashCode => Object.hash(runtimeType,draft);
 
 @override
 String toString() {
-  return 'DraftPostEvent.delete(draft: $draft)';
+  return 'DraftDetailEvent.delete(draft: $draft)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$DeleteCopyWith<$Res> implements $DraftPostEventCopyWith<$Res> {
+abstract mixin class _$DeleteCopyWith<$Res> implements $DraftDetailEventCopyWith<$Res> {
   factory _$DeleteCopyWith(_Delete value, $Res Function(_Delete) _then) = __$DeleteCopyWithImpl;
 @useResult
 $Res call({
@@ -495,7 +495,7 @@ class __$DeleteCopyWithImpl<$Res>
   final _Delete _self;
   final $Res Function(_Delete) _then;
 
-/// Create a copy of DraftPostEvent
+/// Create a copy of DraftDetailEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? draft = null,}) {
   return _then(_Delete(
@@ -508,7 +508,7 @@ as DraftPost,
 }
 
 /// @nodoc
-mixin _$DraftPostState {
+mixin _$DraftDetailState {
 
 
 
@@ -516,7 +516,7 @@ mixin _$DraftPostState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DraftPostState);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DraftDetailState);
 }
 
 
@@ -525,20 +525,20 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'DraftPostState()';
+  return 'DraftDetailState()';
 }
 
 
 }
 
 /// @nodoc
-class $DraftPostStateCopyWith<$Res>  {
-$DraftPostStateCopyWith(DraftPostState _, $Res Function(DraftPostState) __);
+class $DraftDetailStateCopyWith<$Res>  {
+$DraftDetailStateCopyWith(DraftDetailState _, $Res Function(DraftDetailState) __);
 }
 
 
-/// Adds pattern-matching-related methods to [DraftPostState].
-extension DraftPostStatePatterns on DraftPostState {
+/// Adds pattern-matching-related methods to [DraftDetailState].
+extension DraftDetailStatePatterns on DraftDetailState {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -551,15 +551,15 @@ extension DraftPostStatePatterns on DraftPostState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( DraftPostSaved value)?  saved,TResult Function( DraftPostDeleted value)?  deleted,TResult Function( DraftPostsCleared value)?  cleared,TResult Function( DraftPostFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( DraftSaved value)?  saved,TResult Function( DraftDeleted value)?  deleted,TResult Function( DraftsCleared value)?  cleared,TResult Function( DraftDetailFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
-return loading(_that);case DraftPostSaved() when saved != null:
-return saved(_that);case DraftPostDeleted() when deleted != null:
-return deleted(_that);case DraftPostsCleared() when cleared != null:
-return cleared(_that);case DraftPostFailure() when failure != null:
+return loading(_that);case DraftSaved() when saved != null:
+return saved(_that);case DraftDeleted() when deleted != null:
+return deleted(_that);case DraftsCleared() when cleared != null:
+return cleared(_that);case DraftDetailFailure() when failure != null:
 return failure(_that);case _:
   return orElse();
 
@@ -578,15 +578,15 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( DraftPostSaved value)  saved,required TResult Function( DraftPostDeleted value)  deleted,required TResult Function( DraftPostsCleared value)  cleared,required TResult Function( DraftPostFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( DraftSaved value)  saved,required TResult Function( DraftDeleted value)  deleted,required TResult Function( DraftsCleared value)  cleared,required TResult Function( DraftDetailFailure value)  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial():
 return initial(_that);case _Loading():
-return loading(_that);case DraftPostSaved():
-return saved(_that);case DraftPostDeleted():
-return deleted(_that);case DraftPostsCleared():
-return cleared(_that);case DraftPostFailure():
+return loading(_that);case DraftSaved():
+return saved(_that);case DraftDeleted():
+return deleted(_that);case DraftsCleared():
+return cleared(_that);case DraftDetailFailure():
 return failure(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -604,15 +604,15 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( DraftPostSaved value)?  saved,TResult? Function( DraftPostDeleted value)?  deleted,TResult? Function( DraftPostsCleared value)?  cleared,TResult? Function( DraftPostFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( DraftSaved value)?  saved,TResult? Function( DraftDeleted value)?  deleted,TResult? Function( DraftsCleared value)?  cleared,TResult? Function( DraftDetailFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
-return loading(_that);case DraftPostSaved() when saved != null:
-return saved(_that);case DraftPostDeleted() when deleted != null:
-return deleted(_that);case DraftPostsCleared() when cleared != null:
-return cleared(_that);case DraftPostFailure() when failure != null:
+return loading(_that);case DraftSaved() when saved != null:
+return saved(_that);case DraftDeleted() when deleted != null:
+return deleted(_that);case DraftsCleared() when cleared != null:
+return cleared(_that);case DraftDetailFailure() when failure != null:
 return failure(_that);case _:
   return null;
 
@@ -634,10 +634,10 @@ return failure(_that);case _:
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
-return loading();case DraftPostSaved() when saved != null:
-return saved(_that.draft);case DraftPostDeleted() when deleted != null:
-return deleted(_that.draft);case DraftPostsCleared() when cleared != null:
-return cleared();case DraftPostFailure() when failure != null:
+return loading();case DraftSaved() when saved != null:
+return saved(_that.draft);case DraftDeleted() when deleted != null:
+return deleted(_that.draft);case DraftsCleared() when cleared != null:
+return cleared();case DraftDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return orElse();
 
@@ -660,10 +660,10 @@ return failure(_that.error);case _:
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
-return loading();case DraftPostSaved():
-return saved(_that.draft);case DraftPostDeleted():
-return deleted(_that.draft);case DraftPostsCleared():
-return cleared();case DraftPostFailure():
+return loading();case DraftSaved():
+return saved(_that.draft);case DraftDeleted():
+return deleted(_that.draft);case DraftsCleared():
+return cleared();case DraftDetailFailure():
 return failure(_that.error);case _:
   throw StateError('Unexpected subclass');
 
@@ -685,10 +685,10 @@ return failure(_that.error);case _:
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
-return loading();case DraftPostSaved() when saved != null:
-return saved(_that.draft);case DraftPostDeleted() when deleted != null:
-return deleted(_that.draft);case DraftPostsCleared() when cleared != null:
-return cleared();case DraftPostFailure() when failure != null:
+return loading();case DraftSaved() when saved != null:
+return saved(_that.draft);case DraftDeleted() when deleted != null:
+return deleted(_that.draft);case DraftsCleared() when cleared != null:
+return cleared();case DraftDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return null;
 
@@ -700,7 +700,7 @@ return failure(_that.error);case _:
 /// @nodoc
 
 
-class _Initial implements DraftPostState {
+class _Initial implements DraftDetailState {
   const _Initial();
   
 
@@ -720,7 +720,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'DraftPostState.initial()';
+  return 'DraftDetailState.initial()';
 }
 
 
@@ -732,7 +732,7 @@ String toString() {
 /// @nodoc
 
 
-class _Loading implements DraftPostState {
+class _Loading implements DraftDetailState {
   const _Loading();
   
 
@@ -752,7 +752,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'DraftPostState.loading()';
+  return 'DraftDetailState.loading()';
 }
 
 
@@ -764,23 +764,23 @@ String toString() {
 /// @nodoc
 
 
-class DraftPostSaved implements DraftPostState {
-  const DraftPostSaved({required this.draft});
+class DraftSaved implements DraftDetailState {
+  const DraftSaved({required this.draft});
   
 
  final  DraftPost draft;
 
-/// Create a copy of DraftPostState
+/// Create a copy of DraftDetailState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$DraftPostSavedCopyWith<DraftPostSaved> get copyWith => _$DraftPostSavedCopyWithImpl<DraftPostSaved>(this, _$identity);
+$DraftSavedCopyWith<DraftSaved> get copyWith => _$DraftSavedCopyWithImpl<DraftSaved>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DraftPostSaved&&(identical(other.draft, draft) || other.draft == draft));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DraftSaved&&(identical(other.draft, draft) || other.draft == draft));
 }
 
 
@@ -789,15 +789,15 @@ int get hashCode => Object.hash(runtimeType,draft);
 
 @override
 String toString() {
-  return 'DraftPostState.saved(draft: $draft)';
+  return 'DraftDetailState.saved(draft: $draft)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $DraftPostSavedCopyWith<$Res> implements $DraftPostStateCopyWith<$Res> {
-  factory $DraftPostSavedCopyWith(DraftPostSaved value, $Res Function(DraftPostSaved) _then) = _$DraftPostSavedCopyWithImpl;
+abstract mixin class $DraftSavedCopyWith<$Res> implements $DraftDetailStateCopyWith<$Res> {
+  factory $DraftSavedCopyWith(DraftSaved value, $Res Function(DraftSaved) _then) = _$DraftSavedCopyWithImpl;
 @useResult
 $Res call({
  DraftPost draft
@@ -808,17 +808,17 @@ $Res call({
 
 }
 /// @nodoc
-class _$DraftPostSavedCopyWithImpl<$Res>
-    implements $DraftPostSavedCopyWith<$Res> {
-  _$DraftPostSavedCopyWithImpl(this._self, this._then);
+class _$DraftSavedCopyWithImpl<$Res>
+    implements $DraftSavedCopyWith<$Res> {
+  _$DraftSavedCopyWithImpl(this._self, this._then);
 
-  final DraftPostSaved _self;
-  final $Res Function(DraftPostSaved) _then;
+  final DraftSaved _self;
+  final $Res Function(DraftSaved) _then;
 
-/// Create a copy of DraftPostState
+/// Create a copy of DraftDetailState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? draft = null,}) {
-  return _then(DraftPostSaved(
+  return _then(DraftSaved(
 draft: null == draft ? _self.draft : draft // ignore: cast_nullable_to_non_nullable
 as DraftPost,
   ));
@@ -830,23 +830,23 @@ as DraftPost,
 /// @nodoc
 
 
-class DraftPostDeleted implements DraftPostState {
-  const DraftPostDeleted({required this.draft});
+class DraftDeleted implements DraftDetailState {
+  const DraftDeleted({required this.draft});
   
 
  final  DraftPost draft;
 
-/// Create a copy of DraftPostState
+/// Create a copy of DraftDetailState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$DraftPostDeletedCopyWith<DraftPostDeleted> get copyWith => _$DraftPostDeletedCopyWithImpl<DraftPostDeleted>(this, _$identity);
+$DraftDeletedCopyWith<DraftDeleted> get copyWith => _$DraftDeletedCopyWithImpl<DraftDeleted>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DraftPostDeleted&&(identical(other.draft, draft) || other.draft == draft));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DraftDeleted&&(identical(other.draft, draft) || other.draft == draft));
 }
 
 
@@ -855,15 +855,15 @@ int get hashCode => Object.hash(runtimeType,draft);
 
 @override
 String toString() {
-  return 'DraftPostState.deleted(draft: $draft)';
+  return 'DraftDetailState.deleted(draft: $draft)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $DraftPostDeletedCopyWith<$Res> implements $DraftPostStateCopyWith<$Res> {
-  factory $DraftPostDeletedCopyWith(DraftPostDeleted value, $Res Function(DraftPostDeleted) _then) = _$DraftPostDeletedCopyWithImpl;
+abstract mixin class $DraftDeletedCopyWith<$Res> implements $DraftDetailStateCopyWith<$Res> {
+  factory $DraftDeletedCopyWith(DraftDeleted value, $Res Function(DraftDeleted) _then) = _$DraftDeletedCopyWithImpl;
 @useResult
 $Res call({
  DraftPost draft
@@ -874,17 +874,17 @@ $Res call({
 
 }
 /// @nodoc
-class _$DraftPostDeletedCopyWithImpl<$Res>
-    implements $DraftPostDeletedCopyWith<$Res> {
-  _$DraftPostDeletedCopyWithImpl(this._self, this._then);
+class _$DraftDeletedCopyWithImpl<$Res>
+    implements $DraftDeletedCopyWith<$Res> {
+  _$DraftDeletedCopyWithImpl(this._self, this._then);
 
-  final DraftPostDeleted _self;
-  final $Res Function(DraftPostDeleted) _then;
+  final DraftDeleted _self;
+  final $Res Function(DraftDeleted) _then;
 
-/// Create a copy of DraftPostState
+/// Create a copy of DraftDetailState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? draft = null,}) {
-  return _then(DraftPostDeleted(
+  return _then(DraftDeleted(
 draft: null == draft ? _self.draft : draft // ignore: cast_nullable_to_non_nullable
 as DraftPost,
   ));
@@ -896,8 +896,8 @@ as DraftPost,
 /// @nodoc
 
 
-class DraftPostsCleared implements DraftPostState {
-  const DraftPostsCleared();
+class DraftsCleared implements DraftDetailState {
+  const DraftsCleared();
   
 
 
@@ -907,7 +907,7 @@ class DraftPostsCleared implements DraftPostState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DraftPostsCleared);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DraftsCleared);
 }
 
 
@@ -916,7 +916,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'DraftPostState.cleared()';
+  return 'DraftDetailState.cleared()';
 }
 
 
@@ -928,23 +928,23 @@ String toString() {
 /// @nodoc
 
 
-class DraftPostFailure implements DraftPostState {
-  const DraftPostFailure({required this.error});
+class DraftDetailFailure implements DraftDetailState {
+  const DraftDetailFailure({required this.error});
   
 
  final  String error;
 
-/// Create a copy of DraftPostState
+/// Create a copy of DraftDetailState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$DraftPostFailureCopyWith<DraftPostFailure> get copyWith => _$DraftPostFailureCopyWithImpl<DraftPostFailure>(this, _$identity);
+$DraftDetailFailureCopyWith<DraftDetailFailure> get copyWith => _$DraftDetailFailureCopyWithImpl<DraftDetailFailure>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DraftPostFailure&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DraftDetailFailure&&(identical(other.error, error) || other.error == error));
 }
 
 
@@ -953,15 +953,15 @@ int get hashCode => Object.hash(runtimeType,error);
 
 @override
 String toString() {
-  return 'DraftPostState.failure(error: $error)';
+  return 'DraftDetailState.failure(error: $error)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $DraftPostFailureCopyWith<$Res> implements $DraftPostStateCopyWith<$Res> {
-  factory $DraftPostFailureCopyWith(DraftPostFailure value, $Res Function(DraftPostFailure) _then) = _$DraftPostFailureCopyWithImpl;
+abstract mixin class $DraftDetailFailureCopyWith<$Res> implements $DraftDetailStateCopyWith<$Res> {
+  factory $DraftDetailFailureCopyWith(DraftDetailFailure value, $Res Function(DraftDetailFailure) _then) = _$DraftDetailFailureCopyWithImpl;
 @useResult
 $Res call({
  String error
@@ -972,17 +972,17 @@ $Res call({
 
 }
 /// @nodoc
-class _$DraftPostFailureCopyWithImpl<$Res>
-    implements $DraftPostFailureCopyWith<$Res> {
-  _$DraftPostFailureCopyWithImpl(this._self, this._then);
+class _$DraftDetailFailureCopyWithImpl<$Res>
+    implements $DraftDetailFailureCopyWith<$Res> {
+  _$DraftDetailFailureCopyWithImpl(this._self, this._then);
 
-  final DraftPostFailure _self;
-  final $Res Function(DraftPostFailure) _then;
+  final DraftDetailFailure _self;
+  final $Res Function(DraftDetailFailure) _then;
 
-/// Create a copy of DraftPostState
+/// Create a copy of DraftDetailState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? error = null,}) {
-  return _then(DraftPostFailure(
+  return _then(DraftDetailFailure(
 error: null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String,
   ));

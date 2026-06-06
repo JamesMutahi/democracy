@@ -30,24 +30,21 @@ class AppRouter extends RootStackRouter {
         AutoRoute(path: 'ballots', page: BallotRoute.page),
         AutoRoute(path: 'ballot/:id', page: BallotDetail.page),
 
-        AutoRoute(
-          path: 'chat/:id',
-          page: ChatDetail.page,
-          children: [AutoRoute(path: 'message/:id', page: EditMessage.page)],
-        ),
+        AutoRoute(path: 'chat/:id', page: ChatDetail.page),
         AutoRoute(path: 'create-message', page: CreateMessage.page),
+        AutoRoute(path: 'message/:id', page: EditMessage.page),
 
         AutoRoute(path: 'create-post', page: PostCreateRoute.page),
         AutoRoute(path: 'post/:id', page: PostDetail.page),
         AutoRoute(path: 'post/:id/community-notes', page: CommunityNotes.page),
         AutoRoute(
-          path: 'create-community-note',
+          path: 'post/:id/create-community-note',
           page: CommunityNoteCreate.page,
         ),
         AutoRoute(path: 'community-note/:id', page: CommunityNoteDetail.page),
 
         AutoRoute(path: 'drafts', page: DraftPosts.page),
-        AutoRoute(path: 'draft/:id', page: PostUpdateRoute.page),
+        AutoRoute(path: 'draft/:id', page: PostUpdate.page),
 
         AutoRoute(path: 'profile/:id', page: ProfileRoute.page),
         AutoRoute(path: 'profile/:id/edit', page: EditProfile.page),
@@ -68,11 +65,8 @@ class AppRouter extends RootStackRouter {
 
         AutoRoute(path: 'petitions', page: PetitionRoute.page),
         AutoRoute(path: 'create-petition', page: PetitionCreate.page),
-        AutoRoute(
-          path: 'petition/:id',
-          page: PetitionDetail.page,
-          children: [AutoRoute(path: 'supporters', page: Supporters.page)],
-        ),
+        AutoRoute(path: 'petition/:id', page: PetitionDetail.page),
+        AutoRoute(path: 'petition/:id/supporters', page: Supporters.page),
 
         AutoRoute(path: 'surveys', page: SurveyRoute.page),
         AutoRoute(path: 'survey-process', page: SurveyProcess.page),

@@ -67,6 +67,7 @@ class _NumberWidgetState extends State<NumberWidget> {
               );
             },
             decoration: InputDecoration(
+              hoverColor: Colors.transparent,
               errorText: errorText,
               errorBorder: OutlineInputBorder(
                 borderSide: BorderSide(

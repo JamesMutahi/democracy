@@ -13,15 +13,19 @@ A true democracy means that the power lies solely with the people and that the p
 
 
 ```
-BASE_URL='http://100.100.100.100:8000/'
-WEBSOCKET_URL='ws://100.100.100.100:8000/ws/'
+{
+  "BASE_URL":"http://100.100.100.100:8000/",
+  "WEBSOCKET_URL":"ws://100.100.100.100:8000/ws/",
 
-SENTRY_DSN='SENTRY_DSN'
+  "LINK_URL":"LINK_URL",
 
-AGORA_ID='AGORA_ID'
+  "SENTRY_DSN":"SENTRY_DSN",
 
-FAKE_EMAIL='FAKE_EMAIL'
-FAKE_PASSWORD='FAKE_PASSWORD'
+  "AGORA_ID":"AGORA_ID",
+
+  "FAKE_USERNAME":"FAKE_USERNAME",
+  "FAKE_PASSWORD":"FAKE_PASSWORD"
+}
 ```
 
 

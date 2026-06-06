@@ -122,10 +122,10 @@ return update(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Petition petition,  User? lastUser)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( List<User> users)?  update,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int petitionId,  User? lastUser)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( List<User> users)?  update,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.petition,_that.lastUser);case _Received() when received != null:
+return get(_that.petitionId,_that.lastUser);case _Received() when received != null:
 return received(_that.payload);case _Update() when update != null:
 return update(_that.users);case _:
   return orElse();
@@ -145,10 +145,10 @@ return update(_that.users);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Petition petition,  User? lastUser)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( List<User> users)  update,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int petitionId,  User? lastUser)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( List<User> users)  update,}) {final _that = this;
 switch (_that) {
 case _Get():
-return get(_that.petition,_that.lastUser);case _Received():
+return get(_that.petitionId,_that.lastUser);case _Received():
 return received(_that.payload);case _Update():
 return update(_that.users);}
 }
@@ -164,10 +164,10 @@ return update(_that.users);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Petition petition,  User? lastUser)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( List<User> users)?  update,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int petitionId,  User? lastUser)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( List<User> users)?  update,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.petition,_that.lastUser);case _Received() when received != null:
+return get(_that.petitionId,_that.lastUser);case _Received() when received != null:
 return received(_that.payload);case _Update() when update != null:
 return update(_that.users);case _:
   return null;
@@ -181,10 +181,10 @@ return update(_that.users);case _:
 
 
 class _Get implements SupportersEvent {
-  const _Get({required this.petition, this.lastUser});
+  const _Get({required this.petitionId, this.lastUser});
   
 
- final  Petition petition;
+ final  int petitionId;
  final  User? lastUser;
 
 /// Create a copy of SupportersEvent
@@ -197,16 +197,16 @@ _$GetCopyWith<_Get> get copyWith => __$GetCopyWithImpl<_Get>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.lastUser, lastUser) || other.lastUser == lastUser));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.petitionId, petitionId) || other.petitionId == petitionId)&&(identical(other.lastUser, lastUser) || other.lastUser == lastUser));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,petition,lastUser);
+int get hashCode => Object.hash(runtimeType,petitionId,lastUser);
 
 @override
 String toString() {
-  return 'SupportersEvent.get(petition: $petition, lastUser: $lastUser)';
+  return 'SupportersEvent.get(petitionId: $petitionId, lastUser: $lastUser)';
 }
 
 
@@ -217,11 +217,11 @@ abstract mixin class _$GetCopyWith<$Res> implements $SupportersEventCopyWith<$Re
   factory _$GetCopyWith(_Get value, $Res Function(_Get) _then) = __$GetCopyWithImpl;
 @useResult
 $Res call({
- Petition petition, User? lastUser
+ int petitionId, User? lastUser
 });
 
 
-$PetitionCopyWith<$Res> get petition;$UserCopyWith<$Res>? get lastUser;
+$UserCopyWith<$Res>? get lastUser;
 
 }
 /// @nodoc
@@ -234,24 +234,15 @@ class __$GetCopyWithImpl<$Res>
 
 /// Create a copy of SupportersEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? petition = null,Object? lastUser = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? petitionId = null,Object? lastUser = freezed,}) {
   return _then(_Get(
-petition: null == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
-as Petition,lastUser: freezed == lastUser ? _self.lastUser : lastUser // ignore: cast_nullable_to_non_nullable
+petitionId: null == petitionId ? _self.petitionId : petitionId // ignore: cast_nullable_to_non_nullable
+as int,lastUser: freezed == lastUser ? _self.lastUser : lastUser // ignore: cast_nullable_to_non_nullable
 as User?,
   ));
 }
 
 /// Create a copy of SupportersEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$PetitionCopyWith<$Res> get petition {
-  
-  return $PetitionCopyWith<$Res>(_self.petition, (value) {
-    return _then(_self.copyWith(petition: value));
-  });
-}/// Create a copy of SupportersEvent
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')

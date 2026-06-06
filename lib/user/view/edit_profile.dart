@@ -334,6 +334,7 @@ class ProfileTextFormField extends StatelessWidget {
           borderRadius: BorderRadius.circular(0),
           borderSide: BorderSide(color: Theme.of(context).colorScheme.outline),
         ),
+        hoverColor: Colors.transparent,
       ),
     );
   }

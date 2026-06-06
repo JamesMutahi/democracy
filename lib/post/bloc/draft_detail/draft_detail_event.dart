@@ -1,8 +1,8 @@
-part of 'draft_post_bloc.dart';
+part of 'draft_detail_bloc.dart';
 
 @freezed
-sealed class DraftPostEvent with _$DraftPostEvent {
-  const factory DraftPostEvent.create({
+sealed class DraftDetailEvent with _$DraftDetailEvent {
+  const factory DraftDetailEvent.create({
     required int? id,
     required String body,
     Post? repostOf,
@@ -17,6 +17,6 @@ sealed class DraftPostEvent with _$DraftPostEvent {
     @Default([]) List<String> filePaths,
     LatLng? location,
   }) = _Create;
-  const factory DraftPostEvent.update({required DraftPost draft}) = _Update;
-  const factory DraftPostEvent.delete({required DraftPost draft}) = _Delete;
+  const factory DraftDetailEvent.update({required DraftPost draft}) = _Update;
+  const factory DraftDetailEvent.delete({required DraftPost draft}) = _Delete;
 }

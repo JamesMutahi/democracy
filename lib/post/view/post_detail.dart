@@ -117,11 +117,6 @@ class _PostDetailState extends State<_PostDetail>
             return bloc;
           },
         ),
-        BlocProvider(
-          create: (context) =>
-              ReplyToBloc(webSocketService: context.read<WebSocketService>())
-                ..add(ReplyToEvent.get(postId: widget.post.id)),
-        ),
       ],
       child: PopScope(
         canPop: true,
@@ -343,7 +338,7 @@ class _PostDetailState extends State<_PostDetail>
                     center: _centerKey,
                     slivers: <Widget>[
                       if (widget.post.replyTo != null)
-                        ReplyTos(post: widget.post),
+                        ReplyTos(postId: widget.post.replyTo!.id),
                       _buildMainPost(),
                       if (state.status == RepliesStatus.initial)
                         SliverToBoxAdapter(

@@ -4,7 +4,6 @@ import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/post/bloc/community_notes/community_notes_bloc.dart';
-import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,9 +12,9 @@ import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 @RoutePage()
 class CommunityNotes extends StatefulWidget {
-  const CommunityNotes({super.key, required this.post});
+  const CommunityNotes({super.key, @PathParam('id') required this.postId});
 
-  final Post post;
+  final int postId;
 
   @override
   State<CommunityNotes> createState() => _CommunityNotesState();
@@ -38,7 +37,7 @@ class _CommunityNotesState extends State<CommunityNotes> {
     return BlocProvider(
       create: (context) => CommunityNotesBloc(
         webSocketService: context.read<WebSocketService>(),
-      )..add(CommunityNotesEvent.get(postId: widget.post.id, sortBy: 'score')),
+      )..add(CommunityNotesEvent.get(postId: widget.postId, sortBy: 'score')),
       child: Scaffold(
         body: SafeArea(
           child: NestedScrollView(
@@ -61,7 +60,7 @@ class _CommunityNotesState extends State<CommunityNotes> {
             },
             body: BlocBuilder<CommunityNotesBloc, CommunityNotesState>(
               buildWhen: (previous, current) {
-                return widget.post.id == current.postId;
+                return widget.postId == current.postId;
               },
               builder: (context, state) {
                 final posts = state.communityNotes.toList();
@@ -113,7 +112,7 @@ class _CommunityNotesState extends State<CommunityNotes> {
                   onRefresh: () {
                     context.read<CommunityNotesBloc>().add(
                       CommunityNotesEvent.get(
-                        postId: widget.post.id,
+                        postId: widget.postId,
                         searchTerm: _searchController.text,
                       ),
                     );
@@ -121,14 +120,14 @@ class _CommunityNotesState extends State<CommunityNotes> {
                   onLoading: () {
                     context.read<CommunityNotesBloc>().add(
                       CommunityNotesEvent.get(
-                        postId: widget.post.id,
+                        postId: widget.postId,
                         previousPosts: posts,
                       ),
                     );
                   },
                   onFailure: () {
                     context.read<CommunityNotesBloc>().add(
-                      CommunityNotesEvent.get(postId: widget.post.id),
+                      CommunityNotesEvent.get(postId: widget.postId),
                     );
                   },
                   origin: 'Community notes',
@@ -139,7 +138,7 @@ class _CommunityNotesState extends State<CommunityNotes> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            context.router.push(CommunityNoteCreate(post: widget.post));
+            context.router.push(CommunityNoteCreate(postId: widget.postId));
           },
           child: Icon(Icons.create_outlined),
         ),
@@ -155,7 +154,7 @@ class _CommunityNotesState extends State<CommunityNotes> {
         hintText: 'Search',
         onChanged: (value) {
           context.read<CommunityNotesBloc>().add(
-            CommunityNotesEvent.get(postId: widget.post.id, searchTerm: value),
+            CommunityNotesEvent.get(postId: widget.postId, searchTerm: value),
           );
         },
         onFilterTap: () {
@@ -170,7 +169,7 @@ class _CommunityNotesState extends State<CommunityNotes> {
               if (mounted) {
                 context.read<CommunityNotesBloc>().add(
                   CommunityNotesEvent.get(
-                    postId: widget.post.id,
+                    postId: widget.postId,
                     searchTerm: _searchController.text,
                     sortBy: value,
                   ),

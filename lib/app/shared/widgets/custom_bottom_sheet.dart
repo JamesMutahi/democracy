@@ -143,11 +143,11 @@ class ShareBottomSheet extends StatelessWidget {
               hoverColor: Colors.transparent,
               onTap: () async {
                 context.router.popTop();
-                copyLink(
-                  navigatorKey: context.router.navigatorKey,
-                  className: name,
-                  objectId: id,
-                );
+                String path = '$name/$id/';
+                if (section != null) {
+                  path = 'constitution?id=$id';
+                }
+                copyLink(navigatorKey: context.router.navigatorKey, path: path);
               },
               child: Column(
                 children: [

@@ -17,7 +17,7 @@ import 'package:democracy/meeting/models/meeting.dart';
 import 'package:democracy/meeting/view/widgets/meeting_tile.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart';
-import 'package:democracy/post/bloc/draft_post/draft_post_bloc.dart';
+import 'package:democracy/post/bloc/draft_detail/draft_detail_bloc.dart';
 import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/bloc/reply_to/reply_to_bloc.dart';
 import 'package:democracy/post/models/post.dart';
@@ -34,7 +34,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:path/path.dart' as p;
-
 
 @RoutePage()
 class PostCreatePage extends StatefulWidget {
@@ -111,8 +110,8 @@ class _PostCreatePageState extends State<PostCreatePage> {
         .map((tag) => {'id': tag.id, 'text': tag.text})
         .toList();
 
-    context.read<DraftPostBloc>().add(
-      DraftPostEvent.create(
+    context.read<DraftDetailBloc>().add(
+      DraftDetailEvent.create(
         id: null,
         body: _controller.formattedText,
         replyTo: widget.replyTo,
@@ -189,21 +188,10 @@ class _PostCreatePageState extends State<PostCreatePage> {
               }
             },
           ),
-          BlocListener<DraftPostBloc, DraftPostState>(
+          BlocListener<DraftDetailBloc, DraftDetailState>(
             listener: (context, state) {
-              if (state is DraftPostSaved) {
+              if (state is DraftSaved) {
                 context.router.popTop();
-              }
-            },
-          ),
-          BlocListener<ReplyToBloc, ReplyToState>(
-            listener: (context, state) {
-              if (state.status == ReplyToStatus.success) {
-                if (widget.replyTo != null) {
-                  context.read<ReplyToBloc>().add(
-                    ReplyToEvent.add(post: widget.replyTo!),
-                  );
-                }
               }
             },
           ),
@@ -274,7 +262,8 @@ class _PostCreatePageState extends State<PostCreatePage> {
               body: CustomScrollView(
                 center: _centerKey,
                 slivers: [
-                  if (widget.replyTo != null) ReplyTos(post: widget.replyTo!),
+                  if (widget.replyTo != null)
+                    ReplyTos(postId: widget.replyTo!.id),
                   SliverToBoxAdapter(key: _centerKey, child: _buildPostForm()),
                 ],
               ),

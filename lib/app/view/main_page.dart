@@ -16,7 +16,7 @@ import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
 import 'package:democracy/meeting/bloc/meeting_detail/meeting_detail_bloc.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
-import 'package:democracy/post/bloc/draft_post/draft_post_bloc.dart';
+import 'package:democracy/post/bloc/draft_detail/draft_detail_bloc.dart';
 import 'package:democracy/post/bloc/following_posts/following_posts_bloc.dart';
 import 'package:democracy/post/bloc/for_you/for_you_bloc.dart';
 import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
@@ -145,9 +145,9 @@ class _MainPageState extends State<MainPage> {
                   }
                 },
               ),
-              BlocListener<DraftPostBloc, DraftPostState>(
+              BlocListener<DraftDetailBloc, DraftDetailState>(
                 listener: (context, state) {
-                  if (state is DraftPostSaved) {
+                  if (state is DraftSaved) {
                     String message = 'Post saved as draft';
                     final snackBar = getSnackBar(
                       context: context,

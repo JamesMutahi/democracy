@@ -31,9 +31,8 @@ import 'package:democracy/notification/bloc/notification_detail/notification_det
 import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/notification/bloc/preferences/preferences_bloc.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
-import 'package:democracy/petition/bloc/supporters/supporters_bloc.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_bloc.dart';
-import 'package:democracy/post/bloc/draft_post/draft_post_bloc.dart';
+import 'package:democracy/post/bloc/draft_detail/draft_detail_bloc.dart';
 import 'package:democracy/post/bloc/draft_posts/draft_posts_bloc.dart';
 import 'package:democracy/post/bloc/hashtags/hashtags_bloc.dart';
 import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
@@ -199,7 +198,7 @@ void main() {
                     ),
                   ),
                   BlocProvider(
-                    create: (context) => DraftPostBloc(
+                    create: (context) => DraftDetailBloc(
                       databaseRepository: context.read<DatabaseRepository>(),
                     ),
                   ),
@@ -288,11 +287,6 @@ void main() {
                     create: (context) => PetitionDetailBloc(
                       webSocketService: context.read<WebSocketService>(),
                       apiRepository: context.read<APIRepository>(),
-                    ),
-                  ),
-                  BlocProvider(
-                    create: (context) => SupportersBloc(
-                      webSocketService: context.read<WebSocketService>(),
                     ),
                   ),
                   BlocProvider(

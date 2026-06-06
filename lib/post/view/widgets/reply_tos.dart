@@ -8,15 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ReplyTos extends StatelessWidget {
-  const ReplyTos({super.key, required this.post});
+  const ReplyTos({super.key, required this.postId});
 
-  final Post post;
+  final int postId;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ReplyToBloc, ReplyToState>(
       buildWhen: (previous, current) {
-        return post.id == current.postId;
+        return postId == current.postId;
       },
       builder: (context, state) {
         final replyTos = state.posts.toList();
@@ -26,7 +26,7 @@ class ReplyTos extends StatelessWidget {
             return SliverToBoxAdapter(
               child: FailureRetryButton(
                 onPressed: () => context.read<ReplyToBloc>().add(
-                  ReplyToEvent.get(postId: post.id),
+                  ReplyToEvent.get(postId: postId),
                 ),
               ),
             );

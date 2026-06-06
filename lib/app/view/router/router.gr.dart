@@ -10,7 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i47;
-import 'package:collection/collection.dart' as _i60;
+import 'package:collection/collection.dart' as _i59;
 import 'package:democracy/app/shared/pages/location.dart' as _i23;
 import 'package:democracy/app/shared/pages/search_results.dart' as _i40;
 import 'package:democracy/app/view/pages/chat_page.dart' as _i5;
@@ -28,8 +28,8 @@ import 'package:democracy/auth/view/splash.dart' as _i42;
 import 'package:democracy/ballot/models/ballot.dart' as _i54;
 import 'package:democracy/ballot/view/ballot_detail.dart' as _i1;
 import 'package:democracy/ballot/view/ballot_page.dart' as _i2;
-import 'package:democracy/chat/models/chat.dart' as _i50;
-import 'package:democracy/chat/models/message.dart' as _i51;
+import 'package:democracy/chat/models/chat.dart' as _i49;
+import 'package:democracy/chat/models/message.dart' as _i50;
 import 'package:democracy/chat/view/chat_detail.dart' as _i4;
 import 'package:democracy/chat/view/create_message.dart' as _i10;
 import 'package:democracy/chat/view/edit_message.dart' as _i13;
@@ -47,8 +47,7 @@ import 'package:democracy/petition/view/petition_create.dart' as _i30;
 import 'package:democracy/petition/view/petition_detail.dart' as _i31;
 import 'package:democracy/petition/view/petition_page.dart' as _i32;
 import 'package:democracy/petition/view/widgets/supporters.dart' as _i43;
-import 'package:democracy/post/models/draft_post.dart' as _i59;
-import 'package:democracy/post/models/post.dart' as _i49;
+import 'package:democracy/post/models/post.dart' as _i53;
 import 'package:democracy/post/view/community_note_create.dart' as _i6;
 import 'package:democracy/post/view/community_note_detail.dart' as _i7;
 import 'package:democracy/post/view/community_notes.dart' as _i8;
@@ -61,7 +60,7 @@ import 'package:democracy/survey/view/survey_page.dart' as _i44;
 import 'package:democracy/survey/view/survey_process/page.dart' as _i45;
 import 'package:democracy/survey/view/survey_process/response_page.dart'
     as _i38;
-import 'package:democracy/user/models/user.dart' as _i52;
+import 'package:democracy/user/models/user.dart' as _i51;
 import 'package:democracy/user/view/edit_profile.dart' as _i14;
 import 'package:democracy/user/view/pages/follow_recommendations.dart' as _i17;
 import 'package:democracy/user/view/pages/following.dart' as _i18;
@@ -69,7 +68,7 @@ import 'package:democracy/user/view/pages/muted_and_blocked.dart' as _i28;
 import 'package:democracy/user/view/pages/users.dart' as _i46;
 import 'package:democracy/user/view/profile.dart' as _i37;
 import 'package:flutter/material.dart' as _i48;
-import 'package:latlong2/latlong.dart' as _i53;
+import 'package:latlong2/latlong.dart' as _i52;
 
 /// generated route for
 /// [_i1.BallotDetail]
@@ -226,11 +225,12 @@ class ChatRoute extends _i47.PageRouteInfo<void> {
 class CommunityNoteCreate extends _i47.PageRouteInfo<CommunityNoteCreateArgs> {
   CommunityNoteCreate({
     _i48.Key? key,
-    required _i49.Post post,
+    required int postId,
     List<_i47.PageRouteInfo>? children,
   }) : super(
          CommunityNoteCreate.name,
-         args: CommunityNoteCreateArgs(key: key, post: post),
+         args: CommunityNoteCreateArgs(key: key, postId: postId),
+         rawPathParams: {'id': postId},
          initialChildren: children,
        );
 
@@ -239,33 +239,36 @@ class CommunityNoteCreate extends _i47.PageRouteInfo<CommunityNoteCreateArgs> {
   static _i47.PageInfo page = _i47.PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<CommunityNoteCreateArgs>();
-      return _i6.CommunityNoteCreate(key: args.key, post: args.post);
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<CommunityNoteCreateArgs>(
+        orElse: () => CommunityNoteCreateArgs(postId: pathParams.getInt('id')),
+      );
+      return _i6.CommunityNoteCreate(key: args.key, postId: args.postId);
     },
   );
 }
 
 class CommunityNoteCreateArgs {
-  const CommunityNoteCreateArgs({this.key, required this.post});
+  const CommunityNoteCreateArgs({this.key, required this.postId});
 
   final _i48.Key? key;
 
-  final _i49.Post post;
+  final int postId;
 
   @override
   String toString() {
-    return 'CommunityNoteCreateArgs{key: $key, post: $post}';
+    return 'CommunityNoteCreateArgs{key: $key, postId: $postId}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! CommunityNoteCreateArgs) return false;
-    return key == other.key && post == other.post;
+    return key == other.key && postId == other.postId;
   }
 
   @override
-  int get hashCode => key.hashCode ^ post.hashCode;
+  int get hashCode => key.hashCode ^ postId.hashCode;
 }
 
 /// generated route for
@@ -324,11 +327,12 @@ class CommunityNoteDetailArgs {
 class CommunityNotes extends _i47.PageRouteInfo<CommunityNotesArgs> {
   CommunityNotes({
     _i48.Key? key,
-    required _i49.Post post,
+    required int postId,
     List<_i47.PageRouteInfo>? children,
   }) : super(
          CommunityNotes.name,
-         args: CommunityNotesArgs(key: key, post: post),
+         args: CommunityNotesArgs(key: key, postId: postId),
+         rawPathParams: {'id': postId},
          initialChildren: children,
        );
 
@@ -337,33 +341,36 @@ class CommunityNotes extends _i47.PageRouteInfo<CommunityNotesArgs> {
   static _i47.PageInfo page = _i47.PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<CommunityNotesArgs>();
-      return _i8.CommunityNotes(key: args.key, post: args.post);
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<CommunityNotesArgs>(
+        orElse: () => CommunityNotesArgs(postId: pathParams.getInt('id')),
+      );
+      return _i8.CommunityNotes(key: args.key, postId: args.postId);
     },
   );
 }
 
 class CommunityNotesArgs {
-  const CommunityNotesArgs({this.key, required this.post});
+  const CommunityNotesArgs({this.key, required this.postId});
 
   final _i48.Key? key;
 
-  final _i49.Post post;
+  final int postId;
 
   @override
   String toString() {
-    return 'CommunityNotesArgs{key: $key, post: $post}';
+    return 'CommunityNotesArgs{key: $key, postId: $postId}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! CommunityNotesArgs) return false;
-    return key == other.key && post == other.post;
+    return key == other.key && postId == other.postId;
   }
 
   @override
-  int get hashCode => key.hashCode ^ post.hashCode;
+  int get hashCode => key.hashCode ^ postId.hashCode;
 }
 
 /// generated route for
@@ -491,8 +498,8 @@ class DraftPosts extends _i47.PageRouteInfo<void> {
 class EditMessage extends _i47.PageRouteInfo<EditMessageArgs> {
   EditMessage({
     _i48.Key? key,
-    required _i50.Chat chat,
-    required _i51.Message message,
+    required _i49.Chat chat,
+    required _i50.Message message,
     List<_i47.PageRouteInfo>? children,
   }) : super(
          EditMessage.name,
@@ -520,9 +527,9 @@ class EditMessageArgs {
 
   final _i48.Key? key;
 
-  final _i50.Chat chat;
+  final _i49.Chat chat;
 
-  final _i51.Message message;
+  final _i50.Message message;
 
   @override
   String toString() {
@@ -545,7 +552,7 @@ class EditMessageArgs {
 class EditProfile extends _i47.PageRouteInfo<EditProfileArgs> {
   EditProfile({
     _i48.Key? key,
-    required _i52.User user,
+    required _i51.User user,
     List<_i47.PageRouteInfo>? children,
   }) : super(
          EditProfile.name,
@@ -569,7 +576,7 @@ class EditProfileArgs {
 
   final _i48.Key? key;
 
-  final _i52.User user;
+  final _i51.User user;
 
   @override
   String toString() {
@@ -931,7 +938,7 @@ class LiveStreamArgs {
 class Location extends _i47.PageRouteInfo<LocationArgs> {
   Location({
     _i48.Key? key,
-    required void Function(_i53.LatLng) onLocation,
+    required void Function(_i52.LatLng) onLocation,
     List<_i47.PageRouteInfo>? children,
   }) : super(
          Location.name,
@@ -955,7 +962,7 @@ class LocationArgs {
 
   final _i48.Key? key;
 
-  final void Function(_i53.LatLng) onLocation;
+  final void Function(_i52.LatLng) onLocation;
 
   @override
   String toString() {
@@ -1223,8 +1230,8 @@ class PetitionRoute extends _i47.PageRouteInfo<void> {
 class PostCreateRoute extends _i47.PageRouteInfo<PostCreateRouteArgs> {
   PostCreateRoute({
     _i48.Key? key,
-    _i49.Post? replyTo,
-    _i49.Post? repostOf,
+    _i53.Post? replyTo,
+    _i53.Post? repostOf,
     _i54.Ballot? ballot,
     _i55.Survey? survey,
     _i56.Petition? petition,
@@ -1282,9 +1289,9 @@ class PostCreateRouteArgs {
 
   final _i48.Key? key;
 
-  final _i49.Post? replyTo;
+  final _i53.Post? replyTo;
 
-  final _i49.Post? repostOf;
+  final _i53.Post? repostOf;
 
   final _i54.Ballot? ballot;
 
@@ -1379,50 +1386,54 @@ class PostDetailArgs {
 }
 
 /// generated route for
-/// [_i35.PostUpdatePage]
-class PostUpdateRoute extends _i47.PageRouteInfo<PostUpdateRouteArgs> {
-  PostUpdateRoute({
+/// [_i35.PostUpdate]
+class PostUpdate extends _i47.PageRouteInfo<PostUpdateArgs> {
+  PostUpdate({
     _i48.Key? key,
-    required _i59.DraftPost draft,
+    required int draftId,
     List<_i47.PageRouteInfo>? children,
   }) : super(
-         PostUpdateRoute.name,
-         args: PostUpdateRouteArgs(key: key, draft: draft),
+         PostUpdate.name,
+         args: PostUpdateArgs(key: key, draftId: draftId),
+         rawPathParams: {'id': draftId},
          initialChildren: children,
        );
 
-  static const String name = 'PostUpdateRoute';
+  static const String name = 'PostUpdate';
 
   static _i47.PageInfo page = _i47.PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<PostUpdateRouteArgs>();
-      return _i35.PostUpdatePage(key: args.key, draft: args.draft);
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<PostUpdateArgs>(
+        orElse: () => PostUpdateArgs(draftId: pathParams.getInt('id')),
+      );
+      return _i35.PostUpdate(key: args.key, draftId: args.draftId);
     },
   );
 }
 
-class PostUpdateRouteArgs {
-  const PostUpdateRouteArgs({this.key, required this.draft});
+class PostUpdateArgs {
+  const PostUpdateArgs({this.key, required this.draftId});
 
   final _i48.Key? key;
 
-  final _i59.DraftPost draft;
+  final int draftId;
 
   @override
   String toString() {
-    return 'PostUpdateRouteArgs{key: $key, draft: $draft}';
+    return 'PostUpdateArgs{key: $key, draftId: $draftId}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    if (other is! PostUpdateRouteArgs) return false;
-    return key == other.key && draft == other.draft;
+    if (other is! PostUpdateArgs) return false;
+    return key == other.key && draftId == other.draftId;
   }
 
   @override
-  int get hashCode => key.hashCode ^ draft.hashCode;
+  int get hashCode => key.hashCode ^ draftId.hashCode;
 }
 
 /// generated route for
@@ -1693,11 +1704,12 @@ class SplashRoute extends _i47.PageRouteInfo<void> {
 class Supporters extends _i47.PageRouteInfo<SupportersArgs> {
   Supporters({
     _i48.Key? key,
-    required _i56.Petition petition,
+    required int petitionId,
     List<_i47.PageRouteInfo>? children,
   }) : super(
          Supporters.name,
-         args: SupportersArgs(key: key, petition: petition),
+         args: SupportersArgs(key: key, petitionId: petitionId),
+         rawPathParams: {'id': petitionId},
          initialChildren: children,
        );
 
@@ -1706,33 +1718,36 @@ class Supporters extends _i47.PageRouteInfo<SupportersArgs> {
   static _i47.PageInfo page = _i47.PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<SupportersArgs>();
-      return _i43.Supporters(key: args.key, petition: args.petition);
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<SupportersArgs>(
+        orElse: () => SupportersArgs(petitionId: pathParams.getInt('id')),
+      );
+      return _i43.Supporters(key: args.key, petitionId: args.petitionId);
     },
   );
 }
 
 class SupportersArgs {
-  const SupportersArgs({this.key, required this.petition});
+  const SupportersArgs({this.key, required this.petitionId});
 
   final _i48.Key? key;
 
-  final _i56.Petition petition;
+  final int petitionId;
 
   @override
   String toString() {
-    return 'SupportersArgs{key: $key, petition: $petition}';
+    return 'SupportersArgs{key: $key, petitionId: $petitionId}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! SupportersArgs) return false;
-    return key == other.key && petition == other.petition;
+    return key == other.key && petitionId == other.petitionId;
   }
 
   @override
-  int get hashCode => key.hashCode ^ petition.hashCode;
+  int get hashCode => key.hashCode ^ petitionId.hashCode;
 }
 
 /// generated route for
@@ -1808,7 +1823,7 @@ class UsersRoute extends _i47.PageRouteInfo<UsersRouteArgs> {
   UsersRoute({
     _i48.Key? key,
     required String title,
-    required List<_i52.User> users,
+    required List<_i51.User> users,
     List<_i47.PageRouteInfo>? children,
   }) : super(
          UsersRoute.name,
@@ -1838,7 +1853,7 @@ class UsersRouteArgs {
 
   final String title;
 
-  final List<_i52.User> users;
+  final List<_i51.User> users;
 
   @override
   String toString() {
@@ -1851,12 +1866,12 @@ class UsersRouteArgs {
     if (other is! UsersRouteArgs) return false;
     return key == other.key &&
         title == other.title &&
-        const _i60.ListEquality<_i52.User>().equals(users, other.users);
+        const _i59.ListEquality<_i51.User>().equals(users, other.users);
   }
 
   @override
   int get hashCode =>
       key.hashCode ^
       title.hashCode ^
-      const _i60.ListEquality<_i52.User>().hash(users);
+      const _i59.ListEquality<_i51.User>().hash(users);
 }

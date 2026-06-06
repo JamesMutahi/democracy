@@ -10,19 +10,19 @@ import 'package:democracy/survey/models/survey.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:latlong2/latlong.dart';
 
-part 'draft_post_event.dart';
-part 'draft_post_state.dart';
-part 'draft_post_bloc.freezed.dart';
+part 'draft_detail_event.dart';
+part 'draft_detail_state.dart';
+part 'draft_detail_bloc.freezed.dart';
 
-class DraftPostBloc extends Bloc<DraftPostEvent, DraftPostState> {
-  DraftPostBloc({required this.databaseRepository})
-    : super(const DraftPostState.initial()) {
+class DraftDetailBloc extends Bloc<DraftDetailEvent, DraftDetailState> {
+  DraftDetailBloc({required this.databaseRepository})
+    : super(const DraftDetailState.initial()) {
     on<_Create>((event, emit) async => await _onCreate(event, emit));
     on<_Update>((event, emit) async => await _onUpdate(event, emit));
     on<_Delete>((event, emit) async => await _onDelete(event, emit));
   }
 
-  Future _onCreate(_Create event, Emitter<DraftPostState> emit) async {
+  Future _onCreate(_Create event, Emitter<DraftDetailState> emit) async {
     emit(_Loading());
     try {
       final drafted = DraftPost()
@@ -40,32 +40,32 @@ class DraftPostBloc extends Bloc<DraftPostEvent, DraftPostState> {
         ..updatedAt = DateTime.now();
       final id = await databaseRepository.createDraft(draft: drafted);
       final draft = await databaseRepository.getDraft(id: id);
-      emit(DraftPostSaved(draft: draft));
+      emit(DraftSaved(draft: draft!));
     } catch (error, stackTrace) {
       addError(error, stackTrace);
-      emit(DraftPostFailure(error: error.toString()));
+      emit(DraftDetailFailure(error: error.toString()));
     }
   }
 
-  Future _onUpdate(_Update event, Emitter<DraftPostState> emit) async {
+  Future _onUpdate(_Update event, Emitter<DraftDetailState> emit) async {
     emit(_Loading());
     try {
       await databaseRepository.updateDraft(draft: event.draft);
-      emit(DraftPostSaved(draft: event.draft));
+      emit(DraftSaved(draft: event.draft));
     } catch (error, stackTrace) {
       addError(error, stackTrace);
-      emit(DraftPostFailure(error: error.toString()));
+      emit(DraftDetailFailure(error: error.toString()));
     }
   }
 
-  Future _onDelete(_Delete event, Emitter<DraftPostState> emit) async {
+  Future _onDelete(_Delete event, Emitter<DraftDetailState> emit) async {
     emit(_Loading());
     try {
       await databaseRepository.deleteDraft(draft: event.draft);
-      emit(DraftPostDeleted(draft: event.draft));
+      emit(DraftDeleted(draft: event.draft));
     } catch (error, stackTrace) {
       addError(error, stackTrace);
-      emit(DraftPostFailure(error: error.toString()));
+      emit(DraftDetailFailure(error: error.toString()));
     }
   }
 

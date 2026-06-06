@@ -8,7 +8,7 @@ class PostCreateEvent with _$PostCreateEvent {
     Post? repostOf,
     RepostType? repostType,
     Post? replyTo,
-    Post? communityNoteOf,
+    int? communityNoteOfId,
     Ballot? ballot,
     Survey? survey,
     Petition? petition,

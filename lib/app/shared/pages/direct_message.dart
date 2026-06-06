@@ -177,6 +177,7 @@ class _DirectMessageState extends State<DirectMessage> {
                               minHeight: 0,
                             ),
                             border: InputBorder.none,
+                            hoverColor: Colors.transparent,
                           ),
                         ),
                       ),

@@ -86,6 +86,7 @@ class _CreateMessageState extends State<CreateMessage> {
                     minWidth: 0,
                     minHeight: 0,
                   ),
+                  hoverColor: Colors.transparent,
                   border: InputBorder.none,
                 ),
               ),

@@ -23,7 +23,6 @@ class ReplyToBloc extends Bloc<ReplyToEvent, ReplyToState> {
     });
     on<_Get>((event, emit) => _onGet(event, emit));
     on<_Received>((event, emit) => _onReceived(event, emit));
-    on<_Add>((event, emit) => _onAdd(event, emit));
     on<_Update>((event, emit) => _onUpdate(event, emit));
   }
 
@@ -60,21 +59,6 @@ class ReplyToBloc extends Bloc<ReplyToEvent, ReplyToState> {
       );
     } else {
       emit(state.copyWith(status: ReplyToStatus.failure));
-    }
-  }
-
-  void _onAdd(_Add event, Emitter<ReplyToState> emit) {
-    final exists = state.posts.any((post) => post.id == event.post.id);
-
-    if (!exists) {
-      emit(state.copyWith(status: ReplyToStatus.loading));
-      emit(
-        state.copyWith(
-          posts: [event.post, ...state.posts],
-          status: ReplyToStatus.success,
-          postId: event.post.id,
-        ),
-      );
     }
   }
 

@@ -5,12 +5,11 @@ import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 void copyLink({
   required GlobalKey<NavigatorState> navigatorKey,
-  required String className,
-  required int objectId,
+  required String path,
 }) async {
   try {
     String linkUrl = const String.fromEnvironment('LINK_URL');
-    String text = '$linkUrl$className/$objectId/';
+    String text = '$linkUrl$path';
     await Clipboard.setData(ClipboardData(text: text));
     showSuccessToast(navigatorKey: navigatorKey, text: 'Copied');
   } catch (e) {

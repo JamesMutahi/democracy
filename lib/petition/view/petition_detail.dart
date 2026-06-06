@@ -212,7 +212,7 @@ class _PetitionDetailState extends State<_PetitionDetail> {
                               GestureDetector(
                                 onTap: () {
                                   context.router.push(
-                                    Supporters(petition: widget.petition),
+                                    Supporters(petitionId: widget.petition.id),
                                   );
                                 },
                                 child: PetitionSupportersRow(

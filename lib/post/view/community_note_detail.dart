@@ -89,9 +89,9 @@ class _CommunityNoteDetailState extends State<_CommunityNoteDetail> {
                 ..add(RepliesEvent.get(postId: widget.post.id)),
         ),
         BlocProvider(
-          create: (context) =>
-              ReplyToBloc(webSocketService: context.read<WebSocketService>())
-                ..add(ReplyToEvent.get(postId: widget.post.id)),
+          create: (context) => ReplyToBloc(
+            webSocketService: context.read<WebSocketService>(),
+          )..add(ReplyToEvent.get(postId: widget.post.communityNoteOf!.id)),
         ),
       ],
       child: PopScope(
@@ -271,7 +271,7 @@ class _CommunityNoteDetailState extends State<_CommunityNoteDetail> {
                         child: CustomScrollView(
                           center: _centerKey,
                           slivers: <Widget>[
-                            ReplyTos(post: widget.post),
+                            ReplyTos(postId: widget.post.id),
                             SliverToBoxAdapter(
                               key: _centerKey,
                               child: Column(

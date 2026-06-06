@@ -15,9 +15,9 @@ import 'package:material_symbols_icons/symbols.dart';
 
 @RoutePage()
 class CommunityNoteCreate extends StatefulWidget {
-  const CommunityNoteCreate({super.key, required this.post});
+  const CommunityNoteCreate({super.key, @PathParam('id') required this.postId});
 
-  final Post post;
+  final int postId;
 
   @override
   State<CommunityNoteCreate> createState() => _CommunityNoteCreateState();
@@ -36,7 +36,7 @@ class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
       PostCreateEvent.create(
         body: _controller.text,
         status: PostStatus.published,
-        communityNoteOf: widget.post,
+        communityNoteOfId: widget.postId,
       ),
     );
     Future.delayed(Duration(seconds: 10), () {
@@ -65,7 +65,7 @@ class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
         final bloc = ReplyToBloc(
           webSocketService: context.read<WebSocketService>(),
         );
-        bloc.add(ReplyToEvent.get(postId: widget.post.id));
+        bloc.add(ReplyToEvent.get(postId: widget.postId));
         return bloc;
       },
       child: MultiBlocListener(
@@ -73,18 +73,9 @@ class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
           BlocListener<PostCreateBloc, PostCreateState>(
             listener: (context, state) {
               if (state.status == PostCreateStatus.success) {
-                if (state.post?.communityNoteOf?.id == widget.post.id) {
+                if (state.post?.communityNoteOf?.id == widget.postId) {
                   context.router.popTop();
                 }
-              }
-            },
-          ),
-          BlocListener<ReplyToBloc, ReplyToState>(
-            listener: (context, state) {
-              if (state.status == ReplyToStatus.success) {
-                context.read<ReplyToBloc>().add(
-                  ReplyToEvent.add(post: widget.post),
-                );
               }
             },
           ),
@@ -138,7 +129,7 @@ class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
               body: CustomScrollView(
                 center: _centerKey,
                 slivers: <Widget>[
-                  ReplyTos(post: widget.post),
+                  ReplyTos(postId: widget.postId),
                   SliverToBoxAdapter(
                     key: _centerKey,
                     child: Stack(

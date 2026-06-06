@@ -66,6 +66,7 @@ class _TextWidgetState extends State<TextWidget> {
               );
             },
             decoration: InputDecoration(
+              hoverColor: Colors.transparent,
               errorText: errorText,
               errorBorder: OutlineInputBorder(
                 borderSide: BorderSide(

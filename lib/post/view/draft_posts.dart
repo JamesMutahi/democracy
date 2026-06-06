@@ -14,7 +14,7 @@ import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
 import 'package:democracy/meeting/view/widgets/meeting_tile.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart';
-import 'package:democracy/post/bloc/draft_post/draft_post_bloc.dart';
+import 'package:democracy/post/bloc/draft_detail/draft_detail_bloc.dart';
 import 'package:democracy/post/bloc/draft_posts/draft_posts_bloc.dart';
 import 'package:democracy/post/models/draft_post.dart';
 import 'package:democracy/post/view/widgets/post_tile.dart';
@@ -44,16 +44,16 @@ class _DraftsPostsState extends State<DraftPosts> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<DraftPostBloc, DraftPostState>(
+    return BlocListener<DraftDetailBloc, DraftDetailState>(
       listener: (context, state) {
         final draftPostsBloc = context.read<DraftPostsBloc>();
-        if (state is DraftPostSaved) {
+        if (state is DraftSaved) {
           draftPostsBloc.add(DraftPostsEvent.update(draft: state.draft));
         }
-        if (state is DraftPostDeleted) {
+        if (state is DraftDeleted) {
           draftPostsBloc.add(DraftPostsEvent.remove(key: state.draft.key));
         }
-        if (state is DraftPostSaved) {
+        if (state is DraftSaved) {
           draftPostsBloc.add(DraftPostsEvent.update(draft: state.draft));
         }
       },
@@ -99,7 +99,7 @@ class DraftTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.router.push(PostUpdateRoute(draft: draft));
+        context.router.push(PostUpdate(draftId: draft.key));
       },
       child: Container(
         margin: EdgeInsets.only(top: 10),

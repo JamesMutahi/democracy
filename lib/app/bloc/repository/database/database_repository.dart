@@ -31,12 +31,9 @@ class DatabaseRepository {
     await box.put(draft.key, draft);
   }
 
-  Future<DraftPost> getDraft({required int id}) async {
+  Future<DraftPost?> getDraft({required int id}) async {
     final box = await _draftBox;
     final draft = box.get(id);
-    if (draft == null) {
-      throw Exception("Draft with ID $id not found.");
-    }
     return draft;
   }
 

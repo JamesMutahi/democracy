@@ -48,7 +48,7 @@ class PostCreateBloc extends Bloc<PostCreateEvent, PostCreateState> {
         repostOf: event.repostOf,
         repostType: event.repostType,
         replyTo: event.replyTo,
-        communityNoteOf: event.communityNoteOf,
+        communityNoteOfId: event.communityNoteOfId,
         ballot: event.ballot,
         survey: event.survey,
         petition: event.petition,

@@ -55,13 +55,12 @@ extension ReplyToEventPatterns on ReplyToEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Add value)?  add,TResult Function( _Update value)?  update,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Get value)?  get,TResult Function( _Received value)?  received,TResult Function( _Update value)?  update,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
-return received(_that);case _Add() when add != null:
-return add(_that);case _Update() when update != null:
+return received(_that);case _Update() when update != null:
 return update(_that);case _:
   return orElse();
 
@@ -80,13 +79,12 @@ return update(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Add value)  add,required TResult Function( _Update value)  update,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Get value)  get,required TResult Function( _Received value)  received,required TResult Function( _Update value)  update,}){
 final _that = this;
 switch (_that) {
 case _Get():
 return get(_that);case _Received():
-return received(_that);case _Add():
-return add(_that);case _Update():
+return received(_that);case _Update():
 return update(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -101,13 +99,12 @@ return update(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Add value)?  add,TResult? Function( _Update value)?  update,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Get value)?  get,TResult? Function( _Received value)?  received,TResult? Function( _Update value)?  update,}){
 final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that);case _Received() when received != null:
-return received(_that);case _Add() when add != null:
-return add(_that);case _Update() when update != null:
+return received(_that);case _Update() when update != null:
 return update(_that);case _:
   return null;
 
@@ -125,12 +122,11 @@ return update(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int postId)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Post post)?  add,TResult Function( List<Post> posts)?  update,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int postId)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( List<Post> posts)?  update,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.postId);case _Received() when received != null:
-return received(_that.payload);case _Add() when add != null:
-return add(_that.post);case _Update() when update != null:
+return received(_that.payload);case _Update() when update != null:
 return update(_that.posts);case _:
   return orElse();
 
@@ -149,12 +145,11 @@ return update(_that.posts);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int postId)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Post post)  add,required TResult Function( List<Post> posts)  update,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int postId)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( List<Post> posts)  update,}) {final _that = this;
 switch (_that) {
 case _Get():
 return get(_that.postId);case _Received():
-return received(_that.payload);case _Add():
-return add(_that.post);case _Update():
+return received(_that.payload);case _Update():
 return update(_that.posts);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -169,12 +164,11 @@ return update(_that.posts);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int postId)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Post post)?  add,TResult? Function( List<Post> posts)?  update,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int postId)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( List<Post> posts)?  update,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.postId);case _Received() when received != null:
-return received(_that.payload);case _Add() when add != null:
-return add(_that.post);case _Update() when update != null:
+return received(_that.payload);case _Update() when update != null:
 return update(_that.posts);case _:
   return null;
 
@@ -319,81 +313,6 @@ as Map<String, dynamic>,
 }
 
 
-}
-
-/// @nodoc
-
-
-class _Add implements ReplyToEvent {
-  const _Add({required this.post});
-  
-
- final  Post post;
-
-/// Create a copy of ReplyToEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$AddCopyWith<_Add> get copyWith => __$AddCopyWithImpl<_Add>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Add&&(identical(other.post, post) || other.post == post));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,post);
-
-@override
-String toString() {
-  return 'ReplyToEvent.add(post: $post)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$AddCopyWith<$Res> implements $ReplyToEventCopyWith<$Res> {
-  factory _$AddCopyWith(_Add value, $Res Function(_Add) _then) = __$AddCopyWithImpl;
-@useResult
-$Res call({
- Post post
-});
-
-
-$PostCopyWith<$Res> get post;
-
-}
-/// @nodoc
-class __$AddCopyWithImpl<$Res>
-    implements _$AddCopyWith<$Res> {
-  __$AddCopyWithImpl(this._self, this._then);
-
-  final _Add _self;
-  final $Res Function(_Add) _then;
-
-/// Create a copy of ReplyToEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? post = null,}) {
-  return _then(_Add(
-post: null == post ? _self.post : post // ignore: cast_nullable_to_non_nullable
-as Post,
-  ));
-}
-
-/// Create a copy of ReplyToEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$PostCopyWith<$Res> get post {
-  
-  return $PostCopyWith<$Res>(_self.post, (value) {
-    return _then(_self.copyWith(post: value));
-  });
-}
 }
 
 /// @nodoc
