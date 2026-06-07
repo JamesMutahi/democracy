@@ -186,7 +186,7 @@ class _MainPageState extends State<MainPage> {
                   ? MainAxisAlignment.center
                   : MainAxisAlignment.start,
               children: [
-                if (kIsWeb)
+                if (kIsWeb && !responsive.isMobile)
                   Flexible(
                     flex: responsive.largerOrEqualTo(expandSideMenu) ? 3 : 1,
                     child: ConstrainedBox(

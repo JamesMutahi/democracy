@@ -45,10 +45,14 @@ class PostDetailState with _$PostDetailState {
     required int postId,
     required bool isUpvoted,
     required int upvotes,
+    required bool isDownvoted,
+    required int downvotes,
   }) = PostUpvoted;
 
   const factory PostDetailState.downvoted({
     required int postId,
+    required bool isUpvoted,
+    required int upvotes,
     required bool isDownvoted,
     required int downvotes,
   }) = PostDownvoted;

@@ -64,7 +64,7 @@ class SurveyTile extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     TimeLeft(
-                      key: ValueKey(survey),
+                      key: ValueKey('survey ${survey.id}'),
                       startTime: survey.startTime,
                       endTime: survey.endTime,
                     ),
@@ -144,7 +144,7 @@ class SurveyBottomSheet extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             TimeLeft(
-              key: ValueKey(survey),
+              key: ValueKey('survey ${survey.id}'),
               startTime: survey.startTime,
               endTime: survey.endTime,
             ),

@@ -207,6 +207,8 @@ class PostListener extends StatelessWidget {
                   posts[postIndex] = posts[postIndex].copyWith(
                     isUpvoted: state.isUpvoted,
                     upvotes: state.upvotes,
+                    isDownvoted: state.isDownvoted,
+                    downvotes: state.downvotes,
                   );
                   updatePosts = true;
                 }
@@ -221,6 +223,8 @@ class PostListener extends StatelessWidget {
                     Post repost = p.repostOf!.copyWith(
                       isUpvoted: state.isUpvoted,
                       upvotes: state.upvotes,
+                      isDownvoted: state.isDownvoted,
+                      downvotes: state.downvotes,
                     );
                     posts[posts.indexOf(p)] = p.copyWith(repostOf: repost);
                   }

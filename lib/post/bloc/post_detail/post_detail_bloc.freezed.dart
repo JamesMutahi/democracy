@@ -161,7 +161,7 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Post post)?  loaded,TResult Function( int postId,  String body,  int likes,  bool isLiked,  int bookmarks,  bool isBookmarked,  int views,  int replies,  int reposts,  String communityNote,  bool isUpvoted,  bool isDownvoted,  int upvotes,  int downvotes,  bool isReposted,  bool isQuoted,  bool isDeleted,  bool isActive)?  updated,TResult Function( int postId,  bool isLiked,  int likes)?  liked,TResult Function( int postId,  bool isBookmarked,  int bookmarks)?  bookmarked,TResult Function( int postId,  bool isUpvoted,  int upvotes)?  upvoted,TResult Function( int postId,  bool isDownvoted,  int downvotes)?  downvoted,TResult Function( int postId)?  viewed,TResult Function( int postId)?  clicked,TResult Function( int postId,  bool isMuted)?  muted,TResult Function( int postId)?  deleted,TResult Function( int postId,  int repostId,  int reposts)?  repostDeleted,TResult Function()?  reported,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Post post)?  loaded,TResult Function( int postId,  String body,  int likes,  bool isLiked,  int bookmarks,  bool isBookmarked,  int views,  int replies,  int reposts,  String communityNote,  bool isUpvoted,  bool isDownvoted,  int upvotes,  int downvotes,  bool isReposted,  bool isQuoted,  bool isDeleted,  bool isActive)?  updated,TResult Function( int postId,  bool isLiked,  int likes)?  liked,TResult Function( int postId,  bool isBookmarked,  int bookmarks)?  bookmarked,TResult Function( int postId,  bool isUpvoted,  int upvotes,  bool isDownvoted,  int downvotes)?  upvoted,TResult Function( int postId,  bool isUpvoted,  int upvotes,  bool isDownvoted,  int downvotes)?  downvoted,TResult Function( int postId)?  viewed,TResult Function( int postId)?  clicked,TResult Function( int postId,  bool isMuted)?  muted,TResult Function( int postId)?  deleted,TResult Function( int postId,  int repostId,  int reposts)?  repostDeleted,TResult Function()?  reported,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case PostDetailLoading() when loading != null:
@@ -170,8 +170,8 @@ return loaded(_that.post);case PostUpdated() when updated != null:
 return updated(_that.postId,_that.body,_that.likes,_that.isLiked,_that.bookmarks,_that.isBookmarked,_that.views,_that.replies,_that.reposts,_that.communityNote,_that.isUpvoted,_that.isDownvoted,_that.upvotes,_that.downvotes,_that.isReposted,_that.isQuoted,_that.isDeleted,_that.isActive);case PostLiked() when liked != null:
 return liked(_that.postId,_that.isLiked,_that.likes);case PostBookmarked() when bookmarked != null:
 return bookmarked(_that.postId,_that.isBookmarked,_that.bookmarks);case PostUpvoted() when upvoted != null:
-return upvoted(_that.postId,_that.isUpvoted,_that.upvotes);case PostDownvoted() when downvoted != null:
-return downvoted(_that.postId,_that.isDownvoted,_that.downvotes);case PostViewed() when viewed != null:
+return upvoted(_that.postId,_that.isUpvoted,_that.upvotes,_that.isDownvoted,_that.downvotes);case PostDownvoted() when downvoted != null:
+return downvoted(_that.postId,_that.isUpvoted,_that.upvotes,_that.isDownvoted,_that.downvotes);case PostViewed() when viewed != null:
 return viewed(_that.postId);case PostClicked() when clicked != null:
 return clicked(_that.postId);case PostMuted() when muted != null:
 return muted(_that.postId,_that.isMuted);case PostDeleted() when deleted != null:
@@ -196,7 +196,7 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Post post)  loaded,required TResult Function( int postId,  String body,  int likes,  bool isLiked,  int bookmarks,  bool isBookmarked,  int views,  int replies,  int reposts,  String communityNote,  bool isUpvoted,  bool isDownvoted,  int upvotes,  int downvotes,  bool isReposted,  bool isQuoted,  bool isDeleted,  bool isActive)  updated,required TResult Function( int postId,  bool isLiked,  int likes)  liked,required TResult Function( int postId,  bool isBookmarked,  int bookmarks)  bookmarked,required TResult Function( int postId,  bool isUpvoted,  int upvotes)  upvoted,required TResult Function( int postId,  bool isDownvoted,  int downvotes)  downvoted,required TResult Function( int postId)  viewed,required TResult Function( int postId)  clicked,required TResult Function( int postId,  bool isMuted)  muted,required TResult Function( int postId)  deleted,required TResult Function( int postId,  int repostId,  int reposts)  repostDeleted,required TResult Function()  reported,required TResult Function( String error)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Post post)  loaded,required TResult Function( int postId,  String body,  int likes,  bool isLiked,  int bookmarks,  bool isBookmarked,  int views,  int replies,  int reposts,  String communityNote,  bool isUpvoted,  bool isDownvoted,  int upvotes,  int downvotes,  bool isReposted,  bool isQuoted,  bool isDeleted,  bool isActive)  updated,required TResult Function( int postId,  bool isLiked,  int likes)  liked,required TResult Function( int postId,  bool isBookmarked,  int bookmarks)  bookmarked,required TResult Function( int postId,  bool isUpvoted,  int upvotes,  bool isDownvoted,  int downvotes)  upvoted,required TResult Function( int postId,  bool isUpvoted,  int upvotes,  bool isDownvoted,  int downvotes)  downvoted,required TResult Function( int postId)  viewed,required TResult Function( int postId)  clicked,required TResult Function( int postId,  bool isMuted)  muted,required TResult Function( int postId)  deleted,required TResult Function( int postId,  int repostId,  int reposts)  repostDeleted,required TResult Function()  reported,required TResult Function( String error)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case PostDetailLoading():
@@ -205,8 +205,8 @@ return loaded(_that.post);case PostUpdated():
 return updated(_that.postId,_that.body,_that.likes,_that.isLiked,_that.bookmarks,_that.isBookmarked,_that.views,_that.replies,_that.reposts,_that.communityNote,_that.isUpvoted,_that.isDownvoted,_that.upvotes,_that.downvotes,_that.isReposted,_that.isQuoted,_that.isDeleted,_that.isActive);case PostLiked():
 return liked(_that.postId,_that.isLiked,_that.likes);case PostBookmarked():
 return bookmarked(_that.postId,_that.isBookmarked,_that.bookmarks);case PostUpvoted():
-return upvoted(_that.postId,_that.isUpvoted,_that.upvotes);case PostDownvoted():
-return downvoted(_that.postId,_that.isDownvoted,_that.downvotes);case PostViewed():
+return upvoted(_that.postId,_that.isUpvoted,_that.upvotes,_that.isDownvoted,_that.downvotes);case PostDownvoted():
+return downvoted(_that.postId,_that.isUpvoted,_that.upvotes,_that.isDownvoted,_that.downvotes);case PostViewed():
 return viewed(_that.postId);case PostClicked():
 return clicked(_that.postId);case PostMuted():
 return muted(_that.postId,_that.isMuted);case PostDeleted():
@@ -230,7 +230,7 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Post post)?  loaded,TResult? Function( int postId,  String body,  int likes,  bool isLiked,  int bookmarks,  bool isBookmarked,  int views,  int replies,  int reposts,  String communityNote,  bool isUpvoted,  bool isDownvoted,  int upvotes,  int downvotes,  bool isReposted,  bool isQuoted,  bool isDeleted,  bool isActive)?  updated,TResult? Function( int postId,  bool isLiked,  int likes)?  liked,TResult? Function( int postId,  bool isBookmarked,  int bookmarks)?  bookmarked,TResult? Function( int postId,  bool isUpvoted,  int upvotes)?  upvoted,TResult? Function( int postId,  bool isDownvoted,  int downvotes)?  downvoted,TResult? Function( int postId)?  viewed,TResult? Function( int postId)?  clicked,TResult? Function( int postId,  bool isMuted)?  muted,TResult? Function( int postId)?  deleted,TResult? Function( int postId,  int repostId,  int reposts)?  repostDeleted,TResult? Function()?  reported,TResult? Function( String error)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Post post)?  loaded,TResult? Function( int postId,  String body,  int likes,  bool isLiked,  int bookmarks,  bool isBookmarked,  int views,  int replies,  int reposts,  String communityNote,  bool isUpvoted,  bool isDownvoted,  int upvotes,  int downvotes,  bool isReposted,  bool isQuoted,  bool isDeleted,  bool isActive)?  updated,TResult? Function( int postId,  bool isLiked,  int likes)?  liked,TResult? Function( int postId,  bool isBookmarked,  int bookmarks)?  bookmarked,TResult? Function( int postId,  bool isUpvoted,  int upvotes,  bool isDownvoted,  int downvotes)?  upvoted,TResult? Function( int postId,  bool isUpvoted,  int upvotes,  bool isDownvoted,  int downvotes)?  downvoted,TResult? Function( int postId)?  viewed,TResult? Function( int postId)?  clicked,TResult? Function( int postId,  bool isMuted)?  muted,TResult? Function( int postId)?  deleted,TResult? Function( int postId,  int repostId,  int reposts)?  repostDeleted,TResult? Function()?  reported,TResult? Function( String error)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case PostDetailLoading() when loading != null:
@@ -239,8 +239,8 @@ return loaded(_that.post);case PostUpdated() when updated != null:
 return updated(_that.postId,_that.body,_that.likes,_that.isLiked,_that.bookmarks,_that.isBookmarked,_that.views,_that.replies,_that.reposts,_that.communityNote,_that.isUpvoted,_that.isDownvoted,_that.upvotes,_that.downvotes,_that.isReposted,_that.isQuoted,_that.isDeleted,_that.isActive);case PostLiked() when liked != null:
 return liked(_that.postId,_that.isLiked,_that.likes);case PostBookmarked() when bookmarked != null:
 return bookmarked(_that.postId,_that.isBookmarked,_that.bookmarks);case PostUpvoted() when upvoted != null:
-return upvoted(_that.postId,_that.isUpvoted,_that.upvotes);case PostDownvoted() when downvoted != null:
-return downvoted(_that.postId,_that.isDownvoted,_that.downvotes);case PostViewed() when viewed != null:
+return upvoted(_that.postId,_that.isUpvoted,_that.upvotes,_that.isDownvoted,_that.downvotes);case PostDownvoted() when downvoted != null:
+return downvoted(_that.postId,_that.isUpvoted,_that.upvotes,_that.isDownvoted,_that.downvotes);case PostViewed() when viewed != null:
 return viewed(_that.postId);case PostClicked() when clicked != null:
 return clicked(_that.postId);case PostMuted() when muted != null:
 return muted(_that.postId,_that.isMuted);case PostDeleted() when deleted != null:
@@ -638,12 +638,14 @@ as int,
 
 
 class PostUpvoted implements PostDetailState {
-  const PostUpvoted({required this.postId, required this.isUpvoted, required this.upvotes});
+  const PostUpvoted({required this.postId, required this.isUpvoted, required this.upvotes, required this.isDownvoted, required this.downvotes});
   
 
  final  int postId;
  final  bool isUpvoted;
  final  int upvotes;
+ final  bool isDownvoted;
+ final  int downvotes;
 
 /// Create a copy of PostDetailState
 /// with the given fields replaced by the non-null parameter values.
@@ -655,16 +657,16 @@ $PostUpvotedCopyWith<PostUpvoted> get copyWith => _$PostUpvotedCopyWithImpl<Post
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostUpvoted&&(identical(other.postId, postId) || other.postId == postId)&&(identical(other.isUpvoted, isUpvoted) || other.isUpvoted == isUpvoted)&&(identical(other.upvotes, upvotes) || other.upvotes == upvotes));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostUpvoted&&(identical(other.postId, postId) || other.postId == postId)&&(identical(other.isUpvoted, isUpvoted) || other.isUpvoted == isUpvoted)&&(identical(other.upvotes, upvotes) || other.upvotes == upvotes)&&(identical(other.isDownvoted, isDownvoted) || other.isDownvoted == isDownvoted)&&(identical(other.downvotes, downvotes) || other.downvotes == downvotes));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,postId,isUpvoted,upvotes);
+int get hashCode => Object.hash(runtimeType,postId,isUpvoted,upvotes,isDownvoted,downvotes);
 
 @override
 String toString() {
-  return 'PostDetailState.upvoted(postId: $postId, isUpvoted: $isUpvoted, upvotes: $upvotes)';
+  return 'PostDetailState.upvoted(postId: $postId, isUpvoted: $isUpvoted, upvotes: $upvotes, isDownvoted: $isDownvoted, downvotes: $downvotes)';
 }
 
 
@@ -675,7 +677,7 @@ abstract mixin class $PostUpvotedCopyWith<$Res> implements $PostDetailStateCopyW
   factory $PostUpvotedCopyWith(PostUpvoted value, $Res Function(PostUpvoted) _then) = _$PostUpvotedCopyWithImpl;
 @useResult
 $Res call({
- int postId, bool isUpvoted, int upvotes
+ int postId, bool isUpvoted, int upvotes, bool isDownvoted, int downvotes
 });
 
 
@@ -692,11 +694,13 @@ class _$PostUpvotedCopyWithImpl<$Res>
 
 /// Create a copy of PostDetailState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? postId = null,Object? isUpvoted = null,Object? upvotes = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? postId = null,Object? isUpvoted = null,Object? upvotes = null,Object? isDownvoted = null,Object? downvotes = null,}) {
   return _then(PostUpvoted(
 postId: null == postId ? _self.postId : postId // ignore: cast_nullable_to_non_nullable
 as int,isUpvoted: null == isUpvoted ? _self.isUpvoted : isUpvoted // ignore: cast_nullable_to_non_nullable
 as bool,upvotes: null == upvotes ? _self.upvotes : upvotes // ignore: cast_nullable_to_non_nullable
+as int,isDownvoted: null == isDownvoted ? _self.isDownvoted : isDownvoted // ignore: cast_nullable_to_non_nullable
+as bool,downvotes: null == downvotes ? _self.downvotes : downvotes // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
@@ -708,10 +712,12 @@ as int,
 
 
 class PostDownvoted implements PostDetailState {
-  const PostDownvoted({required this.postId, required this.isDownvoted, required this.downvotes});
+  const PostDownvoted({required this.postId, required this.isUpvoted, required this.upvotes, required this.isDownvoted, required this.downvotes});
   
 
  final  int postId;
+ final  bool isUpvoted;
+ final  int upvotes;
  final  bool isDownvoted;
  final  int downvotes;
 
@@ -725,16 +731,16 @@ $PostDownvotedCopyWith<PostDownvoted> get copyWith => _$PostDownvotedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostDownvoted&&(identical(other.postId, postId) || other.postId == postId)&&(identical(other.isDownvoted, isDownvoted) || other.isDownvoted == isDownvoted)&&(identical(other.downvotes, downvotes) || other.downvotes == downvotes));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostDownvoted&&(identical(other.postId, postId) || other.postId == postId)&&(identical(other.isUpvoted, isUpvoted) || other.isUpvoted == isUpvoted)&&(identical(other.upvotes, upvotes) || other.upvotes == upvotes)&&(identical(other.isDownvoted, isDownvoted) || other.isDownvoted == isDownvoted)&&(identical(other.downvotes, downvotes) || other.downvotes == downvotes));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,postId,isDownvoted,downvotes);
+int get hashCode => Object.hash(runtimeType,postId,isUpvoted,upvotes,isDownvoted,downvotes);
 
 @override
 String toString() {
-  return 'PostDetailState.downvoted(postId: $postId, isDownvoted: $isDownvoted, downvotes: $downvotes)';
+  return 'PostDetailState.downvoted(postId: $postId, isUpvoted: $isUpvoted, upvotes: $upvotes, isDownvoted: $isDownvoted, downvotes: $downvotes)';
 }
 
 
@@ -745,7 +751,7 @@ abstract mixin class $PostDownvotedCopyWith<$Res> implements $PostDetailStateCop
   factory $PostDownvotedCopyWith(PostDownvoted value, $Res Function(PostDownvoted) _then) = _$PostDownvotedCopyWithImpl;
 @useResult
 $Res call({
- int postId, bool isDownvoted, int downvotes
+ int postId, bool isUpvoted, int upvotes, bool isDownvoted, int downvotes
 });
 
 
@@ -762,9 +768,11 @@ class _$PostDownvotedCopyWithImpl<$Res>
 
 /// Create a copy of PostDetailState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? postId = null,Object? isDownvoted = null,Object? downvotes = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? postId = null,Object? isUpvoted = null,Object? upvotes = null,Object? isDownvoted = null,Object? downvotes = null,}) {
   return _then(PostDownvoted(
 postId: null == postId ? _self.postId : postId // ignore: cast_nullable_to_non_nullable
+as int,isUpvoted: null == isUpvoted ? _self.isUpvoted : isUpvoted // ignore: cast_nullable_to_non_nullable
+as bool,upvotes: null == upvotes ? _self.upvotes : upvotes // ignore: cast_nullable_to_non_nullable
 as int,isDownvoted: null == isDownvoted ? _self.isDownvoted : isDownvoted // ignore: cast_nullable_to_non_nullable
 as bool,downvotes: null == downvotes ? _self.downvotes : downvotes // ignore: cast_nullable_to_non_nullable
 as int,

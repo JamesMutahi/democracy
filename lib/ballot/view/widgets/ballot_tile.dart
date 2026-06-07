@@ -80,7 +80,7 @@ class BallotTile extends StatelessWidget {
                 SizedBox(height: 10),
                 ...ballot.options.map((option) {
                   return BallotPercentIndicator(
-                    key: UniqueKey(),
+                    key: ValueKey(option.id),
                     ballot: ballot,
                     option: option,
                     animateToInitialPercent: animateToInitialPercent,

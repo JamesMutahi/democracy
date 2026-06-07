@@ -182,7 +182,7 @@ class _SurveyProcessState extends State<_SurveyProcess> {
                         Text('Survey complete', style: TextStyle(fontSize: 20)),
                         SizedBox(height: 10),
                         TimeLeft(
-                          key: UniqueKey(),
+                          key: ValueKey('survey ${widget.survey.id}'),
                           alignCenter: true,
                           startTime: widget.survey.startTime,
                           endTime: widget.survey.endTime,

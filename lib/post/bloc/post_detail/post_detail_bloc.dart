@@ -178,6 +178,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           postId: event.payload['data']['pk'],
           isUpvoted: event.payload['data']['is_upvoted'],
           upvotes: event.payload['data']['upvotes'],
+          isDownvoted: event.payload['data']['is_downvoted'],
+          downvotes: event.payload['data']['downvotes'],
         ),
       );
     } else {
@@ -190,6 +192,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       emit(
         PostDownvoted(
           postId: event.payload['data']['pk'],
+          isUpvoted: event.payload['data']['is_upvoted'],
+          upvotes: event.payload['data']['upvotes'],
           isDownvoted: event.payload['data']['is_downvoted'],
           downvotes: event.payload['data']['downvotes'],
         ),

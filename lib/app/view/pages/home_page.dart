@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage>
         child: NestedScrollView(
           headerSliverBuilder: (context, bool innerBoxIsScrolled) {
             return [
-              if (!kIsWeb)
+              if (!kIsWeb || responsive.isMobile)
                 SliverAppBar(
                   floating: true,
                   snap: true,

@@ -271,7 +271,7 @@ class _CommunityNoteDetailState extends State<_CommunityNoteDetail> {
                         child: CustomScrollView(
                           center: _centerKey,
                           slivers: <Widget>[
-                            ReplyTos(postId: widget.post.id),
+                            ReplyTos(postId: widget.post.communityNoteOf!.id),
                             SliverToBoxAdapter(
                               key: _centerKey,
                               child: Column(

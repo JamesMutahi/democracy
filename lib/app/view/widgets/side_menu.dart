@@ -149,7 +149,8 @@ class SideMenu extends StatelessWidget {
                                 selected: currentRoute == Settings.name,
                               ),
                               if (kIsWeb)
-                                responsive.smallerThan(expandSideMenu)
+                                !responsive.isMobile &&
+                                        responsive.smallerThan(expandSideMenu)
                                     ? IconButton.filledTonal(
                                         onPressed: () {
                                           _showCreateDialog(context);
@@ -289,7 +290,9 @@ class _ProfileButtonState extends State<_ProfileButton>
   Widget build(BuildContext context) {
     final responsive = ResponsiveBreakpoints.of(context);
 
-    return kIsWeb && responsive.smallerThan(expandSideMenu)
+    return kIsWeb &&
+            !responsive.isMobile &&
+            responsive.smallerThan(expandSideMenu)
         ? MenuAnchor(
             controller: _menuController,
             builder: (context, controller, child) {
@@ -417,7 +420,9 @@ class DrawerListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final responsive = ResponsiveBreakpoints.of(context);
 
-    return kIsWeb && responsive.smallerThan(expandSideMenu)
+    return kIsWeb &&
+            responsive.smallerThan(expandSideMenu) &&
+            !responsive.isMobile
         ? Container(
             margin: EdgeInsets.only(bottom: 5),
             child: IconButton(

@@ -194,6 +194,7 @@ class _BallotDetailState extends State<_BallotDetail> {
                                     animateToInitialPercent: true,
                                   )
                                 : OptionTile(
+                                    key: ValueKey(option.id),
                                     option: option,
                                     onTap: () {
                                       if (widget.ballot.isActive) {
@@ -268,7 +269,6 @@ class OptionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     double optionHeight = 40;
     return Container(
-      key: UniqueKey(),
       margin: EdgeInsets.symmetric(vertical: 5),
       child: InkWell(
         onTap: onTap,
