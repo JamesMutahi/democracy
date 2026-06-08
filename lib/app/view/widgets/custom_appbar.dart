@@ -68,6 +68,8 @@ class CustomSearchBar extends StatelessWidget {
     this.controller,
     required this.hintText,
     this.filterCount = 0,
+    this.onTap,
+    this.onTapOutside,
     this.onChanged,
     this.onSubmitted,
     this.onFilterTap,
@@ -76,6 +78,8 @@ class CustomSearchBar extends StatelessWidget {
   final TextEditingController? controller;
   final String hintText;
   final int filterCount;
+  final VoidCallback? onTap;
+  final VoidCallback? onTapOutside;
   final void Function(String)? onChanged;
   final void Function(String)? onSubmitted;
   final VoidCallback? onFilterTap;
@@ -117,8 +121,10 @@ class CustomSearchBar extends StatelessWidget {
           TextStyle(color: Theme.of(context).hintColor),
         ),
         onTapOutside: (event) {
+          onTapOutside?.call();
           FocusManager.instance.primaryFocus?.unfocus();
         },
+        onTap: onTap,
         onChanged: onChanged,
         onSubmitted: onSubmitted,
       ),

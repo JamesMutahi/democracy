@@ -1,68 +1,63 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/bloc/autocomplete/autocomplete_bloc.dart';
+import 'package:democracy/app/bloc/route/route_cubit.dart';
+import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
+import 'package:democracy/app/view/widgets/explore_search_anchor.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/post/bloc/post_filter/post_filter_cubit.dart';
 import 'package:democracy/post/bloc/trending_topics/trending_topics_bloc.dart';
 import 'package:democracy/user/bloc/follow_recommendations/follow_recommendations_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/view/widgets/user_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_symbols_icons/material_symbols_icons.dart';
 
-class SidePanel extends StatelessWidget {
+class SidePanel extends StatefulWidget {
   const SidePanel({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final String currentPath = context.router.current.path;
-    return Container(
-      constraints: BoxConstraints(maxWidth: 400),
-      margin: EdgeInsets.only(top: 10),
-      child: CustomScrollView(
-        slivers: [
-          if (!currentPath.startsWith('/search-results')) _SearchBar(),
-          _Trending(),
-          _WhoToFollow(),
-        ],
-      ),
-    );
-  }
+  State<SidePanel> createState() => _SidePanelState();
 }
 
-class _SearchBar extends StatelessWidget {
-  const _SearchBar();
+class _SidePanelState extends State<SidePanel> {
+  final SearchController _searchController = SearchController();
 
   @override
   Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Container(
-        margin: EdgeInsets.only(left: 20, bottom: 20),
-        height: 50,
-        child: SearchBar(
-          padding: WidgetStateProperty.all(EdgeInsets.only(left: 15)),
-          leading: Icon(
-            Symbols.search_rounded,
-            color: Theme.of(context).colorScheme.outline,
-            size: 20,
-          ),
-          hintText: 'Search',
-          hintStyle: WidgetStateProperty.all(
-            TextStyle(color: Theme.of(context).colorScheme.outline),
-          ),
-          onChanged: (value) {
-            //   TODO: Search trending and users
-          },
-          onSubmitted: (value) {
-            context.router.push(
-              SearchResults(
-                searchTerm: value,
-                startDate: null,
-                endDate: null,
-                filterCount: 0,
-              ),
-            );
-          },
-        ),
+    String currentPath = context.router.current.path;
+    String currentRoute = context.watch<RouteCubit>().state;
+    bool showSearchBar = false;
+    showSearchBar = currentRoute != ExploreRoute.name;
+    if (showSearchBar) {
+      showSearchBar = !currentPath.startsWith('/search-results');
+    }
+    return BlocProvider(
+      create: (context) =>
+          AutocompleteBloc(webSocketService: context.read<WebSocketService>()),
+      child: Builder(
+        builder: (context) {
+          return Container(
+            constraints: BoxConstraints(maxWidth: 400),
+            margin: EdgeInsets.only(top: 10),
+            child: CustomScrollView(
+              slivers: [
+                if (showSearchBar)
+                  SliverToBoxAdapter(
+                    child: ExploreSearchAnchor(
+                      searchController: _searchController,
+                      filterCubit: PostFilterCubit(),
+                      filterState: PostFilterState(),
+                      autocompleteBloc: context.read<AutocompleteBloc>(),
+                      hideFilterButton: true,
+                    ),
+                  ),
+                _Trending(),
+                _WhoToFollow(),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

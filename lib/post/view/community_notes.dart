@@ -54,7 +54,7 @@ class _CommunityNotesState extends State<CommunityNotes> {
                       Text('Community notes'),
                     ],
                   ),
-                  bottom: _buildSearchBar(),
+                  bottom: _buildSearchBar(context.read<CommunityNotesBloc>()),
                 ),
               ];
             },
@@ -146,14 +146,14 @@ class _CommunityNotesState extends State<CommunityNotes> {
     );
   }
 
-  PreferredSize _buildSearchBar() {
+  PreferredSize _buildSearchBar(CommunityNotesBloc bloc) {
     return PreferredSize(
       preferredSize: Size.fromHeight(50.0),
       child: CustomSearchBar(
         controller: _searchController,
         hintText: 'Search',
         onChanged: (value) {
-          context.read<CommunityNotesBloc>().add(
+          bloc.add(
             CommunityNotesEvent.get(postId: widget.postId, searchTerm: value),
           );
         },
@@ -167,7 +167,7 @@ class _CommunityNotesState extends State<CommunityNotes> {
                 sortBy = value;
               });
               if (mounted) {
-                context.read<CommunityNotesBloc>().add(
+                bloc.add(
                   CommunityNotesEvent.get(
                     postId: widget.postId,
                     searchTerm: _searchController.text,

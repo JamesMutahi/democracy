@@ -161,49 +161,10 @@ class SideMenu extends StatelessWidget {
                                           Theme.of(context).primaryColor,
                                         ),
                                       )
-                                    : Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 0.0,
-                                        ),
-                                        child: ListTile(
-                                          onTap: () {
-                                            menuController.closeDrawer();
-                                            _showCreateDialog(context);
-                                          },
-                                          leading: _buildCreateIcon(
-                                            context,
-                                            currentRoute.toLowerCase().contains(
-                                                  'create',
-                                                )
-                                                ? Theme.of(context).primaryColor
-                                                : Theme.of(
-                                                    context,
-                                                  ).colorScheme.outline,
-                                          ),
-                                          title: Text(
-                                            'Create',
-                                            style: TextStyle(
-                                              color:
-                                                  currentRoute
-                                                      .toLowerCase()
-                                                      .contains('create')
-                                                  ? Theme.of(
-                                                      context,
-                                                    ).primaryColor
-                                                  : Theme.of(
-                                                      context,
-                                                    ).colorScheme.outline,
-                                            ),
-                                          ),
-                                          tileColor: Theme.of(
-                                            context,
-                                          ).colorScheme.primaryContainer,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              10,
-                                            ),
-                                          ),
-                                        ),
+                                    : _buildCreateButton(
+                                        context,
+                                        menuController,
+                                        currentRoute,
                                       ),
                             ],
                           ),
@@ -224,6 +185,38 @@ class SideMenu extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildCreateButton(
+    BuildContext context,
+    MenuControllerCubit menuController,
+    String currentRoute,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 0.0),
+      child: ListTile(
+        onTap: () {
+          menuController.closeDrawer();
+          _showCreateDialog(context);
+        },
+        leading: _buildCreateIcon(
+          context,
+          currentRoute.toLowerCase().contains('create')
+              ? Theme.of(context).primaryColor
+              : Theme.of(context).colorScheme.outline,
+        ),
+        title: Text(
+          'Create',
+          style: TextStyle(
+            color: currentRoute.toLowerCase().contains('create')
+                ? Theme.of(context).primaryColor
+                : Theme.of(context).colorScheme.outline,
+          ),
+        ),
+        tileColor: Theme.of(context).colorScheme.primaryContainer,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+      ),
     );
   }
 

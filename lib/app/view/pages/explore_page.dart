@@ -1,8 +1,9 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:democracy/app/shared/pages/search_results.dart'
-    show SearchFilters;
+import 'package:democracy/app/bloc/autocomplete/autocomplete_bloc.dart';
+import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/widgets/no_results.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
+import 'package:democracy/app/view/widgets/explore_search_anchor.dart';
 import 'package:democracy/post/bloc/trending_topics/trending_topics_bloc.dart';
 import 'package:democracy/post/view/utils/add_post_view.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
@@ -18,7 +19,6 @@ import 'package:democracy/user/bloc/follow_recommendations/follow_recommendation
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/user_tile.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
@@ -33,11 +33,11 @@ class ExplorePage extends StatefulWidget {
 }
 
 class _ExplorePageState extends State<ExplorePage> {
-  final TextEditingController _controller = TextEditingController();
+  final SearchController _searchController = SearchController();
 
   @override
   void dispose() {
-    _controller.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -45,8 +45,15 @@ class _ExplorePageState extends State<ExplorePage> {
   Widget build(BuildContext context) {
     final responsive = ResponsiveBreakpoints.of(context);
 
-    return BlocProvider(
-      create: (context) => PostFilterCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => PostFilterCubit()),
+        BlocProvider(
+          create: (context) => AutocompleteBloc(
+            webSocketService: context.read<WebSocketService>(),
+          ),
+        ),
+      ],
       child: Scaffold(
         body: DefaultTabController(
           length: 2,
@@ -57,7 +64,8 @@ class _ExplorePageState extends State<ExplorePage> {
             builder: (context, state) {
               return NestedScrollView(
                 headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-                  final cubit = context.read<PostFilterCubit>();
+                  final filterCubit = context.read<PostFilterCubit>();
+                  final autocompleteBloc = context.read<AutocompleteBloc>();
                   return [
                     if (responsive.isMobile)
                       CustomAppBar(
@@ -69,7 +77,12 @@ class _ExplorePageState extends State<ExplorePage> {
                           preferredSize: Size.fromHeight(100.0),
                           child: Column(
                             children: [
-                              _buildSearchBar(cubit, state),
+                              ExploreSearchAnchor(
+                                searchController: _searchController,
+                                filterCubit: filterCubit,
+                                filterState: state,
+                                autocompleteBloc: autocompleteBloc,
+                              ),
                               _buildTabBar(),
                             ],
                           ),
@@ -85,7 +98,12 @@ class _ExplorePageState extends State<ExplorePage> {
                           builder: (context) {
                             return SizedBox(
                               height: 60,
-                              child: _buildSearchBar(cubit, state),
+                              child: ExploreSearchAnchor(
+                                searchController: _searchController,
+                                filterCubit: filterCubit,
+                                filterState: state,
+                                autocompleteBloc: autocompleteBloc,
+                              ),
                             );
                           },
                         ),
@@ -102,51 +120,6 @@ class _ExplorePageState extends State<ExplorePage> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildSearchBar(PostFilterCubit cubit, PostFilterState state) {
-    return CustomSearchBar(
-      controller: _controller,
-      hintText: 'Search',
-      filterCount: state.count,
-      onSubmitted: (value) async {
-        if (_controller.text.trim().isNotEmpty) {
-          final route = SearchResults(
-            searchTerm: _controller.text,
-            startDate: state.startDate,
-            endDate: state.endDate,
-            filterCount: state.count,
-          );
-          await context.router.push(route);
-          _controller.clear();
-        }
-      },
-      onFilterTap: () {
-        final filters = SearchFilters(
-          onExplorePage: true,
-          startDate: state.startDate,
-          endDate: state.endDate,
-          cubit: cubit,
-        );
-        kIsWeb
-            ? showModalBottomSheet<void>(
-                context: context,
-                isScrollControlled: true,
-                shape: const BeveledRectangleBorder(),
-                useSafeArea: true,
-                builder: (context) {
-                  return filters;
-                },
-              )
-            : showGeneralDialog(
-                context: context,
-                transitionDuration: const Duration(milliseconds: 300),
-                pageBuilder: (context, animation, secondaryAnimation) {
-                  return filters;
-                },
-              );
-      },
     );
   }
 

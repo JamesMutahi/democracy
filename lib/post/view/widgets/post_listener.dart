@@ -236,6 +236,8 @@ class PostListener extends StatelessWidget {
                     (element) => element.id == state.postId,
                   );
                   posts[postIndex] = posts[postIndex].copyWith(
+                    isUpvoted: state.isUpvoted,
+                    upvotes: state.upvotes,
                     isDownvoted: state.isDownvoted,
                     downvotes: state.downvotes,
                   );
