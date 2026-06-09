@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:democracy/app.dart';
+import 'package:democracy/app/bloc/autocomplete/autocomplete_bloc.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
 import 'package:democracy/app/bloc/location/location_cubit.dart';
 import 'package:democracy/app/bloc/menu_controller/menu_controller_cubit.dart';
@@ -323,6 +324,11 @@ void main() {
                   ),
                   BlocProvider(
                     create: (context) => TrendingTopicsBloc(
+                      webSocketService: context.read<WebSocketService>(),
+                    ),
+                  ),
+                  BlocProvider(
+                    create: (context) => AutocompleteBloc(
                       webSocketService: context.read<WebSocketService>(),
                     ),
                   ),

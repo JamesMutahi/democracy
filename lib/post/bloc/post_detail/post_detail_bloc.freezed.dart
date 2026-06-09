@@ -55,7 +55,7 @@ extension PostDetailStatePatterns on PostDetailState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( PostDetailLoading value)?  loading,TResult Function( PostLoaded value)?  loaded,TResult Function( PostUpdated value)?  updated,TResult Function( PostLiked value)?  liked,TResult Function( PostBookmarked value)?  bookmarked,TResult Function( PostUpvoted value)?  upvoted,TResult Function( PostDownvoted value)?  downvoted,TResult Function( PostViewed value)?  viewed,TResult Function( PostClicked value)?  clicked,TResult Function( PostMuted value)?  muted,TResult Function( PostDeleted value)?  deleted,TResult Function( RepostDeleted value)?  repostDeleted,TResult Function( PostReported value)?  reported,TResult Function( PostDetailFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( PostDetailLoading value)?  loading,TResult Function( PostLoaded value)?  loaded,TResult Function( PostUpdated value)?  updated,TResult Function( PostLiked value)?  liked,TResult Function( PostBookmarked value)?  bookmarked,TResult Function( PostUpvoted value)?  upvoted,TResult Function( PostDownvoted value)?  downvoted,TResult Function( PostViewed value)?  viewed,TResult Function( PostClicked value)?  clicked,TResult Function( PostMuted value)?  muted,TResult Function( PostDeleted value)?  deleted,TResult Function( RepostDeleted value)?  repostDeleted,TResult Function( SearchHistoryUpdated value)?  searchHistoryUpdated,TResult Function( PostReported value)?  reported,TResult Function( PostDetailFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
@@ -71,7 +71,8 @@ return viewed(_that);case PostClicked() when clicked != null:
 return clicked(_that);case PostMuted() when muted != null:
 return muted(_that);case PostDeleted() when deleted != null:
 return deleted(_that);case RepostDeleted() when repostDeleted != null:
-return repostDeleted(_that);case PostReported() when reported != null:
+return repostDeleted(_that);case SearchHistoryUpdated() when searchHistoryUpdated != null:
+return searchHistoryUpdated(_that);case PostReported() when reported != null:
 return reported(_that);case PostDetailFailure() when failure != null:
 return failure(_that);case _:
   return orElse();
@@ -91,7 +92,7 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( PostDetailLoading value)  loading,required TResult Function( PostLoaded value)  loaded,required TResult Function( PostUpdated value)  updated,required TResult Function( PostLiked value)  liked,required TResult Function( PostBookmarked value)  bookmarked,required TResult Function( PostUpvoted value)  upvoted,required TResult Function( PostDownvoted value)  downvoted,required TResult Function( PostViewed value)  viewed,required TResult Function( PostClicked value)  clicked,required TResult Function( PostMuted value)  muted,required TResult Function( PostDeleted value)  deleted,required TResult Function( RepostDeleted value)  repostDeleted,required TResult Function( PostReported value)  reported,required TResult Function( PostDetailFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( PostDetailLoading value)  loading,required TResult Function( PostLoaded value)  loaded,required TResult Function( PostUpdated value)  updated,required TResult Function( PostLiked value)  liked,required TResult Function( PostBookmarked value)  bookmarked,required TResult Function( PostUpvoted value)  upvoted,required TResult Function( PostDownvoted value)  downvoted,required TResult Function( PostViewed value)  viewed,required TResult Function( PostClicked value)  clicked,required TResult Function( PostMuted value)  muted,required TResult Function( PostDeleted value)  deleted,required TResult Function( RepostDeleted value)  repostDeleted,required TResult Function( SearchHistoryUpdated value)  searchHistoryUpdated,required TResult Function( PostReported value)  reported,required TResult Function( PostDetailFailure value)  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial():
@@ -107,7 +108,8 @@ return viewed(_that);case PostClicked():
 return clicked(_that);case PostMuted():
 return muted(_that);case PostDeleted():
 return deleted(_that);case RepostDeleted():
-return repostDeleted(_that);case PostReported():
+return repostDeleted(_that);case SearchHistoryUpdated():
+return searchHistoryUpdated(_that);case PostReported():
 return reported(_that);case PostDetailFailure():
 return failure(_that);case _:
   throw StateError('Unexpected subclass');
@@ -126,7 +128,7 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( PostDetailLoading value)?  loading,TResult? Function( PostLoaded value)?  loaded,TResult? Function( PostUpdated value)?  updated,TResult? Function( PostLiked value)?  liked,TResult? Function( PostBookmarked value)?  bookmarked,TResult? Function( PostUpvoted value)?  upvoted,TResult? Function( PostDownvoted value)?  downvoted,TResult? Function( PostViewed value)?  viewed,TResult? Function( PostClicked value)?  clicked,TResult? Function( PostMuted value)?  muted,TResult? Function( PostDeleted value)?  deleted,TResult? Function( RepostDeleted value)?  repostDeleted,TResult? Function( PostReported value)?  reported,TResult? Function( PostDetailFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( PostDetailLoading value)?  loading,TResult? Function( PostLoaded value)?  loaded,TResult? Function( PostUpdated value)?  updated,TResult? Function( PostLiked value)?  liked,TResult? Function( PostBookmarked value)?  bookmarked,TResult? Function( PostUpvoted value)?  upvoted,TResult? Function( PostDownvoted value)?  downvoted,TResult? Function( PostViewed value)?  viewed,TResult? Function( PostClicked value)?  clicked,TResult? Function( PostMuted value)?  muted,TResult? Function( PostDeleted value)?  deleted,TResult? Function( RepostDeleted value)?  repostDeleted,TResult? Function( SearchHistoryUpdated value)?  searchHistoryUpdated,TResult? Function( PostReported value)?  reported,TResult? Function( PostDetailFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
@@ -142,7 +144,8 @@ return viewed(_that);case PostClicked() when clicked != null:
 return clicked(_that);case PostMuted() when muted != null:
 return muted(_that);case PostDeleted() when deleted != null:
 return deleted(_that);case RepostDeleted() when repostDeleted != null:
-return repostDeleted(_that);case PostReported() when reported != null:
+return repostDeleted(_that);case SearchHistoryUpdated() when searchHistoryUpdated != null:
+return searchHistoryUpdated(_that);case PostReported() when reported != null:
 return reported(_that);case PostDetailFailure() when failure != null:
 return failure(_that);case _:
   return null;
@@ -161,7 +164,7 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Post post)?  loaded,TResult Function( int postId,  String body,  int likes,  bool isLiked,  int bookmarks,  bool isBookmarked,  int views,  int replies,  int reposts,  String communityNote,  bool isUpvoted,  bool isDownvoted,  int upvotes,  int downvotes,  bool isReposted,  bool isQuoted,  bool isDeleted,  bool isActive)?  updated,TResult Function( int postId,  bool isLiked,  int likes)?  liked,TResult Function( int postId,  bool isBookmarked,  int bookmarks)?  bookmarked,TResult Function( int postId,  bool isUpvoted,  int upvotes,  bool isDownvoted,  int downvotes)?  upvoted,TResult Function( int postId,  bool isUpvoted,  int upvotes,  bool isDownvoted,  int downvotes)?  downvoted,TResult Function( int postId)?  viewed,TResult Function( int postId)?  clicked,TResult Function( int postId,  bool isMuted)?  muted,TResult Function( int postId)?  deleted,TResult Function( int postId,  int repostId,  int reposts)?  repostDeleted,TResult Function()?  reported,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Post post)?  loaded,TResult Function( int postId,  String body,  int likes,  bool isLiked,  int bookmarks,  bool isBookmarked,  int views,  int replies,  int reposts,  String communityNote,  bool isUpvoted,  bool isDownvoted,  int upvotes,  int downvotes,  bool isReposted,  bool isQuoted,  bool isDeleted,  bool isActive)?  updated,TResult Function( int postId,  bool isLiked,  int likes)?  liked,TResult Function( int postId,  bool isBookmarked,  int bookmarks)?  bookmarked,TResult Function( int postId,  bool isUpvoted,  int upvotes,  bool isDownvoted,  int downvotes)?  upvoted,TResult Function( int postId,  bool isUpvoted,  int upvotes,  bool isDownvoted,  int downvotes)?  downvoted,TResult Function( int postId)?  viewed,TResult Function( int postId)?  clicked,TResult Function( int postId,  bool isMuted)?  muted,TResult Function( int postId)?  deleted,TResult Function( int postId,  int repostId,  int reposts)?  repostDeleted,TResult Function()?  searchHistoryUpdated,TResult Function()?  reported,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case PostDetailLoading() when loading != null:
@@ -176,7 +179,8 @@ return viewed(_that.postId);case PostClicked() when clicked != null:
 return clicked(_that.postId);case PostMuted() when muted != null:
 return muted(_that.postId,_that.isMuted);case PostDeleted() when deleted != null:
 return deleted(_that.postId);case RepostDeleted() when repostDeleted != null:
-return repostDeleted(_that.postId,_that.repostId,_that.reposts);case PostReported() when reported != null:
+return repostDeleted(_that.postId,_that.repostId,_that.reposts);case SearchHistoryUpdated() when searchHistoryUpdated != null:
+return searchHistoryUpdated();case PostReported() when reported != null:
 return reported();case PostDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return orElse();
@@ -196,7 +200,7 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Post post)  loaded,required TResult Function( int postId,  String body,  int likes,  bool isLiked,  int bookmarks,  bool isBookmarked,  int views,  int replies,  int reposts,  String communityNote,  bool isUpvoted,  bool isDownvoted,  int upvotes,  int downvotes,  bool isReposted,  bool isQuoted,  bool isDeleted,  bool isActive)  updated,required TResult Function( int postId,  bool isLiked,  int likes)  liked,required TResult Function( int postId,  bool isBookmarked,  int bookmarks)  bookmarked,required TResult Function( int postId,  bool isUpvoted,  int upvotes,  bool isDownvoted,  int downvotes)  upvoted,required TResult Function( int postId,  bool isUpvoted,  int upvotes,  bool isDownvoted,  int downvotes)  downvoted,required TResult Function( int postId)  viewed,required TResult Function( int postId)  clicked,required TResult Function( int postId,  bool isMuted)  muted,required TResult Function( int postId)  deleted,required TResult Function( int postId,  int repostId,  int reposts)  repostDeleted,required TResult Function()  reported,required TResult Function( String error)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Post post)  loaded,required TResult Function( int postId,  String body,  int likes,  bool isLiked,  int bookmarks,  bool isBookmarked,  int views,  int replies,  int reposts,  String communityNote,  bool isUpvoted,  bool isDownvoted,  int upvotes,  int downvotes,  bool isReposted,  bool isQuoted,  bool isDeleted,  bool isActive)  updated,required TResult Function( int postId,  bool isLiked,  int likes)  liked,required TResult Function( int postId,  bool isBookmarked,  int bookmarks)  bookmarked,required TResult Function( int postId,  bool isUpvoted,  int upvotes,  bool isDownvoted,  int downvotes)  upvoted,required TResult Function( int postId,  bool isUpvoted,  int upvotes,  bool isDownvoted,  int downvotes)  downvoted,required TResult Function( int postId)  viewed,required TResult Function( int postId)  clicked,required TResult Function( int postId,  bool isMuted)  muted,required TResult Function( int postId)  deleted,required TResult Function( int postId,  int repostId,  int reposts)  repostDeleted,required TResult Function()  searchHistoryUpdated,required TResult Function()  reported,required TResult Function( String error)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case PostDetailLoading():
@@ -211,7 +215,8 @@ return viewed(_that.postId);case PostClicked():
 return clicked(_that.postId);case PostMuted():
 return muted(_that.postId,_that.isMuted);case PostDeleted():
 return deleted(_that.postId);case RepostDeleted():
-return repostDeleted(_that.postId,_that.repostId,_that.reposts);case PostReported():
+return repostDeleted(_that.postId,_that.repostId,_that.reposts);case SearchHistoryUpdated():
+return searchHistoryUpdated();case PostReported():
 return reported();case PostDetailFailure():
 return failure(_that.error);case _:
   throw StateError('Unexpected subclass');
@@ -230,7 +235,7 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Post post)?  loaded,TResult? Function( int postId,  String body,  int likes,  bool isLiked,  int bookmarks,  bool isBookmarked,  int views,  int replies,  int reposts,  String communityNote,  bool isUpvoted,  bool isDownvoted,  int upvotes,  int downvotes,  bool isReposted,  bool isQuoted,  bool isDeleted,  bool isActive)?  updated,TResult? Function( int postId,  bool isLiked,  int likes)?  liked,TResult? Function( int postId,  bool isBookmarked,  int bookmarks)?  bookmarked,TResult? Function( int postId,  bool isUpvoted,  int upvotes,  bool isDownvoted,  int downvotes)?  upvoted,TResult? Function( int postId,  bool isUpvoted,  int upvotes,  bool isDownvoted,  int downvotes)?  downvoted,TResult? Function( int postId)?  viewed,TResult? Function( int postId)?  clicked,TResult? Function( int postId,  bool isMuted)?  muted,TResult? Function( int postId)?  deleted,TResult? Function( int postId,  int repostId,  int reposts)?  repostDeleted,TResult? Function()?  reported,TResult? Function( String error)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Post post)?  loaded,TResult? Function( int postId,  String body,  int likes,  bool isLiked,  int bookmarks,  bool isBookmarked,  int views,  int replies,  int reposts,  String communityNote,  bool isUpvoted,  bool isDownvoted,  int upvotes,  int downvotes,  bool isReposted,  bool isQuoted,  bool isDeleted,  bool isActive)?  updated,TResult? Function( int postId,  bool isLiked,  int likes)?  liked,TResult? Function( int postId,  bool isBookmarked,  int bookmarks)?  bookmarked,TResult? Function( int postId,  bool isUpvoted,  int upvotes,  bool isDownvoted,  int downvotes)?  upvoted,TResult? Function( int postId,  bool isUpvoted,  int upvotes,  bool isDownvoted,  int downvotes)?  downvoted,TResult? Function( int postId)?  viewed,TResult? Function( int postId)?  clicked,TResult? Function( int postId,  bool isMuted)?  muted,TResult? Function( int postId)?  deleted,TResult? Function( int postId,  int repostId,  int reposts)?  repostDeleted,TResult? Function()?  searchHistoryUpdated,TResult? Function()?  reported,TResult? Function( String error)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case PostDetailLoading() when loading != null:
@@ -245,7 +250,8 @@ return viewed(_that.postId);case PostClicked() when clicked != null:
 return clicked(_that.postId);case PostMuted() when muted != null:
 return muted(_that.postId,_that.isMuted);case PostDeleted() when deleted != null:
 return deleted(_that.postId);case RepostDeleted() when repostDeleted != null:
-return repostDeleted(_that.postId,_that.repostId,_that.reposts);case PostReported() when reported != null:
+return repostDeleted(_that.postId,_that.repostId,_that.reposts);case SearchHistoryUpdated() when searchHistoryUpdated != null:
+return searchHistoryUpdated();case PostReported() when reported != null:
 return reported();case PostDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return null;
@@ -1121,6 +1127,38 @@ as int,
 /// @nodoc
 
 
+class SearchHistoryUpdated implements PostDetailState {
+  const SearchHistoryUpdated();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchHistoryUpdated);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'PostDetailState.searchHistoryUpdated()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
 class PostReported implements PostDetailState {
   const PostReported();
   
@@ -1260,7 +1298,7 @@ extension PostDetailEventPatterns on PostDetailEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Loaded value)?  loaded,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _RepostDeleted value)?  repostDeleted,TResult Function( _Reported value)?  reported,TResult Function( _Liked value)?  liked,TResult Function( _Bookmarked value)?  bookmarked,TResult Function( _Upvoted value)?  upvoted,TResult Function( _Downvoted value)?  downvoted,TResult Function( _ViewAdded value)?  viewAdded,TResult Function( _ClickAdded value)?  clickAdded,TResult Function( _Muted value)?  muted,TResult Function( _Get value)?  get,TResult Function( _AddView value)?  addView,TResult Function( _AddClick value)?  addClick,TResult Function( _Like value)?  like,TResult Function( _Mute value)?  mute,TResult Function( _Bookmark value)?  bookmark,TResult Function( _Upvote value)?  upvote,TResult Function( _Downvote value)?  downvote,TResult Function( _Delete value)?  delete,TResult Function( _DeleteRepost value)?  deleteRepost,TResult Function( _Report value)?  report,TResult Function( _Unsubscribe value)?  unsubscribe,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Loaded value)?  loaded,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _RepostDeleted value)?  repostDeleted,TResult Function( _Reported value)?  reported,TResult Function( _Liked value)?  liked,TResult Function( _Bookmarked value)?  bookmarked,TResult Function( _Upvoted value)?  upvoted,TResult Function( _Downvoted value)?  downvoted,TResult Function( _ViewAdded value)?  viewAdded,TResult Function( _ClickAdded value)?  clickAdded,TResult Function( _Muted value)?  muted,TResult Function( _Get value)?  get,TResult Function( _AddView value)?  addView,TResult Function( _AddClick value)?  addClick,TResult Function( _Like value)?  like,TResult Function( _Mute value)?  mute,TResult Function( _Bookmark value)?  bookmark,TResult Function( _Upvote value)?  upvote,TResult Function( _Downvote value)?  downvote,TResult Function( _Delete value)?  delete,TResult Function( _DeleteRepost value)?  deleteRepost,TResult Function( _SaveSearchedTerm value)?  saveSearchedTerm,TResult Function( _SaveSearchedProfile value)?  saveSearchedProfile,TResult Function( _DeleteSearchedTerm value)?  deleteSearchedTerm,TResult Function( _DeleteSearchedProfile value)?  deleteSearchedProfile,TResult Function( _ClearSearchHistory value)?  clearSearchHistory,TResult Function( _SearchHistoryUpdated value)?  searchHistoryUpdated,TResult Function( _Report value)?  report,TResult Function( _Unsubscribe value)?  unsubscribe,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
@@ -1286,7 +1324,13 @@ return bookmark(_that);case _Upvote() when upvote != null:
 return upvote(_that);case _Downvote() when downvote != null:
 return downvote(_that);case _Delete() when delete != null:
 return delete(_that);case _DeleteRepost() when deleteRepost != null:
-return deleteRepost(_that);case _Report() when report != null:
+return deleteRepost(_that);case _SaveSearchedTerm() when saveSearchedTerm != null:
+return saveSearchedTerm(_that);case _SaveSearchedProfile() when saveSearchedProfile != null:
+return saveSearchedProfile(_that);case _DeleteSearchedTerm() when deleteSearchedTerm != null:
+return deleteSearchedTerm(_that);case _DeleteSearchedProfile() when deleteSearchedProfile != null:
+return deleteSearchedProfile(_that);case _ClearSearchHistory() when clearSearchHistory != null:
+return clearSearchHistory(_that);case _SearchHistoryUpdated() when searchHistoryUpdated != null:
+return searchHistoryUpdated(_that);case _Report() when report != null:
 return report(_that);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that);case _:
   return orElse();
@@ -1306,7 +1350,7 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Loaded value)  loaded,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _RepostDeleted value)  repostDeleted,required TResult Function( _Reported value)  reported,required TResult Function( _Liked value)  liked,required TResult Function( _Bookmarked value)  bookmarked,required TResult Function( _Upvoted value)  upvoted,required TResult Function( _Downvoted value)  downvoted,required TResult Function( _ViewAdded value)  viewAdded,required TResult Function( _ClickAdded value)  clickAdded,required TResult Function( _Muted value)  muted,required TResult Function( _Get value)  get,required TResult Function( _AddView value)  addView,required TResult Function( _AddClick value)  addClick,required TResult Function( _Like value)  like,required TResult Function( _Mute value)  mute,required TResult Function( _Bookmark value)  bookmark,required TResult Function( _Upvote value)  upvote,required TResult Function( _Downvote value)  downvote,required TResult Function( _Delete value)  delete,required TResult Function( _DeleteRepost value)  deleteRepost,required TResult Function( _Report value)  report,required TResult Function( _Unsubscribe value)  unsubscribe,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Loaded value)  loaded,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _RepostDeleted value)  repostDeleted,required TResult Function( _Reported value)  reported,required TResult Function( _Liked value)  liked,required TResult Function( _Bookmarked value)  bookmarked,required TResult Function( _Upvoted value)  upvoted,required TResult Function( _Downvoted value)  downvoted,required TResult Function( _ViewAdded value)  viewAdded,required TResult Function( _ClickAdded value)  clickAdded,required TResult Function( _Muted value)  muted,required TResult Function( _Get value)  get,required TResult Function( _AddView value)  addView,required TResult Function( _AddClick value)  addClick,required TResult Function( _Like value)  like,required TResult Function( _Mute value)  mute,required TResult Function( _Bookmark value)  bookmark,required TResult Function( _Upvote value)  upvote,required TResult Function( _Downvote value)  downvote,required TResult Function( _Delete value)  delete,required TResult Function( _DeleteRepost value)  deleteRepost,required TResult Function( _SaveSearchedTerm value)  saveSearchedTerm,required TResult Function( _SaveSearchedProfile value)  saveSearchedProfile,required TResult Function( _DeleteSearchedTerm value)  deleteSearchedTerm,required TResult Function( _DeleteSearchedProfile value)  deleteSearchedProfile,required TResult Function( _ClearSearchHistory value)  clearSearchHistory,required TResult Function( _SearchHistoryUpdated value)  searchHistoryUpdated,required TResult Function( _Report value)  report,required TResult Function( _Unsubscribe value)  unsubscribe,}){
 final _that = this;
 switch (_that) {
 case _Created():
@@ -1332,7 +1376,13 @@ return bookmark(_that);case _Upvote():
 return upvote(_that);case _Downvote():
 return downvote(_that);case _Delete():
 return delete(_that);case _DeleteRepost():
-return deleteRepost(_that);case _Report():
+return deleteRepost(_that);case _SaveSearchedTerm():
+return saveSearchedTerm(_that);case _SaveSearchedProfile():
+return saveSearchedProfile(_that);case _DeleteSearchedTerm():
+return deleteSearchedTerm(_that);case _DeleteSearchedProfile():
+return deleteSearchedProfile(_that);case _ClearSearchHistory():
+return clearSearchHistory(_that);case _SearchHistoryUpdated():
+return searchHistoryUpdated(_that);case _Report():
 return report(_that);case _Unsubscribe():
 return unsubscribe(_that);}
 }
@@ -1348,7 +1398,7 @@ return unsubscribe(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _RepostDeleted value)?  repostDeleted,TResult? Function( _Reported value)?  reported,TResult? Function( _Liked value)?  liked,TResult? Function( _Bookmarked value)?  bookmarked,TResult? Function( _Upvoted value)?  upvoted,TResult? Function( _Downvoted value)?  downvoted,TResult? Function( _ViewAdded value)?  viewAdded,TResult? Function( _ClickAdded value)?  clickAdded,TResult? Function( _Muted value)?  muted,TResult? Function( _Get value)?  get,TResult? Function( _AddView value)?  addView,TResult? Function( _AddClick value)?  addClick,TResult? Function( _Like value)?  like,TResult? Function( _Mute value)?  mute,TResult? Function( _Bookmark value)?  bookmark,TResult? Function( _Upvote value)?  upvote,TResult? Function( _Downvote value)?  downvote,TResult? Function( _Delete value)?  delete,TResult? Function( _DeleteRepost value)?  deleteRepost,TResult? Function( _Report value)?  report,TResult? Function( _Unsubscribe value)?  unsubscribe,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _RepostDeleted value)?  repostDeleted,TResult? Function( _Reported value)?  reported,TResult? Function( _Liked value)?  liked,TResult? Function( _Bookmarked value)?  bookmarked,TResult? Function( _Upvoted value)?  upvoted,TResult? Function( _Downvoted value)?  downvoted,TResult? Function( _ViewAdded value)?  viewAdded,TResult? Function( _ClickAdded value)?  clickAdded,TResult? Function( _Muted value)?  muted,TResult? Function( _Get value)?  get,TResult? Function( _AddView value)?  addView,TResult? Function( _AddClick value)?  addClick,TResult? Function( _Like value)?  like,TResult? Function( _Mute value)?  mute,TResult? Function( _Bookmark value)?  bookmark,TResult? Function( _Upvote value)?  upvote,TResult? Function( _Downvote value)?  downvote,TResult? Function( _Delete value)?  delete,TResult? Function( _DeleteRepost value)?  deleteRepost,TResult? Function( _SaveSearchedTerm value)?  saveSearchedTerm,TResult? Function( _SaveSearchedProfile value)?  saveSearchedProfile,TResult? Function( _DeleteSearchedTerm value)?  deleteSearchedTerm,TResult? Function( _DeleteSearchedProfile value)?  deleteSearchedProfile,TResult? Function( _ClearSearchHistory value)?  clearSearchHistory,TResult? Function( _SearchHistoryUpdated value)?  searchHistoryUpdated,TResult? Function( _Report value)?  report,TResult? Function( _Unsubscribe value)?  unsubscribe,}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
@@ -1374,7 +1424,13 @@ return bookmark(_that);case _Upvote() when upvote != null:
 return upvote(_that);case _Downvote() when downvote != null:
 return downvote(_that);case _Delete() when delete != null:
 return delete(_that);case _DeleteRepost() when deleteRepost != null:
-return deleteRepost(_that);case _Report() when report != null:
+return deleteRepost(_that);case _SaveSearchedTerm() when saveSearchedTerm != null:
+return saveSearchedTerm(_that);case _SaveSearchedProfile() when saveSearchedProfile != null:
+return saveSearchedProfile(_that);case _DeleteSearchedTerm() when deleteSearchedTerm != null:
+return deleteSearchedTerm(_that);case _DeleteSearchedProfile() when deleteSearchedProfile != null:
+return deleteSearchedProfile(_that);case _ClearSearchHistory() when clearSearchHistory != null:
+return clearSearchHistory(_that);case _SearchHistoryUpdated() when searchHistoryUpdated != null:
+return searchHistoryUpdated(_that);case _Report() when report != null:
 return report(_that);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that);case _:
   return null;
@@ -1393,7 +1449,7 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Map<String, dynamic> payload)?  repostDeleted,TResult Function( Map<String, dynamic> payload)?  reported,TResult Function( Map<String, dynamic> payload)?  liked,TResult Function( Map<String, dynamic> payload)?  bookmarked,TResult Function( Map<String, dynamic> payload)?  upvoted,TResult Function( Map<String, dynamic> payload)?  downvoted,TResult Function( Map<String, dynamic> payload)?  viewAdded,TResult Function( Map<String, dynamic> payload)?  clickAdded,TResult Function( Map<String, dynamic> payload)?  muted,TResult Function( int postId)?  get,TResult Function( Post post)?  addView,TResult Function( Post post)?  addClick,TResult Function( Post post)?  like,TResult Function( Post post)?  mute,TResult Function( Post post)?  bookmark,TResult Function( Post post)?  upvote,TResult Function( Post post)?  downvote,TResult Function( Post post)?  delete,TResult Function( Post post)?  deleteRepost,TResult Function( String issue,  Post post)?  report,TResult Function( int postId)?  unsubscribe,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( Map<String, dynamic> payload)?  repostDeleted,TResult Function( Map<String, dynamic> payload)?  reported,TResult Function( Map<String, dynamic> payload)?  liked,TResult Function( Map<String, dynamic> payload)?  bookmarked,TResult Function( Map<String, dynamic> payload)?  upvoted,TResult Function( Map<String, dynamic> payload)?  downvoted,TResult Function( Map<String, dynamic> payload)?  viewAdded,TResult Function( Map<String, dynamic> payload)?  clickAdded,TResult Function( Map<String, dynamic> payload)?  muted,TResult Function( int postId)?  get,TResult Function( Post post)?  addView,TResult Function( Post post)?  addClick,TResult Function( Post post)?  like,TResult Function( Post post)?  mute,TResult Function( Post post)?  bookmark,TResult Function( Post post)?  upvote,TResult Function( Post post)?  downvote,TResult Function( Post post)?  delete,TResult Function( Post post)?  deleteRepost,TResult Function( String searchTerm)?  saveSearchedTerm,TResult Function( int userId)?  saveSearchedProfile,TResult Function( String searchTerm)?  deleteSearchedTerm,TResult Function( int userId)?  deleteSearchedProfile,TResult Function()?  clearSearchHistory,TResult Function()?  searchHistoryUpdated,TResult Function( String issue,  Post post)?  report,TResult Function( int postId)?  unsubscribe,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
@@ -1418,7 +1474,13 @@ return bookmark(_that.post);case _Upvote() when upvote != null:
 return upvote(_that.post);case _Downvote() when downvote != null:
 return downvote(_that.post);case _Delete() when delete != null:
 return delete(_that.post);case _DeleteRepost() when deleteRepost != null:
-return deleteRepost(_that.post);case _Report() when report != null:
+return deleteRepost(_that.post);case _SaveSearchedTerm() when saveSearchedTerm != null:
+return saveSearchedTerm(_that.searchTerm);case _SaveSearchedProfile() when saveSearchedProfile != null:
+return saveSearchedProfile(_that.userId);case _DeleteSearchedTerm() when deleteSearchedTerm != null:
+return deleteSearchedTerm(_that.searchTerm);case _DeleteSearchedProfile() when deleteSearchedProfile != null:
+return deleteSearchedProfile(_that.userId);case _ClearSearchHistory() when clearSearchHistory != null:
+return clearSearchHistory();case _SearchHistoryUpdated() when searchHistoryUpdated != null:
+return searchHistoryUpdated();case _Report() when report != null:
 return report(_that.issue,_that.post);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that.postId);case _:
   return orElse();
@@ -1438,7 +1500,7 @@ return unsubscribe(_that.postId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Map<String, dynamic> payload)  repostDeleted,required TResult Function( Map<String, dynamic> payload)  reported,required TResult Function( Map<String, dynamic> payload)  liked,required TResult Function( Map<String, dynamic> payload)  bookmarked,required TResult Function( Map<String, dynamic> payload)  upvoted,required TResult Function( Map<String, dynamic> payload)  downvoted,required TResult Function( Map<String, dynamic> payload)  viewAdded,required TResult Function( Map<String, dynamic> payload)  clickAdded,required TResult Function( Map<String, dynamic> payload)  muted,required TResult Function( int postId)  get,required TResult Function( Post post)  addView,required TResult Function( Post post)  addClick,required TResult Function( Post post)  like,required TResult Function( Post post)  mute,required TResult Function( Post post)  bookmark,required TResult Function( Post post)  upvote,required TResult Function( Post post)  downvote,required TResult Function( Post post)  delete,required TResult Function( Post post)  deleteRepost,required TResult Function( String issue,  Post post)  report,required TResult Function( int postId)  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( Map<String, dynamic> payload)  repostDeleted,required TResult Function( Map<String, dynamic> payload)  reported,required TResult Function( Map<String, dynamic> payload)  liked,required TResult Function( Map<String, dynamic> payload)  bookmarked,required TResult Function( Map<String, dynamic> payload)  upvoted,required TResult Function( Map<String, dynamic> payload)  downvoted,required TResult Function( Map<String, dynamic> payload)  viewAdded,required TResult Function( Map<String, dynamic> payload)  clickAdded,required TResult Function( Map<String, dynamic> payload)  muted,required TResult Function( int postId)  get,required TResult Function( Post post)  addView,required TResult Function( Post post)  addClick,required TResult Function( Post post)  like,required TResult Function( Post post)  mute,required TResult Function( Post post)  bookmark,required TResult Function( Post post)  upvote,required TResult Function( Post post)  downvote,required TResult Function( Post post)  delete,required TResult Function( Post post)  deleteRepost,required TResult Function( String searchTerm)  saveSearchedTerm,required TResult Function( int userId)  saveSearchedProfile,required TResult Function( String searchTerm)  deleteSearchedTerm,required TResult Function( int userId)  deleteSearchedProfile,required TResult Function()  clearSearchHistory,required TResult Function()  searchHistoryUpdated,required TResult Function( String issue,  Post post)  report,required TResult Function( int postId)  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Loaded():
@@ -1463,7 +1525,13 @@ return bookmark(_that.post);case _Upvote():
 return upvote(_that.post);case _Downvote():
 return downvote(_that.post);case _Delete():
 return delete(_that.post);case _DeleteRepost():
-return deleteRepost(_that.post);case _Report():
+return deleteRepost(_that.post);case _SaveSearchedTerm():
+return saveSearchedTerm(_that.searchTerm);case _SaveSearchedProfile():
+return saveSearchedProfile(_that.userId);case _DeleteSearchedTerm():
+return deleteSearchedTerm(_that.searchTerm);case _DeleteSearchedProfile():
+return deleteSearchedProfile(_that.userId);case _ClearSearchHistory():
+return clearSearchHistory();case _SearchHistoryUpdated():
+return searchHistoryUpdated();case _Report():
 return report(_that.issue,_that.post);case _Unsubscribe():
 return unsubscribe(_that.postId);}
 }
@@ -1479,7 +1547,7 @@ return unsubscribe(_that.postId);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Map<String, dynamic> payload)?  repostDeleted,TResult? Function( Map<String, dynamic> payload)?  reported,TResult? Function( Map<String, dynamic> payload)?  liked,TResult? Function( Map<String, dynamic> payload)?  bookmarked,TResult? Function( Map<String, dynamic> payload)?  upvoted,TResult? Function( Map<String, dynamic> payload)?  downvoted,TResult? Function( Map<String, dynamic> payload)?  viewAdded,TResult? Function( Map<String, dynamic> payload)?  clickAdded,TResult? Function( Map<String, dynamic> payload)?  muted,TResult? Function( int postId)?  get,TResult? Function( Post post)?  addView,TResult? Function( Post post)?  addClick,TResult? Function( Post post)?  like,TResult? Function( Post post)?  mute,TResult? Function( Post post)?  bookmark,TResult? Function( Post post)?  upvote,TResult? Function( Post post)?  downvote,TResult? Function( Post post)?  delete,TResult? Function( Post post)?  deleteRepost,TResult? Function( String issue,  Post post)?  report,TResult? Function( int postId)?  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( Map<String, dynamic> payload)?  repostDeleted,TResult? Function( Map<String, dynamic> payload)?  reported,TResult? Function( Map<String, dynamic> payload)?  liked,TResult? Function( Map<String, dynamic> payload)?  bookmarked,TResult? Function( Map<String, dynamic> payload)?  upvoted,TResult? Function( Map<String, dynamic> payload)?  downvoted,TResult? Function( Map<String, dynamic> payload)?  viewAdded,TResult? Function( Map<String, dynamic> payload)?  clickAdded,TResult? Function( Map<String, dynamic> payload)?  muted,TResult? Function( int postId)?  get,TResult? Function( Post post)?  addView,TResult? Function( Post post)?  addClick,TResult? Function( Post post)?  like,TResult? Function( Post post)?  mute,TResult? Function( Post post)?  bookmark,TResult? Function( Post post)?  upvote,TResult? Function( Post post)?  downvote,TResult? Function( Post post)?  delete,TResult? Function( Post post)?  deleteRepost,TResult? Function( String searchTerm)?  saveSearchedTerm,TResult? Function( int userId)?  saveSearchedProfile,TResult? Function( String searchTerm)?  deleteSearchedTerm,TResult? Function( int userId)?  deleteSearchedProfile,TResult? Function()?  clearSearchHistory,TResult? Function()?  searchHistoryUpdated,TResult? Function( String issue,  Post post)?  report,TResult? Function( int postId)?  unsubscribe,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
@@ -1504,7 +1572,13 @@ return bookmark(_that.post);case _Upvote() when upvote != null:
 return upvote(_that.post);case _Downvote() when downvote != null:
 return downvote(_that.post);case _Delete() when delete != null:
 return delete(_that.post);case _DeleteRepost() when deleteRepost != null:
-return deleteRepost(_that.post);case _Report() when report != null:
+return deleteRepost(_that.post);case _SaveSearchedTerm() when saveSearchedTerm != null:
+return saveSearchedTerm(_that.searchTerm);case _SaveSearchedProfile() when saveSearchedProfile != null:
+return saveSearchedProfile(_that.userId);case _DeleteSearchedTerm() when deleteSearchedTerm != null:
+return deleteSearchedTerm(_that.searchTerm);case _DeleteSearchedProfile() when deleteSearchedProfile != null:
+return deleteSearchedProfile(_that.userId);case _ClearSearchHistory() when clearSearchHistory != null:
+return clearSearchHistory();case _SearchHistoryUpdated() when searchHistoryUpdated != null:
+return searchHistoryUpdated();case _Report() when report != null:
 return report(_that.issue,_that.post);case _Unsubscribe() when unsubscribe != null:
 return unsubscribe(_that.postId);case _:
   return null;
@@ -3190,6 +3264,334 @@ $PostCopyWith<$Res> get post {
   });
 }
 }
+
+/// @nodoc
+
+
+class _SaveSearchedTerm implements PostDetailEvent {
+  const _SaveSearchedTerm({required this.searchTerm});
+  
+
+ final  String searchTerm;
+
+/// Create a copy of PostDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SaveSearchedTermCopyWith<_SaveSearchedTerm> get copyWith => __$SaveSearchedTermCopyWithImpl<_SaveSearchedTerm>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SaveSearchedTerm&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,searchTerm);
+
+@override
+String toString() {
+  return 'PostDetailEvent.saveSearchedTerm(searchTerm: $searchTerm)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SaveSearchedTermCopyWith<$Res> implements $PostDetailEventCopyWith<$Res> {
+  factory _$SaveSearchedTermCopyWith(_SaveSearchedTerm value, $Res Function(_SaveSearchedTerm) _then) = __$SaveSearchedTermCopyWithImpl;
+@useResult
+$Res call({
+ String searchTerm
+});
+
+
+
+
+}
+/// @nodoc
+class __$SaveSearchedTermCopyWithImpl<$Res>
+    implements _$SaveSearchedTermCopyWith<$Res> {
+  __$SaveSearchedTermCopyWithImpl(this._self, this._then);
+
+  final _SaveSearchedTerm _self;
+  final $Res Function(_SaveSearchedTerm) _then;
+
+/// Create a copy of PostDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? searchTerm = null,}) {
+  return _then(_SaveSearchedTerm(
+searchTerm: null == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _SaveSearchedProfile implements PostDetailEvent {
+  const _SaveSearchedProfile({required this.userId});
+  
+
+ final  int userId;
+
+/// Create a copy of PostDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SaveSearchedProfileCopyWith<_SaveSearchedProfile> get copyWith => __$SaveSearchedProfileCopyWithImpl<_SaveSearchedProfile>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SaveSearchedProfile&&(identical(other.userId, userId) || other.userId == userId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,userId);
+
+@override
+String toString() {
+  return 'PostDetailEvent.saveSearchedProfile(userId: $userId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SaveSearchedProfileCopyWith<$Res> implements $PostDetailEventCopyWith<$Res> {
+  factory _$SaveSearchedProfileCopyWith(_SaveSearchedProfile value, $Res Function(_SaveSearchedProfile) _then) = __$SaveSearchedProfileCopyWithImpl;
+@useResult
+$Res call({
+ int userId
+});
+
+
+
+
+}
+/// @nodoc
+class __$SaveSearchedProfileCopyWithImpl<$Res>
+    implements _$SaveSearchedProfileCopyWith<$Res> {
+  __$SaveSearchedProfileCopyWithImpl(this._self, this._then);
+
+  final _SaveSearchedProfile _self;
+  final $Res Function(_SaveSearchedProfile) _then;
+
+/// Create a copy of PostDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? userId = null,}) {
+  return _then(_SaveSearchedProfile(
+userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _DeleteSearchedTerm implements PostDetailEvent {
+  const _DeleteSearchedTerm({required this.searchTerm});
+  
+
+ final  String searchTerm;
+
+/// Create a copy of PostDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DeleteSearchedTermCopyWith<_DeleteSearchedTerm> get copyWith => __$DeleteSearchedTermCopyWithImpl<_DeleteSearchedTerm>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DeleteSearchedTerm&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,searchTerm);
+
+@override
+String toString() {
+  return 'PostDetailEvent.deleteSearchedTerm(searchTerm: $searchTerm)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DeleteSearchedTermCopyWith<$Res> implements $PostDetailEventCopyWith<$Res> {
+  factory _$DeleteSearchedTermCopyWith(_DeleteSearchedTerm value, $Res Function(_DeleteSearchedTerm) _then) = __$DeleteSearchedTermCopyWithImpl;
+@useResult
+$Res call({
+ String searchTerm
+});
+
+
+
+
+}
+/// @nodoc
+class __$DeleteSearchedTermCopyWithImpl<$Res>
+    implements _$DeleteSearchedTermCopyWith<$Res> {
+  __$DeleteSearchedTermCopyWithImpl(this._self, this._then);
+
+  final _DeleteSearchedTerm _self;
+  final $Res Function(_DeleteSearchedTerm) _then;
+
+/// Create a copy of PostDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? searchTerm = null,}) {
+  return _then(_DeleteSearchedTerm(
+searchTerm: null == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _DeleteSearchedProfile implements PostDetailEvent {
+  const _DeleteSearchedProfile({required this.userId});
+  
+
+ final  int userId;
+
+/// Create a copy of PostDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DeleteSearchedProfileCopyWith<_DeleteSearchedProfile> get copyWith => __$DeleteSearchedProfileCopyWithImpl<_DeleteSearchedProfile>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DeleteSearchedProfile&&(identical(other.userId, userId) || other.userId == userId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,userId);
+
+@override
+String toString() {
+  return 'PostDetailEvent.deleteSearchedProfile(userId: $userId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DeleteSearchedProfileCopyWith<$Res> implements $PostDetailEventCopyWith<$Res> {
+  factory _$DeleteSearchedProfileCopyWith(_DeleteSearchedProfile value, $Res Function(_DeleteSearchedProfile) _then) = __$DeleteSearchedProfileCopyWithImpl;
+@useResult
+$Res call({
+ int userId
+});
+
+
+
+
+}
+/// @nodoc
+class __$DeleteSearchedProfileCopyWithImpl<$Res>
+    implements _$DeleteSearchedProfileCopyWith<$Res> {
+  __$DeleteSearchedProfileCopyWithImpl(this._self, this._then);
+
+  final _DeleteSearchedProfile _self;
+  final $Res Function(_DeleteSearchedProfile) _then;
+
+/// Create a copy of PostDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? userId = null,}) {
+  return _then(_DeleteSearchedProfile(
+userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _ClearSearchHistory implements PostDetailEvent {
+  const _ClearSearchHistory();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ClearSearchHistory);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'PostDetailEvent.clearSearchHistory()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _SearchHistoryUpdated implements PostDetailEvent {
+  const _SearchHistoryUpdated();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchHistoryUpdated);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'PostDetailEvent.searchHistoryUpdated()';
+}
+
+
+}
+
+
+
 
 /// @nodoc
 

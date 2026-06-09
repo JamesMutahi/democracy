@@ -48,6 +48,10 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
             add(_ClickAdded(payload: message['payload']));
           case 'mute':
             add(_Muted(payload: message['payload']));
+          case 'delete_searched_term':
+          case 'delete_searched_profile':
+          case 'clear_search_history':
+            add(_SearchHistoryUpdated());
           case 'report':
             add(_Reported(payload: message['payload']));
         }
@@ -75,6 +79,20 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     on<_ClickAdded>((event, emit) => _onClickAdded(event, emit));
     on<_Mute>((event, emit) => _onMute(event, emit));
     on<_Muted>((event, emit) => _onMuted(event, emit));
+    on<_SaveSearchedTerm>((event, emit) => _onSaveSearchedTerm(event, emit));
+    on<_SaveSearchedProfile>(
+      (event, emit) => _onSaveSearchedProfile(event, emit),
+    );
+    on<_DeleteSearchedTerm>(
+      (event, emit) => _onDeleteSearchedTerm(event, emit),
+    );
+    on<_DeleteSearchedProfile>(
+      (event, emit) => _onDeleteSearchedProfile(event, emit),
+    );
+    on<_ClearSearchHistory>(
+      (event, emit) => _onClearSearchHistory(event, emit),
+    );
+    on<_SearchHistoryUpdated>((event, emit) => emit(SearchHistoryUpdated()));
     on<_Report>((event, emit) => _onReport(event, emit));
     on<_Unsubscribe>((event, emit) => _onUnsubscribe(event, emit));
   }
@@ -419,6 +437,97 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
         'request_id': requestId,
         'pk': event.post.id,
       },
+    };
+    webSocketService.send(message);
+  }
+
+  void _onSaveSearchedTerm(
+    _SaveSearchedTerm event,
+    Emitter<PostDetailState> emit,
+  ) {
+    emit(PostDetailLoading());
+    if (!webSocketService.isConnected) {
+      emit(PostDetailFailure(error: serverError));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        'action': 'save_searched_term',
+        'search_term': event.searchTerm,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  void _onSaveSearchedProfile(
+    _SaveSearchedProfile event,
+    Emitter<PostDetailState> emit,
+  ) {
+    emit(PostDetailLoading());
+    if (!webSocketService.isConnected) {
+      emit(PostDetailFailure(error: serverError));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {'action': 'save_searched_profile', 'user_id': event.userId},
+    };
+    webSocketService.send(message);
+  }
+
+  void _onDeleteSearchedTerm(
+    _DeleteSearchedTerm event,
+    Emitter<PostDetailState> emit,
+  ) {
+    emit(PostDetailLoading());
+    if (!webSocketService.isConnected) {
+      emit(PostDetailFailure(error: serverError));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        'action': 'delete_searched_term',
+        'search_term': event.searchTerm,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  void _onDeleteSearchedProfile(
+    _DeleteSearchedProfile event,
+    Emitter<PostDetailState> emit,
+  ) {
+    emit(PostDetailLoading());
+    if (!webSocketService.isConnected) {
+      emit(PostDetailFailure(error: serverError));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {'action': 'delete_searched_profile', 'user_id': event.userId},
+    };
+    webSocketService.send(message);
+  }
+
+  void _onClearSearchHistory(
+    _ClearSearchHistory event,
+    Emitter<PostDetailState> emit,
+  ) {
+    emit(PostDetailLoading());
+    if (!webSocketService.isConnected) {
+      emit(PostDetailFailure(error: serverError));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {'action': 'clear_search_history'},
     };
     webSocketService.send(message);
   }

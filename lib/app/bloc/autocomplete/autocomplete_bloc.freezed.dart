@@ -55,12 +55,13 @@ extension AutocompleteEventPatterns on AutocompleteEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Search value)?  search,TResult Function( _Received value)?  received,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Search value)?  search,TResult Function( _Received value)?  received,TResult Function( _Redo value)?  redo,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Search() when search != null:
 return search(_that);case _Received() when received != null:
-return received(_that);case _:
+return received(_that);case _Redo() when redo != null:
+return redo(_that);case _:
   return orElse();
 
 }
@@ -78,12 +79,13 @@ return received(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Search value)  search,required TResult Function( _Received value)  received,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Search value)  search,required TResult Function( _Received value)  received,required TResult Function( _Redo value)  redo,}){
 final _that = this;
 switch (_that) {
 case _Search():
 return search(_that);case _Received():
-return received(_that);case _:
+return received(_that);case _Redo():
+return redo(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -100,12 +102,13 @@ return received(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Search value)?  search,TResult? Function( _Received value)?  received,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Search value)?  search,TResult? Function( _Received value)?  received,TResult? Function( _Redo value)?  redo,}){
 final _that = this;
 switch (_that) {
 case _Search() when search != null:
 return search(_that);case _Received() when received != null:
-return received(_that);case _:
+return received(_that);case _Redo() when redo != null:
+return redo(_that);case _:
   return null;
 
 }
@@ -122,11 +125,12 @@ return received(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String searchTerm)?  search,TResult Function( Map<String, dynamic> payload)?  received,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String searchTerm)?  search,TResult Function( Map<String, dynamic> payload)?  received,TResult Function()?  redo,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Search() when search != null:
 return search(_that.searchTerm);case _Received() when received != null:
-return received(_that.payload);case _:
+return received(_that.payload);case _Redo() when redo != null:
+return redo();case _:
   return orElse();
 
 }
@@ -144,11 +148,12 @@ return received(_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String searchTerm)  search,required TResult Function( Map<String, dynamic> payload)  received,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String searchTerm)  search,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function()  redo,}) {final _that = this;
 switch (_that) {
 case _Search():
 return search(_that.searchTerm);case _Received():
-return received(_that.payload);case _:
+return received(_that.payload);case _Redo():
+return redo();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -165,11 +170,12 @@ return received(_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String searchTerm)?  search,TResult? Function( Map<String, dynamic> payload)?  received,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String searchTerm)?  search,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function()?  redo,}) {final _that = this;
 switch (_that) {
 case _Search() when search != null:
 return search(_that.searchTerm);case _Received() when received != null:
-return received(_that.payload);case _:
+return received(_that.payload);case _Redo() when redo != null:
+return redo();case _:
   return null;
 
 }
@@ -314,5 +320,37 @@ as Map<String, dynamic>,
 
 
 }
+
+/// @nodoc
+
+
+class _Redo implements AutocompleteEvent {
+  const _Redo();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Redo);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'AutocompleteEvent.redo()';
+}
+
+
+}
+
+
+
 
 // dart format on

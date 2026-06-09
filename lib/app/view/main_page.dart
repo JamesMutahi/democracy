@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/bloc/autocomplete/autocomplete_bloc.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
 import 'package:democracy/app/bloc/menu_controller/menu_controller_cubit.dart';
 import 'package:democracy/app/bloc/repository/api/api_repository.dart';
@@ -177,6 +178,15 @@ class _MainPageState extends State<MainPage> {
                 listener: (context, state) {
                   if (state is ConnectivitySuccess) {
                     context.read<SyncBloc>().add(SyncEvent.start());
+                  }
+                },
+              ),
+              BlocListener<PostDetailBloc, PostDetailState>(
+                listener: (context, state) {
+                  if (state is SearchHistoryUpdated) {
+                    context.read<AutocompleteBloc>().add(
+                      AutocompleteEvent.redo(),
+                    );
                   }
                 },
               ),

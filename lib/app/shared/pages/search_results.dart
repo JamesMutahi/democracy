@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/view/widgets/filters_modal.dart';
 import 'package:democracy/app/view/widgets/results_search_bar.dart';
+import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/post_filter/post_filter_cubit.dart';
 import 'package:democracy/post/bloc/posts/posts_bloc.dart';
 import 'package:democracy/post/bloc/recent/recent_posts_bloc.dart';
@@ -45,6 +46,9 @@ class _SearchResultsState extends State<SearchResults>
   void initState() {
     super.initState();
     _controller.text = widget.searchTerm;
+    context.read<PostDetailBloc>().add(
+      PostDetailEvent.saveSearchedTerm(searchTerm: widget.searchTerm),
+    );
   }
 
   @override

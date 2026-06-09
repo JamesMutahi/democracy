@@ -73,6 +73,23 @@ sealed class PostDetailEvent with _$PostDetailEvent {
   const factory PostDetailEvent.deleteRepost({required Post post}) =
       _DeleteRepost;
 
+  const factory PostDetailEvent.saveSearchedTerm({required String searchTerm}) =
+      _SaveSearchedTerm;
+
+  const factory PostDetailEvent.saveSearchedProfile({required int userId}) =
+      _SaveSearchedProfile;
+
+  const factory PostDetailEvent.deleteSearchedTerm({
+    required String searchTerm,
+  }) = _DeleteSearchedTerm;
+
+  const factory PostDetailEvent.deleteSearchedProfile({required int userId}) =
+      _DeleteSearchedProfile;
+
+  const factory PostDetailEvent.clearSearchHistory() = _ClearSearchHistory;
+
+  const factory PostDetailEvent.searchHistoryUpdated() = _SearchHistoryUpdated;
+
   const factory PostDetailEvent.report({
     required String issue,
     required Post post,

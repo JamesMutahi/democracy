@@ -7,4 +7,5 @@ class AutocompleteEvent with _$AutocompleteEvent {
   const factory AutocompleteEvent.received({
     required Map<String, dynamic> payload,
   }) = _Received;
+  const factory AutocompleteEvent.redo() = _Redo;
 }

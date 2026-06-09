@@ -1,6 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:democracy/app/bloc/autocomplete/autocomplete_bloc.dart';
-import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/widgets/no_results.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/app/view/widgets/explore_search_anchor.dart';
@@ -45,15 +43,8 @@ class _ExplorePageState extends State<ExplorePage> {
   Widget build(BuildContext context) {
     final responsive = ResponsiveBreakpoints.of(context);
 
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => PostFilterCubit()),
-        BlocProvider(
-          create: (context) => AutocompleteBloc(
-            webSocketService: context.read<WebSocketService>(),
-          ),
-        ),
-      ],
+    return BlocProvider(
+      create: (context) => PostFilterCubit(),
       child: Scaffold(
         body: DefaultTabController(
           length: 2,
@@ -65,7 +56,6 @@ class _ExplorePageState extends State<ExplorePage> {
               return NestedScrollView(
                 headerSliverBuilder: (context, bool innerBoxIsScrolled) {
                   final filterCubit = context.read<PostFilterCubit>();
-                  final autocompleteBloc = context.read<AutocompleteBloc>();
                   return [
                     if (responsive.isMobile)
                       CustomAppBar(
@@ -81,7 +71,6 @@ class _ExplorePageState extends State<ExplorePage> {
                                 searchController: _searchController,
                                 filterCubit: filterCubit,
                                 filterState: state,
-                                autocompleteBloc: autocompleteBloc,
                               ),
                               _buildTabBar(),
                             ],
@@ -102,7 +91,6 @@ class _ExplorePageState extends State<ExplorePage> {
                                 searchController: _searchController,
                                 filterCubit: filterCubit,
                                 filterState: state,
-                                autocompleteBloc: autocompleteBloc,
                               ),
                             );
                           },

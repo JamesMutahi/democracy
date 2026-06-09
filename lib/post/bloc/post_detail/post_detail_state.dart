@@ -74,6 +74,8 @@ class PostDetailState with _$PostDetailState {
     required int reposts,
   }) = RepostDeleted;
 
+  const factory PostDetailState.searchHistoryUpdated() = SearchHistoryUpdated;
+
   const factory PostDetailState.reported() = PostReported;
 
   const factory PostDetailState.failure({required String error}) =

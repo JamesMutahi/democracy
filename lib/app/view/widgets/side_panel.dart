@@ -1,7 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:democracy/app/bloc/autocomplete/autocomplete_bloc.dart';
 import 'package:democracy/app/bloc/route/route_cubit.dart';
-import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/app/view/widgets/explore_search_anchor.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
@@ -25,40 +23,31 @@ class _SidePanelState extends State<SidePanel> {
 
   @override
   Widget build(BuildContext context) {
-    String currentPath = context.router.current.path;
     String currentRoute = context.watch<RouteCubit>().state;
-    bool showSearchBar = false;
-    showSearchBar = currentRoute != ExploreRoute.name;
-    if (showSearchBar) {
-      showSearchBar = !currentPath.startsWith('/search-results');
-    }
-    return BlocProvider(
-      create: (context) =>
-          AutocompleteBloc(webSocketService: context.read<WebSocketService>()),
-      child: Builder(
-        builder: (context) {
-          return Container(
-            constraints: BoxConstraints(maxWidth: 400),
-            margin: EdgeInsets.only(top: 10),
-            child: CustomScrollView(
-              slivers: [
-                if (showSearchBar)
-                  SliverToBoxAdapter(
-                    child: ExploreSearchAnchor(
-                      searchController: _searchController,
-                      filterCubit: PostFilterCubit(),
-                      filterState: PostFilterState(),
-                      autocompleteBloc: context.read<AutocompleteBloc>(),
-                      hideFilterButton: true,
-                    ),
+    bool hideSearchBar =
+        currentRoute == ExploreRoute.name || currentRoute == SearchResults.name;
+    return Builder(
+      builder: (context) {
+        return Container(
+          constraints: BoxConstraints(maxWidth: 400),
+          margin: EdgeInsets.only(top: 10),
+          child: CustomScrollView(
+            slivers: [
+              if (!hideSearchBar)
+                SliverToBoxAdapter(
+                  child: ExploreSearchAnchor(
+                    searchController: _searchController,
+                    filterCubit: PostFilterCubit(),
+                    filterState: PostFilterState(),
+                    hideFilterButton: true,
                   ),
-                _Trending(),
-                _WhoToFollow(),
-              ],
-            ),
-          );
-        },
-      ),
+                ),
+              _Trending(),
+              _WhoToFollow(),
+            ],
+          ),
+        );
+      },
     );
   }
 }

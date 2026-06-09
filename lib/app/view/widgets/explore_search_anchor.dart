@@ -5,6 +5,7 @@ import 'package:democracy/app/shared/pages/search_results.dart'
     show SearchFilters;
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
+import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/post_filter/post_filter_cubit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -16,14 +17,12 @@ class ExploreSearchAnchor extends StatelessWidget {
     required this.searchController,
     required this.filterCubit,
     required this.filterState,
-    required this.autocompleteBloc,
     this.hideFilterButton = false,
   });
 
   final SearchController searchController;
   final PostFilterCubit filterCubit;
   final PostFilterState filterState;
-  final AutocompleteBloc autocompleteBloc;
   final bool hideFilterButton;
 
   @override
@@ -33,26 +32,38 @@ class ExploreSearchAnchor extends StatelessWidget {
       isFullScreen: false,
       viewConstraints: const BoxConstraints(maxHeight: 400),
       shrinkWrap: true,
+      viewOnChanged: (value) {
+        String searchTerm = value.toLowerCase().trim();
+        context.read<AutocompleteBloc>().add(
+          AutocompleteEvent.search(searchTerm: searchTerm),
+        );
+      },
+      viewOnSubmitted: (value) async {
+        if (value.trim().isNotEmpty) {
+          final route = SearchResults(
+            searchTerm: value,
+            startDate: filterState.startDate,
+            endDate: filterState.endDate,
+            filterCount: filterState.count,
+          );
+          await context.router.push(route);
+          searchController.clear();
+        }
+      },
       builder: (BuildContext context, SearchController controller) {
         return CustomSearchBar(
           controller: controller,
           hintText: 'Search',
           filterCount: filterState.count,
-          onTap: () => controller.openView(),
+          onTap: () {
+            String searchTerm = controller.text.toLowerCase().trim();
+            context.read<AutocompleteBloc>().add(
+              AutocompleteEvent.search(searchTerm: searchTerm),
+            );
+            controller.openView();
+          },
           onTapOutside: () => controller.closeView(controller.text),
           onChanged: (value) => controller.openView(),
-          onSubmitted: (value) async {
-            if (controller.text.trim().isNotEmpty) {
-              final route = SearchResults(
-                searchTerm: controller.text,
-                startDate: filterState.startDate,
-                endDate: filterState.endDate,
-                filterCount: filterState.count,
-              );
-              await context.router.push(route);
-              controller.clear();
-            }
-          },
           onFilterTap: hideFilterButton
               ? null
               : () {
@@ -84,11 +95,8 @@ class ExploreSearchAnchor extends StatelessWidget {
         );
       },
       suggestionsBuilder: (BuildContext context, SearchController controller) {
-        final String searchTerm = controller.text.toLowerCase().trim();
-        autocompleteBloc.add(AutocompleteEvent.search(searchTerm: searchTerm));
         return [
           BlocBuilder<AutocompleteBloc, AutocompleteState>(
-            bloc: autocompleteBloc,
             builder: (context, state) {
               return Column(
                 mainAxisSize: MainAxisSize.min,
@@ -98,6 +106,10 @@ class ExploreSearchAnchor extends StatelessWidget {
                       title: Text(hashtag),
                       onTap: () {
                         controller.closeView(hashtag);
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        context.read<PostDetailBloc>().add(
+                          PostDetailEvent.saveSearchedTerm(searchTerm: hashtag),
+                        );
                         context.router.push(
                           SearchResults(
                             searchTerm: hashtag,
@@ -112,8 +124,23 @@ class ExploreSearchAnchor extends StatelessWidget {
                   ...state.words.map(
                     (word) => ListTile(
                       title: Text(word),
+                      trailing: controller.text.trim().isNotEmpty
+                          ? SizedBox.shrink()
+                          : IconButton(
+                              onPressed: () =>
+                                  context.read<PostDetailBloc>().add(
+                                    PostDetailEvent.deleteSearchedTerm(
+                                      searchTerm: word,
+                                    ),
+                                  ),
+                              icon: Icon(Icons.close_rounded),
+                            ),
                       onTap: () {
                         controller.closeView(word);
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        context.read<PostDetailBloc>().add(
+                          PostDetailEvent.saveSearchedTerm(searchTerm: word),
+                        );
                         context.router.push(
                           SearchResults(
                             searchTerm: word,
@@ -145,8 +172,23 @@ class ExploreSearchAnchor extends StatelessWidget {
                       ),
                       title: Text(user.name, overflow: TextOverflow.ellipsis),
                       subtitle: Text('@${user.username}'),
+                      trailing: controller.text.trim().isNotEmpty
+                          ? SizedBox.shrink()
+                          : IconButton(
+                              onPressed: () =>
+                                  context.read<PostDetailBloc>().add(
+                                    PostDetailEvent.deleteSearchedProfile(
+                                      userId: user.id,
+                                    ),
+                                  ),
+                              icon: Icon(Icons.close_rounded),
+                            ),
                       onTap: () {
                         controller.closeView(user.username);
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        context.read<PostDetailBloc>().add(
+                          PostDetailEvent.saveSearchedProfile(userId: user.id),
+                        );
                         context.router.push(ProfileRoute(userId: user.id));
                       },
                     ),

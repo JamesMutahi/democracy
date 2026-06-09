@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/models/autocomplete_user.dart';
+import 'package:democracy/app/shared/utils/transformers.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -23,12 +24,18 @@ class AutocompleteBloc extends Bloc<AutocompleteEvent, AutocompleteState> {
         add(_Received(payload: message['payload']));
       }
     });
-    on<_Search>((event, emit) => _onSearch(event, emit));
+    on<_Search>(
+      (event, emit) => _onSearch(event, emit),
+      transformer: debounce(),
+    );
     on<_Received>((event, emit) => _onReceived(event, emit));
+    on<_Redo>((event, emit) {
+      add(_Search(searchTerm: state.searchTerm));
+    });
   }
 
   void _onSearch(_Search event, Emitter<AutocompleteState> emit) {
-    emit(AutocompleteState(status: AutocompleteStatus.loading));
+    emit(state.copyWith(status: AutocompleteStatus.loading));
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: AutocompleteStatus.failure));
       return;
@@ -38,7 +45,7 @@ class AutocompleteBloc extends Bloc<AutocompleteEvent, AutocompleteState> {
       'stream': stream,
       'payload': {
         'action': action,
-        'request_id': requestId,
+        'request_id': event.searchTerm,
         'query': event.searchTerm,
       },
     };
@@ -51,7 +58,7 @@ class AutocompleteBloc extends Bloc<AutocompleteEvent, AutocompleteState> {
       List<String> hashtags = [];
       List<String> words = [];
       List<AutocompleteUser> users = [];
-      for (var result in event.payload['data']) {
+      for (Map<String, dynamic> result in event.payload['data']) {
         if (result['type'] == 'hashtag') {
           hashtags.add(result['text']);
         }
@@ -65,6 +72,7 @@ class AutocompleteBloc extends Bloc<AutocompleteEvent, AutocompleteState> {
       emit(
         state.copyWith(
           status: AutocompleteStatus.success,
+          searchTerm: event.payload['request_id'],
           hashtags: hashtags,
           words: words,
           users: users,
