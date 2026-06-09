@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
+import 'package:democracy/app/view/widgets/explore_search_anchor.dart';
 import 'package:democracy/app/view/widgets/filters_modal.dart';
-import 'package:democracy/app/view/widgets/results_search_bar.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/bloc/post_filter/post_filter_cubit.dart';
 import 'package:democracy/post/bloc/posts/posts_bloc.dart';
@@ -40,12 +40,12 @@ class _SearchResultsState extends State<SearchResults>
   @override
   bool get wantKeepAlive => true;
 
-  final TextEditingController _controller = TextEditingController();
+  final SearchController _searchController = SearchController();
 
   @override
   void initState() {
     super.initState();
-    _controller.text = widget.searchTerm;
+    _searchController.text = widget.searchTerm;
     context.read<PostDetailBloc>().add(
       PostDetailEvent.saveSearchedTerm(searchTerm: widget.searchTerm),
     );
@@ -53,7 +53,7 @@ class _SearchResultsState extends State<SearchResults>
 
   @override
   void dispose() {
-    _controller.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -79,6 +79,7 @@ class _SearchResultsState extends State<SearchResults>
               builder: (context, state) {
                 return NestedScrollView(
                   headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+                    final filterCubit = context.read<PostFilterCubit>();
                     return [
                       SliverAppBar(
                         floating: true,
@@ -87,19 +88,24 @@ class _SearchResultsState extends State<SearchResults>
                         automaticallyImplyLeading: false,
                         flexibleSpace: Builder(
                           builder: (context) {
-                            return SizedBox(
-                              height: 50,
-                              child: Row(
-                                children: [
-                                  BackButton(),
-                                  _buildSearchBar(
-                                    cubit: context.read<PostFilterCubit>(),
-                                    startDate: state.startDate,
-                                    endDate: state.endDate,
-                                    filterCount: state.count,
+                            return Row(
+                              children: [
+                                BackButton(),
+                                Expanded(
+                                  child: SizedBox(
+                                    height: 60,
+                                    child: ExploreSearchAnchor(
+                                      searchController: _searchController,
+                                      filterCubit: filterCubit,
+                                      filterState: state,
+                                      onSubmitted: () {
+                                        _searchController.text =
+                                            widget.searchTerm;
+                                      },
+                                    ),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             );
                           },
                         ),
@@ -158,39 +164,6 @@ class _SearchResultsState extends State<SearchResults>
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildSearchBar({
-    required PostFilterCubit cubit,
-    required DateTime? startDate,
-    required DateTime? endDate,
-    required int filterCount,
-  }) {
-    return ResultsSearchBar(
-      controller: _controller,
-      filterCount: filterCount,
-      filterModal: SearchFilters(
-        onExplorePage: false,
-        startDate: startDate,
-        endDate: endDate,
-        cubit: cubit,
-      ),
-      onSubmitted: (value) async {
-        if (_controller.text.isNotEmpty &&
-            widget.searchTerm != _controller.text) {
-          final route = router_gr.SearchResults(
-            searchTerm: _controller.text,
-            startDate: startDate,
-            endDate: endDate,
-            filterCount: filterCount,
-          );
-
-          await route.push(context);
-
-          _controller.text = widget.searchTerm;
-        }
-      },
     );
   }
 }

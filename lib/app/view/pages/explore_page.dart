@@ -67,11 +67,7 @@ class _ExplorePageState extends State<ExplorePage> {
                           preferredSize: Size.fromHeight(100.0),
                           child: Column(
                             children: [
-                              ExploreSearchAnchor(
-                                searchController: _searchController,
-                                filterCubit: filterCubit,
-                                filterState: state,
-                              ),
+                              _buildSearchBar(filterCubit, state),
                               _buildTabBar(),
                             ],
                           ),
@@ -87,11 +83,7 @@ class _ExplorePageState extends State<ExplorePage> {
                           builder: (context) {
                             return SizedBox(
                               height: 60,
-                              child: ExploreSearchAnchor(
-                                searchController: _searchController,
-                                filterCubit: filterCubit,
-                                filterState: state,
-                              ),
+                              child: _buildSearchBar(filterCubit, state),
                             );
                           },
                         ),
@@ -108,6 +100,17 @@ class _ExplorePageState extends State<ExplorePage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildSearchBar(PostFilterCubit cubit, PostFilterState state) {
+    return ExploreSearchAnchor(
+      searchController: _searchController,
+      filterCubit: cubit,
+      filterState: state,
+      onSubmitted: () {
+        _searchController.clear();
+      },
     );
   }
 

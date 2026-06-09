@@ -10,6 +10,7 @@ import 'package:democracy/post/bloc/post_filter/post_filter_cubit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 class ExploreSearchAnchor extends StatelessWidget {
   const ExploreSearchAnchor({
@@ -18,12 +19,14 @@ class ExploreSearchAnchor extends StatelessWidget {
     required this.filterCubit,
     required this.filterState,
     this.hideFilterButton = false,
+    required this.onSubmitted,
   });
 
   final SearchController searchController;
   final PostFilterCubit filterCubit;
   final PostFilterState filterState;
   final bool hideFilterButton;
+  final VoidCallback onSubmitted;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +35,10 @@ class ExploreSearchAnchor extends StatelessWidget {
       isFullScreen: false,
       viewConstraints: const BoxConstraints(maxHeight: 400),
       shrinkWrap: true,
+      viewLeading: IconButton.outlined(
+        onPressed: () => searchController.closeView(searchController.text),
+        icon: Icon(Symbols.keyboard_arrow_up),
+      ),
       viewOnChanged: (value) {
         String searchTerm = value.toLowerCase().trim();
         context.read<AutocompleteBloc>().add(
@@ -47,7 +54,7 @@ class ExploreSearchAnchor extends StatelessWidget {
             filterCount: filterState.count,
           );
           await context.router.push(route);
-          searchController.clear();
+          onSubmitted();
         }
       },
       builder: (BuildContext context, SearchController controller) {

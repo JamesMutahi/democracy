@@ -40,6 +40,7 @@ class _SidePanelState extends State<SidePanel> {
                     filterCubit: PostFilterCubit(),
                     filterState: PostFilterState(),
                     hideFilterButton: true,
+                    onSubmitted: () {},
                   ),
                 ),
               _Trending(),
