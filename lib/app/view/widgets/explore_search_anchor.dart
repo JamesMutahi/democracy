@@ -46,6 +46,7 @@ class ExploreSearchAnchor extends StatelessWidget {
         );
       },
       viewOnSubmitted: (value) async {
+        searchController.closeView(searchController.text);
         if (value.trim().isNotEmpty) {
           final route = SearchResults(
             searchTerm: value,
@@ -69,7 +70,6 @@ class ExploreSearchAnchor extends StatelessWidget {
             );
             controller.openView();
           },
-          onTapOutside: () => controller.closeView(controller.text),
           onChanged: (value) => controller.openView(),
           onFilterTap: hideFilterButton
               ? null

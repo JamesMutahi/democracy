@@ -38,7 +38,7 @@ class _MyAppState extends State<MyApp> {
                   child: FToastBuilder()(context, child),
                   breakpoints: breakpoints,
                 ),
-                title: 'Democracy',
+                title: 'People of Kenya',
                 theme: AppTheme.light,
                 darkTheme: AppTheme.dark,
                 themeMode: themeMode,

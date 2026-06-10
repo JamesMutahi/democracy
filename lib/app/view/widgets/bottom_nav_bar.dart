@@ -80,7 +80,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                           },
                         ),
                         NavBarItem(
-                          asset: 'assets/icons/chat-square.svg',
+                          asset: 'assets/icons/chat.svg',
                           isActive: currentRoute == ChatRoute.name,
                           onTap: () {
                             context.navigateTo(const ChatRoute());

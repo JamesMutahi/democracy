@@ -39,7 +39,6 @@ class _LoginPageState extends State<LoginPage> {
       child: Scaffold(
         body: Stack(
           children: [
-            _buildDefinition(),
             Center(
               child: IntrinsicWidth(
                 child: Column(
@@ -139,26 +138,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDefinition() {
-    return SafeArea(
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 20.0),
-          child: Text(
-            'A true democracy means that the power lies solely with the people '
-            'and that the people alone are entitled to it and thus, parties, '
-            'rulers, the powerful, the hierarchical and other rulers are not '
-            'allowed to decide on any matters independently or even to make '
-            'propaganda for their ideas.',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
         ),
       ),
     );

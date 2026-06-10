@@ -103,6 +103,7 @@ dependencies:
   auto_route: ^11.1.0
   flutter_web_plugins:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
   flutter_test:

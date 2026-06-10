@@ -70,7 +70,7 @@ class SideMenu extends StatelessWidget {
                                     menuController.closeDrawer();
                                     context.navigateTo(const HomeRoute());
                                   },
-                                  iconData: Symbols.home_rounded,
+                                  icon: 'assets/icons/home.svg',
                                   title: 'Home',
                                   selected: currentRoute == HomeRoute.name,
                                 ),
@@ -79,7 +79,7 @@ class SideMenu extends StatelessWidget {
                                     menuController.closeDrawer();
                                     context.navigateTo(const ExploreRoute());
                                   },
-                                  iconData: Symbols.search_rounded,
+                                  icon: 'assets/icons/search.svg',
                                   title: 'Explore',
                                   selected: currentRoute == ExploreRoute.name,
                                 ),
@@ -88,7 +88,7 @@ class SideMenu extends StatelessWidget {
                                     menuController.closeDrawer();
                                     context.navigateTo(const Hub());
                                   },
-                                  iconData: Symbols.dashboard_rounded,
+                                  icon: 'assets/icons/widgets.svg',
                                   title: 'Hub',
                                   selected: currentRoute == Hub.name,
                                 ),
@@ -97,7 +97,7 @@ class SideMenu extends StatelessWidget {
                                     menuController.closeDrawer();
                                     context.navigateTo(const ChatRoute());
                                   },
-                                  iconData: Symbols.chat_bubble_rounded,
+                                  icon: 'assets/icons/chat.svg',
                                   title: 'Chat',
                                   selected: currentRoute == ChatRoute.name,
                                 ),
@@ -109,7 +109,7 @@ class SideMenu extends StatelessWidget {
                                     context.router.push(const Notifications());
                                   }
                                 },
-                                iconData: Symbols.notifications_rounded,
+                                icon: 'assets/icons/bell.svg',
                                 title: 'Notifications',
                                 selected: currentRoute == Notifications.name,
                               ),
@@ -120,7 +120,7 @@ class SideMenu extends StatelessWidget {
                                     context.router.push(const Bookmarks());
                                   }
                                 },
-                                iconData: Symbols.bookmark_rounded,
+                                icon: 'assets/icons/bookmark.svg',
                                 title: 'Bookmarks',
                                 selected: currentRoute == Bookmarks.name,
                               ),
@@ -133,7 +133,7 @@ class SideMenu extends StatelessWidget {
                                     );
                                   }
                                 },
-                                iconData: Symbols.book_rounded,
+                                icon: 'assets/icons/notebook.svg',
                                 title: 'Constitution',
                                 selected: currentRoute == Constitution.name,
                               ),
@@ -144,7 +144,7 @@ class SideMenu extends StatelessWidget {
                                     context.router.push(const Settings());
                                   }
                                 },
-                                iconData: Symbols.settings_rounded,
+                                icon: 'assets/icons/settings.svg',
                                 title: 'Settings',
                                 selected: currentRoute == Settings.name,
                               ),
@@ -230,7 +230,7 @@ class SideMenu extends StatelessWidget {
 
   Widget _buildCreateIcon(BuildContext context, Color color) {
     return SvgPicture.asset(
-      'assets/icons/pen.svg',
+      'assets/icons/pen-round.svg',
       colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
     );
   }
@@ -400,13 +400,13 @@ class DrawerListTile extends StatelessWidget {
     super.key,
     required this.title,
     required this.onTap,
-    required this.iconData,
+    required this.icon,
     this.selected = false,
   });
 
   final String title;
   final VoidCallback onTap;
-  final IconData iconData;
+  final String icon;
   final bool selected;
 
   @override
@@ -421,10 +421,16 @@ class DrawerListTile extends StatelessWidget {
             child: IconButton(
               onPressed: onTap,
               padding: EdgeInsets.all(10),
-              icon: Icon(
-                iconData,
-                size: 25,
-                color: selected ? null : Theme.of(context).colorScheme.outline,
+              icon: SvgPicture.asset(
+                icon,
+                height: 20,
+                width: 20,
+                colorFilter: ColorFilter.mode(
+                  selected
+                      ? Theme.of(context).primaryColor
+                      : Theme.of(context).colorScheme.outline,
+                  BlendMode.srcIn,
+                ),
               ),
               tooltip: title,
             ),
@@ -436,10 +442,16 @@ class DrawerListTile extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
-            leading: Icon(
-              iconData,
-              size: 20,
-              color: selected ? null : Theme.of(context).colorScheme.outline,
+            leading: SvgPicture.asset(
+              icon,
+              height: 20,
+              width: 20,
+              colorFilter: ColorFilter.mode(
+                selected
+                    ? Theme.of(context).primaryColor
+                    : Theme.of(context).colorScheme.outline,
+                BlendMode.srcIn,
+              ),
             ),
             title: Text(
               title,
