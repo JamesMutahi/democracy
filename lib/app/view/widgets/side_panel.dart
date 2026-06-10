@@ -33,16 +33,31 @@ class _SidePanelState extends State<SidePanel> {
           margin: EdgeInsets.only(top: 10),
           child: CustomScrollView(
             slivers: [
-              if (!hideSearchBar)
-                SliverToBoxAdapter(
-                  child: ExploreSearchAnchor(
-                    searchController: _searchController,
-                    filterCubit: PostFilterCubit(),
-                    filterState: PostFilterState(),
-                    hideFilterButton: true,
-                    onSubmitted: () {},
-                  ),
-                ),
+              SliverToBoxAdapter(
+                child: hideSearchBar
+                    ? Container(
+                        margin: EdgeInsets.only(left: 20, bottom: 10),
+                        height: 5,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.outlineVariant,
+                          ),
+                          borderRadius: BorderRadius.circular(15),
+                          color: Theme.of(context).colorScheme.outlineVariant,
+                        ),
+                      )
+                    : Container(
+                        margin: EdgeInsets.only(left: 10, bottom: 10),
+                        child: ExploreSearchAnchor(
+                          searchController: _searchController,
+                          filterCubit: PostFilterCubit(),
+                          filterState: PostFilterState(),
+                          hideFilterButton: true,
+                          onSubmitted: () {},
+                        ),
+                      ),
+              ),
               _Trending(),
               _WhoToFollow(),
             ],
@@ -90,7 +105,7 @@ class _TrendingState extends State<_Trending> {
                 ...topics.map(
                   (topic) => Container(
                     key: ValueKey(topic),
-                    child: InkWell(
+                    child: ListTile(
                       onTap: () {
                         context.router.push(
                           SearchResults(
@@ -101,7 +116,7 @@ class _TrendingState extends State<_Trending> {
                           ),
                         );
                       },
-                      child: ListTile(title: Text(topic)),
+                      title: Text(topic),
                     ),
                   ),
                 ),

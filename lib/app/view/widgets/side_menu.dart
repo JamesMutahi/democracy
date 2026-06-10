@@ -149,23 +149,26 @@ class SideMenu extends StatelessWidget {
                                 selected: currentRoute == Settings.name,
                               ),
                               if (kIsWeb)
-                                !responsive.isMobile &&
-                                        responsive.smallerThan(expandSideMenu)
-                                    ? IconButton.filledTonal(
-                                        onPressed: () {
-                                          _showCreateDialog(context);
-                                        },
-                                        padding: const EdgeInsets.all(10),
-                                        icon: _buildCreateIcon(
+                                Container(
+                                  margin: EdgeInsets.only(top: 5),
+                                  child: !responsive.isMobile &&
+                                          responsive.smallerThan(expandSideMenu)
+                                      ? IconButton.filledTonal(
+                                          onPressed: () {
+                                            _showCreateDialog(context);
+                                          },
+                                          padding: const EdgeInsets.all(10),
+                                          icon: _buildCreateIcon(
+                                            context,
+                                            Theme.of(context).primaryColor,
+                                          ),
+                                        )
+                                      : _buildCreateButton(
                                           context,
-                                          Theme.of(context).primaryColor,
+                                          menuController,
+                                          currentRoute,
                                         ),
-                                      )
-                                    : _buildCreateButton(
-                                        context,
-                                        menuController,
-                                        currentRoute,
-                                      ),
+                                ),
                             ],
                           ),
                         ),
@@ -193,30 +196,27 @@ class SideMenu extends StatelessWidget {
     MenuControllerCubit menuController,
     String currentRoute,
   ) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 0.0),
-      child: ListTile(
-        onTap: () {
-          menuController.closeDrawer();
-          _showCreateDialog(context);
-        },
-        leading: _buildCreateIcon(
-          context,
-          currentRoute.toLowerCase().contains('create')
+    return ListTile(
+      onTap: () {
+        menuController.closeDrawer();
+        _showCreateDialog(context);
+      },
+      leading: _buildCreateIcon(
+        context,
+        currentRoute.toLowerCase().contains('create')
+            ? Theme.of(context).primaryColor
+            : Theme.of(context).colorScheme.outline,
+      ),
+      title: Text(
+        'Create',
+        style: TextStyle(
+          color: currentRoute.toLowerCase().contains('create')
               ? Theme.of(context).primaryColor
               : Theme.of(context).colorScheme.outline,
         ),
-        title: Text(
-          'Create',
-          style: TextStyle(
-            color: currentRoute.toLowerCase().contains('create')
-                ? Theme.of(context).primaryColor
-                : Theme.of(context).colorScheme.outline,
-          ),
-        ),
-        tileColor: Theme.of(context).colorScheme.primaryContainer,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
       ),
+      tileColor: Theme.of(context).colorScheme.primaryContainer,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
     );
   }
 

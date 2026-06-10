@@ -25,6 +25,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 class Messages extends StatefulWidget {
   const Messages({super.key, required this.chat, required this.me});
@@ -441,6 +442,10 @@ class _AlignmentContainerState extends State<AlignmentContainer> {
 
   @override
   Widget build(BuildContext context) {
+    final responsive = ResponsiveBreakpoints.of(context);
+    double messageWidth = responsive.screenWidth < 600
+        ? MediaQuery.of(context).size.width / 1.5
+        : 400;
     return BlocListener<MessageActionsCubit, MessageActionsState>(
       listener: (context, state) {
         if (state.status == MessageActionsStatus.actionButtonsOpened) {
@@ -490,7 +495,7 @@ class _AlignmentContainerState extends State<AlignmentContainer> {
                   ? Alignment.topRight
                   : Alignment.topLeft,
               child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 400),
+                constraints: BoxConstraints(maxWidth: messageWidth),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [

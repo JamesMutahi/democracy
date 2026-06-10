@@ -29,7 +29,6 @@ import 'package:democracy/constitution/bloc/sections/sections_bloc.dart';
 import 'package:democracy/geo/bloc/geo/geo_bloc.dart';
 import 'package:democracy/meeting/bloc/meeting_detail/meeting_detail_bloc.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
-import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/notification/bloc/preferences/preferences_bloc.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_bloc.dart';
@@ -244,13 +243,6 @@ void main() {
                     create: (context) => AnswerBloc(
                       webSocketService: context.read<WebSocketService>(),
                     ),
-                  ),
-                  BlocProvider(
-                    create: (context) => NotificationsBloc(
-                      webSocketService: context.read<WebSocketService>(),
-                      databaseRepository: context.read<DatabaseRepository>(),
-                    ),
-                    lazy: false,
                   ),
                   BlocProvider(
                     create: (context) => NotificationDetailBloc(

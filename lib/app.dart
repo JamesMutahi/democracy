@@ -7,6 +7,7 @@ import 'package:democracy/app/view/router/route_observer.dart';
 import 'package:democracy/app/view/router/router.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -46,6 +47,16 @@ class _MyAppState extends State<MyApp> {
                   navigatorObservers: () => [
                     AppRouteObserver(routeCubit: routeCubit),
                   ],
+                ),
+                scrollBehavior: const MaterialScrollBehavior().copyWith(
+                  scrollbars: false,
+                  physics: const BouncingScrollPhysics(),
+                  dragDevices: {
+                    PointerDeviceKind.touch,
+                    PointerDeviceKind.mouse,
+                    PointerDeviceKind.trackpad,
+                    PointerDeviceKind.stylus,
+                  },
                 ),
               );
             },

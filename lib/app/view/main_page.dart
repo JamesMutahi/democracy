@@ -46,6 +46,13 @@ class _MainPageState extends State<MainPage> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
+          create: (context) => NotificationsBloc(
+            webSocketService: context.read<WebSocketService>(),
+            databaseRepository: context.read<DatabaseRepository>(),
+          ),
+          lazy: false,
+        ),
+        BlocProvider(
           create: (context) => SyncBloc(
             apiRepository: context.read<APIRepository>(),
             databaseRepository: context.read<DatabaseRepository>(),
@@ -196,14 +203,16 @@ class _MainPageState extends State<MainPage> {
                   ? MainAxisAlignment.center
                   : MainAxisAlignment.start,
               children: [
-                if (kIsWeb && !responsive.isMobile)
-                  Flexible(
+                Visibility(
+                  visible: kIsWeb && !responsive.isMobile,
+                  child: Flexible(
                     flex: responsive.largerOrEqualTo(expandSideMenu) ? 3 : 1,
                     child: ConstrainedBox(
                       constraints: BoxConstraints(maxWidth: 300),
                       child: SideMenu(),
                     ),
                   ),
+                ),
                 Flexible(
                   flex: responsive.largerOrEqualTo(expandSideMenu) ? 5 : 6,
                   child: Container(
