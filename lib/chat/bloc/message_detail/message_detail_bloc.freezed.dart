@@ -865,13 +865,13 @@ return delete(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( User author,  Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<String> filePaths,  LatLng? location)?  create,TResult Function( Message message,  String text)?  edit,TResult Function( List<Message> messages)?  delete,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( User author,  Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Broadcast? broadcast,  Section? section,  List<String> filePaths,  LatLng? location)?  create,TResult Function( Message message,  String text)?  edit,TResult Function( List<Message> messages)?  delete,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Create() when create != null:
-return create(_that.author,_that.chat,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.filePaths,_that.location);case _Edit() when edit != null:
+return create(_that.author,_that.chat,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.broadcast,_that.section,_that.filePaths,_that.location);case _Edit() when edit != null:
 return edit(_that.message,_that.text);case _Delete() when delete != null:
 return delete(_that.messages);case _:
   return orElse();
@@ -891,13 +891,13 @@ return delete(_that.messages);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( User author,  Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<String> filePaths,  LatLng? location)  create,required TResult Function( Message message,  String text)  edit,required TResult Function( List<Message> messages)  delete,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( User author,  Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Broadcast? broadcast,  Section? section,  List<String> filePaths,  LatLng? location)  create,required TResult Function( Message message,  String text)  edit,required TResult Function( List<Message> messages)  delete,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Updated():
 return updated(_that.payload);case _Deleted():
 return deleted(_that.payload);case _Create():
-return create(_that.author,_that.chat,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.filePaths,_that.location);case _Edit():
+return create(_that.author,_that.chat,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.broadcast,_that.section,_that.filePaths,_that.location);case _Edit():
 return edit(_that.message,_that.text);case _Delete():
 return delete(_that.messages);}
 }
@@ -913,13 +913,13 @@ return delete(_that.messages);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( User author,  Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<String> filePaths,  LatLng? location)?  create,TResult? Function( Message message,  String text)?  edit,TResult? Function( List<Message> messages)?  delete,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( User author,  Chat chat,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Broadcast? broadcast,  Section? section,  List<String> filePaths,  LatLng? location)?  create,TResult? Function( Message message,  String text)?  edit,TResult? Function( List<Message> messages)?  delete,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Create() when create != null:
-return create(_that.author,_that.chat,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.filePaths,_that.location);case _Edit() when edit != null:
+return create(_that.author,_that.chat,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.broadcast,_that.section,_that.filePaths,_that.location);case _Edit() when edit != null:
 return edit(_that.message,_that.text);case _Delete() when delete != null:
 return delete(_that.messages);case _:
   return null;
@@ -1149,7 +1149,7 @@ as Map<String, dynamic>,
 
 
 class _Create implements MessageDetailEvent {
-  const _Create({required this.author, required this.chat, required this.text, this.post, this.ballot, this.survey, this.petition, this.meeting, this.section, final  List<String> filePaths = const [], this.location}): _filePaths = filePaths;
+  const _Create({required this.author, required this.chat, required this.text, this.post, this.ballot, this.survey, this.petition, this.broadcast, this.section, final  List<String> filePaths = const [], this.location}): _filePaths = filePaths;
   
 
  final  User author;
@@ -1159,7 +1159,7 @@ class _Create implements MessageDetailEvent {
  final  Ballot? ballot;
  final  Survey? survey;
  final  Petition? petition;
- final  Meeting? meeting;
+ final  Broadcast? broadcast;
  final  Section? section;
  final  List<String> _filePaths;
 @JsonKey() List<String> get filePaths {
@@ -1180,16 +1180,16 @@ _$CreateCopyWith<_Create> get copyWith => __$CreateCopyWithImpl<_Create>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Create&&(identical(other.author, author) || other.author == author)&&(identical(other.chat, chat) || other.chat == chat)&&(identical(other.text, text) || other.text == text)&&(identical(other.post, post) || other.post == post)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.section, section) || other.section == section)&&const DeepCollectionEquality().equals(other._filePaths, _filePaths)&&(identical(other.location, location) || other.location == location));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Create&&(identical(other.author, author) || other.author == author)&&(identical(other.chat, chat) || other.chat == chat)&&(identical(other.text, text) || other.text == text)&&(identical(other.post, post) || other.post == post)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.broadcast, broadcast) || other.broadcast == broadcast)&&(identical(other.section, section) || other.section == section)&&const DeepCollectionEquality().equals(other._filePaths, _filePaths)&&(identical(other.location, location) || other.location == location));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,author,chat,text,post,ballot,survey,petition,meeting,section,const DeepCollectionEquality().hash(_filePaths),location);
+int get hashCode => Object.hash(runtimeType,author,chat,text,post,ballot,survey,petition,broadcast,section,const DeepCollectionEquality().hash(_filePaths),location);
 
 @override
 String toString() {
-  return 'MessageDetailEvent.create(author: $author, chat: $chat, text: $text, post: $post, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, section: $section, filePaths: $filePaths, location: $location)';
+  return 'MessageDetailEvent.create(author: $author, chat: $chat, text: $text, post: $post, ballot: $ballot, survey: $survey, petition: $petition, broadcast: $broadcast, section: $section, filePaths: $filePaths, location: $location)';
 }
 
 
@@ -1200,11 +1200,11 @@ abstract mixin class _$CreateCopyWith<$Res> implements $MessageDetailEventCopyWi
   factory _$CreateCopyWith(_Create value, $Res Function(_Create) _then) = __$CreateCopyWithImpl;
 @useResult
 $Res call({
- User author, Chat chat, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting, Section? section, List<String> filePaths, LatLng? location
+ User author, Chat chat, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Broadcast? broadcast, Section? section, List<String> filePaths, LatLng? location
 });
 
 
-$UserCopyWith<$Res> get author;$PostCopyWith<$Res>? get post;$BallotCopyWith<$Res>? get ballot;$SurveyCopyWith<$Res>? get survey;$PetitionCopyWith<$Res>? get petition;$MeetingCopyWith<$Res>? get meeting;$SectionCopyWith<$Res>? get section;
+$UserCopyWith<$Res> get author;$PostCopyWith<$Res>? get post;$BallotCopyWith<$Res>? get ballot;$SurveyCopyWith<$Res>? get survey;$PetitionCopyWith<$Res>? get petition;$BroadcastCopyWith<$Res>? get broadcast;$SectionCopyWith<$Res>? get section;
 
 }
 /// @nodoc
@@ -1217,7 +1217,7 @@ class __$CreateCopyWithImpl<$Res>
 
 /// Create a copy of MessageDetailEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? author = null,Object? chat = null,Object? text = null,Object? post = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? meeting = freezed,Object? section = freezed,Object? filePaths = null,Object? location = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? author = null,Object? chat = null,Object? text = null,Object? post = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? broadcast = freezed,Object? section = freezed,Object? filePaths = null,Object? location = freezed,}) {
   return _then(_Create(
 author: null == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
 as User,chat: null == chat ? _self.chat : chat // ignore: cast_nullable_to_non_nullable
@@ -1226,8 +1226,8 @@ as String,post: freezed == post ? _self.post : post // ignore: cast_nullable_to_
 as Post?,ballot: freezed == ballot ? _self.ballot : ballot // ignore: cast_nullable_to_non_nullable
 as Ballot?,survey: freezed == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
 as Survey?,petition: freezed == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
-as Petition?,meeting: freezed == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
-as Meeting?,section: freezed == section ? _self.section : section // ignore: cast_nullable_to_non_nullable
+as Petition?,broadcast: freezed == broadcast ? _self.broadcast : broadcast // ignore: cast_nullable_to_non_nullable
+as Broadcast?,section: freezed == section ? _self.section : section // ignore: cast_nullable_to_non_nullable
 as Section?,filePaths: null == filePaths ? _self._filePaths : filePaths // ignore: cast_nullable_to_non_nullable
 as List<String>,location: freezed == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
 as LatLng?,
@@ -1295,13 +1295,13 @@ $PetitionCopyWith<$Res>? get petition {
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$MeetingCopyWith<$Res>? get meeting {
-    if (_self.meeting == null) {
+$BroadcastCopyWith<$Res>? get broadcast {
+    if (_self.broadcast == null) {
     return null;
   }
 
-  return $MeetingCopyWith<$Res>(_self.meeting!, (value) {
-    return _then(_self.copyWith(meeting: value));
+  return $BroadcastCopyWith<$Res>(_self.broadcast!, (value) {
+    return _then(_self.copyWith(broadcast: value));
   });
 }/// Create a copy of MessageDetailEvent
 /// with the given fields replaced by the non-null parameter values.

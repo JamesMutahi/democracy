@@ -125,10 +125,10 @@ return retry(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String body,  PostStatus status,  Post? repostOf,  RepostType? repostType,  Post? replyTo,  int? communityNoteOfId,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)?  create,TResult Function( List<dynamic> uploads)?  uploadAssets,TResult Function()?  retry,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String body,  PostStatus status,  Post? repostOf,  RepostType? repostType,  Post? replyTo,  int? communityNoteOfId,  Ballot? ballot,  Survey? survey,  Petition? petition,  Broadcast? broadcast,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)?  create,TResult Function( List<dynamic> uploads)?  uploadAssets,TResult Function()?  retry,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Create() when create != null:
-return create(_that.body,_that.status,_that.repostOf,_that.repostType,_that.replyTo,_that.communityNoteOfId,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.filePaths,_that.location);case _UploadAssets() when uploadAssets != null:
+return create(_that.body,_that.status,_that.repostOf,_that.repostType,_that.replyTo,_that.communityNoteOfId,_that.ballot,_that.survey,_that.petition,_that.broadcast,_that.section,_that.tags,_that.filePaths,_that.location);case _UploadAssets() when uploadAssets != null:
 return uploadAssets(_that.uploads);case _Retry() when retry != null:
 return retry();case _:
   return orElse();
@@ -148,10 +148,10 @@ return retry();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String body,  PostStatus status,  Post? repostOf,  RepostType? repostType,  Post? replyTo,  int? communityNoteOfId,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)  create,required TResult Function( List<dynamic> uploads)  uploadAssets,required TResult Function()  retry,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String body,  PostStatus status,  Post? repostOf,  RepostType? repostType,  Post? replyTo,  int? communityNoteOfId,  Ballot? ballot,  Survey? survey,  Petition? petition,  Broadcast? broadcast,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)  create,required TResult Function( List<dynamic> uploads)  uploadAssets,required TResult Function()  retry,}) {final _that = this;
 switch (_that) {
 case _Create():
-return create(_that.body,_that.status,_that.repostOf,_that.repostType,_that.replyTo,_that.communityNoteOfId,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.filePaths,_that.location);case _UploadAssets():
+return create(_that.body,_that.status,_that.repostOf,_that.repostType,_that.replyTo,_that.communityNoteOfId,_that.ballot,_that.survey,_that.petition,_that.broadcast,_that.section,_that.tags,_that.filePaths,_that.location);case _UploadAssets():
 return uploadAssets(_that.uploads);case _Retry():
 return retry();case _:
   throw StateError('Unexpected subclass');
@@ -170,10 +170,10 @@ return retry();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String body,  PostStatus status,  Post? repostOf,  RepostType? repostType,  Post? replyTo,  int? communityNoteOfId,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)?  create,TResult? Function( List<dynamic> uploads)?  uploadAssets,TResult? Function()?  retry,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String body,  PostStatus status,  Post? repostOf,  RepostType? repostType,  Post? replyTo,  int? communityNoteOfId,  Ballot? ballot,  Survey? survey,  Petition? petition,  Broadcast? broadcast,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)?  create,TResult? Function( List<dynamic> uploads)?  uploadAssets,TResult? Function()?  retry,}) {final _that = this;
 switch (_that) {
 case _Create() when create != null:
-return create(_that.body,_that.status,_that.repostOf,_that.repostType,_that.replyTo,_that.communityNoteOfId,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.filePaths,_that.location);case _UploadAssets() when uploadAssets != null:
+return create(_that.body,_that.status,_that.repostOf,_that.repostType,_that.replyTo,_that.communityNoteOfId,_that.ballot,_that.survey,_that.petition,_that.broadcast,_that.section,_that.tags,_that.filePaths,_that.location);case _UploadAssets() when uploadAssets != null:
 return uploadAssets(_that.uploads);case _Retry() when retry != null:
 return retry();case _:
   return null;
@@ -187,7 +187,7 @@ return retry();case _:
 
 
 class _Create implements PostCreateEvent {
-  const _Create({required this.body, required this.status, this.repostOf, this.repostType, this.replyTo, this.communityNoteOfId, this.ballot, this.survey, this.petition, this.meeting, this.section, final  List<Map<String, String>> tags = const [], final  List<String> filePaths = const [], this.location}): _tags = tags,_filePaths = filePaths;
+  const _Create({required this.body, required this.status, this.repostOf, this.repostType, this.replyTo, this.communityNoteOfId, this.ballot, this.survey, this.petition, this.broadcast, this.section, final  List<Map<String, String>> tags = const [], final  List<String> filePaths = const [], this.location}): _tags = tags,_filePaths = filePaths;
   
 
  final  String body;
@@ -199,7 +199,7 @@ class _Create implements PostCreateEvent {
  final  Ballot? ballot;
  final  Survey? survey;
  final  Petition? petition;
- final  Meeting? meeting;
+ final  Broadcast? broadcast;
  final  Section? section;
  final  List<Map<String, String>> _tags;
 @JsonKey() List<Map<String, String>> get tags {
@@ -227,16 +227,16 @@ _$CreateCopyWith<_Create> get copyWith => __$CreateCopyWithImpl<_Create>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Create&&(identical(other.body, body) || other.body == body)&&(identical(other.status, status) || other.status == status)&&(identical(other.repostOf, repostOf) || other.repostOf == repostOf)&&(identical(other.repostType, repostType) || other.repostType == repostType)&&(identical(other.replyTo, replyTo) || other.replyTo == replyTo)&&(identical(other.communityNoteOfId, communityNoteOfId) || other.communityNoteOfId == communityNoteOfId)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.section, section) || other.section == section)&&const DeepCollectionEquality().equals(other._tags, _tags)&&const DeepCollectionEquality().equals(other._filePaths, _filePaths)&&(identical(other.location, location) || other.location == location));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Create&&(identical(other.body, body) || other.body == body)&&(identical(other.status, status) || other.status == status)&&(identical(other.repostOf, repostOf) || other.repostOf == repostOf)&&(identical(other.repostType, repostType) || other.repostType == repostType)&&(identical(other.replyTo, replyTo) || other.replyTo == replyTo)&&(identical(other.communityNoteOfId, communityNoteOfId) || other.communityNoteOfId == communityNoteOfId)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.broadcast, broadcast) || other.broadcast == broadcast)&&(identical(other.section, section) || other.section == section)&&const DeepCollectionEquality().equals(other._tags, _tags)&&const DeepCollectionEquality().equals(other._filePaths, _filePaths)&&(identical(other.location, location) || other.location == location));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,body,status,repostOf,repostType,replyTo,communityNoteOfId,ballot,survey,petition,meeting,section,const DeepCollectionEquality().hash(_tags),const DeepCollectionEquality().hash(_filePaths),location);
+int get hashCode => Object.hash(runtimeType,body,status,repostOf,repostType,replyTo,communityNoteOfId,ballot,survey,petition,broadcast,section,const DeepCollectionEquality().hash(_tags),const DeepCollectionEquality().hash(_filePaths),location);
 
 @override
 String toString() {
-  return 'PostCreateEvent.create(body: $body, status: $status, repostOf: $repostOf, repostType: $repostType, replyTo: $replyTo, communityNoteOfId: $communityNoteOfId, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, section: $section, tags: $tags, filePaths: $filePaths, location: $location)';
+  return 'PostCreateEvent.create(body: $body, status: $status, repostOf: $repostOf, repostType: $repostType, replyTo: $replyTo, communityNoteOfId: $communityNoteOfId, ballot: $ballot, survey: $survey, petition: $petition, broadcast: $broadcast, section: $section, tags: $tags, filePaths: $filePaths, location: $location)';
 }
 
 
@@ -247,11 +247,11 @@ abstract mixin class _$CreateCopyWith<$Res> implements $PostCreateEventCopyWith<
   factory _$CreateCopyWith(_Create value, $Res Function(_Create) _then) = __$CreateCopyWithImpl;
 @useResult
 $Res call({
- String body, PostStatus status, Post? repostOf, RepostType? repostType, Post? replyTo, int? communityNoteOfId, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting, Section? section, List<Map<String, String>> tags, List<String> filePaths, LatLng? location
+ String body, PostStatus status, Post? repostOf, RepostType? repostType, Post? replyTo, int? communityNoteOfId, Ballot? ballot, Survey? survey, Petition? petition, Broadcast? broadcast, Section? section, List<Map<String, String>> tags, List<String> filePaths, LatLng? location
 });
 
 
-$PostCopyWith<$Res>? get repostOf;$PostCopyWith<$Res>? get replyTo;$BallotCopyWith<$Res>? get ballot;$SurveyCopyWith<$Res>? get survey;$PetitionCopyWith<$Res>? get petition;$MeetingCopyWith<$Res>? get meeting;$SectionCopyWith<$Res>? get section;
+$PostCopyWith<$Res>? get repostOf;$PostCopyWith<$Res>? get replyTo;$BallotCopyWith<$Res>? get ballot;$SurveyCopyWith<$Res>? get survey;$PetitionCopyWith<$Res>? get petition;$BroadcastCopyWith<$Res>? get broadcast;$SectionCopyWith<$Res>? get section;
 
 }
 /// @nodoc
@@ -264,7 +264,7 @@ class __$CreateCopyWithImpl<$Res>
 
 /// Create a copy of PostCreateEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? body = null,Object? status = null,Object? repostOf = freezed,Object? repostType = freezed,Object? replyTo = freezed,Object? communityNoteOfId = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? meeting = freezed,Object? section = freezed,Object? tags = null,Object? filePaths = null,Object? location = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? body = null,Object? status = null,Object? repostOf = freezed,Object? repostType = freezed,Object? replyTo = freezed,Object? communityNoteOfId = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? broadcast = freezed,Object? section = freezed,Object? tags = null,Object? filePaths = null,Object? location = freezed,}) {
   return _then(_Create(
 body: null == body ? _self.body : body // ignore: cast_nullable_to_non_nullable
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
@@ -275,8 +275,8 @@ as Post?,communityNoteOfId: freezed == communityNoteOfId ? _self.communityNoteOf
 as int?,ballot: freezed == ballot ? _self.ballot : ballot // ignore: cast_nullable_to_non_nullable
 as Ballot?,survey: freezed == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
 as Survey?,petition: freezed == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
-as Petition?,meeting: freezed == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
-as Meeting?,section: freezed == section ? _self.section : section // ignore: cast_nullable_to_non_nullable
+as Petition?,broadcast: freezed == broadcast ? _self.broadcast : broadcast // ignore: cast_nullable_to_non_nullable
+as Broadcast?,section: freezed == section ? _self.section : section // ignore: cast_nullable_to_non_nullable
 as Section?,tags: null == tags ? _self._tags : tags // ignore: cast_nullable_to_non_nullable
 as List<Map<String, String>>,filePaths: null == filePaths ? _self._filePaths : filePaths // ignore: cast_nullable_to_non_nullable
 as List<String>,location: freezed == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
@@ -348,13 +348,13 @@ $PetitionCopyWith<$Res>? get petition {
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$MeetingCopyWith<$Res>? get meeting {
-    if (_self.meeting == null) {
+$BroadcastCopyWith<$Res>? get broadcast {
+    if (_self.broadcast == null) {
     return null;
   }
 
-  return $MeetingCopyWith<$Res>(_self.meeting!, (value) {
-    return _then(_self.copyWith(meeting: value));
+  return $BroadcastCopyWith<$Res>(_self.broadcast!, (value) {
+    return _then(_self.copyWith(broadcast: value));
   });
 }/// Create a copy of PostCreateEvent
 /// with the given fields replaced by the non-null parameter values.

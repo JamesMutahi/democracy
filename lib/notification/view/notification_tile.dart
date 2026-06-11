@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/chat/view/utils/last_message.dart';
-import 'package:democracy/meeting/view/widgets/meeting_tile.dart';
+import 'package:democracy/broadcast/view/widgets/meeting_tile.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/post/view/widgets/post_body.dart';
@@ -108,11 +108,11 @@ class NotificationTile extends StatelessWidget {
       onTap = () {
         context.router.push(BallotDetail(ballotId: notification.ballot!.id));
       };
-    } else if (notification.meeting != null) {
+    } else if (notification.broadcast != null) {
       icon = Icon(Symbols.meeting_room);
       title = Text(notification.text);
       subtitle = Text(
-        notification.meeting!.title,
+        notification.broadcast!.title,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );
@@ -121,7 +121,7 @@ class NotificationTile extends StatelessWidget {
           context: context,
           shape: const BeveledRectangleBorder(),
           builder: (BuildContext context) {
-            return MeetingBottomSheet(meeting: notification.meeting!);
+            return MeetingBottomSheet(broadcast: notification.broadcast!);
           },
         );
       };

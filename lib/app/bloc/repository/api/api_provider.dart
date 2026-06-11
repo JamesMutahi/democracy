@@ -15,7 +15,7 @@ class APIProvider {
     Ballot? ballot,
     Survey? survey,
     Petition? petition,
-    Meeting? meeting,
+    Broadcast? broadcast,
     Section? section,
     List<Map> tags = const [],
     List<Map> assets = const [],
@@ -32,7 +32,7 @@ class APIProvider {
         'ballot_id': ballot?.id,
         'survey_id': survey?.id,
         'petition_id': petition?.id,
-        'meeting_id': meeting?.id,
+        'broadcast_id': broadcast?.id,
         'section_id': section?.id,
         if (location != null)
           'location': 'POINT (${location.longitude} ${location.latitude})',
@@ -149,7 +149,7 @@ class APIProvider {
     Ballot? ballot,
     Survey? survey,
     Petition? petition,
-    Meeting? meeting,
+    Broadcast? broadcast,
     Section? section,
     List<Map> assets = const [],
     LatLng? location,
@@ -163,7 +163,7 @@ class APIProvider {
         'ballot_id': ballot?.id,
         'survey_id': survey?.id,
         'petition_id': petition?.id,
-        'meeting_id': meeting?.id,
+        'broadcast_id': broadcast?.id,
         'section_id': section?.id,
         if (location != null)
           'location': 'POINT (${location.longitude} ${location.latitude})',
@@ -305,7 +305,7 @@ class APIProvider {
     Ballot? ballot,
     Survey? survey,
     Petition? petition,
-    Meeting? meeting,
+    Broadcast? broadcast,
     Section? section,
     List<Map> assets = const [],
     LatLng? location,
@@ -319,7 +319,7 @@ class APIProvider {
         'ballot_id': ballot?.id,
         'survey_id': survey?.id,
         'petition_id': petition?.id,
-        'meeting_id': meeting?.id,
+        'broadcast_id': broadcast?.id,
         'section_id': section?.id,
         if (location != null)
           'location': 'POINT (${location.longitude} ${location.latitude})',
@@ -400,10 +400,10 @@ class APIProvider {
     }
   }
 
-  Future<Map> getMeetingToken({required Meeting meeting}) async {
+  Future<Map> getBroadcastToken({required Broadcast broadcast}) async {
     try {
-      FormData data = FormData.fromMap({'meeting_id': meeting.id});
-      Response response = await dio.post('meeting/token/', data: data);
+      FormData data = FormData.fromMap({'broadcast_id': broadcast.id});
+      Response response = await dio.post('broadcast/token/', data: data);
       if (response.statusCode == 200) {
         return response.data;
       } else {

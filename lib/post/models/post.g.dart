@@ -52,9 +52,9 @@ _Post _$PostFromJson(Map<String, dynamic> json) => _Post(
   petition: json['petition'] == null
       ? null
       : Petition.fromJson(json['petition'] as Map<String, dynamic>),
-  meeting: json['meeting'] == null
+  broadcast: json['broadcast'] == null
       ? null
-      : Meeting.fromJson(json['meeting'] as Map<String, dynamic>),
+      : Broadcast.fromJson(json['broadcast'] as Map<String, dynamic>),
   section: json['section'] == null
       ? null
       : Section.fromJson(json['section'] as Map<String, dynamic>),
@@ -103,7 +103,7 @@ Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
   'ballot': instance.ballot,
   'survey': instance.survey,
   'petition': instance.petition,
-  'meeting': instance.meeting,
+  'broadcast': instance.broadcast,
   'section': instance.section,
   'tagged_users': instance.taggedUsers,
   'is_upvoted': instance.isUpvoted,

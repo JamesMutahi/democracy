@@ -38,7 +38,7 @@ class MessageAdapter extends TypeAdapter<Message> {
       ..ballotJson = fields[15] as String?
       ..surveyJson = fields[16] as String?
       ..petitionJson = fields[17] as String?
-      ..meetingJson = fields[18] as String?
+      ..broadcastJson = fields[18] as String?
       ..sectionJson = fields[19] as String?
       ..assetsJson = fields[20] as String?;
   }
@@ -84,7 +84,7 @@ class MessageAdapter extends TypeAdapter<Message> {
       ..writeByte(17)
       ..write(obj.petitionJson)
       ..writeByte(18)
-      ..write(obj.meetingJson)
+      ..write(obj.broadcastJson)
       ..writeByte(19)
       ..write(obj.sectionJson)
       ..writeByte(20)

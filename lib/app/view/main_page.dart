@@ -13,8 +13,9 @@ import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/app/view/widgets/bottom_nav_bar.dart';
 import 'package:democracy/app/view/widgets/side_menu.dart';
 import 'package:democracy/app/view/widgets/side_panel.dart';
+import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
-import 'package:democracy/meeting/bloc/meeting_detail/meeting_detail_bloc.dart';
+import 'package:democracy/broadcast/bloc/broadcast_detail/broadcast_detail_bloc.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/post/bloc/draft_detail/draft_detail_bloc.dart';
@@ -166,10 +167,11 @@ class _MainPageState extends State<MainPage> {
                   }
                 },
               ),
-              BlocListener<MeetingDetailBloc, MeetingDetailState>(
+              BlocListener<BroadcastDetailBloc, BroadcastDetailState>(
                 listener: (context, state) {
-                  if (state is MeetingCreated) {
-                    String message = state.meeting.isLiveStream
+                  if (state is BroadcastCreated) {
+                    String message =
+                        state.broadcast.type == BroadcastType.livestream
                         ? 'Starting live stream'
                         : 'Meeting created';
                     final snackBar = getSnackBar(

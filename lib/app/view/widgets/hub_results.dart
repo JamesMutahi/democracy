@@ -10,9 +10,9 @@ import 'package:democracy/app/view/widgets/results_search_bar.dart';
 import 'package:democracy/ballot/bloc/ballots/ballots_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
-import 'package:democracy/meeting/bloc/meetings/meetings_bloc.dart';
-import 'package:democracy/meeting/models/meeting.dart';
-import 'package:democracy/meeting/view/widgets/meeting_tile.dart';
+import 'package:democracy/broadcast/bloc/meetings/meetings_bloc.dart';
+import 'package:democracy/broadcast/models/broadcast.dart';
+import 'package:democracy/broadcast/view/widgets/meeting_tile.dart';
 import 'package:democracy/petition/bloc/petitions/petitions_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart';
@@ -554,10 +554,10 @@ class _MeetingsTabState extends State<_MeetingsTab>
     _getMeetings();
   }
 
-  void _getMeetings({List<Meeting>? previousMeetings}) {
+  void _getMeetings({List<Broadcast>? previousBroadcasts}) {
     context.read<MeetingsBloc>().add(
       MeetingsEvent.get(
-        previousMeetings: previousMeetings,
+        previousBroadcasts: previousBroadcasts,
         searchTerm: widget.searchTerm,
         filterByRegion: widget.filterByRegion,
         sortBy: widget.sortBy,
@@ -589,7 +589,7 @@ class _MeetingsTabState extends State<_MeetingsTab>
           return widget.searchTerm == current.searchTerm;
         },
         builder: (context, state) {
-          final meetings = state.meetings.toList();
+          final broadcasts = state.broadcasts.toList();
 
           if (state.status == MeetingsStatus.initial) {
             return const BottomLoader();
@@ -611,7 +611,7 @@ class _MeetingsTabState extends State<_MeetingsTab>
             if (_refreshController.footerStatus == LoadStatus.loading) {
               _refreshController.loadFailed();
             }
-            if (state.meetings.isEmpty) {
+            if (state.broadcasts.isEmpty) {
               return FailureRetryButton(
                 onPressed: () => context.read<MeetingsBloc>().add(
                   MeetingsEvent.get(searchTerm: state.searchTerm),
@@ -627,25 +627,25 @@ class _MeetingsTabState extends State<_MeetingsTab>
             controller: _refreshController,
             onRefresh: _getMeetings,
             onLoading: () {
-              _getMeetings(previousMeetings: meetings);
+              _getMeetings(previousBroadcasts: broadcasts);
             },
             footer: ClassicFooter(),
-            child: meetings.isEmpty
+            child: broadcasts.isEmpty
                 ? NoResults(text: 'No meetings')
                 : ListView.builder(
                     padding: EdgeInsets.all(15),
                     itemBuilder: (BuildContext context, int index) {
-                      Meeting meeting = meetings[index];
+                      Broadcast broadcast = broadcasts[index];
                       return Container(
                         margin: EdgeInsets.only(bottom: 10),
                         child: MeetingTile(
-                          key: ValueKey(meeting.id),
-                          meeting: meeting,
+                          key: ValueKey(broadcast.id),
+                          broadcast: broadcast,
                           isDependency: false,
                         ),
                       );
                     },
-                    itemCount: meetings.length,
+                    itemCount: broadcasts.length,
                   ),
           );
         },

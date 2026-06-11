@@ -125,10 +125,10 @@ return retry(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<String> filePaths,  LatLng? location)?  send,TResult Function( List<dynamic> uploads)?  uploadAssets,TResult Function()?  retry,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Broadcast? broadcast,  Section? section,  List<String> filePaths,  LatLng? location)?  send,TResult Function( List<dynamic> uploads)?  uploadAssets,TResult Function()?  retry,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Send() when send != null:
-return send(_that.users,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.filePaths,_that.location);case _UploadAssets() when uploadAssets != null:
+return send(_that.users,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.broadcast,_that.section,_that.filePaths,_that.location);case _UploadAssets() when uploadAssets != null:
 return uploadAssets(_that.uploads);case _Retry() when retry != null:
 return retry();case _:
   return orElse();
@@ -148,10 +148,10 @@ return retry();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<String> filePaths,  LatLng? location)  send,required TResult Function( List<dynamic> uploads)  uploadAssets,required TResult Function()  retry,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Broadcast? broadcast,  Section? section,  List<String> filePaths,  LatLng? location)  send,required TResult Function( List<dynamic> uploads)  uploadAssets,required TResult Function()  retry,}) {final _that = this;
 switch (_that) {
 case _Send():
-return send(_that.users,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.filePaths,_that.location);case _UploadAssets():
+return send(_that.users,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.broadcast,_that.section,_that.filePaths,_that.location);case _UploadAssets():
 return uploadAssets(_that.uploads);case _Retry():
 return retry();case _:
   throw StateError('Unexpected subclass');
@@ -170,10 +170,10 @@ return retry();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<String> filePaths,  LatLng? location)?  send,TResult? Function( List<dynamic> uploads)?  uploadAssets,TResult? Function()?  retry,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( List<User> users,  String text,  Post? post,  Ballot? ballot,  Survey? survey,  Petition? petition,  Broadcast? broadcast,  Section? section,  List<String> filePaths,  LatLng? location)?  send,TResult? Function( List<dynamic> uploads)?  uploadAssets,TResult? Function()?  retry,}) {final _that = this;
 switch (_that) {
 case _Send() when send != null:
-return send(_that.users,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.filePaths,_that.location);case _UploadAssets() when uploadAssets != null:
+return send(_that.users,_that.text,_that.post,_that.ballot,_that.survey,_that.petition,_that.broadcast,_that.section,_that.filePaths,_that.location);case _UploadAssets() when uploadAssets != null:
 return uploadAssets(_that.uploads);case _Retry() when retry != null:
 return retry();case _:
   return null;
@@ -187,7 +187,7 @@ return retry();case _:
 
 
 class _Send implements DirectMessageEvent {
-  const _Send({required final  List<User> users, required this.text, this.post, this.ballot, this.survey, this.petition, this.meeting, this.section, final  List<String> filePaths = const [], this.location}): _users = users,_filePaths = filePaths;
+  const _Send({required final  List<User> users, required this.text, this.post, this.ballot, this.survey, this.petition, this.broadcast, this.section, final  List<String> filePaths = const [], this.location}): _users = users,_filePaths = filePaths;
   
 
  final  List<User> _users;
@@ -202,7 +202,7 @@ class _Send implements DirectMessageEvent {
  final  Ballot? ballot;
  final  Survey? survey;
  final  Petition? petition;
- final  Meeting? meeting;
+ final  Broadcast? broadcast;
  final  Section? section;
  final  List<String> _filePaths;
 @JsonKey() List<String> get filePaths {
@@ -223,16 +223,16 @@ _$SendCopyWith<_Send> get copyWith => __$SendCopyWithImpl<_Send>(this, _$identit
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Send&&const DeepCollectionEquality().equals(other._users, _users)&&(identical(other.text, text) || other.text == text)&&(identical(other.post, post) || other.post == post)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.section, section) || other.section == section)&&const DeepCollectionEquality().equals(other._filePaths, _filePaths)&&(identical(other.location, location) || other.location == location));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Send&&const DeepCollectionEquality().equals(other._users, _users)&&(identical(other.text, text) || other.text == text)&&(identical(other.post, post) || other.post == post)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.broadcast, broadcast) || other.broadcast == broadcast)&&(identical(other.section, section) || other.section == section)&&const DeepCollectionEquality().equals(other._filePaths, _filePaths)&&(identical(other.location, location) || other.location == location));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_users),text,post,ballot,survey,petition,meeting,section,const DeepCollectionEquality().hash(_filePaths),location);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_users),text,post,ballot,survey,petition,broadcast,section,const DeepCollectionEquality().hash(_filePaths),location);
 
 @override
 String toString() {
-  return 'DirectMessageEvent.send(users: $users, text: $text, post: $post, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, section: $section, filePaths: $filePaths, location: $location)';
+  return 'DirectMessageEvent.send(users: $users, text: $text, post: $post, ballot: $ballot, survey: $survey, petition: $petition, broadcast: $broadcast, section: $section, filePaths: $filePaths, location: $location)';
 }
 
 
@@ -243,11 +243,11 @@ abstract mixin class _$SendCopyWith<$Res> implements $DirectMessageEventCopyWith
   factory _$SendCopyWith(_Send value, $Res Function(_Send) _then) = __$SendCopyWithImpl;
 @useResult
 $Res call({
- List<User> users, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting, Section? section, List<String> filePaths, LatLng? location
+ List<User> users, String text, Post? post, Ballot? ballot, Survey? survey, Petition? petition, Broadcast? broadcast, Section? section, List<String> filePaths, LatLng? location
 });
 
 
-$PostCopyWith<$Res>? get post;$BallotCopyWith<$Res>? get ballot;$SurveyCopyWith<$Res>? get survey;$PetitionCopyWith<$Res>? get petition;$MeetingCopyWith<$Res>? get meeting;$SectionCopyWith<$Res>? get section;
+$PostCopyWith<$Res>? get post;$BallotCopyWith<$Res>? get ballot;$SurveyCopyWith<$Res>? get survey;$PetitionCopyWith<$Res>? get petition;$BroadcastCopyWith<$Res>? get broadcast;$SectionCopyWith<$Res>? get section;
 
 }
 /// @nodoc
@@ -260,7 +260,7 @@ class __$SendCopyWithImpl<$Res>
 
 /// Create a copy of DirectMessageEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? users = null,Object? text = null,Object? post = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? meeting = freezed,Object? section = freezed,Object? filePaths = null,Object? location = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? users = null,Object? text = null,Object? post = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? broadcast = freezed,Object? section = freezed,Object? filePaths = null,Object? location = freezed,}) {
   return _then(_Send(
 users: null == users ? _self._users : users // ignore: cast_nullable_to_non_nullable
 as List<User>,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
@@ -268,8 +268,8 @@ as String,post: freezed == post ? _self.post : post // ignore: cast_nullable_to_
 as Post?,ballot: freezed == ballot ? _self.ballot : ballot // ignore: cast_nullable_to_non_nullable
 as Ballot?,survey: freezed == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
 as Survey?,petition: freezed == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
-as Petition?,meeting: freezed == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
-as Meeting?,section: freezed == section ? _self.section : section // ignore: cast_nullable_to_non_nullable
+as Petition?,broadcast: freezed == broadcast ? _self.broadcast : broadcast // ignore: cast_nullable_to_non_nullable
+as Broadcast?,section: freezed == section ? _self.section : section // ignore: cast_nullable_to_non_nullable
 as Section?,filePaths: null == filePaths ? _self._filePaths : filePaths // ignore: cast_nullable_to_non_nullable
 as List<String>,location: freezed == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
 as LatLng?,
@@ -328,13 +328,13 @@ $PetitionCopyWith<$Res>? get petition {
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$MeetingCopyWith<$Res>? get meeting {
-    if (_self.meeting == null) {
+$BroadcastCopyWith<$Res>? get broadcast {
+    if (_self.broadcast == null) {
     return null;
   }
 
-  return $MeetingCopyWith<$Res>(_self.meeting!, (value) {
-    return _then(_self.copyWith(meeting: value));
+  return $BroadcastCopyWith<$Res>(_self.broadcast!, (value) {
+    return _then(_self.copyWith(broadcast: value));
   });
 }/// Create a copy of DirectMessageEvent
 /// with the given fields replaced by the non-null parameter values.

@@ -5,7 +5,7 @@ import 'package:democracy/app/core/app_logger.dart';
 import 'package:democracy/app/models/asset.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/constitution/models/section.dart';
-import 'package:democracy/meeting/models/meeting.dart';
+import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
@@ -73,7 +73,7 @@ class Message extends HiveObject {
   String? petitionJson;
 
   @HiveField(18)
-  String? meetingJson;
+  String? broadcastJson;
 
   @HiveField(19)
   String? sectionJson;
@@ -123,11 +123,11 @@ class Message extends HiveObject {
   set petition(Petition? value) =>
       petitionJson = value != null ? jsonEncode(value.toJson()) : null;
 
-  Meeting? get meeting =>
-      meetingJson != null ? Meeting.fromJson(jsonDecode(meetingJson!)) : null;
+  Broadcast? get broadcast =>
+      broadcastJson != null ? Broadcast.fromJson(jsonDecode(broadcastJson!)) : null;
 
-  set meeting(Meeting? value) =>
-      meetingJson = value != null ? jsonEncode(value.toJson()) : null;
+  set broadcast(Broadcast? value) =>
+      broadcastJson = value != null ? jsonEncode(value.toJson()) : null;
 
   Section? get section =>
       sectionJson != null ? Section.fromJson(jsonDecode(sectionJson!)) : null;
@@ -188,7 +188,7 @@ class Message extends HiveObject {
     Post? post,
     Survey? survey,
     Ballot? ballot,
-    Meeting? meeting,
+    Broadcast? broadcast,
     Petition? petition,
     Section? section,
     LatLng? location,
@@ -205,7 +205,7 @@ class Message extends HiveObject {
     if (post != null) this.post = post;
     if (survey != null) this.survey = survey;
     if (ballot != null) this.ballot = ballot;
-    if (meeting != null) this.meeting = meeting;
+    if (broadcast != null) this.broadcast = broadcast;
     if (petition != null) this.petition = petition;
     if (section != null) this.section = section;
     if (location != null) this.location = location;

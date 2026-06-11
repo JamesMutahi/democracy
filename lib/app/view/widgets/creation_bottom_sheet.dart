@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
+import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -19,7 +20,12 @@ class CreationButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 10.0, right: 10.0,top: 15, bottom: 5),
+      padding: const EdgeInsets.only(
+        left: 10.0,
+        right: 10.0,
+        top: 15,
+        bottom: 5,
+      ),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,14 +36,22 @@ class CreationButtons extends StatelessWidget {
               text: 'Post',
             ),
             _CreationButton(
-              onTap: () =>
-                  context.router.push(MeetingCreate(isLiveStream: false)),
+              onTap: () => context.router.push(
+                MeetingCreate(
+                  type: BroadcastTypeConverter().toJson(BroadcastType.meeting),
+                ),
+              ),
               asset: 'assets/icons/microphone.svg',
               text: 'Meeting',
             ),
             _CreationButton(
-              onTap: () =>
-                  context.router.push(MeetingCreate(isLiveStream: true)),
+              onTap: () => context.router.push(
+                MeetingCreate(
+                  type: BroadcastTypeConverter().toJson(
+                    BroadcastType.livestream,
+                  ),
+                ),
+              ),
               asset: 'assets/icons/video.svg',
               text: 'Go Live',
             ),
@@ -52,7 +66,6 @@ class CreationButtons extends StatelessWidget {
     );
   }
 }
-
 
 class _CreationButton extends StatelessWidget {
   const _CreationButton({

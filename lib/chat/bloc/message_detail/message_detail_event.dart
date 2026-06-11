@@ -22,7 +22,7 @@ sealed class MessageDetailEvent with _$MessageDetailEvent {
     Ballot? ballot,
     Survey? survey,
     Petition? petition,
-    Meeting? meeting,
+    Broadcast? broadcast,
     Section? section,
     @Default([]) List<String> filePaths,
     LatLng? location,

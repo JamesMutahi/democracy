@@ -1,0 +1,134 @@
+import 'dart:async';
+
+import 'package:bloc/bloc.dart';
+import 'package:democracy/app/bloc/services/websocket_service.dart';
+import 'package:democracy/app/shared/utils/transformers.dart';
+import 'package:democracy/broadcast/models/broadcast.dart';
+import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'meetings_event.dart';
+part 'meetings_state.dart';
+part 'meetings_bloc.freezed.dart';
+
+const String stream = 'broadcasts';
+const String action = 'list';
+
+class MeetingsBloc extends Bloc<MeetingsEvent, MeetingsState> {
+  MeetingsBloc({required this.webSocketService})
+    : super(const MeetingsState()) {
+    _subscription = webSocketService.messages.listen((message) {
+      if (message['stream'] == stream &&
+          message['payload']['action'] == action) {
+        add(_Received(payload: message['payload']));
+      }
+    });
+    on<_Get>((event, emit) => _onGet(event, emit), transformer: debounce());
+    on<_Received>((event, emit) => _onReceived(event, emit));
+    on<_Add>((event, emit) => _onAdd(event, emit));
+    on<_Update>((event, emit) => _onUpdate(event, emit));
+    on<_Remove>((event, emit) => _onRemove(event, emit));
+  }
+
+  void _onGet(_Get event, Emitter<MeetingsState> emit) {
+    emit(state.copyWith(status: MeetingsStatus.loading));
+    if (!webSocketService.isConnected) {
+      emit(state.copyWith(status: MeetingsStatus.failure));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        'action': action,
+        'request_id': event.searchTerm,
+        'search_term': event.searchTerm,
+        'previous_broadcasts': event.previousBroadcasts
+            ?.map((broadcast) => broadcast.id)
+            .toList(),
+        'is_active': event.isActive,
+        'sort_by': event.sortBy,
+        'filter_by_region': event.filterByRegion,
+        'start_date': event.startDate?.toIso8601String(),
+        'end_date': event.endDate?.toIso8601String(),
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  void _onReceived(_Received event, Emitter<MeetingsState> emit) {
+    emit(state.copyWith(status: MeetingsStatus.loading));
+    if (event.payload['response_status'] == 200) {
+      final List<Broadcast> broadcasts = List.from(
+        event.payload['data']['results'].map((e) => Broadcast.fromJson(e)),
+      );
+      List previousMeetings = event.payload['data']['previous_meetings'] ?? [];
+      emit(
+        state.copyWith(
+          status: MeetingsStatus.success,
+          searchTerm: event.payload['request_id'],
+          broadcasts: previousMeetings.isEmpty
+              ? broadcasts
+              : [...state.broadcasts, ...broadcasts],
+          hasNext: event.payload['data']['has_next'],
+        ),
+      );
+    } else {
+      emit(state.copyWith(status: MeetingsStatus.failure));
+    }
+  }
+
+  void _onAdd(_Add event, Emitter<MeetingsState> emit) {
+    final exists = state.broadcasts.any(
+      (element) => element.id == event.broadcast.id,
+    );
+
+    if (!exists) {
+      emit(
+        state.copyWith(
+          broadcasts: [event.broadcast, ...state.broadcasts],
+          status: MeetingsStatus.success,
+        ),
+      );
+    }
+  }
+
+  void _onUpdate(_Update event, Emitter<MeetingsState> emit) {
+    final index = state.broadcasts.indexWhere(
+      (element) => element.id == event.broadcast.id,
+    );
+    if (index == -1) return;
+
+    final updatedMeetings = List<Broadcast>.from(state.broadcasts);
+    updatedMeetings[index] = event.broadcast;
+
+    emit(
+      state.copyWith(
+        broadcasts: updatedMeetings,
+        status: MeetingsStatus.success,
+      ),
+    );
+  }
+
+  void _onRemove(_Remove event, Emitter<MeetingsState> emit) {
+    final updatedMeetings = state.broadcasts
+        .where((element) => element.id != event.broadcastId)
+        .toList();
+
+    emit(
+      state.copyWith(
+        broadcasts: updatedMeetings,
+        status: MeetingsStatus.success,
+      ),
+    );
+  }
+
+  @override
+  Future<void> close() async {
+    await _subscription.cancel();
+    await super.close();
+  }
+
+  late StreamSubscription _subscription;
+  final WebSocketService webSocketService;
+}

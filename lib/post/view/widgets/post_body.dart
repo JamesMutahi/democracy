@@ -110,12 +110,12 @@ String extractLinkFromPost(Post post) {
         }
       }
     }
-    if (post.meeting != null) {
+    if (post.broadcast != null) {
       for (String url in matchingLinks) {
         Uri uri = Uri.parse(url);
         if (uri.path.contains('meeting')) {
           String intString = uri.path.replaceAll(RegExp(r'[^0-9]'), '');
-          if (post.meeting!.id == int.parse(intString)) {
+          if (post.broadcast!.id == int.parse(intString)) {
             text = post.body.replaceAll(url, '');
           }
         }

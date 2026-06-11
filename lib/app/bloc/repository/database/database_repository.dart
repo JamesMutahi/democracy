@@ -174,7 +174,7 @@ class DatabaseRepository {
     target.ballot = source.ballot;
     target.survey = source.survey;
     target.petition = source.petition;
-    target.meeting = source.meeting;
+    target.broadcast = source.broadcast;
     // Keep original chatId
   }
 

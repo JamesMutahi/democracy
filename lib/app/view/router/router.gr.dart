@@ -28,6 +28,11 @@ import 'package:democracy/auth/view/splash.dart' as _i42;
 import 'package:democracy/ballot/models/ballot.dart' as _i54;
 import 'package:democracy/ballot/view/ballot_detail.dart' as _i1;
 import 'package:democracy/ballot/view/ballot_page.dart' as _i2;
+import 'package:democracy/broadcast/models/broadcast.dart' as _i57;
+import 'package:democracy/broadcast/view/live_stream.dart' as _i22;
+import 'package:democracy/broadcast/view/meeting_create.dart' as _i25;
+import 'package:democracy/broadcast/view/meeting_detail.dart' as _i26;
+import 'package:democracy/broadcast/view/meeting_page.dart' as _i27;
 import 'package:democracy/chat/models/chat.dart' as _i49;
 import 'package:democracy/chat/models/message.dart' as _i50;
 import 'package:democracy/chat/view/chat_detail.dart' as _i4;
@@ -35,11 +40,6 @@ import 'package:democracy/chat/view/create_message.dart' as _i10;
 import 'package:democracy/chat/view/edit_message.dart' as _i13;
 import 'package:democracy/constitution/models/section.dart' as _i58;
 import 'package:democracy/constitution/view/constitution.dart' as _i9;
-import 'package:democracy/meeting/models/meeting.dart' as _i57;
-import 'package:democracy/meeting/view/live_stream.dart' as _i22;
-import 'package:democracy/meeting/view/meeting_create.dart' as _i25;
-import 'package:democracy/meeting/view/meeting_detail.dart' as _i26;
-import 'package:democracy/meeting/view/meeting_page.dart' as _i27;
 import 'package:democracy/notification/view/notifications.dart' as _i29;
 import 'package:democracy/notification/view/preferences.dart' as _i36;
 import 'package:democracy/petition/models/petition.dart' as _i56;
@@ -887,12 +887,12 @@ class HubResultsArgs {
 class LiveStream extends _i47.PageRouteInfo<LiveStreamArgs> {
   LiveStream({
     _i48.Key? key,
-    required int meetingId,
+    required int broadcastId,
     List<_i47.PageRouteInfo>? children,
   }) : super(
          LiveStream.name,
-         args: LiveStreamArgs(key: key, meetingId: meetingId),
-         rawPathParams: {'id': meetingId},
+         args: LiveStreamArgs(key: key, broadcastId: broadcastId),
+         rawPathParams: {'id': broadcastId},
          initialChildren: children,
        );
 
@@ -903,34 +903,34 @@ class LiveStream extends _i47.PageRouteInfo<LiveStreamArgs> {
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<LiveStreamArgs>(
-        orElse: () => LiveStreamArgs(meetingId: pathParams.getInt('id')),
+        orElse: () => LiveStreamArgs(broadcastId: pathParams.getInt('id')),
       );
-      return _i22.LiveStream(key: args.key, meetingId: args.meetingId);
+      return _i22.LiveStream(key: args.key, broadcastId: args.broadcastId);
     },
   );
 }
 
 class LiveStreamArgs {
-  const LiveStreamArgs({this.key, required this.meetingId});
+  const LiveStreamArgs({this.key, required this.broadcastId});
 
   final _i48.Key? key;
 
-  final int meetingId;
+  final int broadcastId;
 
   @override
   String toString() {
-    return 'LiveStreamArgs{key: $key, meetingId: $meetingId}';
+    return 'LiveStreamArgs{key: $key, broadcastId: $broadcastId}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! LiveStreamArgs) return false;
-    return key == other.key && meetingId == other.meetingId;
+    return key == other.key && broadcastId == other.broadcastId;
   }
 
   @override
-  int get hashCode => key.hashCode ^ meetingId.hashCode;
+  int get hashCode => key.hashCode ^ broadcastId.hashCode;
 }
 
 /// generated route for
@@ -1001,11 +1001,12 @@ class LoginRoute extends _i47.PageRouteInfo<void> {
 class MeetingCreate extends _i47.PageRouteInfo<MeetingCreateArgs> {
   MeetingCreate({
     _i48.Key? key,
-    required bool isLiveStream,
+    String type = 'meeting',
     List<_i47.PageRouteInfo>? children,
   }) : super(
          MeetingCreate.name,
-         args: MeetingCreateArgs(key: key, isLiveStream: isLiveStream),
+         args: MeetingCreateArgs(key: key, type: type),
+         rawQueryParams: {'type': type},
          initialChildren: children,
        );
 
@@ -1014,33 +1015,37 @@ class MeetingCreate extends _i47.PageRouteInfo<MeetingCreateArgs> {
   static _i47.PageInfo page = _i47.PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<MeetingCreateArgs>();
-      return _i25.MeetingCreate(key: args.key, isLiveStream: args.isLiveStream);
+      final queryParams = data.queryParams;
+      final args = data.argsAs<MeetingCreateArgs>(
+        orElse: () =>
+            MeetingCreateArgs(type: queryParams.getString('type', 'meeting')),
+      );
+      return _i25.MeetingCreate(key: args.key, type: args.type);
     },
   );
 }
 
 class MeetingCreateArgs {
-  const MeetingCreateArgs({this.key, required this.isLiveStream});
+  const MeetingCreateArgs({this.key, this.type = 'meeting'});
 
   final _i48.Key? key;
 
-  final bool isLiveStream;
+  final String type;
 
   @override
   String toString() {
-    return 'MeetingCreateArgs{key: $key, isLiveStream: $isLiveStream}';
+    return 'MeetingCreateArgs{key: $key, type: $type}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! MeetingCreateArgs) return false;
-    return key == other.key && isLiveStream == other.isLiveStream;
+    return key == other.key && type == other.type;
   }
 
   @override
-  int get hashCode => key.hashCode ^ isLiveStream.hashCode;
+  int get hashCode => key.hashCode ^ type.hashCode;
 }
 
 /// generated route for
@@ -1048,12 +1053,12 @@ class MeetingCreateArgs {
 class MeetingDetail extends _i47.PageRouteInfo<MeetingDetailArgs> {
   MeetingDetail({
     _i48.Key? key,
-    required int meetingId,
+    required int broadcastId,
     List<_i47.PageRouteInfo>? children,
   }) : super(
          MeetingDetail.name,
-         args: MeetingDetailArgs(key: key, meetingId: meetingId),
-         rawPathParams: {'id': meetingId},
+         args: MeetingDetailArgs(key: key, broadcastId: broadcastId),
+         rawPathParams: {'id': broadcastId},
          initialChildren: children,
        );
 
@@ -1064,34 +1069,34 @@ class MeetingDetail extends _i47.PageRouteInfo<MeetingDetailArgs> {
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<MeetingDetailArgs>(
-        orElse: () => MeetingDetailArgs(meetingId: pathParams.getInt('id')),
+        orElse: () => MeetingDetailArgs(broadcastId: pathParams.getInt('id')),
       );
-      return _i26.MeetingDetail(key: args.key, meetingId: args.meetingId);
+      return _i26.MeetingDetail(key: args.key, broadcastId: args.broadcastId);
     },
   );
 }
 
 class MeetingDetailArgs {
-  const MeetingDetailArgs({this.key, required this.meetingId});
+  const MeetingDetailArgs({this.key, required this.broadcastId});
 
   final _i48.Key? key;
 
-  final int meetingId;
+  final int broadcastId;
 
   @override
   String toString() {
-    return 'MeetingDetailArgs{key: $key, meetingId: $meetingId}';
+    return 'MeetingDetailArgs{key: $key, broadcastId: $broadcastId}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! MeetingDetailArgs) return false;
-    return key == other.key && meetingId == other.meetingId;
+    return key == other.key && broadcastId == other.broadcastId;
   }
 
   @override
-  int get hashCode => key.hashCode ^ meetingId.hashCode;
+  int get hashCode => key.hashCode ^ broadcastId.hashCode;
 }
 
 /// generated route for
@@ -1235,7 +1240,7 @@ class PostCreateRoute extends _i47.PageRouteInfo<PostCreateRouteArgs> {
     _i54.Ballot? ballot,
     _i55.Survey? survey,
     _i56.Petition? petition,
-    _i57.Meeting? meeting,
+    _i57.Broadcast? broadcast,
     _i58.Section? section,
     List<_i47.PageRouteInfo>? children,
   }) : super(
@@ -1247,7 +1252,7 @@ class PostCreateRoute extends _i47.PageRouteInfo<PostCreateRouteArgs> {
            ballot: ballot,
            survey: survey,
            petition: petition,
-           meeting: meeting,
+           broadcast: broadcast,
            section: section,
          ),
          initialChildren: children,
@@ -1268,7 +1273,7 @@ class PostCreateRoute extends _i47.PageRouteInfo<PostCreateRouteArgs> {
         ballot: args.ballot,
         survey: args.survey,
         petition: args.petition,
-        meeting: args.meeting,
+        broadcast: args.broadcast,
         section: args.section,
       );
     },
@@ -1283,7 +1288,7 @@ class PostCreateRouteArgs {
     this.ballot,
     this.survey,
     this.petition,
-    this.meeting,
+    this.broadcast,
     this.section,
   });
 
@@ -1299,13 +1304,13 @@ class PostCreateRouteArgs {
 
   final _i56.Petition? petition;
 
-  final _i57.Meeting? meeting;
+  final _i57.Broadcast? broadcast;
 
   final _i58.Section? section;
 
   @override
   String toString() {
-    return 'PostCreateRouteArgs{key: $key, replyTo: $replyTo, repostOf: $repostOf, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, section: $section}';
+    return 'PostCreateRouteArgs{key: $key, replyTo: $replyTo, repostOf: $repostOf, ballot: $ballot, survey: $survey, petition: $petition, broadcast: $broadcast, section: $section}';
   }
 
   @override
@@ -1318,7 +1323,7 @@ class PostCreateRouteArgs {
         ballot == other.ballot &&
         survey == other.survey &&
         petition == other.petition &&
-        meeting == other.meeting &&
+        broadcast == other.broadcast &&
         section == other.section;
   }
 
@@ -1330,7 +1335,7 @@ class PostCreateRouteArgs {
       ballot.hashCode ^
       survey.hashCode ^
       petition.hashCode ^
-      meeting.hashCode ^
+      broadcast.hashCode ^
       section.hashCode;
 }
 

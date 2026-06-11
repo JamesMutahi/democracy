@@ -15,7 +15,7 @@ import 'package:democracy/app/shared/widgets/map_widget.dart';
 import 'package:democracy/app/shared/utils/media_tools.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
 import 'package:democracy/constitution/models/section.dart';
-import 'package:democracy/meeting/view/widgets/meeting_tile.dart';
+import 'package:democracy/broadcast/view/widgets/meeting_tile.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart';
 import 'package:democracy/post/bloc/draft/draft_bloc.dart';
 import 'package:democracy/post/bloc/draft_detail/draft_detail_bloc.dart';
@@ -144,7 +144,7 @@ class _PostUpdateState extends State<_PostUpdate> {
         ballot: widget.draft.ballot,
         survey: widget.draft.survey,
         petition: widget.draft.petition,
-        meeting: widget.draft.meeting,
+        broadcast: widget.draft.broadcast,
         section: _selectedSection,
         tags: tags,
         filePaths: [
@@ -181,7 +181,7 @@ class _PostUpdateState extends State<_PostUpdate> {
     draft.ballot = widget.draft.ballot;
     draft.survey = widget.draft.survey;
     draft.petition = widget.draft.petition;
-    draft.meeting = widget.draft.meeting;
+    draft.broadcast = widget.draft.broadcast;
     draft.section = _selectedSection;
     draft.tags = tags;
     draft.filePaths = [
@@ -462,10 +462,10 @@ class _PostUpdateState extends State<_PostUpdate> {
                     isDependency: true,
                   ),
                 ),
-              if (widget.draft.meeting != null)
+              if (widget.draft.broadcast != null)
                 DependencyContainer(
                   child: MeetingTile(
-                    meeting: widget.draft.meeting!,
+                    broadcast: widget.draft.broadcast!,
                     isDependency: true,
                   ),
                 ),

@@ -28,9 +28,9 @@ _Notification _$NotificationFromJson(Map<String, dynamic> json) =>
       petition: json['petition'] == null
           ? null
           : Petition.fromJson(json['petition'] as Map<String, dynamic>),
-      meeting: json['meeting'] == null
+      broadcast: json['broadcast'] == null
           ? null
-          : Meeting.fromJson(json['meeting'] as Map<String, dynamic>),
+          : Broadcast.fromJson(json['broadcast'] as Map<String, dynamic>),
       chat: const ChatConverter().fromJson(
         json['chat'] as Map<String, dynamic>?,
       ),
@@ -53,7 +53,7 @@ Map<String, dynamic> _$NotificationToJson(_Notification instance) =>
       'ballot': instance.ballot,
       'survey': instance.survey,
       'petition': instance.petition,
-      'meeting': instance.meeting,
+      'broadcast': instance.broadcast,
       'chat': const ChatConverter().toJson(instance.chat),
       'message': const MessageConverter().toJson(instance.message),
       'is_read': instance.isRead,

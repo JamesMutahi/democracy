@@ -122,10 +122,10 @@ return delete(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int? id,  String body,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)?  create,TResult Function( DraftPost draft)?  update,TResult Function( DraftPost draft)?  delete,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int? id,  String body,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Broadcast? broadcast,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)?  create,TResult Function( DraftPost draft)?  update,TResult Function( DraftPost draft)?  delete,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Create() when create != null:
-return create(_that.id,_that.body,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.filePaths,_that.location);case _Update() when update != null:
+return create(_that.id,_that.body,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.broadcast,_that.section,_that.tags,_that.filePaths,_that.location);case _Update() when update != null:
 return update(_that.draft);case _Delete() when delete != null:
 return delete(_that.draft);case _:
   return orElse();
@@ -145,10 +145,10 @@ return delete(_that.draft);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int? id,  String body,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)  create,required TResult Function( DraftPost draft)  update,required TResult Function( DraftPost draft)  delete,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int? id,  String body,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Broadcast? broadcast,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)  create,required TResult Function( DraftPost draft)  update,required TResult Function( DraftPost draft)  delete,}) {final _that = this;
 switch (_that) {
 case _Create():
-return create(_that.id,_that.body,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.filePaths,_that.location);case _Update():
+return create(_that.id,_that.body,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.broadcast,_that.section,_that.tags,_that.filePaths,_that.location);case _Update():
 return update(_that.draft);case _Delete():
 return delete(_that.draft);}
 }
@@ -164,10 +164,10 @@ return delete(_that.draft);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int? id,  String body,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Meeting? meeting,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)?  create,TResult? Function( DraftPost draft)?  update,TResult? Function( DraftPost draft)?  delete,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int? id,  String body,  Post? repostOf,  Post? replyTo,  Post? communityNoteOf,  Ballot? ballot,  Survey? survey,  Petition? petition,  Broadcast? broadcast,  Section? section,  List<Map<String, String>> tags,  List<String> filePaths,  LatLng? location)?  create,TResult? Function( DraftPost draft)?  update,TResult? Function( DraftPost draft)?  delete,}) {final _that = this;
 switch (_that) {
 case _Create() when create != null:
-return create(_that.id,_that.body,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.meeting,_that.section,_that.tags,_that.filePaths,_that.location);case _Update() when update != null:
+return create(_that.id,_that.body,_that.repostOf,_that.replyTo,_that.communityNoteOf,_that.ballot,_that.survey,_that.petition,_that.broadcast,_that.section,_that.tags,_that.filePaths,_that.location);case _Update() when update != null:
 return update(_that.draft);case _Delete() when delete != null:
 return delete(_that.draft);case _:
   return null;
@@ -181,7 +181,7 @@ return delete(_that.draft);case _:
 
 
 class _Create implements DraftDetailEvent {
-  const _Create({required this.id, required this.body, this.repostOf, this.replyTo, this.communityNoteOf, this.ballot, this.survey, this.petition, this.meeting, this.section, final  List<Map<String, String>> tags = const [], final  List<String> filePaths = const [], this.location}): _tags = tags,_filePaths = filePaths;
+  const _Create({required this.id, required this.body, this.repostOf, this.replyTo, this.communityNoteOf, this.ballot, this.survey, this.petition, this.broadcast, this.section, final  List<Map<String, String>> tags = const [], final  List<String> filePaths = const [], this.location}): _tags = tags,_filePaths = filePaths;
   
 
  final  int? id;
@@ -192,7 +192,7 @@ class _Create implements DraftDetailEvent {
  final  Ballot? ballot;
  final  Survey? survey;
  final  Petition? petition;
- final  Meeting? meeting;
+ final  Broadcast? broadcast;
  final  Section? section;
  final  List<Map<String, String>> _tags;
 @JsonKey() List<Map<String, String>> get tags {
@@ -220,16 +220,16 @@ _$CreateCopyWith<_Create> get copyWith => __$CreateCopyWithImpl<_Create>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Create&&(identical(other.id, id) || other.id == id)&&(identical(other.body, body) || other.body == body)&&(identical(other.repostOf, repostOf) || other.repostOf == repostOf)&&(identical(other.replyTo, replyTo) || other.replyTo == replyTo)&&(identical(other.communityNoteOf, communityNoteOf) || other.communityNoteOf == communityNoteOf)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.section, section) || other.section == section)&&const DeepCollectionEquality().equals(other._tags, _tags)&&const DeepCollectionEquality().equals(other._filePaths, _filePaths)&&(identical(other.location, location) || other.location == location));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Create&&(identical(other.id, id) || other.id == id)&&(identical(other.body, body) || other.body == body)&&(identical(other.repostOf, repostOf) || other.repostOf == repostOf)&&(identical(other.replyTo, replyTo) || other.replyTo == replyTo)&&(identical(other.communityNoteOf, communityNoteOf) || other.communityNoteOf == communityNoteOf)&&(identical(other.ballot, ballot) || other.ballot == ballot)&&(identical(other.survey, survey) || other.survey == survey)&&(identical(other.petition, petition) || other.petition == petition)&&(identical(other.broadcast, broadcast) || other.broadcast == broadcast)&&(identical(other.section, section) || other.section == section)&&const DeepCollectionEquality().equals(other._tags, _tags)&&const DeepCollectionEquality().equals(other._filePaths, _filePaths)&&(identical(other.location, location) || other.location == location));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,body,repostOf,replyTo,communityNoteOf,ballot,survey,petition,meeting,section,const DeepCollectionEquality().hash(_tags),const DeepCollectionEquality().hash(_filePaths),location);
+int get hashCode => Object.hash(runtimeType,id,body,repostOf,replyTo,communityNoteOf,ballot,survey,petition,broadcast,section,const DeepCollectionEquality().hash(_tags),const DeepCollectionEquality().hash(_filePaths),location);
 
 @override
 String toString() {
-  return 'DraftDetailEvent.create(id: $id, body: $body, repostOf: $repostOf, replyTo: $replyTo, communityNoteOf: $communityNoteOf, ballot: $ballot, survey: $survey, petition: $petition, meeting: $meeting, section: $section, tags: $tags, filePaths: $filePaths, location: $location)';
+  return 'DraftDetailEvent.create(id: $id, body: $body, repostOf: $repostOf, replyTo: $replyTo, communityNoteOf: $communityNoteOf, ballot: $ballot, survey: $survey, petition: $petition, broadcast: $broadcast, section: $section, tags: $tags, filePaths: $filePaths, location: $location)';
 }
 
 
@@ -240,11 +240,11 @@ abstract mixin class _$CreateCopyWith<$Res> implements $DraftDetailEventCopyWith
   factory _$CreateCopyWith(_Create value, $Res Function(_Create) _then) = __$CreateCopyWithImpl;
 @useResult
 $Res call({
- int? id, String body, Post? repostOf, Post? replyTo, Post? communityNoteOf, Ballot? ballot, Survey? survey, Petition? petition, Meeting? meeting, Section? section, List<Map<String, String>> tags, List<String> filePaths, LatLng? location
+ int? id, String body, Post? repostOf, Post? replyTo, Post? communityNoteOf, Ballot? ballot, Survey? survey, Petition? petition, Broadcast? broadcast, Section? section, List<Map<String, String>> tags, List<String> filePaths, LatLng? location
 });
 
 
-$PostCopyWith<$Res>? get repostOf;$PostCopyWith<$Res>? get replyTo;$PostCopyWith<$Res>? get communityNoteOf;$BallotCopyWith<$Res>? get ballot;$SurveyCopyWith<$Res>? get survey;$PetitionCopyWith<$Res>? get petition;$MeetingCopyWith<$Res>? get meeting;$SectionCopyWith<$Res>? get section;
+$PostCopyWith<$Res>? get repostOf;$PostCopyWith<$Res>? get replyTo;$PostCopyWith<$Res>? get communityNoteOf;$BallotCopyWith<$Res>? get ballot;$SurveyCopyWith<$Res>? get survey;$PetitionCopyWith<$Res>? get petition;$BroadcastCopyWith<$Res>? get broadcast;$SectionCopyWith<$Res>? get section;
 
 }
 /// @nodoc
@@ -257,7 +257,7 @@ class __$CreateCopyWithImpl<$Res>
 
 /// Create a copy of DraftDetailEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? body = null,Object? repostOf = freezed,Object? replyTo = freezed,Object? communityNoteOf = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? meeting = freezed,Object? section = freezed,Object? tags = null,Object? filePaths = null,Object? location = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? body = null,Object? repostOf = freezed,Object? replyTo = freezed,Object? communityNoteOf = freezed,Object? ballot = freezed,Object? survey = freezed,Object? petition = freezed,Object? broadcast = freezed,Object? section = freezed,Object? tags = null,Object? filePaths = null,Object? location = freezed,}) {
   return _then(_Create(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int?,body: null == body ? _self.body : body // ignore: cast_nullable_to_non_nullable
@@ -267,8 +267,8 @@ as Post?,communityNoteOf: freezed == communityNoteOf ? _self.communityNoteOf : c
 as Post?,ballot: freezed == ballot ? _self.ballot : ballot // ignore: cast_nullable_to_non_nullable
 as Ballot?,survey: freezed == survey ? _self.survey : survey // ignore: cast_nullable_to_non_nullable
 as Survey?,petition: freezed == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
-as Petition?,meeting: freezed == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
-as Meeting?,section: freezed == section ? _self.section : section // ignore: cast_nullable_to_non_nullable
+as Petition?,broadcast: freezed == broadcast ? _self.broadcast : broadcast // ignore: cast_nullable_to_non_nullable
+as Broadcast?,section: freezed == section ? _self.section : section // ignore: cast_nullable_to_non_nullable
 as Section?,tags: null == tags ? _self._tags : tags // ignore: cast_nullable_to_non_nullable
 as List<Map<String, String>>,filePaths: null == filePaths ? _self._filePaths : filePaths // ignore: cast_nullable_to_non_nullable
 as List<String>,location: freezed == location ? _self.location : location // ignore: cast_nullable_to_non_nullable
@@ -352,13 +352,13 @@ $PetitionCopyWith<$Res>? get petition {
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$MeetingCopyWith<$Res>? get meeting {
-    if (_self.meeting == null) {
+$BroadcastCopyWith<$Res>? get broadcast {
+    if (_self.broadcast == null) {
     return null;
   }
 
-  return $MeetingCopyWith<$Res>(_self.meeting!, (value) {
-    return _then(_self.copyWith(meeting: value));
+  return $BroadcastCopyWith<$Res>(_self.broadcast!, (value) {
+    return _then(_self.copyWith(broadcast: value));
   });
 }/// Create a copy of DraftDetailEvent
 /// with the given fields replaced by the non-null parameter values.

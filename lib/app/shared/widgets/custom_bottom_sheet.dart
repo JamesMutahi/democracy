@@ -4,7 +4,7 @@ import 'package:democracy/app/shared/pages/direct_message.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/constitution/models/section.dart';
-import 'package:democracy/meeting/models/meeting.dart';
+import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
@@ -92,7 +92,7 @@ class ShareBottomSheet extends StatelessWidget {
     this.ballot,
     this.survey,
     this.petition,
-    this.meeting,
+    this.broadcast,
     this.section,
   });
 
@@ -100,7 +100,7 @@ class ShareBottomSheet extends StatelessWidget {
   final Ballot? ballot;
   final Survey? survey;
   final Petition? petition;
-  final Meeting? meeting;
+  final Broadcast? broadcast;
   final Section? section;
 
   @override
@@ -128,7 +128,7 @@ class ShareBottomSheet extends StatelessWidget {
                 ballot: ballot,
                 survey: survey,
                 petition: petition,
-                meeting: meeting,
+                broadcast: broadcast,
                 section: section,
               ),
             );
@@ -173,7 +173,7 @@ class ShareBottomSheet extends StatelessWidget {
                     ballot: ballot,
                     survey: survey,
                     petition: petition,
-                    meeting: meeting,
+                    broadcast: broadcast,
                     section: section,
                   ),
                 );
@@ -200,7 +200,14 @@ class ShareBottomSheet extends StatelessWidget {
     if (post != null) return 'post';
     if (ballot != null) return 'ballot';
     if (survey != null) return 'survey';
-    if (meeting != null) return 'meeting';
+    if (broadcast != null) {
+      switch (broadcast!.type) {
+        case BroadcastType.meeting:
+          return 'meeting';
+        case BroadcastType.livestream:
+          return 'livestream';
+      }
+    }
     if (petition != null) return 'petition';
     if (section != null) return 'section';
     throw StateError('ShareBottomSheet: No shareable item provided');
@@ -210,7 +217,7 @@ class ShareBottomSheet extends StatelessWidget {
     if (post != null) return post!.id;
     if (ballot != null) return ballot!.id;
     if (survey != null) return survey!.id;
-    if (meeting != null) return meeting!.id;
+    if (broadcast != null) return broadcast!.id;
     if (petition != null) return petition!.id;
     if (section != null) return section!.id;
     throw StateError('ShareBottomSheet: No shareable item provided');

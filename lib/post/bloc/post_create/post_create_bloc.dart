@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/repository/api/api_repository.dart';
 import 'package:democracy/ballot/models/ballot.dart';
+import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:democracy/constitution/models/section.dart';
-import 'package:democracy/meeting/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
@@ -52,7 +52,7 @@ class PostCreateBloc extends Bloc<PostCreateEvent, PostCreateState> {
         ballot: event.ballot,
         survey: event.survey,
         petition: event.petition,
-        meeting: event.meeting,
+        broadcast: event.broadcast,
         section: event.section,
         tags: event.tags,
         filePaths: event.filePaths,

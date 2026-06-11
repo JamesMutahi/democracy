@@ -33,12 +33,12 @@ String extractLinkFromMessage(Message message) {
         }
       }
     }
-    if (message.meeting != null) {
+    if (message.broadcast != null) {
       for (String url in matchingLinks) {
         Uri uri = Uri.parse(url);
         if (uri.path.contains('meeting')) {
           String intString = uri.path.replaceAll(RegExp(r'[^0-9]'), '');
-          if (message.meeting!.id == int.parse(intString)) {
+          if (message.broadcast!.id == int.parse(intString)) {
             text = message.text.replaceAll(url, '');
           }
         }

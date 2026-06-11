@@ -151,7 +151,8 @@ class SideMenu extends StatelessWidget {
                               if (kIsWeb)
                                 Container(
                                   margin: EdgeInsets.only(top: 5),
-                                  child: !responsive.isMobile &&
+                                  child:
+                                      !responsive.isMobile &&
                                           responsive.smallerThan(expandSideMenu)
                                       ? IconButton.filledTonal(
                                           onPressed: () {
@@ -347,14 +348,10 @@ class _ProfileButtonState extends State<_ProfileButton>
                 child: Column(
                   children: [
                     _buildProfileButton(
-                      onTap: () {
-                        _dropdownAnimationController.reverse();
-                      },
+                      onTap: () => _dropdownAnimationController.reverse(),
                     ),
                     _buildLogoutButton(
-                      onTap: () {
-                        _dropdownAnimationController.reverse();
-                      },
+                      onTap: () => _dropdownAnimationController.reverse(),
                     ),
                   ],
                 ),
@@ -367,9 +364,7 @@ class _ProfileButtonState extends State<_ProfileButton>
     return ListTile(
       onTap: () {
         onTap();
-        if (!kIsWeb) {
-          widget.menuController.closeDrawer();
-        }
+        widget.menuController.closeDrawer();
         context.router.push(ProfileRoute(userId: widget.user.id));
       },
       leading: Icon(Symbols.person_2_rounded),
@@ -382,9 +377,7 @@ class _ProfileButtonState extends State<_ProfileButton>
     return ListTile(
       onTap: () {
         onTap();
-        if (!kIsWeb) {
-          widget.menuController.closeDrawer();
-        }
+        widget.menuController.closeDrawer();
         showDialog(context: context, builder: (context) => LogoutDialog());
       },
       textColor: Colors.red,

@@ -13,8 +13,8 @@ import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
-import 'package:democracy/meeting/models/meeting.dart';
-import 'package:democracy/meeting/view/widgets/meeting_tile.dart';
+import 'package:democracy/broadcast/models/broadcast.dart';
+import 'package:democracy/broadcast/view/widgets/meeting_tile.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart';
 import 'package:democracy/post/bloc/draft_detail/draft_detail_bloc.dart';
@@ -44,7 +44,7 @@ class PostCreatePage extends StatefulWidget {
     this.ballot,
     this.survey,
     this.petition,
-    this.meeting,
+    this.broadcast,
     this.section,
   });
 
@@ -53,7 +53,7 @@ class PostCreatePage extends StatefulWidget {
   final Ballot? ballot;
   final Survey? survey;
   final Petition? petition;
-  final Meeting? meeting;
+  final Broadcast? broadcast;
   final Section? section;
 
   @override
@@ -86,7 +86,7 @@ class _PostCreatePageState extends State<PostCreatePage> {
         ballot: widget.ballot,
         survey: widget.survey,
         petition: widget.petition,
-        meeting: widget.meeting,
+        broadcast: widget.broadcast,
         section: widget.section ?? _selectedSection,
         tags: tags,
         filePaths: [
@@ -119,7 +119,7 @@ class _PostCreatePageState extends State<PostCreatePage> {
         ballot: widget.ballot,
         survey: widget.survey,
         petition: widget.petition,
-        meeting: widget.meeting,
+        broadcast: widget.broadcast,
         section: widget.section ?? _selectedSection,
         tags: tags,
         filePaths: [
@@ -392,10 +392,10 @@ class _PostCreatePageState extends State<PostCreatePage> {
                   ),
                 ),
 
-              if (widget.meeting != null)
+              if (widget.broadcast != null)
                 DependencyContainer(
                   child: MeetingTile(
-                    meeting: widget.meeting!,
+                    broadcast: widget.broadcast!,
                     isDependency: true,
                   ),
                 ),

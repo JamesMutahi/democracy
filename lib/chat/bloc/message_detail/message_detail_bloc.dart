@@ -11,7 +11,7 @@ import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/constitution/models/section.dart';
-import 'package:democracy/meeting/models/meeting.dart';
+import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
@@ -118,7 +118,7 @@ class MessageDetailBloc extends Bloc<MessageDetailEvent, MessageDetailState> {
         ballot: event.ballot,
         survey: event.survey,
         petition: event.petition,
-        meeting: event.meeting,
+        broadcast: event.broadcast,
         section: event.section,
         filePaths: event.filePaths,
         location: event.location,

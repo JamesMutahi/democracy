@@ -1,5 +1,5 @@
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
-import 'package:democracy/meeting/models/meeting.dart';
+import 'package:democracy/broadcast/models/broadcast.dart';
 
 class AgoraService {
   static final AgoraService _instance = AgoraService._internal();
@@ -7,7 +7,7 @@ class AgoraService {
   AgoraService._internal();
 
   RtcEngine? _engine;
-  int? _currentMeeting;
+  int? _currentBroadcast;
 
   Future<RtcEngine> getEngine() async {
     if (_engine == null) {
@@ -19,12 +19,12 @@ class AgoraService {
     return _engine!;
   }
 
-  Future<void> joinAudioMeeting({
+  Future<void> joinMeeting({
     required bool isBroadcaster,
-    required Meeting meeting,
+    required Broadcast broadcast,
     required Function(RtcEngine) onEngineReady,
   }) async {
-    if (_currentMeeting == meeting.id) return; // Already in this channel
+    if (_currentBroadcast == broadcast.id) return; // Already in this channel
 
     final engine = await getEngine();
 
@@ -48,15 +48,15 @@ class AgoraService {
 
     onEngineReady(engine);
 
-    _currentMeeting = meeting.id;
+    _currentBroadcast = broadcast.id;
   }
 
   Future<void> joinLiveStream({
     required bool isHost,
-    required Meeting meeting,
+    required Broadcast broadcast,
     required Function(RtcEngine) onEngineReady,
   }) async {
-    if (_currentMeeting == meeting.id) return; // Already in this channel
+    if (_currentBroadcast == broadcast.id) return; // Already in this channel
 
     final engine = await getEngine();
 
@@ -88,14 +88,14 @@ class AgoraService {
 
     onEngineReady(engine);
 
-    _currentMeeting = meeting.id;
+    _currentBroadcast = broadcast.id;
   }
 
   Future<void> joinMiniStream({
-    required Meeting meeting,
+    required Broadcast broadcast,
     required Function(RtcEngine) onEngineReady,
   }) async {
-    if (_currentMeeting == meeting.id) return; // Already in this channel
+    if (_currentBroadcast == broadcast.id) return; // Already in this channel
 
     final engine = await getEngine();
 
@@ -110,17 +110,17 @@ class AgoraService {
 
     onEngineReady(engine);
 
-    _currentMeeting = meeting.id;
+    _currentBroadcast = broadcast.id;
   }
 
   Future<void> leaveCurrent() async {
     await _engine?.leaveChannel();
-    _currentMeeting = null;
+    _currentBroadcast = null;
   }
 
   Future<void> dispose() async {
     await _engine?.release();
     _engine = null;
-    _currentMeeting = null;
+    _currentBroadcast = null;
   }
 }

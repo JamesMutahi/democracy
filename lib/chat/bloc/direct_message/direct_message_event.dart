@@ -9,7 +9,7 @@ class DirectMessageEvent with _$DirectMessageEvent {
     Ballot? ballot,
     Survey? survey,
     Petition? petition,
-    Meeting? meeting,
+    Broadcast? broadcast,
     Section? section,
     @Default([]) List<String> filePaths,
     LatLng? location,

@@ -7,7 +7,7 @@ import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/chat/bloc/direct_message/direct_message_bloc.dart';
 import 'package:democracy/constitution/models/section.dart';
-import 'package:democracy/meeting/models/meeting.dart';
+import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
@@ -28,7 +28,7 @@ class DirectMessage extends StatefulWidget {
     required this.ballot,
     required this.survey,
     required this.petition,
-    this.meeting,
+    this.broadcast,
     this.section,
   });
 
@@ -36,7 +36,7 @@ class DirectMessage extends StatefulWidget {
   final Ballot? ballot;
   final Survey? survey;
   final Petition? petition;
-  final Meeting? meeting;
+  final Broadcast? broadcast;
   final Section? section;
 
   @override
@@ -322,7 +322,7 @@ class _DirectMessageState extends State<DirectMessage> {
                         ballot: widget.ballot,
                         survey: widget.survey,
                         petition: widget.petition,
-                        meeting: widget.meeting,
+                        broadcast: widget.broadcast,
                         section: widget.section,
                         filePaths: [
                           ..._media.map((m) => m.path),

@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:democracy/app/models/asset.dart';
 import 'package:democracy/ballot/models/ballot.dart';
+import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:democracy/chat/models/message.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/geo/models/constituency.dart';
 import 'package:democracy/geo/models/county.dart';
 import 'package:democracy/geo/models/ward.dart';
-import 'package:democracy/meeting/models/meeting.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:democracy/survey/models/survey.dart';
@@ -35,7 +35,7 @@ class APIRepository {
     Ballot? ballot,
     Survey? survey,
     Petition? petition,
-    Meeting? meeting,
+    Broadcast? broadcast,
     Section? section,
     List<Map> tags = const [],
     List<String> filePaths = const [],
@@ -52,7 +52,7 @@ class APIRepository {
       ballot: ballot,
       survey: survey,
       petition: petition,
-      meeting: meeting,
+      broadcast: broadcast,
       section: section,
       tags: tags,
       assets: assets,
@@ -90,7 +90,7 @@ class APIRepository {
     Ballot? ballot,
     Survey? survey,
     Petition? petition,
-    Meeting? meeting,
+    Broadcast? broadcast,
     Section? section,
     List<String> filePaths = const [],
     LatLng? location,
@@ -105,7 +105,7 @@ class APIRepository {
       ballot: ballot,
       survey: survey,
       petition: petition,
-      meeting: meeting,
+      broadcast: broadcast,
       section: section,
       assets: assets,
       location: location,
@@ -153,7 +153,7 @@ class APIRepository {
     Ballot? ballot,
     Survey? survey,
     Petition? petition,
-    Meeting? meeting,
+    Broadcast? broadcast,
     Section? section,
     List<String> filePaths = const [],
     LatLng? location,
@@ -167,7 +167,7 @@ class APIRepository {
       ballot: ballot,
       survey: survey,
       petition: petition,
-      meeting: meeting,
+      broadcast: broadcast,
       section: section,
       assets: assets,
       location: location,
@@ -208,8 +208,8 @@ class APIRepository {
     );
   }
 
-  Future<Map> getMeetingToken({required Meeting meeting}) async {
-    return await apiProvider.getMeetingToken(meeting: meeting);
+  Future<Map> getBroadcastToken({required Broadcast broadcast}) async {
+    return await apiProvider.getBroadcastToken(broadcast: broadcast);
   }
 
   Future<List<Map>> getAssets(List<String> filePaths) async {

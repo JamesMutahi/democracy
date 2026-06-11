@@ -12,7 +12,7 @@ class PostCreateEvent with _$PostCreateEvent {
     Ballot? ballot,
     Survey? survey,
     Petition? petition,
-    Meeting? meeting,
+    Broadcast? broadcast,
     Section? section,
     @Default([]) List<Map<String, String>> tags,
     @Default([]) List<String> filePaths,

@@ -32,7 +32,7 @@ class DraftPostAdapter extends TypeAdapter<DraftPost> {
       ..ballotJson = fields[11] as String?
       ..surveyJson = fields[12] as String?
       ..petitionJson = fields[13] as String?
-      ..meetingJson = fields[14] as String?
+      ..broadcastJson = fields[14] as String?
       ..sectionJson = fields[15] as String?
       ..tagsJson = fields[16] as String?
       ..assetsJson = fields[17] as String?;
@@ -71,7 +71,7 @@ class DraftPostAdapter extends TypeAdapter<DraftPost> {
       ..writeByte(13)
       ..write(obj.petitionJson)
       ..writeByte(14)
-      ..write(obj.meetingJson)
+      ..write(obj.broadcastJson)
       ..writeByte(15)
       ..write(obj.sectionJson)
       ..writeByte(16)

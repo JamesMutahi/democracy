@@ -10,7 +10,7 @@ import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
-import 'package:democracy/meeting/view/widgets/meeting_tile.dart';
+import 'package:democracy/broadcast/view/widgets/meeting_tile.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart';
 import 'package:democracy/post/bloc/post/post_bloc.dart';
 import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
@@ -589,10 +589,10 @@ class _PostContainer extends StatelessWidget {
                           isDependency: true,
                         ),
                       ),
-                    if (post.meeting != null)
+                    if (post.broadcast != null)
                       DependencyContainer(
                         child: MeetingTile(
-                          meeting: post.meeting!,
+                          broadcast: post.broadcast!,
                           isDependency: true,
                         ),
                       ),
