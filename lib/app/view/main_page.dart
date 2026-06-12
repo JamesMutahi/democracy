@@ -217,30 +217,32 @@ class _MainPageState extends State<MainPage> {
                 ),
                 Flexible(
                   flex: responsive.largerOrEqualTo(expandSideMenu) ? 5 : 6,
-                  child: Container(
-                    constraints: BoxConstraints(maxWidth: 600),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        left: BorderSide(
-                          color: responsive.isMobile
-                              ? Colors.transparent
-                              : Theme.of(context).colorScheme.outlineVariant,
-                        ),
-                        right: BorderSide(
-                          color: responsive.isMobile
-                              ? Colors.transparent
-                              : Theme.of(context).colorScheme.outlineVariant,
+                  child: SelectionArea(
+                    child: Container(
+                      constraints: BoxConstraints(maxWidth: 600),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          left: BorderSide(
+                            color: responsive.isMobile
+                                ? Colors.transparent
+                                : Theme.of(context).colorScheme.outlineVariant,
+                          ),
+                          right: BorderSide(
+                            color: responsive.isMobile
+                                ? Colors.transparent
+                                : Theme.of(context).colorScheme.outlineVariant,
+                          ),
                         ),
                       ),
-                    ),
-                    child: Container(
-                      padding: EdgeInsets.only(top: 10),
-                      child: AutoRouter(),
+                      child: Container(
+                        padding: EdgeInsets.only(top: 10),
+                        child: AutoRouter(),
+                      ),
                     ),
                   ),
                 ),
                 if (responsive.largerOrEqualTo(expandSidePanel))
-                  Flexible(flex: 3, child: SidePanel()),
+                  Flexible(flex: 3, child: SelectionArea(child: SidePanel())),
               ],
             ),
           ),

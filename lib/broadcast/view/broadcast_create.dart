@@ -11,16 +11,16 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 
 @RoutePage()
-class MeetingCreate extends StatefulWidget {
-  const MeetingCreate({super.key, @QueryParam('type') this.type = 'meeting'});
+class BroadcastCreate extends StatefulWidget {
+  const BroadcastCreate({super.key, @QueryParam('type') this.type = 'meeting'});
 
   final String type;
 
   @override
-  State<MeetingCreate> createState() => _MeetingCreateState();
+  State<BroadcastCreate> createState() => _BroadcastCreateState();
 }
 
-class _MeetingCreateState extends State<MeetingCreate> {
+class _BroadcastCreateState extends State<BroadcastCreate> {
   final _controller = TextEditingController();
   final _formKey = GlobalKey<FormBuilderState>();
   bool _setStartTime = false;

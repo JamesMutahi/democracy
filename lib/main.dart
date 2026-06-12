@@ -82,15 +82,17 @@ void main() {
 
           // Forward Flutter Framework errors to Talker & Sentry
           FlutterError.onError = (details) {
+            final rawStack = details.stack;
+            final StackTrace cleanStack = (rawStack is StackTrace)
+                ? rawStack
+                : StackTrace.current;
+
             AppLogger.error(
               'Flutter Framework Error',
               details.exception,
-              details.stack,
+              cleanStack,
             );
-            Sentry.captureException(
-              details.exception,
-              stackTrace: details.stack,
-            );
+            Sentry.captureException(details.exception, stackTrace: cleanStack);
           };
 
           // Forward Platform/Native errors to Talker & Sentry

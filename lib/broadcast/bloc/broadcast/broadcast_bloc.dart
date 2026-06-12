@@ -5,6 +5,7 @@ import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:pro_image_editor/pro_image_editor.dart';
 
 part 'broadcast_event.dart';
 part 'broadcast_state.dart';
@@ -13,7 +14,8 @@ part 'broadcast_bloc.freezed.dart';
 const String stream = 'broadcasts';
 
 class BroadcastBloc extends Bloc<BroadcastEvent, BroadcastState> {
-  BroadcastBloc({required this.webSocketService}) : super(const BroadcastState()) {
+  BroadcastBloc({required this.webSocketService})
+    : super(const BroadcastState()) {
     _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
         switch (message['payload']['action']) {
@@ -29,7 +31,10 @@ class BroadcastBloc extends Bloc<BroadcastEvent, BroadcastState> {
 
   void _onLoad(_Load event, Emitter<BroadcastState> emit) async {
     emit(
-      state.copyWith(status: BroadcastStatus.loading, broadcastId: event.broadcastId),
+      state.copyWith(
+        status: BroadcastStatus.loading,
+        broadcastId: event.broadcastId,
+      ),
     );
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: BroadcastStatus.failure));
@@ -55,7 +60,7 @@ class BroadcastBloc extends Bloc<BroadcastEvent, BroadcastState> {
         state.copyWith(
           status: BroadcastStatus.success,
           broadcast: broadcast,
-          broadcastId: event.payload['request_id'],
+          broadcastId: tryParseInt(event.payload['request_id']),
         ),
       );
     } else {

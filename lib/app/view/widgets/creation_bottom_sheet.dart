@@ -37,7 +37,7 @@ class CreationButtons extends StatelessWidget {
             ),
             _CreationButton(
               onTap: () => context.router.push(
-                MeetingCreate(
+                BroadcastCreate(
                   type: BroadcastTypeConverter().toJson(BroadcastType.meeting),
                 ),
               ),
@@ -46,7 +46,7 @@ class CreationButtons extends StatelessWidget {
             ),
             _CreationButton(
               onTap: () => context.router.push(
-                MeetingCreate(
+                BroadcastCreate(
                   type: BroadcastTypeConverter().toJson(
                     BroadcastType.livestream,
                   ),

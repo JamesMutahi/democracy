@@ -50,11 +50,19 @@ class _MeetingsState extends State<Meetings> {
             final broadcastsBloc = context.read<MeetingsBloc>();
 
             if (state is BroadcastCreated) {
-              broadcastsBloc.add(MeetingsEvent.add(broadcast: state.broadcast));
+              if (state.broadcast.type == BroadcastType.meeting) {
+                broadcastsBloc.add(
+                  MeetingsEvent.add(broadcast: state.broadcast),
+                );
+              }
             } else if (state is BroadcastLoaded) {
-              broadcastsBloc.add(MeetingsEvent.update(broadcast: state.broadcast));
+              broadcastsBloc.add(
+                MeetingsEvent.update(broadcast: state.broadcast),
+              );
             } else if (state is BroadcastUpdated) {
-              broadcastsBloc.add(MeetingsEvent.update(broadcast: state.broadcast));
+              broadcastsBloc.add(
+                MeetingsEvent.update(broadcast: state.broadcast),
+              );
             } else if (state is BroadcastDeleted) {
               broadcastsBloc.add(
                 MeetingsEvent.remove(broadcastId: state.broadcastId),

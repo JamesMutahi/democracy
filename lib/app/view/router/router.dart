@@ -59,7 +59,7 @@ class AppRouter extends RootStackRouter {
         AutoRoute(path: 'users', page: UsersRoute.page),
 
         AutoRoute(path: 'meetings', page: MeetingRoute.page),
-        AutoRoute(path: 'create-meeting', page: MeetingCreate.page),
+        AutoRoute(path: 'create-broadcast', page: BroadcastCreate.page),
         AutoRoute(path: 'meeting/:id', page: MeetingDetail.page),
         AutoRoute(path: 'live-stream/:id', page: LiveStream.page),
 

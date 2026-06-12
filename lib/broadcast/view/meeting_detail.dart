@@ -59,7 +59,13 @@ class MeetingDetail extends StatelessWidget {
               },
             );
           }
-          return _MeetingDetail(broadcast: state.broadcast!);
+          return BlocProvider(
+            create: (context) => SpeakerDetailBloc(
+              webSocketService: context.read<WebSocketService>(),
+              apiRepository: context.read<APIRepository>(),
+            ),
+            child: _MeetingDetail(broadcast: state.broadcast!),
+          );
         },
       ),
     );
@@ -123,6 +129,16 @@ class _MeetingDetailState extends State<_MeetingDetail> {
                 ),
               );
             },
+            onError: (ErrorCodeType err, String message) {
+              if (mounted) {
+                final snackBar = getSnackBar(
+                  context: context,
+                  message: 'Error: $err - $message',
+                  status: SnackBarStatus.failure,
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              }
+            },
             onRtcStats: (connection, stats) {
               setState(() => _count = stats.userCount);
             },
@@ -137,7 +153,7 @@ class _MeetingDetailState extends State<_MeetingDetail> {
                 ) {
                   if (reason ==
                       UserOfflineReasonType.userOfflineBecomeAudience) {
-                    setState(() => _speakers.remove(uid));
+                    // setState(() => _speakers.remove(uid));
                   }
                   //
                 },
@@ -204,201 +220,193 @@ class _MeetingDetailState extends State<_MeetingDetail> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => SpeakerDetailBloc(
-        webSocketService: context.read<WebSocketService>(),
-        apiRepository: context.read<APIRepository>(),
-      ),
-      child: MultiBlocListener(
-        listeners: [
-          BlocListener<WebsocketBloc, WebsocketState>(
-            listener: (context, state) {
-              if (state.status == WebsocketStatus.connected) {
-                context.read<BroadcastDetailBloc>().add(
-                  BroadcastDetailEvent.subscribe(
-                    broadcast: widget.broadcast,
-                    isMuted: _isMuted,
-                  ),
-                );
-              }
-            },
-          ),
-          BlocListener<BroadcastDetailBloc, BroadcastDetailState>(
-            listener: (context, state) async {
-              switch (state) {
-                case BroadcastLoaded(:final broadcast):
-                  if (broadcast.id == widget.broadcast.id) {
-                    context.read<BroadcastBloc>().add(
-                      BroadcastEvent.updated(broadcast: state.broadcast),
-                    );
-                    setState(() {
-                      _count = broadcast.participantsCount;
-                    });
-                  }
-                case BroadcastUpdated(:final broadcast):
-                  if (broadcast.id == widget.broadcast.id) {
-                    final isCoHost = state.broadcast.coHosts.any(
-                      (c) => c.id == me.id,
-                    );
-                    final isSpeaker = state.broadcast.speakers.any(
-                      (s) => s.id == me.id,
-                    );
-                    final isNewCoHost =
-                        (isCoHost == true) && (_isCoHost == false);
-                    final isNewSpeaker =
-                        (isSpeaker == true) && (_isSpeaker == false);
-                    final isBroadcaster = isCoHost || isSpeaker;
-                    if (isBroadcaster != (_isCoHost || _isSpeaker)) {
-                      await _engine.setClientRole(
-                        role: isBroadcaster
-                            ? ClientRoleType.clientRoleBroadcaster
-                            : ClientRoleType.clientRoleAudience,
-                      );
-                    }
-                    final isMuted = state.broadcast.muted.any(
-                      (m) => m == me.id,
-                    );
-                    if (isMuted && !_isMuted) {
-                      await _engine.muteLocalAudioStream(isMuted);
-                    }
-
-                    if (context.mounted) {
-                      context.read<BroadcastBloc>().add(
-                        BroadcastEvent.updated(broadcast: state.broadcast),
-                      );
-                    }
-
-                    if (isNewCoHost || isNewSpeaker) {
-                      String message = 'You are now a co-host';
-                      if (isNewSpeaker) message = 'You are now a speaker';
-                      if (context.mounted) {
-                        final snackBar = getSnackBar(
-                          context: context,
-                          message: message,
-                          status: SnackBarStatus.info,
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      }
-                    }
-                  }
-                case BroadcastDeleted(:final broadcastId):
-                  if (broadcastId == widget.broadcast.id) {
-                    setState(() => isDeleted = true);
-                  }
-                case BroadcastDetailFailure(:final error):
-                  final snackBar = getSnackBar(
-                    context: context,
-                    message: error,
-                    status: SnackBarStatus.failure,
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<WebsocketBloc, WebsocketState>(
+          listener: (context, state) {
+            if (state.status == WebsocketStatus.connected) {
+              context.read<BroadcastDetailBloc>().add(
+                BroadcastDetailEvent.subscribe(
+                  broadcast: widget.broadcast,
+                  isMuted: _isMuted,
+                ),
+              );
+            }
+          },
+        ),
+        BlocListener<BroadcastDetailBloc, BroadcastDetailState>(
+          listener: (context, state) async {
+            switch (state) {
+              case BroadcastLoaded(:final broadcast):
+                if (broadcast.id == widget.broadcast.id) {
+                  context.read<BroadcastBloc>().add(
+                    BroadcastEvent.updated(broadcast: state.broadcast),
                   );
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              }
-            },
-          ),
-          BlocListener<UserDetailBloc, UserDetailState>(
-            listener: (context, state) {
-              if (state is UserRetrieved) {
-                //
-              }
-            },
-          ),
-          BlocListener<ChatDetailBloc, ChatDetailState>(
-            listener: (context, state) {
-              if (state is ChatCreated) {
-                context.router.push(ChatDetail(chatId: state.chat.id));
-              }
-            },
-          ),
-          BlocListener<SpeakerDetailBloc, SpeakerDetailState>(
-            listener: (context, state) async {
-              switch (state) {
-                case RequestedToSpeak():
-                  setState(() => _hasRequestedToSpeak = true);
-                case SpeakerRequestCreated(:final request):
-                  if (_isHost || _isCoHost) {
-                    final snackBar = getSnackBar(
-                      context: context,
-                      message: '${request.user.name} requests to speak',
-                      status: SnackBarStatus.info,
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }
-                case SpeakerRequestUpdated(:final request):
-                  if (request.user.id == me.id && request.isApproved != null) {
-                    setState(() => _hasRequestedToSpeak = false);
+                  setState(() {
+                    _count = broadcast.participantsCount;
+                  });
+                }
+              case BroadcastUpdated(:final broadcast):
+                if (broadcast.id == widget.broadcast.id) {
+                  final isCoHost = state.broadcast.coHosts.any(
+                    (c) => c.id == me.id,
+                  );
+                  final isSpeaker = state.broadcast.speakers.any(
+                    (s) => s.id == me.id,
+                  );
+                  final isNewCoHost =
+                      (isCoHost == true) && (_isCoHost == false);
+                  final isNewSpeaker =
+                      (isSpeaker == true) && (_isSpeaker == false);
+                  final isBroadcaster = isCoHost || isSpeaker;
+                  if (isBroadcaster != (_isCoHost || _isSpeaker)) {
                     await _engine.setClientRole(
-                      role: request.isApproved!
+                      role: isBroadcaster
                           ? ClientRoleType.clientRoleBroadcaster
                           : ClientRoleType.clientRoleAudience,
                     );
                   }
-              }
-            },
-          ),
-        ],
-        child: PopScope(
-          canPop: false,
-          onPopInvokedWithResult: (didPop, result) {
-            if (didPop) {
-              return;
+                  final isMuted = state.broadcast.muted.any((m) => m == me.id);
+                  if (isMuted && !_isMuted) {
+                    await _engine.muteLocalAudioStream(isMuted);
+                  }
+
+                  if (context.mounted) {
+                    context.read<BroadcastBloc>().add(
+                      BroadcastEvent.updated(broadcast: state.broadcast),
+                    );
+                  }
+
+                  if (isNewCoHost || isNewSpeaker) {
+                    String message = 'You are now a co-host';
+                    if (isNewSpeaker) message = 'You are now a speaker';
+                    if (context.mounted) {
+                      final snackBar = getSnackBar(
+                        context: context,
+                        message: message,
+                        status: SnackBarStatus.info,
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }
+                  }
+                }
+              case BroadcastDeleted(:final broadcastId):
+                if (broadcastId == widget.broadcast.id) {
+                  setState(() => isDeleted = true);
+                }
+              case BroadcastDetailFailure(:final error):
+                final snackBar = getSnackBar(
+                  context: context,
+                  message: error,
+                  status: SnackBarStatus.failure,
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
-            _showExitDialog();
           },
-          child: Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                onPressed: () {
-                  //  TODO: Minimize
-                },
-                icon: Icon(Icons.keyboard_arrow_down_rounded),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: _showExitDialog,
-                  child: Text('Leave', style: TextStyle(color: Colors.red)),
-                ),
-              ],
+        ),
+        BlocListener<UserDetailBloc, UserDetailState>(
+          listener: (context, state) {
+            if (state is UserRetrieved) {
+              //
+            }
+          },
+        ),
+        BlocListener<ChatDetailBloc, ChatDetailState>(
+          listener: (context, state) {
+            if (state is ChatCreated) {
+              context.router.push(ChatDetail(chatId: state.chat.id));
+            }
+          },
+        ),
+        BlocListener<SpeakerDetailBloc, SpeakerDetailState>(
+          listener: (context, state) async {
+            switch (state) {
+              case RequestedToSpeak():
+                setState(() => _hasRequestedToSpeak = true);
+              case SpeakerRequestCreated(:final request):
+                if (_isHost || _isCoHost) {
+                  final snackBar = getSnackBar(
+                    context: context,
+                    message: '${request.user.name} requests to speak',
+                    status: SnackBarStatus.info,
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                }
+              case SpeakerRequestUpdated(:final request):
+                if (request.user.id == me.id && request.isApproved != null) {
+                  setState(() => _hasRequestedToSpeak = false);
+                  await _engine.setClientRole(
+                    role: request.isApproved!
+                        ? ClientRoleType.clientRoleBroadcaster
+                        : ClientRoleType.clientRoleAudience,
+                  );
+                }
+            }
+          },
+        ),
+      ],
+      child: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) {
+            return;
+          }
+          _showExitDialog();
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              onPressed: () {
+                //  TODO: Minimize
+              },
+              icon: Icon(Icons.keyboard_arrow_down_rounded),
             ),
-            body: isDeleted || !widget.broadcast.isActive
-                ? Center(child: Text('This broadcast has been closed'))
-                : Container(
-                    margin: EdgeInsets.symmetric(horizontal: 15),
-                    child: CustomScrollView(
-                      slivers: [
-                        SliverToBoxAdapter(
-                          child: Text(
-                            widget.broadcast.title,
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
+            actions: [
+              TextButton(
+                onPressed: _showExitDialog,
+                child: Text('Leave', style: TextStyle(color: Colors.red)),
+              ),
+            ],
+          ),
+          body: isDeleted || !widget.broadcast.isActive
+              ? Center(child: Text('This broadcast has been closed'))
+              : Container(
+                  margin: EdgeInsets.symmetric(horizontal: 15),
+                  child: CustomScrollView(
+                    slivers: [
+                      SliverToBoxAdapter(
+                        child: Text(
+                          widget.broadcast.title,
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
-                        SliverToBoxAdapter(
-                          child: Text(widget.broadcast.description),
-                        ),
-                        !_isJoined
-                            ? SliverToBoxAdapter(child: BottomLoader())
-                            : _buildParticipantsList(),
-                      ],
+                      ),
+                      SliverToBoxAdapter(
+                        child: Text(widget.broadcast.description),
+                      ),
+                      !_isJoined
+                          ? SliverToBoxAdapter(child: BottomLoader())
+                          : _buildParticipantsList(),
+                    ],
+                  ),
+                ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.miniStartFloat,
+          floatingActionButton: _isJoined && (_isHost || _isCoHost)
+              ? FilledButton.tonal(
+                  style: FilledButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.miniStartFloat,
-            floatingActionButton: _isJoined && (_isHost || _isCoHost)
-                ? FilledButton.tonal(
-                    style: FilledButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    onPressed: () {
-                      context.read<SpeakerDetailBloc>().add(
-                        MuteEveryone(broadcast: widget.broadcast),
-                      );
-                    },
-                    child: Text('Mute everyone'),
-                  )
-                : null,
-            bottomNavigationBar: _buildControls(),
-          ),
+                  onPressed: () {
+                    context.read<SpeakerDetailBloc>().add(
+                      MuteEveryone(broadcast: widget.broadcast),
+                    );
+                  },
+                  child: Text('Mute everyone'),
+                )
+              : null,
+          bottomNavigationBar: _buildControls(),
         ),
       ),
     );

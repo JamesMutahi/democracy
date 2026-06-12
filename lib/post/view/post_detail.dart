@@ -523,9 +523,13 @@ class _PostContainer extends StatelessWidget {
                           ProfileRoute(userId: post.author.id),
                         );
                       },
+                      hoverColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
                       child: Container(
                         margin: const EdgeInsets.only(right: 30.0),
                         child: Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             PostAuthorProfile(
                               isDependency: false,

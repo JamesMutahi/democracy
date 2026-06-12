@@ -4,6 +4,7 @@ import 'package:democracy/app/bloc/services/websocket_service.dart'
     show WebsocketStatus, WebSocketService;
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
+import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
@@ -11,12 +12,12 @@ import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/broadcast/bloc/broadcast/broadcast_bloc.dart';
 import 'package:democracy/broadcast/bloc/broadcast_detail/broadcast_detail_bloc.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
-import 'package:democracy/broadcast/view/widgets/broadcast_pop_up_menu.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 @RoutePage()
@@ -168,7 +169,7 @@ class _LiveStreamState extends State<_LiveStream> {
     showDialog(
       context: context,
       builder: (context) => _isHost
-      /* TODO: End broadcast via bloc + leave */
+          /* TODO: End broadcast via bloc + leave */
           ? EndLivestreamDialog(onYesPressed: _leaveChannel)
           : LeaveLivestreamDialog(onYesPressed: _leaveChannel),
     );
@@ -237,7 +238,7 @@ class _LiveStreamState extends State<_LiveStream> {
         },
         child: Scaffold(
           appBar: AppBar(
-            leading: BroadcastPopUpMenu(broadcast: widget.broadcast),
+            automaticallyImplyLeading: false,
             centerTitle: true,
             title: Text(
               widget.broadcast.title,
@@ -327,7 +328,24 @@ class _LiveStreamState extends State<_LiveStream> {
               icon: const Icon(Icons.flip_camera_ios),
               onPressed: () => _engine.switchCamera(),
             ),
-          // Leave for audience
+          // Share
+          IconButton.filledTonal(
+            iconSize: 20,
+            icon: Icon(Symbols.share_rounded),
+            onPressed: () {
+              showModalBottomSheet<void>(
+                context: context,
+                isScrollControlled: true,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(15),
+                    topRight: Radius.circular(15),
+                  ),
+                ),
+                builder: (_) => ShareBottomSheet(broadcast: widget.broadcast),
+              );
+            },
+          ),
         ],
       ),
     );
