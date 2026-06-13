@@ -1,8 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
+import 'package:democracy/broadcast/view/widgets/meeting_tile.dart'
+    show MeetingBottomSheet;
 import 'package:democracy/chat/view/utils/last_message.dart';
-import 'package:democracy/broadcast/view/widgets/meeting_tile.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:democracy/notification/models/notification.dart' as n_;
 import 'package:democracy/post/view/widgets/post_body.dart';

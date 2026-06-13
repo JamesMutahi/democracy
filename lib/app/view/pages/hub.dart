@@ -62,10 +62,7 @@ class _HubState extends State<Hub> {
                       automaticallyImplyLeading: false,
                       flexibleSpace: Builder(
                         builder: (context) {
-                          return SizedBox(
-                            height: 60,
-                            child: _buildSearchBar(cubit, state),
-                          );
+                          return _buildSearchBar(cubit, state);
                         },
                       ),
                     ),

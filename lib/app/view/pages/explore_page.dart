@@ -81,10 +81,7 @@ class _ExplorePageState extends State<ExplorePage> {
                         automaticallyImplyLeading: false,
                         flexibleSpace: Builder(
                           builder: (context) {
-                            return SizedBox(
-                              height: 60,
-                              child: _buildSearchBar(filterCubit, state),
-                            );
+                            return _buildSearchBar(filterCubit, state);
                           },
                         ),
                         bottom: _buildTabBar(),

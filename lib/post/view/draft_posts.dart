@@ -11,6 +11,7 @@ import 'package:democracy/app/shared/widgets/map_widget.dart';
 import 'package:democracy/app/shared/widgets/video_viewer.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
+import 'package:democracy/broadcast/view/widgets/broadcast_selector.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
 import 'package:democracy/broadcast/view/widgets/meeting_tile.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart';
@@ -146,7 +147,7 @@ class DraftTile extends StatelessWidget {
               ),
             if (draft.broadcast != null)
               DependencyContainer(
-                child: MeetingTile(
+                child: BroadcastSelector(
                   broadcast: draft.broadcast!,
                   isDependency: true,
                 ),

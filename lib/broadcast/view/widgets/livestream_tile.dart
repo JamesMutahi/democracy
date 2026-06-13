@@ -6,19 +6,21 @@ import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/broadcast/bloc/broadcast_detail/broadcast_detail_bloc.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
+import 'package:democracy/user/view/widgets/profile_image.dart';
+import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class LivePostTile extends StatefulWidget {
+class LivestreamTile extends StatefulWidget {
   final Broadcast broadcast;
 
-  const LivePostTile({super.key, required this.broadcast});
+  const LivestreamTile({super.key, required this.broadcast});
 
   @override
-  State<LivePostTile> createState() => _LivePostTileState();
+  State<LivestreamTile> createState() => _LivestreamTileState();
 }
 
-class _LivePostTileState extends State<LivePostTile> {
+class _LivestreamTileState extends State<LivestreamTile> {
   RtcEngine? _engine;
   bool _isJoined = false;
   int? _hostUid;
@@ -88,6 +90,8 @@ class _LivePostTileState extends State<LivePostTile> {
         }
       },
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             height: 220, // Fixed aspect ratio like Twitter
@@ -177,14 +181,28 @@ class _LivePostTileState extends State<LivePostTile> {
               ],
             ),
           ),
-
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    ProfileImage(user: widget.broadcast.host, radius: 12),
+                    SizedBox(width: 5),
+                    ProfileName(user: widget.broadcast.host),
+                  ],
+                ),
+                SizedBox(height: 5),
+                Text(widget.broadcast.title),
+              ],
+            ),
+          ),
         ],
       ),
     );
-  }
-
-  Widget _buildLiveStreamInfo() {
-    // TODO:
-    return Container();
   }
 }

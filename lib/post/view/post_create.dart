@@ -11,10 +11,10 @@ import 'package:democracy/app/shared/widgets/loader_overlay_widgets.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
+import 'package:democracy/broadcast/view/widgets/broadcast_selector.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
-import 'package:democracy/broadcast/view/widgets/meeting_tile.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart';
 import 'package:democracy/post/bloc/draft_detail/draft_detail_bloc.dart';
@@ -394,7 +394,7 @@ class _PostCreatePageState extends State<PostCreatePage> {
 
               if (widget.broadcast != null)
                 DependencyContainer(
-                  child: MeetingTile(
+                  child: BroadcastSelector(
                     broadcast: widget.broadcast!,
                     isDependency: true,
                   ),

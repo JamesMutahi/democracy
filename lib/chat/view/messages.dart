@@ -9,6 +9,7 @@ import 'package:democracy/app/shared/widgets/custom_text.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
+import 'package:democracy/broadcast/view/widgets/broadcast_selector.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/messages/messages_bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
@@ -232,7 +233,7 @@ class _MessagesState extends State<Messages> {
                   AlignmentContainer(
                     message: message,
                     alignedRight: alignedRight,
-                    child: MeetingTile(
+                    child: BroadcastSelector(
                       key: ValueKey(message.id),
                       broadcast: message.broadcast!,
                       isDependency: true,

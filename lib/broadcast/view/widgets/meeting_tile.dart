@@ -6,7 +6,6 @@ import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/broadcast/bloc/broadcast_detail/broadcast_detail_bloc.dart';
-import 'package:democracy/broadcast/view/widgets/live_tile.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
@@ -25,95 +24,89 @@ class MeetingTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return broadcast.type == BroadcastType.livestream
-        ? LivePostTile(broadcast: broadcast)
-        : GestureDetector(
-            onTap: () {
-              showModalBottomSheet<void>(
-                context: context,
-                shape: const BeveledRectangleBorder(),
-                builder: (BuildContext context) {
-                  return MeetingBottomSheet(broadcast: broadcast);
-                },
-              );
-            },
-            child: Stack(
+    return GestureDetector(
+      onTap: () {
+        showModalBottomSheet<void>(
+          context: context,
+          shape: const BeveledRectangleBorder(),
+          builder: (BuildContext context) {
+            return MeetingBottomSheet(broadcast: broadcast);
+          },
+        );
+      },
+      child: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(12)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.only(
+                    left: 15,
+                    right: 15,
+                    top: 15,
+                    bottom: 10,
+                  ),
                   decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(12)),
+                    color: isDependency
+                        ? Colors.transparent
+                        : Theme.of(context).colorScheme.tertiaryContainer,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(12),
+                      topRight: Radius.circular(12),
+                    ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.only(
-                          left: 15,
-                          right: 15,
-                          top: 15,
-                          bottom: 10,
-                        ),
-                        decoration: BoxDecoration(
-                          color: isDependency
-                              ? Colors.transparent
-                              : Theme.of(context).colorScheme.tertiaryContainer,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(12),
-                            topRight: Radius.circular(12),
-                          ),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (broadcast.county != null)
-                              Container(
-                                margin: EdgeInsets.only(bottom: 10),
-                                child: GeoChipRow(
-                                  county: broadcast.county,
-                                  constituency: broadcast.constituency,
-                                  ward: broadcast.ward,
-                                ),
-                              ),
-                            Text(
-                              broadcast.title,
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            if (!isDependency) SizedBox(height: 10),
-                            if (!isDependency) ListenersRow(broadcast: broadcast),
-                          ],
-                        ),
-                      ),
-                      if (!isDependency)
+                      if (broadcast.county != null)
                         Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 10,
+                          margin: EdgeInsets.only(bottom: 10),
+                          child: GeoChipRow(
+                            county: broadcast.county,
+                            constituency: broadcast.constituency,
+                            ward: broadcast.ward,
                           ),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .tertiaryContainer
-                                .withValues(alpha: 0.6),
-                            borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(12),
-                              bottomRight: Radius.circular(12),
-                            ),
-                          ),
-                          child: _HostInfo(broadcast: broadcast),
                         ),
+                      Text(
+                        broadcast.title,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      if (!isDependency) SizedBox(height: 10),
+                      if (!isDependency) ListenersRow(broadcast: broadcast),
                     ],
                   ),
                 ),
                 if (!isDependency)
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: MeetingPopUp(broadcast: broadcast),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.tertiaryContainer.withValues(alpha: 0.6),
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(12),
+                        bottomRight: Radius.circular(12),
+                      ),
+                    ),
+                    child: _HostInfo(broadcast: broadcast),
                   ),
               ],
             ),
-          );
+          ),
+          if (!isDependency)
+            Align(
+              alignment: Alignment.topRight,
+              child: MeetingPopUp(broadcast: broadcast),
+            ),
+        ],
+      ),
+    );
   }
 }
 
@@ -178,7 +171,11 @@ class _HostInfo extends StatelessWidget {
         ),
         SizedBox(height: 5),
         if (broadcast.host.bio.isNotEmpty)
-          Text(broadcast.host.bio, maxLines: 2, overflow: TextOverflow.ellipsis),
+          Text(
+            broadcast.host.bio,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
       ],
     );
   }

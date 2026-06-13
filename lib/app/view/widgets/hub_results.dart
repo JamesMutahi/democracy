@@ -12,7 +12,7 @@ import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
 import 'package:democracy/broadcast/bloc/meetings/meetings_bloc.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
-import 'package:democracy/broadcast/view/widgets/meeting_tile.dart';
+import 'package:democracy/broadcast/view/widgets/broadcast_selector.dart';
 import 'package:democracy/petition/bloc/petitions/petitions_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart';
@@ -638,7 +638,7 @@ class _MeetingsTabState extends State<_MeetingsTab>
                       Broadcast broadcast = broadcasts[index];
                       return Container(
                         margin: EdgeInsets.only(bottom: 10),
-                        child: MeetingTile(
+                        child: BroadcastSelector(
                           key: ValueKey(broadcast.id),
                           broadcast: broadcast,
                           isDependency: false,

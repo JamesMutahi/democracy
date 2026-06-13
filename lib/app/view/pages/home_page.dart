@@ -58,19 +58,15 @@ class _HomePageState extends State<HomePage>
                               ],
                             ),
                           ),
-                          Positioned(top: 5, child: Logo(width: 60, height: 60)),
+                          Positioned(
+                            top: 5,
+                            child: Logo(width: 60, height: 60),
+                          ),
                         ],
                       );
                     },
                   ),
-                  bottom: TabBar(
-                    dividerColor: Theme.of(context).colorScheme.outlineVariant,
-                    labelStyle: Theme.of(context).textTheme.titleMedium,
-                    tabs: [
-                      Tab(text: 'For You'),
-                      Tab(text: 'Following'),
-                    ],
-                  ),
+                  bottom: _buildTabBar(),
                 )
               else
                 SliverAppBar(
@@ -80,16 +76,7 @@ class _HomePageState extends State<HomePage>
                   automaticallyImplyLeading: false,
                   flexibleSpace: Builder(
                     builder: (context) {
-                      return TabBar(
-                        dividerColor: Theme.of(
-                          context,
-                        ).colorScheme.outlineVariant,
-                        labelStyle: Theme.of(context).textTheme.titleMedium,
-                        tabs: [
-                          Tab(text: 'For You'),
-                          Tab(text: 'Following'),
-                        ],
-                      );
+                      return _buildTabBar();
                     },
                   ),
                 ),
@@ -101,6 +88,17 @@ class _HomePageState extends State<HomePage>
           ),
         ),
       ),
+    );
+  }
+
+  PreferredSizeWidget _buildTabBar() {
+    return TabBar(
+      dividerColor: Theme.of(context).colorScheme.outlineVariant,
+      labelStyle: Theme.of(context).textTheme.titleMedium,
+      tabs: [
+        Tab(text: 'For You'),
+        Tab(text: 'Following'),
+      ],
     );
   }
 }
