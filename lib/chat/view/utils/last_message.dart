@@ -1,9 +1,17 @@
 import 'package:democracy/app/models/asset.dart';
+import 'package:democracy/app/shared/utils/link_extractor.dart';
 import 'package:democracy/chat/models/message.dart';
-import 'package:democracy/chat/view/utils/link_extractor.dart';
 
 String getLastMessageText(Message message, String prefix) {
-  final text = extractLinkFromMessage(message);
+  String text = extractLink(
+    text: message.text,
+    post: message.post,
+    ballot: message.ballot,
+    broadcast: message.broadcast,
+    survey: message.survey,
+    petition: message.petition,
+    section: message.section,
+  );
 
   if (text.isNotEmpty) {
     return '$prefix${message.text}';

@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/shared/utils/link_extractor.dart';
 import 'package:democracy/app/shared/widgets/custom_text.dart';
-import 'package:democracy/app/shared/constants/regex.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/post/models/post.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +27,15 @@ class _PostBodyState extends State<PostBody> {
 
   @override
   Widget build(BuildContext context) {
-    String text = extractLinkFromPost(widget.post);
+    String text = extractLink(
+      text: widget.post.body,
+      post: widget.post.repostOf,
+      ballot: widget.post.ballot,
+      broadcast: widget.post.broadcast,
+      survey: widget.post.survey,
+      petition: widget.post.petition,
+      section: widget.post.section,
+    );
     return text.isEmpty
         ? SizedBox.shrink()
         : CustomText(
@@ -75,96 +83,4 @@ class _PostBodyState extends State<PostBody> {
             },
           );
   }
-}
-
-String extractLinkFromPost(Post post) {
-  String text = post.body;
-
-  // Find all matches in the text
-  final Iterable<RegExpMatch> urlMatches = linkRegExp.allMatches(text);
-
-  // Extract the actual URL strings from the matches
-  List<String> urls = urlMatches
-      .map((urlMatch) => text.substring(urlMatch.start, urlMatch.end))
-      .toList();
-
-  // Get all links using base url
-  String baseUrl = const String.fromEnvironment('BASE_URL');
-  List<String> matchingLinks = [];
-  for (String url in urls) {
-    if (url.contains(baseUrl)) {
-      matchingLinks.add(url);
-    }
-  }
-
-  // Extract link from text and return text if related object is present
-  if (matchingLinks.isNotEmpty) {
-    if (post.repostOf != null) {
-      for (String url in matchingLinks) {
-        Uri uri = Uri.parse(url);
-        if (uri.path.contains('post')) {
-          String intString = uri.path.replaceAll(RegExp(r'[^0-9]'), '');
-          if (post.repostOf!.id == int.parse(intString)) {
-            text = post.body.replaceAll(url, '');
-          }
-        }
-      }
-    }
-    if (post.broadcast != null) {
-      for (String url in matchingLinks) {
-        Uri uri = Uri.parse(url);
-        if (uri.path.contains('meeting')) {
-          String intString = uri.path.replaceAll(RegExp(r'[^0-9]'), '');
-          if (post.broadcast!.id == int.parse(intString)) {
-            text = post.body.replaceAll(url, '');
-          }
-        }
-      }
-    }
-    if (post.ballot != null) {
-      for (String url in matchingLinks) {
-        Uri uri = Uri.parse(url);
-        if (uri.path.contains('ballot')) {
-          String intString = uri.path.replaceAll(RegExp(r'[^0-9]'), '');
-          if (post.ballot!.id == int.parse(intString)) {
-            text = post.body.replaceAll(url, '');
-          }
-        }
-      }
-    }
-    if (post.survey != null) {
-      for (String url in matchingLinks) {
-        Uri uri = Uri.parse(url);
-        if (uri.path.contains('survey')) {
-          String intString = uri.path.replaceAll(RegExp(r'[^0-9]'), '');
-          if (post.survey!.id == int.parse(intString)) {
-            text = post.body.replaceAll(url, '');
-          }
-        }
-      }
-    }
-    if (post.petition != null) {
-      for (String url in matchingLinks) {
-        Uri uri = Uri.parse(url);
-        if (uri.path.contains('petition')) {
-          String intString = uri.path.replaceAll(RegExp(r'[^0-9]'), '');
-          if (post.petition!.id == int.parse(intString)) {
-            text = post.body.replaceAll(url, '');
-          }
-        }
-      }
-    }
-    if (post.section != null) {
-      for (String url in matchingLinks) {
-        Uri uri = Uri.parse(url);
-        if (uri.path.contains('section')) {
-          String intString = uri.path.replaceAll(RegExp(r'[^0-9]'), '');
-          if (post.section!.id == int.parse(intString)) {
-            text = post.body.replaceAll(url, '');
-          }
-        }
-      }
-    }
-  }
-  return text;
 }

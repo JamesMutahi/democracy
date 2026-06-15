@@ -3,6 +3,7 @@ import 'package:democracy/app/bloc/services/websocket_service.dart'
     show WebsocketStatus;
 import 'package:democracy/app/bloc/sync/sync_bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
+import 'package:democracy/app/shared/utils/link_extractor.dart';
 import 'package:democracy/app/shared/widgets/asset_viewer.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/custom_text.dart';
@@ -14,9 +15,7 @@ import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/messages/messages_bloc.dart';
 import 'package:democracy/chat/models/chat.dart';
 import 'package:democracy/chat/models/message.dart';
-import 'package:democracy/chat/view/utils/link_extractor.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
-import 'package:democracy/broadcast/view/widgets/meeting_tile.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart';
 import 'package:democracy/post/view/widgets/post_widget_selector.dart';
 import 'package:democracy/survey/view/widgets/survey_tile.dart';
@@ -101,7 +100,15 @@ class _MessagesState extends State<Messages> {
           // ListView is in reverse so objects are set in reverse order as well
           for (Message message in list) {
             bool alignedRight = widget.me.id == message.author.id;
-            String text = extractLinkFromMessage(message);
+            String text = extractLink(
+              text: message.text,
+              post: message.post,
+              ballot: message.ballot,
+              broadcast: message.broadcast,
+              survey: message.survey,
+              petition: message.petition,
+              section: message.section,
+            );
             widgets.add(SizedBox(height: messageMargin));
             if (message.isDeleted) {
               widgets.add(
