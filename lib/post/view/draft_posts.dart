@@ -13,7 +13,6 @@ import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
 import 'package:democracy/broadcast/view/widgets/broadcast_selector.dart';
 import 'package:democracy/constitution/view/section_tile.dart';
-import 'package:democracy/broadcast/view/widgets/meeting_tile.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart';
 import 'package:democracy/post/bloc/draft_detail/draft_detail_bloc.dart';
 import 'package:democracy/post/bloc/draft_posts/draft_posts_bloc.dart';

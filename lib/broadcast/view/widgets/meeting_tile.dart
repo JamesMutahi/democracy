@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/more_pop_up.dart';
+import 'package:democracy/app/shared/widgets/share_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
@@ -191,8 +192,10 @@ class MeetingBottomSheet extends StatelessWidget {
     return BlocListener<BroadcastDetailBloc, BroadcastDetailState>(
       listener: (context, state) {
         if (state is BroadcastLoaded) {
-          context.router.popTop();
-          context.router.push(MeetingDetail(broadcastId: state.broadcast.id));
+          if (state.broadcast.id == broadcast.id) {
+            context.router.popTop();
+            context.router.push(MeetingDetail(broadcastId: state.broadcast.id));
+          }
         }
         if (state is BroadcastDetailFailure) {
           context.router.popTop();

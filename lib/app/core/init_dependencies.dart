@@ -167,7 +167,9 @@ class MyNetworkClient {
           'Accept': 'application/json',
         },
         validateStatus: (status) {
-          return status != null && status >= 200 && status < 300;
+          if (status == null) return false;
+
+          return (status >= 200 && status < 300) || status == 403;
         },
       ),
     );

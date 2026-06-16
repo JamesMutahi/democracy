@@ -35,6 +35,8 @@ _Broadcast _$BroadcastFromJson(Map<String, dynamic> json) => _Broadcast(
       .map((e) => (e as num).toInt())
       .toList(),
   isRecorded: json['is_recorded'] as bool,
+  hasStarted: json['has_started'] as bool,
+  hasEnded: json['has_ended'] as bool,
   isActive: json['is_active'] as bool,
   startTime: DateTime.parse(json['start_time'] as String),
   endTime: json['end_time'] == null
@@ -58,6 +60,8 @@ Map<String, dynamic> _$BroadcastToJson(_Broadcast instance) =>
       'participants_count': instance.participantsCount,
       'muted': instance.muted,
       'is_recorded': instance.isRecorded,
+      'has_started': instance.hasStarted,
+      'has_ended': instance.hasEnded,
       'is_active': instance.isActive,
       'start_time': instance.startTime.toIso8601String(),
       'end_time': instance.endTime?.toIso8601String(),

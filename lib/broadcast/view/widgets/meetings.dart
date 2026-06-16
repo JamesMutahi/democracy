@@ -5,7 +5,6 @@ import 'package:democracy/broadcast/bloc/meeting_filter/meeting_filter_cubit.dar
 import 'package:democracy/broadcast/bloc/meetings/meetings_bloc.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:democracy/broadcast/view/widgets/broadcast_selector.dart';
-import 'package:democracy/broadcast/view/widgets/meeting_tile.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

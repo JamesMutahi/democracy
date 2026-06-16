@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
-import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
+import 'package:democracy/app/shared/widgets/share_bottom_sheet.dart';
 import 'package:democracy/constitution/bloc/constitution/constitution_bloc.dart';
 import 'package:democracy/constitution/bloc/section/section_bloc.dart';
 import 'package:democracy/constitution/models/section.dart';

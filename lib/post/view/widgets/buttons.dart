@@ -3,6 +3,7 @@ import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/more_pop_up.dart';
 import 'package:democracy/app/shared/pages/report.dart';
+import 'package:democracy/app/shared/widgets/share_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
@@ -243,7 +244,9 @@ class RepostButton extends StatelessWidget {
       builder: (context) => CustomBottomSheet(
         title: 'Repost',
         children: [
-          PostWidgetSelector(post: post, isDependency: true),
+          IgnorePointer(
+            child: PostWidgetSelector(post: post, isDependency: true),
+          ),
           CustomBottomSheetContainer(
             text: 'Quote',
             iconData: Icons.format_quote_rounded,

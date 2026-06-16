@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/more_pop_up.dart';
+import 'package:democracy/app/shared/widgets/share_bottom_sheet.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart' show TimeLeft;
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
