@@ -4,7 +4,7 @@ import 'package:democracy/broadcast/bloc/broadcast_detail/broadcast_detail_bloc.
 import 'package:democracy/broadcast/bloc/meeting_filter/meeting_filter_cubit.dart';
 import 'package:democracy/broadcast/bloc/meetings/meetings_bloc.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
-import 'package:democracy/broadcast/view/widgets/broadcast_selector.dart';
+import 'package:democracy/broadcast/view/widgets/broadcast_tile.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -141,7 +141,7 @@ class _MeetingsState extends State<Meetings> {
                     Broadcast broadcast = broadcasts[index];
                     return Container(
                       margin: EdgeInsets.only(bottom: 10),
-                      child: BroadcastSelector(
+                      child: BroadcastTile(
                         key: ValueKey(broadcast.id),
                         broadcast: broadcast,
                         isDependency: false,

@@ -50,7 +50,7 @@ class _MainPageState extends State<MainPage> {
           create: (context) => NotificationsBloc(
             webSocketService: context.read<WebSocketService>(),
             databaseRepository: context.read<DatabaseRepository>(),
-          ),
+          )..add(NotificationsEvent.get()),
           lazy: false,
         ),
         BlocProvider(

@@ -9,6 +9,7 @@ import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/app/view/widgets/creation_bottom_sheet.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
+import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:flutter/foundation.dart';
@@ -102,16 +103,9 @@ class SideMenu extends StatelessWidget {
                                   selected: currentRoute == ChatRoute.name,
                                 ),
                               ],
-                              DrawerListTile(
-                                onTap: () {
-                                  menuController.closeDrawer();
-                                  if (currentRoute != Notifications.name) {
-                                    context.router.push(const Notifications());
-                                  }
-                                },
-                                icon: 'assets/icons/bell.svg',
-                                title: 'Notifications',
-                                selected: currentRoute == Notifications.name,
+                              _buildNotificationTile(
+                                menuController,
+                                currentRoute,
                               ),
                               DrawerListTile(
                                 onTap: () {
@@ -158,10 +152,17 @@ class SideMenu extends StatelessWidget {
                                           onPressed: () {
                                             _showCreateDialog(context);
                                           },
+                                          tooltip: 'Create',
                                           padding: const EdgeInsets.all(10),
                                           icon: _buildCreateIcon(
                                             context,
-                                            Theme.of(context).primaryColor,
+                                            currentRoute.toLowerCase().contains(
+                                                  'create',
+                                                )
+                                                ? Theme.of(context).primaryColor
+                                                : Theme.of(
+                                                    context,
+                                                  ).colorScheme.outline,
                                           ),
                                         )
                                       : _buildCreateButton(
@@ -192,6 +193,36 @@ class SideMenu extends StatelessWidget {
     );
   }
 
+  Widget _buildNotificationTile(
+    MenuControllerCubit menuController,
+    String currentRoute,
+  ) {
+    return BlocBuilder<NotificationsBloc, NotificationsState>(
+      builder: (context, state) {
+        return DrawerListTile(
+          onTap: () {
+            menuController.closeDrawer();
+            if (currentRoute != Notifications.name) {
+              context.router.push(const Notifications());
+            }
+          },
+          icon: 'assets/icons/bell.svg',
+          title: 'Notifications',
+          selected: currentRoute == Notifications.name,
+          trailing: state.unreadCount < 1
+              ? null
+              : Badge(
+                  backgroundColor: Colors.red,
+                  label: Text(
+                    state.unreadCount.toString(),
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                ),
+        );
+      },
+    );
+  }
+
   Widget _buildCreateButton(
     BuildContext context,
     MenuControllerCubit menuController,
@@ -202,18 +233,14 @@ class SideMenu extends StatelessWidget {
         menuController.closeDrawer();
         _showCreateDialog(context);
       },
-      leading: _buildCreateIcon(
-        context,
-        currentRoute.toLowerCase().contains('create')
-            ? Theme.of(context).primaryColor
-            : Theme.of(context).colorScheme.outline,
-      ),
-      title: Text(
-        'Create',
-        style: TextStyle(
-          color: currentRoute.toLowerCase().contains('create')
-              ? Theme.of(context).primaryColor
-              : Theme.of(context).colorScheme.outline,
+      title: Center(
+        child: Text(
+          'Create',
+          style: TextStyle(
+            color: currentRoute.toLowerCase().contains('create')
+                ? Theme.of(context).primaryColor
+                : Theme.of(context).colorScheme.outline,
+          ),
         ),
       ),
       tileColor: Theme.of(context).colorScheme.primaryContainer,
@@ -232,6 +259,8 @@ class SideMenu extends StatelessWidget {
   Widget _buildCreateIcon(BuildContext context, Color color) {
     return SvgPicture.asset(
       'assets/icons/pen-round.svg',
+      height: 22,
+      width: 22,
       colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
     );
   }
@@ -395,12 +424,14 @@ class DrawerListTile extends StatelessWidget {
     required this.onTap,
     required this.icon,
     this.selected = false,
+    this.trailing,
   });
 
   final String title;
   final VoidCallback onTap;
   final String icon;
   final bool selected;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -409,24 +440,30 @@ class DrawerListTile extends StatelessWidget {
     return kIsWeb &&
             responsive.smallerThan(expandSideMenu) &&
             !responsive.isMobile
-        ? Container(
-            margin: EdgeInsets.only(bottom: 5),
-            child: IconButton(
-              onPressed: onTap,
-              padding: EdgeInsets.all(10),
-              icon: SvgPicture.asset(
-                icon,
-                height: 20,
-                width: 20,
-                colorFilter: ColorFilter.mode(
-                  selected
-                      ? Theme.of(context).primaryColor
-                      : Theme.of(context).colorScheme.outline,
-                  BlendMode.srcIn,
+        ? Stack(
+            children: [
+              Container(
+                margin: EdgeInsets.only(bottom: 5),
+                child: IconButton(
+                  onPressed: onTap,
+                  padding: EdgeInsets.all(10),
+                  icon: SvgPicture.asset(
+                    icon,
+                    height: 22,
+                    width: 22,
+                    colorFilter: ColorFilter.mode(
+                      selected
+                          ? Theme.of(context).primaryColor
+                          : Theme.of(context).colorScheme.outline,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  tooltip: title,
                 ),
               ),
-              tooltip: title,
-            ),
+              if (trailing != null)
+                Positioned(right: 5, top: 5, child: trailing!),
+            ],
           )
         : ListTile(
             onTap: onTap,
@@ -437,8 +474,8 @@ class DrawerListTile extends StatelessWidget {
             ),
             leading: SvgPicture.asset(
               icon,
-              height: 20,
-              width: 20,
+              height: 22,
+              width: 22,
               colorFilter: ColorFilter.mode(
                 selected
                     ? Theme.of(context).primaryColor
@@ -448,10 +485,11 @@ class DrawerListTile extends StatelessWidget {
             ),
             title: Text(
               title,
-              style: TextStyle(
+              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                 color: selected ? null : Theme.of(context).colorScheme.outline,
               ),
             ),
+            trailing: trailing,
           );
   }
 }

@@ -120,6 +120,14 @@ class _TrendingState extends State<_Trending> {
                     ),
                   ),
                 ),
+                if (topics.length > 3)
+                  ListTile(
+                    onTap: () => context.router.push(ExploreRoute()),
+                    title: Text(
+                      'Show more',
+                      style: TextStyle(color: Colors.blueAccent),
+                    ),
+                  ),
               ],
             ),
           );
@@ -197,6 +205,14 @@ class _WhoToFollowState extends State<_WhoToFollow> {
                       },
                     ),
                   ),
+                  if (users.length > 3)
+                    ListTile(
+                      onTap: () => context.router.push(FollowRecommendations()),
+                      title: Text(
+                        'Show more',
+                        style: TextStyle(color: Colors.blueAccent),
+                      ),
+                    ),
                 ],
               ),
             ),

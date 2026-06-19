@@ -19,7 +19,6 @@ sealed class BroadcastDetailEvent with _$BroadcastDetailEvent {
     required String title,
     required String description,
     DateTime? startTime,
-    required bool isRecorded,
   }) = _Create;
   const factory BroadcastDetailEvent.join({
     required RtcEngine engine,
@@ -32,6 +31,13 @@ sealed class BroadcastDetailEvent with _$BroadcastDetailEvent {
     required Broadcast broadcast,
     required bool isMuted,
   }) = _Subscribe;
-  const factory BroadcastDetailEvent.unsubscribe({required Broadcast broadcast}) =
-      _Unsubscribe;
+  const factory BroadcastDetailEvent.unsubscribe({
+    required Broadcast broadcast,
+  }) = _Unsubscribe;
+  const factory BroadcastDetailEvent.startRecording({
+    required Broadcast broadcast,
+  }) = _StartRecording;
+  const factory BroadcastDetailEvent.stopRecording({
+    required Broadcast broadcast,
+  }) = _StopRecording;
 }

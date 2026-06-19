@@ -109,11 +109,6 @@ class _BroadcastCreateState extends State<BroadcastCreate> {
                     maxLines: 2,
                   ),
                   SizedBox(height: 15),
-                  _MeetingSwitch(
-                    name: 'record',
-                    title: isLivestream ? 'Record stream' : 'Record meeting',
-                  ),
-                  SizedBox(height: 15),
                   if (_setStartTime && !isLivestream)
                     Align(
                       alignment: Alignment.centerRight,
@@ -171,7 +166,6 @@ class _BroadcastCreateState extends State<BroadcastCreate> {
           type: _type,
           title: formData['title'],
           description: formData['description'],
-          isRecorded: formData['record'] ?? false,
           startTime: formData['start time'],
         ),
       );
@@ -181,36 +175,5 @@ class _BroadcastCreateState extends State<BroadcastCreate> {
         }
       });
     }
-  }
-}
-
-class _MeetingSwitch extends StatelessWidget {
-  const _MeetingSwitch({required this.name, required this.title});
-
-  final String name;
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-      data: Theme.of(context).copyWith(
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        hoverColor: Colors.transparent,
-      ),
-      child: FormBuilderSwitch(
-        name: name,
-        title: Text(title),
-        contentPadding: EdgeInsets.symmetric(horizontal: 10),
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.zero,
-          border: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          errorBorder: InputBorder.none,
-          disabledBorder: InputBorder.none,
-        ),
-      ),
-    );
   }
 }

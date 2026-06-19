@@ -55,7 +55,7 @@ extension BroadcastDetailEventPatterns on BroadcastDetailEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Loaded value)?  loaded,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Create value)?  create,TResult Function( _Join value)?  join,TResult Function( _Retrieve value)?  retrieve,TResult Function( _Subscribe value)?  subscribe,TResult Function( _Unsubscribe value)?  unsubscribe,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Loaded value)?  loaded,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Create value)?  create,TResult Function( _Join value)?  join,TResult Function( _Retrieve value)?  retrieve,TResult Function( _Subscribe value)?  subscribe,TResult Function( _Unsubscribe value)?  unsubscribe,TResult Function( _StartRecording value)?  startRecording,TResult Function( _StopRecording value)?  stopRecording,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
@@ -67,7 +67,9 @@ return create(_that);case _Join() when join != null:
 return join(_that);case _Retrieve() when retrieve != null:
 return retrieve(_that);case _Subscribe() when subscribe != null:
 return subscribe(_that);case _Unsubscribe() when unsubscribe != null:
-return unsubscribe(_that);case _:
+return unsubscribe(_that);case _StartRecording() when startRecording != null:
+return startRecording(_that);case _StopRecording() when stopRecording != null:
+return stopRecording(_that);case _:
   return orElse();
 
 }
@@ -85,7 +87,7 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Loaded value)  loaded,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Create value)  create,required TResult Function( _Join value)  join,required TResult Function( _Retrieve value)  retrieve,required TResult Function( _Subscribe value)  subscribe,required TResult Function( _Unsubscribe value)  unsubscribe,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Loaded value)  loaded,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Create value)  create,required TResult Function( _Join value)  join,required TResult Function( _Retrieve value)  retrieve,required TResult Function( _Subscribe value)  subscribe,required TResult Function( _Unsubscribe value)  unsubscribe,required TResult Function( _StartRecording value)  startRecording,required TResult Function( _StopRecording value)  stopRecording,}){
 final _that = this;
 switch (_that) {
 case _Created():
@@ -97,7 +99,9 @@ return create(_that);case _Join():
 return join(_that);case _Retrieve():
 return retrieve(_that);case _Subscribe():
 return subscribe(_that);case _Unsubscribe():
-return unsubscribe(_that);}
+return unsubscribe(_that);case _StartRecording():
+return startRecording(_that);case _StopRecording():
+return stopRecording(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -111,7 +115,7 @@ return unsubscribe(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Create value)?  create,TResult? Function( _Join value)?  join,TResult? Function( _Retrieve value)?  retrieve,TResult? Function( _Subscribe value)?  subscribe,TResult? Function( _Unsubscribe value)?  unsubscribe,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Create value)?  create,TResult? Function( _Join value)?  join,TResult? Function( _Retrieve value)?  retrieve,TResult? Function( _Subscribe value)?  subscribe,TResult? Function( _Unsubscribe value)?  unsubscribe,TResult? Function( _StartRecording value)?  startRecording,TResult? Function( _StopRecording value)?  stopRecording,}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
@@ -123,7 +127,9 @@ return create(_that);case _Join() when join != null:
 return join(_that);case _Retrieve() when retrieve != null:
 return retrieve(_that);case _Subscribe() when subscribe != null:
 return subscribe(_that);case _Unsubscribe() when unsubscribe != null:
-return unsubscribe(_that);case _:
+return unsubscribe(_that);case _StartRecording() when startRecording != null:
+return startRecording(_that);case _StopRecording() when stopRecording != null:
+return stopRecording(_that);case _:
   return null;
 
 }
@@ -140,18 +146,20 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( BroadcastType type,  String title,  String description,  DateTime? startTime,  bool isRecorded)?  create,TResult Function( RtcEngine engine,  Broadcast broadcast,  User user)?  join,TResult Function( Broadcast broadcast)?  retrieve,TResult Function( Broadcast broadcast,  bool isMuted)?  subscribe,TResult Function( Broadcast broadcast)?  unsubscribe,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( BroadcastType type,  String title,  String description,  DateTime? startTime)?  create,TResult Function( RtcEngine engine,  Broadcast broadcast,  User user)?  join,TResult Function( Broadcast broadcast)?  retrieve,TResult Function( Broadcast broadcast,  bool isMuted)?  subscribe,TResult Function( Broadcast broadcast)?  unsubscribe,TResult Function( Broadcast broadcast)?  startRecording,TResult Function( Broadcast broadcast)?  stopRecording,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
 return loaded(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Create() when create != null:
-return create(_that.type,_that.title,_that.description,_that.startTime,_that.isRecorded);case _Join() when join != null:
+return create(_that.type,_that.title,_that.description,_that.startTime);case _Join() when join != null:
 return join(_that.engine,_that.broadcast,_that.user);case _Retrieve() when retrieve != null:
 return retrieve(_that.broadcast);case _Subscribe() when subscribe != null:
 return subscribe(_that.broadcast,_that.isMuted);case _Unsubscribe() when unsubscribe != null:
-return unsubscribe(_that.broadcast);case _:
+return unsubscribe(_that.broadcast);case _StartRecording() when startRecording != null:
+return startRecording(_that.broadcast);case _StopRecording() when stopRecording != null:
+return stopRecording(_that.broadcast);case _:
   return orElse();
 
 }
@@ -169,18 +177,20 @@ return unsubscribe(_that.broadcast);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( BroadcastType type,  String title,  String description,  DateTime? startTime,  bool isRecorded)  create,required TResult Function( RtcEngine engine,  Broadcast broadcast,  User user)  join,required TResult Function( Broadcast broadcast)  retrieve,required TResult Function( Broadcast broadcast,  bool isMuted)  subscribe,required TResult Function( Broadcast broadcast)  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( BroadcastType type,  String title,  String description,  DateTime? startTime)  create,required TResult Function( RtcEngine engine,  Broadcast broadcast,  User user)  join,required TResult Function( Broadcast broadcast)  retrieve,required TResult Function( Broadcast broadcast,  bool isMuted)  subscribe,required TResult Function( Broadcast broadcast)  unsubscribe,required TResult Function( Broadcast broadcast)  startRecording,required TResult Function( Broadcast broadcast)  stopRecording,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Loaded():
 return loaded(_that.payload);case _Updated():
 return updated(_that.payload);case _Deleted():
 return deleted(_that.payload);case _Create():
-return create(_that.type,_that.title,_that.description,_that.startTime,_that.isRecorded);case _Join():
+return create(_that.type,_that.title,_that.description,_that.startTime);case _Join():
 return join(_that.engine,_that.broadcast,_that.user);case _Retrieve():
 return retrieve(_that.broadcast);case _Subscribe():
 return subscribe(_that.broadcast,_that.isMuted);case _Unsubscribe():
-return unsubscribe(_that.broadcast);}
+return unsubscribe(_that.broadcast);case _StartRecording():
+return startRecording(_that.broadcast);case _StopRecording():
+return stopRecording(_that.broadcast);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -194,18 +204,20 @@ return unsubscribe(_that.broadcast);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( BroadcastType type,  String title,  String description,  DateTime? startTime,  bool isRecorded)?  create,TResult? Function( RtcEngine engine,  Broadcast broadcast,  User user)?  join,TResult? Function( Broadcast broadcast)?  retrieve,TResult? Function( Broadcast broadcast,  bool isMuted)?  subscribe,TResult? Function( Broadcast broadcast)?  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( BroadcastType type,  String title,  String description,  DateTime? startTime)?  create,TResult? Function( RtcEngine engine,  Broadcast broadcast,  User user)?  join,TResult? Function( Broadcast broadcast)?  retrieve,TResult? Function( Broadcast broadcast,  bool isMuted)?  subscribe,TResult? Function( Broadcast broadcast)?  unsubscribe,TResult? Function( Broadcast broadcast)?  startRecording,TResult? Function( Broadcast broadcast)?  stopRecording,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
 return loaded(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Deleted() when deleted != null:
 return deleted(_that.payload);case _Create() when create != null:
-return create(_that.type,_that.title,_that.description,_that.startTime,_that.isRecorded);case _Join() when join != null:
+return create(_that.type,_that.title,_that.description,_that.startTime);case _Join() when join != null:
 return join(_that.engine,_that.broadcast,_that.user);case _Retrieve() when retrieve != null:
 return retrieve(_that.broadcast);case _Subscribe() when subscribe != null:
 return subscribe(_that.broadcast,_that.isMuted);case _Unsubscribe() when unsubscribe != null:
-return unsubscribe(_that.broadcast);case _:
+return unsubscribe(_that.broadcast);case _StartRecording() when startRecording != null:
+return startRecording(_that.broadcast);case _StopRecording() when stopRecording != null:
+return stopRecording(_that.broadcast);case _:
   return null;
 
 }
@@ -505,14 +517,13 @@ as Map<String, dynamic>,
 
 
 class _Create implements BroadcastDetailEvent {
-  const _Create({required this.type, required this.title, required this.description, this.startTime, required this.isRecorded});
+  const _Create({required this.type, required this.title, required this.description, this.startTime});
   
 
  final  BroadcastType type;
  final  String title;
  final  String description;
  final  DateTime? startTime;
- final  bool isRecorded;
 
 /// Create a copy of BroadcastDetailEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -524,16 +535,16 @@ _$CreateCopyWith<_Create> get copyWith => __$CreateCopyWithImpl<_Create>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Create&&(identical(other.type, type) || other.type == type)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.isRecorded, isRecorded) || other.isRecorded == isRecorded));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Create&&(identical(other.type, type) || other.type == type)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.startTime, startTime) || other.startTime == startTime));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,type,title,description,startTime,isRecorded);
+int get hashCode => Object.hash(runtimeType,type,title,description,startTime);
 
 @override
 String toString() {
-  return 'BroadcastDetailEvent.create(type: $type, title: $title, description: $description, startTime: $startTime, isRecorded: $isRecorded)';
+  return 'BroadcastDetailEvent.create(type: $type, title: $title, description: $description, startTime: $startTime)';
 }
 
 
@@ -544,7 +555,7 @@ abstract mixin class _$CreateCopyWith<$Res> implements $BroadcastDetailEventCopy
   factory _$CreateCopyWith(_Create value, $Res Function(_Create) _then) = __$CreateCopyWithImpl;
 @useResult
 $Res call({
- BroadcastType type, String title, String description, DateTime? startTime, bool isRecorded
+ BroadcastType type, String title, String description, DateTime? startTime
 });
 
 
@@ -561,14 +572,13 @@ class __$CreateCopyWithImpl<$Res>
 
 /// Create a copy of BroadcastDetailEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? type = null,Object? title = null,Object? description = null,Object? startTime = freezed,Object? isRecorded = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? type = null,Object? title = null,Object? description = null,Object? startTime = freezed,}) {
   return _then(_Create(
 type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as BroadcastType,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,startTime: freezed == startTime ? _self.startTime : startTime // ignore: cast_nullable_to_non_nullable
-as DateTime?,isRecorded: null == isRecorded ? _self.isRecorded : isRecorded // ignore: cast_nullable_to_non_nullable
-as bool,
+as DateTime?,
   ));
 }
 
@@ -873,6 +883,156 @@ class __$UnsubscribeCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? broadcast = null,}) {
   return _then(_Unsubscribe(
+broadcast: null == broadcast ? _self.broadcast : broadcast // ignore: cast_nullable_to_non_nullable
+as Broadcast,
+  ));
+}
+
+/// Create a copy of BroadcastDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$BroadcastCopyWith<$Res> get broadcast {
+  
+  return $BroadcastCopyWith<$Res>(_self.broadcast, (value) {
+    return _then(_self.copyWith(broadcast: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _StartRecording implements BroadcastDetailEvent {
+  const _StartRecording({required this.broadcast});
+  
+
+ final  Broadcast broadcast;
+
+/// Create a copy of BroadcastDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$StartRecordingCopyWith<_StartRecording> get copyWith => __$StartRecordingCopyWithImpl<_StartRecording>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StartRecording&&(identical(other.broadcast, broadcast) || other.broadcast == broadcast));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,broadcast);
+
+@override
+String toString() {
+  return 'BroadcastDetailEvent.startRecording(broadcast: $broadcast)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$StartRecordingCopyWith<$Res> implements $BroadcastDetailEventCopyWith<$Res> {
+  factory _$StartRecordingCopyWith(_StartRecording value, $Res Function(_StartRecording) _then) = __$StartRecordingCopyWithImpl;
+@useResult
+$Res call({
+ Broadcast broadcast
+});
+
+
+$BroadcastCopyWith<$Res> get broadcast;
+
+}
+/// @nodoc
+class __$StartRecordingCopyWithImpl<$Res>
+    implements _$StartRecordingCopyWith<$Res> {
+  __$StartRecordingCopyWithImpl(this._self, this._then);
+
+  final _StartRecording _self;
+  final $Res Function(_StartRecording) _then;
+
+/// Create a copy of BroadcastDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? broadcast = null,}) {
+  return _then(_StartRecording(
+broadcast: null == broadcast ? _self.broadcast : broadcast // ignore: cast_nullable_to_non_nullable
+as Broadcast,
+  ));
+}
+
+/// Create a copy of BroadcastDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$BroadcastCopyWith<$Res> get broadcast {
+  
+  return $BroadcastCopyWith<$Res>(_self.broadcast, (value) {
+    return _then(_self.copyWith(broadcast: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _StopRecording implements BroadcastDetailEvent {
+  const _StopRecording({required this.broadcast});
+  
+
+ final  Broadcast broadcast;
+
+/// Create a copy of BroadcastDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$StopRecordingCopyWith<_StopRecording> get copyWith => __$StopRecordingCopyWithImpl<_StopRecording>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StopRecording&&(identical(other.broadcast, broadcast) || other.broadcast == broadcast));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,broadcast);
+
+@override
+String toString() {
+  return 'BroadcastDetailEvent.stopRecording(broadcast: $broadcast)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$StopRecordingCopyWith<$Res> implements $BroadcastDetailEventCopyWith<$Res> {
+  factory _$StopRecordingCopyWith(_StopRecording value, $Res Function(_StopRecording) _then) = __$StopRecordingCopyWithImpl;
+@useResult
+$Res call({
+ Broadcast broadcast
+});
+
+
+$BroadcastCopyWith<$Res> get broadcast;
+
+}
+/// @nodoc
+class __$StopRecordingCopyWithImpl<$Res>
+    implements _$StopRecordingCopyWith<$Res> {
+  __$StopRecordingCopyWithImpl(this._self, this._then);
+
+  final _StopRecording _self;
+  final $Res Function(_StopRecording) _then;
+
+/// Create a copy of BroadcastDetailEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? broadcast = null,}) {
+  return _then(_StopRecording(
 broadcast: null == broadcast ? _self.broadcast : broadcast // ignore: cast_nullable_to_non_nullable
 as Broadcast,
   ));

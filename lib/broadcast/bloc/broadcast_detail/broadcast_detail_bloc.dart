@@ -16,7 +16,8 @@ part 'broadcast_detail_bloc.freezed.dart';
 const String stream = 'broadcasts';
 const String requestId = 'broadcasts';
 
-class BroadcastDetailBloc extends Bloc<BroadcastDetailEvent, BroadcastDetailState> {
+class BroadcastDetailBloc
+    extends Bloc<BroadcastDetailEvent, BroadcastDetailState> {
   BroadcastDetailBloc({
     required this.webSocketService,
     required this.apiRepository,
@@ -45,6 +46,8 @@ class BroadcastDetailBloc extends Bloc<BroadcastDetailEvent, BroadcastDetailStat
     on<_Retrieve>((event, emit) => _onRetrieve(event, emit));
     on<_Subscribe>((event, emit) => _onSubscribe(event, emit));
     on<_Unsubscribe>((event, emit) => _onUnsubscribe(event, emit));
+    on<_StartRecording>((event, emit) => _onStartRecording(event, emit));
+    on<_StopRecording>((event, emit) => _onStopRecording(event, emit));
   }
 
   void _onCreated(_Created event, Emitter<BroadcastDetailState> emit) {
@@ -103,7 +106,6 @@ class BroadcastDetailBloc extends Bloc<BroadcastDetailEvent, BroadcastDetailStat
           'title': event.title,
           'description': event.description,
           'start_time': event.startTime?.toIso8601String(),
-          'is_recorded': event.isRecorded,
         },
       },
     };
@@ -113,7 +115,9 @@ class BroadcastDetailBloc extends Bloc<BroadcastDetailEvent, BroadcastDetailStat
   Future<void> _onJoin(_Join event, Emitter<BroadcastDetailState> emit) async {
     emit(BroadcastDetailLoading());
     try {
-      final data = await apiRepository.getBroadcastToken(broadcast: event.broadcast);
+      final data = await apiRepository.getBroadcastToken(
+        broadcast: event.broadcast,
+      );
       await event.engine.joinChannel(
         token: data['token'],
         channelId: event.broadcast.id.toString(),
@@ -183,6 +187,32 @@ class BroadcastDetailBloc extends Bloc<BroadcastDetailEvent, BroadcastDetailStat
       },
     };
     webSocketService.send(message);
+  }
+
+  Future<void> _onStartRecording(
+    _StartRecording event,
+    Emitter<BroadcastDetailState> emit,
+  ) async {
+    emit(BroadcastDetailLoading());
+    try {
+      await apiRepository.startRecording(broadcast: event.broadcast);
+      emit(BroadcastJoined(broadcast: event.broadcast));
+    } catch (e) {
+      emit(BroadcastDetailFailure(error: e.toString()));
+    }
+  }
+
+  Future<void> _onStopRecording(
+    _StopRecording event,
+    Emitter<BroadcastDetailState> emit,
+  ) async {
+    emit(BroadcastDetailLoading());
+    try {
+      await apiRepository.stopRecording(broadcast: event.broadcast);
+      emit(BroadcastJoined(broadcast: event.broadcast));
+    } catch (e) {
+      emit(BroadcastDetailFailure(error: e.toString()));
+    }
   }
 
   @override

@@ -161,19 +161,11 @@ class NotificationButton extends StatelessWidget {
                 Positioned(
                   right: 10,
                   top: 0,
-                  child: Container(
-                    padding: EdgeInsets.all(1),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(
-                        10,
-                      ), // Makes it a circle
-                    ),
-                    constraints: BoxConstraints(minWidth: 18, minHeight: 18),
-                    child: Text(
+                  child: Badge(
+                    backgroundColor: Colors.red,
+                    label: Text(
                       state.unreadCount.toString(),
-                      style: TextStyle(color: Colors.white, fontSize: 10),
-                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.labelSmall,
                     ),
                   ),
                 ),

@@ -212,6 +212,14 @@ class APIRepository {
     return await apiProvider.getBroadcastToken(broadcast: broadcast);
   }
 
+  Future<Map> startRecording({required Broadcast broadcast}) async {
+    return await apiProvider.startRecording(broadcast: broadcast);
+  }
+
+  Future<Map> stopRecording({required Broadcast broadcast}) async {
+    return await apiProvider.stopRecording(broadcast: broadcast);
+  }
+
   Future<List<Map>> getAssets(List<String> filePaths) async {
     List<Map> assets = [];
     for (var filePath in filePaths) {

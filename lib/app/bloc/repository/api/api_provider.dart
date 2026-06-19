@@ -413,4 +413,38 @@ class APIProvider {
       return Future.error(e.toString());
     }
   }
+
+  Future<Map> startRecording({required Broadcast broadcast}) async {
+    try {
+      FormData data = FormData.fromMap({'broadcast_id': broadcast.id});
+      Response response = await dio.post(
+        'broadcast/start-recording/',
+        data: data,
+      );
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        return Future.error(response.data.toString());
+      }
+    } on DioException catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
+  Future<Map> stopRecording({required Broadcast broadcast}) async {
+    try {
+      FormData data = FormData.fromMap({'broadcast_id': broadcast.id});
+      Response response = await dio.post(
+        'broadcast/stop-recording/',
+        data: data,
+      );
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        return Future.error(response.data.toString());
+      }
+    } on DioException catch (e) {
+      return Future.error(e.toString());
+    }
+  }
 }
