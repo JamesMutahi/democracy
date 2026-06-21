@@ -36,6 +36,10 @@ _Broadcast _$BroadcastFromJson(Map<String, dynamic> json) => _Broadcast(
       .toList(),
   hasStarted: json['has_started'] as bool,
   hasEnded: json['has_ended'] as bool,
+  recordingStatus: _$JsonConverterFromJson<String, RecordingStatus>(
+    json['recording_status'],
+    const RecordingStatusConverter().fromJson,
+  ),
   recordingUrl: json['recording_url'] as String?,
   isActive: json['is_active'] as bool,
   startTime: DateTime.parse(json['start_time'] as String),
@@ -61,8 +65,22 @@ Map<String, dynamic> _$BroadcastToJson(_Broadcast instance) =>
       'muted': instance.muted,
       'has_started': instance.hasStarted,
       'has_ended': instance.hasEnded,
+      'recording_status': _$JsonConverterToJson<String, RecordingStatus>(
+        instance.recordingStatus,
+        const RecordingStatusConverter().toJson,
+      ),
       'recording_url': instance.recordingUrl,
       'is_active': instance.isActive,
       'start_time': instance.startTime.toIso8601String(),
       'end_time': instance.endTime?.toIso8601String(),
     };
+
+Value? _$JsonConverterFromJson<Json, Value>(
+  Object? json,
+  Value? Function(Json json) fromJson,
+) => json == null ? null : fromJson(json as Json);
+
+Json? _$JsonConverterToJson<Json, Value>(
+  Value? value,
+  Json? Function(Value value) toJson,
+) => value == null ? null : toJson(value);

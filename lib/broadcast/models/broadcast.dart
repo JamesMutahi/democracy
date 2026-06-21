@@ -7,8 +7,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'broadcast.freezed.dart';
 part 'broadcast.g.dart';
 
-enum BroadcastType { meeting, livestream }
-
 @freezed
 sealed class Broadcast with _$Broadcast {
   const factory Broadcast({
@@ -27,6 +25,9 @@ sealed class Broadcast with _$Broadcast {
     @JsonKey(name: 'muted') required List<int> muted,
     @JsonKey(name: 'has_started') required bool hasStarted,
     @JsonKey(name: 'has_ended') required bool hasEnded,
+    @RecordingStatusConverter()
+    @JsonKey(name: 'recording_status')
+    required RecordingStatus? recordingStatus,
     @JsonKey(name: 'recording_url') required String? recordingUrl,
     @JsonKey(name: 'is_active') required bool isActive,
     @JsonKey(name: 'start_time') required DateTime startTime,
@@ -36,6 +37,8 @@ sealed class Broadcast with _$Broadcast {
   factory Broadcast.fromJson(Map<String, Object?> json) =>
       _$BroadcastFromJson(json);
 }
+
+enum BroadcastType { meeting, livestream }
 
 class BroadcastTypeConverter implements JsonConverter<BroadcastType, String> {
   const BroadcastTypeConverter();
@@ -59,6 +62,39 @@ class BroadcastTypeConverter implements JsonConverter<BroadcastType, String> {
         return 'meeting';
       case BroadcastType.livestream:
         return 'livestream';
+    }
+  }
+}
+
+enum RecordingStatus { inProgress, stopped, error }
+
+class RecordingStatusConverter
+    implements JsonConverter<RecordingStatus, String> {
+  const RecordingStatusConverter();
+
+  @override
+  RecordingStatus fromJson(String data) {
+    late RecordingStatus status;
+    switch (data) {
+      case 'in progress':
+        status = RecordingStatus.inProgress;
+      case 'stopped':
+        status = RecordingStatus.stopped;
+      case 'error':
+        status = RecordingStatus.error;
+    }
+    return status;
+  }
+
+  @override
+  String toJson(RecordingStatus object) {
+    switch (object) {
+      case RecordingStatus.inProgress:
+        return 'in progress';
+      case RecordingStatus.stopped:
+        return 'stopped';
+      case RecordingStatus.error:
+        return 'error';
     }
   }
 }

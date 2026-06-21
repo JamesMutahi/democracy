@@ -16,8 +16,21 @@ class BroadcastTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (broadcast.hasEnded && broadcast.recordingUrl != null) {
-      return VideoViewer(url: broadcast.recordingUrl!);
+    if (broadcast.recordingStatus == RecordingStatus.stopped) {
+      return broadcast.recordingUrl == null
+          ? Container(
+              height: 200,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: const BorderRadius.all(Radius.circular(12)),
+              ),
+              child: Icon(
+                Icons.broken_image_rounded,
+                size: 24,
+                color: Colors.grey[600],
+              ),
+            )
+          : VideoViewer(url: broadcast.recordingUrl!);
     }
     return switch (broadcast.type) {
       BroadcastType.meeting => MeetingTile(

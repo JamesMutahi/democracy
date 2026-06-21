@@ -152,18 +152,15 @@ class SideMenu extends StatelessWidget {
                                           onPressed: () {
                                             _showCreateDialog(context);
                                           },
+                                          style: IconButton.styleFrom(
+                                            backgroundColor: Theme.of(
+                                              context,
+                                            ).colorScheme.primaryContainer,
+                                            foregroundColor: Colors.white,
+                                          ),
                                           tooltip: 'Create',
                                           padding: const EdgeInsets.all(10),
-                                          icon: _buildCreateIcon(
-                                            context,
-                                            currentRoute.toLowerCase().contains(
-                                                  'create',
-                                                )
-                                                ? Theme.of(context).primaryColor
-                                                : Theme.of(
-                                                    context,
-                                                  ).colorScheme.outline,
-                                          ),
+                                          icon: _buildCreateIcon(context),
                                         )
                                       : _buildCreateButton(
                                           context,
@@ -234,14 +231,7 @@ class SideMenu extends StatelessWidget {
         _showCreateDialog(context);
       },
       title: Center(
-        child: Text(
-          'Create',
-          style: TextStyle(
-            color: currentRoute.toLowerCase().contains('create')
-                ? Theme.of(context).primaryColor
-                : Theme.of(context).colorScheme.outline,
-          ),
-        ),
+        child: Text('Create', style: Theme.of(context).textTheme.bodyLarge),
       ),
       tileColor: Theme.of(context).colorScheme.primaryContainer,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
@@ -256,12 +246,15 @@ class SideMenu extends StatelessWidget {
     );
   }
 
-  Widget _buildCreateIcon(BuildContext context, Color color) {
+  Widget _buildCreateIcon(BuildContext context) {
     return SvgPicture.asset(
       'assets/icons/pen-round.svg',
       height: 22,
       width: 22,
-      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      colorFilter: ColorFilter.mode(
+        Theme.of(context).primaryColor,
+        BlendMode.srcIn,
+      ),
     );
   }
 }

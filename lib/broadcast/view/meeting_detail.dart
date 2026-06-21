@@ -107,115 +107,10 @@ class _MeetingDetailState extends State<_MeetingDetail> {
     _initAgora();
   }
 
-  Future<void> _initAgora() async {
-    await [Permission.microphone].request();
-
-    await AgoraService().joinMeeting(
-      isBroadcaster: _isHost || _isCoHost || _isSpeaker,
-      broadcast: widget.broadcast,
-      onEngineReady: (engine) {
-        setState(() {
-          _engine = engine;
-        });
-
-        _engine.registerEventHandler(
-          RtcEngineEventHandler(
-            onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
-              setState(() => _isJoined = true);
-              context.read<BroadcastDetailBloc>().add(
-                BroadcastDetailEvent.subscribe(
-                  broadcast: widget.broadcast,
-                  isMuted: _isHost || _isCoHost || _isSpeaker,
-                ),
-              );
-            },
-            onError: (ErrorCodeType err, String message) {
-              if (mounted) {
-                final snackBar = getSnackBar(
-                  context: context,
-                  message: 'Error: $err - $message',
-                  status: SnackBarStatus.failure,
-                );
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              }
-            },
-            onRtcStats: (connection, stats) {
-              setState(() => _count = stats.userCount);
-            },
-            onUserJoined: (RtcConnection connection, int uid, int elapsed) {
-              //
-            },
-            onUserOffline:
-                (
-                  RtcConnection connection,
-                  int uid,
-                  UserOfflineReasonType reason,
-                ) {
-                  if (reason ==
-                      UserOfflineReasonType.userOfflineBecomeAudience) {
-                    // setState(() => _speakers.remove(uid));
-                  }
-                  //
-                },
-            onActiveSpeaker: (RtcConnection connection, int uid) {
-              setState(() => _activeSpeaker = uid);
-            },
-            onUserMuteAudio: (RtcConnection connection, int uid, bool muted) {
-              //
-            },
-            onRemoteAudioStateChanged:
-                (
-                  RtcConnection connection,
-                  int uid,
-                  RemoteAudioState state,
-                  RemoteAudioStateReason reason,
-                  int elapsed,
-                ) {
-                  // Catching states that onUserMuteAudio might miss
-                  if (reason ==
-                      RemoteAudioStateReason.remoteAudioReasonRemoteMuted) {
-                    //
-                  } else if (reason ==
-                      RemoteAudioStateReason.remoteAudioReasonRemoteUnmuted) {
-                    //
-                  }
-                },
-          ),
-        );
-
-        context.read<BroadcastDetailBloc>().add(
-          BroadcastDetailEvent.join(
-            engine: _engine,
-            broadcast: widget.broadcast,
-            user: me,
-          ),
-        );
-      },
-    );
-  }
-
   @override
   void dispose() {
     _leaveChannel();
     super.dispose();
-  }
-
-  Future<void> _leaveChannel() async {
-    await AgoraService().leaveCurrent();
-    await AgoraService().dispose();
-    if (mounted) {
-      context.read<BroadcastDetailBloc>().add(
-        BroadcastDetailEvent.unsubscribe(broadcast: widget.broadcast),
-      );
-      context.router.popTop();
-    }
-  }
-
-  void _showExitDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => ExitMeetingDialog(onYesPressed: _leaveChannel),
-    );
   }
 
   @override
@@ -362,10 +257,16 @@ class _MeetingDetailState extends State<_MeetingDetail> {
               icon: Icon(Icons.keyboard_arrow_down_rounded),
             ),
             actions: [
-              TextButton(
-                onPressed: _showExitDialog,
-                child: Text('Leave', style: TextStyle(color: Colors.red)),
-              ),
+              if (_isHost)
+                TextButton(
+                  onPressed: _showEndDialog,
+                  child: Text('End', style: TextStyle(color: Colors.red)),
+                )
+              else
+                TextButton(
+                  onPressed: _showExitDialog,
+                  child: Text('Leave', style: TextStyle(color: Colors.red)),
+                ),
             ],
           ),
           body: isDeleted || !widget.broadcast.isActive
@@ -579,6 +480,133 @@ class _MeetingDetailState extends State<_MeetingDetail> {
             ),
     );
   }
+
+  Future<void> _initAgora() async {
+    await [Permission.microphone].request();
+
+    await AgoraService().joinMeeting(
+      isBroadcaster: _isHost || _isCoHost || _isSpeaker,
+      broadcast: widget.broadcast,
+      onEngineReady: (engine) {
+        setState(() {
+          _engine = engine;
+        });
+
+        _engine.registerEventHandler(
+          RtcEngineEventHandler(
+            onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
+              setState(() => _isJoined = true);
+              if (widget.broadcast.recordingStatus == null &&
+                  (_isHost || _isCoHost || _isSpeaker)) {
+                context.read<BroadcastDetailBloc>().add(
+                  BroadcastDetailEvent.startRecording(
+                    broadcast: widget.broadcast,
+                  ),
+                );
+              }
+              context.read<BroadcastDetailBloc>().add(
+                BroadcastDetailEvent.subscribe(
+                  broadcast: widget.broadcast,
+                  isMuted: _isHost || _isCoHost || _isSpeaker,
+                ),
+              );
+            },
+            onError: (ErrorCodeType err, String message) {
+              if (mounted) {
+                final snackBar = getSnackBar(
+                  context: context,
+                  message: 'Error: $err - $message',
+                  status: SnackBarStatus.failure,
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              }
+            },
+            onRtcStats: (connection, stats) {
+              setState(() => _count = stats.userCount);
+            },
+            onUserJoined: (RtcConnection connection, int uid, int elapsed) {
+              //
+            },
+            onUserOffline:
+                (
+                  RtcConnection connection,
+                  int uid,
+                  UserOfflineReasonType reason,
+                ) {
+                  if (reason ==
+                      UserOfflineReasonType.userOfflineBecomeAudience) {
+                    // setState(() => _speakers.remove(uid));
+                  }
+                  //
+                },
+            onActiveSpeaker: (RtcConnection connection, int uid) {
+              setState(() => _activeSpeaker = uid);
+            },
+            onUserMuteAudio: (RtcConnection connection, int uid, bool muted) {
+              //
+            },
+            onRemoteAudioStateChanged:
+                (
+                  RtcConnection connection,
+                  int uid,
+                  RemoteAudioState state,
+                  RemoteAudioStateReason reason,
+                  int elapsed,
+                ) {
+                  // Catching states that onUserMuteAudio might miss
+                  if (reason ==
+                      RemoteAudioStateReason.remoteAudioReasonRemoteMuted) {
+                    //
+                  } else if (reason ==
+                      RemoteAudioStateReason.remoteAudioReasonRemoteUnmuted) {
+                    //
+                  }
+                },
+          ),
+        );
+
+        context.read<BroadcastDetailBloc>().add(
+          BroadcastDetailEvent.join(
+            engine: _engine,
+            broadcast: widget.broadcast,
+            user: me,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _leaveChannel() async {
+    await AgoraService().leaveCurrent();
+    await AgoraService().dispose();
+    if (mounted) {
+      context.read<BroadcastDetailBloc>().add(
+        BroadcastDetailEvent.unsubscribe(broadcast: widget.broadcast),
+      );
+      context.router.popTop();
+    }
+  }
+
+  void _showExitDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => ExitMeetingDialog(onYesPressed: _leaveChannel),
+    );
+  }
+
+  void _showEndDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => ExitMeetingDialog(
+        onYesPressed: () {
+          context.read<BroadcastDetailBloc>().add(
+            BroadcastDetailEvent.stopRecording(broadcast: widget.broadcast),
+          );
+          _leaveChannel();
+        },
+      ),
+    );
+  }
 }
 
 class ExitMeetingDialog extends StatelessWidget {
@@ -589,8 +617,31 @@ class ExitMeetingDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomDialog(
-      title: 'Leave broadcast',
-      content: 'Are you sure you want to leave the broadcast?',
+      title: 'Leave meeting',
+      content: 'Are you sure you want to leave the meeting?',
+      button1Text: 'Yes',
+      onButton1Pressed: () {
+        context.router.popTop();
+        onYesPressed();
+      },
+      button2Text: 'No',
+      onButton2Pressed: () {
+        context.router.popTop();
+      },
+    );
+  }
+}
+
+class EndMeetingDialog extends StatelessWidget {
+  const EndMeetingDialog({super.key, required this.onYesPressed});
+
+  final VoidCallback onYesPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomDialog(
+      title: 'End meeting',
+      content: 'Are you sure you want to end the meeting?',
       button1Text: 'Yes',
       onButton1Pressed: () {
         context.router.popTop();

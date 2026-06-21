@@ -103,6 +103,11 @@ class _LiveStreamState extends State<_LiveStream> {
               setState(() => _isJoined = true);
               if (_isHost) {
                 _engine.startPreview(); // Important for host
+                context.read<BroadcastDetailBloc>().add(
+                  BroadcastDetailEvent.startRecording(
+                    broadcast: widget.broadcast,
+                  ),
+                );
               }
               context.read<BroadcastDetailBloc>().add(
                 BroadcastDetailEvent.subscribe(
