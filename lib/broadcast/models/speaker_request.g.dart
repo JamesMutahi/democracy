@@ -9,7 +9,7 @@ part of 'speaker_request.dart';
 _SpeakerRequest _$SpeakerRequestFromJson(Map<String, dynamic> json) =>
     _SpeakerRequest(
       id: (json['id'] as num).toInt(),
-      meeting: (json['meeting'] as num).toInt(),
+      broadcast: (json['broadcast'] as num).toInt(),
       user: User.fromJson(json['user'] as Map<String, dynamic>),
       isApproved: json['is_approved'] as bool?,
       decidedBy: json['decided_by'] as String?,
@@ -18,7 +18,7 @@ _SpeakerRequest _$SpeakerRequestFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$SpeakerRequestToJson(_SpeakerRequest instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'meeting': instance.meeting,
+      'broadcast': instance.broadcast,
       'user': instance.user,
       'is_approved': instance.isApproved,
       'decided_by': instance.decidedBy,

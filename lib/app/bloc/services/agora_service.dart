@@ -37,13 +37,16 @@ class AgoraService {
       reportVad: true,
     );
     await engine.setChannelProfile(
-      ChannelProfileType.channelProfileCommunication,
+      ChannelProfileType.channelProfileLiveBroadcasting,
     );
     await engine.setClientRole(
       role: isBroadcaster
           ? ClientRoleType.clientRoleBroadcaster
           : ClientRoleType.clientRoleAudience,
     );
+    if (isBroadcaster) {
+      await engine.muteLocalAudioStream(true);
+    }
 
     onEngineReady(engine);
 

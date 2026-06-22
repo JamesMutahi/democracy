@@ -57,7 +57,16 @@ class SideMenu extends StatelessWidget {
                                     left: 11,
                                     top: 5,
                                   ),
-                                  child: const Logo(width: 40, height: 40),
+                                  child: InkWell(
+                                    splashColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    hoverColor: Colors.transparent,
+                                    onTap: () {
+                                      menuController.closeDrawer();
+                                      context.navigateTo(const HomeRoute());
+                                    },
+                                    child: const Logo(width: 40, height: 40),
+                                  ),
                                 )
                               else
                                 DrawerHeader(
@@ -387,7 +396,10 @@ class _ProfileButtonState extends State<_ProfileButton>
       onTap: () {
         onTap();
         widget.menuController.closeDrawer();
-        context.router.push(ProfileRoute(userId: widget.user.id));
+        String currentPath = context.router.currentPath;
+        if (!currentPath.contains('profile/${widget.user.id}')) {
+          context.router.push(ProfileRoute(userId: widget.user.id));
+        }
       },
       leading: Icon(Symbols.person_2_rounded),
       title: Text('Profile'),

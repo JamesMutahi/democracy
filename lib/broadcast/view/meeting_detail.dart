@@ -82,6 +82,7 @@ class _MeetingDetail extends StatefulWidget {
 }
 
 class _MeetingDetailState extends State<_MeetingDetail> {
+  final AgoraService agoraService = AgoraService();
   late RtcEngine _engine;
   late int? _count = widget.broadcast.participantsCount;
   bool _isJoined = false;
@@ -90,8 +91,6 @@ class _MeetingDetailState extends State<_MeetingDetail> {
   bool isDeleted = false;
 
   // Reactively synced via Getters (Evaluated fresh on every UI rebuild)
-  List<int> get _speakers =>
-      widget.broadcast.speakers.map((s) => s.id).toList();
   List<int> get _muted => widget.broadcast.muted;
 
   // User & Role Getters (Instantly react when _broadcast changes)
@@ -153,16 +152,22 @@ class _MeetingDetailState extends State<_MeetingDetail> {
                       (isCoHost == true) && (_isCoHost == false);
                   final isNewSpeaker =
                       (isSpeaker == true) && (_isSpeaker == false);
-                  final isBroadcaster = isCoHost || isSpeaker;
-                  if (isBroadcaster != (_isCoHost || _isSpeaker)) {
-                    await _engine.setClientRole(
-                      role: isBroadcaster
-                          ? ClientRoleType.clientRoleBroadcaster
-                          : ClientRoleType.clientRoleAudience,
-                    );
+                  if (!_isHost) {
+                    final wasBroadcaster = _isCoHost || _isSpeaker;
+                    final isBroadcaster = isCoHost || isSpeaker;
+                    if (isBroadcaster != wasBroadcaster) {
+                      if (!isBroadcaster) {
+                        await _engine.muteLocalAudioStream(true);
+                      }
+                      await _engine.setClientRole(
+                        role: isBroadcaster
+                            ? ClientRoleType.clientRoleBroadcaster
+                            : ClientRoleType.clientRoleAudience,
+                      );
+                    }
                   }
                   final isMuted = state.broadcast.muted.any((m) => m == me.id);
-                  if (isMuted && !_isMuted) {
+                  if (isMuted != _isMuted) {
                     await _engine.muteLocalAudioStream(isMuted);
                   }
 
@@ -257,16 +262,13 @@ class _MeetingDetailState extends State<_MeetingDetail> {
               icon: Icon(Icons.keyboard_arrow_down_rounded),
             ),
             actions: [
-              if (_isHost)
-                TextButton(
-                  onPressed: _showEndDialog,
-                  child: Text('End', style: TextStyle(color: Colors.red)),
-                )
-              else
-                TextButton(
-                  onPressed: _showExitDialog,
-                  child: Text('Leave', style: TextStyle(color: Colors.red)),
+              TextButton(
+                onPressed: _isHost ? _showEndDialog : _showExitDialog,
+                child: Text(
+                  _isHost ? 'End' : 'Leave',
+                  style: TextStyle(color: Colors.red),
                 ),
+              ),
             ],
           ),
           body: isDeleted || !widget.broadcast.isActive
@@ -484,7 +486,7 @@ class _MeetingDetailState extends State<_MeetingDetail> {
   Future<void> _initAgora() async {
     await [Permission.microphone].request();
 
-    await AgoraService().joinMeeting(
+    await agoraService.joinMeeting(
       isBroadcaster: _isHost || _isCoHost || _isSpeaker,
       broadcast: widget.broadcast,
       onEngineReady: (engine) {
@@ -535,7 +537,7 @@ class _MeetingDetailState extends State<_MeetingDetail> {
                 ) {
                   if (reason ==
                       UserOfflineReasonType.userOfflineBecomeAudience) {
-                    // setState(() => _speakers.remove(uid));
+                    //
                   }
                   //
                 },
@@ -577,8 +579,8 @@ class _MeetingDetailState extends State<_MeetingDetail> {
   }
 
   Future<void> _leaveChannel() async {
-    await AgoraService().leaveCurrent();
-    await AgoraService().dispose();
+    await agoraService.leaveCurrent();
+    await agoraService.dispose();
     if (mounted) {
       context.read<BroadcastDetailBloc>().add(
         BroadcastDetailEvent.unsubscribe(broadcast: widget.broadcast),

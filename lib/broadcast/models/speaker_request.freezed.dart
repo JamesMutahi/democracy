@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SpeakerRequest {
 
- int get id; int get meeting; User get user;@JsonKey(name: 'is_approved') bool? get isApproved;@JsonKey(name: 'decided_by') String? get decidedBy;
+ int get id; int get broadcast; User get user;@JsonKey(name: 'is_approved') bool? get isApproved;@JsonKey(name: 'decided_by') String? get decidedBy;
 /// Create a copy of SpeakerRequest
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $SpeakerRequestCopyWith<SpeakerRequest> get copyWith => _$SpeakerRequestCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SpeakerRequest&&(identical(other.id, id) || other.id == id)&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.user, user) || other.user == user)&&(identical(other.isApproved, isApproved) || other.isApproved == isApproved)&&(identical(other.decidedBy, decidedBy) || other.decidedBy == decidedBy));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SpeakerRequest&&(identical(other.id, id) || other.id == id)&&(identical(other.broadcast, broadcast) || other.broadcast == broadcast)&&(identical(other.user, user) || other.user == user)&&(identical(other.isApproved, isApproved) || other.isApproved == isApproved)&&(identical(other.decidedBy, decidedBy) || other.decidedBy == decidedBy));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,meeting,user,isApproved,decidedBy);
+int get hashCode => Object.hash(runtimeType,id,broadcast,user,isApproved,decidedBy);
 
 @override
 String toString() {
-  return 'SpeakerRequest(id: $id, meeting: $meeting, user: $user, isApproved: $isApproved, decidedBy: $decidedBy)';
+  return 'SpeakerRequest(id: $id, broadcast: $broadcast, user: $user, isApproved: $isApproved, decidedBy: $decidedBy)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $SpeakerRequestCopyWith<$Res>  {
   factory $SpeakerRequestCopyWith(SpeakerRequest value, $Res Function(SpeakerRequest) _then) = _$SpeakerRequestCopyWithImpl;
 @useResult
 $Res call({
- int id, int meeting, User user,@JsonKey(name: 'is_approved') bool? isApproved,@JsonKey(name: 'decided_by') String? decidedBy
+ int id, int broadcast, User user,@JsonKey(name: 'is_approved') bool? isApproved,@JsonKey(name: 'decided_by') String? decidedBy
 });
 
 
@@ -65,10 +65,10 @@ class _$SpeakerRequestCopyWithImpl<$Res>
 
 /// Create a copy of SpeakerRequest
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? meeting = null,Object? user = null,Object? isApproved = freezed,Object? decidedBy = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? broadcast = null,Object? user = null,Object? isApproved = freezed,Object? decidedBy = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,meeting: null == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
+as int,broadcast: null == broadcast ? _self.broadcast : broadcast // ignore: cast_nullable_to_non_nullable
 as int,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as User,isApproved: freezed == isApproved ? _self.isApproved : isApproved // ignore: cast_nullable_to_non_nullable
 as bool?,decidedBy: freezed == decidedBy ? _self.decidedBy : decidedBy // ignore: cast_nullable_to_non_nullable
@@ -163,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int meeting,  User user, @JsonKey(name: 'is_approved')  bool? isApproved, @JsonKey(name: 'decided_by')  String? decidedBy)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int broadcast,  User user, @JsonKey(name: 'is_approved')  bool? isApproved, @JsonKey(name: 'decided_by')  String? decidedBy)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SpeakerRequest() when $default != null:
-return $default(_that.id,_that.meeting,_that.user,_that.isApproved,_that.decidedBy);case _:
+return $default(_that.id,_that.broadcast,_that.user,_that.isApproved,_that.decidedBy);case _:
   return orElse();
 
 }
@@ -184,10 +184,10 @@ return $default(_that.id,_that.meeting,_that.user,_that.isApproved,_that.decided
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int meeting,  User user, @JsonKey(name: 'is_approved')  bool? isApproved, @JsonKey(name: 'decided_by')  String? decidedBy)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int broadcast,  User user, @JsonKey(name: 'is_approved')  bool? isApproved, @JsonKey(name: 'decided_by')  String? decidedBy)  $default,) {final _that = this;
 switch (_that) {
 case _SpeakerRequest():
-return $default(_that.id,_that.meeting,_that.user,_that.isApproved,_that.decidedBy);}
+return $default(_that.id,_that.broadcast,_that.user,_that.isApproved,_that.decidedBy);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -201,10 +201,10 @@ return $default(_that.id,_that.meeting,_that.user,_that.isApproved,_that.decided
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int meeting,  User user, @JsonKey(name: 'is_approved')  bool? isApproved, @JsonKey(name: 'decided_by')  String? decidedBy)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int broadcast,  User user, @JsonKey(name: 'is_approved')  bool? isApproved, @JsonKey(name: 'decided_by')  String? decidedBy)?  $default,) {final _that = this;
 switch (_that) {
 case _SpeakerRequest() when $default != null:
-return $default(_that.id,_that.meeting,_that.user,_that.isApproved,_that.decidedBy);case _:
+return $default(_that.id,_that.broadcast,_that.user,_that.isApproved,_that.decidedBy);case _:
   return null;
 
 }
@@ -216,11 +216,11 @@ return $default(_that.id,_that.meeting,_that.user,_that.isApproved,_that.decided
 @JsonSerializable()
 
 class _SpeakerRequest implements SpeakerRequest {
-  const _SpeakerRequest({required this.id, required this.meeting, required this.user, @JsonKey(name: 'is_approved') required this.isApproved, @JsonKey(name: 'decided_by') required this.decidedBy});
+  const _SpeakerRequest({required this.id, required this.broadcast, required this.user, @JsonKey(name: 'is_approved') required this.isApproved, @JsonKey(name: 'decided_by') required this.decidedBy});
   factory _SpeakerRequest.fromJson(Map<String, dynamic> json) => _$SpeakerRequestFromJson(json);
 
 @override final  int id;
-@override final  int meeting;
+@override final  int broadcast;
 @override final  User user;
 @override@JsonKey(name: 'is_approved') final  bool? isApproved;
 @override@JsonKey(name: 'decided_by') final  String? decidedBy;
@@ -238,16 +238,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SpeakerRequest&&(identical(other.id, id) || other.id == id)&&(identical(other.meeting, meeting) || other.meeting == meeting)&&(identical(other.user, user) || other.user == user)&&(identical(other.isApproved, isApproved) || other.isApproved == isApproved)&&(identical(other.decidedBy, decidedBy) || other.decidedBy == decidedBy));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SpeakerRequest&&(identical(other.id, id) || other.id == id)&&(identical(other.broadcast, broadcast) || other.broadcast == broadcast)&&(identical(other.user, user) || other.user == user)&&(identical(other.isApproved, isApproved) || other.isApproved == isApproved)&&(identical(other.decidedBy, decidedBy) || other.decidedBy == decidedBy));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,meeting,user,isApproved,decidedBy);
+int get hashCode => Object.hash(runtimeType,id,broadcast,user,isApproved,decidedBy);
 
 @override
 String toString() {
-  return 'SpeakerRequest(id: $id, meeting: $meeting, user: $user, isApproved: $isApproved, decidedBy: $decidedBy)';
+  return 'SpeakerRequest(id: $id, broadcast: $broadcast, user: $user, isApproved: $isApproved, decidedBy: $decidedBy)';
 }
 
 
@@ -258,7 +258,7 @@ abstract mixin class _$SpeakerRequestCopyWith<$Res> implements $SpeakerRequestCo
   factory _$SpeakerRequestCopyWith(_SpeakerRequest value, $Res Function(_SpeakerRequest) _then) = __$SpeakerRequestCopyWithImpl;
 @override @useResult
 $Res call({
- int id, int meeting, User user,@JsonKey(name: 'is_approved') bool? isApproved,@JsonKey(name: 'decided_by') String? decidedBy
+ int id, int broadcast, User user,@JsonKey(name: 'is_approved') bool? isApproved,@JsonKey(name: 'decided_by') String? decidedBy
 });
 
 
@@ -275,10 +275,10 @@ class __$SpeakerRequestCopyWithImpl<$Res>
 
 /// Create a copy of SpeakerRequest
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? meeting = null,Object? user = null,Object? isApproved = freezed,Object? decidedBy = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? broadcast = null,Object? user = null,Object? isApproved = freezed,Object? decidedBy = freezed,}) {
   return _then(_SpeakerRequest(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,meeting: null == meeting ? _self.meeting : meeting // ignore: cast_nullable_to_non_nullable
+as int,broadcast: null == broadcast ? _self.broadcast : broadcast // ignore: cast_nullable_to_non_nullable
 as int,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as User,isApproved: freezed == isApproved ? _self.isApproved : isApproved // ignore: cast_nullable_to_non_nullable
 as bool?,decidedBy: freezed == decidedBy ? _self.decidedBy : decidedBy // ignore: cast_nullable_to_non_nullable

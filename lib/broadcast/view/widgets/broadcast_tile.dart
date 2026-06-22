@@ -26,7 +26,7 @@ class BroadcastTile extends StatelessWidget {
               ),
               child: Icon(
                 Icons.broken_image_rounded,
-                size: 24,
+                size: 50,
                 color: Colors.grey[600],
               ),
             )
