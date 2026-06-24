@@ -1,4 +1,3 @@
-import 'package:democracy/app/shared/widgets/video_viewer.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:democracy/broadcast/view/widgets/livestream_tile.dart';
 import 'package:democracy/broadcast/view/widgets/meeting_tile.dart';
@@ -16,22 +15,6 @@ class BroadcastTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (broadcast.recordingStatus == RecordingStatus.stopped) {
-      return broadcast.recordingUrl == null
-          ? Container(
-              height: 200,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: const BorderRadius.all(Radius.circular(12)),
-              ),
-              child: Icon(
-                Icons.broken_image_rounded,
-                size: 50,
-                color: Colors.grey[600],
-              ),
-            )
-          : VideoViewer(url: broadcast.recordingUrl!);
-    }
     return switch (broadcast.type) {
       BroadcastType.meeting => MeetingTile(
         broadcast: broadcast,

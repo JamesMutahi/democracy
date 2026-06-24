@@ -3,6 +3,7 @@ import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/more_pop_up.dart';
 import 'package:democracy/app/shared/widgets/share_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
+import 'package:democracy/app/shared/widgets/video_viewer.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
@@ -230,11 +231,17 @@ class MeetingBottomSheet extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: OutlinedButton(
               onPressed: () {
-                context.read<BroadcastDetailBloc>().add(
-                  BroadcastDetailEvent.retrieve(broadcast: broadcast),
-                );
+                broadcast.hasEnded
+                    ? showDialog(
+                        context: context,
+                        builder: (context) =>
+                            VideoViewer(url: broadcast.recordingUrl!),
+                      )
+                    : context.read<BroadcastDetailBloc>().add(
+                        BroadcastDetailEvent.retrieve(broadcast: broadcast),
+                      );
               },
-              child: Text('Join'),
+              child: Text(broadcast.hasEnded ? 'Play recording' : 'Join'),
             ),
           ),
         ],

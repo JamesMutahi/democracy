@@ -84,7 +84,9 @@ class ParticipantTile extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 42,
-              backgroundColor: isSpeaking ? Colors.blue : Colors.transparent,
+              backgroundColor: isSpeaking
+                  ? Colors.blue.withAlpha(75)
+                  : Colors.transparent,
               child: ProfileImage(user: user, radius: 40),
             ),
             SizedBox(height: 5),

@@ -37,8 +37,8 @@ class _VideoViewerState extends State<VideoViewer>
 
   @override
   void initState() {
-    super.initState();
     _initializePlayer();
+    super.initState();
   }
 
   Future<void> _initializePlayer() async {

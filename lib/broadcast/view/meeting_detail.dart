@@ -86,7 +86,8 @@ class _MeetingDetailState extends State<_MeetingDetail> {
   late RtcEngine _engine;
   late int? _count = widget.broadcast.participantsCount;
   bool _isJoined = false;
-  int? _activeSpeaker;
+  final Map<int, bool> _speakingUsers = {};
+  bool _isLocalSpeaking = false;
   bool _hasRequestedToSpeak = false;
   bool isDeleted = false;
 
@@ -148,10 +149,8 @@ class _MeetingDetailState extends State<_MeetingDetail> {
                   final isSpeaker = state.broadcast.speakers.any(
                     (s) => s.id == me.id,
                   );
-                  final isNewCoHost =
-                      (isCoHost == true) && (_isCoHost == false);
-                  final isNewSpeaker =
-                      (isSpeaker == true) && (_isSpeaker == false);
+                  final isNewCoHost = isCoHost && !_isCoHost;
+                  final isNewSpeaker = isSpeaker && !_isSpeaker;
                   if (!_isHost) {
                     final wasBroadcaster = _isCoHost || _isSpeaker;
                     final isBroadcaster = isCoHost || isSpeaker;
@@ -329,7 +328,7 @@ class _MeetingDetailState extends State<_MeetingDetail> {
         bool isCoHost = widget.broadcast.coHosts.any((c) => c.id == user.id);
         bool isSpeaker = widget.broadcast.speakers.any((s) => s.id == user.id);
         bool isMuted = _muted.contains(user.id);
-        bool isSpeaking = _activeSpeaker == user.id && !isMuted;
+        bool isSpeaking = isUserSpeaking(user.id);
         return ParticipantTile(
           key: ValueKey(user.id),
           me: me,
@@ -541,8 +540,39 @@ class _MeetingDetailState extends State<_MeetingDetail> {
                   }
                   //
                 },
+            onAudioVolumeIndication:
+                (
+                  RtcConnection connection,
+                  List<AudioVolumeInfo> speakers,
+                  int speakerNumber,
+                  int totalVolume,
+                ) {
+                  setState(() {
+                    for (var speaker in speakers) {
+                      final uid = speaker.uid;
+                      final volume = speaker.volume ?? 0; // 0 - 255
+
+                      // Adjust threshold (20 - 40 works well)
+                      final isSpeakingNow = volume > 25;
+
+                      if (uid != null) {
+                        if (uid == 0) {
+                          // Local user (Host / Co-host)
+                          _isLocalSpeaking = isSpeakingNow;
+                        } else {
+                          _speakingUsers[uid] = isSpeakingNow;
+                        }
+                      }
+                    }
+                  });
+                },
             onActiveSpeaker: (RtcConnection connection, int uid) {
-              setState(() => _activeSpeaker = uid);
+              if (uid != 0) {
+                setState(() => _speakingUsers[uid] = true);
+                Future.delayed(const Duration(seconds: 3), () {
+                  if (mounted) setState(() => _speakingUsers[uid] = false);
+                });
+              }
             },
             onUserMuteAudio: (RtcConnection connection, int uid, bool muted) {
               //
@@ -576,6 +606,11 @@ class _MeetingDetailState extends State<_MeetingDetail> {
         );
       },
     );
+  }
+
+  bool isUserSpeaking(int userId) {
+    if (userId == me.id) return _isLocalSpeaking;
+    return _speakingUsers[userId] ?? false;
   }
 
   Future<void> _leaveChannel() async {
