@@ -60,7 +60,7 @@ class _VideoViewerState extends State<VideoViewer>
       // Now safely create ChewieController
       _chewieController = ChewieController(
         videoPlayerController: _player.controller,
-        autoInitialize: true,
+        autoInitialize: false,
         showControls: widget.showControls,
         autoPlay: widget.autoPlay,
         errorBuilder: (context, errorMessage) => Center(

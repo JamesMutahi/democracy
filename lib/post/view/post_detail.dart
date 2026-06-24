@@ -419,6 +419,7 @@ class _PostDetailState extends State<_PostDetail>
   }
 
   Widget _buildMainPost() {
+    bool isRepost = widget.post.repostType == RepostType.repost;
     return SliverToBoxAdapter(
       key: _centerKey,
       child: Column(
@@ -426,15 +427,17 @@ class _PostDetailState extends State<_PostDetail>
           if (widget.post.replyTo == null)
             Column(
               children: [
-                if (widget.post.repostType == RepostType.repost)
-                  _repostBanner(),
-                _PostContainer(post: widget.post, isDeleted: _isDeleted),
+                if (isRepost) _repostBanner(),
+                _PostContainer(
+                  post: isRepost ? widget.post.repostOf! : widget.post,
+                  isDeleted: _isDeleted,
+                ),
               ],
             )
           else
             Column(
               children: [
-                if (widget.post.repostType == RepostType.repost)
+                if (isRepost)
                   Stack(
                     children: [
                       ThreadLine(showBottomThread: true, showTopThread: true),

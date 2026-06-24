@@ -442,14 +442,15 @@ class DrawerListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final responsive = ResponsiveBreakpoints.of(context);
 
-    return kIsWeb &&
-            responsive.smallerThan(expandSideMenu) &&
-            !responsive.isMobile
-        ? Stack(
-            children: [
-              Container(
-                margin: EdgeInsets.only(bottom: 5),
-                child: IconButton(
+    return Container(
+      margin: EdgeInsets.only(top: 5),
+      child:
+          kIsWeb &&
+              responsive.smallerThan(expandSideMenu) &&
+              !responsive.isMobile
+          ? Stack(
+              children: [
+                IconButton(
                   onPressed: onTap,
                   padding: EdgeInsets.all(10),
                   icon: SvgPicture.asset(
@@ -465,37 +466,39 @@ class DrawerListTile extends StatelessWidget {
                   ),
                   tooltip: title,
                 ),
+                if (trailing != null)
+                  Positioned(right: 5, top: 5, child: trailing!),
+              ],
+            )
+          : ListTile(
+              onTap: onTap,
+              selected: selected,
+              selectedTileColor: Theme.of(context).highlightColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
               ),
-              if (trailing != null)
-                Positioned(right: 5, top: 5, child: trailing!),
-            ],
-          )
-        : ListTile(
-            onTap: onTap,
-            selected: selected,
-            selectedTileColor: Theme.of(context).highlightColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            leading: SvgPicture.asset(
-              icon,
-              height: 22,
-              width: 22,
-              colorFilter: ColorFilter.mode(
-                selected
-                    ? Theme.of(context).primaryColor
-                    : Theme.of(context).colorScheme.outline,
-                BlendMode.srcIn,
+              leading: SvgPicture.asset(
+                icon,
+                height: 22,
+                width: 22,
+                colorFilter: ColorFilter.mode(
+                  selected
+                      ? Theme.of(context).primaryColor
+                      : Theme.of(context).colorScheme.outline,
+                  BlendMode.srcIn,
+                ),
               ),
-            ),
-            title: Text(
-              title,
-              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                color: selected ? null : Theme.of(context).colorScheme.outline,
+              title: Text(
+                title,
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  color: selected
+                      ? null
+                      : Theme.of(context).colorScheme.outline,
+                ),
               ),
+              trailing: trailing,
             ),
-            trailing: trailing,
-          );
+    );
   }
 }
 

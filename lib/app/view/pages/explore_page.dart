@@ -76,8 +76,8 @@ class _ExplorePageState extends State<ExplorePage> {
                     else
                       SliverAppBar(
                         pinned: true,
-                        floating: true,
-                        snap: true,
+                        floating: false,
+                        snap: false,
                         automaticallyImplyLeading: false,
                         flexibleSpace: Builder(
                           builder: (context) {

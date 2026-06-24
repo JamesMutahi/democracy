@@ -56,8 +56,8 @@ class _ChatPageState extends State<ChatPage> {
             else
               SliverAppBar(
                 pinned: true,
-                floating: true,
-                snap: true,
+                floating: false,
+                snap: false,
                 automaticallyImplyLeading: false,
                 flexibleSpace: Builder(
                   builder: (context) {

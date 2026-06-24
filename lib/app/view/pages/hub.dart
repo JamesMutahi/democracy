@@ -57,8 +57,8 @@ class _HubState extends State<Hub> {
                   else
                     SliverAppBar(
                       pinned: true,
-                      floating: true,
-                      snap: true,
+                      floating: false,
+                      snap: false,
                       automaticallyImplyLeading: false,
                       flexibleSpace: Builder(
                         builder: (context) {
