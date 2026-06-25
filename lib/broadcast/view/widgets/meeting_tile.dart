@@ -3,7 +3,7 @@ import 'package:democracy/app/shared/widgets/custom_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/more_pop_up.dart';
 import 'package:democracy/app/shared/widgets/share_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
-import 'package:democracy/app/shared/widgets/video_viewer.dart';
+import 'package:democracy/app/shared/widgets/video_pip.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
@@ -195,7 +195,11 @@ class MeetingBottomSheet extends StatelessWidget {
         if (state is BroadcastLoaded) {
           if (state.broadcast.id == broadcast.id) {
             context.router.popTop();
-            context.router.push(MeetingDetail(broadcastId: state.broadcast.id));
+            state.broadcast.hasEnded
+                ? startPip(url: state.broadcast.recordingUrl!)
+                : context.router.push(
+                    MeetingDetail(broadcastId: state.broadcast.id),
+                  );
           }
         }
         if (state is BroadcastDetailFailure) {
@@ -231,15 +235,14 @@ class MeetingBottomSheet extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: OutlinedButton(
               onPressed: () {
-                broadcast.hasEnded
-                    ? showDialog(
-                        context: context,
-                        builder: (context) =>
-                            VideoViewer(url: broadcast.recordingUrl!),
-                      )
-                    : context.read<BroadcastDetailBloc>().add(
-                        BroadcastDetailEvent.retrieve(broadcast: broadcast),
-                      );
+                if (broadcast.hasEnded) {
+                  context.router.popTop();
+                  startPip(url: broadcast.recordingUrl!);
+                } else {
+                  context.read<BroadcastDetailBloc>().add(
+                    BroadcastDetailEvent.retrieve(broadcast: broadcast),
+                  );
+                }
               },
               child: Text(broadcast.hasEnded ? 'Play recording' : 'Join'),
             ),

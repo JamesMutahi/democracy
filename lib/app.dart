@@ -9,6 +9,9 @@ import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_in_app_pip/pip_material_app.dart';
+import 'package:flutter_in_app_pip/pip_params.dart';
+import 'package:flutter_in_app_pip/pip_view_corner.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
@@ -33,7 +36,21 @@ class _MyAppState extends State<MyApp> {
                   ? ThemeMode.values[state.index!]
                   : ThemeMode.system;
               final routeCubit = context.read<RouteCubit>();
-              return MaterialApp.router(
+              double width = MediaQuery.of(context).size.width;
+              return PiPMaterialApp.router(
+                pipParams: PiPParams(
+                  pipWindowWidth: width > 600 ? 500 : 300,
+                  pipWindowHeight: width > 600 ? 300 : 200,
+                  bottomSpace: 5,
+                  leftSpace: 5,
+                  rightSpace: 5,
+                  topSpace: 5,
+                  maxSize: Size(600, 400),
+                  minSize: Size(200, 108),
+                  movable: true,
+                  resizable: true,
+                  initialCorner: PIPViewCorner.bottomRight,
+                ),
                 builder: (context, child) => ResponsiveBreakpoints.builder(
                   child: FToastBuilder()(context, child),
                   breakpoints: breakpoints,
