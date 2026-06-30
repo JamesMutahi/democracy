@@ -131,7 +131,7 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
     if (event.payload['response_status'] == 200) {
       //
     } else {
-      emit(BallotDetailFailure(error: event.payload['errors'].toString()));
+      emit(BallotDetailFailure(error: event.payload['errors'][0].toString()));
     }
   }
 

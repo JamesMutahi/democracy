@@ -244,7 +244,7 @@ class _ParticipantProfileState extends State<ParticipantProfile> {
                             title: Text(_isMuted ? 'Muted' : 'Mute their mic'),
                           ),
 
-                        /// Blocked status is host's not the current user (me)
+                        /// Blocked status is host's data not the current user (me)
                         BlocBuilder<ProfileBloc, ProfileState>(
                           buildWhen: (previous, current) {
                             return current.user?.id == widget.user.id;

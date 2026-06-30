@@ -13,6 +13,8 @@ A true democracy means that the power lies solely with the people and that the p
 
 
 ```
+--dart-define-from-file=env.json --web-port=5000
+
 {
   "BASE_URL":"http://100.100.100.100:8000/",
   "WEBSOCKET_URL":"ws://100.100.100.100:8000/ws/",

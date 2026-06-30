@@ -79,7 +79,6 @@ List<Breakpoint> breakpoints = [
   const Breakpoint(start: 1100, end: double.infinity, name: DESKTOP),
   const Breakpoint(start: 1280, end: 1280, name: expandSideMenu),
   const Breakpoint(start: 1010, end: 1010, name: expandSidePanel),
-  const Breakpoint(start: 2600, end: double.infinity, name: centerMainPage),
 ];
 
 class _Listeners extends StatelessWidget {

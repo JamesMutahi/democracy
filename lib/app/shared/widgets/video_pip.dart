@@ -127,12 +127,13 @@ class _CustomControlsState extends State<_CustomControls> {
     final chewieController = ChewieController.of(context);
     final videoPlayerController = chewieController.videoPlayerController;
 
-    return MouseRegion(
-      onEnter: (_) => _showControlsTemporarily(),
-      onHover: (_) => _showControlsTemporarily(),
-      onExit: (_) => _startHideTimer(),
-      child: GestureDetector(
-        onTap: _toggleControls,
+    return GestureDetector(
+      onTap: _toggleControls,
+      behavior: HitTestBehavior.translucent,
+      child: MouseRegion(
+        onEnter: (_) => _showControlsTemporarily(),
+        onHover: (_) => _showControlsTemporarily(),
+        onExit: (_) => _startHideTimer(),
         child: Stack(
           children: [
             // Close Button (Top Right)
@@ -171,7 +172,7 @@ class _CustomControlsState extends State<_CustomControls> {
                             isPlaying
                                 ? Icons.pause_rounded
                                 : Icons.play_arrow_rounded,
-                            color: Colors.white.withAlpha(90),
+                            color: Colors.white,
                           ),
                         ),
                         onPressed: () {
