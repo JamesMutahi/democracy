@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
+import 'package:democracy/app/shared/widgets/cached_link_preview.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/post/bloc/post/post_bloc.dart';
@@ -294,6 +295,10 @@ class _CommunityNoteDetailState extends State<_CommunityNoteDetail> {
                                     isDependency: false,
                                     showTopThread: true,
                                     showBottomThread: false,
+                                  ),
+                                  CachedLinkPreview(
+                                    text: widget.post.body,
+                                    cacheKey: 'post: ${widget.post.id}',
                                   ),
                                 ],
                               ),

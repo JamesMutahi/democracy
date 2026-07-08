@@ -3,6 +3,7 @@ import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/asset_viewer.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
+import 'package:democracy/app/shared/widgets/cached_link_preview.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/shared/widgets/map_widget.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
@@ -610,6 +611,10 @@ class _PostContainer extends StatelessWidget {
                           isDependency: true,
                         ),
                       ),
+                    CachedLinkPreview(
+                      text: post.body,
+                      cacheKey: 'post: ${post.id}',
+                    ),
                     if (post.communityNote.isNotEmpty)
                       CommunityNote(post: post),
                     SizedBox(height: 5),
