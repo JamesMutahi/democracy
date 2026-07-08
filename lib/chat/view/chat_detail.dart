@@ -16,6 +16,7 @@ import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/chat/bloc/chat/chat_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
+import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
 import 'package:democracy/chat/bloc/message_actions/message_actions_cubit.dart';
 import 'package:democracy/chat/bloc/message_detail/message_detail_bloc.dart';
 import 'package:democracy/chat/bloc/messages/messages_bloc.dart';
@@ -162,6 +163,7 @@ class _ChatDetailState extends State<_ChatDetail> {
                   context.read<MessagesBloc>().add(
                     MessagesEvent.update(message: state.message),
                   );
+                  context.read<ChatsBloc>().add(ChatsEvent.update());
                   if (widget.me.id != state.message.author.id) {
                     context.read<ChatDetailBloc>().add(
                       ChatDetailEvent.markAsRead(chat: widget.chat),

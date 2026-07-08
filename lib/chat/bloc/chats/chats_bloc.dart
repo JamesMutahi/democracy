@@ -81,6 +81,7 @@ class ChatsBloc extends Bloc<ChatsEvent, ChatsState> {
   }
 
   Future _onUpdate(_Update event, Emitter<ChatsState> emit) async {
+    emit(state.copyWith(status: ChatsStatus.loading));
     try {
       List<Chat> chats = await databaseRepository.fetchChats();
       emit(state.copyWith(chats: chats, status: ChatsStatus.success));

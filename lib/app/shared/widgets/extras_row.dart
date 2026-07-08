@@ -9,6 +9,7 @@ import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/constitution/models/section.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
@@ -59,58 +60,61 @@ class ExtrasRow extends StatelessWidget {
         spacing: 15.0,
         runSpacing: 5.0,
         children: <Widget>[
-          _ExtraCard(
-            onTap: () async {
-              await controller?.reverse();
-              if (maxAssets == 0) {
-                maxAssetsReached();
-              } else {
-                if (context.mounted) {
-                  openCamera(
-                    context: context,
-                    recipient: recipient,
-                    textEditingController: textEditingController,
-                    onImageEditingComplete: onImageEditingComplete,
-                    onVideoEditingComplete: onVideoEditingComplete,
-                  );
+          if (!kIsWeb)
+            _ExtraCard(
+              onTap: () async {
+                await controller?.reverse();
+                if (maxAssets == 0) {
+                  maxAssetsReached();
+                } else {
+                  if (context.mounted) {
+                    openCamera(
+                      context: context,
+                      recipient: recipient,
+                      textEditingController: textEditingController,
+                      onImageEditingComplete: onImageEditingComplete,
+                      onVideoEditingComplete: onVideoEditingComplete,
+                    );
+                  }
                 }
-              }
-            },
-            iconData: Symbols.photo_camera_rounded,
-            text: 'Camera',
-          ),
-          _ExtraCard(
-            onTap: () async {
-              await controller?.reverse();
-              if (maxAssets == 0) {
-                maxAssetsReached();
-              } else {
-                if (context.mounted) {
-                  openGallery(
-                    context: context,
-                    maxAssets: maxAssets,
-                    onMedia: onMedia,
-                  );
+              },
+              iconData: Symbols.photo_camera_rounded,
+              text: 'Camera',
+            ),
+          if (!kIsWeb)
+            _ExtraCard(
+              onTap: () async {
+                await controller?.reverse();
+                if (maxAssets == 0) {
+                  maxAssetsReached();
+                } else {
+                  if (context.mounted) {
+                    openGallery(
+                      context: context,
+                      maxAssets: maxAssets,
+                      onMedia: onMedia,
+                    );
+                  }
                 }
-              }
-            },
-            iconData: Symbols.photo_library_rounded,
-            text: 'Gallery',
-          ),
-          _ExtraCard(
-            onTap: () async {
-              await controller?.reverse();
-              var status = await Permission.storage.status;
-              if (!status.isGranted) {
-                await Permission.storage.request();
-              }
-              if (context.mounted) {
-                context.router.push(Location(onLocation: onLocation));
-              }
-            },
-            iconData: Symbols.location_on_rounded,
-            text: 'Location',
-          ),
+              },
+              iconData: Symbols.photo_library_rounded,
+              text: 'Gallery',
+            ),
+          if (!kIsWeb)
+            _ExtraCard(
+              onTap: () async {
+                await controller?.reverse();
+                var status = await Permission.storage.status;
+                if (!status.isGranted) {
+                  await Permission.storage.request();
+                }
+                if (context.mounted) {
+                  context.router.push(Location(onLocation: onLocation));
+                }
+              },
+              iconData: Symbols.location_on_rounded,
+              text: 'Location',
+            ),
           _ExtraCard(
             onTap: () async {
               await controller?.reverse();

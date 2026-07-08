@@ -235,13 +235,22 @@ class MeetingBottomSheet extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: OutlinedButton(
               onPressed: () {
-                if (broadcast.hasEnded) {
-                  context.router.popTop();
-                  startPip(url: broadcast.recordingUrl!);
+                if (broadcast.recordingUrl != null) {
+                  if (broadcast.hasEnded) {
+                    context.router.popTop();
+                    startPip(url: broadcast.recordingUrl!);
+                  } else {
+                    context.read<BroadcastDetailBloc>().add(
+                      BroadcastDetailEvent.retrieve(broadcast: broadcast),
+                    );
+                  }
                 } else {
-                  context.read<BroadcastDetailBloc>().add(
-                    BroadcastDetailEvent.retrieve(broadcast: broadcast),
+                  final snackBar = getSnackBar(
+                    context: context,
+                    message: "Recording not found",
+                    status: SnackBarStatus.failure,
                   );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 }
               },
               child: Text(broadcast.hasEnded ? 'Play recording' : 'Join'),

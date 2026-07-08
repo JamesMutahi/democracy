@@ -131,13 +131,14 @@ class _MessagesState extends State<Messages> {
               if (text.isNotEmpty) {
                 widgets.add(
                   AlignmentContainer(
+                    key: ValueKey(message.id),
                     message: message,
                     alignedRight: alignedRight,
                     verticalPadding: 7,
                     horizontalPadding: 14,
                     child: Column(
                       children: [
-                        MessageCard(key: ValueKey(message.id), text: text),
+                        MessageCard(text: text),
                         CachedLinkPreview(
                           text: message.text,
                           cacheKey: 'message: ${message.id}',

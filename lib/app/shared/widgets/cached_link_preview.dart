@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class CachedLinkPreview extends StatefulWidget {
   final String text;
-  final String cacheKey; // Use the parsed URL as a unique cache key
+  final String cacheKey;
 
   const CachedLinkPreview({
     super.key,
@@ -56,10 +56,7 @@ class _CachedLinkPreviewState extends State<CachedLinkPreview> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const SizedBox(
-        height: 50,
-        child: Center(child: CircularProgressIndicator.adaptive()),
-      );
+      return const SizedBox.shrink();
     }
 
     return LinkPreview(
