@@ -47,8 +47,8 @@ class AppRouter extends RootStackRouter {
         AutoRoute(path: 'draft/:id', page: PostUpdate.page),
 
         AutoRoute(path: 'profile/:id', page: ProfileRoute.page),
-        AutoRoute(path: 'profile/:id/edit', page: EditProfile.page),
-        AutoRoute(path: 'profile/:id/following', page: FollowingRoute.page),
+        AutoRoute(path: 'profile/edit', page: EditProfile.page),
+        AutoRoute(path: 'profile/:id/:name/following', page: FollowingRoute.page),
         AutoRoute(path: 'muted-and-blocked', page: MutedAndBlocked.page),
 
         AutoRoute(

@@ -18,17 +18,16 @@ import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 @RoutePage()
 class EditProfile extends StatefulWidget {
-  const EditProfile({super.key, required this.user});
-
-  final User user;
+  const EditProfile({super.key});
 
   @override
   State<EditProfile> createState() => _EditProfileState();
 }
 
 class _EditProfileState extends State<EditProfile> {
-  late String name = widget.user.name;
-  late String bio = widget.user.bio;
+  late User user = context.read<AuthBloc>().state.user!;
+  late String name = user.name;
+  late String bio = user.bio;
   File? image;
   File? coverPhoto;
 
@@ -64,8 +63,8 @@ class _EditProfileState extends State<EditProfile> {
                   onPressed:
                       (image == null &&
                           coverPhoto == null &&
-                          name == widget.user.name &&
-                          bio == widget.user.bio)
+                          name == user.name &&
+                          bio == user.bio)
                       ? null
                       : () {
                           showDialog(
@@ -75,7 +74,7 @@ class _EditProfileState extends State<EditProfile> {
                                 context.loaderOverlay.show();
                                 context.read<UserDetailBloc>().add(
                                   UserDetailEvent.patch(
-                                    user: widget.user,
+                                    user: user,
                                     name: name,
                                     bio: bio,
                                     imagePath: image?.path,
@@ -143,8 +142,8 @@ class _EditProfileState extends State<EditProfile> {
                             image: DecorationImage(
                               image: coverPhoto == null
                                   ? CachedNetworkImageProvider(
-                                      widget.user.coverPhoto,
-                                      cacheKey: 'cover ${widget.user.id}',
+                                      user.coverPhoto,
+                                      cacheKey: 'cover ${user.id}',
                                     )
                                   : FileImage(coverPhoto!),
                               fit: BoxFit.cover,
@@ -167,7 +166,7 @@ class _EditProfileState extends State<EditProfile> {
                     child: Column(
                       children: [
                         ProfileTextFormField(
-                          initialValue: widget.user.name,
+                          initialValue: user.name,
                           label: 'Name',
                           onChanged: (value) {
                             setState(() {
@@ -179,7 +178,7 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                         SizedBox(height: 15),
                         ProfileTextFormField(
-                          initialValue: widget.user.bio,
+                          initialValue: user.bio,
                           label: 'Bio',
                           onChanged: (value) {
                             setState(() {
@@ -244,8 +243,8 @@ class _EditProfileState extends State<EditProfile> {
                               image: DecorationImage(
                                 image: image == null
                                     ? CachedNetworkImageProvider(
-                                        widget.user.image,
-                                        cacheKey: 'profile ${widget.user.id}',
+                                        user.image,
+                                        cacheKey: 'profile ${user.id}',
                                       )
                                     : FileImage(image!),
                                 fit: BoxFit.cover,

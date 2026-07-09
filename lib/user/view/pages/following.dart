@@ -13,8 +13,8 @@ import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 class FollowingPage extends StatelessWidget {
   const FollowingPage({
     super.key,
-    required this.userId,
-    required this.userName,
+    @PathParam('id') required this.userId,
+    @PathParam('name') required this.userName,
   });
 
   final int userId;

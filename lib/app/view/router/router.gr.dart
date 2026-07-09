@@ -25,10 +25,10 @@ import 'package:democracy/app/view/widgets/settings.dart' as _i41;
 import 'package:democracy/auth/view/failure.dart' as _i17;
 import 'package:democracy/auth/view/login.dart' as _i25;
 import 'package:democracy/auth/view/splash.dart' as _i42;
-import 'package:democracy/ballot/models/ballot.dart' as _i54;
+import 'package:democracy/ballot/models/ballot.dart' as _i53;
 import 'package:democracy/ballot/view/ballot_detail.dart' as _i1;
 import 'package:democracy/ballot/view/ballot_page.dart' as _i2;
-import 'package:democracy/broadcast/models/broadcast.dart' as _i57;
+import 'package:democracy/broadcast/models/broadcast.dart' as _i56;
 import 'package:democracy/broadcast/view/broadcast_create.dart' as _i4;
 import 'package:democracy/broadcast/view/live_stream.dart' as _i23;
 import 'package:democracy/broadcast/view/meeting_detail.dart' as _i26;
@@ -38,16 +38,16 @@ import 'package:democracy/chat/models/message.dart' as _i50;
 import 'package:democracy/chat/view/chat_detail.dart' as _i5;
 import 'package:democracy/chat/view/create_message.dart' as _i11;
 import 'package:democracy/chat/view/edit_message.dart' as _i14;
-import 'package:democracy/constitution/models/section.dart' as _i58;
+import 'package:democracy/constitution/models/section.dart' as _i57;
 import 'package:democracy/constitution/view/constitution.dart' as _i10;
 import 'package:democracy/notification/view/notifications.dart' as _i29;
 import 'package:democracy/notification/view/preferences.dart' as _i36;
-import 'package:democracy/petition/models/petition.dart' as _i56;
+import 'package:democracy/petition/models/petition.dart' as _i55;
 import 'package:democracy/petition/view/petition_create.dart' as _i30;
 import 'package:democracy/petition/view/petition_detail.dart' as _i31;
 import 'package:democracy/petition/view/petition_page.dart' as _i32;
 import 'package:democracy/petition/view/widgets/supporters.dart' as _i43;
-import 'package:democracy/post/models/post.dart' as _i53;
+import 'package:democracy/post/models/post.dart' as _i52;
 import 'package:democracy/post/view/community_note_create.dart' as _i7;
 import 'package:democracy/post/view/community_note_detail.dart' as _i8;
 import 'package:democracy/post/view/community_notes.dart' as _i9;
@@ -55,12 +55,12 @@ import 'package:democracy/post/view/draft_posts.dart' as _i13;
 import 'package:democracy/post/view/post_create.dart' as _i33;
 import 'package:democracy/post/view/post_detail.dart' as _i34;
 import 'package:democracy/post/view/post_update.dart' as _i35;
-import 'package:democracy/survey/models/survey.dart' as _i55;
+import 'package:democracy/survey/models/survey.dart' as _i54;
 import 'package:democracy/survey/view/survey_page.dart' as _i44;
 import 'package:democracy/survey/view/survey_process/page.dart' as _i45;
 import 'package:democracy/survey/view/survey_process/response_page.dart'
     as _i38;
-import 'package:democracy/user/models/user.dart' as _i51;
+import 'package:democracy/user/models/user.dart' as _i58;
 import 'package:democracy/user/view/edit_profile.dart' as _i15;
 import 'package:democracy/user/view/pages/follow_recommendations.dart' as _i18;
 import 'package:democracy/user/view/pages/following.dart' as _i19;
@@ -68,7 +68,7 @@ import 'package:democracy/user/view/pages/muted_and_blocked.dart' as _i28;
 import 'package:democracy/user/view/pages/users.dart' as _i46;
 import 'package:democracy/user/view/profile.dart' as _i37;
 import 'package:flutter/material.dart' as _i48;
-import 'package:latlong2/latlong.dart' as _i52;
+import 'package:latlong2/latlong.dart' as _i51;
 
 /// generated route for
 /// [_i1.BallotDetail]
@@ -601,49 +601,18 @@ class EditMessageArgs {
 
 /// generated route for
 /// [_i15.EditProfile]
-class EditProfile extends _i47.PageRouteInfo<EditProfileArgs> {
-  EditProfile({
-    _i48.Key? key,
-    required _i51.User user,
-    List<_i47.PageRouteInfo>? children,
-  }) : super(
-         EditProfile.name,
-         args: EditProfileArgs(key: key, user: user),
-         initialChildren: children,
-       );
+class EditProfile extends _i47.PageRouteInfo<void> {
+  const EditProfile({List<_i47.PageRouteInfo>? children})
+    : super(EditProfile.name, initialChildren: children);
 
   static const String name = 'EditProfile';
 
   static _i47.PageInfo page = _i47.PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<EditProfileArgs>();
-      return _i15.EditProfile(key: args.key, user: args.user);
+      return const _i15.EditProfile();
     },
   );
-}
-
-class EditProfileArgs {
-  const EditProfileArgs({this.key, required this.user});
-
-  final _i48.Key? key;
-
-  final _i51.User user;
-
-  @override
-  String toString() {
-    return 'EditProfileArgs{key: $key, user: $user}';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! EditProfileArgs) return false;
-    return key == other.key && user == other.user;
-  }
-
-  @override
-  int get hashCode => key.hashCode ^ user.hashCode;
 }
 
 /// generated route for
@@ -736,6 +705,7 @@ class FollowingRoute extends _i47.PageRouteInfo<FollowingRouteArgs> {
   }) : super(
          FollowingRoute.name,
          args: FollowingRouteArgs(key: key, userId: userId, userName: userName),
+         rawPathParams: {'id': userId, 'name': userName},
          initialChildren: children,
        );
 
@@ -744,7 +714,13 @@ class FollowingRoute extends _i47.PageRouteInfo<FollowingRouteArgs> {
   static _i47.PageInfo page = _i47.PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<FollowingRouteArgs>();
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<FollowingRouteArgs>(
+        orElse: () => FollowingRouteArgs(
+          userId: pathParams.getInt('id'),
+          userName: pathParams.getString('name'),
+        ),
+      );
       return _i19.FollowingPage(
         key: args.key,
         userId: args.userId,
@@ -990,7 +966,7 @@ class LiveStreamArgs {
 class Location extends _i47.PageRouteInfo<LocationArgs> {
   Location({
     _i48.Key? key,
-    required void Function(_i52.LatLng) onLocation,
+    required void Function(_i51.LatLng) onLocation,
     List<_i47.PageRouteInfo>? children,
   }) : super(
          Location.name,
@@ -1014,7 +990,7 @@ class LocationArgs {
 
   final _i48.Key? key;
 
-  final void Function(_i52.LatLng) onLocation;
+  final void Function(_i51.LatLng) onLocation;
 
   @override
   String toString() {
@@ -1235,13 +1211,13 @@ class PetitionRoute extends _i47.PageRouteInfo<void> {
 class PostCreateRoute extends _i47.PageRouteInfo<PostCreateRouteArgs> {
   PostCreateRoute({
     _i48.Key? key,
-    _i53.Post? replyTo,
-    _i53.Post? repostOf,
-    _i54.Ballot? ballot,
-    _i55.Survey? survey,
-    _i56.Petition? petition,
-    _i57.Broadcast? broadcast,
-    _i58.Section? section,
+    _i52.Post? replyTo,
+    _i52.Post? repostOf,
+    _i53.Ballot? ballot,
+    _i54.Survey? survey,
+    _i55.Petition? petition,
+    _i56.Broadcast? broadcast,
+    _i57.Section? section,
     List<_i47.PageRouteInfo>? children,
   }) : super(
          PostCreateRoute.name,
@@ -1294,19 +1270,19 @@ class PostCreateRouteArgs {
 
   final _i48.Key? key;
 
-  final _i53.Post? replyTo;
+  final _i52.Post? replyTo;
 
-  final _i53.Post? repostOf;
+  final _i52.Post? repostOf;
 
-  final _i54.Ballot? ballot;
+  final _i53.Ballot? ballot;
 
-  final _i55.Survey? survey;
+  final _i54.Survey? survey;
 
-  final _i56.Petition? petition;
+  final _i55.Petition? petition;
 
-  final _i57.Broadcast? broadcast;
+  final _i56.Broadcast? broadcast;
 
-  final _i58.Section? section;
+  final _i57.Section? section;
 
   @override
   String toString() {
@@ -1828,7 +1804,7 @@ class UsersRoute extends _i47.PageRouteInfo<UsersRouteArgs> {
   UsersRoute({
     _i48.Key? key,
     required String title,
-    required List<_i51.User> users,
+    required List<_i58.User> users,
     List<_i47.PageRouteInfo>? children,
   }) : super(
          UsersRoute.name,
@@ -1858,7 +1834,7 @@ class UsersRouteArgs {
 
   final String title;
 
-  final List<_i51.User> users;
+  final List<_i58.User> users;
 
   @override
   String toString() {
@@ -1871,12 +1847,12 @@ class UsersRouteArgs {
     if (other is! UsersRouteArgs) return false;
     return key == other.key &&
         title == other.title &&
-        const _i59.ListEquality<_i51.User>().equals(users, other.users);
+        const _i59.ListEquality<_i58.User>().equals(users, other.users);
   }
 
   @override
   int get hashCode =>
       key.hashCode ^
       title.hashCode ^
-      const _i59.ListEquality<_i51.User>().hash(users);
+      const _i59.ListEquality<_i58.User>().hash(users);
 }

@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 const List<Tab> tabs = <Tab>[
   Tab(text: 'Posts'),
@@ -132,6 +133,7 @@ class _ProfilePageState extends State<_Profile> {
   Widget build(BuildContext context) {
     User currentUser = context.read<AuthBloc>().state.user!;
     bool isCurrentUser = currentUser.id == widget.user.id;
+    final responsive = ResponsiveBreakpoints.of(context);
 
     return MultiBlocProvider(
       providers: [
@@ -246,8 +248,8 @@ class _ProfilePageState extends State<_Profile> {
                       SliverPersistentHeader(
                         delegate: _TabBarAppBarDelegate(
                           TabBar(
-                            isScrollable: isCurrentUser,
-                            tabAlignment: isCurrentUser
+                            isScrollable: isCurrentUser && responsive.isMobile,
+                            tabAlignment: isCurrentUser && responsive.isMobile
                                 ? TabAlignment.center
                                 : TabAlignment.fill,
                             labelStyle: Theme.of(context).textTheme.titleMedium,
@@ -417,7 +419,7 @@ class ProfileAppBarDelegate extends SliverPersistentHeaderDelegate {
                   isCurrentUser
                       ? OutlinedButton(
                           onPressed: () {
-                            context.router.push(EditProfile(user: user));
+                            context.router.push(EditProfile());
                           },
                           child: Text('Edit profile'),
                         )
@@ -617,13 +619,17 @@ class _UserDetails extends StatelessWidget {
               ? Column(children: [SizedBox(height: 5), Text(user.bio)])
               : SizedBox.shrink(),
           SizedBox(height: 5),
-          GestureDetector(
+          InkWell(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            hoverColor: Colors.transparent,
             onTap: () {
               context.router.push(
                 FollowingRoute(userId: user.id, userName: user.name),
               );
             },
             child: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text('${user.following} Following'),
                 SizedBox(width: 10),
