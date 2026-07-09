@@ -17,14 +17,14 @@ final class AutocompleteState extends Equatable {
   final String searchTerm; // Used on redo event; also for bloc build when
   final List<String> hashtags;
   final List<String> words;
-  final List<AutocompleteUser> users;
+  final List<SimpleUser> users;
 
   AutocompleteState copyWith({
     AutocompleteStatus? status,
     String? searchTerm,
     List<String>? hashtags,
     List<String>? words,
-    List<AutocompleteUser>? users,
+    List<SimpleUser>? users,
     int? postId,
   }) {
     return AutocompleteState(

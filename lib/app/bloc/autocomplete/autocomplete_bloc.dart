@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
-import 'package:democracy/app/models/autocomplete_user.dart';
+import 'package:democracy/app/models/simple_user.dart';
 import 'package:democracy/app/shared/utils/transformers.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -57,7 +57,7 @@ class AutocompleteBloc extends Bloc<AutocompleteEvent, AutocompleteState> {
     if (event.payload['response_status'] == 200) {
       List<String> hashtags = [];
       List<String> words = [];
-      List<AutocompleteUser> users = [];
+      List<SimpleUser> users = [];
       for (Map<String, dynamic> result in event.payload['data']) {
         if (result['type'] == 'hashtag') {
           hashtags.add(result['text']);
@@ -66,7 +66,7 @@ class AutocompleteBloc extends Bloc<AutocompleteEvent, AutocompleteState> {
           words.add(result['text']);
         }
         if (result['type'] == 'user') {
-          users.add(AutocompleteUser.fromJson(result));
+          users.add(SimpleUser.fromJson(result));
         }
       }
       emit(

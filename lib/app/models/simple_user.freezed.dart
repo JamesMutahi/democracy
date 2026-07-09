@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'autocomplete_user.dart';
+part of 'simple_user.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -13,22 +13,22 @@ part of 'autocomplete_user.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$AutocompleteUser {
+mixin _$SimpleUser {
 
  int get id; String get username; String get name; String get image;
-/// Create a copy of AutocompleteUser
+/// Create a copy of SimpleUser
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$AutocompleteUserCopyWith<AutocompleteUser> get copyWith => _$AutocompleteUserCopyWithImpl<AutocompleteUser>(this as AutocompleteUser, _$identity);
+$SimpleUserCopyWith<SimpleUser> get copyWith => _$SimpleUserCopyWithImpl<SimpleUser>(this as SimpleUser, _$identity);
 
-  /// Serializes this AutocompleteUser to a JSON map.
+  /// Serializes this SimpleUser to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AutocompleteUser&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.name, name) || other.name == name)&&(identical(other.image, image) || other.image == image));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SimpleUser&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.name, name) || other.name == name)&&(identical(other.image, image) || other.image == image));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -37,15 +37,15 @@ int get hashCode => Object.hash(runtimeType,id,username,name,image);
 
 @override
 String toString() {
-  return 'AutocompleteUser(id: $id, username: $username, name: $name, image: $image)';
+  return 'SimpleUser(id: $id, username: $username, name: $name, image: $image)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $AutocompleteUserCopyWith<$Res>  {
-  factory $AutocompleteUserCopyWith(AutocompleteUser value, $Res Function(AutocompleteUser) _then) = _$AutocompleteUserCopyWithImpl;
+abstract mixin class $SimpleUserCopyWith<$Res>  {
+  factory $SimpleUserCopyWith(SimpleUser value, $Res Function(SimpleUser) _then) = _$SimpleUserCopyWithImpl;
 @useResult
 $Res call({
  int id, String username, String name, String image
@@ -56,14 +56,14 @@ $Res call({
 
 }
 /// @nodoc
-class _$AutocompleteUserCopyWithImpl<$Res>
-    implements $AutocompleteUserCopyWith<$Res> {
-  _$AutocompleteUserCopyWithImpl(this._self, this._then);
+class _$SimpleUserCopyWithImpl<$Res>
+    implements $SimpleUserCopyWith<$Res> {
+  _$SimpleUserCopyWithImpl(this._self, this._then);
 
-  final AutocompleteUser _self;
-  final $Res Function(AutocompleteUser) _then;
+  final SimpleUser _self;
+  final $Res Function(SimpleUser) _then;
 
-/// Create a copy of AutocompleteUser
+/// Create a copy of SimpleUser
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? username = null,Object? name = null,Object? image = null,}) {
   return _then(_self.copyWith(
@@ -78,8 +78,8 @@ as String,
 }
 
 
-/// Adds pattern-matching-related methods to [AutocompleteUser].
-extension AutocompleteUserPatterns on AutocompleteUser {
+/// Adds pattern-matching-related methods to [SimpleUser].
+extension SimpleUserPatterns on SimpleUser {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -92,10 +92,10 @@ extension AutocompleteUserPatterns on AutocompleteUser {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _AutocompleteUser value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SimpleUser value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _AutocompleteUser() when $default != null:
+case _SimpleUser() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -114,10 +114,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _AutocompleteUser value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SimpleUser value)  $default,){
 final _that = this;
 switch (_that) {
-case _AutocompleteUser():
+case _SimpleUser():
 return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -132,10 +132,10 @@ return $default(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _AutocompleteUser value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SimpleUser value)?  $default,){
 final _that = this;
 switch (_that) {
-case _AutocompleteUser() when $default != null:
+case _SimpleUser() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -155,7 +155,7 @@ return $default(_that);case _:
 
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String username,  String name,  String image)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _AutocompleteUser() when $default != null:
+case _SimpleUser() when $default != null:
 return $default(_that.id,_that.username,_that.name,_that.image);case _:
   return orElse();
 
@@ -176,7 +176,7 @@ return $default(_that.id,_that.username,_that.name,_that.image);case _:
 
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String username,  String name,  String image)  $default,) {final _that = this;
 switch (_that) {
-case _AutocompleteUser():
+case _SimpleUser():
 return $default(_that.id,_that.username,_that.name,_that.image);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -193,7 +193,7 @@ return $default(_that.id,_that.username,_that.name,_that.image);}
 
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String username,  String name,  String image)?  $default,) {final _that = this;
 switch (_that) {
-case _AutocompleteUser() when $default != null:
+case _SimpleUser() when $default != null:
 return $default(_that.id,_that.username,_that.name,_that.image);case _:
   return null;
 
@@ -205,29 +205,29 @@ return $default(_that.id,_that.username,_that.name,_that.image);case _:
 /// @nodoc
 @JsonSerializable()
 
-class _AutocompleteUser implements AutocompleteUser {
-  const _AutocompleteUser({required this.id, required this.username, required this.name, required this.image});
-  factory _AutocompleteUser.fromJson(Map<String, dynamic> json) => _$AutocompleteUserFromJson(json);
+class _SimpleUser implements SimpleUser {
+  const _SimpleUser({required this.id, required this.username, required this.name, required this.image});
+  factory _SimpleUser.fromJson(Map<String, dynamic> json) => _$SimpleUserFromJson(json);
 
 @override final  int id;
 @override final  String username;
 @override final  String name;
 @override final  String image;
 
-/// Create a copy of AutocompleteUser
+/// Create a copy of SimpleUser
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$AutocompleteUserCopyWith<_AutocompleteUser> get copyWith => __$AutocompleteUserCopyWithImpl<_AutocompleteUser>(this, _$identity);
+_$SimpleUserCopyWith<_SimpleUser> get copyWith => __$SimpleUserCopyWithImpl<_SimpleUser>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$AutocompleteUserToJson(this, );
+  return _$SimpleUserToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AutocompleteUser&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.name, name) || other.name == name)&&(identical(other.image, image) || other.image == image));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SimpleUser&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.name, name) || other.name == name)&&(identical(other.image, image) || other.image == image));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -236,15 +236,15 @@ int get hashCode => Object.hash(runtimeType,id,username,name,image);
 
 @override
 String toString() {
-  return 'AutocompleteUser(id: $id, username: $username, name: $name, image: $image)';
+  return 'SimpleUser(id: $id, username: $username, name: $name, image: $image)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$AutocompleteUserCopyWith<$Res> implements $AutocompleteUserCopyWith<$Res> {
-  factory _$AutocompleteUserCopyWith(_AutocompleteUser value, $Res Function(_AutocompleteUser) _then) = __$AutocompleteUserCopyWithImpl;
+abstract mixin class _$SimpleUserCopyWith<$Res> implements $SimpleUserCopyWith<$Res> {
+  factory _$SimpleUserCopyWith(_SimpleUser value, $Res Function(_SimpleUser) _then) = __$SimpleUserCopyWithImpl;
 @override @useResult
 $Res call({
  int id, String username, String name, String image
@@ -255,17 +255,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$AutocompleteUserCopyWithImpl<$Res>
-    implements _$AutocompleteUserCopyWith<$Res> {
-  __$AutocompleteUserCopyWithImpl(this._self, this._then);
+class __$SimpleUserCopyWithImpl<$Res>
+    implements _$SimpleUserCopyWith<$Res> {
+  __$SimpleUserCopyWithImpl(this._self, this._then);
 
-  final _AutocompleteUser _self;
-  final $Res Function(_AutocompleteUser) _then;
+  final _SimpleUser _self;
+  final $Res Function(_SimpleUser) _then;
 
-/// Create a copy of AutocompleteUser
+/// Create a copy of SimpleUser
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? username = null,Object? name = null,Object? image = null,}) {
-  return _then(_AutocompleteUser(
+  return _then(_SimpleUser(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
