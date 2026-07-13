@@ -267,3 +267,53 @@ class _MainPageState extends State<MainPage> {
     );
   }
 }
+
+@RoutePage()
+class PostShell extends StatelessWidget {
+  const PostShell({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AutoRouter();
+  }
+}
+
+@RoutePage()
+class HubShell extends StatelessWidget {
+  const HubShell({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AutoRouter();
+  }
+}
+
+@RoutePage()
+class ChatShell extends StatelessWidget {
+  const ChatShell({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AutoRouter();
+  }
+}
+
+@RoutePage()
+class PetitionShell extends StatelessWidget {
+  const PetitionShell({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AutoRouter();
+  }
+}
+
+@RoutePage()
+class ProfileShell extends StatelessWidget {
+  const ProfileShell({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AutoRouter();
+  }
+}

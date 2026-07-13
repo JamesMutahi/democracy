@@ -276,6 +276,7 @@ class _ChatDetailState extends State<_ChatDetail> {
           },
           child: Scaffold(
             appBar: AppBar(
+              leading: AutoLeadingButton(),
               titleSpacing: 0,
               title: showMessageActions
                   ? SizedBox.shrink()
@@ -578,72 +579,75 @@ class _MessageActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        if (messages.length == 1)
-          if (!messages.any((message) => message.author.id != currentUser.id))
-            if (DateTime.now().difference(messages.first.createdAt) <
-                Duration(minutes: 15))
-              IconButton(
-                onPressed: () {
-                  // TODO: How to do page route builder
-                  context.router.push(
-                    EditMessage(chat: chat, message: messages.first),
-                  );
-                  // Navigator.of(context).push(
-                  //   PageRouteBuilder(
-                  //     opaque: false,
-                  //     pageBuilder: (_, _, _) =>
-                  //         EditMessage(chat: chat, message: messages.first),
-                  //   ),
-                  // );
-                },
-                icon: Icon(Symbols.edit_rounded),
-              ),
-        IconButton(
-          onPressed: () async {
-            context.read<MessageActionsCubit>().closeActionButtons();
-            _copy(
-              navigatorKey: context.router.navigatorKey,
-              messages: messages,
-            );
-          },
-          icon: Icon(Symbols.content_copy),
-        ),
-        (messages.any((message) => message.author.id != currentUser.id))
-            ? SizedBox.shrink()
-            : IconButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => CustomDialog(
-                      title: 'Delete message',
-                      content:
-                          'Are you sure you want to delete this? \n'
-                          'The message will be permanently deleted',
-                      button1Text: 'Yes',
-                      onButton1Pressed: () {
-                        context.router.popTop();
-                        context.read<MessageDetailBloc>().add(
-                          MessageDetailEvent.delete(
-                            messages: messages.toList(),
-                          ),
-                        );
-                        context
-                            .read<MessageActionsCubit>()
-                            .closeActionButtons();
-                      },
-                      button2Text: 'No',
-                      onButton2Pressed: () {
-                        context.router.popTop();
-                      },
-                    ),
-                  );
-                },
-                icon: Icon(Symbols.delete_rounded),
-              ),
-      ],
+    return Container(
+      margin: EdgeInsets.only(right: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          if (messages.length == 1)
+            if (!messages.any((message) => message.author.id != currentUser.id))
+              if (DateTime.now().difference(messages.first.createdAt) <
+                  Duration(minutes: 15))
+                IconButton(
+                  onPressed: () {
+                    // TODO: Page route builder
+                    context.router.push(
+                      EditMessage(chat: chat, message: messages.first),
+                    );
+                    // Navigator.of(context).push(
+                    //   PageRouteBuilder(
+                    //     opaque: false,
+                    //     pageBuilder: (_, _, _) =>
+                    //         EditMessage(chat: chat, message: messages.first),
+                    //   ),
+                    // );
+                  },
+                  icon: Icon(Symbols.edit_rounded),
+                ),
+          IconButton(
+            onPressed: () async {
+              context.read<MessageActionsCubit>().closeActionButtons();
+              _copy(
+                navigatorKey: context.router.navigatorKey,
+                messages: messages,
+              );
+            },
+            icon: Icon(Symbols.content_copy),
+          ),
+          (messages.any((message) => message.author.id != currentUser.id))
+              ? SizedBox.shrink()
+              : IconButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => CustomDialog(
+                        title: 'Delete message',
+                        content:
+                            'Are you sure you want to delete this? \n'
+                            'The message will be permanently deleted',
+                        button1Text: 'Yes',
+                        onButton1Pressed: () {
+                          context.router.popTop();
+                          context.read<MessageDetailBloc>().add(
+                            MessageDetailEvent.delete(
+                              messages: messages.toList(),
+                            ),
+                          );
+                          context
+                              .read<MessageActionsCubit>()
+                              .closeActionButtons();
+                        },
+                        button2Text: 'No',
+                        onButton2Pressed: () {
+                          context.router.popTop();
+                        },
+                      ),
+                    );
+                  },
+                  icon: Icon(Symbols.delete_rounded),
+                ),
+        ],
+      ),
     );
   }
 }

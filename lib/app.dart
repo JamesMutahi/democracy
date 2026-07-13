@@ -60,6 +60,7 @@ class _MyAppState extends State<MyApp> {
                 darkTheme: AppTheme.dark,
                 themeMode: themeMode,
                 routerConfig: _appRouter.config(
+                  includePrefixMatches: true,
                   navigatorObservers: () => [
                     AppRouteObserver(routeCubit: routeCubit),
                   ],
@@ -101,7 +102,6 @@ class _Listeners extends StatelessWidget {
           listener: (context, state) {
             switch (state) {
               case LoggedIn():
-                context.read<AuthBloc>().add(const AuthEvent.authenticate());
               case LoggedOut():
                 context.read<AuthBloc>().add(const AuthEvent.authenticate());
             }

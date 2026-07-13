@@ -355,7 +355,7 @@ class ProfileAppBarDelegate extends SliverPersistentHeaderDelegate {
               elevation: 0.0,
               leading: _ButtonContainer(
                 nameIsScrolled: nameIsScrolled,
-                child: BackButton(),
+                child: AutoLeadingButton(),
               ),
               actions: [
                 _ButtonContainer(

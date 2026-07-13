@@ -121,6 +121,7 @@ class _BallotDetailState extends State<_BallotDetail> {
         },
         child: Scaffold(
           appBar: AppBar(
+            leading: AutoLeadingButton(),
             title: Text('Ballot'),
             actions: [
               Container(

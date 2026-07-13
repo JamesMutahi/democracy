@@ -126,6 +126,7 @@ class _PetitionDetailState extends State<_PetitionDetail> {
         },
         child: Scaffold(
           appBar: AppBar(
+            leading: AutoLeadingButton(),
             title: Text('Petition'),
             actions: [PetitionPopUpMenu(petition: widget.petition)],
           ),

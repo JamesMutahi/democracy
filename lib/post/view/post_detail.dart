@@ -293,7 +293,10 @@ class _PostDetailState extends State<_PostDetail>
             ),
           ],
           child: Scaffold(
-            appBar: AppBar(title: Text('Post')),
+            appBar: AppBar(
+              leading: const AutoLeadingButton(),
+              title: Text('Post'),
+            ),
             body: BlocBuilder<RepliesBloc, RepliesState>(
               buildWhen: (previous, current) {
                 return widget.post.id == current.postId;
