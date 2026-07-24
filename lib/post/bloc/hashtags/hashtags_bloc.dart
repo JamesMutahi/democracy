@@ -30,7 +30,6 @@ class HashtagsBloc extends Bloc<HashtagsEvent, HashtagsState> {
     emit(
       HashtagsState(
         status: HashtagsStatus.loading,
-        hashtags: event.searchTerm.isEmpty ? [] : ['#${event.searchTerm}'],
         searchTerm: event.searchTerm,
       ),
     );
@@ -60,9 +59,7 @@ class HashtagsBloc extends Bloc<HashtagsEvent, HashtagsState> {
       emit(
         state.copyWith(
           status: HashtagsStatus.success,
-          hashtags: hashtags.isEmpty && searchTerm.isNotEmpty
-              ? ['#$searchTerm']
-              : hashtags,
+          hashtags: hashtags,
           searchTerm: searchTerm,
         ),
       );

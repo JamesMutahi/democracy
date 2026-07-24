@@ -17,7 +17,6 @@ class APIProvider {
     Petition? petition,
     Broadcast? broadcast,
     Section? section,
-    List<Map> tags = const [],
     List<Map> assets = const [],
     LatLng? location,
   }) async {
@@ -39,11 +38,6 @@ class APIProvider {
       };
 
       /// Flatten keys for lists: Manually add tags in a format Django Rest Framework understands
-      for (int i = 0; i < tags.length; i++) {
-        data["tags[$i]id"] = tags[i]['id'];
-        data["tags[$i]text"] = tags[i]['text'];
-      }
-
       for (int i = 0; i < assets.length; i++) {
         data["assets[$i]name"] = assets[i]['name'];
         data["assets[$i]content_type"] = assets[i]['type'];

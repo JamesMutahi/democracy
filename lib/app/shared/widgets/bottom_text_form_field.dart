@@ -18,7 +18,6 @@ import 'package:path_provider/path_provider.dart';
 class BottomTextFormField extends StatefulWidget {
   const BottomTextFormField({
     super.key,
-    this.containerKey,
     required this.focusNode,
     required this.showCursor,
     required this.readOnly,
@@ -48,7 +47,6 @@ class BottomTextFormField extends StatefulWidget {
     this.onSend,
   });
 
-  final Key? containerKey;
   final FocusNode focusNode;
   final bool showCursor;
   final bool readOnly;
@@ -125,7 +123,6 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
   @override
   Widget build(BuildContext context) {
     return Container(
-      key: widget.containerKey,
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),

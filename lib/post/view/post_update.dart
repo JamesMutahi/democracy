@@ -5,6 +5,7 @@ import 'package:democracy/app/bloc/repository/database/database_repository.dart'
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/camera/camera.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
+import 'package:democracy/app/shared/utils/custom_editing_controller.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
@@ -31,7 +32,6 @@ import 'package:democracy/survey/view/widgets/survey_tile.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertagger/fluttertagger.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -90,7 +90,8 @@ class _PostUpdate extends StatefulWidget {
 }
 
 class _PostUpdateState extends State<_PostUpdate> {
-  late final _controller = FlutterTaggerController();
+  final _controller = CustomEditingController();
+  final _focusNode = FocusNode();
   final ValueKey _centerKey = ValueKey('Center');
 
   bool _canPost = true;
@@ -111,7 +112,6 @@ class _PostUpdateState extends State<_PostUpdate> {
     // Initialize flutter tagger
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _controller.text = draft.body;
-      _controller.formatTags();
     });
 
     // Initialize media
@@ -131,13 +131,9 @@ class _PostUpdateState extends State<_PostUpdate> {
   void _createPost() {
     context.loaderOverlay.show();
 
-    final tags = _controller.tags
-        .map((tag) => {'id': tag.id, 'text': tag.text})
-        .toList();
-
     context.read<PostCreateBloc>().add(
       PostCreateEvent.create(
-        body: _controller.formattedText,
+        body: _controller.text,
         status: PostStatus.published,
         replyTo: widget.draft.replyTo,
         repostOf: widget.draft.repostOf,
@@ -146,7 +142,6 @@ class _PostUpdateState extends State<_PostUpdate> {
         petition: widget.draft.petition,
         broadcast: widget.draft.broadcast,
         section: _selectedSection,
-        tags: tags,
         filePaths: [
           ..._media.map((m) => m.path),
           if (_document != null) _document!.path,
@@ -170,12 +165,8 @@ class _PostUpdateState extends State<_PostUpdate> {
   void _saveDraft() {
     context.loaderOverlay.show();
 
-    final tags = _controller.tags
-        .map((tag) => {'id': tag.id, 'text': tag.text})
-        .toList();
-
     DraftPost draft = widget.draft;
-    draft.body = _controller.formattedText;
+    draft.body = _controller.text;
     draft.replyTo = widget.draft.replyTo;
     draft.repostOf = widget.draft.repostOf;
     draft.ballot = widget.draft.ballot;
@@ -183,7 +174,6 @@ class _PostUpdateState extends State<_PostUpdate> {
     draft.petition = widget.draft.petition;
     draft.broadcast = widget.draft.broadcast;
     draft.section = _selectedSection;
-    draft.tags = tags;
     draft.filePaths = [
       ..._media.map((m) => m.path),
       if (_document != null) _document!.path,
@@ -351,19 +341,19 @@ class _PostUpdateState extends State<_PostUpdate> {
                       _media.add(file);
                     }
                   });
-                  _updatePostButtonState(_controller.formattedText);
+                  _updatePostButtonState(_controller.text);
                 },
                 onNewDocument: (file) {
                   setState(() => _document = file);
-                  _updatePostButtonState(_controller.formattedText);
+                  _updatePostButtonState(_controller.text);
                 },
                 onLocation: (point) {
                   setState(() => _selectedLocation = point);
-                  _updatePostButtonState(_controller.formattedText);
+                  _updatePostButtonState(_controller.text);
                 },
                 onNewSection: (section) {
                   setState(() => _selectedSection = section);
-                  _updatePostButtonState(_controller.formattedText);
+                  _updatePostButtonState(_controller.text);
                 },
               ),
             ),
@@ -391,6 +381,7 @@ class _PostUpdateState extends State<_PostUpdate> {
                   PostAuthor(),
                   PostTextField(
                     controller: _controller,
+                    focusNode: _focusNode,
                     hintText: widget.draft.replyTo != null
                         ? 'Reply'
                         : "What's new?",

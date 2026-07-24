@@ -287,9 +287,7 @@ class CustomUserTagElement extends LinkableElement {
 }
 
 class HashtagLinkifier extends Linkifier {
-  ///This matches any string in this format
-  ///"#{id}#{hashtagTitle}#"
-  final _userTagRegex = RegExp(r'^(.*?)(\#\w+\#..+?\#)');
+  final _hashtagRegex = RegExp(r'#(\w+)');
 
   @override
   List<LinkifyElement> parse(
@@ -300,31 +298,28 @@ class HashtagLinkifier extends Linkifier {
 
     for (var element in elements) {
       if (element is TextElement) {
-        final match = _userTagRegex.firstMatch(element.text);
-
-        if (match == null) {
+        final matches = _hashtagRegex.allMatches(element.text);
+        if (matches.isEmpty) {
           list.add(element);
-        } else {
-          final text = element.text.replaceFirst(match.group(0)!, '');
+          continue;
+        }
 
-          if (match.group(1)?.isNotEmpty == true) {
-            list.add(TextElement(match.group(1)!));
+        int lastEnd = 0;
+        for (final match in matches) {
+          if (match.start > lastEnd) {
+            list.add(TextElement(element.text.substring(lastEnd, match.start)));
           }
+          list.add(HashtagElement(title: match.group(0)!));
+          lastEnd = match.end;
+        }
 
-          if (match.group(2)?.isNotEmpty == true) {
-            final blob = match.group(2)!.split("#");
-            list.add(HashtagElement(title: "#${blob[blob.length - 2]}"));
-          }
-
-          if (text.isNotEmpty) {
-            list.addAll(parse([TextElement(text)], options));
-          }
+        if (lastEnd < element.text.length) {
+          list.add(TextElement(element.text.substring(lastEnd)));
         }
       } else {
         list.add(element);
       }
     }
-
     return list;
   }
 }

@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
+import 'package:democracy/app/shared/utils/custom_editing_controller.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/loader_overlay_widgets.dart';
 import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
@@ -24,7 +25,8 @@ class CommunityNoteCreate extends StatefulWidget {
 }
 
 class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
-  final _controller = TextEditingController();
+  final _controller = CustomEditingController();
+  final _focusNode = FocusNode();
   final ValueKey _centerKey = const ValueKey('center');
 
   bool _disablePostButton = true;
@@ -153,6 +155,7 @@ class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
                                 const PostAuthor(),
                                 PostTextField(
                                   controller: _controller,
+                                  focusNode: _focusNode,
                                   hintText: "What's the note?",
                                   onChanged: (value) {
                                     setState(() {

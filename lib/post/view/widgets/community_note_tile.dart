@@ -40,34 +40,34 @@ class CommunityNoteTile extends StatelessWidget {
     var timeFormat = DateFormat('hh:mm a');
     var dateFormat = DateFormat('dd/MM/yyyy');
 
-    return InkWell(
-      onTap: !navigateToDetailPage
-          ? null
-          : () {
-              context.router.push(
-                CommunityNoteDetail(postId: communityNote.id),
-              );
-            },
-      child: VisibilityDetector(
-        key: Key('${communityNote.id}'),
-        onVisibilityChanged: (visibilityInfo) {
-          var visibilityPercentage = visibilityInfo.visibleFraction * 100;
-          if (visibilityPercentage > 100) {
-            onViewed?.call();
-          }
-        },
-        child: Stack(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: isDependency || hideBorder
-                      ? BorderSide.none
-                      : BorderSide(
-                          color: Theme.of(context).disabledColor.withAlpha(30),
-                        ),
-                ),
+    return VisibilityDetector(
+      key: Key('${communityNote.id}'),
+      onVisibilityChanged: (visibilityInfo) {
+        var visibilityPercentage = visibilityInfo.visibleFraction * 100;
+        if (visibilityPercentage > 100) {
+          onViewed?.call();
+        }
+      },
+      child: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: isDependency || hideBorder
+                    ? BorderSide.none
+                    : BorderSide(
+                        color: Theme.of(context).disabledColor.withAlpha(30),
+                      ),
               ),
+            ),
+            child: InkWell(
+              onTap: !navigateToDetailPage
+                  ? null
+                  : () {
+                      context.router.push(
+                        CommunityNoteDetail(postId: communityNote.id),
+                      );
+                    },
               child: Stack(
                 children: [
                   ThreadLine(
@@ -235,13 +235,13 @@ class CommunityNoteTile extends StatelessWidget {
                 ],
               ),
             ),
-            if (!isDependency)
-              Align(
-                alignment: Alignment.topRight,
-                child: PostPopUp(post: communityNote),
-              ),
-          ],
-        ),
+          ),
+          if (!isDependency)
+            Align(
+              alignment: Alignment.topRight,
+              child: PostPopUp(post: communityNote),
+            ),
+        ],
       ),
     );
   }

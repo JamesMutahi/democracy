@@ -75,11 +75,7 @@ class PostTile extends StatelessWidget {
         child: Column(
           children: [
             InkWell(
-              onTap: () {
-                post.communityNoteOf == null
-                    ? context.router.push(PostDetail(postId: post.id))
-                    : context.router.push(CommunityNoteDetail(postId: post.id));
-              },
+              onTap: () => context.router.push(PostDetail(postId: post.id)),
               child: post.repostType == RepostType.repost
                   ? Column(
                       children: [

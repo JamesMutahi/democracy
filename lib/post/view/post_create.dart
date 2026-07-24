@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
+import 'package:democracy/app/shared/utils/custom_editing_controller.dart';
 import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart'
     show SectionView, MultiMediaView;
 import 'package:democracy/app/shared/widgets/dialogs.dart';
@@ -29,7 +30,6 @@ import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/widgets/survey_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertagger/fluttertagger.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -61,7 +61,8 @@ class PostCreatePage extends StatefulWidget {
 }
 
 class _PostCreatePageState extends State<PostCreatePage> {
-  final _controller = FlutterTaggerController();
+  final _controller = CustomEditingController();
+  final _focusNode = FocusNode();
   final ValueKey _centerKey = const ValueKey('center');
 
   bool _canPost = false;
@@ -74,12 +75,9 @@ class _PostCreatePageState extends State<PostCreatePage> {
   void _createPost() {
     context.loaderOverlay.show();
 
-    final tags = _controller.tags
-        .map((tag) => {'id': tag.id, 'text': tag.text})
-        .toList();
     context.read<PostCreateBloc>().add(
       PostCreateEvent.create(
-        body: _controller.formattedText,
+        body: _controller.text,
         status: PostStatus.published,
         replyTo: widget.replyTo,
         repostOf: widget.repostOf,
@@ -88,7 +86,6 @@ class _PostCreatePageState extends State<PostCreatePage> {
         petition: widget.petition,
         broadcast: widget.broadcast,
         section: widget.section ?? _selectedSection,
-        tags: tags,
         filePaths: [
           ..._media.map((m) => m.path),
           if (_document != null) _document!.path,
@@ -106,14 +103,10 @@ class _PostCreatePageState extends State<PostCreatePage> {
   void _saveDraft() {
     context.loaderOverlay.show();
 
-    final tags = _controller.tags
-        .map((tag) => {'id': tag.id, 'text': tag.text})
-        .toList();
-
     context.read<DraftDetailBloc>().add(
       DraftDetailEvent.create(
         id: null,
-        body: _controller.formattedText,
+        body: _controller.text,
         replyTo: widget.replyTo,
         repostOf: widget.repostOf,
         ballot: widget.ballot,
@@ -121,7 +114,6 @@ class _PostCreatePageState extends State<PostCreatePage> {
         petition: widget.petition,
         broadcast: widget.broadcast,
         section: widget.section ?? _selectedSection,
-        tags: tags,
         filePaths: [
           ..._media.map((m) => m.path),
           if (_document != null) _document!.path,
@@ -275,20 +267,20 @@ class _PostCreatePageState extends State<PostCreatePage> {
                   setState(() {
                     _media.addAll(images);
                   });
-                  _updatePostButtonState(_controller.formattedText);
+                  _updatePostButtonState(_controller.text);
                 },
                 onNewDocument: (file) {
                   setState(() => _document = file);
-                  _updatePostButtonState(_controller.formattedText);
+                  _updatePostButtonState(_controller.text);
                 },
                 onLocation: (point) {
                   setState(() => _selectedLocation = point);
-                  _updatePostButtonState(_controller.formattedText);
+                  _updatePostButtonState(_controller.text);
                 },
                 onNewSection: (section) {
                   if (widget.section == null) {
                     setState(() => _selectedSection = section);
-                    _updatePostButtonState(_controller.formattedText);
+                    _updatePostButtonState(_controller.text);
                   }
                 },
               ),
@@ -321,6 +313,7 @@ class _PostCreatePageState extends State<PostCreatePage> {
                   const PostAuthor(),
                   PostTextField(
                     controller: _controller,
+                    focusNode: _focusNode,
                     hintText: widget.replyTo != null ? 'Reply' : "What's new?",
                     onChanged: _updatePostButtonState,
                     onContentInsertion: (imageFile) {

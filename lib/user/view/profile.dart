@@ -28,7 +28,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 const List<Tab> tabs = <Tab>[
   Tab(text: 'Posts'),
   Tab(text: 'Replies'),
-  Tab(text: 'Community \nNotes'),
+  Tab(text: 'Community notes'),
   Tab(text: 'Petitions'),
 ];
 
@@ -36,7 +36,7 @@ const List<Tab> userTabs = <Tab>[
   Tab(text: 'Posts'),
   Tab(text: 'Replies'),
   Tab(text: 'Likes'),
-  Tab(text: 'Community \nNotes'),
+  Tab(text: 'Community notes'),
   Tab(text: 'Petitions'),
 ];
 
@@ -248,10 +248,8 @@ class _ProfilePageState extends State<_Profile> {
                       SliverPersistentHeader(
                         delegate: _TabBarAppBarDelegate(
                           TabBar(
-                            isScrollable: isCurrentUser && responsive.isMobile,
-                            tabAlignment: isCurrentUser && responsive.isMobile
-                                ? TabAlignment.center
-                                : TabAlignment.fill,
+                            isScrollable: true,
+                            tabAlignment: TabAlignment.center,
                             labelStyle: Theme.of(context).textTheme.titleMedium,
                             dividerColor: Theme.of(
                               context,

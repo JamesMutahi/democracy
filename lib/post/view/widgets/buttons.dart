@@ -282,7 +282,6 @@ class RepostButton extends StatelessWidget {
                         ? post.repostOf
                         : post,
                     repostType: RepostType.repost,
-                    tags: [],
                   ),
                 );
               },

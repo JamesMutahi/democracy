@@ -797,14 +797,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  fluttertagger:
-    dependency: "direct main"
-    description:
-      name: fluttertagger
-      sha256: "04514674b41a063b97901aedf6970d0675b828bd723a0fb9f9dba89b91953382"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.2"
   fluttertoast:
     dependency: "direct main"
     description:

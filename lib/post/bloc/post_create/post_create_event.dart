@@ -14,7 +14,6 @@ class PostCreateEvent with _$PostCreateEvent {
     Petition? petition,
     Broadcast? broadcast,
     Section? section,
-    @Default([]) List<Map<String, String>> tags,
     @Default([]) List<String> filePaths,
     LatLng? location,
   }) = _Create;

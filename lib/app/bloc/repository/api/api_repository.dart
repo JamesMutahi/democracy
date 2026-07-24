@@ -37,7 +37,6 @@ class APIRepository {
     Petition? petition,
     Broadcast? broadcast,
     Section? section,
-    List<Map> tags = const [],
     List<String> filePaths = const [],
     LatLng? location,
   }) async {
@@ -54,7 +53,6 @@ class APIRepository {
       petition: petition,
       broadcast: broadcast,
       section: section,
-      tags: tags,
       assets: assets,
       location: location,
     );

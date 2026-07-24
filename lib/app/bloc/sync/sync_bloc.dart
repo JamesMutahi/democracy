@@ -71,7 +71,6 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
           petition: draft.petition,
           broadcast: draft.broadcast,
           section: draft.section,
-          tags: draft.tags,
           filePaths: draft.filePaths,
           location: draft.location,
         );

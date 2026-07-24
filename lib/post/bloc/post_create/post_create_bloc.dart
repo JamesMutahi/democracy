@@ -54,7 +54,6 @@ class PostCreateBloc extends Bloc<PostCreateEvent, PostCreateState> {
         petition: event.petition,
         broadcast: event.broadcast,
         section: event.section,
-        tags: event.tags,
         filePaths: event.filePaths,
         location: event.location,
       );

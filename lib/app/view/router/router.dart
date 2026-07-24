@@ -54,18 +54,11 @@ class AppRouter extends RootStackRouter {
 
         // POSTS
         AutoRoute(path: 'create-post', page: PostCreateRoute.page),
+        AutoRoute(path: 'post/:id', page: PostDetail.page),
+        AutoRoute(path: 'post/:id/community-notes', page: CommunityNotes.page),
         AutoRoute(
-          path: 'post',
-          page: PostShell.page,
-          children: [
-            AutoRoute(path: ':id', page: PostDetail.page),
-            AutoRoute(path: ':id/community-notes', page: CommunityNotes.page),
-            AutoRoute(
-              path: ':id/create-community-note',
-              page: CommunityNoteCreate.page,
-            ),
-            RedirectRoute(path: '', redirectTo: '/'),
-          ],
+          path: 'post/:id/create-community-note',
+          page: CommunityNoteCreate.page,
         ),
         AutoRoute(path: 'community-note/:id', page: CommunityNoteDetail.page),
 
