@@ -62,14 +62,8 @@ class _PostBodyState extends State<PostBody> {
                 });
               }
             },
-            onUserTagPressed: (userId) {
-              context.router.push(
-                ProfileRoute(
-                  username: widget.post.taggedUsers
-                      .firstWhere((user) => user.id == userId)
-                      .username,
-                ),
-              );
+            onUserTagPressed: (username) {
+              context.router.push(ProfileRoute(username: username));
             },
             onHashtagPressed: (hashtag) {
               context.router.push(

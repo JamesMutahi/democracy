@@ -15,7 +15,7 @@ class CustomText extends StatelessWidget {
   final String? parentText;
   final TextStyle? parentTextStyle;
   final VoidCallback? onParentPressed;
-  final Function(int)? onUserTagPressed;
+  final Function(String)? onUserTagPressed;
   final Function(String)? onHashtagPressed;
 
   CustomText({
@@ -157,11 +157,11 @@ class CustomText extends StatelessWidget {
       } else if (element is CustomUserTagElement) {
         _addText(
           TextSpan(
-            text: element.name,
+            text: element.username,
             style: style.copyWith(color: Colors.purpleAccent),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                onUserTagPressed?.call(int.parse(element.userId));
+                onUserTagPressed?.call(element.username.replaceAll('@', ''));
               },
           ),
         );
@@ -213,9 +213,8 @@ class CustomText extends StatelessWidget {
 }
 
 class CustomUserTagLinkifier extends Linkifier {
-  /// Matches a sequence starting with '@' followed by word characters (alphanumeric and underscores)
-  /// Example: "@john_doe"
-  final _userTagRegex = RegExp(r'^(.*?)(\@[a-zA-Z0-9_]+)');
+  final _userTagRegex = RegExp(r'@(\w+)');
+
 
   @override
   List<LinkifyElement> parse(
@@ -226,38 +225,24 @@ class CustomUserTagLinkifier extends Linkifier {
 
     for (var element in elements) {
       if (element is TextElement) {
-        final match = _userTagRegex.firstMatch(element.text);
-        if (match == null) {
+        final matches = _userTagRegex.allMatches(element.text);
+        if (matches.isEmpty) {
           list.add(element);
-        } else {
-          final fullMatch = match.group(0)!;
-          final prefixText = match.group(1);
-          final rawUserTag = match.group(2)!; // This is the "@username" string
+          continue;
+        }
 
-          // Remove the parsed block from the main string chunk to continue recursion
-          final remainingText = element.text.replaceFirst(fullMatch, '');
-
-          // 1. If there was plain text before the match, add it
-          if (prefixText != null && prefixText.isNotEmpty) {
-            list.add(TextElement(prefixText));
+        int lastEnd = 0;
+        for (final match in matches) {
+          if (match.start > lastEnd) {
+            list.add(TextElement(element.text.substring(lastEnd, match.start)));
           }
 
-          // 2. Add the custom tag element extracting username as the key identifier
-          if (rawUserTag.isNotEmpty) {
-            list.add(
-              CustomUserTagElement(
-                // Strip the '@' to get the clean username string
-                userId: rawUserTag.replaceAll("@", ""),
-                name:
-                    rawUserTag, // Keeps the visual name formatted with the "@" prefix
-              ),
-            );
-          }
+          list.add(CustomUserTagElement(username: match.group(0)!));
+          lastEnd = match.end;
+        }
 
-          // 3. Recursively check the rest of the text string segment for more links
-          if (remainingText.isNotEmpty) {
-            list.addAll(parse([TextElement(remainingText)], options));
-          }
+        if (lastEnd < element.text.length) {
+          list.add(TextElement(element.text.substring(lastEnd)));
         }
       } else {
         list.add(element);
@@ -268,29 +253,26 @@ class CustomUserTagLinkifier extends Linkifier {
 }
 
 class CustomUserTagElement extends LinkableElement {
-  final String userId;
-  final String name;
+  final String username;
 
-  CustomUserTagElement({required this.userId, required this.name})
-    : super(userId, name);
+  CustomUserTagElement({required this.username}) : super(username, username);
 
   @override
   String toString() {
-    return "CustomUserTagElement(userId: '$userId', name: $name)";
+    return "CustomUserTagElement(username: '$username')";
   }
 
   @override
   bool operator ==(other) => equals(other);
 
   @override
-  int get hashCode => Object.hashAll([userId, name]);
+  int get hashCode => Object.hashAll([username]);
 
   @override
   bool equals(other) =>
       other is CustomUserTagElement &&
       super.equals(other) &&
-      other.userId == userId &&
-      other.name == name;
+      other.username == username;
 }
 
 class HashtagLinkifier extends Linkifier {

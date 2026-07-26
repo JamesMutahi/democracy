@@ -58,6 +58,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           username: event.payload['request_id'],
         ),
       );
+    } else if (event.payload['response_status'] == 404) {
+      emit(
+        state.copyWith(
+          status: ProfileStatus.notFound,
+          username: event.payload['request_id'],
+        ),
+      );
     } else {
       emit(state.copyWith(status: ProfileStatus.failure));
     }

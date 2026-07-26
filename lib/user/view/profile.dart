@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
+import 'package:democracy/app/shared/widgets/custom_text.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
@@ -66,6 +67,15 @@ class ProfilePage extends StatelessWidget {
                     ProfileEvent.load(username: username),
                   );
                 },
+              );
+            }
+            if (state.status == ProfileStatus.notFound) {
+              return Scaffold(
+                appBar: AppBar(
+                  leading: AutoLeadingButton(),
+                  title: Text('Profile'),
+                ),
+                body: Center(child: Text('This account does not exist')),
               );
             }
             return _Profile(user: state.user!);
@@ -614,7 +624,15 @@ class _UserDetails extends StatelessWidget {
             ],
           ),
           (user.bio.isNotEmpty)
-              ? Column(children: [SizedBox(height: 5), Text(user.bio)])
+              ? Column(
+                  children: [
+                    SizedBox(height: 5),
+                    CustomText(
+                      text: user.bio,
+                      style: Theme.of(context).textTheme.bodyMedium!,
+                    ),
+                  ],
+                )
               : SizedBox.shrink(),
           SizedBox(height: 5),
           InkWell(

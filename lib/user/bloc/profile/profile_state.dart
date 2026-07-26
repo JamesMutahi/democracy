@@ -1,6 +1,6 @@
 part of 'profile_bloc.dart';
 
-enum ProfileStatus { initial, loading, success, failure }
+enum ProfileStatus { initial, loading, notFound, success, failure }
 
 final class ProfileState extends Equatable {
   const ProfileState({
