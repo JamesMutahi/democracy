@@ -196,7 +196,9 @@ class ExploreSearchAnchor extends StatelessWidget {
                         context.read<PostDetailBloc>().add(
                           PostDetailEvent.saveSearchedProfile(userId: user.id),
                         );
-                        context.router.push(ProfileRoute(userId: user.id));
+                        context.router.push(
+                          ProfileRoute(username: user.username),
+                        );
                       },
                     ),
                   ),

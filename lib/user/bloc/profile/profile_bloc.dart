@@ -28,7 +28,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   void _onLoad(_Load event, Emitter<ProfileState> emit) async {
-    emit(state.copyWith(status: ProfileStatus.loading, userId: event.userId));
+    emit(
+      state.copyWith(status: ProfileStatus.loading, username: event.username),
+    );
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: ProfileStatus.failure));
       return;
@@ -38,8 +40,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       'stream': stream,
       'payload': {
         'action': 'retrieve',
-        'request_id': event.userId,
-        'pk': event.userId,
+        'request_id': event.username,
+        'username': event.username,
       },
     };
     webSocketService.send(message);
@@ -53,7 +55,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         state.copyWith(
           status: ProfileStatus.success,
           user: user,
-          userId: event.payload['request_id'],
+          username: event.payload['request_id'],
         ),
       );
     } else {
@@ -67,7 +69,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       state.copyWith(
         status: ProfileStatus.success,
         user: event.user,
-        userId: event.user.id,
+        username: event.user.username,
       ),
     );
   }

@@ -21,7 +21,7 @@ class ProfileImage extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.all(Radius.circular(20)),
       onTap: navigateToProfile
-          ? () => context.router.push(ProfileRoute(userId: user.id))
+          ? () => context.router.push(ProfileRoute(username: user.username))
           : null,
       child: CircleAvatar(
         radius: radius,

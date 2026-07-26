@@ -58,7 +58,7 @@ class _ParticipantProfileState extends State<ParticipantProfile> {
 
   void _subscribe() {
     // subscribe and get user
-    context.read<ProfileBloc>().add(ProfileEvent.load(userId: _user.id));
+    context.read<ProfileBloc>().add(ProfileEvent.load(username: _user.username));
   }
 
   @override

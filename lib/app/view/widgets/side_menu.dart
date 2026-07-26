@@ -398,7 +398,7 @@ class _ProfileButtonState extends State<_ProfileButton>
         widget.menuController.closeDrawer();
         String currentPath = context.router.currentPath;
         if (!currentPath.contains('profile/${widget.user.id}')) {
-          context.router.push(ProfileRoute(userId: widget.user.id));
+          context.router.push(ProfileRoute(username: widget.user.username));
         }
       },
       leading: Icon(Symbols.person_2_rounded),

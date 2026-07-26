@@ -319,7 +319,7 @@ class _ForYouState extends State<_ForYou> with AutomaticKeepAliveClientMixin {
                 showProfileButtons: true,
                 selectedUsers: [],
                 onTap: () {
-                  context.router.push(ProfileRoute(userId: user.id));
+                  context.router.push(ProfileRoute(username: user.username));
                 },
               );
             }, childCount: users.length),

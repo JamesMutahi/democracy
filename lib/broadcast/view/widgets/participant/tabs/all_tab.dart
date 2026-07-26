@@ -72,7 +72,7 @@ class _AllTabState extends State<AllTab> with AutomaticKeepAliveClientMixin {
             );
           },
           onUserTap: (user) {
-            context.router.push(ProfileRoute(userId: user.id));
+            context.router.push(ProfileRoute(username: user.username));
           },
           onRefresh: () {
             context.read<ParticipantsBloc>().add(

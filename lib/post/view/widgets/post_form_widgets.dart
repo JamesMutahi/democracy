@@ -44,7 +44,6 @@ class PostTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Flexible(
       flex: 9,
       child: SingleChildScrollView(
@@ -131,26 +130,11 @@ class PostBottomNavBar extends StatefulWidget {
 
 class _PostBottomNavBarState extends State<PostBottomNavBar>
     with TickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<Offset> _animation;
-
   late StreamSubscription<bool> keyboardSubscription;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 150),
-    );
-
-    _animation = Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero)
-        .animate(
-          CurvedAnimation(
-            parent: _animationController,
-            curve: Curves.easeInOut,
-          ),
-        );
 
     var keyboardVisibilityController = KeyboardVisibilityController();
     keyboardSubscription = keyboardVisibilityController.onChange.listen((
@@ -164,7 +148,6 @@ class _PostBottomNavBarState extends State<PostBottomNavBar>
 
   @override
   void dispose() {
-    _animationController.dispose();
     widget.controller.dispose();
     keyboardSubscription.cancel();
     super.dispose();

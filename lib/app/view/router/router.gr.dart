@@ -1503,12 +1503,12 @@ class PreferencesRoute extends _i48.PageRouteInfo<void> {
 class ProfileRoute extends _i48.PageRouteInfo<ProfileRouteArgs> {
   ProfileRoute({
     _i49.Key? key,
-    required int userId,
+    required String username,
     List<_i48.PageRouteInfo>? children,
   }) : super(
          ProfileRoute.name,
-         args: ProfileRouteArgs(key: key, userId: userId),
-         rawPathParams: {'id': userId},
+         args: ProfileRouteArgs(key: key, username: username),
+         rawPathParams: {'username': username},
          initialChildren: children,
        );
 
@@ -1519,34 +1519,35 @@ class ProfileRoute extends _i48.PageRouteInfo<ProfileRouteArgs> {
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<ProfileRouteArgs>(
-        orElse: () => ProfileRouteArgs(userId: pathParams.getInt('id')),
+        orElse: () =>
+            ProfileRouteArgs(username: pathParams.getString('username')),
       );
-      return _i38.ProfilePage(key: args.key, userId: args.userId);
+      return _i38.ProfilePage(key: args.key, username: args.username);
     },
   );
 }
 
 class ProfileRouteArgs {
-  const ProfileRouteArgs({this.key, required this.userId});
+  const ProfileRouteArgs({this.key, required this.username});
 
   final _i49.Key? key;
 
-  final int userId;
+  final String username;
 
   @override
   String toString() {
-    return 'ProfileRouteArgs{key: $key, userId: $userId}';
+    return 'ProfileRouteArgs{key: $key, username: $username}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! ProfileRouteArgs) return false;
-    return key == other.key && userId == other.userId;
+    return key == other.key && username == other.username;
   }
 
   @override
-  int get hashCode => key.hashCode ^ userId.hashCode;
+  int get hashCode => key.hashCode ^ username.hashCode;
 }
 
 /// generated route for

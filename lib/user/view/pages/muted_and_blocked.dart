@@ -100,7 +100,7 @@ class _MutedTabState extends State<_MutedTab> {
             context.read<MutedBloc>().add(MutedEvent.update(users: users));
           },
           onUserTap: (user) {
-            context.router.push(ProfileRoute(userId: user.id));
+            context.router.push(ProfileRoute(username: user.username));
           },
           onRefresh: () {
             context.read<MutedBloc>().add(MutedEvent.get());
@@ -173,7 +173,7 @@ class _BlockedTabState extends State<_BlockedTab> {
             context.read<BlockedBloc>().add(BlockedEvent.update(users: users));
           },
           onUserTap: (user) {
-            context.router.push(ProfileRoute(userId: user.id));
+            context.router.push(ProfileRoute(username: user.username));
           },
           onRefresh: () {
             context.read<BlockedBloc>().add(BlockedEvent.get());

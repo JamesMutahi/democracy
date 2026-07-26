@@ -125,10 +125,10 @@ return updated(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int userId)?  load,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( User user)?  updated,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String username)?  load,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( User user)?  updated,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Load() when load != null:
-return load(_that.userId);case _Loaded() when loaded != null:
+return load(_that.username);case _Loaded() when loaded != null:
 return loaded(_that.payload);case _Updated() when updated != null:
 return updated(_that.user);case _:
   return orElse();
@@ -148,10 +148,10 @@ return updated(_that.user);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int userId)  load,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( User user)  updated,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String username)  load,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( User user)  updated,}) {final _that = this;
 switch (_that) {
 case _Load():
-return load(_that.userId);case _Loaded():
+return load(_that.username);case _Loaded():
 return loaded(_that.payload);case _Updated():
 return updated(_that.user);case _:
   throw StateError('Unexpected subclass');
@@ -170,10 +170,10 @@ return updated(_that.user);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int userId)?  load,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( User user)?  updated,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String username)?  load,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( User user)?  updated,}) {final _that = this;
 switch (_that) {
 case _Load() when load != null:
-return load(_that.userId);case _Loaded() when loaded != null:
+return load(_that.username);case _Loaded() when loaded != null:
 return loaded(_that.payload);case _Updated() when updated != null:
 return updated(_that.user);case _:
   return null;
@@ -187,10 +187,10 @@ return updated(_that.user);case _:
 
 
 class _Load implements ProfileEvent {
-  const _Load({required this.userId});
+  const _Load({required this.username});
   
 
- final  int userId;
+ final  String username;
 
 /// Create a copy of ProfileEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -202,16 +202,16 @@ _$LoadCopyWith<_Load> get copyWith => __$LoadCopyWithImpl<_Load>(this, _$identit
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Load&&(identical(other.userId, userId) || other.userId == userId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Load&&(identical(other.username, username) || other.username == username));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,userId);
+int get hashCode => Object.hash(runtimeType,username);
 
 @override
 String toString() {
-  return 'ProfileEvent.load(userId: $userId)';
+  return 'ProfileEvent.load(username: $username)';
 }
 
 
@@ -222,7 +222,7 @@ abstract mixin class _$LoadCopyWith<$Res> implements $ProfileEventCopyWith<$Res>
   factory _$LoadCopyWith(_Load value, $Res Function(_Load) _then) = __$LoadCopyWithImpl;
 @useResult
 $Res call({
- int userId
+ String username
 });
 
 
@@ -239,10 +239,10 @@ class __$LoadCopyWithImpl<$Res>
 
 /// Create a copy of ProfileEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? userId = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? username = null,}) {
   return _then(_Load(
-userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
-as int,
+username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

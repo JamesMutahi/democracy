@@ -2,10 +2,6 @@ part of 'user_detail_bloc.dart';
 
 @freezed
 sealed class UserDetailEvent with _$UserDetailEvent {
-  const factory UserDetailEvent.retrieved({
-    required Map<String, dynamic> payload,
-  }) = _Retrieved;
-
   const factory UserDetailEvent.subscribed({
     required Map<String, dynamic> payload,
   }) = _Subscribed;

@@ -213,9 +213,9 @@ class CustomText extends StatelessWidget {
 }
 
 class CustomUserTagLinkifier extends Linkifier {
-  ///This matches any string in this format
-  ///"@{userId}#{userName}#"
-  final _userTagRegex = RegExp(r'^(.*?)(\@\w+\#..+?\#)');
+  /// Matches a sequence starting with '@' followed by word characters (alphanumeric and underscores)
+  /// Example: "@john_doe"
+  final _userTagRegex = RegExp(r'^(.*?)(\@[a-zA-Z0-9_]+)');
 
   @override
   List<LinkifyElement> parse(
@@ -227,35 +227,42 @@ class CustomUserTagLinkifier extends Linkifier {
     for (var element in elements) {
       if (element is TextElement) {
         final match = _userTagRegex.firstMatch(element.text);
-
         if (match == null) {
           list.add(element);
         } else {
-          final text = element.text.replaceFirst(match.group(0)!, '');
+          final fullMatch = match.group(0)!;
+          final prefixText = match.group(1);
+          final rawUserTag = match.group(2)!; // This is the "@username" string
 
-          if (match.group(1)?.isNotEmpty == true) {
-            list.add(TextElement(match.group(1)!));
+          // Remove the parsed block from the main string chunk to continue recursion
+          final remainingText = element.text.replaceFirst(fullMatch, '');
+
+          // 1. If there was plain text before the match, add it
+          if (prefixText != null && prefixText.isNotEmpty) {
+            list.add(TextElement(prefixText));
           }
 
-          if (match.group(2)?.isNotEmpty == true) {
-            final blob = match.group(2)!.split("#");
+          // 2. Add the custom tag element extracting username as the key identifier
+          if (rawUserTag.isNotEmpty) {
             list.add(
               CustomUserTagElement(
-                userId: blob.first.replaceAll("@", ""),
-                name: "@${blob[1]}",
+                // Strip the '@' to get the clean username string
+                userId: rawUserTag.replaceAll("@", ""),
+                name:
+                    rawUserTag, // Keeps the visual name formatted with the "@" prefix
               ),
             );
           }
 
-          if (text.isNotEmpty) {
-            list.addAll(parse([TextElement(text)], options));
+          // 3. Recursively check the rest of the text string segment for more links
+          if (remainingText.isNotEmpty) {
+            list.addAll(parse([TextElement(remainingText)], options));
           }
         }
       } else {
         list.add(element);
       }
     }
-
     return list;
   }
 }

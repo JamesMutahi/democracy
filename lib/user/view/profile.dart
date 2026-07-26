@@ -23,7 +23,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 
 const List<Tab> tabs = <Tab>[
   Tab(text: 'Posts'),
@@ -42,19 +41,19 @@ const List<Tab> userTabs = <Tab>[
 
 @RoutePage()
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key, @PathParam('id') required this.userId});
+  const ProfilePage({super.key, @PathParam('username') required this.username});
 
-  final int userId;
+  final String username;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
           ProfileBloc(webSocketService: context.read<WebSocketService>())
-            ..add(ProfileEvent.load(userId: userId)),
+            ..add(ProfileEvent.load(username: username)),
       child: Scaffold(
         body: BlocBuilder<ProfileBloc, ProfileState>(
-          buildWhen: (previous, current) => current.userId == userId,
+          buildWhen: (previous, current) => current.username == username,
           builder: (context, state) {
             if (state.status == ProfileStatus.initial ||
                 (state.status == ProfileStatus.loading && state.user == null)) {
@@ -64,7 +63,7 @@ class ProfilePage extends StatelessWidget {
               return FailureRetryButton(
                 onPressed: () {
                   context.read<ProfileBloc>().add(
-                    ProfileEvent.load(userId: userId),
+                    ProfileEvent.load(username: username),
                   );
                 },
               );
@@ -106,7 +105,9 @@ class _ProfilePageState extends State<_Profile> {
 
   void _loadUser() {
     // subscribe and get user
-    context.read<ProfileBloc>().add(ProfileEvent.load(userId: widget.user.id));
+    context.read<ProfileBloc>().add(
+      ProfileEvent.load(username: widget.user.username),
+    );
   }
 
   @override
@@ -133,7 +134,6 @@ class _ProfilePageState extends State<_Profile> {
   Widget build(BuildContext context) {
     User currentUser = context.read<AuthBloc>().state.user!;
     bool isCurrentUser = currentUser.id == widget.user.id;
-    final responsive = ResponsiveBreakpoints.of(context);
 
     return MultiBlocProvider(
       providers: [

@@ -753,11 +753,10 @@ extension UserDetailEventPatterns on UserDetailEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Retrieved value)?  retrieved,TResult Function( _Subscribed value)?  subscribed,TResult Function( _Updated value)?  updated,TResult Function( _Subscribe value)?  subscribe,TResult Function( _Patch value)?  patch,TResult Function( _Follow value)?  follow,TResult Function( _Mute value)?  mute,TResult Function( _Block value)?  block,TResult Function( _AddVisit value)?  addVisit,TResult Function( _VisitAdded value)?  visitAdded,TResult Function( _ToggleNotifications value)?  toggleNotifications,TResult Function( _Unsubscribe value)?  unsubscribe,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Subscribed value)?  subscribed,TResult Function( _Updated value)?  updated,TResult Function( _Subscribe value)?  subscribe,TResult Function( _Patch value)?  patch,TResult Function( _Follow value)?  follow,TResult Function( _Mute value)?  mute,TResult Function( _Block value)?  block,TResult Function( _AddVisit value)?  addVisit,TResult Function( _VisitAdded value)?  visitAdded,TResult Function( _ToggleNotifications value)?  toggleNotifications,TResult Function( _Unsubscribe value)?  unsubscribe,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _Retrieved() when retrieved != null:
-return retrieved(_that);case _Subscribed() when subscribed != null:
+case _Subscribed() when subscribed != null:
 return subscribed(_that);case _Updated() when updated != null:
 return updated(_that);case _Subscribe() when subscribe != null:
 return subscribe(_that);case _Patch() when patch != null:
@@ -786,11 +785,10 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Retrieved value)  retrieved,required TResult Function( _Subscribed value)  subscribed,required TResult Function( _Updated value)  updated,required TResult Function( _Subscribe value)  subscribe,required TResult Function( _Patch value)  patch,required TResult Function( _Follow value)  follow,required TResult Function( _Mute value)  mute,required TResult Function( _Block value)  block,required TResult Function( _AddVisit value)  addVisit,required TResult Function( _VisitAdded value)  visitAdded,required TResult Function( _ToggleNotifications value)  toggleNotifications,required TResult Function( _Unsubscribe value)  unsubscribe,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Subscribed value)  subscribed,required TResult Function( _Updated value)  updated,required TResult Function( _Subscribe value)  subscribe,required TResult Function( _Patch value)  patch,required TResult Function( _Follow value)  follow,required TResult Function( _Mute value)  mute,required TResult Function( _Block value)  block,required TResult Function( _AddVisit value)  addVisit,required TResult Function( _VisitAdded value)  visitAdded,required TResult Function( _ToggleNotifications value)  toggleNotifications,required TResult Function( _Unsubscribe value)  unsubscribe,}){
 final _that = this;
 switch (_that) {
-case _Retrieved():
-return retrieved(_that);case _Subscribed():
+case _Subscribed():
 return subscribed(_that);case _Updated():
 return updated(_that);case _Subscribe():
 return subscribe(_that);case _Patch():
@@ -815,11 +813,10 @@ return unsubscribe(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Retrieved value)?  retrieved,TResult? Function( _Subscribed value)?  subscribed,TResult? Function( _Updated value)?  updated,TResult? Function( _Subscribe value)?  subscribe,TResult? Function( _Patch value)?  patch,TResult? Function( _Follow value)?  follow,TResult? Function( _Mute value)?  mute,TResult? Function( _Block value)?  block,TResult? Function( _AddVisit value)?  addVisit,TResult? Function( _VisitAdded value)?  visitAdded,TResult? Function( _ToggleNotifications value)?  toggleNotifications,TResult? Function( _Unsubscribe value)?  unsubscribe,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Subscribed value)?  subscribed,TResult? Function( _Updated value)?  updated,TResult? Function( _Subscribe value)?  subscribe,TResult? Function( _Patch value)?  patch,TResult? Function( _Follow value)?  follow,TResult? Function( _Mute value)?  mute,TResult? Function( _Block value)?  block,TResult? Function( _AddVisit value)?  addVisit,TResult? Function( _VisitAdded value)?  visitAdded,TResult? Function( _ToggleNotifications value)?  toggleNotifications,TResult? Function( _Unsubscribe value)?  unsubscribe,}){
 final _that = this;
 switch (_that) {
-case _Retrieved() when retrieved != null:
-return retrieved(_that);case _Subscribed() when subscribed != null:
+case _Subscribed() when subscribed != null:
 return subscribed(_that);case _Updated() when updated != null:
 return updated(_that);case _Subscribe() when subscribe != null:
 return subscribe(_that);case _Patch() when patch != null:
@@ -847,10 +844,9 @@ return unsubscribe(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  retrieved,TResult Function( Map<String, dynamic> payload)?  subscribed,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( int userId)?  subscribe,TResult Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath)?  patch,TResult Function( User user)?  follow,TResult Function( User user)?  mute,TResult Function( User user)?  block,TResult Function( User user)?  addVisit,TResult Function( Map<String, dynamic> payload)?  visitAdded,TResult Function( User user)?  toggleNotifications,TResult Function( User user)?  unsubscribe,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  subscribed,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( int userId)?  subscribe,TResult Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath)?  patch,TResult Function( User user)?  follow,TResult Function( User user)?  mute,TResult Function( User user)?  block,TResult Function( User user)?  addVisit,TResult Function( Map<String, dynamic> payload)?  visitAdded,TResult Function( User user)?  toggleNotifications,TResult Function( User user)?  unsubscribe,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _Retrieved() when retrieved != null:
-return retrieved(_that.payload);case _Subscribed() when subscribed != null:
+case _Subscribed() when subscribed != null:
 return subscribed(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Subscribe() when subscribe != null:
 return subscribe(_that.userId);case _Patch() when patch != null:
@@ -879,10 +875,9 @@ return unsubscribe(_that.user);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  retrieved,required TResult Function( Map<String, dynamic> payload)  subscribed,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( int userId)  subscribe,required TResult Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath)  patch,required TResult Function( User user)  follow,required TResult Function( User user)  mute,required TResult Function( User user)  block,required TResult Function( User user)  addVisit,required TResult Function( Map<String, dynamic> payload)  visitAdded,required TResult Function( User user)  toggleNotifications,required TResult Function( User user)  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  subscribed,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( int userId)  subscribe,required TResult Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath)  patch,required TResult Function( User user)  follow,required TResult Function( User user)  mute,required TResult Function( User user)  block,required TResult Function( User user)  addVisit,required TResult Function( Map<String, dynamic> payload)  visitAdded,required TResult Function( User user)  toggleNotifications,required TResult Function( User user)  unsubscribe,}) {final _that = this;
 switch (_that) {
-case _Retrieved():
-return retrieved(_that.payload);case _Subscribed():
+case _Subscribed():
 return subscribed(_that.payload);case _Updated():
 return updated(_that.payload);case _Subscribe():
 return subscribe(_that.userId);case _Patch():
@@ -907,10 +902,9 @@ return unsubscribe(_that.user);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  retrieved,TResult? Function( Map<String, dynamic> payload)?  subscribed,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( int userId)?  subscribe,TResult? Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath)?  patch,TResult? Function( User user)?  follow,TResult? Function( User user)?  mute,TResult? Function( User user)?  block,TResult? Function( User user)?  addVisit,TResult? Function( Map<String, dynamic> payload)?  visitAdded,TResult? Function( User user)?  toggleNotifications,TResult? Function( User user)?  unsubscribe,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  subscribed,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( int userId)?  subscribe,TResult? Function( User user,  String name,  String bio,  String? imagePath,  String? coverPhotoPath)?  patch,TResult? Function( User user)?  follow,TResult? Function( User user)?  mute,TResult? Function( User user)?  block,TResult? Function( User user)?  addVisit,TResult? Function( Map<String, dynamic> payload)?  visitAdded,TResult? Function( User user)?  toggleNotifications,TResult? Function( User user)?  unsubscribe,}) {final _that = this;
 switch (_that) {
-case _Retrieved() when retrieved != null:
-return retrieved(_that.payload);case _Subscribed() when subscribed != null:
+case _Subscribed() when subscribed != null:
 return subscribed(_that.payload);case _Updated() when updated != null:
 return updated(_that.payload);case _Subscribe() when subscribe != null:
 return subscribe(_that.userId);case _Patch() when patch != null:
@@ -926,78 +920,6 @@ return unsubscribe(_that.user);case _:
 
 }
 }
-
-}
-
-/// @nodoc
-
-
-class _Retrieved implements UserDetailEvent {
-  const _Retrieved({required final  Map<String, dynamic> payload}): _payload = payload;
-  
-
- final  Map<String, dynamic> _payload;
- Map<String, dynamic> get payload {
-  if (_payload is EqualUnmodifiableMapView) return _payload;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_payload);
-}
-
-
-/// Create a copy of UserDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$RetrievedCopyWith<_Retrieved> get copyWith => __$RetrievedCopyWithImpl<_Retrieved>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Retrieved&&const DeepCollectionEquality().equals(other._payload, _payload));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
-
-@override
-String toString() {
-  return 'UserDetailEvent.retrieved(payload: $payload)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$RetrievedCopyWith<$Res> implements $UserDetailEventCopyWith<$Res> {
-  factory _$RetrievedCopyWith(_Retrieved value, $Res Function(_Retrieved) _then) = __$RetrievedCopyWithImpl;
-@useResult
-$Res call({
- Map<String, dynamic> payload
-});
-
-
-
-
-}
-/// @nodoc
-class __$RetrievedCopyWithImpl<$Res>
-    implements _$RetrievedCopyWith<$Res> {
-  __$RetrievedCopyWithImpl(this._self, this._then);
-
-  final _Retrieved _self;
-  final $Res Function(_Retrieved) _then;
-
-/// Create a copy of UserDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
-  return _then(_Retrieved(
-payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>,
-  ));
-}
-
 
 }
 

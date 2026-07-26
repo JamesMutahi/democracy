@@ -6,26 +6,26 @@ final class ProfileState extends Equatable {
   const ProfileState({
     this.status = ProfileStatus.initial,
     this.user,
-    this.userId,
+    this.username,
   });
 
   final ProfileStatus status;
   final User? user;
-  final int? userId;
+  final String? username;
 
-  ProfileState copyWith({ProfileStatus? status, User? user, int? userId}) {
+  ProfileState copyWith({ProfileStatus? status, User? user, String? username}) {
     return ProfileState(
       status: status ?? this.status,
       user: user ?? this.user,
-      userId: userId ?? this.userId,
+      username: username ?? this.username,
     );
   }
 
   @override
   String toString() {
-    return '''ProfileState { status: $status, user: $user, userId: $userId }''';
+    return '''ProfileState { status: $status, user: $user, username: $username }''';
   }
 
   @override
-  List<Object?> get props => [status, user, userId];
+  List<Object?> get props => [status, user, username];
 }

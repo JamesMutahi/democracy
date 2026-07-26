@@ -129,7 +129,7 @@ class _FollowersTabState extends State<_FollowersTab> {
             );
           },
           onUserTap: (user) {
-            context.router.push(ProfileRoute(userId: user.id));
+            context.router.push(ProfileRoute(username: user.username));
           },
           onRefresh: () {
             context.read<FollowersBloc>().add(
@@ -216,7 +216,7 @@ class _FollowingTabState extends State<_FollowingTab> {
             );
           },
           onUserTap: (user) {
-            context.router.push(ProfileRoute(userId: user.id));
+            context.router.push(ProfileRoute(username: user.username));
           },
           onRefresh: () {
             context.read<FollowingBloc>().add(

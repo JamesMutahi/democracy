@@ -449,7 +449,9 @@ class _ProfilesTabState extends State<_ProfilesTab>
           enablePullUp: state.hasNext,
           showProfileButtons: true,
           onUserTap: (user) {
-            context.router.push(router_gr.ProfileRoute(userId: user.id));
+            context.router.push(
+              router_gr.ProfileRoute(username: user.username),
+            );
           },
           onLoading: () {
             _getUsers(lastUser: users.last);

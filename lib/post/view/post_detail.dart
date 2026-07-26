@@ -527,7 +527,7 @@ class _PostContainer extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         context.router.push(
-                          ProfileRoute(userId: post.author.id),
+                          ProfileRoute(username: post.author.username),
                         );
                       },
                       hoverColor: Colors.transparent,

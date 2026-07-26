@@ -45,7 +45,7 @@ class _UsersPageState extends State<UsersPage> {
               showProfileButtons: true,
               selectedUsers: [],
               onTap: () {
-                context.router.push(ProfileRoute(userId: user.id));
+                context.router.push(ProfileRoute(username: user.username));
               },
             );
           },

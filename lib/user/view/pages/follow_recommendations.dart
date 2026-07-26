@@ -31,65 +31,66 @@ class _FollowRecommendationsState extends State<FollowRecommendations> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          FollowRecommendationsBloc(
-            webSocketService: context.read<WebSocketService>(),
-          ),
+      create: (context) => FollowRecommendationsBloc(
+        webSocketService: context.read<WebSocketService>(),
+      ),
       child: Scaffold(
         appBar: AppBar(title: Text('Who to follow')),
-        body: BlocBuilder<FollowRecommendationsBloc,
-            FollowRecommendationsState>(
-          builder: (context, state) {
-            final users = state.users.take(3).toList();
+        body:
+            BlocBuilder<FollowRecommendationsBloc, FollowRecommendationsState>(
+              builder: (context, state) {
+                final users = state.users.take(3).toList();
 
-            final authBloc = context.read<AuthBloc>();
-            final me = authBloc.state.user!;
+                final authBloc = context.read<AuthBloc>();
+                final me = authBloc.state.user!;
 
-            if (state.status == FollowRecommendationsStatus.loading) {
-              return BottomLoader();
-            }
-
-            return BlocListener<UserDetailBloc, UserDetailState>(
-              listener: (context, state) {
-                if (state is UserUpdated) {
-                  if (users.any((user) => user.id == state.user.id)) {
-                    int index = users.indexWhere(
-                          (user) => user.id == state.user.id,
-                    );
-                    users[index] = state.user;
-                    context.read<FollowRecommendationsBloc>().add(
-                      FollowRecommendationsEvent.update(users: users),
-                    );
-                  }
+                if (state.status == FollowRecommendationsStatus.loading) {
+                  return BottomLoader();
                 }
-              },
-              child: UserListener(
-                users: users,
-                showProfileButtons: true,
-                onUsersUpdated: (users) {
-                  context.read<FollowRecommendationsBloc>().add(
-                    FollowRecommendationsEvent.update(users: users),
-                  );
-                },
-                child: ListView.builder(
-                  itemBuilder: (BuildContext context, int index) {
-                    User user = users[index];
-                    return UserTile(
-                      user: user,
-                      me: me,
-                      showProfileButtons: true,
-                      selectedUsers: [],
-                      onTap: () {
-                        context.router.push(ProfileRoute(userId: user.id));
-                      },
-                    );
+
+                return BlocListener<UserDetailBloc, UserDetailState>(
+                  listener: (context, state) {
+                    if (state is UserUpdated) {
+                      if (users.any((user) => user.id == state.user.id)) {
+                        int index = users.indexWhere(
+                          (user) => user.id == state.user.id,
+                        );
+                        users[index] = state.user;
+                        context.read<FollowRecommendationsBloc>().add(
+                          FollowRecommendationsEvent.update(users: users),
+                        );
+                      }
+                    }
                   },
-                  itemCount: users.length,
-                ),
-              ),
-            );
-          },
-        ),
+                  child: UserListener(
+                    users: users,
+                    showProfileButtons: true,
+                    onUsersUpdated: (users) {
+                      context.read<FollowRecommendationsBloc>().add(
+                        FollowRecommendationsEvent.update(users: users),
+                      );
+                    },
+                    child: ListView.builder(
+                      itemBuilder: (BuildContext context, int index) {
+                        User user = users[index];
+                        return UserTile(
+                          user: user,
+                          me: me,
+                          showProfileButtons: true,
+                          selectedUsers: [],
+                          onTap: () {
+                            context.router.push(
+                              ProfileRoute(username: user.username),
+                            );
+                          },
+                        );
+                      },
+                      itemCount: users.length,
+                    ),
+                  ),
+                );
+              },
+            ),
       ),
     );
   }

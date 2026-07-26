@@ -200,7 +200,9 @@ class _PetitionDetailState extends State<_PetitionDetail> {
                           GestureDetector(
                             onTap: () {
                               context.router.push(
-                                ProfileRoute(userId: widget.petition.author.id),
+                                ProfileRoute(
+                                  username: widget.petition.author.username,
+                                ),
                               );
                             },
                             child: PetitionAuthorInfo(

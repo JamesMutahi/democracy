@@ -200,7 +200,9 @@ class _WhoToFollowState extends State<_WhoToFollow> {
                       onTap: () {
                         String currentPath = context.router.currentPath;
                         if (!currentPath.contains('profile/${user.id}')) {
-                          context.router.push(ProfileRoute(userId: user.id));
+                          context.router.push(
+                            ProfileRoute(username: user.username),
+                          );
                         }
                       },
                     ),

@@ -33,7 +33,9 @@ class _SpeakersTabState extends State<SpeakersTab>
             showProfileButtons: true,
             selectedUsers: [],
             onTap: () {
-              context.router.push(ProfileRoute(userId: widget.broadcast.host.id));
+              context.router.push(
+                ProfileRoute(username: widget.broadcast.host.username),
+              );
             },
           ),
         ),
@@ -49,7 +51,7 @@ class _SpeakersTabState extends State<SpeakersTab>
               showProfileButtons: true,
               selectedUsers: [],
               onTap: () {
-                context.router.push(ProfileRoute(userId: user.id));
+                context.router.push(ProfileRoute(username: user.username));
               },
             );
           }, childCount: widget.broadcast.coHosts.length),
@@ -66,7 +68,7 @@ class _SpeakersTabState extends State<SpeakersTab>
               showProfileButtons: true,
               selectedUsers: [],
               onTap: () {
-                context.router.push(ProfileRoute(userId: user.id));
+                context.router.push(ProfileRoute(username: user.username));
               },
             );
           }, childCount: widget.broadcast.speakers.length),

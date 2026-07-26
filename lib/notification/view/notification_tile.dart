@@ -60,7 +60,7 @@ class NotificationTile extends StatelessWidget {
       onTap = () {
         if (notification.users.length == 1) {
           context.router.push(
-            ProfileRoute(userId: notification.users.first.id),
+            ProfileRoute(username: notification.users.first.username),
           );
         } else {
           context.router.push(
@@ -83,7 +83,7 @@ class NotificationTile extends StatelessWidget {
       onTap = () {
         if (notification.users.length == 1) {
           context.router.push(
-            ProfileRoute(userId: notification.users.first.id),
+            ProfileRoute(username: notification.users.first.username),
           );
         } else {
           context.router.push(

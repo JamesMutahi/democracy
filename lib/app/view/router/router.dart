@@ -70,9 +70,9 @@ class AppRouter extends RootStackRouter {
           path: 'profile',
           page: ProfileShell.page,
           children: [
-            AutoRoute(path: ':id', page: ProfileRoute.page),
+            AutoRoute(path: ':username', page: ProfileRoute.page),
             AutoRoute(path: 'edit', page: EditProfile.page),
-            AutoRoute(path: ':id/:name/following', page: FollowingRoute.page),
+            AutoRoute(path: ':username/following', page: FollowingRoute.page),
             RedirectRoute(path: '', redirectTo: '/'),
           ],
         ),

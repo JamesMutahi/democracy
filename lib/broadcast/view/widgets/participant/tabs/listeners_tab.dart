@@ -72,7 +72,7 @@ class _ListenersTabState extends State<ListenersTab>
             );
           },
           onUserTap: (user) {
-            context.router.push(ProfileRoute(userId: user.id));
+            context.router.push(ProfileRoute(username: user.username));
           },
           onRefresh: () {
             context.read<ListenersBloc>().add(

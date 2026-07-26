@@ -20,8 +20,6 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
     _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == stream) {
         switch (message['payload']['action']) {
-          case 'retrieve':
-            add(_Retrieved(payload: message['payload']));
           case 'subscribed':
             add(_Subscribed(payload: message['payload']));
           case 'update':
@@ -35,7 +33,6 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
         }
       }
     });
-    on<_Retrieved>((event, emit) => _onRetrieved(event, emit));
     on<_Subscribed>((event, emit) => _onSubscribed(event, emit));
     on<_Updated>((event, emit) => _onUpdated(event, emit));
     on<_Subscribe>((event, emit) => _onSubscribe(event, emit));
@@ -49,16 +46,6 @@ class UserDetailBloc extends Bloc<UserDetailEvent, UserDetailState> {
       (event, emit) => _onToggleNotifications(event, emit),
     );
     on<_Unsubscribe>((event, emit) => _onUnsubscribe(event, emit));
-  }
-
-  void _onRetrieved(_Retrieved event, Emitter<UserDetailState> emit) async {
-    emit(_Loading());
-    if (event.payload['response_status'] == 200) {
-      User user = User.fromJson(event.payload['data']);
-      emit(UserRetrieved(user: user));
-    } else {
-      emit(UserDetailFailure(error: event.payload['errors'].toString()));
-    }
   }
 
   void _onSubscribed(_Subscribed event, Emitter<UserDetailState> emit) async {
