@@ -408,15 +408,6 @@ class _CommunityNoteState extends State<CommunityNote> {
                     }
                   });
                 },
-                onUserTagPressed: (userId) {
-                  context.router.push(
-                    ProfileRoute(
-                      username: widget.post.taggedUsers
-                          .firstWhere((user) => user.id == userId)
-                          .username,
-                    ),
-                  );
-                },
               ),
             ],
           ),

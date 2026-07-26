@@ -62,19 +62,6 @@ class _PostBodyState extends State<PostBody> {
                 });
               }
             },
-            onUserTagPressed: (username) {
-              context.router.push(ProfileRoute(username: username));
-            },
-            onHashtagPressed: (hashtag) {
-              context.router.push(
-                SearchResults(
-                  searchTerm: hashtag,
-                  startDate: null,
-                  endDate: null,
-                  filterCount: 0,
-                ),
-              );
-            },
           );
   }
 }

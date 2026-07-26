@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:linkify/linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:democracy/app/view/router/router.gr.dart';
 
 // ignore: must_be_immutable
 class CustomText extends StatelessWidget {
@@ -15,8 +17,6 @@ class CustomText extends StatelessWidget {
   final String? parentText;
   final TextStyle? parentTextStyle;
   final VoidCallback? onParentPressed;
-  final Function(String)? onUserTagPressed;
-  final Function(String)? onHashtagPressed;
 
   CustomText({
     super.key,
@@ -30,8 +30,6 @@ class CustomText extends StatelessWidget {
     this.parentText,
     this.parentTextStyle,
     this.onParentPressed,
-    this.onUserTagPressed,
-    this.onHashtagPressed,
   }) : _suffix = suffix,
        _text = text.trim();
 
@@ -120,7 +118,26 @@ class CustomText extends StatelessWidget {
     return TextSpan(children: spans);
   }
 
-  TextSpan get _parsedTextSpan {
+  @override
+  Widget build(BuildContext context) {
+    final TextSpan child = _buildParsedTextSpan(context);
+
+    TextSpan result = child;
+    if (parentText != null) {
+      result = TextSpan(
+        text: parentText,
+        style: parentTextStyle,
+        children: [child],
+        recognizer: TapGestureRecognizer()..onTap = onParentPressed,
+      );
+    }
+    return Text.rich(result);
+  }
+
+  TextSpan _buildParsedTextSpan(BuildContext context) {
+    _spans.clear();
+    _length = 0;
+
     if (_text.contains('<mark>')) {
       return _parseTextWithHighlights();
     }
@@ -137,6 +154,7 @@ class CustomText extends StatelessWidget {
 
     for (var element in elements) {
       _length += element.text.length;
+
       if (element is UrlElement) {
         _addText(
           TextSpan(
@@ -145,7 +163,6 @@ class CustomText extends StatelessWidget {
             recognizer: TapGestureRecognizer()
               ..onTap = () async {
                 final isEmail = _isEmail(element.text);
-
                 if (isEmail) {
                   await launchUrl(Uri.parse("mailto:${element.text}"));
                 } else {
@@ -161,7 +178,9 @@ class CustomText extends StatelessWidget {
             style: style.copyWith(color: Colors.purpleAccent),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                onUserTagPressed?.call(element.username.replaceAll('@', ''));
+                context.router.push(
+                  ProfileRoute(username: element.username.replaceAll('@', '')),
+                );
               },
           ),
         );
@@ -172,7 +191,14 @@ class CustomText extends StatelessWidget {
             style: style.copyWith(color: Colors.blueAccent),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                onHashtagPressed?.call(element.title);
+                context.router.push(
+                  SearchResults(
+                    searchTerm: element.title,
+                    startDate: null,
+                    endDate: null,
+                    filterCount: 0,
+                  ),
+                );
               },
           ),
         );
@@ -193,28 +219,13 @@ class CustomText extends StatelessWidget {
         ),
       );
     }
+
     return TextSpan(children: _spans);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    TextSpan child = _parsedTextSpan;
-
-    if (parentText != null) {
-      child = TextSpan(
-        text: parentText,
-        style: parentTextStyle,
-        children: [child],
-        recognizer: TapGestureRecognizer()..onTap = onParentPressed,
-      );
-    }
-    return Text.rich(child);
   }
 }
 
 class CustomUserTagLinkifier extends Linkifier {
   final _userTagRegex = RegExp(r'@(\w+)');
-
 
   @override
   List<LinkifyElement> parse(
