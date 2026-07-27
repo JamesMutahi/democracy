@@ -6,7 +6,7 @@ import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/logo.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
-import 'package:democracy/app/view/widgets/creation_bottom_sheet.dart';
+import 'package:democracy/app/view/widgets/creation_buttons.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
@@ -96,11 +96,11 @@ class SideMenu extends StatelessWidget {
                                 DrawerListTile(
                                   onTap: () {
                                     menuController.closeDrawer();
-                                    context.navigateTo(const Hub());
+                                    context.navigateTo(const HubRoute());
                                   },
                                   icon: 'assets/icons/widgets.svg',
                                   title: 'Hub',
-                                  selected: currentRoute == Hub.name,
+                                  selected: currentRoute == HubRoute.name,
                                 ),
                                 DrawerListTile(
                                   onTap: () {

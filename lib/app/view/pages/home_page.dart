@@ -29,62 +29,65 @@ class _HomePageState extends State<HomePage>
     final responsive = ResponsiveBreakpoints.of(context);
 
     return Scaffold(
-      body: DefaultTabController(
-        length: 2,
-        child: NestedScrollView(
-          headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-            return [
-              if (!kIsWeb || responsive.isMobile)
-                SliverAppBar(
-                  floating: true,
-                  snap: true,
-                  automaticallyImplyLeading: false,
-                  forceElevated: true,
-                  flexibleSpace: Builder(
-                    builder: (context) {
-                      return Stack(
-                        // Allows children to go outside bounds
-                        clipBehavior: Clip.none,
-                        alignment: Alignment.center,
-                        children: [
-                          SizedBox(
-                            height: 55,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                if (responsive.isMobile) DrawerOpener(),
-                                NotificationButton(),
-                              ],
+      body: SafeArea(
+        child: DefaultTabController(
+          length: 2,
+          child: NestedScrollView(
+            headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+              return [
+                if (!kIsWeb || responsive.isMobile)
+                  SliverAppBar(
+                    floating: true,
+                    snap: true,
+                    automaticallyImplyLeading: false,
+                    forceElevated: true,
+                    flexibleSpace: Builder(
+                      builder: (context) {
+                        return Stack(
+                          // Allows children to go outside bounds
+                          clipBehavior: Clip.none,
+                          alignment: Alignment.center,
+                          children: [
+                            SizedBox(
+                              height: 55,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  if (responsive.isMobile) DrawerOpener(),
+                                  NotificationButton(),
+                                ],
+                              ),
                             ),
-                          ),
-                          Positioned(
-                            top: 5,
-                            child: Logo(width: 60, height: 60),
-                          ),
-                        ],
-                      );
-                    },
+                            Positioned(
+                              top: 5,
+                              child: Logo(width: 60, height: 60),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                    bottom: _buildTabBar(),
+                  )
+                else
+                  SliverAppBar(
+                    pinned: true,
+                    floating: false,
+                    snap: false,
+                    automaticallyImplyLeading: false,
+                    flexibleSpace: Builder(
+                      builder: (context) {
+                        return _buildTabBar();
+                      },
+                    ),
                   ),
-                  bottom: _buildTabBar(),
-                )
-              else
-                SliverAppBar(
-                  pinned: true,
-                  floating: false,
-                  snap: false,
-                  automaticallyImplyLeading: false,
-                  flexibleSpace: Builder(
-                    builder: (context) {
-                      return _buildTabBar();
-                    },
-                  ),
-                ),
-            ];
-          },
-          body: TabBarView(
-            physics: NeverScrollableScrollPhysics(),
-            children: [ForYouTab(), FollowingTab()],
+              ];
+            },
+            body: TabBarView(
+              physics: NeverScrollableScrollPhysics(),
+              children: [ForYouTab(), FollowingTab()],
+            ),
           ),
         ),
       ),

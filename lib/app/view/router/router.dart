@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
-import 'package:flutter/material.dart';
 
 @AutoRouterConfig()
 class AppRouter extends RootStackRouter {
@@ -18,9 +17,9 @@ class AppRouter extends RootStackRouter {
 
         AutoRoute(
           path: 'hub',
-          page: HubShell.page,
+          page: HubWrapper.page,
           children: [
-            AutoRoute(path: '', page: Hub.page),
+            AutoRoute(path: '', page: HubRoute.page),
             AutoRoute(path: 'results', page: HubResults.page),
             RedirectRoute(path: '', redirectTo: '/'),
           ],
@@ -43,7 +42,7 @@ class AppRouter extends RootStackRouter {
         // MESSAGES
         AutoRoute(
           path: 'chat',
-          page: ChatShell.page,
+          page: ChatWrapper.page,
           children: [
             AutoRoute(path: ':id', page: ChatDetail.page),
             AutoRoute(path: 'create-message', page: CreateMessage.page),
@@ -68,7 +67,7 @@ class AppRouter extends RootStackRouter {
         // PROFILE
         AutoRoute(
           path: 'profile',
-          page: ProfileShell.page,
+          page: ProfileWrapper.page,
           children: [
             AutoRoute(path: ':username', page: ProfileRoute.page),
             AutoRoute(path: 'edit', page: EditProfile.page),
@@ -97,7 +96,7 @@ class AppRouter extends RootStackRouter {
         AutoRoute(path: 'create-petition', page: PetitionCreate.page),
         AutoRoute(
           path: 'petition',
-          page: PetitionShell.page,
+          page: PetitionWrapper.page,
           children: [
             AutoRoute(path: ':id', page: PetitionDetail.page),
             AutoRoute(path: ':id/supporters', page: Supporters.page),
@@ -110,22 +109,6 @@ class AppRouter extends RootStackRouter {
         AutoRoute(path: 'survey/:id/process', page: SurveyProcess.page),
         AutoRoute(path: 'survey/:id/response', page: ResponseRoute.page),
 
-        CustomRoute(
-          page: CreationBottomSheet.page,
-          customRouteBuilder: <T>(context, child, page) {
-            return ModalBottomSheetRoute<T>(
-              builder: (context) => child,
-              isScrollControlled: false,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(15),
-                  topRight: Radius.circular(15),
-                ),
-              ),
-              settings: page, // Ensures arguments pass properly
-            );
-          },
-        ),
       ],
     ),
     RedirectRoute(path: '*', redirectTo: '/'),

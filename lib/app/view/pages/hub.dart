@@ -10,14 +10,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 @RoutePage()
-class Hub extends StatefulWidget {
-  const Hub({super.key});
+class HubPage extends StatefulWidget {
+  const HubPage({super.key});
 
   @override
-  State<Hub> createState() => _HubState();
+  State<HubPage> createState() => _HubState();
 }
 
-class _HubState extends State<Hub> {
+class _HubState extends State<HubPage> {
   final TextEditingController _controller = TextEditingController();
   double padding = 15;
 
@@ -34,78 +34,80 @@ class _HubState extends State<Hub> {
     return BlocProvider(
       create: (context) => HubFilterCubit(),
       child: Scaffold(
-        body: BlocBuilder<HubFilterCubit, HubFilterState>(
-          buildWhen: (previous, current) {
-            return current.onHubPage;
-          },
-          builder: (context, state) {
-            return NestedScrollView(
-              headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-                final cubit = context.read<HubFilterCubit>();
-                return [
-                  if (responsive.isMobile)
-                    CustomAppBar(
-                      middle: Text(
-                        'Hub',
-                        style: Theme.of(context).textTheme.titleLarge,
+        body: SafeArea(
+          child: BlocBuilder<HubFilterCubit, HubFilterState>(
+            buildWhen: (previous, current) {
+              return current.onHubPage;
+            },
+            builder: (context, state) {
+              return NestedScrollView(
+                headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+                  final cubit = context.read<HubFilterCubit>();
+                  return [
+                    if (responsive.isMobile)
+                      CustomAppBar(
+                        middle: Text(
+                          'Hub',
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        bottom: PreferredSize(
+                          preferredSize: Size.fromHeight(60.0),
+                          child: _buildSearchBar(cubit, state),
+                        ),
+                      )
+                    else
+                      SliverAppBar(
+                        pinned: true,
+                        floating: false,
+                        snap: false,
+                        automaticallyImplyLeading: false,
+                        flexibleSpace: Builder(
+                          builder: (context) {
+                            return _buildSearchBar(cubit, state);
+                          },
+                        ),
                       ),
-                      bottom: PreferredSize(
-                        preferredSize: Size.fromHeight(60.0),
-                        child: _buildSearchBar(cubit, state),
-                      ),
-                    )
-                  else
-                    SliverAppBar(
-                      pinned: true,
-                      floating: false,
-                      snap: false,
-                      automaticallyImplyLeading: false,
-                      flexibleSpace: Builder(
-                        builder: (context) {
-                          return _buildSearchBar(cubit, state);
-                        },
-                      ),
+                  ];
+                },
+                body: GridView.count(
+                  padding: EdgeInsets.all(padding),
+                  crossAxisCount: 2,
+                  mainAxisSpacing: padding,
+                  crossAxisSpacing: padding,
+                  children: [
+                    _HubCard(
+                      onTap: () {
+                        context.router.push(const BallotRoute());
+                      },
+                      asset: 'assets/icons/ballot-box.svg',
+                      text: 'Ballots',
                     ),
-                ];
-              },
-              body: GridView.count(
-                padding: EdgeInsets.all(padding),
-                crossAxisCount: 2,
-                mainAxisSpacing: padding,
-                crossAxisSpacing: padding,
-                children: [
-                  _HubCard(
-                    onTap: () {
-                      context.router.push(const BallotRoute());
-                    },
-                    asset: 'assets/icons/ballot-box.svg',
-                    text: 'Ballots',
-                  ),
-                  _HubCard(
-                    onTap: () {
-                      context.router.push(const SurveyRoute());
-                    },
-                    asset: 'assets/icons/question.svg',
-                    text: 'Surveys',
-                  ),
-                  _HubCard(
-                    onTap: () {
-                      context.router.push(const MeetingRoute());
-                    },
-                    asset: 'assets/icons/meeting.svg',
-                    text: 'Meetings',
-                  ),
-                  _HubCard(
-                    onTap: () {
-                      context.router.push(const PetitionRoute());
-                    },
-                    asset: 'assets/icons/signature.svg',
-                    text: 'Petitions',
-                  ),
-                ],
-              ),
-            );
-          },
+                    _HubCard(
+                      onTap: () {
+                        context.router.push(const SurveyRoute());
+                      },
+                      asset: 'assets/icons/question.svg',
+                      text: 'Surveys',
+                    ),
+                    _HubCard(
+                      onTap: () {
+                        context.router.push(const MeetingRoute());
+                      },
+                      asset: 'assets/icons/meeting.svg',
+                      text: 'Meetings',
+                    ),
+                    _HubCard(
+                      onTap: () {
+                        context.router.push(const PetitionRoute());
+                      },
+                      asset: 'assets/icons/signature.svg',
+                      text: 'Petitions',
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

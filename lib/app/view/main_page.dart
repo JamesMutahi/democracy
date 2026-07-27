@@ -4,7 +4,6 @@ import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
 import 'package:democracy/app/bloc/menu_controller/menu_controller_cubit.dart';
 import 'package:democracy/app/bloc/repository/api/api_repository.dart';
 import 'package:democracy/app/bloc/repository/database/database_repository.dart';
-import 'package:democracy/app/bloc/route/route_cubit.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/bloc/sync/sync_bloc.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
@@ -42,8 +41,6 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    final responsive = ResponsiveBreakpoints.of(context);
-
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -86,234 +83,211 @@ class _MainPageState extends State<MainPage> {
           ),
         ),
       ],
-      child: Scaffold(
-        key: _scaffoldKey,
-        resizeToAvoidBottomInset: false,
-        drawer: Drawer(child: SideMenu()),
-        body: SafeArea(
-          child: MultiBlocListener(
-            listeners: [
-              BlocListener<MenuControllerCubit, MenuControllerState>(
-                listener: (context, state) {
-                  if (state.status == DrawerStatus.leftOpen) {
-                    _scaffoldKey.currentState?.openDrawer();
-                  } else if (state.status == DrawerStatus.rightOpen) {
-                    _scaffoldKey.currentState?.openEndDrawer();
-                  } else if (state.status == DrawerStatus.closed) {
-                    _scaffoldKey.currentState?.closeDrawer();
-                  }
-                },
-              ),
-              BlocListener<NotificationDetailBloc, NotificationDetailState>(
-                listener: (context, state) {
-                  final bloc = context.read<NotificationsBloc>();
-
-                  if (state is NotificationCreated) {
-                    bloc.add(
-                      NotificationsEvent.add(notification: state.notification),
-                    );
-                  } else if (state is NotificationUpdated) {
-                    bloc.add(
-                      NotificationsEvent.update(
-                        notification: state.notification,
-                      ),
-                    );
-                  } else if (state is NotificationDeleted) {
-                    bloc.add(
-                      NotificationsEvent.remove(
-                        notificationId: state.notificationId,
-                      ),
-                    );
-                  }
-                },
-              ),
-              BlocListener<PostDetailBloc, PostDetailState>(
-                listener: (context, state) {
-                  if (state is PostDetailFailure) {
-                    final snackBar = getSnackBar(
-                      context: context,
-                      message: state.error,
-                      status: SnackBarStatus.failure,
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }
-                },
-              ),
-              BlocListener<PostCreateBloc, PostCreateState>(
-                listener: (context, state) {
-                  if (state.status == PostCreateStatus.success) {
-                    String message = state.post!.replyTo == null
-                        ? 'Posted'
-                        : 'Reply sent';
-                    final snackBar = getSnackBar(
-                      context: context,
-                      message: message,
-                      status: SnackBarStatus.success,
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }
-                },
-              ),
-              BlocListener<DraftDetailBloc, DraftDetailState>(
-                listener: (context, state) {
-                  if (state is DraftSaved) {
-                    String message = 'Post saved as draft';
-                    final snackBar = getSnackBar(
-                      context: context,
-                      message: message,
-                      status: SnackBarStatus.success,
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }
-                },
-              ),
-              BlocListener<BroadcastDetailBloc, BroadcastDetailState>(
-                listener: (context, state) {
-                  if (state is BroadcastCreated) {
-                    String message =
-                        state.broadcast.type == BroadcastType.livestream
-                        ? 'Starting live stream'
-                        : 'Meeting created';
-                    final snackBar = getSnackBar(
-                      context: context,
-                      message: message,
-                      status: SnackBarStatus.success,
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }
-                },
-              ),
-              BlocListener<ConnectivityBloc, ConnectivityState>(
-                listener: (context, state) {
-                  if (state is ConnectivitySuccess) {
-                    context.read<SyncBloc>().add(SyncEvent.start());
-                  }
-                },
-              ),
-              BlocListener<PostDetailBloc, PostDetailState>(
-                listener: (context, state) {
-                  if (state is SearchHistoryUpdated) {
-                    context.read<AutocompleteBloc>().add(
-                      AutocompleteEvent.redo(),
-                    );
-                  }
-                },
-              ),
-            ],
-            child: Row(
-              mainAxisAlignment: kIsWeb
-                  ? MainAxisAlignment.center
-                  : MainAxisAlignment.start,
-              children: [
-                Visibility(
-                  visible: kIsWeb && !responsive.isMobile,
-                  child: Flexible(
-                    flex: responsive.largerOrEqualTo(expandSideMenu) ? 3 : 1,
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 300),
-                      child: SideMenu(),
-                    ),
-                  ),
-                ),
-                Flexible(
-                  flex: responsive.largerOrEqualTo(expandSideMenu) ? 5 : 6,
-                  child: Container(
-                    constraints: BoxConstraints(maxWidth: 600),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        left: BorderSide(
-                          color: responsive.isMobile
-                              ? Colors.transparent
-                              : Theme.of(context).colorScheme.outlineVariant,
-                        ),
-                        right: BorderSide(
-                          color: responsive.isMobile
-                              ? Colors.transparent
-                              : Theme.of(context).colorScheme.outlineVariant,
-                        ),
-                      ),
-                    ),
-                    child: Container(
-                      padding: EdgeInsets.only(top: 10),
-                      child: AutoRouter(),
-                    ),
-                  ),
-                ),
-                if (responsive.largerOrEqualTo(expandSidePanel))
-                  Flexible(flex: 3, child: SidePanel()),
-              ],
-            ),
-          ),
-        ),
-        bottomNavigationBar: !kIsWeb && responsive.isMobile
-            ? BlocBuilder<RouteCubit, String>(
-                builder: (context, currentRoute) {
-                  List routes = [
-                    HomeRoute.name,
-                    ExploreRoute.name,
-                    CreationBottomSheet.name,
-                    Hub.name,
-                    ChatRoute.name,
-                  ];
-                  if (routes.contains(currentRoute)) {
-                    return BottomNavBar();
-                  } else {
-                    return SizedBox.shrink();
-                  }
-                },
-              )
-            : SizedBox.shrink(),
+      child: _Listeners(
+        scaffoldKey: _scaffoldKey,
+        child: kIsWeb
+            ? _Web(scaffoldKey: _scaffoldKey)
+            : _Mobile(scaffoldKey: _scaffoldKey),
       ),
     );
   }
 }
 
-@RoutePage()
-class PostShell extends StatelessWidget {
-  const PostShell({super.key});
+class _Mobile extends StatelessWidget {
+  const _Mobile({required this.scaffoldKey});
+
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
   Widget build(BuildContext context) {
-    return AutoRouter();
+    return AutoTabsScaffold(
+      scaffoldKey: scaffoldKey,
+      routes: const [
+        HomeRoute(),
+        ExploreRoute(),
+        HubWrapper(),
+        ChatRoute(),
+      ],
+      bottomNavigationBuilder: (_, tabsRouter) {
+        return BottomNavBar(tabsRouter: tabsRouter);
+      },
+    );
   }
 }
 
-@RoutePage()
-class HubShell extends StatelessWidget {
-  const HubShell({super.key});
+class _Web extends StatelessWidget {
+  const _Web({required this.scaffoldKey});
+
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
   Widget build(BuildContext context) {
-    return AutoRouter();
+    final responsive = ResponsiveBreakpoints.of(context);
+
+    return Scaffold(
+      key: scaffoldKey,
+      resizeToAvoidBottomInset: false,
+      drawer: Drawer(child: SideMenu()),
+      body: SafeArea(
+        child: Row(
+          mainAxisAlignment: kIsWeb
+              ? MainAxisAlignment.center
+              : MainAxisAlignment.start,
+          children: [
+            Visibility(
+              visible: kIsWeb && !responsive.isMobile,
+              child: Flexible(
+                flex: responsive.largerOrEqualTo(expandSideMenu) ? 3 : 1,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 300),
+                  child: SideMenu(),
+                ),
+              ),
+            ),
+            Flexible(
+              flex: responsive.largerOrEqualTo(expandSideMenu) ? 5 : 6,
+              child: Container(
+                constraints: BoxConstraints(maxWidth: 600),
+                decoration: BoxDecoration(
+                  border: Border(
+                    left: BorderSide(
+                      color: responsive.isMobile
+                          ? Colors.transparent
+                          : Theme.of(context).colorScheme.outlineVariant,
+                    ),
+                    right: BorderSide(
+                      color: responsive.isMobile
+                          ? Colors.transparent
+                          : Theme.of(context).colorScheme.outlineVariant,
+                    ),
+                  ),
+                ),
+                child: Container(
+                  padding: EdgeInsets.only(top: 10),
+                  child: AutoRouter(),
+                ),
+              ),
+            ),
+            if (responsive.largerOrEqualTo(expandSidePanel))
+              Flexible(flex: 3, child: SidePanel()),
+          ],
+        ),
+      ),
+    );
   }
 }
 
-@RoutePage()
-class ChatShell extends StatelessWidget {
-  const ChatShell({super.key});
+class _Listeners extends StatelessWidget {
+  const _Listeners({required this.child, required this.scaffoldKey});
+
+  final GlobalKey<ScaffoldState> scaffoldKey;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    return AutoRouter();
-  }
-}
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<MenuControllerCubit, MenuControllerState>(
+          listener: (context, state) {
+            if (state.status == DrawerStatus.leftOpen) {
+              scaffoldKey.currentState?.openDrawer();
+            } else if (state.status == DrawerStatus.rightOpen) {
+              scaffoldKey.currentState?.openEndDrawer();
+            } else if (state.status == DrawerStatus.closed) {
+              scaffoldKey.currentState?.closeDrawer();
+            }
+          },
+        ),
+        BlocListener<NotificationDetailBloc, NotificationDetailState>(
+          listener: (context, state) {
+            final bloc = context.read<NotificationsBloc>();
 
-@RoutePage()
-class PetitionShell extends StatelessWidget {
-  const PetitionShell({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return AutoRouter();
-  }
-}
-
-@RoutePage()
-class ProfileShell extends StatelessWidget {
-  const ProfileShell({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return AutoRouter();
+            if (state is NotificationCreated) {
+              bloc.add(
+                NotificationsEvent.add(notification: state.notification),
+              );
+            } else if (state is NotificationUpdated) {
+              bloc.add(
+                NotificationsEvent.update(notification: state.notification),
+              );
+            } else if (state is NotificationDeleted) {
+              bloc.add(
+                NotificationsEvent.remove(notificationId: state.notificationId),
+              );
+            }
+          },
+        ),
+        BlocListener<PostDetailBloc, PostDetailState>(
+          listener: (context, state) {
+            if (state is PostDetailFailure) {
+              final snackBar = getSnackBar(
+                context: context,
+                message: state.error,
+                status: SnackBarStatus.failure,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+          },
+        ),
+        BlocListener<PostCreateBloc, PostCreateState>(
+          listener: (context, state) {
+            if (state.status == PostCreateStatus.success) {
+              String message = state.post!.replyTo == null
+                  ? 'Posted'
+                  : 'Reply sent';
+              final snackBar = getSnackBar(
+                context: context,
+                message: message,
+                status: SnackBarStatus.success,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+          },
+        ),
+        BlocListener<DraftDetailBloc, DraftDetailState>(
+          listener: (context, state) {
+            if (state is DraftSaved) {
+              String message = 'Post saved as draft';
+              final snackBar = getSnackBar(
+                context: context,
+                message: message,
+                status: SnackBarStatus.success,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+          },
+        ),
+        BlocListener<BroadcastDetailBloc, BroadcastDetailState>(
+          listener: (context, state) {
+            if (state is BroadcastCreated) {
+              String message = state.broadcast.type == BroadcastType.livestream
+                  ? 'Starting live stream'
+                  : 'Meeting created';
+              final snackBar = getSnackBar(
+                context: context,
+                message: message,
+                status: SnackBarStatus.success,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
+          },
+        ),
+        BlocListener<ConnectivityBloc, ConnectivityState>(
+          listener: (context, state) {
+            if (state is ConnectivitySuccess) {
+              context.read<SyncBloc>().add(SyncEvent.start());
+            }
+          },
+        ),
+        BlocListener<PostDetailBloc, PostDetailState>(
+          listener: (context, state) {
+            if (state is SearchHistoryUpdated) {
+              context.read<AutocompleteBloc>().add(AutocompleteEvent.redo());
+            }
+          },
+        ),
+      ],
+      child: child,
+    );
   }
 }

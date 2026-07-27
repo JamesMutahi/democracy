@@ -30,70 +30,72 @@ class _ChatPageState extends State<ChatPage> {
     final responsive = ResponsiveBreakpoints.of(context);
 
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-          return [
-            if (responsive.isMobile)
-              CustomAppBar(
-                middle: Text(
-                  'Chat',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                bottom: PreferredSize(
-                  preferredSize: Size.fromHeight(60.0),
-                  child: BlocConsumer<ChatFilterCubit, ChatFilterState>(
-                    listener: (context, state) {
-                      context.read<ChatsBloc>().add(
-                        ChatsEvent.get(searchTerm: state.searchTerm),
-                      );
-                    },
-                    builder: (context, state) {
+      body: SafeArea(
+        child: NestedScrollView(
+          headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+            return [
+              if (responsive.isMobile)
+                CustomAppBar(
+                  middle: Text(
+                    'Chat',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  bottom: PreferredSize(
+                    preferredSize: Size.fromHeight(60.0),
+                    child: BlocConsumer<ChatFilterCubit, ChatFilterState>(
+                      listener: (context, state) {
+                        context.read<ChatsBloc>().add(
+                          ChatsEvent.get(searchTerm: state.searchTerm),
+                        );
+                      },
+                      builder: (context, state) {
+                        return _buildSearchBar();
+                      },
+                    ),
+                  ),
+                )
+              else
+                SliverAppBar(
+                  pinned: true,
+                  floating: false,
+                  snap: false,
+                  automaticallyImplyLeading: false,
+                  flexibleSpace: Builder(
+                    builder: (context) {
                       return _buildSearchBar();
                     },
                   ),
                 ),
-              )
-            else
-              SliverAppBar(
-                pinned: true,
-                floating: false,
-                snap: false,
-                automaticallyImplyLeading: false,
-                flexibleSpace: Builder(
-                  builder: (context) {
-                    return _buildSearchBar();
-                  },
+            ];
+          },
+          body: Stack(
+            children: [
+              Chats(),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Container(
+                  margin: EdgeInsets.only(right: 10, bottom: 10),
+                  child: FloatingActionButton(
+                    heroTag: 'message',
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        showDragHandle: true,
+                        isScrollControlled: true,
+                        useSafeArea: true,
+                        backgroundColor: Theme.of(
+                          context,
+                        ).scaffoldBackgroundColor,
+                        shape: const BeveledRectangleBorder(),
+                        builder: (context) => CreateMessage(),
+                      );
+                    },
+                    child: Icon(Icons.send_rounded),
+                  ),
                 ),
               ),
-          ];
-        },
-        body: Stack(
-          children: [
-            Chats(),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Container(
-                margin: EdgeInsets.only(right: 10, bottom: 10),
-                child: FloatingActionButton(
-                  heroTag: 'message',
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      showDragHandle: true,
-                      isScrollControlled: true,
-                      useSafeArea: true,
-                      backgroundColor: Theme.of(
-                        context,
-                      ).scaffoldBackgroundColor,
-                      shape: const BeveledRectangleBorder(),
-                      builder: (context) => CreateMessage(),
-                    );
-                  },
-                  child: Icon(Icons.send_rounded),
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

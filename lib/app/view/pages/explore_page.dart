@@ -46,54 +46,56 @@ class _ExplorePageState extends State<ExplorePage> {
     return BlocProvider(
       create: (context) => PostFilterCubit(),
       child: Scaffold(
-        body: DefaultTabController(
-          length: 2,
-          child: BlocBuilder<PostFilterCubit, PostFilterState>(
-            buildWhen: (previous, current) {
-              return current.onExplorePage;
-            },
-            builder: (context, state) {
-              return NestedScrollView(
-                headerSliverBuilder: (context, bool innerBoxIsScrolled) {
-                  final filterCubit = context.read<PostFilterCubit>();
-                  return [
-                    if (responsive.isMobile)
-                      CustomAppBar(
-                        middle: Text(
-                          'Explore',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        bottom: PreferredSize(
-                          preferredSize: Size.fromHeight(100.0),
-                          child: Column(
-                            children: [
-                              _buildSearchBar(filterCubit, state),
-                              _buildTabBar(),
-                            ],
+        body: SafeArea(
+          child: DefaultTabController(
+            length: 2,
+            child: BlocBuilder<PostFilterCubit, PostFilterState>(
+              buildWhen: (previous, current) {
+                return current.onExplorePage;
+              },
+              builder: (context, state) {
+                return NestedScrollView(
+                  headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+                    final filterCubit = context.read<PostFilterCubit>();
+                    return [
+                      if (responsive.isMobile)
+                        CustomAppBar(
+                          middle: Text(
+                            'Explore',
+                            style: Theme.of(context).textTheme.titleLarge,
                           ),
+                          bottom: PreferredSize(
+                            preferredSize: Size.fromHeight(100.0),
+                            child: Column(
+                              children: [
+                                _buildSearchBar(filterCubit, state),
+                                _buildTabBar(),
+                              ],
+                            ),
+                          ),
+                        )
+                      else
+                        SliverAppBar(
+                          pinned: true,
+                          floating: false,
+                          snap: false,
+                          automaticallyImplyLeading: false,
+                          flexibleSpace: Builder(
+                            builder: (context) {
+                              return _buildSearchBar(filterCubit, state);
+                            },
+                          ),
+                          bottom: _buildTabBar(),
                         ),
-                      )
-                    else
-                      SliverAppBar(
-                        pinned: true,
-                        floating: false,
-                        snap: false,
-                        automaticallyImplyLeading: false,
-                        flexibleSpace: Builder(
-                          builder: (context) {
-                            return _buildSearchBar(filterCubit, state);
-                          },
-                        ),
-                        bottom: _buildTabBar(),
-                      ),
-                  ];
-                },
-                body: TabBarView(
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [_ForYou(), _Trending()],
-                ),
-              );
-            },
+                    ];
+                  },
+                  body: TabBarView(
+                    physics: NeverScrollableScrollPhysics(),
+                    children: [_ForYou(), _Trending()],
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ),

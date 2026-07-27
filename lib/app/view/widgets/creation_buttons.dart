@@ -4,16 +4,6 @@ import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-@RoutePage()
-class CreationBottomSheet extends StatelessWidget {
-  const CreationBottomSheet({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return CreationButtons();
-  }
-}
-
 class CreationButtons extends StatelessWidget {
   const CreationButtons({super.key});
 
@@ -23,7 +13,7 @@ class CreationButtons extends StatelessWidget {
       padding: const EdgeInsets.only(
         left: 10.0,
         right: 10.0,
-        top: 15,
+        top: 10,
         bottom: 5,
       ),
       child: SingleChildScrollView(
@@ -83,7 +73,7 @@ class _CreationButton extends StatelessWidget {
     return ListTile(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       onTap: () {
-        context.router.popTop();
+        Navigator.of(context).pop();
         onTap();
       },
       leading: SvgPicture.asset(
