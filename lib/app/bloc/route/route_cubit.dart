@@ -4,8 +4,6 @@ class RouteCubit extends Cubit<String> {
   RouteCubit() : super('HomeRoute');
 
   void updateRoute(String routeName) {
-    if (routeName == 'RootRoute') return;
-
     if (routeName != state) {
       emit(routeName);
     }

@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/autocomplete/autocomplete_bloc.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
 import 'package:democracy/app/bloc/menu_controller/menu_controller_cubit.dart';
-import 'package:democracy/app/bloc/repository/api/api_repository.dart';
 import 'package:democracy/app/bloc/repository/database/database_repository.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/bloc/sync/sync_bloc.dart';
@@ -43,19 +42,12 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => NotificationsBloc(
-            webSocketService: context.read<WebSocketService>(),
-            databaseRepository: context.read<DatabaseRepository>(),
-          )..add(NotificationsEvent.get()),
-          lazy: false,
+        BlocProvider.value(
+          value: context.read<NotificationsBloc>()
+            ..add(NotificationsEvent.get()),
         ),
-        BlocProvider(
-          create: (context) => SyncBloc(
-            apiRepository: context.read<APIRepository>(),
-            databaseRepository: context.read<DatabaseRepository>(),
-          )..add(SyncEvent.start()),
-          lazy: false,
+        BlocProvider.value(
+          value: context.read<SyncBloc>()..add(SyncEvent.start()),
         ),
         BlocProvider(
           create: (context) =>
@@ -102,12 +94,8 @@ class _Mobile extends StatelessWidget {
   Widget build(BuildContext context) {
     return AutoTabsScaffold(
       scaffoldKey: scaffoldKey,
-      routes: const [
-        HomeRoute(),
-        ExploreRoute(),
-        HubWrapper(),
-        ChatRoute(),
-      ],
+      drawer: Drawer(child: SideMenu()),
+      routes: const [HomeRoute(), ExploreRoute(), HubWrapper(), ChatRoute()],
       bottomNavigationBuilder: (_, tabsRouter) {
         return BottomNavBar(tabsRouter: tabsRouter);
       },

@@ -9,6 +9,7 @@ import 'package:democracy/app/bloc/repository/api/api_repository.dart';
 import 'package:democracy/app/bloc/global/global_cubit.dart';
 import 'package:democracy/app/bloc/repository/database/database_repository.dart';
 import 'package:democracy/app/bloc/route/route_cubit.dart';
+import 'package:democracy/app/bloc/sync/sync_bloc.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/bloc/services/token_interceptor.dart';
@@ -29,6 +30,7 @@ import 'package:democracy/constitution/bloc/sections/sections_bloc.dart';
 import 'package:democracy/geo/bloc/geo/geo_bloc.dart';
 import 'package:democracy/broadcast/bloc/broadcast_detail/broadcast_detail_bloc.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
+import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
 import 'package:democracy/notification/bloc/preferences/preferences_bloc.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
 import 'package:democracy/post/bloc/bookmarks/bookmarks_bloc.dart';
@@ -324,6 +326,18 @@ void main() {
                   BlocProvider(
                     create: (context) => AutocompleteBloc(
                       webSocketService: context.read<WebSocketService>(),
+                    ),
+                  ),
+                  BlocProvider(
+                    create: (context) => NotificationsBloc(
+                      webSocketService: context.read<WebSocketService>(),
+                      databaseRepository: context.read<DatabaseRepository>(),
+                    ),
+                  ),
+                  BlocProvider(
+                    create: (context) => SyncBloc(
+                      apiRepository: context.read<APIRepository>(),
+                      databaseRepository: context.read<DatabaseRepository>(),
                     ),
                   ),
                 ],
