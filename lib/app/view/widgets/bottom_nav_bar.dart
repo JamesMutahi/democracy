@@ -53,7 +53,12 @@ class BottomNavBar extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
-                icon: const Icon(Symbols.add_rounded, size: 30, weight: 500),
+                icon: Icon(
+                  Symbols.add_rounded,
+                  size: 30,
+                  weight: 500,
+                  color: Theme.of(context).disabledColor,
+                ),
               ),
               NavBarItem(
                 asset: 'assets/icons/widgets.svg',

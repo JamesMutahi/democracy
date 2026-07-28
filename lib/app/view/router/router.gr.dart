@@ -9,45 +9,45 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i47;
-import 'package:collection/collection.dart' as _i59;
+import 'package:auto_route/auto_route.dart' as _i48;
+import 'package:collection/collection.dart' as _i60;
 import 'package:democracy/app/shared/pages/location.dart' as _i24;
-import 'package:democracy/app/shared/pages/search_results.dart' as _i40;
+import 'package:democracy/app/shared/pages/search_results.dart' as _i41;
 import 'package:democracy/app/view/pages/chat_page.dart' as _i6;
 import 'package:democracy/app/view/pages/explore_page.dart' as _i16;
 import 'package:democracy/app/view/pages/home_page.dart' as _i20;
 import 'package:democracy/app/view/pages/hub.dart' as _i21;
-import 'package:democracy/app/view/root.dart' as _i39;
+import 'package:democracy/app/view/root.dart' as _i40;
 import 'package:democracy/app/view/widgets/bookmarks.dart' as _i3;
 import 'package:democracy/app/view/widgets/hub_results.dart' as _i22;
-import 'package:democracy/app/view/widgets/settings.dart' as _i41;
+import 'package:democracy/app/view/widgets/settings.dart' as _i42;
 import 'package:democracy/app/view/widgets/wrappers.dart' as _i7;
 import 'package:democracy/auth/view/failure.dart' as _i17;
 import 'package:democracy/auth/view/login.dart' as _i25;
-import 'package:democracy/auth/view/splash.dart' as _i42;
-import 'package:democracy/ballot/models/ballot.dart' as _i53;
+import 'package:democracy/auth/view/splash.dart' as _i43;
+import 'package:democracy/ballot/models/ballot.dart' as _i54;
 import 'package:democracy/ballot/view/ballot_detail.dart' as _i1;
 import 'package:democracy/ballot/view/ballot_page.dart' as _i2;
-import 'package:democracy/broadcast/models/broadcast.dart' as _i56;
+import 'package:democracy/broadcast/models/broadcast.dart' as _i57;
 import 'package:democracy/broadcast/view/broadcast_create.dart' as _i4;
 import 'package:democracy/broadcast/view/live_stream.dart' as _i23;
 import 'package:democracy/broadcast/view/meeting_detail.dart' as _i26;
 import 'package:democracy/broadcast/view/meeting_page.dart' as _i27;
-import 'package:democracy/chat/models/chat.dart' as _i49;
-import 'package:democracy/chat/models/message.dart' as _i50;
+import 'package:democracy/chat/models/chat.dart' as _i50;
+import 'package:democracy/chat/models/message.dart' as _i51;
 import 'package:democracy/chat/view/chat_detail.dart' as _i5;
 import 'package:democracy/chat/view/create_message.dart' as _i12;
 import 'package:democracy/chat/view/edit_message.dart' as _i14;
-import 'package:democracy/constitution/models/section.dart' as _i57;
+import 'package:democracy/constitution/models/section.dart' as _i58;
 import 'package:democracy/constitution/view/constitution.dart' as _i11;
 import 'package:democracy/notification/view/notifications.dart' as _i29;
 import 'package:democracy/notification/view/preferences.dart' as _i36;
-import 'package:democracy/petition/models/petition.dart' as _i55;
+import 'package:democracy/petition/models/petition.dart' as _i56;
 import 'package:democracy/petition/view/petition_create.dart' as _i30;
 import 'package:democracy/petition/view/petition_detail.dart' as _i31;
 import 'package:democracy/petition/view/petition_page.dart' as _i32;
-import 'package:democracy/petition/view/widgets/supporters.dart' as _i43;
-import 'package:democracy/post/models/post.dart' as _i52;
+import 'package:democracy/petition/view/widgets/supporters.dart' as _i44;
+import 'package:democracy/post/models/post.dart' as _i53;
 import 'package:democracy/post/view/community_note_create.dart' as _i8;
 import 'package:democracy/post/view/community_note_detail.dart' as _i9;
 import 'package:democracy/post/view/community_notes.dart' as _i10;
@@ -55,28 +55,29 @@ import 'package:democracy/post/view/draft_posts.dart' as _i13;
 import 'package:democracy/post/view/post_create.dart' as _i33;
 import 'package:democracy/post/view/post_detail.dart' as _i34;
 import 'package:democracy/post/view/post_update.dart' as _i35;
-import 'package:democracy/survey/models/survey.dart' as _i54;
-import 'package:democracy/survey/view/survey_page.dart' as _i44;
-import 'package:democracy/survey/view/survey_process/page.dart' as _i45;
+import 'package:democracy/post/view/widgets/post_activity.dart' as _i38;
+import 'package:democracy/survey/models/survey.dart' as _i55;
+import 'package:democracy/survey/view/survey_page.dart' as _i45;
+import 'package:democracy/survey/view/survey_process/page.dart' as _i46;
 import 'package:democracy/survey/view/survey_process/response_page.dart'
-    as _i38;
-import 'package:democracy/user/models/user.dart' as _i58;
+    as _i39;
+import 'package:democracy/user/models/user.dart' as _i59;
 import 'package:democracy/user/view/edit_profile.dart' as _i15;
 import 'package:democracy/user/view/pages/follow_recommendations.dart' as _i18;
 import 'package:democracy/user/view/pages/following.dart' as _i19;
 import 'package:democracy/user/view/pages/muted_and_blocked.dart' as _i28;
-import 'package:democracy/user/view/pages/users.dart' as _i46;
+import 'package:democracy/user/view/pages/users.dart' as _i47;
 import 'package:democracy/user/view/profile.dart' as _i37;
-import 'package:flutter/material.dart' as _i48;
-import 'package:latlong2/latlong.dart' as _i51;
+import 'package:flutter/material.dart' as _i49;
+import 'package:latlong2/latlong.dart' as _i52;
 
 /// generated route for
 /// [_i1.BallotDetail]
-class BallotDetail extends _i47.PageRouteInfo<BallotDetailArgs> {
+class BallotDetail extends _i48.PageRouteInfo<BallotDetailArgs> {
   BallotDetail({
-    _i48.Key? key,
+    _i49.Key? key,
     required int ballotId,
-    List<_i47.PageRouteInfo>? children,
+    List<_i48.PageRouteInfo>? children,
   }) : super(
          BallotDetail.name,
          args: BallotDetailArgs(key: key, ballotId: ballotId),
@@ -86,7 +87,7 @@ class BallotDetail extends _i47.PageRouteInfo<BallotDetailArgs> {
 
   static const String name = 'BallotDetail';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -101,7 +102,7 @@ class BallotDetail extends _i47.PageRouteInfo<BallotDetailArgs> {
 class BallotDetailArgs {
   const BallotDetailArgs({this.key, required this.ballotId});
 
-  final _i48.Key? key;
+  final _i49.Key? key;
 
   final int ballotId;
 
@@ -123,13 +124,13 @@ class BallotDetailArgs {
 
 /// generated route for
 /// [_i2.BallotPage]
-class BallotRoute extends _i47.PageRouteInfo<void> {
-  const BallotRoute({List<_i47.PageRouteInfo>? children})
+class BallotRoute extends _i48.PageRouteInfo<void> {
+  const BallotRoute({List<_i48.PageRouteInfo>? children})
     : super(BallotRoute.name, initialChildren: children);
 
   static const String name = 'BallotRoute';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       return const _i2.BallotPage();
@@ -139,13 +140,13 @@ class BallotRoute extends _i47.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i3.Bookmarks]
-class Bookmarks extends _i47.PageRouteInfo<void> {
-  const Bookmarks({List<_i47.PageRouteInfo>? children})
+class Bookmarks extends _i48.PageRouteInfo<void> {
+  const Bookmarks({List<_i48.PageRouteInfo>? children})
     : super(Bookmarks.name, initialChildren: children);
 
   static const String name = 'Bookmarks';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       return const _i3.Bookmarks();
@@ -155,11 +156,11 @@ class Bookmarks extends _i47.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i4.BroadcastCreate]
-class BroadcastCreate extends _i47.PageRouteInfo<BroadcastCreateArgs> {
+class BroadcastCreate extends _i48.PageRouteInfo<BroadcastCreateArgs> {
   BroadcastCreate({
-    _i48.Key? key,
+    _i49.Key? key,
     String type = 'meeting',
-    List<_i47.PageRouteInfo>? children,
+    List<_i48.PageRouteInfo>? children,
   }) : super(
          BroadcastCreate.name,
          args: BroadcastCreateArgs(key: key, type: type),
@@ -169,7 +170,7 @@ class BroadcastCreate extends _i47.PageRouteInfo<BroadcastCreateArgs> {
 
   static const String name = 'BroadcastCreate';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final queryParams = data.queryParams;
@@ -185,7 +186,7 @@ class BroadcastCreate extends _i47.PageRouteInfo<BroadcastCreateArgs> {
 class BroadcastCreateArgs {
   const BroadcastCreateArgs({this.key, this.type = 'meeting'});
 
-  final _i48.Key? key;
+  final _i49.Key? key;
 
   final String type;
 
@@ -207,11 +208,11 @@ class BroadcastCreateArgs {
 
 /// generated route for
 /// [_i5.ChatDetail]
-class ChatDetail extends _i47.PageRouteInfo<ChatDetailArgs> {
+class ChatDetail extends _i48.PageRouteInfo<ChatDetailArgs> {
   ChatDetail({
-    _i48.Key? key,
+    _i49.Key? key,
     required int chatId,
-    List<_i47.PageRouteInfo>? children,
+    List<_i48.PageRouteInfo>? children,
   }) : super(
          ChatDetail.name,
          args: ChatDetailArgs(key: key, chatId: chatId),
@@ -221,7 +222,7 @@ class ChatDetail extends _i47.PageRouteInfo<ChatDetailArgs> {
 
   static const String name = 'ChatDetail';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -236,7 +237,7 @@ class ChatDetail extends _i47.PageRouteInfo<ChatDetailArgs> {
 class ChatDetailArgs {
   const ChatDetailArgs({this.key, required this.chatId});
 
-  final _i48.Key? key;
+  final _i49.Key? key;
 
   final int chatId;
 
@@ -258,13 +259,13 @@ class ChatDetailArgs {
 
 /// generated route for
 /// [_i6.ChatPage]
-class ChatRoute extends _i47.PageRouteInfo<void> {
-  const ChatRoute({List<_i47.PageRouteInfo>? children})
+class ChatRoute extends _i48.PageRouteInfo<void> {
+  const ChatRoute({List<_i48.PageRouteInfo>? children})
     : super(ChatRoute.name, initialChildren: children);
 
   static const String name = 'ChatRoute';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       return const _i6.ChatPage();
@@ -274,13 +275,13 @@ class ChatRoute extends _i47.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i7.ChatWrapper]
-class ChatWrapper extends _i47.PageRouteInfo<void> {
-  const ChatWrapper({List<_i47.PageRouteInfo>? children})
+class ChatWrapper extends _i48.PageRouteInfo<void> {
+  const ChatWrapper({List<_i48.PageRouteInfo>? children})
     : super(ChatWrapper.name, initialChildren: children);
 
   static const String name = 'ChatWrapper';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       return const _i7.ChatWrapper();
@@ -290,11 +291,11 @@ class ChatWrapper extends _i47.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i8.CommunityNoteCreate]
-class CommunityNoteCreate extends _i47.PageRouteInfo<CommunityNoteCreateArgs> {
+class CommunityNoteCreate extends _i48.PageRouteInfo<CommunityNoteCreateArgs> {
   CommunityNoteCreate({
-    _i48.Key? key,
+    _i49.Key? key,
     required int postId,
-    List<_i47.PageRouteInfo>? children,
+    List<_i48.PageRouteInfo>? children,
   }) : super(
          CommunityNoteCreate.name,
          args: CommunityNoteCreateArgs(key: key, postId: postId),
@@ -304,7 +305,7 @@ class CommunityNoteCreate extends _i47.PageRouteInfo<CommunityNoteCreateArgs> {
 
   static const String name = 'CommunityNoteCreate';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -319,7 +320,7 @@ class CommunityNoteCreate extends _i47.PageRouteInfo<CommunityNoteCreateArgs> {
 class CommunityNoteCreateArgs {
   const CommunityNoteCreateArgs({this.key, required this.postId});
 
-  final _i48.Key? key;
+  final _i49.Key? key;
 
   final int postId;
 
@@ -341,11 +342,11 @@ class CommunityNoteCreateArgs {
 
 /// generated route for
 /// [_i9.CommunityNoteDetail]
-class CommunityNoteDetail extends _i47.PageRouteInfo<CommunityNoteDetailArgs> {
+class CommunityNoteDetail extends _i48.PageRouteInfo<CommunityNoteDetailArgs> {
   CommunityNoteDetail({
-    _i48.Key? key,
+    _i49.Key? key,
     required int postId,
-    List<_i47.PageRouteInfo>? children,
+    List<_i48.PageRouteInfo>? children,
   }) : super(
          CommunityNoteDetail.name,
          args: CommunityNoteDetailArgs(key: key, postId: postId),
@@ -355,7 +356,7 @@ class CommunityNoteDetail extends _i47.PageRouteInfo<CommunityNoteDetailArgs> {
 
   static const String name = 'CommunityNoteDetail';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -370,7 +371,7 @@ class CommunityNoteDetail extends _i47.PageRouteInfo<CommunityNoteDetailArgs> {
 class CommunityNoteDetailArgs {
   const CommunityNoteDetailArgs({this.key, required this.postId});
 
-  final _i48.Key? key;
+  final _i49.Key? key;
 
   final int postId;
 
@@ -392,11 +393,11 @@ class CommunityNoteDetailArgs {
 
 /// generated route for
 /// [_i10.CommunityNotes]
-class CommunityNotes extends _i47.PageRouteInfo<CommunityNotesArgs> {
+class CommunityNotes extends _i48.PageRouteInfo<CommunityNotesArgs> {
   CommunityNotes({
-    _i48.Key? key,
+    _i49.Key? key,
     required int postId,
-    List<_i47.PageRouteInfo>? children,
+    List<_i48.PageRouteInfo>? children,
   }) : super(
          CommunityNotes.name,
          args: CommunityNotesArgs(key: key, postId: postId),
@@ -406,7 +407,7 @@ class CommunityNotes extends _i47.PageRouteInfo<CommunityNotesArgs> {
 
   static const String name = 'CommunityNotes';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -421,7 +422,7 @@ class CommunityNotes extends _i47.PageRouteInfo<CommunityNotesArgs> {
 class CommunityNotesArgs {
   const CommunityNotesArgs({this.key, required this.postId});
 
-  final _i48.Key? key;
+  final _i49.Key? key;
 
   final int postId;
 
@@ -443,12 +444,12 @@ class CommunityNotesArgs {
 
 /// generated route for
 /// [_i11.Constitution]
-class Constitution extends _i47.PageRouteInfo<ConstitutionArgs> {
+class Constitution extends _i48.PageRouteInfo<ConstitutionArgs> {
   Constitution({
-    _i48.Key? key,
+    _i49.Key? key,
     int? sectionId,
     bool selectionMode = false,
-    List<_i47.PageRouteInfo>? children,
+    List<_i48.PageRouteInfo>? children,
   }) : super(
          Constitution.name,
          args: ConstitutionArgs(
@@ -462,7 +463,7 @@ class Constitution extends _i47.PageRouteInfo<ConstitutionArgs> {
 
   static const String name = 'Constitution';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final queryParams = data.queryParams;
@@ -488,7 +489,7 @@ class ConstitutionArgs {
     this.selectionMode = false,
   });
 
-  final _i48.Key? key;
+  final _i49.Key? key;
 
   final int? sectionId;
 
@@ -515,13 +516,13 @@ class ConstitutionArgs {
 
 /// generated route for
 /// [_i12.CreateMessage]
-class CreateMessage extends _i47.PageRouteInfo<void> {
-  const CreateMessage({List<_i47.PageRouteInfo>? children})
+class CreateMessage extends _i48.PageRouteInfo<void> {
+  const CreateMessage({List<_i48.PageRouteInfo>? children})
     : super(CreateMessage.name, initialChildren: children);
 
   static const String name = 'CreateMessage';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       return const _i12.CreateMessage();
@@ -531,13 +532,13 @@ class CreateMessage extends _i47.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i13.DraftPosts]
-class DraftPosts extends _i47.PageRouteInfo<void> {
-  const DraftPosts({List<_i47.PageRouteInfo>? children})
+class DraftPosts extends _i48.PageRouteInfo<void> {
+  const DraftPosts({List<_i48.PageRouteInfo>? children})
     : super(DraftPosts.name, initialChildren: children);
 
   static const String name = 'DraftPosts';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       return const _i13.DraftPosts();
@@ -547,12 +548,12 @@ class DraftPosts extends _i47.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i14.EditMessage]
-class EditMessage extends _i47.PageRouteInfo<EditMessageArgs> {
+class EditMessage extends _i48.PageRouteInfo<EditMessageArgs> {
   EditMessage({
-    _i48.Key? key,
-    required _i49.Chat chat,
-    required _i50.Message message,
-    List<_i47.PageRouteInfo>? children,
+    _i49.Key? key,
+    required _i50.Chat chat,
+    required _i51.Message message,
+    List<_i48.PageRouteInfo>? children,
   }) : super(
          EditMessage.name,
          args: EditMessageArgs(key: key, chat: chat, message: message),
@@ -561,7 +562,7 @@ class EditMessage extends _i47.PageRouteInfo<EditMessageArgs> {
 
   static const String name = 'EditMessage';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<EditMessageArgs>();
@@ -577,11 +578,11 @@ class EditMessage extends _i47.PageRouteInfo<EditMessageArgs> {
 class EditMessageArgs {
   const EditMessageArgs({this.key, required this.chat, required this.message});
 
-  final _i48.Key? key;
+  final _i49.Key? key;
 
-  final _i49.Chat chat;
+  final _i50.Chat chat;
 
-  final _i50.Message message;
+  final _i51.Message message;
 
   @override
   String toString() {
@@ -601,13 +602,13 @@ class EditMessageArgs {
 
 /// generated route for
 /// [_i15.EditProfile]
-class EditProfile extends _i47.PageRouteInfo<void> {
-  const EditProfile({List<_i47.PageRouteInfo>? children})
+class EditProfile extends _i48.PageRouteInfo<void> {
+  const EditProfile({List<_i48.PageRouteInfo>? children})
     : super(EditProfile.name, initialChildren: children);
 
   static const String name = 'EditProfile';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       return const _i15.EditProfile();
@@ -617,13 +618,13 @@ class EditProfile extends _i47.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i16.ExplorePage]
-class ExploreRoute extends _i47.PageRouteInfo<void> {
-  const ExploreRoute({List<_i47.PageRouteInfo>? children})
+class ExploreRoute extends _i48.PageRouteInfo<void> {
+  const ExploreRoute({List<_i48.PageRouteInfo>? children})
     : super(ExploreRoute.name, initialChildren: children);
 
   static const String name = 'ExploreRoute';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       return const _i16.ExplorePage();
@@ -633,11 +634,11 @@ class ExploreRoute extends _i47.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i17.FailurePage]
-class FailureRoute extends _i47.PageRouteInfo<FailureRouteArgs> {
+class FailureRoute extends _i48.PageRouteInfo<FailureRouteArgs> {
   FailureRoute({
-    _i48.Key? key,
+    _i49.Key? key,
     required String error,
-    List<_i47.PageRouteInfo>? children,
+    List<_i48.PageRouteInfo>? children,
   }) : super(
          FailureRoute.name,
          args: FailureRouteArgs(key: key, error: error),
@@ -646,7 +647,7 @@ class FailureRoute extends _i47.PageRouteInfo<FailureRouteArgs> {
 
   static const String name = 'FailureRoute';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<FailureRouteArgs>();
@@ -658,7 +659,7 @@ class FailureRoute extends _i47.PageRouteInfo<FailureRouteArgs> {
 class FailureRouteArgs {
   const FailureRouteArgs({this.key, required this.error});
 
-  final _i48.Key? key;
+  final _i49.Key? key;
 
   final String error;
 
@@ -680,13 +681,13 @@ class FailureRouteArgs {
 
 /// generated route for
 /// [_i18.FollowRecommendations]
-class FollowRecommendations extends _i47.PageRouteInfo<void> {
-  const FollowRecommendations({List<_i47.PageRouteInfo>? children})
+class FollowRecommendations extends _i48.PageRouteInfo<void> {
+  const FollowRecommendations({List<_i48.PageRouteInfo>? children})
     : super(FollowRecommendations.name, initialChildren: children);
 
   static const String name = 'FollowRecommendations';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       return const _i18.FollowRecommendations();
@@ -696,12 +697,12 @@ class FollowRecommendations extends _i47.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i19.FollowingPage]
-class FollowingRoute extends _i47.PageRouteInfo<FollowingRouteArgs> {
+class FollowingRoute extends _i48.PageRouteInfo<FollowingRouteArgs> {
   FollowingRoute({
-    _i48.Key? key,
+    _i49.Key? key,
     required int userId,
     required String userName,
-    List<_i47.PageRouteInfo>? children,
+    List<_i48.PageRouteInfo>? children,
   }) : super(
          FollowingRoute.name,
          args: FollowingRouteArgs(key: key, userId: userId, userName: userName),
@@ -711,7 +712,7 @@ class FollowingRoute extends _i47.PageRouteInfo<FollowingRouteArgs> {
 
   static const String name = 'FollowingRoute';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -737,7 +738,7 @@ class FollowingRouteArgs {
     required this.userName,
   });
 
-  final _i48.Key? key;
+  final _i49.Key? key;
 
   final int userId;
 
@@ -763,13 +764,13 @@ class FollowingRouteArgs {
 
 /// generated route for
 /// [_i20.HomePage]
-class HomeRoute extends _i47.PageRouteInfo<void> {
-  const HomeRoute({List<_i47.PageRouteInfo>? children})
+class HomeRoute extends _i48.PageRouteInfo<void> {
+  const HomeRoute({List<_i48.PageRouteInfo>? children})
     : super(HomeRoute.name, initialChildren: children);
 
   static const String name = 'HomeRoute';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       return const _i20.HomePage();
@@ -779,13 +780,13 @@ class HomeRoute extends _i47.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i21.HubPage]
-class HubRoute extends _i47.PageRouteInfo<void> {
-  const HubRoute({List<_i47.PageRouteInfo>? children})
+class HubRoute extends _i48.PageRouteInfo<void> {
+  const HubRoute({List<_i48.PageRouteInfo>? children})
     : super(HubRoute.name, initialChildren: children);
 
   static const String name = 'HubRoute';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       return const _i21.HubPage();
@@ -795,16 +796,16 @@ class HubRoute extends _i47.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i22.HubResults]
-class HubResults extends _i47.PageRouteInfo<HubResultsArgs> {
+class HubResults extends _i48.PageRouteInfo<HubResultsArgs> {
   HubResults({
-    _i48.Key? key,
+    _i49.Key? key,
     String searchTerm = '',
     bool filterByRegion = true,
     String sortBy = 'recent',
     DateTime? startDate,
     DateTime? endDate,
     int filterCount = 0,
-    List<_i47.PageRouteInfo>? children,
+    List<_i48.PageRouteInfo>? children,
   }) : super(
          HubResults.name,
          args: HubResultsArgs(
@@ -829,7 +830,7 @@ class HubResults extends _i47.PageRouteInfo<HubResultsArgs> {
 
   static const String name = 'HubResults';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final queryParams = data.queryParams;
@@ -867,7 +868,7 @@ class HubResultsArgs {
     this.filterCount = 0,
   });
 
-  final _i48.Key? key;
+  final _i49.Key? key;
 
   final String searchTerm;
 
@@ -912,13 +913,13 @@ class HubResultsArgs {
 
 /// generated route for
 /// [_i7.HubWrapper]
-class HubWrapper extends _i47.PageRouteInfo<void> {
-  const HubWrapper({List<_i47.PageRouteInfo>? children})
+class HubWrapper extends _i48.PageRouteInfo<void> {
+  const HubWrapper({List<_i48.PageRouteInfo>? children})
     : super(HubWrapper.name, initialChildren: children);
 
   static const String name = 'HubWrapper';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       return const _i7.HubWrapper();
@@ -928,11 +929,11 @@ class HubWrapper extends _i47.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i23.LiveStream]
-class LiveStream extends _i47.PageRouteInfo<LiveStreamArgs> {
+class LiveStream extends _i48.PageRouteInfo<LiveStreamArgs> {
   LiveStream({
-    _i48.Key? key,
+    _i49.Key? key,
     required int broadcastId,
-    List<_i47.PageRouteInfo>? children,
+    List<_i48.PageRouteInfo>? children,
   }) : super(
          LiveStream.name,
          args: LiveStreamArgs(key: key, broadcastId: broadcastId),
@@ -942,7 +943,7 @@ class LiveStream extends _i47.PageRouteInfo<LiveStreamArgs> {
 
   static const String name = 'LiveStream';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -957,7 +958,7 @@ class LiveStream extends _i47.PageRouteInfo<LiveStreamArgs> {
 class LiveStreamArgs {
   const LiveStreamArgs({this.key, required this.broadcastId});
 
-  final _i48.Key? key;
+  final _i49.Key? key;
 
   final int broadcastId;
 
@@ -979,11 +980,11 @@ class LiveStreamArgs {
 
 /// generated route for
 /// [_i24.Location]
-class Location extends _i47.PageRouteInfo<LocationArgs> {
+class Location extends _i48.PageRouteInfo<LocationArgs> {
   Location({
-    _i48.Key? key,
-    required void Function(_i51.LatLng) onLocation,
-    List<_i47.PageRouteInfo>? children,
+    _i49.Key? key,
+    required void Function(_i52.LatLng) onLocation,
+    List<_i48.PageRouteInfo>? children,
   }) : super(
          Location.name,
          args: LocationArgs(key: key, onLocation: onLocation),
@@ -992,7 +993,7 @@ class Location extends _i47.PageRouteInfo<LocationArgs> {
 
   static const String name = 'Location';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<LocationArgs>();
@@ -1004,9 +1005,9 @@ class Location extends _i47.PageRouteInfo<LocationArgs> {
 class LocationArgs {
   const LocationArgs({this.key, required this.onLocation});
 
-  final _i48.Key? key;
+  final _i49.Key? key;
 
-  final void Function(_i51.LatLng) onLocation;
+  final void Function(_i52.LatLng) onLocation;
 
   @override
   String toString() {
@@ -1026,13 +1027,13 @@ class LocationArgs {
 
 /// generated route for
 /// [_i25.LoginPage]
-class LoginRoute extends _i47.PageRouteInfo<void> {
-  const LoginRoute({List<_i47.PageRouteInfo>? children})
+class LoginRoute extends _i48.PageRouteInfo<void> {
+  const LoginRoute({List<_i48.PageRouteInfo>? children})
     : super(LoginRoute.name, initialChildren: children);
 
   static const String name = 'LoginRoute';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       return const _i25.LoginPage();
@@ -1042,11 +1043,11 @@ class LoginRoute extends _i47.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i26.MeetingDetail]
-class MeetingDetail extends _i47.PageRouteInfo<MeetingDetailArgs> {
+class MeetingDetail extends _i48.PageRouteInfo<MeetingDetailArgs> {
   MeetingDetail({
-    _i48.Key? key,
+    _i49.Key? key,
     required int broadcastId,
-    List<_i47.PageRouteInfo>? children,
+    List<_i48.PageRouteInfo>? children,
   }) : super(
          MeetingDetail.name,
          args: MeetingDetailArgs(key: key, broadcastId: broadcastId),
@@ -1056,7 +1057,7 @@ class MeetingDetail extends _i47.PageRouteInfo<MeetingDetailArgs> {
 
   static const String name = 'MeetingDetail';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -1071,7 +1072,7 @@ class MeetingDetail extends _i47.PageRouteInfo<MeetingDetailArgs> {
 class MeetingDetailArgs {
   const MeetingDetailArgs({this.key, required this.broadcastId});
 
-  final _i48.Key? key;
+  final _i49.Key? key;
 
   final int broadcastId;
 
@@ -1093,13 +1094,13 @@ class MeetingDetailArgs {
 
 /// generated route for
 /// [_i27.MeetingPage]
-class MeetingRoute extends _i47.PageRouteInfo<void> {
-  const MeetingRoute({List<_i47.PageRouteInfo>? children})
+class MeetingRoute extends _i48.PageRouteInfo<void> {
+  const MeetingRoute({List<_i48.PageRouteInfo>? children})
     : super(MeetingRoute.name, initialChildren: children);
 
   static const String name = 'MeetingRoute';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       return const _i27.MeetingPage();
@@ -1109,13 +1110,13 @@ class MeetingRoute extends _i47.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i28.MutedAndBlocked]
-class MutedAndBlocked extends _i47.PageRouteInfo<void> {
-  const MutedAndBlocked({List<_i47.PageRouteInfo>? children})
+class MutedAndBlocked extends _i48.PageRouteInfo<void> {
+  const MutedAndBlocked({List<_i48.PageRouteInfo>? children})
     : super(MutedAndBlocked.name, initialChildren: children);
 
   static const String name = 'MutedAndBlocked';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       return const _i28.MutedAndBlocked();
@@ -1125,13 +1126,13 @@ class MutedAndBlocked extends _i47.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i29.Notifications]
-class Notifications extends _i47.PageRouteInfo<void> {
-  const Notifications({List<_i47.PageRouteInfo>? children})
+class Notifications extends _i48.PageRouteInfo<void> {
+  const Notifications({List<_i48.PageRouteInfo>? children})
     : super(Notifications.name, initialChildren: children);
 
   static const String name = 'Notifications';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       return const _i29.Notifications();
@@ -1141,13 +1142,13 @@ class Notifications extends _i47.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i30.PetitionCreate]
-class PetitionCreate extends _i47.PageRouteInfo<void> {
-  const PetitionCreate({List<_i47.PageRouteInfo>? children})
+class PetitionCreate extends _i48.PageRouteInfo<void> {
+  const PetitionCreate({List<_i48.PageRouteInfo>? children})
     : super(PetitionCreate.name, initialChildren: children);
 
   static const String name = 'PetitionCreate';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       return const _i30.PetitionCreate();
@@ -1157,11 +1158,11 @@ class PetitionCreate extends _i47.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i31.PetitionDetail]
-class PetitionDetail extends _i47.PageRouteInfo<PetitionDetailArgs> {
+class PetitionDetail extends _i48.PageRouteInfo<PetitionDetailArgs> {
   PetitionDetail({
-    _i48.Key? key,
+    _i49.Key? key,
     required int petitionId,
-    List<_i47.PageRouteInfo>? children,
+    List<_i48.PageRouteInfo>? children,
   }) : super(
          PetitionDetail.name,
          args: PetitionDetailArgs(key: key, petitionId: petitionId),
@@ -1171,7 +1172,7 @@ class PetitionDetail extends _i47.PageRouteInfo<PetitionDetailArgs> {
 
   static const String name = 'PetitionDetail';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -1186,7 +1187,7 @@ class PetitionDetail extends _i47.PageRouteInfo<PetitionDetailArgs> {
 class PetitionDetailArgs {
   const PetitionDetailArgs({this.key, required this.petitionId});
 
-  final _i48.Key? key;
+  final _i49.Key? key;
 
   final int petitionId;
 
@@ -1208,13 +1209,13 @@ class PetitionDetailArgs {
 
 /// generated route for
 /// [_i32.PetitionPage]
-class PetitionRoute extends _i47.PageRouteInfo<void> {
-  const PetitionRoute({List<_i47.PageRouteInfo>? children})
+class PetitionRoute extends _i48.PageRouteInfo<void> {
+  const PetitionRoute({List<_i48.PageRouteInfo>? children})
     : super(PetitionRoute.name, initialChildren: children);
 
   static const String name = 'PetitionRoute';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       return const _i32.PetitionPage();
@@ -1224,13 +1225,13 @@ class PetitionRoute extends _i47.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i7.PetitionWrapper]
-class PetitionWrapper extends _i47.PageRouteInfo<void> {
-  const PetitionWrapper({List<_i47.PageRouteInfo>? children})
+class PetitionWrapper extends _i48.PageRouteInfo<void> {
+  const PetitionWrapper({List<_i48.PageRouteInfo>? children})
     : super(PetitionWrapper.name, initialChildren: children);
 
   static const String name = 'PetitionWrapper';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       return const _i7.PetitionWrapper();
@@ -1240,17 +1241,17 @@ class PetitionWrapper extends _i47.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i33.PostCreatePage]
-class PostCreateRoute extends _i47.PageRouteInfo<PostCreateRouteArgs> {
+class PostCreateRoute extends _i48.PageRouteInfo<PostCreateRouteArgs> {
   PostCreateRoute({
-    _i48.Key? key,
-    _i52.Post? replyTo,
-    _i52.Post? repostOf,
-    _i53.Ballot? ballot,
-    _i54.Survey? survey,
-    _i55.Petition? petition,
-    _i56.Broadcast? broadcast,
-    _i57.Section? section,
-    List<_i47.PageRouteInfo>? children,
+    _i49.Key? key,
+    _i53.Post? replyTo,
+    _i53.Post? repostOf,
+    _i54.Ballot? ballot,
+    _i55.Survey? survey,
+    _i56.Petition? petition,
+    _i57.Broadcast? broadcast,
+    _i58.Section? section,
+    List<_i48.PageRouteInfo>? children,
   }) : super(
          PostCreateRoute.name,
          args: PostCreateRouteArgs(
@@ -1268,7 +1269,7 @@ class PostCreateRoute extends _i47.PageRouteInfo<PostCreateRouteArgs> {
 
   static const String name = 'PostCreateRoute';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<PostCreateRouteArgs>(
@@ -1300,21 +1301,21 @@ class PostCreateRouteArgs {
     this.section,
   });
 
-  final _i48.Key? key;
+  final _i49.Key? key;
 
-  final _i52.Post? replyTo;
+  final _i53.Post? replyTo;
 
-  final _i52.Post? repostOf;
+  final _i53.Post? repostOf;
 
-  final _i53.Ballot? ballot;
+  final _i54.Ballot? ballot;
 
-  final _i54.Survey? survey;
+  final _i55.Survey? survey;
 
-  final _i55.Petition? petition;
+  final _i56.Petition? petition;
 
-  final _i56.Broadcast? broadcast;
+  final _i57.Broadcast? broadcast;
 
-  final _i57.Section? section;
+  final _i58.Section? section;
 
   @override
   String toString() {
@@ -1349,11 +1350,11 @@ class PostCreateRouteArgs {
 
 /// generated route for
 /// [_i34.PostDetail]
-class PostDetail extends _i47.PageRouteInfo<PostDetailArgs> {
+class PostDetail extends _i48.PageRouteInfo<PostDetailArgs> {
   PostDetail({
-    _i48.Key? key,
+    _i49.Key? key,
     required int postId,
-    List<_i47.PageRouteInfo>? children,
+    List<_i48.PageRouteInfo>? children,
   }) : super(
          PostDetail.name,
          args: PostDetailArgs(key: key, postId: postId),
@@ -1363,7 +1364,7 @@ class PostDetail extends _i47.PageRouteInfo<PostDetailArgs> {
 
   static const String name = 'PostDetail';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -1378,7 +1379,7 @@ class PostDetail extends _i47.PageRouteInfo<PostDetailArgs> {
 class PostDetailArgs {
   const PostDetailArgs({this.key, required this.postId});
 
-  final _i48.Key? key;
+  final _i49.Key? key;
 
   final int postId;
 
@@ -1400,11 +1401,11 @@ class PostDetailArgs {
 
 /// generated route for
 /// [_i35.PostUpdate]
-class PostUpdate extends _i47.PageRouteInfo<PostUpdateArgs> {
+class PostUpdate extends _i48.PageRouteInfo<PostUpdateArgs> {
   PostUpdate({
-    _i48.Key? key,
+    _i49.Key? key,
     required int draftId,
-    List<_i47.PageRouteInfo>? children,
+    List<_i48.PageRouteInfo>? children,
   }) : super(
          PostUpdate.name,
          args: PostUpdateArgs(key: key, draftId: draftId),
@@ -1414,7 +1415,7 @@ class PostUpdate extends _i47.PageRouteInfo<PostUpdateArgs> {
 
   static const String name = 'PostUpdate';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -1429,7 +1430,7 @@ class PostUpdate extends _i47.PageRouteInfo<PostUpdateArgs> {
 class PostUpdateArgs {
   const PostUpdateArgs({this.key, required this.draftId});
 
-  final _i48.Key? key;
+  final _i49.Key? key;
 
   final int draftId;
 
@@ -1451,13 +1452,13 @@ class PostUpdateArgs {
 
 /// generated route for
 /// [_i7.PostWrapper]
-class PostWrapper extends _i47.PageRouteInfo<void> {
-  const PostWrapper({List<_i47.PageRouteInfo>? children})
+class PostWrapper extends _i48.PageRouteInfo<void> {
+  const PostWrapper({List<_i48.PageRouteInfo>? children})
     : super(PostWrapper.name, initialChildren: children);
 
   static const String name = 'PostWrapper';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       return const _i7.PostWrapper();
@@ -1467,13 +1468,13 @@ class PostWrapper extends _i47.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i36.PreferencesPage]
-class PreferencesRoute extends _i47.PageRouteInfo<void> {
-  const PreferencesRoute({List<_i47.PageRouteInfo>? children})
+class PreferencesRoute extends _i48.PageRouteInfo<void> {
+  const PreferencesRoute({List<_i48.PageRouteInfo>? children})
     : super(PreferencesRoute.name, initialChildren: children);
 
   static const String name = 'PreferencesRoute';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       return const _i36.PreferencesPage();
@@ -1483,11 +1484,11 @@ class PreferencesRoute extends _i47.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i37.ProfilePage]
-class ProfileRoute extends _i47.PageRouteInfo<ProfileRouteArgs> {
+class ProfileRoute extends _i48.PageRouteInfo<ProfileRouteArgs> {
   ProfileRoute({
-    _i48.Key? key,
+    _i49.Key? key,
     required String username,
-    List<_i47.PageRouteInfo>? children,
+    List<_i48.PageRouteInfo>? children,
   }) : super(
          ProfileRoute.name,
          args: ProfileRouteArgs(key: key, username: username),
@@ -1497,7 +1498,7 @@ class ProfileRoute extends _i47.PageRouteInfo<ProfileRouteArgs> {
 
   static const String name = 'ProfileRoute';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -1513,7 +1514,7 @@ class ProfileRoute extends _i47.PageRouteInfo<ProfileRouteArgs> {
 class ProfileRouteArgs {
   const ProfileRouteArgs({this.key, required this.username});
 
-  final _i48.Key? key;
+  final _i49.Key? key;
 
   final String username;
 
@@ -1535,13 +1536,13 @@ class ProfileRouteArgs {
 
 /// generated route for
 /// [_i7.ProfileWrapper]
-class ProfileWrapper extends _i47.PageRouteInfo<void> {
-  const ProfileWrapper({List<_i47.PageRouteInfo>? children})
+class ProfileWrapper extends _i48.PageRouteInfo<void> {
+  const ProfileWrapper({List<_i48.PageRouteInfo>? children})
     : super(ProfileWrapper.name, initialChildren: children);
 
   static const String name = 'ProfileWrapper';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       return const _i7.ProfileWrapper();
@@ -1550,12 +1551,63 @@ class ProfileWrapper extends _i47.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i38.ResponsePage]
-class ResponseRoute extends _i47.PageRouteInfo<ResponseRouteArgs> {
+/// [_i38.Reposts]
+class Reposts extends _i48.PageRouteInfo<RepostsArgs> {
+  Reposts({
+    _i49.Key? key,
+    required int postId,
+    List<_i48.PageRouteInfo>? children,
+  }) : super(
+         Reposts.name,
+         args: RepostsArgs(key: key, postId: postId),
+         rawPathParams: {'id': postId},
+         initialChildren: children,
+       );
+
+  static const String name = 'Reposts';
+
+  static _i48.PageInfo page = _i48.PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<RepostsArgs>(
+        orElse: () => RepostsArgs(postId: pathParams.getInt('id')),
+      );
+      return _i38.Reposts(key: args.key, postId: args.postId);
+    },
+  );
+}
+
+class RepostsArgs {
+  const RepostsArgs({this.key, required this.postId});
+
+  final _i49.Key? key;
+
+  final int postId;
+
+  @override
+  String toString() {
+    return 'RepostsArgs{key: $key, postId: $postId}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! RepostsArgs) return false;
+    return key == other.key && postId == other.postId;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ postId.hashCode;
+}
+
+/// generated route for
+/// [_i39.ResponsePage]
+class ResponseRoute extends _i48.PageRouteInfo<ResponseRouteArgs> {
   ResponseRoute({
-    _i48.Key? key,
+    _i49.Key? key,
     required int surveyId,
-    List<_i47.PageRouteInfo>? children,
+    List<_i48.PageRouteInfo>? children,
   }) : super(
          ResponseRoute.name,
          args: ResponseRouteArgs(key: key, surveyId: surveyId),
@@ -1565,14 +1617,14 @@ class ResponseRoute extends _i47.PageRouteInfo<ResponseRouteArgs> {
 
   static const String name = 'ResponseRoute';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<ResponseRouteArgs>(
         orElse: () => ResponseRouteArgs(surveyId: pathParams.getInt('id')),
       );
-      return _i38.ResponsePage(key: args.key, surveyId: args.surveyId);
+      return _i39.ResponsePage(key: args.key, surveyId: args.surveyId);
     },
   );
 }
@@ -1580,7 +1632,7 @@ class ResponseRoute extends _i47.PageRouteInfo<ResponseRouteArgs> {
 class ResponseRouteArgs {
   const ResponseRouteArgs({this.key, required this.surveyId});
 
-  final _i48.Key? key;
+  final _i49.Key? key;
 
   final int surveyId;
 
@@ -1601,31 +1653,31 @@ class ResponseRouteArgs {
 }
 
 /// generated route for
-/// [_i39.RootRoute]
-class RootRoute extends _i47.PageRouteInfo<void> {
-  const RootRoute({List<_i47.PageRouteInfo>? children})
+/// [_i40.RootRoute]
+class RootRoute extends _i48.PageRouteInfo<void> {
+  const RootRoute({List<_i48.PageRouteInfo>? children})
     : super(RootRoute.name, initialChildren: children);
 
   static const String name = 'RootRoute';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
-      return const _i39.RootRoute();
+      return const _i40.RootRoute();
     },
   );
 }
 
 /// generated route for
-/// [_i40.SearchResults]
-class SearchResults extends _i47.PageRouteInfo<SearchResultsArgs> {
+/// [_i41.SearchResults]
+class SearchResults extends _i48.PageRouteInfo<SearchResultsArgs> {
   SearchResults({
-    _i48.Key? key,
+    _i49.Key? key,
     String searchTerm = '',
     DateTime? startDate,
     DateTime? endDate,
     int filterCount = 0,
-    List<_i47.PageRouteInfo>? children,
+    List<_i48.PageRouteInfo>? children,
   }) : super(
          SearchResults.name,
          args: SearchResultsArgs(
@@ -1646,7 +1698,7 @@ class SearchResults extends _i47.PageRouteInfo<SearchResultsArgs> {
 
   static const String name = 'SearchResults';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final queryParams = data.queryParams;
@@ -1658,7 +1710,7 @@ class SearchResults extends _i47.PageRouteInfo<SearchResultsArgs> {
           filterCount: queryParams.getInt('filterCount', 0),
         ),
       );
-      return _i40.SearchResults(
+      return _i41.SearchResults(
         key: args.key,
         searchTerm: args.searchTerm,
         startDate: args.startDate,
@@ -1678,7 +1730,7 @@ class SearchResultsArgs {
     this.filterCount = 0,
   });
 
-  final _i48.Key? key;
+  final _i49.Key? key;
 
   final String searchTerm;
 
@@ -1714,44 +1766,44 @@ class SearchResultsArgs {
 }
 
 /// generated route for
-/// [_i41.Settings]
-class Settings extends _i47.PageRouteInfo<void> {
-  const Settings({List<_i47.PageRouteInfo>? children})
+/// [_i42.Settings]
+class Settings extends _i48.PageRouteInfo<void> {
+  const Settings({List<_i48.PageRouteInfo>? children})
     : super(Settings.name, initialChildren: children);
 
   static const String name = 'Settings';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
-      return const _i41.Settings();
+      return const _i42.Settings();
     },
   );
 }
 
 /// generated route for
-/// [_i42.SplashPage]
-class SplashRoute extends _i47.PageRouteInfo<void> {
-  const SplashRoute({List<_i47.PageRouteInfo>? children})
+/// [_i43.SplashPage]
+class SplashRoute extends _i48.PageRouteInfo<void> {
+  const SplashRoute({List<_i48.PageRouteInfo>? children})
     : super(SplashRoute.name, initialChildren: children);
 
   static const String name = 'SplashRoute';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
-      return const _i42.SplashPage();
+      return const _i43.SplashPage();
     },
   );
 }
 
 /// generated route for
-/// [_i43.Supporters]
-class Supporters extends _i47.PageRouteInfo<SupportersArgs> {
+/// [_i44.Supporters]
+class Supporters extends _i48.PageRouteInfo<SupportersArgs> {
   Supporters({
-    _i48.Key? key,
+    _i49.Key? key,
     required int petitionId,
-    List<_i47.PageRouteInfo>? children,
+    List<_i48.PageRouteInfo>? children,
   }) : super(
          Supporters.name,
          args: SupportersArgs(key: key, petitionId: petitionId),
@@ -1761,14 +1813,14 @@ class Supporters extends _i47.PageRouteInfo<SupportersArgs> {
 
   static const String name = 'Supporters';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<SupportersArgs>(
         orElse: () => SupportersArgs(petitionId: pathParams.getInt('id')),
       );
-      return _i43.Supporters(key: args.key, petitionId: args.petitionId);
+      return _i44.Supporters(key: args.key, petitionId: args.petitionId);
     },
   );
 }
@@ -1776,7 +1828,7 @@ class Supporters extends _i47.PageRouteInfo<SupportersArgs> {
 class SupportersArgs {
   const SupportersArgs({this.key, required this.petitionId});
 
-  final _i48.Key? key;
+  final _i49.Key? key;
 
   final int petitionId;
 
@@ -1797,28 +1849,28 @@ class SupportersArgs {
 }
 
 /// generated route for
-/// [_i44.SurveyPage]
-class SurveyRoute extends _i47.PageRouteInfo<void> {
-  const SurveyRoute({List<_i47.PageRouteInfo>? children})
+/// [_i45.SurveyPage]
+class SurveyRoute extends _i48.PageRouteInfo<void> {
+  const SurveyRoute({List<_i48.PageRouteInfo>? children})
     : super(SurveyRoute.name, initialChildren: children);
 
   static const String name = 'SurveyRoute';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
-      return const _i44.SurveyPage();
+      return const _i45.SurveyPage();
     },
   );
 }
 
 /// generated route for
-/// [_i45.SurveyProcess]
-class SurveyProcess extends _i47.PageRouteInfo<SurveyProcessArgs> {
+/// [_i46.SurveyProcess]
+class SurveyProcess extends _i48.PageRouteInfo<SurveyProcessArgs> {
   SurveyProcess({
-    _i48.Key? key,
+    _i49.Key? key,
     required int surveyId,
-    List<_i47.PageRouteInfo>? children,
+    List<_i48.PageRouteInfo>? children,
   }) : super(
          SurveyProcess.name,
          args: SurveyProcessArgs(key: key, surveyId: surveyId),
@@ -1828,14 +1880,14 @@ class SurveyProcess extends _i47.PageRouteInfo<SurveyProcessArgs> {
 
   static const String name = 'SurveyProcess';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<SurveyProcessArgs>(
         orElse: () => SurveyProcessArgs(surveyId: pathParams.getInt('id')),
       );
-      return _i45.SurveyProcess(key: args.key, surveyId: args.surveyId);
+      return _i46.SurveyProcess(key: args.key, surveyId: args.surveyId);
     },
   );
 }
@@ -1843,7 +1895,7 @@ class SurveyProcess extends _i47.PageRouteInfo<SurveyProcessArgs> {
 class SurveyProcessArgs {
   const SurveyProcessArgs({this.key, required this.surveyId});
 
-  final _i48.Key? key;
+  final _i49.Key? key;
 
   final int surveyId;
 
@@ -1864,13 +1916,13 @@ class SurveyProcessArgs {
 }
 
 /// generated route for
-/// [_i46.UsersPage]
-class UsersRoute extends _i47.PageRouteInfo<UsersRouteArgs> {
+/// [_i47.UsersPage]
+class UsersRoute extends _i48.PageRouteInfo<UsersRouteArgs> {
   UsersRoute({
-    _i48.Key? key,
+    _i49.Key? key,
     required String title,
-    required List<_i58.User> users,
-    List<_i47.PageRouteInfo>? children,
+    required List<_i59.User> users,
+    List<_i48.PageRouteInfo>? children,
   }) : super(
          UsersRoute.name,
          args: UsersRouteArgs(key: key, title: title, users: users),
@@ -1879,11 +1931,11 @@ class UsersRoute extends _i47.PageRouteInfo<UsersRouteArgs> {
 
   static const String name = 'UsersRoute';
 
-  static _i47.PageInfo page = _i47.PageInfo(
+  static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<UsersRouteArgs>();
-      return _i46.UsersPage(
+      return _i47.UsersPage(
         key: args.key,
         title: args.title,
         users: args.users,
@@ -1895,11 +1947,11 @@ class UsersRoute extends _i47.PageRouteInfo<UsersRouteArgs> {
 class UsersRouteArgs {
   const UsersRouteArgs({this.key, required this.title, required this.users});
 
-  final _i48.Key? key;
+  final _i49.Key? key;
 
   final String title;
 
-  final List<_i58.User> users;
+  final List<_i59.User> users;
 
   @override
   String toString() {
@@ -1912,12 +1964,12 @@ class UsersRouteArgs {
     if (other is! UsersRouteArgs) return false;
     return key == other.key &&
         title == other.title &&
-        const _i59.ListEquality<_i58.User>().equals(users, other.users);
+        const _i60.ListEquality<_i59.User>().equals(users, other.users);
   }
 
   @override
   int get hashCode =>
       key.hashCode ^
       title.hashCode ^
-      const _i59.ListEquality<_i58.User>().hash(users);
+      const _i60.ListEquality<_i59.User>().hash(users);
 }

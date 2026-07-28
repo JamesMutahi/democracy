@@ -90,7 +90,10 @@ final otherRoutes = [
     path: '${kIsWeb ? '' : '/'}community-note/:id',
     page: CommunityNoteDetail.page,
   ),
-
+  AutoRoute(
+    path: '${kIsWeb ? '' : '/'}post/:id/reposts',
+    page: Reposts.page,
+  ),
   AutoRoute(path: '${kIsWeb ? '' : '/'}drafts', page: DraftPosts.page),
   AutoRoute(path: '${kIsWeb ? '' : '/'}draft/:id', page: PostUpdate.page),
 

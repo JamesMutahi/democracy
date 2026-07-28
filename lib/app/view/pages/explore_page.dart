@@ -65,7 +65,7 @@ class _ExplorePageState extends State<ExplorePage> {
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                           bottom: PreferredSize(
-                            preferredSize: Size.fromHeight(100.0),
+                            preferredSize: Size.fromHeight(108.0),
                             child: Column(
                               children: [
                                 _buildSearchBar(filterCubit, state),

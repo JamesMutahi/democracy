@@ -69,9 +69,9 @@ class PostPopUp extends StatelessWidget {
   List<String> _buildMenuItems(User currentUser, Post post) {
     final List<String> items = [];
 
-    if (post.communityNoteOf == null) items.add('Community notes');
-
     items.add('Share');
+    items.add('Reposts');
+    if (post.communityNoteOf == null) items.add('Community notes');
 
     if (currentUser.id == post.author.id) {
       items.add(post.isMuted ? 'Unmute' : 'Mute');
@@ -98,6 +98,10 @@ class PostPopUp extends StatelessWidget {
           shape: const BeveledRectangleBorder(),
           builder: (_) => ShareBottomSheet(post: post),
         );
+        break;
+
+      case 'Reposts':
+        context.router.push(Reposts(postId: post.id));
         break;
 
       case 'Delete':
