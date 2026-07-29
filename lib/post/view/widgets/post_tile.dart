@@ -17,7 +17,6 @@ import 'package:democracy/post/view/widgets/time_difference.dart';
 import 'package:democracy/post/view/widgets/thread.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
 import 'package:democracy/survey/view/widgets/survey_tile.dart';
-import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,6 +30,7 @@ class PostTile extends StatelessWidget {
     this.checkVisibility = false,
     this.isDependency = false,
     this.hideBorder = false,
+    this.showPin = false,
     this.showThreadedReplies = false,
     this.showTopThread = false,
     this.showBottomThread = false,
@@ -44,6 +44,7 @@ class PostTile extends StatelessWidget {
   final bool checkVisibility;
   final bool isDependency;
   final bool hideBorder;
+  final bool showPin;
   final bool showThreadedReplies;
   final bool showTopThread;
   final bool showBottomThread;
@@ -79,23 +80,28 @@ class PostTile extends StatelessWidget {
               child: post.repostType == RepostType.repost
                   ? Column(
                       children: [
-                        _repostBanner(),
+                        _repostBanner(context),
                         PostWidgetSelector(
                           post: post.repostOf!,
                           isDependency: false,
                         ),
                       ],
                     )
-                  : Stack(
+                  : Column(
                       children: [
-                        ThreadLine(
-                          showBottomThread: showBottomThread,
-                          showTopThread: showTopThread,
-                        ),
-                        _PostContainer(
-                          post: post,
-                          isDependency: isDependency,
-                          onViewed: onViewed,
+                        if (showPin) _pinnedBanner(context),
+                        Stack(
+                          children: [
+                            ThreadLine(
+                              showBottomThread: showBottomThread,
+                              showTopThread: showTopThread,
+                            ),
+                            _PostContainer(
+                              post: post,
+                              isDependency: isDependency,
+                              onViewed: onViewed,
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -113,34 +119,50 @@ class PostTile extends StatelessWidget {
     );
   }
 
-  Widget _repostBanner() {
-    return BlocBuilder<AuthBloc, AuthState>(
-      builder: (context, state) {
-        User user = state.user!;
-        String text = user.id == post.author.id
-            ? 'You reposted'
-            : '${post.author.name} reposted';
-        if (post.repostOf!.communityNoteOf != null) {
-          text = '$text a community note';
-        }
-        return Container(
-          padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
-          child: Row(
-            children: [
-              Icon(
-                Symbols.loop_rounded,
-                color: Theme.of(context).colorScheme.outline,
-                size: 17,
-              ),
-              const SizedBox(width: 5),
-              Text(
-                text,
-                style: TextStyle(color: Theme.of(context).colorScheme.outline),
-              ),
-            ],
+  Widget _pinnedBanner(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
+      child: Row(
+        children: [
+          Icon(
+            Symbols.push_pin,
+            color: Theme.of(context).colorScheme.outline,
+            size: 17,
           ),
-        );
-      },
+          const SizedBox(width: 5),
+          Text(
+            'Pinned',
+            style: TextStyle(color: Theme.of(context).colorScheme.outline),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _repostBanner(BuildContext context) {
+    final user = context.read<AuthBloc>().state.user!;
+    String text = user.id == post.author.id
+        ? 'You reposted'
+        : '${post.author.name} reposted';
+    if (post.repostOf!.communityNoteOf != null) {
+      text = '$text a community note';
+    }
+    return Container(
+      padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
+      child: Row(
+        children: [
+          Icon(
+            Symbols.loop_rounded,
+            color: Theme.of(context).colorScheme.outline,
+            size: 17,
+          ),
+          const SizedBox(width: 5),
+          Text(
+            text,
+            style: TextStyle(color: Theme.of(context).colorScheme.outline),
+          ),
+        ],
+      ),
     );
   }
 }

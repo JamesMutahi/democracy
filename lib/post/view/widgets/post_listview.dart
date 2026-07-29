@@ -18,6 +18,7 @@ class PostListView extends StatelessWidget {
     required this.enablePullDown,
     required this.enablePullUp,
     this.checkVisibility = false,
+    this.showPin = false,
     required this.onPostsUpdated,
     required this.onRefresh,
     required this.onLoading,
@@ -31,6 +32,7 @@ class PostListView extends StatelessWidget {
   final RefreshController refreshController;
   final bool enablePullDown;
   final bool enablePullUp;
+  final bool showPin;
   final bool checkVisibility;
   final void Function(List<Post>) onPostsUpdated;
   final VoidCallback onRefresh;
@@ -66,6 +68,7 @@ class PostListView extends StatelessWidget {
                           post: post,
                           isDependency: false,
                           checkVisibility: checkVisibility,
+                          showPin: showPin && post.isPinned,
                           onViewed: () {
                             if (origin != null) {
                               addPostView(context, origin!, post);

@@ -10,6 +10,7 @@ class PostWidgetSelector extends StatelessWidget {
     this.isDependency = false,
     this.checkVisibility = false,
     this.hideBorder = false,
+    this.showPin = false,
     this.showTopThread = false,
     this.showBottomThread = false,
     this.onViewed,
@@ -19,6 +20,7 @@ class PostWidgetSelector extends StatelessWidget {
   final bool isDependency;
   final bool checkVisibility;
   final bool hideBorder;
+  final bool showPin;
   final bool showTopThread;
   final bool showBottomThread;
   final VoidCallback? onViewed;
@@ -31,6 +33,7 @@ class PostWidgetSelector extends StatelessWidget {
             isDependency: isDependency,
             checkVisibility: checkVisibility,
             hideBorder: hideBorder,
+            showPin: showPin,
             showTopThread: showTopThread,
             showBottomThread: showBottomThread,
             onViewed: onViewed,

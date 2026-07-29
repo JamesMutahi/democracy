@@ -86,6 +86,7 @@ class _UserPostsState extends State<UserPosts> {
           enablePullDown: posts.isNotEmpty,
           enablePullUp: state.hasNext,
           checkVisibility: true,
+          showPin: true,
           onRefresh: () {
             context.read<UserPostsBloc>().add(
               UserPostsEvent.get(user: widget.user),
