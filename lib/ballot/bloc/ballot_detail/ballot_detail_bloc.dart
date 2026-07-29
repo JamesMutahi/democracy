@@ -51,7 +51,7 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
       Ballot ballot = Ballot.fromJson(event.payload['data']);
       emit(BallotCreated(ballot: ballot));
     } else {
-      emit(BallotDetailFailure(error: event.payload['errors'].toString()));
+      emit(BallotDetailFailure(error: event.payload['errors'][0].toString()));
     }
   }
 
@@ -61,7 +61,7 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
       Ballot ballot = Ballot.fromJson(event.payload['data']);
       emit(BallotLoaded(ballot: ballot));
     } else {
-      emit(BallotDetailFailure(error: event.payload['errors'].toString()));
+      emit(BallotDetailFailure(error: event.payload['errors'][0].toString()));
     }
   }
 
@@ -71,7 +71,7 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
       final Ballot ballot = Ballot.fromJson(event.payload['data']);
       emit(BallotUpdated(ballot: ballot));
     } else {
-      emit(BallotDetailFailure(error: event.payload['errors'].toString()));
+      emit(BallotDetailFailure(error: event.payload['errors'][0].toString()));
     }
   }
 
@@ -80,7 +80,7 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
     if (event.payload['response_status'] == 204) {
       emit(BallotDeleted(ballotId: event.payload['pk']));
     } else {
-      emit(BallotDetailFailure(error: event.payload['errors'].toString()));
+      emit(BallotDetailFailure(error: event.payload['errors'][0].toString()));
     }
   }
 

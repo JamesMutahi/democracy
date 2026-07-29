@@ -55,7 +55,7 @@ import 'package:democracy/post/view/draft_posts.dart' as _i13;
 import 'package:democracy/post/view/post_create.dart' as _i33;
 import 'package:democracy/post/view/post_detail.dart' as _i34;
 import 'package:democracy/post/view/post_update.dart' as _i35;
-import 'package:democracy/post/view/widgets/post_activity.dart' as _i38;
+import 'package:democracy/post/view/widgets/reposts.dart' as _i38;
 import 'package:democracy/survey/models/survey.dart' as _i55;
 import 'package:democracy/survey/view/survey_page.dart' as _i45;
 import 'package:democracy/survey/view/survey_process/page.dart' as _i46;

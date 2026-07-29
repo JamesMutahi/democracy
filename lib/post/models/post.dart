@@ -30,6 +30,7 @@ sealed class Post with _$Post {
     @JsonKey(name: 'is_bookmarked') required bool isBookmarked,
     required int views,
     @JsonKey(name: 'is_muted') required bool isMuted,
+    @JsonKey(name: 'is_pinned') required bool isPinned,
     required int replies,
     required int reposts,
     @JsonKey(name: 'is_reposted') required bool isReposted,

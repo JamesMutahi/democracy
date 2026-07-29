@@ -23,6 +23,8 @@ _Ballot _$BallotFromJson(Map<String, dynamic> json) => _Ballot(
   endTime: DateTime.parse(json['end_time'] as String),
   totalVotes: (json['total_votes'] as num).toInt(),
   votedOption: (json['voted_option'] as num?)?.toInt(),
+  hasStarted: json['has_started'] as bool,
+  hasEnded: json['has_ended'] as bool,
   isActive: json['is_active'] as bool,
   options: (json['options'] as List<dynamic>)
       .map((e) => Option.fromJson(e as Map<String, dynamic>))
@@ -43,6 +45,8 @@ Map<String, dynamic> _$BallotToJson(_Ballot instance) => <String, dynamic>{
   'end_time': instance.endTime.toIso8601String(),
   'total_votes': instance.totalVotes,
   'voted_option': instance.votedOption,
+  'has_started': instance.hasStarted,
+  'has_ended': instance.hasEnded,
   'is_active': instance.isActive,
   'options': instance.options,
   'reason': instance.reason,

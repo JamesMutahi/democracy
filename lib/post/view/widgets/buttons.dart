@@ -74,6 +74,7 @@ class PostPopUp extends StatelessWidget {
     if (post.communityNoteOf == null) items.add('Community notes');
 
     if (currentUser.id == post.author.id) {
+      items.add(post.isPinned ? 'Unpin' : 'Pin');
       items.add(post.isMuted ? 'Unmute' : 'Mute');
       items.add('Delete');
     } else {
@@ -106,6 +107,14 @@ class PostPopUp extends StatelessWidget {
 
       case 'Delete':
         _showDeleteDialog(context, post);
+        break;
+
+      case 'Unpin':
+      case 'Pin':
+        showDialog(
+          context: context,
+          builder: (_) => PinPostDialog(post: post),
+        );
         break;
 
       case 'Mute':

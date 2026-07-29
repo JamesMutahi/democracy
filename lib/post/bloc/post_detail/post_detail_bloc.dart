@@ -48,6 +48,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
             add(_ClickAdded(payload: message['payload']));
           case 'mute':
             add(_Muted(payload: message['payload']));
+          case 'toggle_pinned':
+            add(_Pinned(payload: message['payload']));
           case 'delete_searched_term':
           case 'delete_searched_profile':
           case 'clear_search_history':
@@ -79,6 +81,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     on<_ClickAdded>((event, emit) => _onClickAdded(event, emit));
     on<_Mute>((event, emit) => _onMute(event, emit));
     on<_Muted>((event, emit) => _onMuted(event, emit));
+    on<_Pin>((event, emit) => _onPin(event, emit));
+    on<_Pinned>((event, emit) => _onPinned(event, emit));
     on<_SaveSearchedTerm>((event, emit) => _onSaveSearchedTerm(event, emit));
     on<_SaveSearchedProfile>(
       (event, emit) => _onSaveSearchedProfile(event, emit),
@@ -250,6 +254,19 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     }
   }
 
+  void _onPinned(_Pinned event, Emitter<PostDetailState> emit) {
+    if (event.payload['response_status'] == 200) {
+      emit(
+        PostPinned(
+          postId: event.payload['data']['pk'],
+          isPinned: event.payload['data']['is_pinned'],
+        ),
+      );
+    } else {
+      emit(PostDetailFailure(error: event.payload['errors'].toString()));
+    }
+  }
+
   void _onReported(_Reported event, Emitter<PostDetailState> emit) {
     emit(PostDetailLoading());
     if (event.payload['response_status'] == 200) {
@@ -398,6 +415,24 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       'stream': stream,
       'payload': {
         'action': 'mute',
+        'request_id': requestId,
+        'pk': event.post.id,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  void _onPin(_Pin event, Emitter<PostDetailState> emit) {
+    emit(PostDetailLoading());
+    if (!webSocketService.isConnected) {
+      emit(PostDetailFailure(error: serverError));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        'action': 'toggle_pinned',
         'request_id': requestId,
         'pk': event.post.id,
       },

@@ -172,6 +172,26 @@ class PostListener extends StatelessWidget {
                   );
                   updatePosts = true;
                 }
+              case PostPinned():
+                final int postIndex = posts.indexWhere((element) => element.id == state.postId);
+
+                if (postIndex != -1) {
+                  // If pinning a new post, unpin all others inside the existing list
+                  if (state.isPinned) {
+                    for (int i = 0; i < posts.length; i++) {
+                      if (posts[i].isPinned) {
+                        posts[i] = posts[i].copyWith(isPinned: false);
+                      }
+                    }
+                  }
+
+                  // Update the target post
+                  posts[postIndex] = posts[postIndex].copyWith(
+                    isPinned: state.isPinned,
+                  );
+
+                  updatePosts = true;
+                }
               case PostBookmarked():
                 if (posts.any((element) => element.id == state.postId)) {
                   int postIndex = posts.indexWhere(

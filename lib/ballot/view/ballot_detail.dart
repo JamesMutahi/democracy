@@ -187,6 +187,7 @@ class _BallotDetailState extends State<_BallotDetail> {
                             duration: const Duration(milliseconds: 300),
                             child:
                                 (!widget.ballot.isActive ||
+                                    widget.ballot.hasEnded ||
                                     (userHasVoted && !changingVote))
                                 ? BallotPercentIndicator(
                                     key: ValueKey(option.id),
@@ -228,7 +229,9 @@ class _BallotDetailState extends State<_BallotDetail> {
                     ),
                   ),
                   SizedBox(height: 10),
-                  userHasVoted && widget.ballot.isActive
+                  userHasVoted &&
+                          widget.ballot.isActive &&
+                          !widget.ballot.hasEnded
                       ? changingVote
                             ? SizedBox.shrink()
                             : Align(
@@ -244,7 +247,7 @@ class _BallotDetailState extends State<_BallotDetail> {
                               )
                       : SizedBox.shrink(),
                   SizedBox(height: 20),
-                  !changingVote
+                  !changingVote && !widget.ballot.hasEnded
                       ? ReasonWidget(
                           ballot: widget.ballot,
                           controller: _textEditingController,

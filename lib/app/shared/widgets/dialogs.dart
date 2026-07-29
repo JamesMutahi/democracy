@@ -58,6 +58,33 @@ class MuteDialog extends StatelessWidget {
   }
 }
 
+class PinPostDialog extends StatelessWidget {
+  const PinPostDialog({super.key, required this.post});
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomDialog(
+      title: post.isPinned
+          ? 'Unpin from your profile?'
+          : 'Pin to your profile?',
+      content: post.isPinned
+          ? 'Post will not be pinned at the top of your profile.'
+          : 'Post will be pinned at the top of your profile.',
+      button1Text: 'Yes',
+      onButton1Pressed: () {
+        context.read<PostDetailBloc>().add(PostDetailEvent.pin(post: post));
+        context.router.popTop();
+      },
+      button2Text: 'No',
+      onButton2Pressed: () {
+        context.router.popTop();
+      },
+    );
+  }
+}
+
 class MutePostDialog extends StatelessWidget {
   const MutePostDialog({super.key, required this.post});
 

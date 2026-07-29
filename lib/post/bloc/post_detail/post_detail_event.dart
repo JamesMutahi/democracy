@@ -52,6 +52,10 @@ sealed class PostDetailEvent with _$PostDetailEvent {
   const factory PostDetailEvent.muted({required Map<String, dynamic> payload}) =
       _Muted;
 
+  const factory PostDetailEvent.pinned({
+    required Map<String, dynamic> payload,
+  }) = _Pinned;
+
   const factory PostDetailEvent.get({required int postId}) = _Get;
 
   const factory PostDetailEvent.addView({required Post post}) = _AddView;
@@ -61,6 +65,8 @@ sealed class PostDetailEvent with _$PostDetailEvent {
   const factory PostDetailEvent.like({required Post post}) = _Like;
 
   const factory PostDetailEvent.mute({required Post post}) = _Mute;
+
+  const factory PostDetailEvent.pin({required Post post}) = _Pin;
 
   const factory PostDetailEvent.bookmark({required Post post}) = _Bookmark;
 

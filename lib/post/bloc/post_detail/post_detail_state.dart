@@ -66,6 +66,11 @@ class PostDetailState with _$PostDetailState {
     required bool isMuted,
   }) = PostMuted;
 
+  const factory PostDetailState.pinned({
+    required int postId,
+    required bool isPinned,
+  }) = PostPinned;
+
   const factory PostDetailState.deleted({required int postId}) = PostDeleted;
 
   const factory PostDetailState.repostDeleted({

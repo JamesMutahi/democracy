@@ -47,6 +47,12 @@ class _UserPostsState extends State<UserPosts> {
       builder: (context, state) {
         final posts = state.posts.toList();
 
+        posts.sort((a, b) {
+          int pinCompare = (b.isPinned ? 1 : 0).compareTo(a.isPinned ? 1 : 0);
+          if (pinCompare != 0) return pinCompare;
+          return b.publishedAt.compareTo(a.publishedAt);
+        });
+
         if (state.status == UserPostsStatus.success) {
           if (_refreshController.headerStatus == RefreshStatus.refreshing) {
             _refreshController.refreshCompleted();
