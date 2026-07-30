@@ -5,7 +5,7 @@ sealed class MeetingsEvent with _$MeetingsEvent {
   const factory MeetingsEvent.get({
     String? searchTerm,
     List<Broadcast>? previousBroadcasts,
-    bool? isActive,
+    bool? isOpen,
     String? sortBy,
     bool? filterByRegion,
     DateTime? startDate,

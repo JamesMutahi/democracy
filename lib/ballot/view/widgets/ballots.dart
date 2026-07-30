@@ -25,7 +25,7 @@ class _BallotsState extends State<Ballots> {
   @override
   void initState() {
     context.read<BallotsBloc>().add(
-      BallotsEvent.get(isActive: true, filterByRegion: true),
+      BallotsEvent.get(isOpen: true, filterByRegion: true),
     );
     super.initState();
   }
@@ -105,7 +105,7 @@ class _BallotsState extends State<Ballots> {
                   BallotsEvent.get(
                     previousBallots: previousBallots,
                     searchTerm: filterState.searchTerm,
-                    isActive: filterState.isActive,
+                    isOpen: filterState.isOpen,
                     sortBy: filterState.sortBy,
                     filterByRegion: filterState.filterByRegion,
                     startDate: filterState.startDate,

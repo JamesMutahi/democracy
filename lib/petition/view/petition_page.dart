@@ -216,7 +216,10 @@ class _FiltersModalState extends State<_FiltersModal> {
           orientation: OptionsOrientation.vertical,
           decoration: InputDecoration(border: InputBorder.none),
           options: [
-            FormBuilderFieldOption<bool>(value: true, child: Text('Yes')),
+            FormBuilderFieldOption<bool>(
+              value: true,
+              child: Text('Yes (default)'),
+            ),
             FormBuilderFieldOption<bool>(value: false, child: Text('No')),
           ],
           onChanged: (value) {

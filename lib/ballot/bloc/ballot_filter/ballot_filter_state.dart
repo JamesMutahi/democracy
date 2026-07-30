@@ -4,7 +4,7 @@ part of 'ballot_filter_cubit.dart';
 sealed class BallotFilterState with _$BallotFilterState {
   const factory BallotFilterState.changed({
     required String searchTerm,
-    required bool? isActive,
+    required bool? isOpen,
     required bool filterByRegion,
     required String sortBy,
     required DateTime? startDate,

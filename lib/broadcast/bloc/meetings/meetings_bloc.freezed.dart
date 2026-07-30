@@ -128,10 +128,10 @@ return remove(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  List<Broadcast>? previousBroadcasts,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Broadcast broadcast)?  add,TResult Function( Broadcast broadcast)?  update,TResult Function( int broadcastId)?  remove,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  List<Broadcast>? previousBroadcasts,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Broadcast broadcast)?  add,TResult Function( Broadcast broadcast)?  update,TResult Function( int broadcastId)?  remove,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.searchTerm,_that.previousBroadcasts,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
+return get(_that.searchTerm,_that.previousBroadcasts,_that.isOpen,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
 return received(_that.payload);case _Add() when add != null:
 return add(_that.broadcast);case _Update() when update != null:
 return update(_that.broadcast);case _Remove() when remove != null:
@@ -153,10 +153,10 @@ return remove(_that.broadcastId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  List<Broadcast>? previousBroadcasts,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Broadcast broadcast)  add,required TResult Function( Broadcast broadcast)  update,required TResult Function( int broadcastId)  remove,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  List<Broadcast>? previousBroadcasts,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Broadcast broadcast)  add,required TResult Function( Broadcast broadcast)  update,required TResult Function( int broadcastId)  remove,}) {final _that = this;
 switch (_that) {
 case _Get():
-return get(_that.searchTerm,_that.previousBroadcasts,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received():
+return get(_that.searchTerm,_that.previousBroadcasts,_that.isOpen,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received():
 return received(_that.payload);case _Add():
 return add(_that.broadcast);case _Update():
 return update(_that.broadcast);case _Remove():
@@ -174,10 +174,10 @@ return remove(_that.broadcastId);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  List<Broadcast>? previousBroadcasts,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Broadcast broadcast)?  add,TResult? Function( Broadcast broadcast)?  update,TResult? Function( int broadcastId)?  remove,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  List<Broadcast>? previousBroadcasts,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Broadcast broadcast)?  add,TResult? Function( Broadcast broadcast)?  update,TResult? Function( int broadcastId)?  remove,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.searchTerm,_that.previousBroadcasts,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
+return get(_that.searchTerm,_that.previousBroadcasts,_that.isOpen,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
 return received(_that.payload);case _Add() when add != null:
 return add(_that.broadcast);case _Update() when update != null:
 return update(_that.broadcast);case _Remove() when remove != null:
@@ -193,7 +193,7 @@ return remove(_that.broadcastId);case _:
 
 
 class _Get implements MeetingsEvent {
-  const _Get({this.searchTerm, final  List<Broadcast>? previousBroadcasts, this.isActive, this.sortBy, this.filterByRegion, this.startDate, this.endDate}): _previousBroadcasts = previousBroadcasts;
+  const _Get({this.searchTerm, final  List<Broadcast>? previousBroadcasts, this.isOpen, this.sortBy, this.filterByRegion, this.startDate, this.endDate}): _previousBroadcasts = previousBroadcasts;
   
 
  final  String? searchTerm;
@@ -206,7 +206,7 @@ class _Get implements MeetingsEvent {
   return EqualUnmodifiableListView(value);
 }
 
- final  bool? isActive;
+ final  bool? isOpen;
  final  String? sortBy;
  final  bool? filterByRegion;
  final  DateTime? startDate;
@@ -222,16 +222,16 @@ _$GetCopyWith<_Get> get copyWith => __$GetCopyWithImpl<_Get>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&const DeepCollectionEquality().equals(other._previousBroadcasts, _previousBroadcasts)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.sortBy, sortBy) || other.sortBy == sortBy)&&(identical(other.filterByRegion, filterByRegion) || other.filterByRegion == filterByRegion)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&const DeepCollectionEquality().equals(other._previousBroadcasts, _previousBroadcasts)&&(identical(other.isOpen, isOpen) || other.isOpen == isOpen)&&(identical(other.sortBy, sortBy) || other.sortBy == sortBy)&&(identical(other.filterByRegion, filterByRegion) || other.filterByRegion == filterByRegion)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,searchTerm,const DeepCollectionEquality().hash(_previousBroadcasts),isActive,sortBy,filterByRegion,startDate,endDate);
+int get hashCode => Object.hash(runtimeType,searchTerm,const DeepCollectionEquality().hash(_previousBroadcasts),isOpen,sortBy,filterByRegion,startDate,endDate);
 
 @override
 String toString() {
-  return 'MeetingsEvent.get(searchTerm: $searchTerm, previousBroadcasts: $previousBroadcasts, isActive: $isActive, sortBy: $sortBy, filterByRegion: $filterByRegion, startDate: $startDate, endDate: $endDate)';
+  return 'MeetingsEvent.get(searchTerm: $searchTerm, previousBroadcasts: $previousBroadcasts, isOpen: $isOpen, sortBy: $sortBy, filterByRegion: $filterByRegion, startDate: $startDate, endDate: $endDate)';
 }
 
 
@@ -242,7 +242,7 @@ abstract mixin class _$GetCopyWith<$Res> implements $MeetingsEventCopyWith<$Res>
   factory _$GetCopyWith(_Get value, $Res Function(_Get) _then) = __$GetCopyWithImpl;
 @useResult
 $Res call({
- String? searchTerm, List<Broadcast>? previousBroadcasts, bool? isActive, String? sortBy, bool? filterByRegion, DateTime? startDate, DateTime? endDate
+ String? searchTerm, List<Broadcast>? previousBroadcasts, bool? isOpen, String? sortBy, bool? filterByRegion, DateTime? startDate, DateTime? endDate
 });
 
 
@@ -259,11 +259,11 @@ class __$GetCopyWithImpl<$Res>
 
 /// Create a copy of MeetingsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? searchTerm = freezed,Object? previousBroadcasts = freezed,Object? isActive = freezed,Object? sortBy = freezed,Object? filterByRegion = freezed,Object? startDate = freezed,Object? endDate = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? searchTerm = freezed,Object? previousBroadcasts = freezed,Object? isOpen = freezed,Object? sortBy = freezed,Object? filterByRegion = freezed,Object? startDate = freezed,Object? endDate = freezed,}) {
   return _then(_Get(
 searchTerm: freezed == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
 as String?,previousBroadcasts: freezed == previousBroadcasts ? _self._previousBroadcasts : previousBroadcasts // ignore: cast_nullable_to_non_nullable
-as List<Broadcast>?,isActive: freezed == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
+as List<Broadcast>?,isOpen: freezed == isOpen ? _self.isOpen : isOpen // ignore: cast_nullable_to_non_nullable
 as bool?,sortBy: freezed == sortBy ? _self.sortBy : sortBy // ignore: cast_nullable_to_non_nullable
 as String?,filterByRegion: freezed == filterByRegion ? _self.filterByRegion : filterByRegion // ignore: cast_nullable_to_non_nullable
 as bool?,startDate: freezed == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable

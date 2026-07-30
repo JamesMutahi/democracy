@@ -45,7 +45,7 @@ class SurveysBloc extends Bloc<SurveysEvent, SurveysState> {
         'previous_surveys': event.previousSurveys
             ?.map((survey) => survey.id)
             .toList(),
-        'is_active': event.isActive,
+        'is_open': event.isOpen,
         'sort_by': event.sortBy,
         'filter_by_region': event.filterByRegion,
         'start_date': event.startDate?.toIso8601String(),

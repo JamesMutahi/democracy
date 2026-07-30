@@ -52,7 +52,7 @@ class _MeetingsPageState extends State<MeetingPage> {
                       context.read<MeetingsBloc>().add(
                         MeetingsEvent.get(
                           searchTerm: state.searchTerm,
-                          isActive: state.isActive,
+                          isOpen: state.isOpen,
                           sortBy: state.sortBy,
                           filterByRegion: state.filterByRegion,
                           startDate: state.startDate,
@@ -82,7 +82,7 @@ class _MeetingsPageState extends State<MeetingPage> {
                               return BlocProvider.value(
                                 value: filterCubit,
                                 child: _FiltersModal(
-                                  isActive: state.isActive,
+                                  isOpen: state.isOpen,
                                   filterByRegion: state.filterByRegion,
                                   sortBy: state.sortBy,
                                   startDate: state.startDate,
@@ -108,14 +108,14 @@ class _MeetingsPageState extends State<MeetingPage> {
 
 class _FiltersModal extends StatefulWidget {
   const _FiltersModal({
-    required this.isActive,
+    required this.isOpen,
     required this.filterByRegion,
     required this.sortBy,
     required this.startDate,
     required this.endDate,
   });
 
-  final bool? isActive;
+  final bool? isOpen;
   final bool filterByRegion;
   final String sortBy;
   final DateTime? startDate;
@@ -126,21 +126,21 @@ class _FiltersModal extends StatefulWidget {
 }
 
 class _FiltersModalState extends State<_FiltersModal> {
-  late bool? isActive = widget.isActive;
+  late bool? isOpen = widget.isOpen;
   late bool filterByRegion = widget.filterByRegion;
   late String sortBy = widget.sortBy;
   late DateTime? startDate = widget.startDate;
   late DateTime? endDate = widget.endDate;
 
   bool get _isUnchanged =>
-      isActive == widget.isActive &&
+      isOpen == widget.isOpen &&
       filterByRegion == widget.filterByRegion &&
       sortBy == widget.sortBy &&
       startDate == widget.startDate &&
       endDate == widget.endDate;
 
   bool get _isDefaultState =>
-      isActive == true &&
+      isOpen == true &&
       sortBy == 'recent' &&
       filterByRegion == true &&
       startDate == null &&
@@ -179,7 +179,7 @@ class _FiltersModalState extends State<_FiltersModal> {
         FilterHeader(text: 'Status'),
         FormBuilderRadioGroup<bool?>(
           name: 'active',
-          initialValue: isActive,
+          initialValue: isOpen,
           orientation: OptionsOrientation.vertical,
           decoration: InputDecoration(border: InputBorder.none),
           options: [
@@ -192,7 +192,7 @@ class _FiltersModalState extends State<_FiltersModal> {
           ],
           onChanged: (value) {
             setState(() {
-              isActive = value;
+              isOpen = value;
             });
           },
         ),
@@ -232,7 +232,7 @@ class _FiltersModalState extends State<_FiltersModal> {
 
   void _applyFilters() {
     context.read<MeetingFilterCubit>().filtersChanged(
-      isActive: isActive,
+      isOpen: isOpen,
       filterByRegion: filterByRegion,
       sortBy: sortBy,
       startDate: startDate,
@@ -242,7 +242,7 @@ class _FiltersModalState extends State<_FiltersModal> {
 
   void _clearFilters() {
     setState(() {
-      isActive = true;
+      isOpen = true;
       sortBy = 'recent';
       filterByRegion = true;
       startDate = null;

@@ -45,7 +45,7 @@ class BallotsBloc extends Bloc<BallotsEvent, BallotsState> {
         'previous_ballots': event.previousBallots
             ?.map((ballot) => ballot.id)
             .toList(),
-        'is_active': event.isActive,
+        'is_open': event.isOpen,
         'sort_by': event.sortBy,
         'filter_by_region': event.filterByRegion,
         'start_date': event.startDate?.toIso8601String(),

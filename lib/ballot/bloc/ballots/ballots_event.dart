@@ -5,7 +5,7 @@ sealed class BallotsEvent with _$BallotsEvent {
   const factory BallotsEvent.get({
     String? searchTerm,
     List<Ballot>? previousBallots,
-    bool? isActive,
+    bool? isOpen,
     String? sortBy,
     bool? filterByRegion,
     DateTime? startDate,

@@ -128,10 +128,10 @@ return remove(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  List<Ballot>? previousBallots,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Ballot ballot)?  add,TResult Function( Ballot ballot)?  update,TResult Function( int ballotId)?  remove,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  List<Ballot>? previousBallots,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Ballot ballot)?  add,TResult Function( Ballot ballot)?  update,TResult Function( int ballotId)?  remove,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.searchTerm,_that.previousBallots,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
+return get(_that.searchTerm,_that.previousBallots,_that.isOpen,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
 return received(_that.payload);case _Add() when add != null:
 return add(_that.ballot);case _Update() when update != null:
 return update(_that.ballot);case _Remove() when remove != null:
@@ -153,10 +153,10 @@ return remove(_that.ballotId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  List<Ballot>? previousBallots,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Ballot ballot)  add,required TResult Function( Ballot ballot)  update,required TResult Function( int ballotId)  remove,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  List<Ballot>? previousBallots,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Ballot ballot)  add,required TResult Function( Ballot ballot)  update,required TResult Function( int ballotId)  remove,}) {final _that = this;
 switch (_that) {
 case _Get():
-return get(_that.searchTerm,_that.previousBallots,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received():
+return get(_that.searchTerm,_that.previousBallots,_that.isOpen,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received():
 return received(_that.payload);case _Add():
 return add(_that.ballot);case _Update():
 return update(_that.ballot);case _Remove():
@@ -174,10 +174,10 @@ return remove(_that.ballotId);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  List<Ballot>? previousBallots,  bool? isActive,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Ballot ballot)?  add,TResult? Function( Ballot ballot)?  update,TResult? Function( int ballotId)?  remove,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  List<Ballot>? previousBallots,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Ballot ballot)?  add,TResult? Function( Ballot ballot)?  update,TResult? Function( int ballotId)?  remove,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
-return get(_that.searchTerm,_that.previousBallots,_that.isActive,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
+return get(_that.searchTerm,_that.previousBallots,_that.isOpen,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
 return received(_that.payload);case _Add() when add != null:
 return add(_that.ballot);case _Update() when update != null:
 return update(_that.ballot);case _Remove() when remove != null:
@@ -193,7 +193,7 @@ return remove(_that.ballotId);case _:
 
 
 class _Get implements BallotsEvent {
-  const _Get({this.searchTerm, final  List<Ballot>? previousBallots, this.isActive, this.sortBy, this.filterByRegion, this.startDate, this.endDate}): _previousBallots = previousBallots;
+  const _Get({this.searchTerm, final  List<Ballot>? previousBallots, this.isOpen, this.sortBy, this.filterByRegion, this.startDate, this.endDate}): _previousBallots = previousBallots;
   
 
  final  String? searchTerm;
@@ -206,7 +206,7 @@ class _Get implements BallotsEvent {
   return EqualUnmodifiableListView(value);
 }
 
- final  bool? isActive;
+ final  bool? isOpen;
  final  String? sortBy;
  final  bool? filterByRegion;
  final  DateTime? startDate;
@@ -222,16 +222,16 @@ _$GetCopyWith<_Get> get copyWith => __$GetCopyWithImpl<_Get>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&const DeepCollectionEquality().equals(other._previousBallots, _previousBallots)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.sortBy, sortBy) || other.sortBy == sortBy)&&(identical(other.filterByRegion, filterByRegion) || other.filterByRegion == filterByRegion)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Get&&(identical(other.searchTerm, searchTerm) || other.searchTerm == searchTerm)&&const DeepCollectionEquality().equals(other._previousBallots, _previousBallots)&&(identical(other.isOpen, isOpen) || other.isOpen == isOpen)&&(identical(other.sortBy, sortBy) || other.sortBy == sortBy)&&(identical(other.filterByRegion, filterByRegion) || other.filterByRegion == filterByRegion)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,searchTerm,const DeepCollectionEquality().hash(_previousBallots),isActive,sortBy,filterByRegion,startDate,endDate);
+int get hashCode => Object.hash(runtimeType,searchTerm,const DeepCollectionEquality().hash(_previousBallots),isOpen,sortBy,filterByRegion,startDate,endDate);
 
 @override
 String toString() {
-  return 'BallotsEvent.get(searchTerm: $searchTerm, previousBallots: $previousBallots, isActive: $isActive, sortBy: $sortBy, filterByRegion: $filterByRegion, startDate: $startDate, endDate: $endDate)';
+  return 'BallotsEvent.get(searchTerm: $searchTerm, previousBallots: $previousBallots, isOpen: $isOpen, sortBy: $sortBy, filterByRegion: $filterByRegion, startDate: $startDate, endDate: $endDate)';
 }
 
 
@@ -242,7 +242,7 @@ abstract mixin class _$GetCopyWith<$Res> implements $BallotsEventCopyWith<$Res> 
   factory _$GetCopyWith(_Get value, $Res Function(_Get) _then) = __$GetCopyWithImpl;
 @useResult
 $Res call({
- String? searchTerm, List<Ballot>? previousBallots, bool? isActive, String? sortBy, bool? filterByRegion, DateTime? startDate, DateTime? endDate
+ String? searchTerm, List<Ballot>? previousBallots, bool? isOpen, String? sortBy, bool? filterByRegion, DateTime? startDate, DateTime? endDate
 });
 
 
@@ -259,11 +259,11 @@ class __$GetCopyWithImpl<$Res>
 
 /// Create a copy of BallotsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? searchTerm = freezed,Object? previousBallots = freezed,Object? isActive = freezed,Object? sortBy = freezed,Object? filterByRegion = freezed,Object? startDate = freezed,Object? endDate = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? searchTerm = freezed,Object? previousBallots = freezed,Object? isOpen = freezed,Object? sortBy = freezed,Object? filterByRegion = freezed,Object? startDate = freezed,Object? endDate = freezed,}) {
   return _then(_Get(
 searchTerm: freezed == searchTerm ? _self.searchTerm : searchTerm // ignore: cast_nullable_to_non_nullable
 as String?,previousBallots: freezed == previousBallots ? _self._previousBallots : previousBallots // ignore: cast_nullable_to_non_nullable
-as List<Ballot>?,isActive: freezed == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
+as List<Ballot>?,isOpen: freezed == isOpen ? _self.isOpen : isOpen // ignore: cast_nullable_to_non_nullable
 as bool?,sortBy: freezed == sortBy ? _self.sortBy : sortBy // ignore: cast_nullable_to_non_nullable
 as String?,filterByRegion: freezed == filterByRegion ? _self.filterByRegion : filterByRegion // ignore: cast_nullable_to_non_nullable
 as bool?,startDate: freezed == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable

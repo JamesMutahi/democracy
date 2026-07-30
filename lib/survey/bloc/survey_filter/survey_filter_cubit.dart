@@ -9,7 +9,7 @@ class SurveyFilterCubit extends Cubit<SurveyFilterState> {
     : super(
         const SurveyFilterState.changed(
           searchTerm: '',
-          isActive: true,
+          isOpen: true,
           filterByRegion: true,
           sortBy: 'recent',
           startDate: null,
@@ -20,7 +20,7 @@ class SurveyFilterCubit extends Cubit<SurveyFilterState> {
 
   void searchTermChanged({required String searchTerm}) {
     int count = 0;
-    if (state.isActive != true) {
+    if (state.isOpen != true) {
       count += 1;
     }
     if (state.filterByRegion != true) {
@@ -35,7 +35,7 @@ class SurveyFilterCubit extends Cubit<SurveyFilterState> {
     emit(
       SurveyFilterState.changed(
         searchTerm: searchTerm,
-        isActive: state.isActive,
+        isOpen: state.isOpen,
         filterByRegion: state.filterByRegion,
         sortBy: state.sortBy,
         startDate: state.startDate,
@@ -46,14 +46,14 @@ class SurveyFilterCubit extends Cubit<SurveyFilterState> {
   }
 
   void filtersChanged({
-    required bool? isActive,
+    required bool? isOpen,
     required bool filterByRegion,
     required String sortBy,
     required DateTime? startDate,
     required DateTime? endDate,
   }) {
     int count = 0;
-    if (isActive != true) {
+    if (isOpen != true) {
       count += 1;
     }
     if (filterByRegion != true) {
@@ -68,7 +68,7 @@ class SurveyFilterCubit extends Cubit<SurveyFilterState> {
     emit(
       SurveyFilterState.changed(
         searchTerm: state.searchTerm,
-        isActive: isActive,
+        isOpen: isOpen,
         filterByRegion: filterByRegion,
         sortBy: sortBy,
         startDate: startDate,
@@ -82,7 +82,7 @@ class SurveyFilterCubit extends Cubit<SurveyFilterState> {
     emit(
       SurveyFilterState.changed(
         searchTerm: state.searchTerm,
-        isActive: true,
+        isOpen: true,
         filterByRegion: true,
         sortBy: 'recent',
         startDate: null,

@@ -240,7 +240,26 @@ class Message extends HiveObject {
           .map((e) => Asset.fromJson(e as Map<String, dynamic>))
           .toList();
     }
-
+    if (json['section'] != null) {
+      message.section =
+          Section.fromJson(json['section'] as Map<String, dynamic>);
+    }
+    if (json['petition'] != null) {
+      message.petition =
+          Petition.fromJson(json['petition'] as Map<String, dynamic>);
+    }
+    if (json['ballot'] != null) {
+      message.ballot =
+          Ballot.fromJson(json['ballot'] as Map<String, dynamic>);
+    }
+    if (json['broadcast'] != null) {
+      message.broadcast =
+          Broadcast.fromJson(json['broadcast'] as Map<String, dynamic>);
+    }
+    if (json['survey'] != null) {
+      message.survey =
+          Survey.fromJson(json['survey'] as Map<String, dynamic>);
+    }
     return message;
   }
 
@@ -258,6 +277,11 @@ class Message extends HiveObject {
       'post': post?.toJson(),
       'location': location?.toJson(),
       'assets': assets.map((e) => e.toJson()).toList(),
+      'section': section?.toJson(),
+      'petition': petition?.toJson(),
+      'ballot': ballot?.toJson(),
+      'broadcast': broadcast?.toJson(),
+      'survey': survey?.toJson(),
     };
   }
 }
