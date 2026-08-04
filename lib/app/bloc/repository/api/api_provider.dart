@@ -5,6 +5,16 @@ class APIProvider {
 
   final Dio dio;
 
+  Future<void> registerFcmDevice({
+    required String token,
+    required String type,
+  }) async {
+    await dio.post(
+      '/api/devices/',
+      data: {'registration_id': token, 'type': type},
+    );
+  }
+
   Future<Map<String, dynamic>> createPost({
     required String body,
     required PostStatus status,

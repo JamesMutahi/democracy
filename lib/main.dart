@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:democracy/app.dart';
 import 'package:democracy/app/bloc/autocomplete/autocomplete_bloc.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
+import 'package:democracy/app/bloc/fcm/fcm_bloc.dart';
 import 'package:democracy/app/bloc/location/location_cubit.dart';
 import 'package:democracy/app/bloc/menu_controller/menu_controller_cubit.dart';
 import 'package:democracy/app/bloc/repository/api/api_repository.dart';
@@ -48,12 +49,23 @@ import 'package:democracy/user/bloc/blocked/blocked_bloc.dart';
 import 'package:democracy/user/bloc/muted/muted_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/bloc/users/users_bloc.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:talker/talker.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
+import 'package:democracy/firebase_options.dart';
+
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  // Optional: light processing
+}
 
 void main() {
   // Force zone errors to be fatal immediately
@@ -62,6 +74,15 @@ void main() {
   runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
+
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+
+      // Register background handler
+      FirebaseMessaging.onBackgroundMessage(
+        _firebaseMessagingBackgroundHandler,
+      );
 
       // Initialize Sentry
       await SentryFlutter.init(
@@ -338,6 +359,12 @@ void main() {
                     create: (context) => SyncBloc(
                       apiRepository: context.read<APIRepository>(),
                       databaseRepository: context.read<DatabaseRepository>(),
+                    ),
+                  ),
+                  BlocProvider(
+                    create: (context) => FcmBloc(
+                      tokenStorage: tokenStorage,
+                      apiRepository: context.read<APIRepository>(),
                     ),
                   ),
                 ],

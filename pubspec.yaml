@@ -107,6 +107,9 @@ dependencies:
   flutter_in_app_pip: ^1.7.5
   flutter_link_previewer: ^4.2.0
   flutter_chat_core: ^2.9.0
+  firebase_core: ^4.13.0
+  firebase_messaging: ^16.5.0
+  flutter_local_notifications: ^22.2.0
 
 dev_dependencies:
   flutter_test:

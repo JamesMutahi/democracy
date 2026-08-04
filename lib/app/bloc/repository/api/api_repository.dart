@@ -25,6 +25,13 @@ class APIRepository {
 
   final APIProvider apiProvider;
 
+  Future<void> registerFcmDevice({
+    required String token,
+    required String type,
+  }) async {
+    await apiProvider.registerFcmDevice(token: token, type: type);
+  }
+
   Future<Map<String, dynamic>> createPost({
     required String body,
     required PostStatus status,

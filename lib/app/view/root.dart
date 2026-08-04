@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/bloc/connectivity/connectivity_bloc.dart';
+import 'package:democracy/app/bloc/fcm/fcm_bloc.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
@@ -44,6 +45,7 @@ class RootRoute extends StatelessWidget {
         }
 
         // Fully authenticated + socket ready → Main App
+        context.read<FcmBloc>().add(FcmEvent.started());
         return _Listeners(child: ThemeMod(child: const MainPage()));
       },
     );
