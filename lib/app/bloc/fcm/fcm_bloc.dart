@@ -44,19 +44,35 @@ class FcmBloc extends Bloc<FcmEvent, FcmState> {
 
       AppLogger.info('FCM permission: ${settings.authorizationStatus}');
 
-      // 2. Set up local notifications
-      await _setupLocalNotifications();
+      if (settings.authorizationStatus == AuthorizationStatus.denied) {
+        emit(state.copyWith(status: FcmStatus.permissionDenied));
+        return;
+      }
 
       // 3. Get current token + register
-      final token = await _messaging.getToken();
+      String? token;
+
+      if (event.isWeb) {
+        token = await _messaging.getToken(
+          vapidKey: const String.fromEnvironment('FIREBASE_WEB_VAPID_KEY'),
+        );
+      } else {
+        // Mobile
+        await _setupLocalNotifications(); // only needed on mobile
+        token = await _messaging.getToken();
+      }
+
       if (token != null) {
-        await _registerToken(token);
+        AppLogger.info('FCM Token: $token');
+        await _registerToken(event.isWeb, token);
         emit(state.copyWith(token: token, status: FcmStatus.ready));
+      } else {
+        emit(state.copyWith(status: FcmStatus.noToken));
       }
 
       // 4. Listeners
       _tokenRefreshSub = _messaging.onTokenRefresh.listen((newToken) {
-        add(FcmTokenRefreshed(token: newToken));
+        add(FcmTokenRefreshed(isWeb: event.isWeb, token: newToken));
       });
 
       _onMessageSub = FirebaseMessaging.onMessage.listen((message) {
@@ -84,7 +100,7 @@ class FcmBloc extends Bloc<FcmEvent, FcmState> {
     FcmTokenRefreshed event,
     Emitter<FcmState> emit,
   ) async {
-    await _registerToken(event.token);
+    await _registerToken(event.isWeb, event.token);
     emit(state.copyWith(token: event.token));
   }
 
@@ -120,7 +136,7 @@ class FcmBloc extends Bloc<FcmEvent, FcmState> {
 
   Future<void> _setupLocalNotifications() async {
     const androidSettings = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
+      '@mipmap/launcher_icon',
     );
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: true,
@@ -136,6 +152,7 @@ class FcmBloc extends Bloc<FcmEvent, FcmState> {
     await _localNotifications.initialize(
       settings: initSettings,
       onDidReceiveNotificationResponse: (details) {
+        AppLogger.info('details: $details');
         // Handle local notification tap if needed
       },
     );
@@ -189,16 +206,13 @@ class FcmBloc extends Bloc<FcmEvent, FcmState> {
     );
   }
 
-  Future<void> _registerToken(String token) async {
+  Future<void> _registerToken(bool isWeb, String token) async {
     try {
-      final deviceType = _isIOS ? 'ios' : 'android';
+      final deviceType = isWeb ? 'web' : (Platform.isIOS ? 'ios' : 'android');
 
       AppLogger.info('Registering FCM token ($deviceType): $token');
 
-      await apiRepository.registerFcmDevice(
-        token: token,
-        type: deviceType,
-      );
+      await apiRepository.registerFcmDevice(token: token, type: deviceType);
     } catch (e, st) {
       AppLogger.error('Failed to register FCM token', e, st);
     }
@@ -221,13 +235,5 @@ bool get _isAndroid {
     return Platform.isAndroid;
   } catch (_) {
     return false; // web or other platforms
-  }
-}
-
-bool get _isIOS {
-  try {
-    return Platform.isIOS;
-  } catch (_) {
-    return false;
   }
 }

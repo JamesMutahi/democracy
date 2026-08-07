@@ -125,11 +125,11 @@ return notificationTapped(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( String token)?  tokenRefreshed,TResult Function( RemoteMessage message)?  messageReceived,TResult Function( RemoteMessage message)?  notificationTapped,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( bool isWeb)?  started,TResult Function( bool isWeb,  String token)?  tokenRefreshed,TResult Function( RemoteMessage message)?  messageReceived,TResult Function( RemoteMessage message)?  notificationTapped,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case FcmStarted() when started != null:
-return started();case FcmTokenRefreshed() when tokenRefreshed != null:
-return tokenRefreshed(_that.token);case FcmMessageReceived() when messageReceived != null:
+return started(_that.isWeb);case FcmTokenRefreshed() when tokenRefreshed != null:
+return tokenRefreshed(_that.isWeb,_that.token);case FcmMessageReceived() when messageReceived != null:
 return messageReceived(_that.message);case FcmNotificationTapped() when notificationTapped != null:
 return notificationTapped(_that.message);case _:
   return orElse();
@@ -149,11 +149,11 @@ return notificationTapped(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( String token)  tokenRefreshed,required TResult Function( RemoteMessage message)  messageReceived,required TResult Function( RemoteMessage message)  notificationTapped,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( bool isWeb)  started,required TResult Function( bool isWeb,  String token)  tokenRefreshed,required TResult Function( RemoteMessage message)  messageReceived,required TResult Function( RemoteMessage message)  notificationTapped,}) {final _that = this;
 switch (_that) {
 case FcmStarted():
-return started();case FcmTokenRefreshed():
-return tokenRefreshed(_that.token);case FcmMessageReceived():
+return started(_that.isWeb);case FcmTokenRefreshed():
+return tokenRefreshed(_that.isWeb,_that.token);case FcmMessageReceived():
 return messageReceived(_that.message);case FcmNotificationTapped():
 return notificationTapped(_that.message);}
 }
@@ -169,11 +169,11 @@ return notificationTapped(_that.message);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( String token)?  tokenRefreshed,TResult? Function( RemoteMessage message)?  messageReceived,TResult? Function( RemoteMessage message)?  notificationTapped,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( bool isWeb)?  started,TResult? Function( bool isWeb,  String token)?  tokenRefreshed,TResult? Function( RemoteMessage message)?  messageReceived,TResult? Function( RemoteMessage message)?  notificationTapped,}) {final _that = this;
 switch (_that) {
 case FcmStarted() when started != null:
-return started();case FcmTokenRefreshed() when tokenRefreshed != null:
-return tokenRefreshed(_that.token);case FcmMessageReceived() when messageReceived != null:
+return started(_that.isWeb);case FcmTokenRefreshed() when tokenRefreshed != null:
+return tokenRefreshed(_that.isWeb,_that.token);case FcmMessageReceived() when messageReceived != null:
 return messageReceived(_that.message);case FcmNotificationTapped() when notificationTapped != null:
 return notificationTapped(_that.message);case _:
   return null;
@@ -187,41 +187,76 @@ return notificationTapped(_that.message);case _:
 
 
 class FcmStarted implements FcmEvent {
-  const FcmStarted();
+  const FcmStarted({required this.isWeb});
   
 
+ final  bool isWeb;
 
-
+/// Create a copy of FcmEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$FcmStartedCopyWith<FcmStarted> get copyWith => _$FcmStartedCopyWithImpl<FcmStarted>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FcmStarted);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FcmStarted&&(identical(other.isWeb, isWeb) || other.isWeb == isWeb));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,isWeb);
 
 @override
 String toString() {
-  return 'FcmEvent.started()';
+  return 'FcmEvent.started(isWeb: $isWeb)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $FcmStartedCopyWith<$Res> implements $FcmEventCopyWith<$Res> {
+  factory $FcmStartedCopyWith(FcmStarted value, $Res Function(FcmStarted) _then) = _$FcmStartedCopyWithImpl;
+@useResult
+$Res call({
+ bool isWeb
+});
 
 
+
+
+}
+/// @nodoc
+class _$FcmStartedCopyWithImpl<$Res>
+    implements $FcmStartedCopyWith<$Res> {
+  _$FcmStartedCopyWithImpl(this._self, this._then);
+
+  final FcmStarted _self;
+  final $Res Function(FcmStarted) _then;
+
+/// Create a copy of FcmEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? isWeb = null,}) {
+  return _then(FcmStarted(
+isWeb: null == isWeb ? _self.isWeb : isWeb // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+
+}
 
 /// @nodoc
 
 
 class FcmTokenRefreshed implements FcmEvent {
-  const FcmTokenRefreshed({required this.token});
+  const FcmTokenRefreshed({required this.isWeb, required this.token});
   
 
+ final  bool isWeb;
  final  String token;
 
 /// Create a copy of FcmEvent
@@ -234,16 +269,16 @@ $FcmTokenRefreshedCopyWith<FcmTokenRefreshed> get copyWith => _$FcmTokenRefreshe
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FcmTokenRefreshed&&(identical(other.token, token) || other.token == token));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FcmTokenRefreshed&&(identical(other.isWeb, isWeb) || other.isWeb == isWeb)&&(identical(other.token, token) || other.token == token));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,token);
+int get hashCode => Object.hash(runtimeType,isWeb,token);
 
 @override
 String toString() {
-  return 'FcmEvent.tokenRefreshed(token: $token)';
+  return 'FcmEvent.tokenRefreshed(isWeb: $isWeb, token: $token)';
 }
 
 
@@ -254,7 +289,7 @@ abstract mixin class $FcmTokenRefreshedCopyWith<$Res> implements $FcmEventCopyWi
   factory $FcmTokenRefreshedCopyWith(FcmTokenRefreshed value, $Res Function(FcmTokenRefreshed) _then) = _$FcmTokenRefreshedCopyWithImpl;
 @useResult
 $Res call({
- String token
+ bool isWeb, String token
 });
 
 
@@ -271,9 +306,10 @@ class _$FcmTokenRefreshedCopyWithImpl<$Res>
 
 /// Create a copy of FcmEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? token = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? isWeb = null,Object? token = null,}) {
   return _then(FcmTokenRefreshed(
-token: null == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
+isWeb: null == isWeb ? _self.isWeb : isWeb // ignore: cast_nullable_to_non_nullable
+as bool,token: null == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

@@ -11,6 +11,7 @@ import 'package:democracy/auth/view/failure.dart';
 import 'package:democracy/auth/view/login.dart';
 import 'package:democracy/auth/view/splash.dart';
 import 'package:democracy/notification/bloc/notifications/notifications_bloc.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -45,7 +46,7 @@ class RootRoute extends StatelessWidget {
         }
 
         // Fully authenticated + socket ready → Main App
-        context.read<FcmBloc>().add(FcmEvent.started());
+        context.read<FcmBloc>().add(FcmEvent.started(isWeb: kIsWeb));
         return _Listeners(child: ThemeMod(child: const MainPage()));
       },
     );

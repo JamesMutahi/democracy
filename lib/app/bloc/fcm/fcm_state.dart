@@ -1,6 +1,13 @@
 part of 'fcm_bloc.dart';
 
-enum FcmStatus { initial, ready, failure, notificationTapped }
+enum FcmStatus {
+  initial,
+  permissionDenied,
+  noToken,
+  ready,
+  failure,
+  notificationTapped,
+}
 
 final class FcmState extends Equatable {
   const FcmState({

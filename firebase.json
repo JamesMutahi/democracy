@@ -1,1 +1,23 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"people-of-kenya","appId":"1:828417705445:android:761caafc99084f17f15b0c","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"people-of-kenya","configurations":{"android":"1:828417705445:android:761caafc99084f17f15b0c","ios":"1:828417705445:ios:d6cfa825c952a1d6f15b0c","web":"1:828417705445:web:b7759b8333711f85f15b0c"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "people-of-kenya",
+          "appId": "1:828417705445:android:761caafc99084f17f15b0c",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "people-of-kenya",
+          "configurations": {
+            "android": "1:828417705445:android:761caafc99084f17f15b0c",
+            "ios": "1:828417705445:ios:d6cfa825c952a1d6f15b0c",
+            "web": "1:828417705445:web:b7759b8333711f85f15b0c"
+          }
+        }
+      }
+    }
+  }
+}
