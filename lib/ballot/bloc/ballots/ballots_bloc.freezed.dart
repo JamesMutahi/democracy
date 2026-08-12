@@ -128,13 +128,13 @@ return remove(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  List<Ballot>? previousBallots,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Ballot ballot)?  add,TResult Function( Ballot ballot)?  update,TResult Function( int ballotId)?  remove,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  List<Ballot>? previousBallots,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Ballot ballot)?  add,TResult Function( List<Ballot> ballots)?  update,TResult Function( int ballotId)?  remove,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.searchTerm,_that.previousBallots,_that.isOpen,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
 return received(_that.payload);case _Add() when add != null:
 return add(_that.ballot);case _Update() when update != null:
-return update(_that.ballot);case _Remove() when remove != null:
+return update(_that.ballots);case _Remove() when remove != null:
 return remove(_that.ballotId);case _:
   return orElse();
 
@@ -153,13 +153,13 @@ return remove(_that.ballotId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  List<Ballot>? previousBallots,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Ballot ballot)  add,required TResult Function( Ballot ballot)  update,required TResult Function( int ballotId)  remove,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  List<Ballot>? previousBallots,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Ballot ballot)  add,required TResult Function( List<Ballot> ballots)  update,required TResult Function( int ballotId)  remove,}) {final _that = this;
 switch (_that) {
 case _Get():
 return get(_that.searchTerm,_that.previousBallots,_that.isOpen,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received():
 return received(_that.payload);case _Add():
 return add(_that.ballot);case _Update():
-return update(_that.ballot);case _Remove():
+return update(_that.ballots);case _Remove():
 return remove(_that.ballotId);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -174,13 +174,13 @@ return remove(_that.ballotId);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  List<Ballot>? previousBallots,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Ballot ballot)?  add,TResult? Function( Ballot ballot)?  update,TResult? Function( int ballotId)?  remove,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  List<Ballot>? previousBallots,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Ballot ballot)?  add,TResult? Function( List<Ballot> ballots)?  update,TResult? Function( int ballotId)?  remove,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.searchTerm,_that.previousBallots,_that.isOpen,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
 return received(_that.payload);case _Add() when add != null:
 return add(_that.ballot);case _Update() when update != null:
-return update(_that.ballot);case _Remove() when remove != null:
+return update(_that.ballots);case _Remove() when remove != null:
 return remove(_that.ballotId);case _:
   return null;
 
@@ -426,10 +426,16 @@ $BallotCopyWith<$Res> get ballot {
 
 
 class _Update implements BallotsEvent {
-  const _Update({required this.ballot});
+  const _Update({required final  List<Ballot> ballots}): _ballots = ballots;
   
 
- final  Ballot ballot;
+ final  List<Ballot> _ballots;
+ List<Ballot> get ballots {
+  if (_ballots is EqualUnmodifiableListView) return _ballots;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_ballots);
+}
+
 
 /// Create a copy of BallotsEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -441,16 +447,16 @@ _$UpdateCopyWith<_Update> get copyWith => __$UpdateCopyWithImpl<_Update>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Update&&(identical(other.ballot, ballot) || other.ballot == ballot));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Update&&const DeepCollectionEquality().equals(other._ballots, _ballots));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ballot);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_ballots));
 
 @override
 String toString() {
-  return 'BallotsEvent.update(ballot: $ballot)';
+  return 'BallotsEvent.update(ballots: $ballots)';
 }
 
 
@@ -461,11 +467,11 @@ abstract mixin class _$UpdateCopyWith<$Res> implements $BallotsEventCopyWith<$Re
   factory _$UpdateCopyWith(_Update value, $Res Function(_Update) _then) = __$UpdateCopyWithImpl;
 @useResult
 $Res call({
- Ballot ballot
+ List<Ballot> ballots
 });
 
 
-$BallotCopyWith<$Res> get ballot;
+
 
 }
 /// @nodoc
@@ -478,23 +484,14 @@ class __$UpdateCopyWithImpl<$Res>
 
 /// Create a copy of BallotsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? ballot = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? ballots = null,}) {
   return _then(_Update(
-ballot: null == ballot ? _self.ballot : ballot // ignore: cast_nullable_to_non_nullable
-as Ballot,
+ballots: null == ballots ? _self._ballots : ballots // ignore: cast_nullable_to_non_nullable
+as List<Ballot>,
   ));
 }
 
-/// Create a copy of BallotsEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$BallotCopyWith<$Res> get ballot {
-  
-  return $BallotCopyWith<$Res>(_self.ballot, (value) {
-    return _then(_self.copyWith(ballot: value));
-  });
-}
+
 }
 
 /// @nodoc

@@ -32,7 +32,7 @@ A true democracy means that the power lies solely with the people and that the p
 
 
 ```
-flutter build appbundle --no-tree-shake-icons
-flutter build apk --no-tree-shake-icons
+flutter build appbundle --no-tree-shake-icons --dart-define-from-file=env.json
+flutter build apk --no-tree-shake-icons --dart-define-from-file=env.json
 flutter install
 ```

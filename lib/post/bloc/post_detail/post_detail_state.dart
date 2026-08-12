@@ -10,21 +10,14 @@ class PostDetailState with _$PostDetailState {
 
   const factory PostDetailState.updated({
     required int postId,
-    required String body,
     required int likes,
-    required bool isLiked,
     required int bookmarks,
-    required bool isBookmarked,
     required int views,
     required int replies,
     required int reposts,
     required String communityNote,
-    required bool isUpvoted,
-    required bool isDownvoted,
     required int upvotes,
     required int downvotes,
-    required bool isReposted,
-    required bool isQuoted,
     required bool isDeleted,
     required bool isActive,
   }) = PostUpdated;

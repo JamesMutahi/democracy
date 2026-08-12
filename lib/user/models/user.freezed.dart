@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$User {
 
- int get id; String get username; String get name; String get image;@JsonKey(name: 'cover_photo') String get coverPhoto; String get bio; County? get county; Constituency? get constituency; Ward? get ward; List<int> get muted; List<int> get blocked; int get following; int get followers;@JsonKey(name: 'is_active') bool get isActive;@JsonKey(name: 'date_joined') DateTime get dateJoined;@JsonKey(name: 'is_muted') bool get isMuted;@JsonKey(name: 'is_blocked') bool get isBlocked;@JsonKey(name: 'has_blocked') bool get hasBlocked;@JsonKey(name: 'is_followed') bool get isFollowed;@JsonKey(name: 'is_notifying') bool get isNotifying;@JsonKey(name: 'is_visited') bool get isVisited;
+ int get id; String get username; String get name; String get image;@JsonKey(name: 'cover_photo') String get coverPhoto; String get bio; County? get county; Constituency? get constituency; Ward? get ward; int get following; int get followers;@JsonKey(name: 'is_active') bool get isActive;@JsonKey(name: 'date_joined') DateTime get dateJoined;@JsonKey(name: 'is_muted') bool get isMuted;@JsonKey(name: 'is_blocked') bool get isBlocked;@JsonKey(name: 'has_blocked') bool get hasBlocked;@JsonKey(name: 'is_followed') bool get isFollowed;@JsonKey(name: 'is_notifying') bool get isNotifying;@JsonKey(name: 'is_visited') bool get isVisited;
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $UserCopyWith<User> get copyWith => _$UserCopyWithImpl<User>(this as User, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is User&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.name, name) || other.name == name)&&(identical(other.image, image) || other.image == image)&&(identical(other.coverPhoto, coverPhoto) || other.coverPhoto == coverPhoto)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.county, county) || other.county == county)&&(identical(other.constituency, constituency) || other.constituency == constituency)&&(identical(other.ward, ward) || other.ward == ward)&&const DeepCollectionEquality().equals(other.muted, muted)&&const DeepCollectionEquality().equals(other.blocked, blocked)&&(identical(other.following, following) || other.following == following)&&(identical(other.followers, followers) || other.followers == followers)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.dateJoined, dateJoined) || other.dateJoined == dateJoined)&&(identical(other.isMuted, isMuted) || other.isMuted == isMuted)&&(identical(other.isBlocked, isBlocked) || other.isBlocked == isBlocked)&&(identical(other.hasBlocked, hasBlocked) || other.hasBlocked == hasBlocked)&&(identical(other.isFollowed, isFollowed) || other.isFollowed == isFollowed)&&(identical(other.isNotifying, isNotifying) || other.isNotifying == isNotifying)&&(identical(other.isVisited, isVisited) || other.isVisited == isVisited));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is User&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.name, name) || other.name == name)&&(identical(other.image, image) || other.image == image)&&(identical(other.coverPhoto, coverPhoto) || other.coverPhoto == coverPhoto)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.county, county) || other.county == county)&&(identical(other.constituency, constituency) || other.constituency == constituency)&&(identical(other.ward, ward) || other.ward == ward)&&(identical(other.following, following) || other.following == following)&&(identical(other.followers, followers) || other.followers == followers)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.dateJoined, dateJoined) || other.dateJoined == dateJoined)&&(identical(other.isMuted, isMuted) || other.isMuted == isMuted)&&(identical(other.isBlocked, isBlocked) || other.isBlocked == isBlocked)&&(identical(other.hasBlocked, hasBlocked) || other.hasBlocked == hasBlocked)&&(identical(other.isFollowed, isFollowed) || other.isFollowed == isFollowed)&&(identical(other.isNotifying, isNotifying) || other.isNotifying == isNotifying)&&(identical(other.isVisited, isVisited) || other.isVisited == isVisited));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,username,name,image,coverPhoto,bio,county,constituency,ward,const DeepCollectionEquality().hash(muted),const DeepCollectionEquality().hash(blocked),following,followers,isActive,dateJoined,isMuted,isBlocked,hasBlocked,isFollowed,isNotifying,isVisited]);
+int get hashCode => Object.hashAll([runtimeType,id,username,name,image,coverPhoto,bio,county,constituency,ward,following,followers,isActive,dateJoined,isMuted,isBlocked,hasBlocked,isFollowed,isNotifying,isVisited]);
 
 @override
 String toString() {
-  return 'User(id: $id, username: $username, name: $name, image: $image, coverPhoto: $coverPhoto, bio: $bio, county: $county, constituency: $constituency, ward: $ward, muted: $muted, blocked: $blocked, following: $following, followers: $followers, isActive: $isActive, dateJoined: $dateJoined, isMuted: $isMuted, isBlocked: $isBlocked, hasBlocked: $hasBlocked, isFollowed: $isFollowed, isNotifying: $isNotifying, isVisited: $isVisited)';
+  return 'User(id: $id, username: $username, name: $name, image: $image, coverPhoto: $coverPhoto, bio: $bio, county: $county, constituency: $constituency, ward: $ward, following: $following, followers: $followers, isActive: $isActive, dateJoined: $dateJoined, isMuted: $isMuted, isBlocked: $isBlocked, hasBlocked: $hasBlocked, isFollowed: $isFollowed, isNotifying: $isNotifying, isVisited: $isVisited)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $UserCopyWith<$Res>  {
   factory $UserCopyWith(User value, $Res Function(User) _then) = _$UserCopyWithImpl;
 @useResult
 $Res call({
- int id, String username, String name, String image,@JsonKey(name: 'cover_photo') String coverPhoto, String bio, County? county, Constituency? constituency, Ward? ward, List<int> muted, List<int> blocked, int following, int followers,@JsonKey(name: 'is_active') bool isActive,@JsonKey(name: 'date_joined') DateTime dateJoined,@JsonKey(name: 'is_muted') bool isMuted,@JsonKey(name: 'is_blocked') bool isBlocked,@JsonKey(name: 'has_blocked') bool hasBlocked,@JsonKey(name: 'is_followed') bool isFollowed,@JsonKey(name: 'is_notifying') bool isNotifying,@JsonKey(name: 'is_visited') bool isVisited
+ int id, String username, String name, String image,@JsonKey(name: 'cover_photo') String coverPhoto, String bio, County? county, Constituency? constituency, Ward? ward, int following, int followers,@JsonKey(name: 'is_active') bool isActive,@JsonKey(name: 'date_joined') DateTime dateJoined,@JsonKey(name: 'is_muted') bool isMuted,@JsonKey(name: 'is_blocked') bool isBlocked,@JsonKey(name: 'has_blocked') bool hasBlocked,@JsonKey(name: 'is_followed') bool isFollowed,@JsonKey(name: 'is_notifying') bool isNotifying,@JsonKey(name: 'is_visited') bool isVisited
 });
 
 
@@ -65,7 +65,7 @@ class _$UserCopyWithImpl<$Res>
 
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? username = null,Object? name = null,Object? image = null,Object? coverPhoto = null,Object? bio = null,Object? county = freezed,Object? constituency = freezed,Object? ward = freezed,Object? muted = null,Object? blocked = null,Object? following = null,Object? followers = null,Object? isActive = null,Object? dateJoined = null,Object? isMuted = null,Object? isBlocked = null,Object? hasBlocked = null,Object? isFollowed = null,Object? isNotifying = null,Object? isVisited = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? username = null,Object? name = null,Object? image = null,Object? coverPhoto = null,Object? bio = null,Object? county = freezed,Object? constituency = freezed,Object? ward = freezed,Object? following = null,Object? followers = null,Object? isActive = null,Object? dateJoined = null,Object? isMuted = null,Object? isBlocked = null,Object? hasBlocked = null,Object? isFollowed = null,Object? isNotifying = null,Object? isVisited = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
@@ -76,9 +76,7 @@ as String,bio: null == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nul
 as String,county: freezed == county ? _self.county : county // ignore: cast_nullable_to_non_nullable
 as County?,constituency: freezed == constituency ? _self.constituency : constituency // ignore: cast_nullable_to_non_nullable
 as Constituency?,ward: freezed == ward ? _self.ward : ward // ignore: cast_nullable_to_non_nullable
-as Ward?,muted: null == muted ? _self.muted : muted // ignore: cast_nullable_to_non_nullable
-as List<int>,blocked: null == blocked ? _self.blocked : blocked // ignore: cast_nullable_to_non_nullable
-as List<int>,following: null == following ? _self.following : following // ignore: cast_nullable_to_non_nullable
+as Ward?,following: null == following ? _self.following : following // ignore: cast_nullable_to_non_nullable
 as int,followers: null == followers ? _self.followers : followers // ignore: cast_nullable_to_non_nullable
 as int,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
 as bool,dateJoined: null == dateJoined ? _self.dateJoined : dateJoined // ignore: cast_nullable_to_non_nullable
@@ -206,10 +204,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String username,  String name,  String image, @JsonKey(name: 'cover_photo')  String coverPhoto,  String bio,  County? county,  Constituency? constituency,  Ward? ward,  List<int> muted,  List<int> blocked,  int following,  int followers, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'date_joined')  DateTime dateJoined, @JsonKey(name: 'is_muted')  bool isMuted, @JsonKey(name: 'is_blocked')  bool isBlocked, @JsonKey(name: 'has_blocked')  bool hasBlocked, @JsonKey(name: 'is_followed')  bool isFollowed, @JsonKey(name: 'is_notifying')  bool isNotifying, @JsonKey(name: 'is_visited')  bool isVisited)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String username,  String name,  String image, @JsonKey(name: 'cover_photo')  String coverPhoto,  String bio,  County? county,  Constituency? constituency,  Ward? ward,  int following,  int followers, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'date_joined')  DateTime dateJoined, @JsonKey(name: 'is_muted')  bool isMuted, @JsonKey(name: 'is_blocked')  bool isBlocked, @JsonKey(name: 'has_blocked')  bool hasBlocked, @JsonKey(name: 'is_followed')  bool isFollowed, @JsonKey(name: 'is_notifying')  bool isNotifying, @JsonKey(name: 'is_visited')  bool isVisited)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _User() when $default != null:
-return $default(_that.id,_that.username,_that.name,_that.image,_that.coverPhoto,_that.bio,_that.county,_that.constituency,_that.ward,_that.muted,_that.blocked,_that.following,_that.followers,_that.isActive,_that.dateJoined,_that.isMuted,_that.isBlocked,_that.hasBlocked,_that.isFollowed,_that.isNotifying,_that.isVisited);case _:
+return $default(_that.id,_that.username,_that.name,_that.image,_that.coverPhoto,_that.bio,_that.county,_that.constituency,_that.ward,_that.following,_that.followers,_that.isActive,_that.dateJoined,_that.isMuted,_that.isBlocked,_that.hasBlocked,_that.isFollowed,_that.isNotifying,_that.isVisited);case _:
   return orElse();
 
 }
@@ -227,10 +225,10 @@ return $default(_that.id,_that.username,_that.name,_that.image,_that.coverPhoto,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String username,  String name,  String image, @JsonKey(name: 'cover_photo')  String coverPhoto,  String bio,  County? county,  Constituency? constituency,  Ward? ward,  List<int> muted,  List<int> blocked,  int following,  int followers, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'date_joined')  DateTime dateJoined, @JsonKey(name: 'is_muted')  bool isMuted, @JsonKey(name: 'is_blocked')  bool isBlocked, @JsonKey(name: 'has_blocked')  bool hasBlocked, @JsonKey(name: 'is_followed')  bool isFollowed, @JsonKey(name: 'is_notifying')  bool isNotifying, @JsonKey(name: 'is_visited')  bool isVisited)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String username,  String name,  String image, @JsonKey(name: 'cover_photo')  String coverPhoto,  String bio,  County? county,  Constituency? constituency,  Ward? ward,  int following,  int followers, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'date_joined')  DateTime dateJoined, @JsonKey(name: 'is_muted')  bool isMuted, @JsonKey(name: 'is_blocked')  bool isBlocked, @JsonKey(name: 'has_blocked')  bool hasBlocked, @JsonKey(name: 'is_followed')  bool isFollowed, @JsonKey(name: 'is_notifying')  bool isNotifying, @JsonKey(name: 'is_visited')  bool isVisited)  $default,) {final _that = this;
 switch (_that) {
 case _User():
-return $default(_that.id,_that.username,_that.name,_that.image,_that.coverPhoto,_that.bio,_that.county,_that.constituency,_that.ward,_that.muted,_that.blocked,_that.following,_that.followers,_that.isActive,_that.dateJoined,_that.isMuted,_that.isBlocked,_that.hasBlocked,_that.isFollowed,_that.isNotifying,_that.isVisited);}
+return $default(_that.id,_that.username,_that.name,_that.image,_that.coverPhoto,_that.bio,_that.county,_that.constituency,_that.ward,_that.following,_that.followers,_that.isActive,_that.dateJoined,_that.isMuted,_that.isBlocked,_that.hasBlocked,_that.isFollowed,_that.isNotifying,_that.isVisited);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -244,10 +242,10 @@ return $default(_that.id,_that.username,_that.name,_that.image,_that.coverPhoto,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String username,  String name,  String image, @JsonKey(name: 'cover_photo')  String coverPhoto,  String bio,  County? county,  Constituency? constituency,  Ward? ward,  List<int> muted,  List<int> blocked,  int following,  int followers, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'date_joined')  DateTime dateJoined, @JsonKey(name: 'is_muted')  bool isMuted, @JsonKey(name: 'is_blocked')  bool isBlocked, @JsonKey(name: 'has_blocked')  bool hasBlocked, @JsonKey(name: 'is_followed')  bool isFollowed, @JsonKey(name: 'is_notifying')  bool isNotifying, @JsonKey(name: 'is_visited')  bool isVisited)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String username,  String name,  String image, @JsonKey(name: 'cover_photo')  String coverPhoto,  String bio,  County? county,  Constituency? constituency,  Ward? ward,  int following,  int followers, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'date_joined')  DateTime dateJoined, @JsonKey(name: 'is_muted')  bool isMuted, @JsonKey(name: 'is_blocked')  bool isBlocked, @JsonKey(name: 'has_blocked')  bool hasBlocked, @JsonKey(name: 'is_followed')  bool isFollowed, @JsonKey(name: 'is_notifying')  bool isNotifying, @JsonKey(name: 'is_visited')  bool isVisited)?  $default,) {final _that = this;
 switch (_that) {
 case _User() when $default != null:
-return $default(_that.id,_that.username,_that.name,_that.image,_that.coverPhoto,_that.bio,_that.county,_that.constituency,_that.ward,_that.muted,_that.blocked,_that.following,_that.followers,_that.isActive,_that.dateJoined,_that.isMuted,_that.isBlocked,_that.hasBlocked,_that.isFollowed,_that.isNotifying,_that.isVisited);case _:
+return $default(_that.id,_that.username,_that.name,_that.image,_that.coverPhoto,_that.bio,_that.county,_that.constituency,_that.ward,_that.following,_that.followers,_that.isActive,_that.dateJoined,_that.isMuted,_that.isBlocked,_that.hasBlocked,_that.isFollowed,_that.isNotifying,_that.isVisited);case _:
   return null;
 
 }
@@ -259,7 +257,7 @@ return $default(_that.id,_that.username,_that.name,_that.image,_that.coverPhoto,
 @JsonSerializable()
 
 class _User implements User {
-  const _User({required this.id, required this.username, required this.name, required this.image, @JsonKey(name: 'cover_photo') required this.coverPhoto, required this.bio, required this.county, required this.constituency, required this.ward, required final  List<int> muted, required final  List<int> blocked, required this.following, required this.followers, @JsonKey(name: 'is_active') required this.isActive, @JsonKey(name: 'date_joined') required this.dateJoined, @JsonKey(name: 'is_muted') required this.isMuted, @JsonKey(name: 'is_blocked') required this.isBlocked, @JsonKey(name: 'has_blocked') required this.hasBlocked, @JsonKey(name: 'is_followed') required this.isFollowed, @JsonKey(name: 'is_notifying') required this.isNotifying, @JsonKey(name: 'is_visited') required this.isVisited}): _muted = muted,_blocked = blocked;
+  const _User({required this.id, required this.username, required this.name, required this.image, @JsonKey(name: 'cover_photo') required this.coverPhoto, required this.bio, required this.county, required this.constituency, required this.ward, required this.following, required this.followers, @JsonKey(name: 'is_active') required this.isActive, @JsonKey(name: 'date_joined') required this.dateJoined, @JsonKey(name: 'is_muted') required this.isMuted, @JsonKey(name: 'is_blocked') required this.isBlocked, @JsonKey(name: 'has_blocked') required this.hasBlocked, @JsonKey(name: 'is_followed') required this.isFollowed, @JsonKey(name: 'is_notifying') required this.isNotifying, @JsonKey(name: 'is_visited') required this.isVisited});
   factory _User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
 @override final  int id;
@@ -271,20 +269,6 @@ class _User implements User {
 @override final  County? county;
 @override final  Constituency? constituency;
 @override final  Ward? ward;
- final  List<int> _muted;
-@override List<int> get muted {
-  if (_muted is EqualUnmodifiableListView) return _muted;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_muted);
-}
-
- final  List<int> _blocked;
-@override List<int> get blocked {
-  if (_blocked is EqualUnmodifiableListView) return _blocked;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_blocked);
-}
-
 @override final  int following;
 @override final  int followers;
 @override@JsonKey(name: 'is_active') final  bool isActive;
@@ -309,16 +293,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _User&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.name, name) || other.name == name)&&(identical(other.image, image) || other.image == image)&&(identical(other.coverPhoto, coverPhoto) || other.coverPhoto == coverPhoto)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.county, county) || other.county == county)&&(identical(other.constituency, constituency) || other.constituency == constituency)&&(identical(other.ward, ward) || other.ward == ward)&&const DeepCollectionEquality().equals(other._muted, _muted)&&const DeepCollectionEquality().equals(other._blocked, _blocked)&&(identical(other.following, following) || other.following == following)&&(identical(other.followers, followers) || other.followers == followers)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.dateJoined, dateJoined) || other.dateJoined == dateJoined)&&(identical(other.isMuted, isMuted) || other.isMuted == isMuted)&&(identical(other.isBlocked, isBlocked) || other.isBlocked == isBlocked)&&(identical(other.hasBlocked, hasBlocked) || other.hasBlocked == hasBlocked)&&(identical(other.isFollowed, isFollowed) || other.isFollowed == isFollowed)&&(identical(other.isNotifying, isNotifying) || other.isNotifying == isNotifying)&&(identical(other.isVisited, isVisited) || other.isVisited == isVisited));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _User&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.name, name) || other.name == name)&&(identical(other.image, image) || other.image == image)&&(identical(other.coverPhoto, coverPhoto) || other.coverPhoto == coverPhoto)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.county, county) || other.county == county)&&(identical(other.constituency, constituency) || other.constituency == constituency)&&(identical(other.ward, ward) || other.ward == ward)&&(identical(other.following, following) || other.following == following)&&(identical(other.followers, followers) || other.followers == followers)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.dateJoined, dateJoined) || other.dateJoined == dateJoined)&&(identical(other.isMuted, isMuted) || other.isMuted == isMuted)&&(identical(other.isBlocked, isBlocked) || other.isBlocked == isBlocked)&&(identical(other.hasBlocked, hasBlocked) || other.hasBlocked == hasBlocked)&&(identical(other.isFollowed, isFollowed) || other.isFollowed == isFollowed)&&(identical(other.isNotifying, isNotifying) || other.isNotifying == isNotifying)&&(identical(other.isVisited, isVisited) || other.isVisited == isVisited));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,username,name,image,coverPhoto,bio,county,constituency,ward,const DeepCollectionEquality().hash(_muted),const DeepCollectionEquality().hash(_blocked),following,followers,isActive,dateJoined,isMuted,isBlocked,hasBlocked,isFollowed,isNotifying,isVisited]);
+int get hashCode => Object.hashAll([runtimeType,id,username,name,image,coverPhoto,bio,county,constituency,ward,following,followers,isActive,dateJoined,isMuted,isBlocked,hasBlocked,isFollowed,isNotifying,isVisited]);
 
 @override
 String toString() {
-  return 'User(id: $id, username: $username, name: $name, image: $image, coverPhoto: $coverPhoto, bio: $bio, county: $county, constituency: $constituency, ward: $ward, muted: $muted, blocked: $blocked, following: $following, followers: $followers, isActive: $isActive, dateJoined: $dateJoined, isMuted: $isMuted, isBlocked: $isBlocked, hasBlocked: $hasBlocked, isFollowed: $isFollowed, isNotifying: $isNotifying, isVisited: $isVisited)';
+  return 'User(id: $id, username: $username, name: $name, image: $image, coverPhoto: $coverPhoto, bio: $bio, county: $county, constituency: $constituency, ward: $ward, following: $following, followers: $followers, isActive: $isActive, dateJoined: $dateJoined, isMuted: $isMuted, isBlocked: $isBlocked, hasBlocked: $hasBlocked, isFollowed: $isFollowed, isNotifying: $isNotifying, isVisited: $isVisited)';
 }
 
 
@@ -329,7 +313,7 @@ abstract mixin class _$UserCopyWith<$Res> implements $UserCopyWith<$Res> {
   factory _$UserCopyWith(_User value, $Res Function(_User) _then) = __$UserCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String username, String name, String image,@JsonKey(name: 'cover_photo') String coverPhoto, String bio, County? county, Constituency? constituency, Ward? ward, List<int> muted, List<int> blocked, int following, int followers,@JsonKey(name: 'is_active') bool isActive,@JsonKey(name: 'date_joined') DateTime dateJoined,@JsonKey(name: 'is_muted') bool isMuted,@JsonKey(name: 'is_blocked') bool isBlocked,@JsonKey(name: 'has_blocked') bool hasBlocked,@JsonKey(name: 'is_followed') bool isFollowed,@JsonKey(name: 'is_notifying') bool isNotifying,@JsonKey(name: 'is_visited') bool isVisited
+ int id, String username, String name, String image,@JsonKey(name: 'cover_photo') String coverPhoto, String bio, County? county, Constituency? constituency, Ward? ward, int following, int followers,@JsonKey(name: 'is_active') bool isActive,@JsonKey(name: 'date_joined') DateTime dateJoined,@JsonKey(name: 'is_muted') bool isMuted,@JsonKey(name: 'is_blocked') bool isBlocked,@JsonKey(name: 'has_blocked') bool hasBlocked,@JsonKey(name: 'is_followed') bool isFollowed,@JsonKey(name: 'is_notifying') bool isNotifying,@JsonKey(name: 'is_visited') bool isVisited
 });
 
 
@@ -346,7 +330,7 @@ class __$UserCopyWithImpl<$Res>
 
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? username = null,Object? name = null,Object? image = null,Object? coverPhoto = null,Object? bio = null,Object? county = freezed,Object? constituency = freezed,Object? ward = freezed,Object? muted = null,Object? blocked = null,Object? following = null,Object? followers = null,Object? isActive = null,Object? dateJoined = null,Object? isMuted = null,Object? isBlocked = null,Object? hasBlocked = null,Object? isFollowed = null,Object? isNotifying = null,Object? isVisited = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? username = null,Object? name = null,Object? image = null,Object? coverPhoto = null,Object? bio = null,Object? county = freezed,Object? constituency = freezed,Object? ward = freezed,Object? following = null,Object? followers = null,Object? isActive = null,Object? dateJoined = null,Object? isMuted = null,Object? isBlocked = null,Object? hasBlocked = null,Object? isFollowed = null,Object? isNotifying = null,Object? isVisited = null,}) {
   return _then(_User(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
@@ -357,9 +341,7 @@ as String,bio: null == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nul
 as String,county: freezed == county ? _self.county : county // ignore: cast_nullable_to_non_nullable
 as County?,constituency: freezed == constituency ? _self.constituency : constituency // ignore: cast_nullable_to_non_nullable
 as Constituency?,ward: freezed == ward ? _self.ward : ward // ignore: cast_nullable_to_non_nullable
-as Ward?,muted: null == muted ? _self._muted : muted // ignore: cast_nullable_to_non_nullable
-as List<int>,blocked: null == blocked ? _self._blocked : blocked // ignore: cast_nullable_to_non_nullable
-as List<int>,following: null == following ? _self.following : following // ignore: cast_nullable_to_non_nullable
+as Ward?,following: null == following ? _self.following : following // ignore: cast_nullable_to_non_nullable
 as int,followers: null == followers ? _self.followers : followers // ignore: cast_nullable_to_non_nullable
 as int,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
 as bool,dateJoined: null == dateJoined ? _self.dateJoined : dateJoined // ignore: cast_nullable_to_non_nullable

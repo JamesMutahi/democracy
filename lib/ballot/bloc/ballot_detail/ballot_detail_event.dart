@@ -24,6 +24,9 @@ sealed class BallotDetailEvent with _$BallotDetailEvent {
     required Ballot ballot,
     required String text,
   }) = _SubmitReason;
+  const factory BallotDetailEvent.reasonSubmitted({
+    required Map<String, dynamic> payload,
+  }) = _ReasonSubmitted;
   const factory BallotDetailEvent.unsubscribe({required Ballot ballot}) =
       _Unsubscribe;
 }

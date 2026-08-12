@@ -84,19 +84,12 @@ class PostListener extends StatelessWidget {
                     (element) => element.id == state.postId,
                   );
                   posts[postIndex] = posts[postIndex].copyWith(
-                    body: state.body,
                     likes: state.likes,
-                    isLiked: state.isLiked,
                     bookmarks: state.bookmarks,
-                    isBookmarked: state.isBookmarked,
                     views: state.views,
                     replies: state.replies,
                     reposts: state.reposts,
-                    isReposted: state.isReposted,
-                    isQuoted: state.isQuoted,
                     communityNote: state.communityNote,
-                    isUpvoted: state.isUpvoted,
-                    isDownvoted: state.isDownvoted,
                     upvotes: state.upvotes,
                     downvotes: state.downvotes,
                     isDeleted: state.isDeleted,
@@ -113,19 +106,12 @@ class PostListener extends StatelessWidget {
                           .where((e) => e.repostOf?.id == state.postId)
                           .toList()) {
                     Post repost = p.repostOf!.copyWith(
-                      body: state.body,
                       likes: state.likes,
-                      isLiked: state.isLiked,
                       bookmarks: state.bookmarks,
-                      isBookmarked: state.isBookmarked,
                       views: state.views,
                       replies: state.replies,
                       reposts: state.reposts,
-                      isReposted: state.isReposted,
-                      isQuoted: state.isQuoted,
                       communityNote: state.communityNote,
-                      isUpvoted: state.isUpvoted,
-                      isDownvoted: state.isDownvoted,
                       upvotes: state.upvotes,
                       downvotes: state.downvotes,
                       isDeleted: state.isDeleted,
@@ -173,7 +159,9 @@ class PostListener extends StatelessWidget {
                   updatePosts = true;
                 }
               case PostPinned():
-                final int postIndex = posts.indexWhere((element) => element.id == state.postId);
+                final int postIndex = posts.indexWhere(
+                  (element) => element.id == state.postId,
+                );
 
                 if (postIndex != -1) {
                   // If pinning a new post, unpin all others inside the existing list
@@ -357,22 +345,52 @@ class PostListener extends StatelessWidget {
               bool updatePosts = false;
               // Update posts
               List<Post> ballotPosts = posts
-                  .where((post) => post.ballot?.id == state.ballot.id)
+                  .where((post) => post.ballot?.id == state.ballotId)
                   .toList();
               if (ballotPosts.isNotEmpty) {
                 for (Post post in ballotPosts) {
+                  final ballot = post.ballot?.copyWith(
+                    id: state.ballotId,
+                    title: state.title,
+                    description: state.description,
+                    county: state.county,
+                    constituency: state.constituency,
+                    ward: state.ward,
+                    startTime: state.startTime,
+                    endTime: state.endTime,
+                    hasStarted: state.hasStarted,
+                    hasEnded: state.hasEnded,
+                    totalVotes: state.totalVotes,
+                    options: state.options,
+                    isActive: state.isActive,
+                  );
                   posts[posts.indexWhere((p) => p.id == post.id)] = post
-                      .copyWith(ballot: state.ballot);
+                      .copyWith(ballot: ballot);
                 }
                 updatePosts = true;
               }
               //   Update reposts
               List<Post> ballotReposts = posts
-                  .where((post) => post.repostOf?.ballot?.id == state.ballot.id)
+                  .where((post) => post.repostOf?.ballot?.id == state.ballotId)
                   .toList();
               if (ballotReposts.isNotEmpty) {
                 for (Post post in ballotReposts) {
-                  Post repostOf = post.repostOf!.copyWith(ballot: state.ballot);
+                  final ballot = post.repostOf!.ballot?.copyWith(
+                    id: state.ballotId,
+                    title: state.title,
+                    description: state.description,
+                    county: state.county,
+                    constituency: state.constituency,
+                    ward: state.ward,
+                    startTime: state.startTime,
+                    endTime: state.endTime,
+                    hasStarted: state.hasStarted,
+                    hasEnded: state.hasEnded,
+                    totalVotes: state.totalVotes,
+                    options: state.options,
+                    isActive: state.isActive,
+                  );
+                  Post repostOf = post.repostOf!.copyWith(ballot: ballot);
                   posts[posts.indexWhere((p) => p.id == post.id)] = post
                       .copyWith(repostOf: repostOf);
                 }

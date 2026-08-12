@@ -140,11 +140,25 @@ class _PostDetailState extends State<_PostDetail>
             BlocListener<PostCreateBloc, PostCreateState>(
               listener: (context, state) {
                 if (state.status == PostCreateStatus.success) {
-                  final post = state.post!;
+                  var post = state.post!;
                   if (widget.post.id == post.replyTo?.id) {
                     context.read<RepliesBloc>().add(
                       RepliesEvent.add(postId: widget.post.id, reply: post),
                     );
+                  }
+                  if (widget.post.id == post.repostOf?.id) {
+                    if (post.repostType == RepostType.quote) {
+                      post = post.copyWith(isQuoted: true);
+                      context.read<PostBloc>().add(
+                        PostEvent.updated(post: post),
+                      );
+                    }
+                    if (post.repostType == RepostType.repost) {
+                      post = post.copyWith(isReposted: true);
+                      context.read<PostBloc>().add(
+                        PostEvent.updated(post: post),
+                      );
+                    }
                   }
                 }
               },
@@ -157,19 +171,12 @@ class _PostDetailState extends State<_PostDetail>
                     if (widget.post.id == state.postId) {
                       var updatedPost = widget.post;
                       updatedPost = updatedPost.copyWith(
-                        body: state.body,
                         likes: state.likes,
-                        isLiked: state.isLiked,
                         bookmarks: state.bookmarks,
-                        isBookmarked: state.isBookmarked,
                         views: state.views,
                         replies: state.replies,
                         reposts: state.reposts,
-                        isReposted: state.isReposted,
-                        isQuoted: state.isQuoted,
                         communityNote: state.communityNote,
-                        isUpvoted: state.isUpvoted,
-                        isDownvoted: state.isDownvoted,
                         upvotes: state.upvotes,
                         downvotes: state.downvotes,
                         isDeleted: state.isDeleted,
@@ -183,25 +190,62 @@ class _PostDetailState extends State<_PostDetail>
                     if (widget.post.repostOf?.id == state.postId) {
                       var updatedPost = widget.post;
                       Post repostOf = updatedPost.repostOf!.copyWith(
-                        body: state.body,
                         likes: state.likes,
-                        isLiked: state.isLiked,
                         bookmarks: state.bookmarks,
-                        isBookmarked: state.isBookmarked,
                         views: state.views,
                         replies: state.replies,
                         reposts: state.reposts,
-                        isReposted: state.isReposted,
-                        isQuoted: state.isQuoted,
                         communityNote: state.communityNote,
-                        isUpvoted: state.isUpvoted,
-                        isDownvoted: state.isDownvoted,
                         upvotes: state.upvotes,
                         downvotes: state.downvotes,
                         isDeleted: state.isDeleted,
                         isActive: state.isActive,
                       );
                       updatedPost = updatedPost.copyWith(repostOf: repostOf);
+                      context.read<PostBloc>().add(
+                        PostEvent.updated(post: updatedPost),
+                      );
+                    }
+
+                  case PostLiked(:final postId):
+                    if (widget.post.id == postId) {
+                      var updatedPost = widget.post;
+                      updatedPost = updatedPost.copyWith(
+                        isLiked: state.isLiked,
+                      );
+                      context.read<PostBloc>().add(
+                        PostEvent.updated(post: updatedPost),
+                      );
+                    }
+
+                  case PostBookmarked(:final postId):
+                    if (widget.post.id == postId) {
+                      var updatedPost = widget.post;
+                      updatedPost = updatedPost.copyWith(
+                        isBookmarked: state.isBookmarked,
+                      );
+                      context.read<PostBloc>().add(
+                        PostEvent.updated(post: updatedPost),
+                      );
+                    }
+
+                  case PostUpvoted(:final postId):
+                    if (widget.post.id == postId) {
+                      var updatedPost = widget.post;
+                      updatedPost = updatedPost.copyWith(
+                        isUpvoted: state.isUpvoted,
+                      );
+                      context.read<PostBloc>().add(
+                        PostEvent.updated(post: updatedPost),
+                      );
+                    }
+
+                  case PostDownvoted(:final postId):
+                    if (widget.post.id == postId) {
+                      var updatedPost = widget.post;
+                      updatedPost = updatedPost.copyWith(
+                        isDownvoted: state.isDownvoted,
+                      );
                       context.read<PostBloc>().add(
                         PostEvent.updated(post: updatedPost),
                       );
@@ -245,18 +289,48 @@ class _PostDetailState extends State<_PostDetail>
               listener: (context, state) {
                 if (state is BallotUpdated) {
                   // post
-                  if (widget.post.ballot?.id == state.ballot.id) {
+                  if (widget.post.ballot?.id == state.ballotId) {
                     var updatedPost = widget.post;
-                    updatedPost = updatedPost.copyWith(ballot: state.ballot);
+                    final ballot = updatedPost.ballot?.copyWith(
+                      id: state.ballotId,
+                      title: state.title,
+                      description: state.description,
+                      county: state.county,
+                      constituency: state.constituency,
+                      ward: state.ward,
+                      startTime: state.startTime,
+                      endTime: state.endTime,
+                      hasStarted: state.hasStarted,
+                      hasEnded: state.hasEnded,
+                      totalVotes: state.totalVotes,
+                      options: state.options,
+                      isActive: state.isActive,
+                    );
+                    updatedPost = updatedPost.copyWith(ballot: ballot);
                     context.read<PostBloc>().add(
                       PostEvent.updated(post: updatedPost),
                     );
                   }
                   // repost
-                  if (widget.post.repostOf?.ballot?.id == state.ballot.id) {
+                  if (widget.post.repostOf?.ballot?.id == state.ballotId) {
                     var updatedPost = widget.post;
+                    final ballot = updatedPost.repostOf!.ballot?.copyWith(
+                      id: state.ballotId,
+                      title: state.title,
+                      description: state.description,
+                      county: state.county,
+                      constituency: state.constituency,
+                      ward: state.ward,
+                      startTime: state.startTime,
+                      endTime: state.endTime,
+                      hasStarted: state.hasStarted,
+                      hasEnded: state.hasEnded,
+                      totalVotes: state.totalVotes,
+                      options: state.options,
+                      isActive: state.isActive,
+                    );
                     Post repostOf = updatedPost.repostOf!.copyWith(
-                      ballot: state.ballot,
+                      ballot: ballot,
                     );
                     updatedPost = updatedPost.copyWith(repostOf: repostOf);
                     context.read<PostBloc>().add(

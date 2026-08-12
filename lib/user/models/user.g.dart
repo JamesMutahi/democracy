@@ -22,12 +22,6 @@ _User _$UserFromJson(Map<String, dynamic> json) => _User(
   ward: json['ward'] == null
       ? null
       : Ward.fromJson(json['ward'] as Map<String, dynamic>),
-  muted: (json['muted'] as List<dynamic>)
-      .map((e) => (e as num).toInt())
-      .toList(),
-  blocked: (json['blocked'] as List<dynamic>)
-      .map((e) => (e as num).toInt())
-      .toList(),
   following: (json['following'] as num).toInt(),
   followers: (json['followers'] as num).toInt(),
   isActive: json['is_active'] as bool,
@@ -50,8 +44,6 @@ Map<String, dynamic> _$UserToJson(_User instance) => <String, dynamic>{
   'county': instance.county,
   'constituency': instance.constituency,
   'ward': instance.ward,
-  'muted': instance.muted,
-  'blocked': instance.blocked,
   'following': instance.following,
   'followers': instance.followers,
   'is_active': instance.isActive,

@@ -30,7 +30,12 @@ class BallotsBloc extends Bloc<BallotsEvent, BallotsState> {
   }
 
   void _onGet(_Get event, Emitter<BallotsState> emit) {
-    emit(state.copyWith(status: BallotsStatus.loading, searchTerm: event.searchTerm));
+    emit(
+      state.copyWith(
+        status: BallotsStatus.loading,
+        searchTerm: event.searchTerm,
+      ),
+    );
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: BallotsStatus.failure));
       return;
@@ -93,17 +98,8 @@ class BallotsBloc extends Bloc<BallotsEvent, BallotsState> {
   }
 
   void _onUpdate(_Update event, Emitter<BallotsState> emit) {
-    final index = state.ballots.indexWhere(
-      (element) => element.id == event.ballot.id,
-    );
-    if (index == -1) return;
-
-    final updatedBallots = List<Ballot>.from(state.ballots);
-    updatedBallots[index] = event.ballot;
-
-    emit(
-      state.copyWith(ballots: updatedBallots, status: BallotsStatus.success),
-    );
+    emit(state.copyWith(status: BallotsStatus.loading));
+    emit(state.copyWith(ballots: event.ballots, status: BallotsStatus.success));
   }
 
   void _onRemove(_Remove event, Emitter<BallotsState> emit) {

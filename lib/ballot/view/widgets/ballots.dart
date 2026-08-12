@@ -32,35 +32,16 @@ class _BallotsState extends State<Ballots> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<NotificationDetailBloc, NotificationDetailState>(
-          listener: (context, state) {
-            if (state is NotificationCreated) {
-              if (state.notification.ballot != null) {
-                final ballotsBloc = context.read<BallotsBloc>();
-                final ballot = state.notification.ballot;
-                ballotsBloc.add(BallotsEvent.add(ballot: ballot!));
-              }
-            }
-          },
-        ),
-        BlocListener<BallotDetailBloc, BallotDetailState>(
-          listener: (context, state) {
+    return BlocListener<NotificationDetailBloc, NotificationDetailState>(
+      listener: (context, state) {
+        if (state is NotificationCreated) {
+          if (state.notification.ballot != null) {
             final ballotsBloc = context.read<BallotsBloc>();
-
-            if (state is BallotCreated) {
-              ballotsBloc.add(BallotsEvent.add(ballot: state.ballot));
-            } else if (state is BallotLoaded) {
-              ballotsBloc.add(BallotsEvent.update(ballot: state.ballot));
-            } else if (state is BallotUpdated) {
-              ballotsBloc.add(BallotsEvent.update(ballot: state.ballot));
-            } else if (state is BallotDeleted) {
-              ballotsBloc.add(BallotsEvent.remove(ballotId: state.ballotId));
-            }
-          },
-        ),
-      ],
+            final ballot = state.notification.ballot;
+            ballotsBloc.add(BallotsEvent.add(ballot: ballot!));
+          }
+        }
+      },
       child: BlocBuilder<BallotFilterCubit, BallotFilterState>(
         builder: (context, filterState) {
           return BlocBuilder<BallotsBloc, BallotsState>(
@@ -114,30 +95,91 @@ class _BallotsState extends State<Ballots> {
                 );
               }
 
-              return SmartRefresher(
-                enablePullDown: true,
-                enablePullUp: ballotsState.hasNext,
-                header: ClassicHeader(),
-                controller: _refreshController,
-                onRefresh: getBallots,
-                onLoading: () {
-                  getBallots(previousBallots: ballots);
+              return BlocListener<BallotDetailBloc, BallotDetailState>(
+                listener: (context, state) {
+                  final ballotsBloc = context.read<BallotsBloc>();
+
+                  switch (state) {
+                    case BallotCreated():
+                      ballotsBloc.add(BallotsEvent.add(ballot: state.ballot));
+                    case BallotUpdated():
+                      if (ballots.any(
+                        (element) => element.id == state.ballotId,
+                      )) {
+                        int ballotIndex = ballots.indexWhere(
+                          (element) => element.id == state.ballotId,
+                        );
+                        ballots[ballotIndex] = ballots[ballotIndex].copyWith(
+                          title: state.title,
+                          description: state.description,
+                          county: state.county,
+                          constituency: state.constituency,
+                          ward: state.ward,
+                          startTime: state.startTime,
+                          endTime: state.endTime,
+                          hasStarted: state.hasStarted,
+                          hasEnded: state.hasEnded,
+                          totalVotes: state.totalVotes,
+                          options: state.options,
+                          isActive: state.isActive,
+                        );
+                        ballotsBloc.add(BallotsEvent.update(ballots: ballots));
+                      }
+                    case BallotVoted():
+                      if (ballots.any(
+                        (element) => element.id == state.ballotId,
+                      )) {
+                        int ballotIndex = ballots.indexWhere(
+                          (element) => element.id == state.ballotId,
+                        );
+                        ballots[ballotIndex] = ballots[ballotIndex].copyWith(
+                          votedOption: state.optionId,
+                        );
+                        ballotsBloc.add(BallotsEvent.update(ballots: ballots));
+                      }
+                    case BallotReasonSubmitted():
+                      if (ballots.any(
+                        (element) => element.id == state.ballotId,
+                      )) {
+                        int ballotIndex = ballots.indexWhere(
+                          (element) => element.id == state.ballotId,
+                        );
+                        ballots[ballotIndex] = ballots[ballotIndex].copyWith(
+                          reason: state.reason,
+                        );
+                        ballotsBloc.add(BallotsEvent.update(ballots: ballots));
+                      }
+                    case BallotDeleted():
+                      ballotsBloc.add(
+                        BallotsEvent.remove(ballotId: state.ballotId),
+                      );
+                  }
                 },
-                footer: ClassicFooter(),
-                child: ListView.builder(
-                  padding: EdgeInsets.all(15),
-                  itemBuilder: (BuildContext context, int index) {
-                    Ballot ballot = ballots[index];
-                    return Container(
-                      margin: EdgeInsets.only(bottom: 10),
-                      child: BallotTile(
-                        key: ValueKey(ballot.id),
-                        ballot: ballot,
-                        isDependency: false,
-                      ),
-                    );
+                child: SmartRefresher(
+                  enablePullDown: true,
+                  enablePullUp: ballotsState.hasNext,
+                  header: ClassicHeader(),
+                  controller: _refreshController,
+                  onRefresh: getBallots,
+                  onLoading: () {
+                    getBallots(previousBallots: ballots);
                   },
-                  itemCount: ballots.length,
+                  footer: ClassicFooter(),
+                  child: ListView.builder(
+                    padding: EdgeInsets.all(15),
+                    itemBuilder: (BuildContext context, int index) {
+                      Ballot ballot = ballots[index];
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: BallotTile(
+                          key: ValueKey(ballot.id),
+                          ballot: ballot,
+                          isDependency: false,
+                        ),
+                      );
+                    },
+                    itemCount: ballots.length,
+                  ),
                 ),
               );
             },

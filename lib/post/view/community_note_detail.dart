@@ -131,19 +131,12 @@ class _CommunityNoteDetailState extends State<_CommunityNoteDetail> {
                     if (widget.post.id == state.postId) {
                       var updatedPost = widget.post;
                       updatedPost = updatedPost.copyWith(
-                        body: state.body,
                         likes: state.likes,
-                        isLiked: state.isLiked,
                         bookmarks: state.bookmarks,
-                        isBookmarked: state.isBookmarked,
                         views: state.views,
                         replies: state.replies,
                         reposts: state.reposts,
-                        isReposted: state.isReposted,
-                        isQuoted: state.isQuoted,
                         communityNote: state.communityNote,
-                        isUpvoted: state.isUpvoted,
-                        isDownvoted: state.isDownvoted,
                         upvotes: state.upvotes,
                         downvotes: state.downvotes,
                         isDeleted: state.isDeleted,
@@ -158,19 +151,12 @@ class _CommunityNoteDetailState extends State<_CommunityNoteDetail> {
                       var updatedPost = widget.post;
                       Post communityNoteOf = updatedPost.communityNoteOf!
                           .copyWith(
-                            body: state.body,
                             likes: state.likes,
-                            isLiked: state.isLiked,
                             bookmarks: state.bookmarks,
-                            isBookmarked: state.isBookmarked,
                             views: state.views,
                             replies: state.replies,
                             reposts: state.reposts,
-                            isReposted: state.isReposted,
-                            isQuoted: state.isQuoted,
                             communityNote: state.communityNote,
-                            isUpvoted: state.isUpvoted,
-                            isDownvoted: state.isDownvoted,
                             upvotes: state.upvotes,
                             downvotes: state.downvotes,
                             isDeleted: state.isDeleted,

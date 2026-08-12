@@ -63,7 +63,7 @@ class _BallotDetailState extends State<_BallotDetail> {
   bool changingVote = false;
   late final TextEditingController _textEditingController =
       TextEditingController(
-        text: widget.ballot.reason == null ? '' : widget.ballot.reason!.text,
+        text: widget.ballot.reason == null ? '' : widget.ballot.reason!,
       );
 
   @override
@@ -82,32 +82,67 @@ class _BallotDetailState extends State<_BallotDetail> {
         ),
         BlocListener<BallotDetailBloc, BallotDetailState>(
           listener: (context, state) {
-            if (state is BallotUpdated) {
-              if (widget.ballot.id == state.ballot.id) {
-                if (state.ballot.reason?.text != widget.ballot.reason?.text) {
-                  final snackBar = getSnackBar(
-                    context: context,
-                    message: 'Submitted',
-                    status: SnackBarStatus.success,
+            Ballot ballot = widget.ballot;
+            switch (state) {
+              case BallotUpdated():
+                if (ballot.id == state.ballotId) {
+                  context.read<BallotBloc>().add(
+                    BallotEvent.updated(
+                      ballot: ballot.copyWith(
+                        title: state.title,
+                        description: state.description,
+                        county: state.county,
+                        constituency: state.constituency,
+                        ward: state.ward,
+                        startTime: state.startTime,
+                        endTime: state.endTime,
+                        hasStarted: state.hasStarted,
+                        hasEnded: state.hasEnded,
+                        totalVotes: state.totalVotes,
+                        options: state.options,
+                        isActive: state.isActive,
+                      ),
+                    ),
                   );
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 }
-                context.read<BallotBloc>().add(
-                  BallotEvent.updated(ballot: state.ballot),
+              case BallotVoted():
+                if (ballot.id == state.ballotId) {
+                  context.read<BallotBloc>().add(
+                    BallotEvent.updated(
+                      ballot: ballot.copyWith(votedOption: state.optionId),
+                    ),
+                  );
+                  if (state.hasChanged) {
+                    _textEditingController.clear();
+                  }
+                }
+              case BallotReasonSubmitted():
+                if (ballot.id == state.ballotId) {
+                  if (state.reason != ballot.reason) {
+                    if (state.reason == null) {
+                      _textEditingController.clear();
+                    }
+                    context.read<BallotBloc>().add(
+                      BallotEvent.updated(
+                        ballot: ballot.copyWith(reason: state.reason),
+                      ),
+                    );
+                    final snackBar = getSnackBar(
+                      context: context,
+                      message: 'Submitted',
+                      status: SnackBarStatus.success,
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
+                }
+              case BallotDetailFailure():
+                final snackBar = getSnackBar(
+                  context: context,
+                  message: state.error,
+                  status: SnackBarStatus.failure,
                 );
-                if (state.ballot.reason == null) {
-                  _textEditingController.clear();
-                }
-              }
-            }
-            if (state is BallotDetailFailure) {
-              final snackBar = getSnackBar(
-                context: context,
-                message: state.error,
-                status: SnackBarStatus.failure,
-              );
-              ScaffoldMessenger.of(context).clearSnackBars();
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
           },
         ),
@@ -200,11 +235,14 @@ class _BallotDetailState extends State<_BallotDetail> {
                                     option: option,
                                     onTap: () {
                                       if (widget.ballot.isActive) {
-                                        context.read<BallotDetailBloc>().add(
-                                          BallotDetailEvent.vote(
-                                            option: option,
-                                          ),
-                                        );
+                                        if (widget.ballot.votedOption !=
+                                            option.id) {
+                                          context.read<BallotDetailBloc>().add(
+                                            BallotDetailEvent.vote(
+                                              option: option,
+                                            ),
+                                          );
+                                        }
                                         setState(() {
                                           changingVote = false;
                                         });
@@ -312,8 +350,8 @@ class _ReasonWidgetState extends State<ReasonWidget> {
   Widget build(BuildContext context) {
     return BlocListener<BallotDetailBloc, BallotDetailState>(
       listener: (context, state) {
-        if (state is BallotUpdated) {
-          if (widget.ballot.id == state.ballot.id) {
+        if (state is BallotReasonSubmitted) {
+          if (widget.ballot.id == state.ballotId) {
             setState(() {
               canSubmit = false;
             });
@@ -339,14 +377,17 @@ class _ReasonWidgetState extends State<ReasonWidget> {
                 setState(() {
                   if (widget.controller.text.isEmpty &&
                           widget.ballot.reason == null ||
-                      widget.controller.text == widget.ballot.reason?.text) {
+                      widget.controller.text == widget.ballot.reason) {
                     canSubmit = false;
                   } else {
                     canSubmit = true;
                   }
                 });
               },
-              readOnly: !widget.ballot.isActive,
+              readOnly:
+                  !widget.ballot.isActive ||
+                  !widget.ballot.hasStarted ||
+                  widget.ballot.hasEnded,
               minLines: 1,
               maxLines: 10,
               maxLength: widget.ballot.isActive ? 300 : null,

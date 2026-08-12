@@ -5,6 +5,9 @@ import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/models/option.dart';
+import 'package:democracy/geo/models/constituency.dart';
+import 'package:democracy/geo/models/county.dart';
+import 'package:democracy/geo/models/ward.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'ballot_detail_bloc.freezed.dart';
@@ -25,12 +28,13 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
           case 'retrieve':
             add(_Loaded(payload: message['payload']));
           case 'update':
-          case 'add_reason':
             add(_Updated(payload: message['payload']));
           case 'delete':
             add(_Deleted(payload: message['payload']));
           case 'vote':
             add(_Voted(payload: message['payload']));
+          case 'add_reason':
+            add(_ReasonSubmitted(payload: message['payload']));
         }
       }
     });
@@ -42,6 +46,7 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
     on<_Vote>((event, emit) => _onVote(event, emit));
     on<_Voted>((event, emit) => _onVoted(event, emit));
     on<_SubmitReason>((event, emit) => _onSubmitReason(event, emit));
+    on<_ReasonSubmitted>((event, emit) => _onReasonSubmitted(event, emit));
     on<_Unsubscribe>((event, emit) => _onUnsubscribe(event, emit));
   }
 
@@ -68,8 +73,31 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
   Future _onUpdated(_Updated event, Emitter<BallotDetailState> emit) async {
     emit(BallotDetailLoading());
     if (event.payload['response_status'] == 200) {
-      final Ballot ballot = Ballot.fromJson(event.payload['data']);
-      emit(BallotUpdated(ballot: ballot));
+      emit(
+        BallotUpdated(
+          ballotId: event.payload['data']['id'],
+          title: event.payload['data']['title'],
+          description: event.payload['data']['description'],
+          county: event.payload['data']['county'] == null
+              ? null
+              : County.fromJson(event.payload['data']['county']),
+          constituency: event.payload['data']['constituency'] == null
+              ? null
+              : Constituency.fromJson(event.payload['data']['constituency']),
+          ward: event.payload['data']['ward'] == null
+              ? null
+              : Ward.fromJson(event.payload['data']['ward']),
+          startTime: DateTime.parse(event.payload['data']['start_time']),
+          endTime: DateTime.parse(event.payload['data']['end_time']),
+          hasStarted: event.payload['data']['has_started'],
+          hasEnded: event.payload['data']['has_ended'],
+          totalVotes: event.payload['data']['total_votes'],
+          options: List.from(
+            event.payload['data']['options'].map((e) => Option.fromJson(e)),
+          ),
+          isActive: event.payload['data']['is_active'],
+        ),
+      );
     } else {
       emit(BallotDetailFailure(error: event.payload['errors'][0].toString()));
     }
@@ -129,7 +157,14 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
 
     emit(BallotDetailLoading());
     if (event.payload['response_status'] == 200) {
-      //
+      emit(
+        BallotVoted(
+          ballotId: event.payload['data']['ballot_id'],
+          optionId: event.payload['data']['option_id'],
+          hasChanged: event.payload['data']['has_changed'],
+          alreadyVoted: event.payload['data']['already_voted'],
+        ),
+      );
     } else {
       emit(BallotDetailFailure(error: event.payload['errors'][0].toString()));
     }
@@ -155,6 +190,29 @@ class BallotDetailBloc extends Bloc<BallotDetailEvent, BallotDetailState> {
       },
     };
     webSocketService.send(message);
+  }
+
+  Future _onReasonSubmitted(
+    _ReasonSubmitted event,
+    Emitter<BallotDetailState> emit,
+  ) async {
+    emit(BallotDetailLoading());
+    if (!webSocketService.isConnected) {
+      emit(BallotDetailFailure(error: serverError));
+      return;
+    }
+
+    emit(BallotDetailLoading());
+    if (event.payload['response_status'] == 200) {
+      emit(
+        BallotReasonSubmitted(
+          ballotId: event.payload['data']['ballot_id'],
+          reason: event.payload['data']['reason'],
+        ),
+      );
+    } else {
+      emit(BallotDetailFailure(error: event.payload['errors'][0].toString()));
+    }
   }
 
   Future _onUnsubscribe(

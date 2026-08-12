@@ -115,6 +115,23 @@ class _PreferencesPageState extends State<PreferencesPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
+                                    'Push notifications',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.titleMedium,
+                                  ),
+                                  SwitchRow(
+                                    text:
+                                    'Allow background notifications',
+                                    value: false,
+                                    onChanged: (value) {
+                                      if (value) {
+
+                                      }
+                                    },
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
                                     'Posts',
                                     style: Theme.of(
                                       context,

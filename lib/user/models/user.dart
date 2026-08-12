@@ -18,8 +18,6 @@ sealed class User with _$User {
     required County? county,
     required Constituency? constituency,
     required Ward? ward,
-    required List<int> muted,
-    required List<int> blocked,
     required int following,
     required int followers,
     @JsonKey(name: 'is_active') required bool isActive,
