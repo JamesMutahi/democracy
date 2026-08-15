@@ -159,7 +159,11 @@ class CommunityNoteTile extends StatelessWidget {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           ProfileImage(
-                                            user: communityNote.author,
+                                            userId: communityNote.author.id,
+                                            username:
+                                                communityNote.author.username,
+                                            imageUrl:
+                                                communityNote.author.image,
                                             navigateToProfile: true,
                                           ),
                                           SizedBox(width: 10),

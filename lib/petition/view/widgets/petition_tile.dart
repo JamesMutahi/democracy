@@ -156,7 +156,12 @@ class PetitionSupportersRow extends StatelessWidget {
                 child: CircleAvatar(
                   radius: 17,
                   backgroundColor: Theme.of(context).cardColor,
-                  child: ProfileImage(user: user, radius: 15),
+                  child: ProfileImage(
+                    userId: user.id,
+                    username: user.username,
+                    imageUrl: user.image,
+                    radius: 15,
+                  ),
                 ),
               );
             }),
@@ -259,7 +264,11 @@ class PetitionAuthorInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        ProfileImage(user: petition.author),
+        ProfileImage(
+          userId: petition.author.id,
+          username: petition.author.username,
+          imageUrl: petition.author.image,
+        ),
         SizedBox(width: 5),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,

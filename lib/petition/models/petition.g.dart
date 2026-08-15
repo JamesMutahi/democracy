@@ -25,7 +25,7 @@ _Petition _$PetitionFromJson(Map<String, dynamic> json) => _Petition(
   views: (json['views'] as num).toInt(),
   supporters: (json['supporters'] as num).toInt(),
   recentSupporters: (json['recent_supporters'] as List<dynamic>)
-      .map((e) => User.fromJson(e as Map<String, dynamic>))
+      .map((e) => SimpleUser.fromJson(e as Map<String, dynamic>))
       .toList(),
   isSupported: json['is_supported'] as bool,
   isOpen: json['is_open'] as bool,

@@ -48,7 +48,7 @@ class SectionTile extends StatelessWidget {
         child: AnimatedContainer(
           curve: Curves.easeInOut,
           duration: Duration(milliseconds: 300),
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
           decoration: BoxDecoration(
             color: isHighlighted
                 ? Theme.of(context).colorScheme.secondaryContainer

@@ -10,7 +10,7 @@ sealed class UserPetitionsEvent with _$UserPetitionsEvent {
     required Map<String, dynamic> payload,
   }) = _Received;
   const factory UserPetitionsEvent.add({required Petition petition}) = _Add;
-  const factory UserPetitionsEvent.update({required Petition petition}) =
+  const factory UserPetitionsEvent.update({required List<Petition> petitions}) =
       _Update;
   const factory UserPetitionsEvent.remove({required int petitionId}) = _Remove;
 }

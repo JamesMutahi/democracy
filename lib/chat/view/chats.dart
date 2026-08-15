@@ -206,7 +206,12 @@ class ChatTile extends StatelessWidget {
     final subtitleText = getLastMessageText(lastMessage, lastMessagePrefix);
 
     return ListTile(
-      leading: ProfileImage(user: otherUser, navigateToProfile: true),
+      leading: ProfileImage(
+        userId: otherUser.id,
+        username: otherUser.username,
+        imageUrl: otherUser.image,
+        navigateToProfile: true,
+      ),
       title: ProfileName(user: otherUser),
       subtitle: Row(
         children: [

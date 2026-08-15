@@ -329,7 +329,11 @@ class _ProfileButtonState extends State<_ProfileButton>
                     controller.open();
                   }
                 },
-                child: ProfileImage(user: widget.user),
+                child: ProfileImage(
+                  userId: widget.user.id,
+                  username: widget.user.username,
+                  imageUrl: widget.user.image,
+                ),
               );
             },
             menuChildren: [
@@ -358,7 +362,11 @@ class _ProfileButtonState extends State<_ProfileButton>
                     _dropdownAnimationController.forward();
                   }
                 },
-                leading: ProfileImage(user: widget.user),
+                leading: ProfileImage(
+                  userId: widget.user.id,
+                  username: widget.user.username,
+                  imageUrl: widget.user.image,
+                ),
                 title: Text(widget.user.name, overflow: TextOverflow.ellipsis),
                 subtitle: Text(
                   '@${widget.user.username}',

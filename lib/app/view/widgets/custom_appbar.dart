@@ -56,7 +56,11 @@ class DrawerOpener extends StatelessWidget {
         onTap: () {
           context.read<MenuControllerCubit>().openDrawer();
         },
-        child: ProfileImage(user: user),
+        child: ProfileImage(
+          userId: user.id,
+          username: user.username,
+          imageUrl: user.image,
+        ),
       ),
     );
   }

@@ -66,7 +66,15 @@ class Recipient extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
       child: Row(
         children: [
-          SizedBox(height: 30, width: 30, child: ProfileImage(user: recipient)),
+          SizedBox(
+            height: 30,
+            width: 30,
+            child: ProfileImage(
+              userId: recipient.id,
+              username: recipient.username,
+              imageUrl: recipient.image,
+            ),
+          ),
           SizedBox(width: 5),
           ProfileName(user: recipient),
         ],

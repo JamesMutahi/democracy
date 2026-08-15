@@ -38,9 +38,9 @@ sealed class PetitionDetailEvent with _$PetitionDetailEvent {
       _AddClick;
   const factory PetitionDetailEvent.changeStatus({required Petition petition}) =
       _ChangeStatus;
-  const factory PetitionDetailEvent.received({
+  const factory PetitionDetailEvent.supported({
     required Map<String, dynamic> payload,
-  }) = _Received;
+  }) = _Supported;
   const factory PetitionDetailEvent.unsubscribe({required Petition petition}) =
       _Unsubscribe;
 }

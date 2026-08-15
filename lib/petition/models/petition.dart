@@ -1,3 +1,4 @@
+import 'package:democracy/app/models/simple_user.dart';
 import 'package:democracy/geo/models/constituency.dart';
 import 'package:democracy/geo/models/county.dart';
 import 'package:democracy/geo/models/ward.dart';
@@ -21,7 +22,8 @@ sealed class Petition with _$Petition {
     required String? video,
     required int views,
     required int supporters,
-    @JsonKey(name: 'recent_supporters') required List<User> recentSupporters,
+    @JsonKey(name: 'recent_supporters')
+    required List<SimpleUser> recentSupporters,
     @JsonKey(name: 'is_supported') required bool isSupported,
     @JsonKey(name: 'is_open') required bool isOpen,
     @JsonKey(name: 'created_at') required DateTime createdAt,

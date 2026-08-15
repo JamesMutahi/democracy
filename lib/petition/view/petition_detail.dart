@@ -91,28 +91,52 @@ class _PetitionDetailState extends State<_PetitionDetail> {
         ),
         BlocListener<PetitionDetailBloc, PetitionDetailState>(
           listener: (context, state) {
-            if (state is PetitionUpdated) {
-              if (widget.petition.id == state.petition.id) {
-                context.read<PetitionBloc>().add(
-                  PetitionEvent.updated(petition: state.petition),
+            Petition petition = widget.petition;
+            switch (state) {
+              case PetitionUpdated():
+                if (widget.petition.id == state.petitionId) {
+                  context.read<PetitionBloc>().add(
+                    PetitionEvent.updated(
+                      petition: petition.copyWith(
+                        title: state.title,
+                        description: state.description,
+                        county: state.county,
+                        constituency: state.constituency,
+                        ward: state.ward,
+                        supporters: state.supporters,
+                        recentSupporters: state.recentSupporters,
+                        image: state.image,
+                        video: state.video,
+                        views: state.views,
+                        isOpen: state.isOpen,
+                        isActive: state.isActive,
+                      ),
+                    ),
+                  );
+                }
+              case PetitionSupported():
+                if (widget.petition.id == state.petitionId) {
+                  context.read<PetitionBloc>().add(
+                    PetitionEvent.updated(
+                      petition: petition.copyWith(
+                        isSupported: state.isSupported,
+                        supporters: state.supporters,
+                      ),
+                    ),
+                  );
+                }
+              case PetitionDeleted():
+                if (widget.petition.id == state.petitionId) {
+                  setState(() => isDeleted = true);
+                }
+              case PetitionDetailFailure():
+                final snackBar = getSnackBar(
+                  context: context,
+                  message: state.error,
+                  status: SnackBarStatus.failure,
                 );
-              }
-            }
-            if (state is PetitionDeleted) {
-              if (widget.petition.id == state.petitionId) {
-                setState(() {
-                  isDeleted = true;
-                });
-              }
-            }
-            if (state is PetitionDetailFailure) {
-              final snackBar = getSnackBar(
-                context: context,
-                message: state.error,
-                status: SnackBarStatus.failure,
-              );
-              ScaffoldMessenger.of(context).clearSnackBars();
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }
           },
         ),

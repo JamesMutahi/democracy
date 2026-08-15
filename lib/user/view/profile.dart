@@ -410,7 +410,12 @@ class ProfileAppBarDelegate extends SliverPersistentHeaderDelegate {
               child: CircleAvatar(
                 radius: 50,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                child: ProfileImage(user: user, radius: 47),
+                child: ProfileImage(
+                  userId: user.id,
+                  username: user.username,
+                  imageUrl: user.image,
+                  radius: 47,
+                ),
               ),
             ),
           ),

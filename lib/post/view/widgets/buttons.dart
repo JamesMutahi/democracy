@@ -39,7 +39,12 @@ class PostAuthorProfile extends StatelessWidget {
       backgroundColor: isDependency
           ? Colors.transparent
           : Theme.of(context).scaffoldBackgroundColor,
-      child: ProfileImage(user: author, navigateToProfile: true),
+      child: ProfileImage(
+        userId: author.id,
+        username: author.username,
+        imageUrl: author.image,
+        navigateToProfile: true,
+      ),
     );
   }
 }

@@ -1,8 +1,8 @@
 import 'package:democracy/app/shared/widgets/bottom_loader.dart';
 import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
-import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
 import 'package:democracy/petition/bloc/user_petitions/user_petitions_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
+import 'package:democracy/petition/view/widgets/petition_listener.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart';
 import 'package:democracy/post/bloc/likes/likes_bloc.dart';
 import 'package:democracy/post/bloc/user_community_notes/user_community_notes_bloc.dart';
@@ -432,58 +432,61 @@ class _UserPetitionsState extends State<UserPetitions> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<PetitionDetailBloc, PetitionDetailState>(
-      listener: (context, state) {
-        final bloc = context.read<UserPetitionsBloc>();
-
-        if (state is PetitionCreated) {
-          bloc.add(UserPetitionsEvent.add(petition: state.petition));
-        } else if (state is PetitionLoaded) {
-          bloc.add(UserPetitionsEvent.update(petition: state.petition));
-        } else if (state is PetitionUpdated) {
-          bloc.add(UserPetitionsEvent.update(petition: state.petition));
-        } else if (state is PetitionDeleted) {
-          bloc.add(UserPetitionsEvent.remove(petitionId: state.petitionId));
-        }
+    return BlocBuilder<UserPetitionsBloc, UserPetitionsState>(
+      buildWhen: (previous, current) {
+        return widget.user.id == current.userId;
       },
-      child: BlocBuilder<UserPetitionsBloc, UserPetitionsState>(
-        buildWhen: (previous, current) {
-          return widget.user.id == current.userId;
-        },
-        builder: (context, state) {
-          final petitions = state.petitions.toList();
+      builder: (context, state) {
+        final petitions = state.petitions.toList();
 
-          if (state.status == UserPetitionsStatus.initial) {
-            return const BottomLoader();
+        if (state.status == UserPetitionsStatus.initial) {
+          return const BottomLoader();
+        }
+
+        if (state.status == UserPetitionsStatus.success) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshCompleted();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadComplete();
+          }
+        }
+
+        if (state.status == UserPetitionsStatus.failure) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshFailed();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadFailed();
           }
 
-          if (state.status == UserPetitionsStatus.success) {
-            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-              _refreshController.refreshCompleted();
-            }
-            if (_refreshController.footerStatus == LoadStatus.loading) {
-              _refreshController.loadComplete();
-            }
+          if (state.petitions.isEmpty) {
+            return FailureRetryButton(
+              onPressed: () => context.read<UserPetitionsBloc>().add(
+                UserPetitionsEvent.get(user: widget.user),
+              ),
+            );
           }
+        }
 
-          if (state.status == UserPetitionsStatus.failure) {
-            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-              _refreshController.refreshFailed();
-            }
-            if (_refreshController.footerStatus == LoadStatus.loading) {
-              _refreshController.loadFailed();
-            }
-
-            if (state.petitions.isEmpty) {
-              return FailureRetryButton(
-                onPressed: () => context.read<UserPetitionsBloc>().add(
-                  UserPetitionsEvent.get(user: widget.user),
-                ),
-              );
-            }
-          }
-
-          return SmartRefresher(
+        return PetitionListener(
+          petitions: petitions,
+          onCreate: (petition) {
+            context.read<UserPetitionsBloc>().add(
+              UserPetitionsEvent.add(petition: petition),
+            );
+          },
+          onUpdate: (petitions) {
+            context.read<UserPetitionsBloc>().add(
+              UserPetitionsEvent.update(petitions: petitions),
+            );
+          },
+          onDelete: (petitionId) {
+            context.read<UserPetitionsBloc>().add(
+              UserPetitionsEvent.remove(petitionId: petitionId),
+            );
+          },
+          child: SmartRefresher(
             enablePullDown: true,
             enablePullUp: state.hasNext,
             header: ClassicHeader(),
@@ -517,9 +520,9 @@ class _UserPetitionsState extends State<UserPetitions> {
               },
               itemCount: petitions.length,
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

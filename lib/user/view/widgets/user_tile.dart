@@ -27,7 +27,11 @@ class UserTile extends StatelessWidget {
     return ListTile(
       selectedTileColor: Theme.of(context).highlightColor,
       selected: selectedUsers.contains(user),
-      leading: ProfileImage(user: user),
+      leading: ProfileImage(
+        userId: user.id,
+        username: user.username,
+        imageUrl: user.image,
+      ),
       title: Text(
         user.name,
         overflow: hideOverflow ? TextOverflow.ellipsis : null,

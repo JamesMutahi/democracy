@@ -252,7 +252,11 @@ class _UserListView extends StatelessWidget {
               final user = state.users[index];
               return ListTile(
                 key: ValueKey(user.id),
-                leading: ProfileImage(user: user),
+                leading: ProfileImage(
+                  userId: user.id,
+                  username: user.username,
+                  imageUrl: user.image,
+                ),
                 title: Text(user.name),
                 subtitle: Text("@${user.username}"),
                 onTap: () {

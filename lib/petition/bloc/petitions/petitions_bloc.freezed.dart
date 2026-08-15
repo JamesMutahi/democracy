@@ -128,13 +128,13 @@ return remove(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  List<Petition>? previousPetitions,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Petition petition)?  add,TResult Function( Petition petition)?  update,TResult Function( int petitionId)?  remove,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? searchTerm,  List<Petition>? previousPetitions,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult Function( Map<String, dynamic> payload)?  received,TResult Function( Petition petition)?  add,TResult Function( List<Petition> petitions)?  update,TResult Function( int petitionId)?  remove,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.searchTerm,_that.previousPetitions,_that.isOpen,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
 return received(_that.payload);case _Add() when add != null:
 return add(_that.petition);case _Update() when update != null:
-return update(_that.petition);case _Remove() when remove != null:
+return update(_that.petitions);case _Remove() when remove != null:
 return remove(_that.petitionId);case _:
   return orElse();
 
@@ -153,13 +153,13 @@ return remove(_that.petitionId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  List<Petition>? previousPetitions,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Petition petition)  add,required TResult Function( Petition petition)  update,required TResult Function( int petitionId)  remove,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? searchTerm,  List<Petition>? previousPetitions,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)  get,required TResult Function( Map<String, dynamic> payload)  received,required TResult Function( Petition petition)  add,required TResult Function( List<Petition> petitions)  update,required TResult Function( int petitionId)  remove,}) {final _that = this;
 switch (_that) {
 case _Get():
 return get(_that.searchTerm,_that.previousPetitions,_that.isOpen,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received():
 return received(_that.payload);case _Add():
 return add(_that.petition);case _Update():
-return update(_that.petition);case _Remove():
+return update(_that.petitions);case _Remove():
 return remove(_that.petitionId);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -174,13 +174,13 @@ return remove(_that.petitionId);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  List<Petition>? previousPetitions,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Petition petition)?  add,TResult? Function( Petition petition)?  update,TResult? Function( int petitionId)?  remove,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? searchTerm,  List<Petition>? previousPetitions,  bool? isOpen,  String? sortBy,  bool? filterByRegion,  DateTime? startDate,  DateTime? endDate)?  get,TResult? Function( Map<String, dynamic> payload)?  received,TResult? Function( Petition petition)?  add,TResult? Function( List<Petition> petitions)?  update,TResult? Function( int petitionId)?  remove,}) {final _that = this;
 switch (_that) {
 case _Get() when get != null:
 return get(_that.searchTerm,_that.previousPetitions,_that.isOpen,_that.sortBy,_that.filterByRegion,_that.startDate,_that.endDate);case _Received() when received != null:
 return received(_that.payload);case _Add() when add != null:
 return add(_that.petition);case _Update() when update != null:
-return update(_that.petition);case _Remove() when remove != null:
+return update(_that.petitions);case _Remove() when remove != null:
 return remove(_that.petitionId);case _:
   return null;
 
@@ -426,10 +426,16 @@ $PetitionCopyWith<$Res> get petition {
 
 
 class _Update implements PetitionsEvent {
-  const _Update({required this.petition});
+  const _Update({required final  List<Petition> petitions}): _petitions = petitions;
   
 
- final  Petition petition;
+ final  List<Petition> _petitions;
+ List<Petition> get petitions {
+  if (_petitions is EqualUnmodifiableListView) return _petitions;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_petitions);
+}
+
 
 /// Create a copy of PetitionsEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -441,16 +447,16 @@ _$UpdateCopyWith<_Update> get copyWith => __$UpdateCopyWithImpl<_Update>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Update&&(identical(other.petition, petition) || other.petition == petition));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Update&&const DeepCollectionEquality().equals(other._petitions, _petitions));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,petition);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_petitions));
 
 @override
 String toString() {
-  return 'PetitionsEvent.update(petition: $petition)';
+  return 'PetitionsEvent.update(petitions: $petitions)';
 }
 
 
@@ -461,11 +467,11 @@ abstract mixin class _$UpdateCopyWith<$Res> implements $PetitionsEventCopyWith<$
   factory _$UpdateCopyWith(_Update value, $Res Function(_Update) _then) = __$UpdateCopyWithImpl;
 @useResult
 $Res call({
- Petition petition
+ List<Petition> petitions
 });
 
 
-$PetitionCopyWith<$Res> get petition;
+
 
 }
 /// @nodoc
@@ -478,23 +484,14 @@ class __$UpdateCopyWithImpl<$Res>
 
 /// Create a copy of PetitionsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? petition = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? petitions = null,}) {
   return _then(_Update(
-petition: null == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
-as Petition,
+petitions: null == petitions ? _self._petitions : petitions // ignore: cast_nullable_to_non_nullable
+as List<Petition>,
   ));
 }
 
-/// Create a copy of PetitionsEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$PetitionCopyWith<$Res> get petition {
-  
-  return $PetitionCopyWith<$Res>(_self.petition, (value) {
-    return _then(_self.copyWith(petition: value));
-  });
-}
+
 }
 
 /// @nodoc

@@ -102,6 +102,16 @@ class _BallotsState extends State<Ballots> {
                   switch (state) {
                     case BallotCreated():
                       ballotsBloc.add(BallotsEvent.add(ballot: state.ballot));
+                    case BallotLoaded():
+                      if (ballots.any(
+                        (element) => element.id == state.ballot.id,
+                      )) {
+                        int petitionIndex = ballots.indexWhere(
+                          (element) => element.id == state.ballot.id,
+                        );
+                        ballots[petitionIndex] = state.ballot;
+                        ballotsBloc.add(BallotsEvent.update(ballots: ballots));
+                      }
                     case BallotUpdated():
                       if (ballots.any(
                         (element) => element.id == state.ballotId,

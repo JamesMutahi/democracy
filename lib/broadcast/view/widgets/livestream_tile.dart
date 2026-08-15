@@ -191,7 +191,12 @@ class _LivestreamTileState extends State<LivestreamTile> {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    ProfileImage(user: widget.broadcast.host, radius: 12),
+                    ProfileImage(
+                      userId: widget.broadcast.host.id,
+                      username: widget.broadcast.host.username,
+                      imageUrl: widget.broadcast.host.image,
+                      radius: 12,
+                    ),
                     SizedBox(width: 5),
                     ProfileName(user: widget.broadcast.host),
                   ],

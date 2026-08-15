@@ -283,7 +283,12 @@ class _ChatDetailState extends State<_ChatDetail> {
                   : Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        ProfileImage(user: _otherUser, navigateToProfile: true),
+                        ProfileImage(
+                          userId: _otherUser.id,
+                          username: _otherUser.username,
+                          imageUrl: _otherUser.image,
+                          navigateToProfile: true,
+                        ),
                         SizedBox(width: 10),
                         Flexible(
                           child: Text(

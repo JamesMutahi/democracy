@@ -94,17 +94,10 @@ class PetitionsBloc extends Bloc<PetitionsEvent, PetitionsState> {
   }
 
   void _onUpdate(_Update event, Emitter<PetitionsState> emit) {
-    final index = state.petitions.indexWhere(
-      (element) => element.id == event.petition.id,
-    );
-    if (index == -1) return;
-
-    final updatedPetitions = List<Petition>.from(state.petitions);
-    updatedPetitions[index] = event.petition;
-
+    emit(state.copyWith(status: PetitionsStatus.loading));
     emit(
       state.copyWith(
-        petitions: updatedPetitions,
+        petitions: event.petitions,
         status: PetitionsStatus.success,
       ),
     );

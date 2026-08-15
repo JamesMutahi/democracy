@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Petition {
 
- int get id; User get author; String get title; String get description; County? get county; Constituency? get constituency; Ward? get ward; String get image; String? get video; int get views; int get supporters;@JsonKey(name: 'recent_supporters') List<User> get recentSupporters;@JsonKey(name: 'is_supported') bool get isSupported;@JsonKey(name: 'is_open') bool get isOpen;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'is_active') bool get isActive;
+ int get id; User get author; String get title; String get description; County? get county; Constituency? get constituency; Ward? get ward; String get image; String? get video; int get views; int get supporters;@JsonKey(name: 'recent_supporters') List<SimpleUser> get recentSupporters;@JsonKey(name: 'is_supported') bool get isSupported;@JsonKey(name: 'is_open') bool get isOpen;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'is_active') bool get isActive;
 /// Create a copy of Petition
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $PetitionCopyWith<$Res>  {
   factory $PetitionCopyWith(Petition value, $Res Function(Petition) _then) = _$PetitionCopyWithImpl;
 @useResult
 $Res call({
- int id, User author, String title, String description, County? county, Constituency? constituency, Ward? ward, String image, String? video, int views, int supporters,@JsonKey(name: 'recent_supporters') List<User> recentSupporters,@JsonKey(name: 'is_supported') bool isSupported,@JsonKey(name: 'is_open') bool isOpen,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'is_active') bool isActive
+ int id, User author, String title, String description, County? county, Constituency? constituency, Ward? ward, String image, String? video, int views, int supporters,@JsonKey(name: 'recent_supporters') List<SimpleUser> recentSupporters,@JsonKey(name: 'is_supported') bool isSupported,@JsonKey(name: 'is_open') bool isOpen,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'is_active') bool isActive
 });
 
 
@@ -79,7 +79,7 @@ as String,video: freezed == video ? _self.video : video // ignore: cast_nullable
 as String?,views: null == views ? _self.views : views // ignore: cast_nullable_to_non_nullable
 as int,supporters: null == supporters ? _self.supporters : supporters // ignore: cast_nullable_to_non_nullable
 as int,recentSupporters: null == recentSupporters ? _self.recentSupporters : recentSupporters // ignore: cast_nullable_to_non_nullable
-as List<User>,isSupported: null == isSupported ? _self.isSupported : isSupported // ignore: cast_nullable_to_non_nullable
+as List<SimpleUser>,isSupported: null == isSupported ? _self.isSupported : isSupported // ignore: cast_nullable_to_non_nullable
 as bool,isOpen: null == isOpen ? _self.isOpen : isOpen // ignore: cast_nullable_to_non_nullable
 as bool,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
@@ -210,7 +210,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  User author,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  String image,  String? video,  int views,  int supporters, @JsonKey(name: 'recent_supporters')  List<User> recentSupporters, @JsonKey(name: 'is_supported')  bool isSupported, @JsonKey(name: 'is_open')  bool isOpen, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'is_active')  bool isActive)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  User author,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  String image,  String? video,  int views,  int supporters, @JsonKey(name: 'recent_supporters')  List<SimpleUser> recentSupporters, @JsonKey(name: 'is_supported')  bool isSupported, @JsonKey(name: 'is_open')  bool isOpen, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'is_active')  bool isActive)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Petition() when $default != null:
 return $default(_that.id,_that.author,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.image,_that.video,_that.views,_that.supporters,_that.recentSupporters,_that.isSupported,_that.isOpen,_that.createdAt,_that.isActive);case _:
@@ -231,7 +231,7 @@ return $default(_that.id,_that.author,_that.title,_that.description,_that.county
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  User author,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  String image,  String? video,  int views,  int supporters, @JsonKey(name: 'recent_supporters')  List<User> recentSupporters, @JsonKey(name: 'is_supported')  bool isSupported, @JsonKey(name: 'is_open')  bool isOpen, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'is_active')  bool isActive)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  User author,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  String image,  String? video,  int views,  int supporters, @JsonKey(name: 'recent_supporters')  List<SimpleUser> recentSupporters, @JsonKey(name: 'is_supported')  bool isSupported, @JsonKey(name: 'is_open')  bool isOpen, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'is_active')  bool isActive)  $default,) {final _that = this;
 switch (_that) {
 case _Petition():
 return $default(_that.id,_that.author,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.image,_that.video,_that.views,_that.supporters,_that.recentSupporters,_that.isSupported,_that.isOpen,_that.createdAt,_that.isActive);}
@@ -248,7 +248,7 @@ return $default(_that.id,_that.author,_that.title,_that.description,_that.county
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  User author,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  String image,  String? video,  int views,  int supporters, @JsonKey(name: 'recent_supporters')  List<User> recentSupporters, @JsonKey(name: 'is_supported')  bool isSupported, @JsonKey(name: 'is_open')  bool isOpen, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'is_active')  bool isActive)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  User author,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  String image,  String? video,  int views,  int supporters, @JsonKey(name: 'recent_supporters')  List<SimpleUser> recentSupporters, @JsonKey(name: 'is_supported')  bool isSupported, @JsonKey(name: 'is_open')  bool isOpen, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'is_active')  bool isActive)?  $default,) {final _that = this;
 switch (_that) {
 case _Petition() when $default != null:
 return $default(_that.id,_that.author,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.image,_that.video,_that.views,_that.supporters,_that.recentSupporters,_that.isSupported,_that.isOpen,_that.createdAt,_that.isActive);case _:
@@ -263,7 +263,7 @@ return $default(_that.id,_that.author,_that.title,_that.description,_that.county
 @JsonSerializable()
 
 class _Petition implements Petition {
-  const _Petition({required this.id, required this.author, required this.title, required this.description, required this.county, required this.constituency, required this.ward, required this.image, required this.video, required this.views, required this.supporters, @JsonKey(name: 'recent_supporters') required final  List<User> recentSupporters, @JsonKey(name: 'is_supported') required this.isSupported, @JsonKey(name: 'is_open') required this.isOpen, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'is_active') required this.isActive}): _recentSupporters = recentSupporters;
+  const _Petition({required this.id, required this.author, required this.title, required this.description, required this.county, required this.constituency, required this.ward, required this.image, required this.video, required this.views, required this.supporters, @JsonKey(name: 'recent_supporters') required final  List<SimpleUser> recentSupporters, @JsonKey(name: 'is_supported') required this.isSupported, @JsonKey(name: 'is_open') required this.isOpen, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'is_active') required this.isActive}): _recentSupporters = recentSupporters;
   factory _Petition.fromJson(Map<String, dynamic> json) => _$PetitionFromJson(json);
 
 @override final  int id;
@@ -277,8 +277,8 @@ class _Petition implements Petition {
 @override final  String? video;
 @override final  int views;
 @override final  int supporters;
- final  List<User> _recentSupporters;
-@override@JsonKey(name: 'recent_supporters') List<User> get recentSupporters {
+ final  List<SimpleUser> _recentSupporters;
+@override@JsonKey(name: 'recent_supporters') List<SimpleUser> get recentSupporters {
   if (_recentSupporters is EqualUnmodifiableListView) return _recentSupporters;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_recentSupporters);
@@ -322,7 +322,7 @@ abstract mixin class _$PetitionCopyWith<$Res> implements $PetitionCopyWith<$Res>
   factory _$PetitionCopyWith(_Petition value, $Res Function(_Petition) _then) = __$PetitionCopyWithImpl;
 @override @useResult
 $Res call({
- int id, User author, String title, String description, County? county, Constituency? constituency, Ward? ward, String image, String? video, int views, int supporters,@JsonKey(name: 'recent_supporters') List<User> recentSupporters,@JsonKey(name: 'is_supported') bool isSupported,@JsonKey(name: 'is_open') bool isOpen,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'is_active') bool isActive
+ int id, User author, String title, String description, County? county, Constituency? constituency, Ward? ward, String image, String? video, int views, int supporters,@JsonKey(name: 'recent_supporters') List<SimpleUser> recentSupporters,@JsonKey(name: 'is_supported') bool isSupported,@JsonKey(name: 'is_open') bool isOpen,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'is_active') bool isActive
 });
 
 
@@ -353,7 +353,7 @@ as String,video: freezed == video ? _self.video : video // ignore: cast_nullable
 as String?,views: null == views ? _self.views : views // ignore: cast_nullable_to_non_nullable
 as int,supporters: null == supporters ? _self.supporters : supporters // ignore: cast_nullable_to_non_nullable
 as int,recentSupporters: null == recentSupporters ? _self._recentSupporters : recentSupporters // ignore: cast_nullable_to_non_nullable
-as List<User>,isSupported: null == isSupported ? _self.isSupported : isSupported // ignore: cast_nullable_to_non_nullable
+as List<SimpleUser>,isSupported: null == isSupported ? _self.isSupported : isSupported // ignore: cast_nullable_to_non_nullable
 as bool,isOpen: null == isOpen ? _self.isOpen : isOpen // ignore: cast_nullable_to_non_nullable
 as bool,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable

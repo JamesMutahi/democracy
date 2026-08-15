@@ -91,7 +91,11 @@ class _RequestsTabState extends State<RequestsTab>
                       SpeakerRequest request = requests[index];
                       return ListTile(
                         key: ValueKey(request),
-                        leading: ProfileImage(user: request.user),
+                        leading: ProfileImage(
+                          userId: request.user.id,
+                          username: request.user.username,
+                          imageUrl: request.user.image,
+                        ),
                         title: Text(
                           request.user.name,
                           overflow: TextOverflow.ellipsis,

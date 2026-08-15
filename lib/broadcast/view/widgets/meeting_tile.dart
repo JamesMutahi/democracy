@@ -153,7 +153,11 @@ class _HostInfo extends StatelessWidget {
         SizedBox(height: 5),
         Row(
           children: [
-            ProfileImage(user: broadcast.host),
+            ProfileImage(
+              userId: broadcast.host.id,
+              username: broadcast.host.username,
+              imageUrl: broadcast.host.image,
+            ),
             SizedBox(width: 5),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -235,22 +239,22 @@ class MeetingBottomSheet extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: OutlinedButton(
               onPressed: () {
-                if (broadcast.recordingUrl != null) {
-                  if (broadcast.hasEnded) {
-                    context.router.popTop();
+                if (broadcast.hasEnded) {
+                  context.router.popTop();
+                  if (broadcast.recordingUrl != null) {
                     startPip(url: broadcast.recordingUrl!);
                   } else {
-                    context.read<BroadcastDetailBloc>().add(
-                      BroadcastDetailEvent.retrieve(broadcast: broadcast),
+                    final snackBar = getSnackBar(
+                      context: context,
+                      message: "Recording not found",
+                      status: SnackBarStatus.failure,
                     );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   }
                 } else {
-                  final snackBar = getSnackBar(
-                    context: context,
-                    message: "Recording not found",
-                    status: SnackBarStatus.failure,
+                  context.read<BroadcastDetailBloc>().add(
+                    BroadcastDetailEvent.retrieve(broadcast: broadcast),
                   );
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 }
               },
               child: Text(broadcast.hasEnded ? 'Play recording' : 'Join'),
@@ -282,7 +286,12 @@ class ListenersRow extends StatelessWidget {
                 child: CircleAvatar(
                   radius: 17,
                   backgroundColor: Theme.of(context).cardColor,
-                  child: ProfileImage(user: user, radius: 15),
+                  child: ProfileImage(
+                    userId: user.id,
+                    username: user.username,
+                    imageUrl: user.image,
+                    radius: 15,
+                  ),
                 ),
               );
             }),

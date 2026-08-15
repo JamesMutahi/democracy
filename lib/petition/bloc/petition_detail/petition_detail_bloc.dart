@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/repository/api/api_repository.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
+import 'package:democracy/app/models/simple_user.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/geo/models/constituency.dart';
 import 'package:democracy/geo/models/county.dart';
@@ -35,7 +36,7 @@ class PetitionDetailBloc
           case 'delete':
             add(_Deleted(payload: message['payload']));
           case 'support':
-            add(_Received(payload: message['payload']));
+            add(_Supported(payload: message['payload']));
           case 'add_view':
             add(_ViewAdded(payload: message['payload']));
           case 'add_click':
@@ -55,7 +56,7 @@ class PetitionDetailBloc
     on<_AddClick>((event, emit) => _onAddClick(event, emit));
     on<_ClickAdded>((event, emit) => _onClickAdded(event, emit));
     on<_ChangeStatus>((event, emit) => _onChangeStatus(event, emit));
-    on<_Received>((event, emit) => _onReceived(event, emit));
+    on<_Supported>((event, emit) => _onSupported(event, emit));
     on<_Unsubscribe>((event, emit) => _onUnsubscribe(event, emit));
   }
 
@@ -82,8 +83,33 @@ class PetitionDetailBloc
   void _onUpdated(_Updated event, Emitter<PetitionDetailState> emit) {
     emit(PetitionDetailLoading());
     if (event.payload['response_status'] == 200) {
-      final Petition petition = Petition.fromJson(event.payload['data']);
-      emit(PetitionUpdated(petition: petition));
+      emit(
+        PetitionUpdated(
+          petitionId: event.payload['data']['id'],
+          title: event.payload['data']['title'],
+          description: event.payload['data']['description'],
+          county: event.payload['data']['county'] == null
+              ? null
+              : County.fromJson(event.payload['data']['county']),
+          constituency: event.payload['data']['constituency'] == null
+              ? null
+              : Constituency.fromJson(event.payload['data']['constituency']),
+          ward: event.payload['data']['ward'] == null
+              ? null
+              : Ward.fromJson(event.payload['data']['ward']),
+          supporters: event.payload['data']['supporters'],
+          recentSupporters: List.from(
+            event.payload['data']['recent_supporters'].map(
+              (e) => SimpleUser.fromJson(e),
+            ),
+          ),
+          image: event.payload['data']['image'],
+          video: event.payload['data']['video'],
+          views: event.payload['data']['views'],
+          isOpen: event.payload['data']['is_open'],
+          isActive: event.payload['data']['is_active'],
+        ),
+      );
     } else {
       emit(PetitionDetailFailure(error: event.payload['errors'].toString()));
     }
@@ -189,7 +215,7 @@ class PetitionDetailBloc
 
   void _onViewAdded(_ViewAdded event, Emitter<PetitionDetailState> emit) {
     if (event.payload['response_status'] == 200) {
-      emit(PetitionViewed(postId: event.payload['data']['pk']));
+      emit(PetitionViewed(petitionId: event.payload['data']['pk']));
     } else {
       emit(PetitionDetailFailure(error: event.payload['errors'].toString()));
     }
@@ -197,7 +223,7 @@ class PetitionDetailBloc
 
   void _onClickAdded(_ClickAdded event, Emitter<PetitionDetailState> emit) {
     if (event.payload['response_status'] == 200) {
-      emit(PetitionClicked(postId: event.payload['data']['pk']));
+      emit(PetitionClicked(petitionId: event.payload['data']['pk']));
     } else {
       emit(PetitionDetailFailure(error: event.payload['errors'].toString()));
     }
@@ -221,10 +247,16 @@ class PetitionDetailBloc
     webSocketService.send(message);
   }
 
-  void _onReceived(_Received event, Emitter<PetitionDetailState> emit) {
+  void _onSupported(_Supported event, Emitter<PetitionDetailState> emit) {
     emit(PetitionDetailLoading());
     if (event.payload['response_status'] == 200) {
-      //
+      emit(
+        PetitionSupported(
+          petitionId: event.payload['data']['pk'],
+          isSupported: event.payload['data']['is_supported'],
+          supporters: event.payload['data']['supporters'],
+        ),
+      );
     } else {
       emit(PetitionDetailFailure(error: event.payload['errors'].toString()));
     }

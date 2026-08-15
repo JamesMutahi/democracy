@@ -87,7 +87,12 @@ class ParticipantTile extends StatelessWidget {
               backgroundColor: isSpeaking
                   ? Colors.blue.withAlpha(75)
                   : Colors.transparent,
-              child: ProfileImage(user: user, radius: 40),
+              child: ProfileImage(
+                userId: user.id,
+                username: user.username,
+                imageUrl: user.image,
+                radius: 40,
+              ),
             ),
             SizedBox(height: 5),
             ProfileName(user: user),
