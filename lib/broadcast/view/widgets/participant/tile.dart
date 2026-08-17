@@ -1,6 +1,7 @@
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/broadcast/bloc/speaker_detail/speaker_detail_bloc.dart';
+import 'package:democracy/broadcast/bloc/speaking_indicator/speaking_indicator_bloc.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:democracy/broadcast/view/widgets/participant/profile.dart';
 import 'package:democracy/user/bloc/profile/profile_bloc.dart';
@@ -23,7 +24,6 @@ class ParticipantTile extends StatelessWidget {
     required this.isHost,
     required this.isCoHost,
     required this.isSpeaker,
-    required this.isSpeaking,
   });
 
   final User me;
@@ -36,7 +36,6 @@ class ParticipantTile extends StatelessWidget {
   final bool isHost;
   final bool isCoHost;
   final bool isSpeaker;
-  final bool isSpeaking;
 
   @override
   Widget build(BuildContext context) {
@@ -82,17 +81,31 @@ class ParticipantTile extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CircleAvatar(
-              radius: 42,
-              backgroundColor: isSpeaking
-                  ? Colors.blue.withAlpha(75)
-                  : Colors.transparent,
-              child: ProfileImage(
-                userId: user.id,
-                username: user.username,
-                imageUrl: user.image,
-                radius: 40,
-              ),
+            BlocBuilder<SpeakingIndicatorBloc, SpeakingState>(
+              buildWhen: (previous, current) {
+                return previous.isSpeaking(user.id) !=
+                    current.isSpeaking(user.id);
+              },
+              builder: (context, state) {
+                final isSpeaking = state.isSpeaking(user.id);
+
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: isSpeaking ? Colors.green : Colors.transparent,
+                      width: 3,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ProfileImage(
+                    userId: user.id,
+                    username: user.username,
+                    imageUrl: user.image,
+                    radius: 40,
+                  ),
+                );
+              },
             ),
             SizedBox(height: 5),
             ProfileName(user: user),
