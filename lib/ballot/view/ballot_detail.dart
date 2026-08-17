@@ -61,10 +61,45 @@ class _BallotDetail extends StatefulWidget {
 
 class _BallotDetailState extends State<_BallotDetail> {
   bool changingVote = false;
-  late final TextEditingController _textEditingController =
-      TextEditingController(
-        text: widget.ballot.reason == null ? '' : widget.ballot.reason!,
+  late final TextEditingController _textEditingController;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize controller
+    _textEditingController = TextEditingController(
+      text: widget.ballot.reason ?? '',
+    );
+
+    // Trigger initial retrieve if websocket is already connected
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final wsState = context.read<WebsocketBloc>().state;
+      if (wsState.status == WebsocketStatus.connected) {
+        context.read<BallotDetailBloc>().add(
+          BallotDetailEvent.retrieve(ballot: widget.ballot),
+        );
+      }
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant _BallotDetail oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Sync controller text if the ballot reason changes externally
+    if (oldWidget.ballot.reason != widget.ballot.reason) {
+      _textEditingController.text = widget.ballot.reason ?? '';
+      // Optional: Move cursor to the end of the text
+      _textEditingController.selection = TextSelection.fromPosition(
+        TextPosition(offset: _textEditingController.text.length),
       );
+    }
+  }
+
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -225,13 +260,13 @@ class _BallotDetailState extends State<_BallotDetail> {
                                     widget.ballot.hasEnded ||
                                     (userHasVoted && !changingVote))
                                 ? BallotPercentIndicator(
-                                    key: ValueKey(option.id),
+                                    key: ValueKey('percent_${option.id}'),
                                     ballot: widget.ballot,
                                     option: option,
                                     animateToInitialPercent: true,
                                   )
                                 : OptionTile(
-                                    key: ValueKey(option.id),
+                                    key: ValueKey('option_${option.id}'),
                                     option: option,
                                     onTap: () {
                                       if (widget.ballot.isActive) {
@@ -344,7 +379,12 @@ class ReasonWidget extends StatefulWidget {
 }
 
 class _ReasonWidgetState extends State<ReasonWidget> {
-  bool canSubmit = false;
+  bool get _canSubmit {
+    final text = widget.controller.text;
+    final reason = widget.ballot.reason;
+    // Disable if empty and no reason exists, or if text matches existing reason
+    return !((text.isEmpty && reason == null) || text == reason);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -352,9 +392,8 @@ class _ReasonWidgetState extends State<ReasonWidget> {
       listener: (context, state) {
         if (state is BallotReasonSubmitted) {
           if (widget.ballot.id == state.ballotId) {
-            setState(() {
-              canSubmit = false;
-            });
+            // Trigger a rebuild to reevaluate _canSubmit
+            setState(() {});
           }
         }
       },
@@ -374,15 +413,8 @@ class _ReasonWidgetState extends State<ReasonWidget> {
             child: TextFormField(
               controller: widget.controller,
               onChanged: (value) {
-                setState(() {
-                  if (widget.controller.text.isEmpty &&
-                          widget.ballot.reason == null ||
-                      widget.controller.text == widget.ballot.reason) {
-                    canSubmit = false;
-                  } else {
-                    canSubmit = true;
-                  }
-                });
+                // Just trigger a rebuild to reevaluate _canSubmit
+                setState(() {});
               },
               readOnly:
                   !widget.ballot.isActive ||
@@ -427,7 +459,7 @@ class _ReasonWidgetState extends State<ReasonWidget> {
             child: Align(
               alignment: Alignment.topRight,
               child: OutlinedButton(
-                onPressed: canSubmit
+                onPressed: _canSubmit
                     ? () {
                         showDialog(
                           context: context,
