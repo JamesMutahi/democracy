@@ -108,7 +108,11 @@ class ParticipantTile extends StatelessWidget {
               },
             ),
             SizedBox(height: 5),
-            ProfileName(user: user),
+            Text(user.name, style: TextStyle(fontWeight: FontWeight.w500)),
+            Text(
+              '@${user.username}',
+              style: TextStyle(color: Theme.of(context).hintColor),
+            ),
             Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,

@@ -39,7 +39,7 @@ class _TextWidgetState extends State<TextWidget> {
         children: [
           Row(
             children: [
-              Text(widget.question.text),
+              Flexible(child: Text(widget.question.text)),
               SizedBox(width: 5),
               (widget.question.isRequired)
                   ? Text(

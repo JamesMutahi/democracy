@@ -120,6 +120,11 @@ class _CommunityNoteDetailState extends State<_CommunityNoteDetail> {
                       RepliesEvent.add(postId: widget.post.id, reply: post),
                     );
                   }
+                  if (widget.post.id == post.repostOf?.id) {
+                    context.read<PostBloc>().add(
+                      PostEvent.postCreated(post: post),
+                    );
+                  }
                 }
               },
             ),
@@ -127,10 +132,9 @@ class _CommunityNoteDetailState extends State<_CommunityNoteDetail> {
               listener: (context, state) {
                 switch (state) {
                   case PostUpdated():
-                    // update post
-                    if (widget.post.id == state.postId) {
-                      var updatedPost = widget.post;
-                      updatedPost = updatedPost.copyWith(
+                    context.read<PostBloc>().add(
+                      PostEvent.detailUpdated(
+                        postId: state.postId,
                         likes: state.likes,
                         bookmarks: state.bookmarks,
                         views: state.views,
@@ -141,34 +145,53 @@ class _CommunityNoteDetailState extends State<_CommunityNoteDetail> {
                         downvotes: state.downvotes,
                         isDeleted: state.isDeleted,
                         isActive: state.isActive,
-                      );
+                      ),
+                    );
+
+                  case PostLiked(:final postId):
+                    if (widget.post.id == postId) {
                       context.read<PostBloc>().add(
-                        PostEvent.updated(post: updatedPost),
+                        PostEvent.likeUpdated(
+                          isLiked: state.isLiked,
+                          likes: state.likes,
+                        ),
                       );
                     }
-                    //   update community note of
-                    if (widget.post.communityNoteOf?.id == state.postId) {
-                      var updatedPost = widget.post;
-                      Post communityNoteOf = updatedPost.communityNoteOf!
-                          .copyWith(
-                            likes: state.likes,
-                            bookmarks: state.bookmarks,
-                            views: state.views,
-                            replies: state.replies,
-                            reposts: state.reposts,
-                            communityNote: state.communityNote,
-                            upvotes: state.upvotes,
-                            downvotes: state.downvotes,
-                            isDeleted: state.isDeleted,
-                            isActive: state.isActive,
-                          );
-                      updatedPost = updatedPost.copyWith(
-                        communityNoteOf: communityNoteOf,
-                      );
+
+                  case PostBookmarked(:final postId):
+                    if (widget.post.id == postId) {
                       context.read<PostBloc>().add(
-                        PostEvent.updated(post: updatedPost),
+                        PostEvent.bookmarkUpdated(
+                          isBookmarked: state.isBookmarked,
+                          bookmarks: state.bookmarks,
+                        ),
                       );
                     }
+
+                  case PostUpvoted(:final postId):
+                    if (widget.post.id == postId) {
+                      context.read<PostBloc>().add(
+                        PostEvent.upvoteUpdated(
+                          isUpvoted: state.isUpvoted,
+                          upvotes: state.upvotes,
+                          isDownvoted: state.isDownvoted,
+                          downvotes: state.downvotes,
+                        ),
+                      );
+                    }
+
+                  case PostDownvoted(:final postId):
+                    if (widget.post.id == postId) {
+                      context.read<PostBloc>().add(
+                        PostEvent.downvoteUpdated(
+                          isUpvoted: state.isUpvoted,
+                          upvotes: state.upvotes,
+                          isDownvoted: state.isDownvoted,
+                          downvotes: state.downvotes,
+                        ),
+                      );
+                    }
+
                   case PostDeleted(:final postId):
                     if (widget.post.id == postId) {
                       setState(() {
@@ -183,22 +206,14 @@ class _CommunityNoteDetailState extends State<_CommunityNoteDetail> {
                 if (state is UserUpdated) {
                   // post
                   if (widget.post.author.id == state.user.id) {
-                    var updatedPost = widget.post;
-                    updatedPost = updatedPost.copyWith(author: state.user);
                     context.read<PostBloc>().add(
-                      PostEvent.updated(post: updatedPost),
+                      PostEvent.authorUpdated(user: state.user),
                     );
                   }
-                  // communityNoteOf
-                  if (widget.post.communityNoteOf?.author.id == state.user.id) {
-                    var updatedPost = widget.post;
-                    Post communityNoteOf = updatedPost.communityNoteOf!
-                        .copyWith(author: state.user);
-                    updatedPost = updatedPost.copyWith(
-                      communityNoteOf: communityNoteOf,
-                    );
+                  // repost
+                  if (widget.post.repostOf?.author.id == state.user.id) {
                     context.read<PostBloc>().add(
-                      PostEvent.updated(post: updatedPost),
+                      PostEvent.authorUpdated(user: state.user),
                     );
                   }
                 }

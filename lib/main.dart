@@ -73,7 +73,7 @@ void main() {
 
   runZonedGuarded(
     () async {
-      WidgetsFlutterBinding.ensureInitialized();
+      SentryWidgetsFlutterBinding.ensureInitialized();
 
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,

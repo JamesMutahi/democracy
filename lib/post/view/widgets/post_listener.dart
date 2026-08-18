@@ -1,4 +1,6 @@
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
+import 'package:democracy/broadcast/bloc/broadcast_detail/broadcast_detail_bloc.dart';
+import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
 import 'package:democracy/post/bloc/post_create/post_create_bloc.dart';
 import 'package:democracy/post/bloc/post_detail/post_detail_bloc.dart';
 import 'package:democracy/post/models/post.dart';
@@ -350,7 +352,6 @@ class PostListener extends StatelessWidget {
               if (ballotPosts.isNotEmpty) {
                 for (Post post in ballotPosts) {
                   final ballot = post.ballot?.copyWith(
-                    id: state.ballotId,
                     title: state.title,
                     description: state.description,
                     county: state.county,
@@ -376,7 +377,6 @@ class PostListener extends StatelessWidget {
               if (ballotReposts.isNotEmpty) {
                 for (Post post in ballotReposts) {
                   final ballot = post.repostOf!.ballot?.copyWith(
-                    id: state.ballotId,
                     title: state.title,
                     description: state.description,
                     county: state.county,
@@ -389,6 +389,41 @@ class PostListener extends StatelessWidget {
                     totalVotes: state.totalVotes,
                     options: state.options,
                     isActive: state.isActive,
+                  );
+                  Post repostOf = post.repostOf!.copyWith(ballot: ballot);
+                  posts[posts.indexWhere((p) => p.id == post.id)] = post
+                      .copyWith(repostOf: repostOf);
+                }
+                updatePosts = true;
+              }
+              if (updatePosts) {
+                onPostsUpdated(posts);
+              }
+            }
+            if (state is BallotVoted) {
+              bool updatePosts = false;
+              // Update posts
+              List<Post> ballotPosts = posts
+                  .where((post) => post.ballot?.id == state.ballotId)
+                  .toList();
+              if (ballotPosts.isNotEmpty) {
+                for (Post post in ballotPosts) {
+                  final ballot = post.ballot?.copyWith(
+                    votedOption: state.optionId,
+                  );
+                  posts[posts.indexWhere((p) => p.id == post.id)] = post
+                      .copyWith(ballot: ballot);
+                }
+                updatePosts = true;
+              }
+              //   Update reposts
+              List<Post> ballotReposts = posts
+                  .where((post) => post.repostOf?.ballot?.id == state.ballotId)
+                  .toList();
+              if (ballotReposts.isNotEmpty) {
+                for (Post post in ballotReposts) {
+                  final ballot = post.repostOf!.ballot?.copyWith(
+                    votedOption: state.optionId,
                   );
                   Post repostOf = post.repostOf!.copyWith(ballot: ballot);
                   posts[posts.indexWhere((p) => p.id == post.id)] = post
@@ -424,6 +459,108 @@ class PostListener extends StatelessWidget {
               if (surveyPosts.isNotEmpty) {
                 for (Post post in surveyReposts) {
                   Post repostOf = post.repostOf!.copyWith(survey: state.survey);
+                  posts[posts.indexWhere((p) => p.id == post.id)] = post
+                      .copyWith(repostOf: repostOf);
+                }
+                updatePosts = true;
+              }
+              if (updatePosts) {
+                onPostsUpdated(posts);
+              }
+            }
+          },
+        ),
+        BlocListener<BroadcastDetailBloc, BroadcastDetailState>(
+          listener: (context, state) {
+            if (state is BroadcastUpdated) {
+              bool updatePosts = false;
+              // Update posts
+              List<Post> broadcastPosts = posts
+                  .where((post) => post.broadcast?.id == state.broadcast.id)
+                  .toList();
+              if (broadcastPosts.isNotEmpty) {
+                for (Post post in broadcastPosts) {
+                  posts[posts.indexWhere((p) => p.id == post.id)] = post
+                      .copyWith(broadcast: state.broadcast);
+                }
+                updatePosts = true;
+              }
+              //   Update reposts
+              List<Post> broadcastReposts = posts
+                  .where(
+                    (post) =>
+                        post.repostOf?.broadcast?.id == state.broadcast.id,
+                  )
+                  .toList();
+              if (broadcastPosts.isNotEmpty) {
+                for (Post post in broadcastReposts) {
+                  Post repostOf = post.repostOf!.copyWith(
+                    broadcast: state.broadcast,
+                  );
+                  posts[posts.indexWhere((p) => p.id == post.id)] = post
+                      .copyWith(repostOf: repostOf);
+                }
+                updatePosts = true;
+              }
+              if (updatePosts) {
+                onPostsUpdated(posts);
+              }
+            }
+          },
+        ),
+        BlocListener<PetitionDetailBloc, PetitionDetailState>(
+          listener: (context, state) {
+            if (state is PetitionUpdated) {
+              bool updatePosts = false;
+              // Update posts
+              List<Post> petitionPosts = posts
+                  .where((post) => post.petition?.id == state.petitionId)
+                  .toList();
+              if (petitionPosts.isNotEmpty) {
+                final petition = petitionPosts.first.petition?.copyWith(
+                  title: state.title,
+                  description: state.description,
+                  county: state.county,
+                  constituency: state.constituency,
+                  ward: state.ward,
+                  supporters: state.supporters,
+                  recentSupporters: state.recentSupporters,
+                  image: state.image,
+                  video: state.video,
+                  views: state.views,
+                  isOpen: state.isOpen,
+                  isActive: state.isActive,
+                );
+                for (Post post in petitionPosts) {
+                  posts[posts.indexWhere((p) => p.id == post.id)] = post
+                      .copyWith(petition: petition);
+                }
+                updatePosts = true;
+              }
+              //   Update reposts
+              List<Post> petitionReposts = posts
+                  .where(
+                    (post) => post.repostOf?.petition?.id == state.petitionId,
+                  )
+                  .toList();
+              if (petitionPosts.isNotEmpty) {
+                final petition = petitionPosts.first.repostOf!.petition
+                    ?.copyWith(
+                      title: state.title,
+                      description: state.description,
+                      county: state.county,
+                      constituency: state.constituency,
+                      ward: state.ward,
+                      supporters: state.supporters,
+                      recentSupporters: state.recentSupporters,
+                      image: state.image,
+                      video: state.video,
+                      views: state.views,
+                      isOpen: state.isOpen,
+                      isActive: state.isActive,
+                    );
+                for (Post post in petitionReposts) {
+                  Post repostOf = post.repostOf!.copyWith(petition: petition);
                   posts[posts.indexWhere((p) => p.id == post.id)] = post
                       .copyWith(repostOf: repostOf);
                 }

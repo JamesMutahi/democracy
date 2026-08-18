@@ -55,13 +55,14 @@ extension PetitionEventPatterns on PetitionEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Load value)?  load,TResult Function( _Loaded value)?  loaded,TResult Function( _Updated value)?  updated,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Load value)?  load,TResult Function( _Loaded value)?  loaded,TResult Function( _DetailUpdated value)?  detailUpdated,TResult Function( _SupportUpdated value)?  supportUpdated,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Load() when load != null:
 return load(_that);case _Loaded() when loaded != null:
-return loaded(_that);case _Updated() when updated != null:
-return updated(_that);case _:
+return loaded(_that);case _DetailUpdated() when detailUpdated != null:
+return detailUpdated(_that);case _SupportUpdated() when supportUpdated != null:
+return supportUpdated(_that);case _:
   return orElse();
 
 }
@@ -79,13 +80,14 @@ return updated(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Load value)  load,required TResult Function( _Loaded value)  loaded,required TResult Function( _Updated value)  updated,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Load value)  load,required TResult Function( _Loaded value)  loaded,required TResult Function( _DetailUpdated value)  detailUpdated,required TResult Function( _SupportUpdated value)  supportUpdated,}){
 final _that = this;
 switch (_that) {
 case _Load():
 return load(_that);case _Loaded():
-return loaded(_that);case _Updated():
-return updated(_that);case _:
+return loaded(_that);case _DetailUpdated():
+return detailUpdated(_that);case _SupportUpdated():
+return supportUpdated(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -102,13 +104,14 @@ return updated(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Load value)?  load,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Updated value)?  updated,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Load value)?  load,TResult? Function( _Loaded value)?  loaded,TResult? Function( _DetailUpdated value)?  detailUpdated,TResult? Function( _SupportUpdated value)?  supportUpdated,}){
 final _that = this;
 switch (_that) {
 case _Load() when load != null:
 return load(_that);case _Loaded() when loaded != null:
-return loaded(_that);case _Updated() when updated != null:
-return updated(_that);case _:
+return loaded(_that);case _DetailUpdated() when detailUpdated != null:
+return detailUpdated(_that);case _SupportUpdated() when supportUpdated != null:
+return supportUpdated(_that);case _:
   return null;
 
 }
@@ -125,12 +128,13 @@ return updated(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int petitionId)?  load,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Petition petition)?  updated,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int petitionId)?  load,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  int supporters,  List<SimpleUser> recentSupporters,  String image,  String? video,  int views,  bool isOpen,  bool isActive)?  detailUpdated,TResult Function( bool isSupported,  int supporters)?  supportUpdated,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Load() when load != null:
 return load(_that.petitionId);case _Loaded() when loaded != null:
-return loaded(_that.payload);case _Updated() when updated != null:
-return updated(_that.petition);case _:
+return loaded(_that.payload);case _DetailUpdated() when detailUpdated != null:
+return detailUpdated(_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.supporters,_that.recentSupporters,_that.image,_that.video,_that.views,_that.isOpen,_that.isActive);case _SupportUpdated() when supportUpdated != null:
+return supportUpdated(_that.isSupported,_that.supporters);case _:
   return orElse();
 
 }
@@ -148,12 +152,13 @@ return updated(_that.petition);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int petitionId)  load,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Petition petition)  updated,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int petitionId)  load,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  int supporters,  List<SimpleUser> recentSupporters,  String image,  String? video,  int views,  bool isOpen,  bool isActive)  detailUpdated,required TResult Function( bool isSupported,  int supporters)  supportUpdated,}) {final _that = this;
 switch (_that) {
 case _Load():
 return load(_that.petitionId);case _Loaded():
-return loaded(_that.payload);case _Updated():
-return updated(_that.petition);case _:
+return loaded(_that.payload);case _DetailUpdated():
+return detailUpdated(_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.supporters,_that.recentSupporters,_that.image,_that.video,_that.views,_that.isOpen,_that.isActive);case _SupportUpdated():
+return supportUpdated(_that.isSupported,_that.supporters);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -170,12 +175,13 @@ return updated(_that.petition);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int petitionId)?  load,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Petition petition)?  updated,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int petitionId)?  load,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  int supporters,  List<SimpleUser> recentSupporters,  String image,  String? video,  int views,  bool isOpen,  bool isActive)?  detailUpdated,TResult? Function( bool isSupported,  int supporters)?  supportUpdated,}) {final _that = this;
 switch (_that) {
 case _Load() when load != null:
 return load(_that.petitionId);case _Loaded() when loaded != null:
-return loaded(_that.payload);case _Updated() when updated != null:
-return updated(_that.petition);case _:
+return loaded(_that.payload);case _DetailUpdated() when detailUpdated != null:
+return detailUpdated(_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.supporters,_that.recentSupporters,_that.image,_that.video,_that.views,_that.isOpen,_that.isActive);case _SupportUpdated() when supportUpdated != null:
+return supportUpdated(_that.isSupported,_that.supporters);case _:
   return null;
 
 }
@@ -324,63 +330,91 @@ as Map<String, dynamic>,
 /// @nodoc
 
 
-class _Updated implements PetitionEvent {
-  const _Updated({required this.petition});
+class _DetailUpdated implements PetitionEvent {
+  const _DetailUpdated({required this.title, required this.description, required this.county, required this.constituency, required this.ward, required this.supporters, required final  List<SimpleUser> recentSupporters, required this.image, required this.video, required this.views, required this.isOpen, required this.isActive}): _recentSupporters = recentSupporters;
   
 
- final  Petition petition;
+ final  String title;
+ final  String description;
+ final  County? county;
+ final  Constituency? constituency;
+ final  Ward? ward;
+ final  int supporters;
+ final  List<SimpleUser> _recentSupporters;
+ List<SimpleUser> get recentSupporters {
+  if (_recentSupporters is EqualUnmodifiableListView) return _recentSupporters;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_recentSupporters);
+}
+
+ final  String image;
+ final  String? video;
+ final  int views;
+ final  bool isOpen;
+ final  bool isActive;
 
 /// Create a copy of PetitionEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$UpdatedCopyWith<_Updated> get copyWith => __$UpdatedCopyWithImpl<_Updated>(this, _$identity);
+_$DetailUpdatedCopyWith<_DetailUpdated> get copyWith => __$DetailUpdatedCopyWithImpl<_DetailUpdated>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Updated&&(identical(other.petition, petition) || other.petition == petition));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DetailUpdated&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.county, county) || other.county == county)&&(identical(other.constituency, constituency) || other.constituency == constituency)&&(identical(other.ward, ward) || other.ward == ward)&&(identical(other.supporters, supporters) || other.supporters == supporters)&&const DeepCollectionEquality().equals(other._recentSupporters, _recentSupporters)&&(identical(other.image, image) || other.image == image)&&(identical(other.video, video) || other.video == video)&&(identical(other.views, views) || other.views == views)&&(identical(other.isOpen, isOpen) || other.isOpen == isOpen)&&(identical(other.isActive, isActive) || other.isActive == isActive));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,petition);
+int get hashCode => Object.hash(runtimeType,title,description,county,constituency,ward,supporters,const DeepCollectionEquality().hash(_recentSupporters),image,video,views,isOpen,isActive);
 
 @override
 String toString() {
-  return 'PetitionEvent.updated(petition: $petition)';
+  return 'PetitionEvent.detailUpdated(title: $title, description: $description, county: $county, constituency: $constituency, ward: $ward, supporters: $supporters, recentSupporters: $recentSupporters, image: $image, video: $video, views: $views, isOpen: $isOpen, isActive: $isActive)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$UpdatedCopyWith<$Res> implements $PetitionEventCopyWith<$Res> {
-  factory _$UpdatedCopyWith(_Updated value, $Res Function(_Updated) _then) = __$UpdatedCopyWithImpl;
+abstract mixin class _$DetailUpdatedCopyWith<$Res> implements $PetitionEventCopyWith<$Res> {
+  factory _$DetailUpdatedCopyWith(_DetailUpdated value, $Res Function(_DetailUpdated) _then) = __$DetailUpdatedCopyWithImpl;
 @useResult
 $Res call({
- Petition petition
+ String title, String description, County? county, Constituency? constituency, Ward? ward, int supporters, List<SimpleUser> recentSupporters, String image, String? video, int views, bool isOpen, bool isActive
 });
 
 
-$PetitionCopyWith<$Res> get petition;
+$CountyCopyWith<$Res>? get county;$ConstituencyCopyWith<$Res>? get constituency;$WardCopyWith<$Res>? get ward;
 
 }
 /// @nodoc
-class __$UpdatedCopyWithImpl<$Res>
-    implements _$UpdatedCopyWith<$Res> {
-  __$UpdatedCopyWithImpl(this._self, this._then);
+class __$DetailUpdatedCopyWithImpl<$Res>
+    implements _$DetailUpdatedCopyWith<$Res> {
+  __$DetailUpdatedCopyWithImpl(this._self, this._then);
 
-  final _Updated _self;
-  final $Res Function(_Updated) _then;
+  final _DetailUpdated _self;
+  final $Res Function(_DetailUpdated) _then;
 
 /// Create a copy of PetitionEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? petition = null,}) {
-  return _then(_Updated(
-petition: null == petition ? _self.petition : petition // ignore: cast_nullable_to_non_nullable
-as Petition,
+@pragma('vm:prefer-inline') $Res call({Object? title = null,Object? description = null,Object? county = freezed,Object? constituency = freezed,Object? ward = freezed,Object? supporters = null,Object? recentSupporters = null,Object? image = null,Object? video = freezed,Object? views = null,Object? isOpen = null,Object? isActive = null,}) {
+  return _then(_DetailUpdated(
+title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String,county: freezed == county ? _self.county : county // ignore: cast_nullable_to_non_nullable
+as County?,constituency: freezed == constituency ? _self.constituency : constituency // ignore: cast_nullable_to_non_nullable
+as Constituency?,ward: freezed == ward ? _self.ward : ward // ignore: cast_nullable_to_non_nullable
+as Ward?,supporters: null == supporters ? _self.supporters : supporters // ignore: cast_nullable_to_non_nullable
+as int,recentSupporters: null == recentSupporters ? _self._recentSupporters : recentSupporters // ignore: cast_nullable_to_non_nullable
+as List<SimpleUser>,image: null == image ? _self.image : image // ignore: cast_nullable_to_non_nullable
+as String,video: freezed == video ? _self.video : video // ignore: cast_nullable_to_non_nullable
+as String?,views: null == views ? _self.views : views // ignore: cast_nullable_to_non_nullable
+as int,isOpen: null == isOpen ? _self.isOpen : isOpen // ignore: cast_nullable_to_non_nullable
+as bool,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -388,12 +422,107 @@ as Petition,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$PetitionCopyWith<$Res> get petition {
-  
-  return $PetitionCopyWith<$Res>(_self.petition, (value) {
-    return _then(_self.copyWith(petition: value));
+$CountyCopyWith<$Res>? get county {
+    if (_self.county == null) {
+    return null;
+  }
+
+  return $CountyCopyWith<$Res>(_self.county!, (value) {
+    return _then(_self.copyWith(county: value));
+  });
+}/// Create a copy of PetitionEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ConstituencyCopyWith<$Res>? get constituency {
+    if (_self.constituency == null) {
+    return null;
+  }
+
+  return $ConstituencyCopyWith<$Res>(_self.constituency!, (value) {
+    return _then(_self.copyWith(constituency: value));
+  });
+}/// Create a copy of PetitionEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$WardCopyWith<$Res>? get ward {
+    if (_self.ward == null) {
+    return null;
+  }
+
+  return $WardCopyWith<$Res>(_self.ward!, (value) {
+    return _then(_self.copyWith(ward: value));
   });
 }
+}
+
+/// @nodoc
+
+
+class _SupportUpdated implements PetitionEvent {
+  const _SupportUpdated({required this.isSupported, required this.supporters});
+  
+
+ final  bool isSupported;
+ final  int supporters;
+
+/// Create a copy of PetitionEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SupportUpdatedCopyWith<_SupportUpdated> get copyWith => __$SupportUpdatedCopyWithImpl<_SupportUpdated>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SupportUpdated&&(identical(other.isSupported, isSupported) || other.isSupported == isSupported)&&(identical(other.supporters, supporters) || other.supporters == supporters));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,isSupported,supporters);
+
+@override
+String toString() {
+  return 'PetitionEvent.supportUpdated(isSupported: $isSupported, supporters: $supporters)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SupportUpdatedCopyWith<$Res> implements $PetitionEventCopyWith<$Res> {
+  factory _$SupportUpdatedCopyWith(_SupportUpdated value, $Res Function(_SupportUpdated) _then) = __$SupportUpdatedCopyWithImpl;
+@useResult
+$Res call({
+ bool isSupported, int supporters
+});
+
+
+
+
+}
+/// @nodoc
+class __$SupportUpdatedCopyWithImpl<$Res>
+    implements _$SupportUpdatedCopyWith<$Res> {
+  __$SupportUpdatedCopyWithImpl(this._self, this._then);
+
+  final _SupportUpdated _self;
+  final $Res Function(_SupportUpdated) _then;
+
+/// Create a copy of PetitionEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? isSupported = null,Object? supporters = null,}) {
+  return _then(_SupportUpdated(
+isSupported: null == isSupported ? _self.isSupported : isSupported // ignore: cast_nullable_to_non_nullable
+as bool,supporters: null == supporters ? _self.supporters : supporters // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
 }
 
 // dart format on

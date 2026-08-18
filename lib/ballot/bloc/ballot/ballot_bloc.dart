@@ -3,6 +3,10 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/ballot/models/ballot.dart';
+import 'package:democracy/ballot/models/option.dart';
+import 'package:democracy/geo/models/constituency.dart';
+import 'package:democracy/geo/models/county.dart';
+import 'package:democracy/geo/models/ward.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -24,11 +28,19 @@ class BallotBloc extends Bloc<BallotEvent, BallotState> {
     });
     on<_Load>((event, emit) => _onLoad(event, emit));
     on<_Loaded>((event, emit) => _onLoaded(event, emit));
-    on<_Updated>((event, emit) => _onUpdated(event, emit));
+    on<_VotedOptionUpdated>(
+      (event, emit) => _onVotedOptionUpdated(event, emit),
+    );
+    on<_BallotDetailUpdated>(
+      (event, emit) => _onBallotDetailUpdated(event, emit),
+    );
+    on<_ReasonUpdated>((event, emit) => _onReasonUpdated(event, emit));
   }
 
   void _onLoad(_Load event, Emitter<BallotState> emit) async {
-    emit(state.copyWith(status: BallotStatus.loading, ballotId: event.ballotId));
+    emit(
+      state.copyWith(status: BallotStatus.loading, ballotId: event.ballotId),
+    );
     if (!webSocketService.isConnected) {
       emit(state.copyWith(status: BallotStatus.failure));
       return;
@@ -61,13 +73,54 @@ class BallotBloc extends Bloc<BallotEvent, BallotState> {
     }
   }
 
-  void _onUpdated(_Updated event, Emitter<BallotState> emit) async {
+  void _onBallotDetailUpdated(
+    _BallotDetailUpdated event,
+    Emitter<BallotState> emit,
+  ) async {
     emit(state.copyWith(status: BallotStatus.loading));
     emit(
       state.copyWith(
         status: BallotStatus.success,
-        ballot: event.ballot,
-        ballotId: event.ballot.id,
+        ballot: state.ballot!.copyWith(
+          title: event.title,
+          description: event.description,
+          county: event.county,
+          constituency: event.constituency,
+          ward: event.ward,
+          startTime: event.startTime,
+          endTime: event.endTime,
+          hasStarted: event.hasStarted,
+          hasEnded: event.hasEnded,
+          totalVotes: event.totalVotes,
+          options: event.options,
+          isActive: event.isActive,
+        ),
+      ),
+    );
+  }
+
+  void _onVotedOptionUpdated(
+    _VotedOptionUpdated event,
+    Emitter<BallotState> emit,
+  ) async {
+    emit(state.copyWith(status: BallotStatus.loading));
+    emit(
+      state.copyWith(
+        status: BallotStatus.success,
+        ballot: state.ballot!.copyWith(votedOption: event.votedOptionId),
+      ),
+    );
+  }
+
+  void _onReasonUpdated(
+    _ReasonUpdated event,
+    Emitter<BallotState> emit,
+  ) async {
+    emit(state.copyWith(status: BallotStatus.loading));
+    emit(
+      state.copyWith(
+        status: BallotStatus.success,
+        ballot: state.ballot!.copyWith(reason: event.reason),
       ),
     );
   }

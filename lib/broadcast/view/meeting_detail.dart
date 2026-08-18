@@ -22,7 +22,6 @@ import 'package:democracy/broadcast/bloc/speaker_requests/speaker_requests_bloc.
 import 'package:democracy/broadcast/models/broadcast.dart';
 import 'package:democracy/broadcast/view/widgets/participant/tile.dart';
 import 'package:democracy/broadcast/view/widgets/participant/tabs/index.dart';
-import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -133,15 +132,6 @@ class _MeetingDetailState extends State<_MeetingDetail> {
           BlocListener<BroadcastDetailBloc, BroadcastDetailState>(
             listener: (context, state) async {
               switch (state) {
-                case BroadcastLoaded(:final broadcast):
-                  if (broadcast.id == widget.broadcast.id) {
-                    context.read<BroadcastBloc>().add(
-                      BroadcastEvent.updated(broadcast: state.broadcast),
-                    );
-                    setState(() {
-                      _count = broadcast.participantsCount;
-                    });
-                  }
                 case BroadcastUpdated(:final broadcast):
                   if (broadcast.id == widget.broadcast.id) {
                     final isCoHost = state.broadcast.coHosts.any(
@@ -203,13 +193,6 @@ class _MeetingDetailState extends State<_MeetingDetail> {
                     status: SnackBarStatus.failure,
                   );
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              }
-            },
-          ),
-          BlocListener<UserDetailBloc, UserDetailState>(
-            listener: (context, state) {
-              if (state is UserRetrieved) {
-                //
               }
             },
           ),
@@ -286,7 +269,22 @@ class _MeetingDetailState extends State<_MeetingDetail> {
                           ),
                         ),
                         SliverToBoxAdapter(
-                          child: Text(widget.broadcast.description),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Visibility(
+                                visible:
+                                    widget.broadcast.description.isNotEmpty,
+                                child: Text(widget.broadcast.description),
+                              ),
+                              Text(
+                                'Participants: $_count',
+                                style: Theme.of(context).textTheme.labelMedium,
+                              ),
+                            ],
+                          ),
                         ),
                         !_isJoined
                             ? SliverToBoxAdapter(child: BottomLoader())

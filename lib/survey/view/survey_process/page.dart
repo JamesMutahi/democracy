@@ -29,24 +29,43 @@ class SurveyProcess extends StatelessWidget {
       create: (context) =>
           SurveyBloc(webSocketService: context.read<WebSocketService>())
             ..add(SurveyEvent.load(surveyId: surveyId)),
-      child: BlocBuilder<SurveyBloc, SurveyState>(
-        buildWhen: (previous, current) => current.surveyId == surveyId,
-        builder: (context, state) {
-          if (state.status == SurveyStatus.initial ||
-              (state.status == SurveyStatus.loading && state.survey == null)) {
-            return BottomLoader();
-          }
-          if (state.status == SurveyStatus.failure && state.survey == null) {
-            return FailureRetryButton(
-              onPressed: () {
-                context.read<SurveyBloc>().add(
-                  SurveyEvent.load(surveyId: surveyId),
-                );
-              },
-            );
-          }
-          return _SurveyProcess(survey: state.survey!);
-        },
+      child: Scaffold(
+        appBar: AppBar(
+          title: BlocBuilder<SurveyBloc, SurveyState>(
+            buildWhen: (previous, current) => current.surveyId == surveyId,
+            builder: (context, state) {
+              return Text(state.survey?.title ?? '');
+            },
+          ),
+        ),
+        body: BlocBuilder<SurveyBloc, SurveyState>(
+          buildWhen: (previous, current) => current.surveyId == surveyId,
+          builder: (context, state) {
+            if (state.status == SurveyStatus.initial ||
+                (state.status == SurveyStatus.loading &&
+                    state.survey == null)) {
+              return BottomLoader();
+            }
+            if (state.status == SurveyStatus.failure && state.survey == null) {
+              return FailureRetryButton(
+                onPressed: () {
+                  context.read<SurveyBloc>().add(
+                    SurveyEvent.load(surveyId: surveyId),
+                  );
+                },
+              );
+            }
+            return _SurveyProcess(survey: state.survey!);
+          },
+        ),
+        bottomNavigationBar: BlocBuilder<SurveyBloc, SurveyState>(
+          buildWhen: (previous, current) => current.surveyId == surveyId,
+          builder: (context, state) {
+            return state.survey != null
+                ? BottomNavBar(survey: state.survey!)
+                : SizedBox.shrink();
+          },
+        ),
       ),
     );
   }
@@ -145,100 +164,94 @@ class _SurveyProcessState extends State<_SurveyProcess> {
             },
           );
         },
-        child: Scaffold(
-          appBar: AppBar(title: Text(widget.survey.title)),
-          body: BlocBuilder<PageBloc, PageState>(
-            builder: (context, state) {
-              switch (state) {
-                case PageLoaded():
-                  List<Question> questions = state.page.questions;
-                  return (questions.isNotEmpty)
-                      ? ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          padding: const EdgeInsets.only(
-                            left: 20.0,
-                            right: 20.0,
-                            top: 20.0,
-                            bottom: 160,
-                          ),
-                          itemBuilder: (BuildContext context, int index) {
-                            return QuestionTile(
-                              key: ValueKey(questions[index].id),
-                              questions: state.page.questions,
-                              question: questions[index],
-                            );
-                          },
-                          itemCount: questions.length,
-                        )
-                      : NoResults(
-                          text: "Oops...questions for this page are missing",
-                        );
-                case PageComplete():
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text('Survey complete', style: TextStyle(fontSize: 20)),
-                        SizedBox(height: 10),
-                        TimeLeft(
-                          key: ValueKey('survey ${widget.survey.id}'),
-                          alignCenter: true,
-                          startTime: widget.survey.startTime,
-                          endTime: widget.survey.endTime,
+        child: BlocBuilder<PageBloc, PageState>(
+          builder: (context, state) {
+            switch (state) {
+              case PageLoaded():
+                List<Question> questions = state.page.questions;
+                return (questions.isNotEmpty)
+                    ? ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        padding: const EdgeInsets.only(
+                          left: 20.0,
+                          right: 20.0,
+                          top: 20.0,
+                          bottom: 160,
                         ),
-                        SizedBox(height: 10),
-                        BlocBuilder<AnswerBloc, AnswerState>(
-                          builder: (context, answerState) {
-                            return ElevatedButton(
-                              onPressed: () {
-                                if (widget.survey.isActive) {
-                                  context.read<AnswerBloc>().add(
-                                    AnswerEvent.submit(
-                                      survey: answerState.survey!,
-                                      startTime: answerState.startTime!,
-                                      endTime: answerState.endTime!,
-                                      textAnswers: answerState.textAnswers!,
-                                      choiceAnswers: answerState.choiceAnswers!,
-                                    ),
-                                  );
-                                } else {
-                                  final snackBar = getSnackBar(
-                                    context: context,
-                                    message: 'Closed',
-                                    status: SnackBarStatus.info,
-                                  );
-                                  ScaffoldMessenger.of(
-                                    context,
-                                  ).clearSnackBars();
-                                  ScaffoldMessenger.of(
-                                    context,
-                                  ).showSnackBar(snackBar);
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: widget.survey.isActive
-                                    ? Theme.of(
-                                        context,
-                                      ).colorScheme.tertiaryContainer
-                                    : Theme.of(context).disabledColor,
-                                shape: BeveledRectangleBorder(
-                                  borderRadius: BorderRadius.circular(2),
-                                ),
+                        itemBuilder: (BuildContext context, int index) {
+                          return QuestionTile(
+                            key: ValueKey(questions[index].id),
+                            questions: state.page.questions,
+                            question: questions[index],
+                          );
+                        },
+                        itemCount: questions.length,
+                      )
+                    : NoResults(
+                        text: "Oops...questions for this page are missing",
+                      );
+              case PageComplete():
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text('Survey complete', style: TextStyle(fontSize: 20)),
+                      SizedBox(height: 10),
+                      TimeLeft(
+                        key: ValueKey('survey ${widget.survey.id}'),
+                        alignCenter: true,
+                        startTime: widget.survey.startTime,
+                        endTime: widget.survey.endTime,
+                      ),
+                      SizedBox(height: 10),
+                      BlocBuilder<AnswerBloc, AnswerState>(
+                        builder: (context, answerState) {
+                          return ElevatedButton(
+                            onPressed: () {
+                              if (widget.survey.isActive) {
+                                context.read<AnswerBloc>().add(
+                                  AnswerEvent.submit(
+                                    survey: answerState.survey!,
+                                    startTime: answerState.startTime!,
+                                    endTime: answerState.endTime!,
+                                    textAnswers: answerState.textAnswers!,
+                                    choiceAnswers: answerState.choiceAnswers!,
+                                  ),
+                                );
+                              } else {
+                                final snackBar = getSnackBar(
+                                  context: context,
+                                  message: 'Closed',
+                                  status: SnackBarStatus.info,
+                                );
+                                ScaffoldMessenger.of(context).clearSnackBars();
+                                ScaffoldMessenger.of(
+                                  context,
+                                ).showSnackBar(snackBar);
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: widget.survey.isActive
+                                  ? Theme.of(
+                                      context,
+                                    ).colorScheme.tertiaryContainer
+                                  : Theme.of(context).disabledColor,
+                              shape: BeveledRectangleBorder(
+                                borderRadius: BorderRadius.circular(2),
                               ),
-                              child: Text('SUBMIT'),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                default:
-                  return const BottomLoader();
-              }
-            },
-          ),
-          bottomNavigationBar: BottomNavBar(survey: widget.survey),
+                            ),
+                            child: Text('SUBMIT'),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              default:
+                return const BottomLoader();
+            }
+          },
         ),
       ),
     );

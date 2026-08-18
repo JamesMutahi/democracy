@@ -55,13 +55,15 @@ extension BallotEventPatterns on BallotEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Load value)?  load,TResult Function( _Loaded value)?  loaded,TResult Function( _Updated value)?  updated,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Load value)?  load,TResult Function( _Loaded value)?  loaded,TResult Function( _BallotDetailUpdated value)?  ballotDetailUpdated,TResult Function( _VotedOptionUpdated value)?  votedOptionUpdated,TResult Function( _ReasonUpdated value)?  reasonUpdated,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Load() when load != null:
 return load(_that);case _Loaded() when loaded != null:
-return loaded(_that);case _Updated() when updated != null:
-return updated(_that);case _:
+return loaded(_that);case _BallotDetailUpdated() when ballotDetailUpdated != null:
+return ballotDetailUpdated(_that);case _VotedOptionUpdated() when votedOptionUpdated != null:
+return votedOptionUpdated(_that);case _ReasonUpdated() when reasonUpdated != null:
+return reasonUpdated(_that);case _:
   return orElse();
 
 }
@@ -79,13 +81,15 @@ return updated(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Load value)  load,required TResult Function( _Loaded value)  loaded,required TResult Function( _Updated value)  updated,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Load value)  load,required TResult Function( _Loaded value)  loaded,required TResult Function( _BallotDetailUpdated value)  ballotDetailUpdated,required TResult Function( _VotedOptionUpdated value)  votedOptionUpdated,required TResult Function( _ReasonUpdated value)  reasonUpdated,}){
 final _that = this;
 switch (_that) {
 case _Load():
 return load(_that);case _Loaded():
-return loaded(_that);case _Updated():
-return updated(_that);case _:
+return loaded(_that);case _BallotDetailUpdated():
+return ballotDetailUpdated(_that);case _VotedOptionUpdated():
+return votedOptionUpdated(_that);case _ReasonUpdated():
+return reasonUpdated(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -102,13 +106,15 @@ return updated(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Load value)?  load,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Updated value)?  updated,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Load value)?  load,TResult? Function( _Loaded value)?  loaded,TResult? Function( _BallotDetailUpdated value)?  ballotDetailUpdated,TResult? Function( _VotedOptionUpdated value)?  votedOptionUpdated,TResult? Function( _ReasonUpdated value)?  reasonUpdated,}){
 final _that = this;
 switch (_that) {
 case _Load() when load != null:
 return load(_that);case _Loaded() when loaded != null:
-return loaded(_that);case _Updated() when updated != null:
-return updated(_that);case _:
+return loaded(_that);case _BallotDetailUpdated() when ballotDetailUpdated != null:
+return ballotDetailUpdated(_that);case _VotedOptionUpdated() when votedOptionUpdated != null:
+return votedOptionUpdated(_that);case _ReasonUpdated() when reasonUpdated != null:
+return reasonUpdated(_that);case _:
   return null;
 
 }
@@ -125,12 +131,14 @@ return updated(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int ballotId)?  load,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Ballot ballot)?  updated,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int ballotId)?  load,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  DateTime startTime,  DateTime endTime,  bool hasStarted,  bool hasEnded,  int totalVotes,  List<Option> options,  bool isActive)?  ballotDetailUpdated,TResult Function( int votedOptionId)?  votedOptionUpdated,TResult Function( String? reason)?  reasonUpdated,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Load() when load != null:
 return load(_that.ballotId);case _Loaded() when loaded != null:
-return loaded(_that.payload);case _Updated() when updated != null:
-return updated(_that.ballot);case _:
+return loaded(_that.payload);case _BallotDetailUpdated() when ballotDetailUpdated != null:
+return ballotDetailUpdated(_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.startTime,_that.endTime,_that.hasStarted,_that.hasEnded,_that.totalVotes,_that.options,_that.isActive);case _VotedOptionUpdated() when votedOptionUpdated != null:
+return votedOptionUpdated(_that.votedOptionId);case _ReasonUpdated() when reasonUpdated != null:
+return reasonUpdated(_that.reason);case _:
   return orElse();
 
 }
@@ -148,12 +156,14 @@ return updated(_that.ballot);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int ballotId)  load,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Ballot ballot)  updated,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int ballotId)  load,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  DateTime startTime,  DateTime endTime,  bool hasStarted,  bool hasEnded,  int totalVotes,  List<Option> options,  bool isActive)  ballotDetailUpdated,required TResult Function( int votedOptionId)  votedOptionUpdated,required TResult Function( String? reason)  reasonUpdated,}) {final _that = this;
 switch (_that) {
 case _Load():
 return load(_that.ballotId);case _Loaded():
-return loaded(_that.payload);case _Updated():
-return updated(_that.ballot);case _:
+return loaded(_that.payload);case _BallotDetailUpdated():
+return ballotDetailUpdated(_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.startTime,_that.endTime,_that.hasStarted,_that.hasEnded,_that.totalVotes,_that.options,_that.isActive);case _VotedOptionUpdated():
+return votedOptionUpdated(_that.votedOptionId);case _ReasonUpdated():
+return reasonUpdated(_that.reason);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -170,12 +180,14 @@ return updated(_that.ballot);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int ballotId)?  load,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Ballot ballot)?  updated,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int ballotId)?  load,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  DateTime startTime,  DateTime endTime,  bool hasStarted,  bool hasEnded,  int totalVotes,  List<Option> options,  bool isActive)?  ballotDetailUpdated,TResult? Function( int votedOptionId)?  votedOptionUpdated,TResult? Function( String? reason)?  reasonUpdated,}) {final _that = this;
 switch (_that) {
 case _Load() when load != null:
 return load(_that.ballotId);case _Loaded() when loaded != null:
-return loaded(_that.payload);case _Updated() when updated != null:
-return updated(_that.ballot);case _:
+return loaded(_that.payload);case _BallotDetailUpdated() when ballotDetailUpdated != null:
+return ballotDetailUpdated(_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.startTime,_that.endTime,_that.hasStarted,_that.hasEnded,_that.totalVotes,_that.options,_that.isActive);case _VotedOptionUpdated() when votedOptionUpdated != null:
+return votedOptionUpdated(_that.votedOptionId);case _ReasonUpdated() when reasonUpdated != null:
+return reasonUpdated(_that.reason);case _:
   return null;
 
 }
@@ -324,63 +336,91 @@ as Map<String, dynamic>,
 /// @nodoc
 
 
-class _Updated implements BallotEvent {
-  const _Updated({required this.ballot});
+class _BallotDetailUpdated implements BallotEvent {
+  const _BallotDetailUpdated({required this.title, required this.description, required this.county, required this.constituency, required this.ward, required this.startTime, required this.endTime, required this.hasStarted, required this.hasEnded, required this.totalVotes, required final  List<Option> options, required this.isActive}): _options = options;
   
 
- final  Ballot ballot;
+ final  String title;
+ final  String description;
+ final  County? county;
+ final  Constituency? constituency;
+ final  Ward? ward;
+ final  DateTime startTime;
+ final  DateTime endTime;
+ final  bool hasStarted;
+ final  bool hasEnded;
+ final  int totalVotes;
+ final  List<Option> _options;
+ List<Option> get options {
+  if (_options is EqualUnmodifiableListView) return _options;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_options);
+}
+
+ final  bool isActive;
 
 /// Create a copy of BallotEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$UpdatedCopyWith<_Updated> get copyWith => __$UpdatedCopyWithImpl<_Updated>(this, _$identity);
+_$BallotDetailUpdatedCopyWith<_BallotDetailUpdated> get copyWith => __$BallotDetailUpdatedCopyWithImpl<_BallotDetailUpdated>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Updated&&(identical(other.ballot, ballot) || other.ballot == ballot));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BallotDetailUpdated&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.county, county) || other.county == county)&&(identical(other.constituency, constituency) || other.constituency == constituency)&&(identical(other.ward, ward) || other.ward == ward)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.hasStarted, hasStarted) || other.hasStarted == hasStarted)&&(identical(other.hasEnded, hasEnded) || other.hasEnded == hasEnded)&&(identical(other.totalVotes, totalVotes) || other.totalVotes == totalVotes)&&const DeepCollectionEquality().equals(other._options, _options)&&(identical(other.isActive, isActive) || other.isActive == isActive));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ballot);
+int get hashCode => Object.hash(runtimeType,title,description,county,constituency,ward,startTime,endTime,hasStarted,hasEnded,totalVotes,const DeepCollectionEquality().hash(_options),isActive);
 
 @override
 String toString() {
-  return 'BallotEvent.updated(ballot: $ballot)';
+  return 'BallotEvent.ballotDetailUpdated(title: $title, description: $description, county: $county, constituency: $constituency, ward: $ward, startTime: $startTime, endTime: $endTime, hasStarted: $hasStarted, hasEnded: $hasEnded, totalVotes: $totalVotes, options: $options, isActive: $isActive)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$UpdatedCopyWith<$Res> implements $BallotEventCopyWith<$Res> {
-  factory _$UpdatedCopyWith(_Updated value, $Res Function(_Updated) _then) = __$UpdatedCopyWithImpl;
+abstract mixin class _$BallotDetailUpdatedCopyWith<$Res> implements $BallotEventCopyWith<$Res> {
+  factory _$BallotDetailUpdatedCopyWith(_BallotDetailUpdated value, $Res Function(_BallotDetailUpdated) _then) = __$BallotDetailUpdatedCopyWithImpl;
 @useResult
 $Res call({
- Ballot ballot
+ String title, String description, County? county, Constituency? constituency, Ward? ward, DateTime startTime, DateTime endTime, bool hasStarted, bool hasEnded, int totalVotes, List<Option> options, bool isActive
 });
 
 
-$BallotCopyWith<$Res> get ballot;
+$CountyCopyWith<$Res>? get county;$ConstituencyCopyWith<$Res>? get constituency;$WardCopyWith<$Res>? get ward;
 
 }
 /// @nodoc
-class __$UpdatedCopyWithImpl<$Res>
-    implements _$UpdatedCopyWith<$Res> {
-  __$UpdatedCopyWithImpl(this._self, this._then);
+class __$BallotDetailUpdatedCopyWithImpl<$Res>
+    implements _$BallotDetailUpdatedCopyWith<$Res> {
+  __$BallotDetailUpdatedCopyWithImpl(this._self, this._then);
 
-  final _Updated _self;
-  final $Res Function(_Updated) _then;
+  final _BallotDetailUpdated _self;
+  final $Res Function(_BallotDetailUpdated) _then;
 
 /// Create a copy of BallotEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? ballot = null,}) {
-  return _then(_Updated(
-ballot: null == ballot ? _self.ballot : ballot // ignore: cast_nullable_to_non_nullable
-as Ballot,
+@pragma('vm:prefer-inline') $Res call({Object? title = null,Object? description = null,Object? county = freezed,Object? constituency = freezed,Object? ward = freezed,Object? startTime = null,Object? endTime = null,Object? hasStarted = null,Object? hasEnded = null,Object? totalVotes = null,Object? options = null,Object? isActive = null,}) {
+  return _then(_BallotDetailUpdated(
+title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String,county: freezed == county ? _self.county : county // ignore: cast_nullable_to_non_nullable
+as County?,constituency: freezed == constituency ? _self.constituency : constituency // ignore: cast_nullable_to_non_nullable
+as Constituency?,ward: freezed == ward ? _self.ward : ward // ignore: cast_nullable_to_non_nullable
+as Ward?,startTime: null == startTime ? _self.startTime : startTime // ignore: cast_nullable_to_non_nullable
+as DateTime,endTime: null == endTime ? _self.endTime : endTime // ignore: cast_nullable_to_non_nullable
+as DateTime,hasStarted: null == hasStarted ? _self.hasStarted : hasStarted // ignore: cast_nullable_to_non_nullable
+as bool,hasEnded: null == hasEnded ? _self.hasEnded : hasEnded // ignore: cast_nullable_to_non_nullable
+as bool,totalVotes: null == totalVotes ? _self.totalVotes : totalVotes // ignore: cast_nullable_to_non_nullable
+as int,options: null == options ? _self._options : options // ignore: cast_nullable_to_non_nullable
+as List<Option>,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -388,12 +428,171 @@ as Ballot,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$BallotCopyWith<$Res> get ballot {
-  
-  return $BallotCopyWith<$Res>(_self.ballot, (value) {
-    return _then(_self.copyWith(ballot: value));
+$CountyCopyWith<$Res>? get county {
+    if (_self.county == null) {
+    return null;
+  }
+
+  return $CountyCopyWith<$Res>(_self.county!, (value) {
+    return _then(_self.copyWith(county: value));
+  });
+}/// Create a copy of BallotEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ConstituencyCopyWith<$Res>? get constituency {
+    if (_self.constituency == null) {
+    return null;
+  }
+
+  return $ConstituencyCopyWith<$Res>(_self.constituency!, (value) {
+    return _then(_self.copyWith(constituency: value));
+  });
+}/// Create a copy of BallotEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$WardCopyWith<$Res>? get ward {
+    if (_self.ward == null) {
+    return null;
+  }
+
+  return $WardCopyWith<$Res>(_self.ward!, (value) {
+    return _then(_self.copyWith(ward: value));
   });
 }
+}
+
+/// @nodoc
+
+
+class _VotedOptionUpdated implements BallotEvent {
+  const _VotedOptionUpdated({required this.votedOptionId});
+  
+
+ final  int votedOptionId;
+
+/// Create a copy of BallotEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$VotedOptionUpdatedCopyWith<_VotedOptionUpdated> get copyWith => __$VotedOptionUpdatedCopyWithImpl<_VotedOptionUpdated>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VotedOptionUpdated&&(identical(other.votedOptionId, votedOptionId) || other.votedOptionId == votedOptionId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,votedOptionId);
+
+@override
+String toString() {
+  return 'BallotEvent.votedOptionUpdated(votedOptionId: $votedOptionId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$VotedOptionUpdatedCopyWith<$Res> implements $BallotEventCopyWith<$Res> {
+  factory _$VotedOptionUpdatedCopyWith(_VotedOptionUpdated value, $Res Function(_VotedOptionUpdated) _then) = __$VotedOptionUpdatedCopyWithImpl;
+@useResult
+$Res call({
+ int votedOptionId
+});
+
+
+
+
+}
+/// @nodoc
+class __$VotedOptionUpdatedCopyWithImpl<$Res>
+    implements _$VotedOptionUpdatedCopyWith<$Res> {
+  __$VotedOptionUpdatedCopyWithImpl(this._self, this._then);
+
+  final _VotedOptionUpdated _self;
+  final $Res Function(_VotedOptionUpdated) _then;
+
+/// Create a copy of BallotEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? votedOptionId = null,}) {
+  return _then(_VotedOptionUpdated(
+votedOptionId: null == votedOptionId ? _self.votedOptionId : votedOptionId // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _ReasonUpdated implements BallotEvent {
+  const _ReasonUpdated({required this.reason});
+  
+
+ final  String? reason;
+
+/// Create a copy of BallotEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ReasonUpdatedCopyWith<_ReasonUpdated> get copyWith => __$ReasonUpdatedCopyWithImpl<_ReasonUpdated>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReasonUpdated&&(identical(other.reason, reason) || other.reason == reason));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,reason);
+
+@override
+String toString() {
+  return 'BallotEvent.reasonUpdated(reason: $reason)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ReasonUpdatedCopyWith<$Res> implements $BallotEventCopyWith<$Res> {
+  factory _$ReasonUpdatedCopyWith(_ReasonUpdated value, $Res Function(_ReasonUpdated) _then) = __$ReasonUpdatedCopyWithImpl;
+@useResult
+$Res call({
+ String? reason
+});
+
+
+
+
+}
+/// @nodoc
+class __$ReasonUpdatedCopyWithImpl<$Res>
+    implements _$ReasonUpdatedCopyWith<$Res> {
+  __$ReasonUpdatedCopyWithImpl(this._self, this._then);
+
+  final _ReasonUpdated _self;
+  final $Res Function(_ReasonUpdated) _then;
+
+/// Create a copy of BallotEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? reason = freezed,}) {
+  return _then(_ReasonUpdated(
+reason: freezed == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
 }
 
 // dart format on

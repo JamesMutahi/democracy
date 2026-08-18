@@ -2,6 +2,10 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
+import 'package:democracy/app/models/simple_user.dart';
+import 'package:democracy/geo/models/constituency.dart';
+import 'package:democracy/geo/models/county.dart';
+import 'package:democracy/geo/models/ward.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -25,7 +29,8 @@ class PetitionBloc extends Bloc<PetitionEvent, PetitionState> {
     });
     on<_Load>((event, emit) => _onLoad(event, emit));
     on<_Loaded>((event, emit) => _onLoaded(event, emit));
-    on<_Updated>((event, emit) => _onUpdated(event, emit));
+    on<_DetailUpdated>((event, emit) => _onDetailUpdated(event, emit));
+    on<_SupportUpdated>((event, emit) => _onSupportUpdated(event, emit));
   }
 
   void _onLoad(_Load event, Emitter<PetitionState> emit) async {
@@ -67,13 +72,44 @@ class PetitionBloc extends Bloc<PetitionEvent, PetitionState> {
     }
   }
 
-  void _onUpdated(_Updated event, Emitter<PetitionState> emit) async {
+  void _onDetailUpdated(
+    _DetailUpdated event,
+    Emitter<PetitionState> emit,
+  ) async {
     emit(state.copyWith(status: PetitionStatus.loading));
     emit(
       state.copyWith(
         status: PetitionStatus.success,
-        petition: event.petition,
-        petitionId: event.petition.id,
+        petition: state.petition?.copyWith(
+          title: event.title,
+          description: event.description,
+          county: event.county,
+          constituency: event.constituency,
+          ward: event.ward,
+          supporters: event.supporters,
+          recentSupporters: event.recentSupporters,
+          image: event.image,
+          video: event.video,
+          views: event.views,
+          isOpen: event.isOpen,
+          isActive: event.isActive,
+        ),
+      ),
+    );
+  }
+
+  void _onSupportUpdated(
+    _SupportUpdated event,
+    Emitter<PetitionState> emit,
+  ) async {
+    emit(state.copyWith(status: PetitionStatus.loading));
+    emit(
+      state.copyWith(
+        status: PetitionStatus.success,
+        petition: state.petition?.copyWith(
+          isSupported: event.isSupported,
+          supporters: event.supporters,
+        ),
       ),
     );
   }
