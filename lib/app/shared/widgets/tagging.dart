@@ -79,7 +79,7 @@ class _TaggingState extends State<Tagging> {
       if (!mounted) return;
       if (isHashtag) {
         context.read<HashtagsBloc>().add(
-          HashtagsEvent.get(searchTerm: searchTerm), // ← Confirm this event
+          HashtagsEvent.get(searchTerm: searchTerm),
         );
       } else {
         context.read<UsersBloc>().add(UsersEvent.get(searchTerm: searchTerm));

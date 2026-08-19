@@ -318,6 +318,24 @@ class _MeetingDetailState extends State<_MeetingDetail> {
 
   Widget _buildParticipantsList() {
     final participants = widget.broadcast.participants.toList();
+    participants.sort((a, b) {
+      // Define a helper function to get the role priority (lower number = higher priority)
+      int getRolePriority(User user) {
+        if (user.id == widget.broadcast.host.id) return 0;
+        if (widget.broadcast.coHosts.any((c) => c.id == user.id)) return 1;
+        if (widget.broadcast.speakers.any((s) => s.id == user.id)) return 2;
+        return 3; // Default for regular audience members
+      }
+
+      int priorityCompare = getRolePriority(a).compareTo(getRolePriority(b));
+
+      // Sort alphabetically by name if roles are the same
+      if (priorityCompare == 0) {
+        return a.name.compareTo(b.name);
+      }
+
+      return priorityCompare;
+    });
 
     return SliverGrid(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

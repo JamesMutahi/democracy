@@ -28,6 +28,7 @@ import 'package:democracy/post/view/widgets/reply_tos.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/view/widgets/survey_tile.dart';
+import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:latlong2/latlong.dart';
@@ -153,6 +154,10 @@ class _PostCreatePageState extends State<PostCreatePage> {
             }
             return bloc;
           },
+        ),
+        BlocProvider(
+          create: (context) =>
+              UsersBloc(webSocketService: context.read<WebSocketService>()),
         ),
       ],
       child: MultiBlocListener(

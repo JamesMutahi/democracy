@@ -31,6 +31,7 @@ import 'package:democracy/post/view/widgets/thread_line.dart';
 import 'package:democracy/survey/bloc/survey_detail/survey_detail_bloc.dart';
 import 'package:democracy/survey/view/widgets/survey_tile.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
+import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,11 +47,20 @@ class PostDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          PostBloc(webSocketService: context.read<WebSocketService>())
-            ..add(PostEvent.load(postId: postId)),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              PostBloc(webSocketService: context.read<WebSocketService>())
+                ..add(PostEvent.load(postId: postId)),
+        ),
+        BlocProvider(
+          create: (context) =>
+              UsersBloc(webSocketService: context.read<WebSocketService>()),
+        ),
+      ],
       child: Scaffold(
+        appBar: AppBar(leading: const AutoLeadingButton(), title: Text('Post')),
         body: BlocBuilder<PostBloc, PostState>(
           buildWhen: (previous, current) => current.postId == postId,
           builder: (context, state) {
@@ -66,6 +76,24 @@ class PostDetail extends StatelessWidget {
               );
             }
             return _PostDetail(post: state.post!);
+          },
+        ),
+        bottomNavigationBar: BlocBuilder<PostBloc, PostState>(
+          buildWhen: (previous, current) => current.postId == postId,
+          builder: (context, state) {
+            return state.post == null
+                ? SizedBox.shrink()
+                : state.post!.isDeleted
+                ? SizedBox.shrink()
+                : state.post!.author.hasBlocked
+                ? Container(
+                    margin: const EdgeInsets.only(bottom: 8.0),
+                    child: Text(
+                      'You have been blocked',
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                : BottomReplyTextField(post: state.post!);
           },
         ),
       ),
@@ -374,130 +402,113 @@ class _PostDetailState extends State<_PostDetail>
               },
             ),
           ],
-          child: Scaffold(
-            appBar: AppBar(
-              leading: const AutoLeadingButton(),
-              title: Text('Post'),
-            ),
-            body: BlocBuilder<RepliesBloc, RepliesState>(
-              buildWhen: (previous, current) {
-                return widget.post.id == current.postId;
-              },
-              builder: (context, state) {
-                final replies = state.posts.toList();
+          child: BlocBuilder<RepliesBloc, RepliesState>(
+            buildWhen: (previous, current) {
+              return widget.post.id == current.postId;
+            },
+            builder: (context, state) {
+              final replies = state.posts.toList();
 
-                if (state.status == RepliesStatus.success) {
-                  if (_refreshController.headerStatus ==
-                      RefreshStatus.refreshing) {
-                    _refreshController.refreshCompleted();
-                  }
-                  if (_refreshController.footerStatus == LoadStatus.loading) {
-                    _refreshController.loadComplete();
-                  }
+              if (state.status == RepliesStatus.success) {
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshCompleted();
                 }
-
-                if (state.status == RepliesStatus.failure) {
-                  if (_refreshController.headerStatus ==
-                      RefreshStatus.refreshing) {
-                    _refreshController.refreshFailed();
-                  }
-                  if (_refreshController.footerStatus == LoadStatus.loading) {
-                    _refreshController.loadFailed();
-                  }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadComplete();
                 }
+              }
 
-                return SmartRefresher(
-                  enablePullDown: false,
-                  enablePullUp: state.hasNext,
-                  header: ClassicHeader(),
-                  footer: ClassicFooter(),
-                  controller: _refreshController,
-                  onLoading: () {
-                    context.read<RepliesBloc>().add(
-                      RepliesEvent.get(
-                        postId: widget.post.id,
-                        previousPosts: replies,
-                      ),
-                    );
-                  },
-                  child: CustomScrollView(
-                    center: _centerKey,
-                    slivers: <Widget>[
-                      if (widget.post.replyTo != null)
-                        ReplyTos(postId: widget.post.replyTo!.id),
-                      _buildMainPost(),
-                      if (state.status == RepliesStatus.initial)
-                        SliverToBoxAdapter(
-                          child: Container(
-                            margin: EdgeInsets.only(top: 50),
-                            child: BottomLoader(),
-                          ),
-                        )
-                      else if (state.status == RepliesStatus.failure &&
-                          replies.isEmpty)
-                        SliverToBoxAdapter(
-                          child: Container(
-                            margin: EdgeInsets.only(top: 50),
-                            child: FailureRetryButton(
-                              onPressed: () {
-                                context.read<RepliesBloc>().add(
-                                  RepliesEvent.get(postId: widget.post.id),
-                                );
-                                if (widget.post.replyTo != null) {
-                                  context.read<ReplyToBloc>().add(
-                                    ReplyToEvent.get(postId: widget.post.id),
-                                  );
-                                }
-                              },
-                            ),
-                          ),
-                        )
-                      else
-                        Replies(
-                          replies: replies,
-                          expandedReplies: expandedReplies,
-                          onExpand: (post) {
-                            setState(() {
-                              expandedReplies.add(post.id);
-                            });
-                          },
-                          onRepliesUpdated: (replies) {
-                            context.read<RepliesBloc>().add(
-                              RepliesEvent.update(
-                                postId: widget.post.id,
-                                replies: replies,
-                              ),
-                            );
-                          },
-                          onThreadUpdated: (reply) {
-                            int index = replies.indexWhere(
-                              (r) => r.id == reply.id,
-                            );
-                            replies[index] = reply;
-                            context.read<RepliesBloc>().add(
-                              RepliesEvent.update(
-                                postId: widget.post.id,
-                                replies: replies,
-                              ),
-                            );
-                          },
-                        ),
-                    ],
-                  ),
-                );
-              },
-            ),
-            bottomNavigationBar: widget.post.isDeleted
-                ? SizedBox.shrink()
-                : widget.post.author.hasBlocked
-                ? Container(
-                    margin: const EdgeInsets.only(bottom: 8.0),
-                    child: Text(
-                      'You have been blocked',
-                      textAlign: TextAlign.center,
+              if (state.status == RepliesStatus.failure) {
+                if (_refreshController.headerStatus ==
+                    RefreshStatus.refreshing) {
+                  _refreshController.refreshFailed();
+                }
+                if (_refreshController.footerStatus == LoadStatus.loading) {
+                  _refreshController.loadFailed();
+                }
+              }
+
+              return SmartRefresher(
+                enablePullDown: false,
+                enablePullUp: state.hasNext,
+                header: ClassicHeader(),
+                footer: ClassicFooter(),
+                controller: _refreshController,
+                onLoading: () {
+                  context.read<RepliesBloc>().add(
+                    RepliesEvent.get(
+                      postId: widget.post.id,
+                      previousPosts: replies,
                     ),
-                  )
-                : BottomReplyTextField(post: widget.post),
+                  );
+                },
+                child: CustomScrollView(
+                  center: _centerKey,
+                  slivers: <Widget>[
+                    if (widget.post.replyTo != null)
+                      ReplyTos(postId: widget.post.replyTo!.id),
+                    _buildMainPost(),
+                    if (state.status == RepliesStatus.initial)
+                      SliverToBoxAdapter(
+                        child: Container(
+                          margin: EdgeInsets.only(top: 50),
+                          child: BottomLoader(),
+                        ),
+                      )
+                    else if (state.status == RepliesStatus.failure &&
+                        replies.isEmpty)
+                      SliverToBoxAdapter(
+                        child: Container(
+                          margin: EdgeInsets.only(top: 50),
+                          child: FailureRetryButton(
+                            onPressed: () {
+                              context.read<RepliesBloc>().add(
+                                RepliesEvent.get(postId: widget.post.id),
+                              );
+                              if (widget.post.replyTo != null) {
+                                context.read<ReplyToBloc>().add(
+                                  ReplyToEvent.get(postId: widget.post.id),
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                      )
+                    else
+                      Replies(
+                        replies: replies,
+                        expandedReplies: expandedReplies,
+                        onExpand: (post) {
+                          setState(() {
+                            expandedReplies.add(post.id);
+                          });
+                        },
+                        onRepliesUpdated: (replies) {
+                          context.read<RepliesBloc>().add(
+                            RepliesEvent.update(
+                              postId: widget.post.id,
+                              replies: replies,
+                            ),
+                          );
+                        },
+                        onThreadUpdated: (reply) {
+                          int index = replies.indexWhere(
+                            (r) => r.id == reply.id,
+                          );
+                          replies[index] = reply;
+                          context.read<RepliesBloc>().add(
+                            RepliesEvent.update(
+                              postId: widget.post.id,
+                              replies: replies,
+                            ),
+                          );
+                        },
+                      ),
+                  ],
+                ),
+              );
+            },
           ),
         ),
       ),

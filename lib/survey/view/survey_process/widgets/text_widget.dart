@@ -2,6 +2,7 @@ import 'package:democracy/survey/bloc/survey_process/answer/answer_bloc.dart';
 import 'package:democracy/survey/models/question.dart';
 import 'package:democracy/survey/models/text_answer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TextWidget extends StatefulWidget {
@@ -43,17 +44,22 @@ class _TextWidgetState extends State<TextWidget> {
               SizedBox(width: 5),
               (widget.question.isRequired)
                   ? Text(
-                    '*',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
-                    ),
-                  )
+                      '*',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    )
                   : SizedBox.shrink(),
             ],
           ),
           SizedBox(height: 10),
           TextFormField(
             initialValue: widget.textAnswer?.text,
+            keyboardType: TextInputType.multiline,
+            minLines: 1,
+            maxLines: 4,
+            maxLength: 500,
+            maxLengthEnforcement: MaxLengthEnforcement.enforced,
             onTapOutside: (event) {
               FocusScope.of(context).unfocus();
             },

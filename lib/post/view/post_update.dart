@@ -29,6 +29,7 @@ import 'package:democracy/post/view/widgets/post_tile.dart';
 import 'package:democracy/post/view/widgets/reply_tos.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
 import 'package:democracy/survey/view/widgets/survey_tile.dart';
+import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -45,10 +46,18 @@ class PostUpdate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          DraftBloc(databaseRepository: context.read<DatabaseRepository>())
-            ..add(DraftEvent.load(draftId: draftId)),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              DraftBloc(databaseRepository: context.read<DatabaseRepository>())
+                ..add(DraftEvent.load(draftId: draftId)),
+        ),
+        BlocProvider(
+          create: (context) =>
+              UsersBloc(webSocketService: context.read<WebSocketService>()),
+        ),
+      ],
       child: Scaffold(
         body: BlocBuilder<DraftBloc, DraftState>(
           buildWhen: (previous, current) => current.draftId == draftId,

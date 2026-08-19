@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/widgets/bottom_text_form_field.dart';
 import 'package:democracy/app/shared/widgets/loader_overlay_widgets.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
@@ -60,283 +61,282 @@ class _DirectMessageState extends State<DirectMessage> {
   }
 
   @override
-  void initState() {
-    context.read<UsersBloc>().add(UsersEvent.get());
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return BlocListener<DirectMessageBloc, DirectMessageState>(
-      listener: (context, state) {
-        if (state.status == DirectMessageStatus.success) {
-          context.router.popTop();
-          final snackBar = getSnackBar(
-            context: context,
-            message: 'Direct message sent',
-            status: SnackBarStatus.success,
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        }
-        if (state.status == DirectMessageStatus.failure) {
-          final snackBar = getSnackBar(
-            context: context,
-            message: state.error,
-            status: SnackBarStatus.failure,
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        }
-      },
-      child: LoaderOverlay(
-        overlayWidgetBuilder: (_) {
-          return BlocBuilder<DirectMessageBloc, DirectMessageState>(
-            builder: (context, state) {
-              return state.status == DirectMessageStatus.failure
-                  ? LoaderOverlayFailure(
-                      onRetry: () {
-                        context.read<DirectMessageBloc>().add(
-                          DirectMessageEvent.retry(),
-                        );
-                      },
-                    )
-                  : LoaderOverlayLoading(progress: state.progress);
-            },
-          );
+    return BlocProvider(
+      create: (context) =>
+          UsersBloc(webSocketService: context.read<WebSocketService>())
+            ..add(UsersEvent.get()),
+      child: BlocListener<DirectMessageBloc, DirectMessageState>(
+        listener: (context, state) {
+          if (state.status == DirectMessageStatus.success) {
+            context.router.popTop();
+            final snackBar = getSnackBar(
+              context: context,
+              message: 'Direct message sent',
+              status: SnackBarStatus.success,
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+          if (state.status == DirectMessageStatus.failure) {
+            final snackBar = getSnackBar(
+              context: context,
+              message: state.error,
+              status: SnackBarStatus.failure,
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
         },
-        child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            automaticallyImplyLeading: false,
-            title: Text('Send via Direct Message'),
-          ),
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Theme.of(context).colorScheme.outline,
-                      width: 1.0,
-                    ),
-                    top: BorderSide(
-                      color: Theme.of(context).colorScheme.outline,
-                      width: 1.0,
+        child: LoaderOverlay(
+          overlayWidgetBuilder: (_) {
+            return BlocBuilder<DirectMessageBloc, DirectMessageState>(
+              builder: (context, state) {
+                return state.status == DirectMessageStatus.failure
+                    ? LoaderOverlayFailure(
+                        onRetry: () {
+                          context.read<DirectMessageBloc>().add(
+                            DirectMessageEvent.retry(),
+                          );
+                        },
+                      )
+                    : LoaderOverlayLoading(progress: state.progress);
+              },
+            );
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              automaticallyImplyLeading: false,
+              title: Text('Send via Direct Message'),
+            ),
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Theme.of(context).colorScheme.outline,
+                        width: 1.0,
+                      ),
+                      top: BorderSide(
+                        color: Theme.of(context).colorScheme.outline,
+                        width: 1.0,
+                      ),
                     ),
                   ),
-                ),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      if (selectedUsers.isNotEmpty)
-                        ...selectedUsers.map((user) {
-                          return Container(
-                            margin: EdgeInsets.only(right: 2.5),
-                            child: InputChip(
-                              label: Text(user.name),
-                              deleteIcon: Icon(Icons.close),
-                              onDeleted: () {
-                                setState(() {
-                                  selectedUsers.remove(user);
-                                });
-                              },
-                              showCheckmark: true,
-                            ),
-                          );
-                        }),
-                      SizedBox(
-                        width: selectedUsers.length < 2
-                            ? MediaQuery.of(context).size.width
-                            : 200,
-                        child: TextFormField(
-                          onChanged: (value) {
-                            context.read<UsersBloc>().add(
-                              UsersEvent.get(searchTerm: value),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        if (selectedUsers.isNotEmpty)
+                          ...selectedUsers.map((user) {
+                            return Container(
+                              margin: EdgeInsets.only(right: 2.5),
+                              child: InputChip(
+                                label: Text(user.name),
+                                deleteIcon: Icon(Icons.close),
+                                onDeleted: () {
+                                  setState(() {
+                                    selectedUsers.remove(user);
+                                  });
+                                },
+                                showCheckmark: true,
+                              ),
                             );
-                          },
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Theme.of(
-                              context,
-                            ).scaffoldBackgroundColor,
-                            hintText: selectedUsers.isEmpty
-                                ? 'Search for people'
-                                : null,
-                            hintStyle: TextStyle(
-                              color: Theme.of(context).hintColor,
+                          }),
+                        SizedBox(
+                          width: selectedUsers.length < 2
+                              ? MediaQuery.of(context).size.width
+                              : 200,
+                          child: TextFormField(
+                            onChanged: (value) {
+                              context.read<UsersBloc>().add(
+                                UsersEvent.get(searchTerm: value),
+                              );
+                            },
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Theme.of(
+                                context,
+                              ).scaffoldBackgroundColor,
+                              hintText: selectedUsers.isEmpty
+                                  ? 'Search for people'
+                                  : null,
+                              hintStyle: TextStyle(
+                                color: Theme.of(context).hintColor,
+                              ),
+                              prefixIcon: selectedUsers.isEmpty
+                                  ? Icon(Symbols.search_rounded)
+                                  : null,
+                              prefixIconConstraints: const BoxConstraints(
+                                minWidth: 0,
+                                minHeight: 0,
+                              ),
+                              border: InputBorder.none,
+                              hoverColor: Colors.transparent,
                             ),
-                            prefixIcon: selectedUsers.isEmpty
-                                ? Icon(Symbols.search_rounded)
-                                : null,
-                            prefixIconConstraints: const BoxConstraints(
-                              minWidth: 0,
-                              minHeight: 0,
-                            ),
-                            border: InputBorder.none,
-                            hoverColor: Colors.transparent,
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: BlocBuilder<UsersBloc, UsersState>(
-                  builder: (context, state) {
-                    final users = state.users.toList();
+                Expanded(
+                  child: BlocBuilder<UsersBloc, UsersState>(
+                    builder: (context, state) {
+                      final users = state.users.toList();
 
-                    if (state.status == UsersStatus.success) {
-                      if (_refreshController.headerStatus ==
-                          RefreshStatus.refreshing) {
-                        _refreshController.refreshCompleted();
+                      if (state.status == UsersStatus.success) {
+                        if (_refreshController.headerStatus ==
+                            RefreshStatus.refreshing) {
+                          _refreshController.refreshCompleted();
+                        }
+                        if (_refreshController.footerStatus ==
+                            LoadStatus.loading) {
+                          _refreshController.loadComplete();
+                        }
                       }
-                      if (_refreshController.footerStatus ==
-                          LoadStatus.loading) {
-                        _refreshController.loadComplete();
-                      }
-                    }
 
-                    if (state.status == UsersStatus.failure) {
-                      if (_refreshController.headerStatus ==
-                          RefreshStatus.refreshing) {
-                        _refreshController.refreshFailed();
+                      if (state.status == UsersStatus.failure) {
+                        if (_refreshController.headerStatus ==
+                            RefreshStatus.refreshing) {
+                          _refreshController.refreshFailed();
+                        }
+                        if (_refreshController.footerStatus ==
+                            LoadStatus.loading) {
+                          _refreshController.loadFailed();
+                        }
                       }
-                      if (_refreshController.footerStatus ==
-                          LoadStatus.loading) {
-                        _refreshController.loadFailed();
-                      }
-                    }
 
-                    return UsersListView(
-                      users: users,
-                      selectedUsers: selectedUsers,
-                      loading:
-                          state.status == UsersStatus.initial ||
-                          state.status == UsersStatus.loading,
-                      failure: state.users.isNotEmpty
-                          ? false
-                          : state.status == UsersStatus.failure,
-                      refreshController: _refreshController,
-                      enablePullUp: state.hasNext,
-                      onUserTap: (user) {
-                        setState(() {
-                          if (selectedUsers.contains(user)) {
-                            selectedUsers.remove(user);
-                          } else {
-                            selectedUsers.add(user);
-                          }
-                        });
-                      },
-                      onLoading: () {
-                        context.read<UsersBloc>().add(
-                          UsersEvent.get(
-                            searchTerm: controller.text,
-                            lastUser: users.last,
-                          ),
-                        );
-                      },
-                      onFailure: () {
-                        context.read<UsersBloc>().add(
-                          UsersEvent.get(lastUser: users.last),
-                        );
-                      },
-                    );
-                  },
+                      return UsersListView(
+                        users: users,
+                        selectedUsers: selectedUsers,
+                        loading:
+                            state.status == UsersStatus.initial ||
+                            state.status == UsersStatus.loading,
+                        failure: state.users.isNotEmpty
+                            ? false
+                            : state.status == UsersStatus.failure,
+                        refreshController: _refreshController,
+                        enablePullUp: state.hasNext,
+                        onUserTap: (user) {
+                          setState(() {
+                            if (selectedUsers.contains(user)) {
+                              selectedUsers.remove(user);
+                            } else {
+                              selectedUsers.add(user);
+                            }
+                          });
+                        },
+                        onLoading: () {
+                          context.read<UsersBloc>().add(
+                            UsersEvent.get(
+                              searchTerm: controller.text,
+                              lastUser: users.last,
+                            ),
+                          );
+                        },
+                        onFailure: () {
+                          context.read<UsersBloc>().add(
+                            UsersEvent.get(lastUser: users.last),
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
-          ),
-          bottomNavigationBar: BottomTextFormField(
-            focusNode: focusNode,
-            showCursor: true,
-            readOnly: false,
-            controller: controller,
-            onTap: () {},
-            onChanged: (value) {},
-            hintText: 'Add a comment',
-            prefixIcon: null,
-            onMedia: (media) {
-              setState(() {
-                _media = media;
-              });
-            },
-            media: _media,
-            onAddMedia: (media) {
-              setState(() {
-                _media.addAll(media);
-              });
-            },
-            onRemoveMedia: (index) {
-              setState(() {
-                _media.removeAt(index);
-              });
-            },
-            onDocument: (file) {
-              setState(() {
-                _document = file;
-              });
-            },
-            document: _document,
-            onContentInsertion: (imageFile) {
-              setState(() {
-                _media.add(imageFile);
-              });
-            },
-            allowedMimeTypes: const <String>['image/png', 'image/gif'],
-            onLocation: (point) {
-              _location = point;
-            },
-            location: _location,
-            onRemoveLocation: () {
-              setState(() {
-                _location = null;
-              });
-            },
-            onSectionSelection: (section) {},
-            section: null,
-            onRemoveSection: () {},
-            onImageEditingComplete: (file) {
-              setState(() {
-                _media.add(file);
-              });
-            },
-            onVideoEditingComplete: (path) {
-              setState(() {
-                _media.add(File(path));
-              });
-            },
-            onSend: selectedUsers.isEmpty
-                ? null
-                : () {
-                    context.loaderOverlay.show();
-                    context.read<DirectMessageBloc>().add(
-                      DirectMessageEvent.send(
-                        users: selectedUsers,
-                        text: controller.text,
-                        post: widget.post,
-                        ballot: widget.ballot,
-                        survey: widget.survey,
-                        petition: widget.petition,
-                        broadcast: widget.broadcast,
-                        section: widget.section,
-                        filePaths: [
-                          ..._media.map((m) => m.path),
-                          if (_document != null) _document!.path,
-                        ],
-                        location: _location,
-                      ),
-                    );
-                    Future.delayed(Duration(seconds: 10), () {
-                      if (context.mounted) {
-                        context.loaderOverlay.hide();
-                      }
-                    });
-                  },
+              ],
+            ),
+            bottomNavigationBar: BottomTextFormField(
+              focusNode: focusNode,
+              showCursor: true,
+              readOnly: false,
+              controller: controller,
+              onTap: () {},
+              onChanged: (value) {},
+              hintText: 'Add a comment',
+              prefixIcon: null,
+              onMedia: (media) {
+                setState(() {
+                  _media = media;
+                });
+              },
+              media: _media,
+              onAddMedia: (media) {
+                setState(() {
+                  _media.addAll(media);
+                });
+              },
+              onRemoveMedia: (index) {
+                setState(() {
+                  _media.removeAt(index);
+                });
+              },
+              onDocument: (file) {
+                setState(() {
+                  _document = file;
+                });
+              },
+              document: _document,
+              onContentInsertion: (imageFile) {
+                setState(() {
+                  _media.add(imageFile);
+                });
+              },
+              allowedMimeTypes: const <String>['image/png', 'image/gif'],
+              onLocation: (point) {
+                _location = point;
+              },
+              location: _location,
+              onRemoveLocation: () {
+                setState(() {
+                  _location = null;
+                });
+              },
+              onSectionSelection: (section) {},
+              section: null,
+              onRemoveSection: () {},
+              onImageEditingComplete: (file) {
+                setState(() {
+                  _media.add(file);
+                });
+              },
+              onVideoEditingComplete: (path) {
+                setState(() {
+                  _media.add(File(path));
+                });
+              },
+              onSend: selectedUsers.isEmpty
+                  ? null
+                  : () {
+                      context.loaderOverlay.show();
+                      context.read<DirectMessageBloc>().add(
+                        DirectMessageEvent.send(
+                          users: selectedUsers,
+                          text: controller.text,
+                          post: widget.post,
+                          ballot: widget.ballot,
+                          survey: widget.survey,
+                          petition: widget.petition,
+                          broadcast: widget.broadcast,
+                          section: widget.section,
+                          filePaths: [
+                            ..._media.map((m) => m.path),
+                            if (_document != null) _document!.path,
+                          ],
+                          location: _location,
+                        ),
+                      );
+                      Future.delayed(Duration(seconds: 10), () {
+                        if (context.mounted) {
+                          context.loaderOverlay.hide();
+                        }
+                      });
+                    },
+            ),
           ),
         ),
       ),

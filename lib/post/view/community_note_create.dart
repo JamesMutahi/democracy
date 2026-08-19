@@ -9,6 +9,7 @@ import 'package:democracy/post/models/post.dart';
 import 'package:democracy/post/view/widgets/post_form_widgets.dart';
 import 'package:democracy/post/view/widgets/reply_tos.dart';
 import 'package:democracy/post/view/widgets/thread_line.dart';
+import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -62,14 +63,22 @@ class _CommunityNoteCreateState extends State<CommunityNoteCreate> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) {
-        final bloc = ReplyToBloc(
-          webSocketService: context.read<WebSocketService>(),
-        );
-        bloc.add(ReplyToEvent.get(postId: widget.postId));
-        return bloc;
-      },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) {
+            final bloc = ReplyToBloc(
+              webSocketService: context.read<WebSocketService>(),
+            );
+            bloc.add(ReplyToEvent.get(postId: widget.postId));
+            return bloc;
+          },
+        ),
+        BlocProvider(
+          create: (context) =>
+              UsersBloc(webSocketService: context.read<WebSocketService>()),
+        ),
+      ],
       child: MultiBlocListener(
         listeners: [
           BlocListener<PostCreateBloc, PostCreateState>(

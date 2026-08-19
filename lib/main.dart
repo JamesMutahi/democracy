@@ -48,7 +48,6 @@ import 'package:democracy/survey/bloc/survey_process/survey_bottom_navigation/su
 import 'package:democracy/user/bloc/blocked/blocked_bloc.dart';
 import 'package:democracy/user/bloc/muted/muted_bloc.dart';
 import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
-import 'package:democracy/user/bloc/users/users_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -273,11 +272,6 @@ void main() {
                     create: (context) => NotificationDetailBloc(
                       webSocketService: context.read<WebSocketService>(),
                       databaseRepository: context.read<DatabaseRepository>(),
-                    ),
-                  ),
-                  BlocProvider(
-                    create: (context) => UsersBloc(
-                      webSocketService: context.read<WebSocketService>(),
                     ),
                   ),
                   BlocProvider(

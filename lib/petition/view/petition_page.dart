@@ -46,6 +46,7 @@ class _PetitionPageState extends State<PetitionPage> {
                 floating: true,
                 snap: true,
                 forceElevated: true,
+                leading: AutoLeadingButton(),
                 title: Text('Petitions'),
                 bottom: PreferredSize(
                   preferredSize: Size.fromHeight(60.0),

@@ -53,14 +53,15 @@ class _Response extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Question> questions = [];
+    Set<Question> questionsSet = {};
     Response response = survey.response as Response;
     for (TextAnswer textAnswer in response.textAnswers) {
-      questions.add(textAnswer.question);
+      questionsSet.add(textAnswer.question);
     }
     for (ChoiceAnswer choiceAnswer in response.choiceAnswers) {
-      questions.add(choiceAnswer.question);
+      questionsSet.add(choiceAnswer.question);
     }
+    List<Question> questions = questionsSet.toList();
     questions.sort((a, b) => a.number.compareTo(b.number));
     return Scaffold(
       appBar: AppBar(
