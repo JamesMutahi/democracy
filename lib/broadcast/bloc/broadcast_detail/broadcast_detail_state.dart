@@ -18,6 +18,16 @@ class BroadcastDetailState with _$BroadcastDetailState {
   const factory BroadcastDetailState.updated({required Broadcast broadcast}) =
       BroadcastUpdated;
 
+  const factory BroadcastDetailState.invitedToSpeak({
+    required int broadcastId,
+    required int userId,
+  }) = InvitedToSpeak;
+
+  const factory BroadcastDetailState.respondedToInvite({
+    required int inviteId,
+    required bool isAccepted,
+  }) = RespondedToInvite;
+
   const factory BroadcastDetailState.deleted({required int broadcastId}) =
       BroadcastDeleted;
 

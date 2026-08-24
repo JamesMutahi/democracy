@@ -50,7 +50,8 @@ class ChatConverter implements JsonConverter<Chat?, Map<String, dynamic>?> {
   }
 }
 
-class MessageConverter implements JsonConverter<Message?, Map<String, dynamic>?> {
+class MessageConverter
+    implements JsonConverter<Message?, Map<String, dynamic>?> {
   const MessageConverter();
 
   @override

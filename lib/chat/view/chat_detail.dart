@@ -630,8 +630,8 @@ class _MessageActions extends StatelessWidget {
                         content:
                             'Are you sure you want to delete this? \n'
                             'The message will be permanently deleted',
-                        button1Text: 'Yes',
-                        onButton1Pressed: () {
+                        elevatedButtonText: 'Yes',
+                        onElevatedButtonPressed: () {
                           context.router.popTop();
                           context.read<MessageDetailBloc>().add(
                             MessageDetailEvent.delete(
@@ -642,8 +642,8 @@ class _MessageActions extends StatelessWidget {
                               .read<MessageActionsCubit>()
                               .closeActionButtons();
                         },
-                        button2Text: 'No',
-                        onButton2Pressed: () {
+                        textButtonText: 'No',
+                        onTextButtonPressed: () {
                           context.router.popTop();
                         },
                       ),

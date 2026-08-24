@@ -1,7 +1,6 @@
-import 'package:auto_route/auto_route.dart';
-import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/broadcast/bloc/participants/participants_bloc.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
+import 'package:democracy/broadcast/view/widgets/participant/profile.dart';
 import 'package:democracy/user/view/widgets/users_listview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -72,7 +71,11 @@ class _AllTabState extends State<AllTab> with AutomaticKeepAliveClientMixin {
             );
           },
           onUserTap: (user) {
-            context.router.push(ProfileRoute(username: user.username));
+            showParticipantProfile(
+              context: context,
+              broadcast: widget.broadcast,
+              user: user,
+            );
           },
           onRefresh: () {
             context.read<ParticipantsBloc>().add(

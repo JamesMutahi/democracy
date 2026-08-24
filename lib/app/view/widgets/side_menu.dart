@@ -518,15 +518,15 @@ class LogoutDialog extends StatelessWidget {
     return CustomDialog(
       title: 'Log out',
       content: 'Are you sure you want to log out?',
-      button1Text: 'Yes',
-      onButton1Pressed: () {
+      elevatedButtonText: 'Yes',
+      onElevatedButtonPressed: () {
         context.router.popTop();
         context.read<MenuControllerCubit>().closeDrawer();
         context.read<WebsocketBloc>().add(WebsocketEvent.disconnect());
         context.read<LoginCubit>().logout();
       },
-      button2Text: 'No',
-      onButton2Pressed: () {
+      textButtonText: 'No',
+      onTextButtonPressed: () {
         context.router.popTop();
       },
     );

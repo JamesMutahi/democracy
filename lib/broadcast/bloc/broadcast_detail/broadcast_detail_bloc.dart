@@ -6,6 +6,7 @@ import 'package:democracy/app/bloc/repository/api/api_repository.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
+import 'package:democracy/broadcast/models/speaker_invite.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -34,6 +35,10 @@ class BroadcastDetailBloc
             add(_Updated(payload: message['payload']));
           case 'delete':
             add(_Deleted(payload: message['payload']));
+          case 'invite_to_speak':
+            add(_InviteToSpeakCompleted(payload: message['payload']));
+          case 'handle_speaker_invite':
+            add(_RespondToInviteCompleted(payload: message['payload']));
         }
       }
     });
@@ -48,6 +53,12 @@ class BroadcastDetailBloc
     on<_Unsubscribe>((event, emit) => _onUnsubscribe(event, emit));
     on<_StartRecording>((event, emit) => _onStartRecording(event, emit));
     on<_StopRecording>((event, emit) => _onStopRecording(event, emit));
+    on<_InviteToSpeak>(_onInviteToSpeak);
+    on<_InviteToSpeakCompleted>(_onInviteToSpeakCompleted);
+    on<_InviteToCoHost>(_onInviteToCoHost);
+    on<_CancelInvite>(_onCancelInvite);
+    on<_RespondToInvite>(_onRespondToInvite);
+    on<_RespondToInviteCompleted>(_onRespondToInviteCompleted);
   }
 
   void _onCreated(_Created event, Emitter<BroadcastDetailState> emit) {
@@ -212,6 +223,127 @@ class BroadcastDetailBloc
       emit(BroadcastJoined(broadcast: event.broadcast));
     } catch (e) {
       emit(BroadcastDetailFailure(error: e.toString()));
+    }
+  }
+
+  void _onInviteToSpeak(
+    _InviteToSpeak event,
+    Emitter<BroadcastDetailState> emit,
+  ) {
+    emit(BroadcastDetailLoading());
+    if (!webSocketService.isConnected) {
+      emit(BroadcastDetailFailure(error: serverError));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        "action": 'invite_to_speak',
+        'request_id': requestId,
+        'broadcast_id': event.broadcast.id,
+        'user_id': event.user.id,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  void _onInviteToSpeakCompleted(
+    _InviteToSpeakCompleted event,
+    Emitter<BroadcastDetailState> emit,
+  ) {
+    emit(BroadcastDetailLoading());
+    if (event.payload['response_status'] == 200) {
+      emit(
+        InvitedToSpeak(
+          broadcastId: event.payload['data']['broadcast_id'],
+          userId: event.payload['data']['user_id'],
+        ),
+      );
+    } else {
+      emit(BroadcastDetailFailure(error: event.payload['errors'].toString()));
+    }
+  }
+
+  void _onInviteToCoHost(
+    _InviteToCoHost event,
+    Emitter<BroadcastDetailState> emit,
+  ) {
+    emit(BroadcastDetailLoading());
+    if (!webSocketService.isConnected) {
+      emit(BroadcastDetailFailure(error: serverError));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        "action": 'invite_to_co_host',
+        'request_id': requestId,
+        'broadcast_id': event.broadcast.id,
+        'user_id': event.user.id,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  void _onCancelInvite(
+    _CancelInvite event,
+    Emitter<BroadcastDetailState> emit,
+  ) {
+    emit(BroadcastDetailLoading());
+    if (!webSocketService.isConnected) {
+      emit(BroadcastDetailFailure(error: serverError));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        "action": 'cancel_invite',
+        'request_id': requestId,
+        'pk': event.invite.id,
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  Future<void> _onRespondToInvite(
+    _RespondToInvite event,
+    Emitter<BroadcastDetailState> emit,
+  ) async {
+    emit(BroadcastDetailLoading());
+    if (!webSocketService.isConnected) {
+      emit(BroadcastDetailFailure(error: serverError));
+      return;
+    }
+
+    Map<String, dynamic> message = {
+      'stream': stream,
+      'payload': {
+        "action": 'handle_speaker_invite',
+        'request_id': requestId,
+        'pk': event.invite.id,
+        "data": {'is_accepted': event.isAccepted},
+      },
+    };
+    webSocketService.send(message);
+  }
+
+  void _onRespondToInviteCompleted(
+    _RespondToInviteCompleted event,
+    Emitter<BroadcastDetailState> emit,
+  ) {
+    emit(BroadcastDetailLoading());
+    if (event.payload['response_status'] == 200) {
+      emit(
+        RespondedToInvite(
+          inviteId: event.payload['data']['invite_id'],
+          isAccepted: event.payload['data']['is_accepted'],
+        ),
+      );
+    } else {
+      emit(BroadcastDetailFailure(error: event.payload['errors'].toString()));
     }
   }
 

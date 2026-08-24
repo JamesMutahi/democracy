@@ -20,6 +20,7 @@ import 'package:democracy/app/core/init_dependencies.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/auth/bloc/login/login_cubit.dart';
 import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
+import 'package:democracy/broadcast/bloc/speaker_detail/speaker_detail_bloc.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/chat/bloc/chat_filter/chat_filter_cubit.dart';
 import 'package:democracy/chat/bloc/direct_message/direct_message_bloc.dart';
@@ -318,6 +319,12 @@ void main() {
                   ),
                   BlocProvider(
                     create: (context) => BroadcastDetailBloc(
+                      webSocketService: context.read<WebSocketService>(),
+                      apiRepository: context.read<APIRepository>(),
+                    ),
+                  ),
+                  BlocProvider(
+                    create: (context) => SpeakerDetailBloc(
                       webSocketService: context.read<WebSocketService>(),
                       apiRepository: context.read<APIRepository>(),
                     ),

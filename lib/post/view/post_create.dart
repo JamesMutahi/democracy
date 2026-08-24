@@ -423,13 +423,13 @@ class PostCreateDialog extends StatelessWidget {
     return CustomDialog(
       title: 'Post',
       content: 'Are you sure you want to post this?',
-      button1Text: 'Yes',
-      onButton1Pressed: () {
+      elevatedButtonText: 'Yes',
+      onElevatedButtonPressed: () {
         context.router.popTop();
         onYesPressed();
       },
-      button2Text: 'No',
-      onButton2Pressed: () => context.router.popTop(),
+      textButtonText: 'No',
+      onTextButtonPressed: () => context.router.popTop(),
     );
   }
 }
@@ -445,13 +445,13 @@ class _SaveDraftDialog extends StatelessWidget {
       title: 'Save as draft',
       content:
           'Do you want to save this post as a draft?\nYou can post it later.',
-      button1Text: 'Delete',
-      onButton1Pressed: () {
+      elevatedButtonText: 'Delete',
+      onElevatedButtonPressed: () {
         context.router.popTop();
         context.router.popTop();
       },
-      button2Text: 'Save',
-      onButton2Pressed: () {
+      textButtonText: 'Save',
+      onTextButtonPressed: () {
         context.router.popTop();
         onYesPressed();
       },

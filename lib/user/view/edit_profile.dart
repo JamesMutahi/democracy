@@ -349,13 +349,13 @@ class _SaveDialog extends StatelessWidget {
     return CustomDialog(
       title: 'Update',
       content: 'Are you sure you want to update this?',
-      button1Text: 'Yes',
-      onButton1Pressed: () {
+      elevatedButtonText: 'Yes',
+      onElevatedButtonPressed: () {
         context.router.popTop();
         onYesPressed();
       },
-      button2Text: 'No',
-      onButton2Pressed: () {
+      textButtonText: 'No',
+      onTextButtonPressed: () {
         context.router.popTop();
       },
     );

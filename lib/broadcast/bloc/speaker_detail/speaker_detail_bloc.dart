@@ -38,12 +38,6 @@ class SpeakerDetailBloc extends Bloc<SpeakerDetailEvent, SpeakerDetailState> {
             add(SpeakerRequestReceived(payload: message['payload']));
           case 'mute':
             add(_MuteStatusReceived(payload: message['payload']));
-          case 'mute_everyone':
-            add(_MutedEveryoneReceived(payload: message['payload']));
-          case 'manage_co_host':
-            add(_ManageCoHostReceived(payload: message['payload']));
-          case 'manage_speaker':
-            add(_ManageSpeakerReceived(payload: message['payload']));
         }
       }
     });
@@ -54,15 +48,12 @@ class SpeakerDetailBloc extends Bloc<SpeakerDetailEvent, SpeakerDetailState> {
     on<RequestToSpeak>(_onRequestToSpeak);
     on<_RequestToSpeakCompleted>(_onRequestToSpeakCompleted);
     on<HandleSpeakerRequest>(_onHandleSpeakerRequest);
-    on<ChangeMuteStatus>(_onChangeMuteStatus);
+    on<_ToggleMute>(_onToggleMute);
     on<_MuteStatusReceived>(_onMuteStatusReceived);
     on<MuteSpeaker>(_onMuteSpeaker);
     on<MuteEveryone>(_onMuteEveryone);
-    on<_MutedEveryoneReceived>(_onMutedEveryoneReceived);
-    on<ManageCoHost>(_onManageCoHost);
-    on<_ManageCoHostReceived>(_onManageCoHostReceived);
-    on<ManageSpeaker>(_onManageSpeaker);
-    on<_ManageSpeakerReceived>(_onManageSpeakerReceived);
+    on<_RemoveCoHost>(_onRemoveCoHost);
+    on<_RemoveSpeaker>(_onRemoveSpeaker);
   }
 
   void _onRequestCreated(
@@ -173,8 +164,8 @@ class SpeakerDetailBloc extends Bloc<SpeakerDetailEvent, SpeakerDetailState> {
     webSocketService.send(message);
   }
 
-  Future<void> _onChangeMuteStatus(
-    ChangeMuteStatus event,
+  Future<void> _onToggleMute(
+    _ToggleMute event,
     Emitter<SpeakerDetailState> emit,
   ) async {
     emit(SpeakerDetailLoading());
@@ -250,20 +241,8 @@ class SpeakerDetailBloc extends Bloc<SpeakerDetailEvent, SpeakerDetailState> {
     webSocketService.send(message);
   }
 
-  Future<void> _onMutedEveryoneReceived(
-    _MutedEveryoneReceived event,
-    Emitter<SpeakerDetailState> emit,
-  ) async {
-    emit(SpeakerDetailLoading());
-    if (event.payload['response_status'] == 200) {
-      emit(MutedEveryone());
-    } else {
-      emit(SpeakerDetailFailure(error: event.payload['errors'].toString()));
-    }
-  }
-
-  Future<void> _onManageCoHost(
-    ManageCoHost event,
+  Future<void> _onRemoveCoHost(
+    _RemoveCoHost event,
     Emitter<SpeakerDetailState> emit,
   ) async {
     emit(SpeakerDetailLoading());
@@ -275,7 +254,7 @@ class SpeakerDetailBloc extends Bloc<SpeakerDetailEvent, SpeakerDetailState> {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
-        "action": 'manage_co_host',
+        "action": 'remove_co_host',
         'request_id': requestId,
         'pk': event.broadcast.id,
         'user_id': event.user.id,
@@ -284,20 +263,8 @@ class SpeakerDetailBloc extends Bloc<SpeakerDetailEvent, SpeakerDetailState> {
     webSocketService.send(message);
   }
 
-  void _onManageCoHostReceived(
-    _ManageCoHostReceived event,
-    Emitter<SpeakerDetailState> emit,
-  ) {
-    emit(SpeakerDetailLoading());
-    if (event.payload['response_status'] == 200) {
-      emit(CoHostStatusChanged(isCoHost: event.payload['data']['is_co_host']));
-    } else {
-      emit(SpeakerDetailFailure(error: event.payload['errors'].toString()));
-    }
-  }
-
-  Future<void> _onManageSpeaker(
-    ManageSpeaker event,
+  Future<void> _onRemoveSpeaker(
+    _RemoveSpeaker event,
     Emitter<SpeakerDetailState> emit,
   ) async {
     emit(SpeakerDetailLoading());
@@ -309,27 +276,13 @@ class SpeakerDetailBloc extends Bloc<SpeakerDetailEvent, SpeakerDetailState> {
     Map<String, dynamic> message = {
       'stream': stream,
       'payload': {
-        "action": 'manage_speaker',
+        "action": 'remove_speaker',
         'request_id': requestId,
         'pk': event.broadcast.id,
         'user_id': event.user.id,
       },
     };
     webSocketService.send(message);
-  }
-
-  void _onManageSpeakerReceived(
-    _ManageSpeakerReceived event,
-    Emitter<SpeakerDetailState> emit,
-  ) {
-    emit(SpeakerDetailLoading());
-    if (event.payload['response_status'] == 200) {
-      emit(
-        SpeakerStatusChanged(isSpeaker: event.payload['data']['is_speaker']),
-      );
-    } else {
-      emit(SpeakerDetailFailure(error: event.payload['errors'].toString()));
-    }
   }
 
   @override

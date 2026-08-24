@@ -207,15 +207,15 @@ class PetitionPopUpMenu extends StatelessWidget {
                     content:
                         'Are you sure you want to close this petition?'
                         '\nYour petition will no longer allow any supporters',
-                    button1Text: 'Yes',
-                    onButton1Pressed: () {
+                    elevatedButtonText: 'Yes',
+                    onElevatedButtonPressed: () {
                       context.read<PetitionDetailBloc>().add(
                         PetitionDetailEvent.changeStatus(petition: petition),
                       );
                       context.router.popTop();
                     },
-                    button2Text: 'No',
-                    onButton2Pressed: () {
+                    textButtonText: 'No',
+                    onTextButtonPressed: () {
                       context.router.popTop();
                     },
                   ),
@@ -228,15 +228,15 @@ class PetitionPopUpMenu extends StatelessWidget {
                     content:
                         'Are you sure you want to open this petition?'
                         '\nPeople will be able to add and remove support',
-                    button1Text: 'Yes',
-                    onButton1Pressed: () {
+                    elevatedButtonText: 'Yes',
+                    onElevatedButtonPressed: () {
                       context.read<PetitionDetailBloc>().add(
                         PetitionDetailEvent.changeStatus(petition: petition),
                       );
                       context.router.popTop();
                     },
-                    button2Text: 'No',
-                    onButton2Pressed: () {
+                    textButtonText: 'No',
+                    onTextButtonPressed: () {
                       context.router.popTop();
                     },
                   ),

@@ -40,4 +40,25 @@ sealed class BroadcastDetailEvent with _$BroadcastDetailEvent {
   const factory BroadcastDetailEvent.stopRecording({
     required Broadcast broadcast,
   }) = _StopRecording;
+  const factory BroadcastDetailEvent.inviteToSpeak({
+    required Broadcast broadcast,
+    required User user,
+  }) = _InviteToSpeak;
+  const factory BroadcastDetailEvent.inviteToSpeakCompleted({
+    required Map<String, dynamic> payload,
+  }) = _InviteToSpeakCompleted;
+    const factory BroadcastDetailEvent.inviteToCoHost({
+    required Broadcast broadcast,
+    required User user,
+  }) = _InviteToCoHost;
+    const factory BroadcastDetailEvent.cancelInvite({
+    required SpeakerInvite invite,
+  }) = _CancelInvite;
+  const factory BroadcastDetailEvent.respondToInvite({
+    required SpeakerInvite invite,
+    required bool isAccepted,
+  }) = _RespondToInvite;
+  const factory BroadcastDetailEvent.respondToInviteCompleted({
+    required Map<String, dynamic> payload,
+  }) = _RespondToInviteCompleted;
 }

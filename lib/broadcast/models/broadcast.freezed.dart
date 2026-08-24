@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Broadcast {
 
- int get id; User get host;@BroadcastTypeConverter() BroadcastType get type;@JsonKey(name: 'co_hosts') List<User> get coHosts; String get title; String get description; County? get county; Constituency? get constituency; Ward? get ward; List<User> get speakers; List<User> get participants;@JsonKey(name: 'participants_count') int get participantsCount;@JsonKey(name: 'muted') List<int> get muted;@JsonKey(name: 'has_started') bool get hasStarted;@JsonKey(name: 'has_ended') bool get hasEnded;@RecordingStatusConverter()@JsonKey(name: 'recording_status') RecordingStatus? get recordingStatus;@JsonKey(name: 'recording_url') String? get recordingUrl;@JsonKey(name: 'is_active') bool get isActive;@JsonKey(name: 'start_time') DateTime get startTime;@JsonKey(name: 'end_time') DateTime? get endTime;
+ int get id; User get host;@BroadcastTypeConverter() BroadcastType get type;@JsonKey(name: 'co_hosts') List<User> get coHosts; String get title; String get description; County? get county; Constituency? get constituency; Ward? get ward; List<User> get speakers;@JsonKey(name: 'speaker_invites') List<SpeakerInvite> get speakerInvites; List<User> get participants;@JsonKey(name: 'participants_count') int get participantsCount;@JsonKey(name: 'muted') List<int> get muted;@JsonKey(name: 'has_started') bool get hasStarted;@JsonKey(name: 'has_ended') bool get hasEnded;@RecordingStatusConverter()@JsonKey(name: 'recording_status') RecordingStatus? get recordingStatus;@JsonKey(name: 'recording_url') String? get recordingUrl;@JsonKey(name: 'is_active') bool get isActive;@JsonKey(name: 'start_time') DateTime get startTime;@JsonKey(name: 'end_time') DateTime? get endTime;
 /// Create a copy of Broadcast
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $BroadcastCopyWith<Broadcast> get copyWith => _$BroadcastCopyWithImpl<Broadcast>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Broadcast&&(identical(other.id, id) || other.id == id)&&(identical(other.host, host) || other.host == host)&&(identical(other.type, type) || other.type == type)&&const DeepCollectionEquality().equals(other.coHosts, coHosts)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.county, county) || other.county == county)&&(identical(other.constituency, constituency) || other.constituency == constituency)&&(identical(other.ward, ward) || other.ward == ward)&&const DeepCollectionEquality().equals(other.speakers, speakers)&&const DeepCollectionEquality().equals(other.participants, participants)&&(identical(other.participantsCount, participantsCount) || other.participantsCount == participantsCount)&&const DeepCollectionEquality().equals(other.muted, muted)&&(identical(other.hasStarted, hasStarted) || other.hasStarted == hasStarted)&&(identical(other.hasEnded, hasEnded) || other.hasEnded == hasEnded)&&(identical(other.recordingStatus, recordingStatus) || other.recordingStatus == recordingStatus)&&(identical(other.recordingUrl, recordingUrl) || other.recordingUrl == recordingUrl)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Broadcast&&(identical(other.id, id) || other.id == id)&&(identical(other.host, host) || other.host == host)&&(identical(other.type, type) || other.type == type)&&const DeepCollectionEquality().equals(other.coHosts, coHosts)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.county, county) || other.county == county)&&(identical(other.constituency, constituency) || other.constituency == constituency)&&(identical(other.ward, ward) || other.ward == ward)&&const DeepCollectionEquality().equals(other.speakers, speakers)&&const DeepCollectionEquality().equals(other.speakerInvites, speakerInvites)&&const DeepCollectionEquality().equals(other.participants, participants)&&(identical(other.participantsCount, participantsCount) || other.participantsCount == participantsCount)&&const DeepCollectionEquality().equals(other.muted, muted)&&(identical(other.hasStarted, hasStarted) || other.hasStarted == hasStarted)&&(identical(other.hasEnded, hasEnded) || other.hasEnded == hasEnded)&&(identical(other.recordingStatus, recordingStatus) || other.recordingStatus == recordingStatus)&&(identical(other.recordingUrl, recordingUrl) || other.recordingUrl == recordingUrl)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,host,type,const DeepCollectionEquality().hash(coHosts),title,description,county,constituency,ward,const DeepCollectionEquality().hash(speakers),const DeepCollectionEquality().hash(participants),participantsCount,const DeepCollectionEquality().hash(muted),hasStarted,hasEnded,recordingStatus,recordingUrl,isActive,startTime,endTime]);
+int get hashCode => Object.hashAll([runtimeType,id,host,type,const DeepCollectionEquality().hash(coHosts),title,description,county,constituency,ward,const DeepCollectionEquality().hash(speakers),const DeepCollectionEquality().hash(speakerInvites),const DeepCollectionEquality().hash(participants),participantsCount,const DeepCollectionEquality().hash(muted),hasStarted,hasEnded,recordingStatus,recordingUrl,isActive,startTime,endTime]);
 
 @override
 String toString() {
-  return 'Broadcast(id: $id, host: $host, type: $type, coHosts: $coHosts, title: $title, description: $description, county: $county, constituency: $constituency, ward: $ward, speakers: $speakers, participants: $participants, participantsCount: $participantsCount, muted: $muted, hasStarted: $hasStarted, hasEnded: $hasEnded, recordingStatus: $recordingStatus, recordingUrl: $recordingUrl, isActive: $isActive, startTime: $startTime, endTime: $endTime)';
+  return 'Broadcast(id: $id, host: $host, type: $type, coHosts: $coHosts, title: $title, description: $description, county: $county, constituency: $constituency, ward: $ward, speakers: $speakers, speakerInvites: $speakerInvites, participants: $participants, participantsCount: $participantsCount, muted: $muted, hasStarted: $hasStarted, hasEnded: $hasEnded, recordingStatus: $recordingStatus, recordingUrl: $recordingUrl, isActive: $isActive, startTime: $startTime, endTime: $endTime)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $BroadcastCopyWith<$Res>  {
   factory $BroadcastCopyWith(Broadcast value, $Res Function(Broadcast) _then) = _$BroadcastCopyWithImpl;
 @useResult
 $Res call({
- int id, User host,@BroadcastTypeConverter() BroadcastType type,@JsonKey(name: 'co_hosts') List<User> coHosts, String title, String description, County? county, Constituency? constituency, Ward? ward, List<User> speakers, List<User> participants,@JsonKey(name: 'participants_count') int participantsCount,@JsonKey(name: 'muted') List<int> muted,@JsonKey(name: 'has_started') bool hasStarted,@JsonKey(name: 'has_ended') bool hasEnded,@RecordingStatusConverter()@JsonKey(name: 'recording_status') RecordingStatus? recordingStatus,@JsonKey(name: 'recording_url') String? recordingUrl,@JsonKey(name: 'is_active') bool isActive,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'end_time') DateTime? endTime
+ int id, User host,@BroadcastTypeConverter() BroadcastType type,@JsonKey(name: 'co_hosts') List<User> coHosts, String title, String description, County? county, Constituency? constituency, Ward? ward, List<User> speakers,@JsonKey(name: 'speaker_invites') List<SpeakerInvite> speakerInvites, List<User> participants,@JsonKey(name: 'participants_count') int participantsCount,@JsonKey(name: 'muted') List<int> muted,@JsonKey(name: 'has_started') bool hasStarted,@JsonKey(name: 'has_ended') bool hasEnded,@RecordingStatusConverter()@JsonKey(name: 'recording_status') RecordingStatus? recordingStatus,@JsonKey(name: 'recording_url') String? recordingUrl,@JsonKey(name: 'is_active') bool isActive,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'end_time') DateTime? endTime
 });
 
 
@@ -65,7 +65,7 @@ class _$BroadcastCopyWithImpl<$Res>
 
 /// Create a copy of Broadcast
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? host = null,Object? type = null,Object? coHosts = null,Object? title = null,Object? description = null,Object? county = freezed,Object? constituency = freezed,Object? ward = freezed,Object? speakers = null,Object? participants = null,Object? participantsCount = null,Object? muted = null,Object? hasStarted = null,Object? hasEnded = null,Object? recordingStatus = freezed,Object? recordingUrl = freezed,Object? isActive = null,Object? startTime = null,Object? endTime = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? host = null,Object? type = null,Object? coHosts = null,Object? title = null,Object? description = null,Object? county = freezed,Object? constituency = freezed,Object? ward = freezed,Object? speakers = null,Object? speakerInvites = null,Object? participants = null,Object? participantsCount = null,Object? muted = null,Object? hasStarted = null,Object? hasEnded = null,Object? recordingStatus = freezed,Object? recordingUrl = freezed,Object? isActive = null,Object? startTime = null,Object? endTime = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,host: null == host ? _self.host : host // ignore: cast_nullable_to_non_nullable
@@ -77,7 +77,8 @@ as String,county: freezed == county ? _self.county : county // ignore: cast_null
 as County?,constituency: freezed == constituency ? _self.constituency : constituency // ignore: cast_nullable_to_non_nullable
 as Constituency?,ward: freezed == ward ? _self.ward : ward // ignore: cast_nullable_to_non_nullable
 as Ward?,speakers: null == speakers ? _self.speakers : speakers // ignore: cast_nullable_to_non_nullable
-as List<User>,participants: null == participants ? _self.participants : participants // ignore: cast_nullable_to_non_nullable
+as List<User>,speakerInvites: null == speakerInvites ? _self.speakerInvites : speakerInvites // ignore: cast_nullable_to_non_nullable
+as List<SpeakerInvite>,participants: null == participants ? _self.participants : participants // ignore: cast_nullable_to_non_nullable
 as List<User>,participantsCount: null == participantsCount ? _self.participantsCount : participantsCount // ignore: cast_nullable_to_non_nullable
 as int,muted: null == muted ? _self.muted : muted // ignore: cast_nullable_to_non_nullable
 as List<int>,hasStarted: null == hasStarted ? _self.hasStarted : hasStarted // ignore: cast_nullable_to_non_nullable
@@ -214,10 +215,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  User host, @BroadcastTypeConverter()  BroadcastType type, @JsonKey(name: 'co_hosts')  List<User> coHosts,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  List<User> speakers,  List<User> participants, @JsonKey(name: 'participants_count')  int participantsCount, @JsonKey(name: 'muted')  List<int> muted, @JsonKey(name: 'has_started')  bool hasStarted, @JsonKey(name: 'has_ended')  bool hasEnded, @RecordingStatusConverter()@JsonKey(name: 'recording_status')  RecordingStatus? recordingStatus, @JsonKey(name: 'recording_url')  String? recordingUrl, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime? endTime)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  User host, @BroadcastTypeConverter()  BroadcastType type, @JsonKey(name: 'co_hosts')  List<User> coHosts,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  List<User> speakers, @JsonKey(name: 'speaker_invites')  List<SpeakerInvite> speakerInvites,  List<User> participants, @JsonKey(name: 'participants_count')  int participantsCount, @JsonKey(name: 'muted')  List<int> muted, @JsonKey(name: 'has_started')  bool hasStarted, @JsonKey(name: 'has_ended')  bool hasEnded, @RecordingStatusConverter()@JsonKey(name: 'recording_status')  RecordingStatus? recordingStatus, @JsonKey(name: 'recording_url')  String? recordingUrl, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime? endTime)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Broadcast() when $default != null:
-return $default(_that.id,_that.host,_that.type,_that.coHosts,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.speakers,_that.participants,_that.participantsCount,_that.muted,_that.hasStarted,_that.hasEnded,_that.recordingStatus,_that.recordingUrl,_that.isActive,_that.startTime,_that.endTime);case _:
+return $default(_that.id,_that.host,_that.type,_that.coHosts,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.speakers,_that.speakerInvites,_that.participants,_that.participantsCount,_that.muted,_that.hasStarted,_that.hasEnded,_that.recordingStatus,_that.recordingUrl,_that.isActive,_that.startTime,_that.endTime);case _:
   return orElse();
 
 }
@@ -235,10 +236,10 @@ return $default(_that.id,_that.host,_that.type,_that.coHosts,_that.title,_that.d
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  User host, @BroadcastTypeConverter()  BroadcastType type, @JsonKey(name: 'co_hosts')  List<User> coHosts,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  List<User> speakers,  List<User> participants, @JsonKey(name: 'participants_count')  int participantsCount, @JsonKey(name: 'muted')  List<int> muted, @JsonKey(name: 'has_started')  bool hasStarted, @JsonKey(name: 'has_ended')  bool hasEnded, @RecordingStatusConverter()@JsonKey(name: 'recording_status')  RecordingStatus? recordingStatus, @JsonKey(name: 'recording_url')  String? recordingUrl, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime? endTime)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  User host, @BroadcastTypeConverter()  BroadcastType type, @JsonKey(name: 'co_hosts')  List<User> coHosts,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  List<User> speakers, @JsonKey(name: 'speaker_invites')  List<SpeakerInvite> speakerInvites,  List<User> participants, @JsonKey(name: 'participants_count')  int participantsCount, @JsonKey(name: 'muted')  List<int> muted, @JsonKey(name: 'has_started')  bool hasStarted, @JsonKey(name: 'has_ended')  bool hasEnded, @RecordingStatusConverter()@JsonKey(name: 'recording_status')  RecordingStatus? recordingStatus, @JsonKey(name: 'recording_url')  String? recordingUrl, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime? endTime)  $default,) {final _that = this;
 switch (_that) {
 case _Broadcast():
-return $default(_that.id,_that.host,_that.type,_that.coHosts,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.speakers,_that.participants,_that.participantsCount,_that.muted,_that.hasStarted,_that.hasEnded,_that.recordingStatus,_that.recordingUrl,_that.isActive,_that.startTime,_that.endTime);}
+return $default(_that.id,_that.host,_that.type,_that.coHosts,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.speakers,_that.speakerInvites,_that.participants,_that.participantsCount,_that.muted,_that.hasStarted,_that.hasEnded,_that.recordingStatus,_that.recordingUrl,_that.isActive,_that.startTime,_that.endTime);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -252,10 +253,10 @@ return $default(_that.id,_that.host,_that.type,_that.coHosts,_that.title,_that.d
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  User host, @BroadcastTypeConverter()  BroadcastType type, @JsonKey(name: 'co_hosts')  List<User> coHosts,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  List<User> speakers,  List<User> participants, @JsonKey(name: 'participants_count')  int participantsCount, @JsonKey(name: 'muted')  List<int> muted, @JsonKey(name: 'has_started')  bool hasStarted, @JsonKey(name: 'has_ended')  bool hasEnded, @RecordingStatusConverter()@JsonKey(name: 'recording_status')  RecordingStatus? recordingStatus, @JsonKey(name: 'recording_url')  String? recordingUrl, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime? endTime)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  User host, @BroadcastTypeConverter()  BroadcastType type, @JsonKey(name: 'co_hosts')  List<User> coHosts,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward,  List<User> speakers, @JsonKey(name: 'speaker_invites')  List<SpeakerInvite> speakerInvites,  List<User> participants, @JsonKey(name: 'participants_count')  int participantsCount, @JsonKey(name: 'muted')  List<int> muted, @JsonKey(name: 'has_started')  bool hasStarted, @JsonKey(name: 'has_ended')  bool hasEnded, @RecordingStatusConverter()@JsonKey(name: 'recording_status')  RecordingStatus? recordingStatus, @JsonKey(name: 'recording_url')  String? recordingUrl, @JsonKey(name: 'is_active')  bool isActive, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime? endTime)?  $default,) {final _that = this;
 switch (_that) {
 case _Broadcast() when $default != null:
-return $default(_that.id,_that.host,_that.type,_that.coHosts,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.speakers,_that.participants,_that.participantsCount,_that.muted,_that.hasStarted,_that.hasEnded,_that.recordingStatus,_that.recordingUrl,_that.isActive,_that.startTime,_that.endTime);case _:
+return $default(_that.id,_that.host,_that.type,_that.coHosts,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.speakers,_that.speakerInvites,_that.participants,_that.participantsCount,_that.muted,_that.hasStarted,_that.hasEnded,_that.recordingStatus,_that.recordingUrl,_that.isActive,_that.startTime,_that.endTime);case _:
   return null;
 
 }
@@ -267,7 +268,7 @@ return $default(_that.id,_that.host,_that.type,_that.coHosts,_that.title,_that.d
 @JsonSerializable()
 
 class _Broadcast implements Broadcast {
-  const _Broadcast({required this.id, required this.host, @BroadcastTypeConverter() required this.type, @JsonKey(name: 'co_hosts') required final  List<User> coHosts, required this.title, required this.description, required this.county, required this.constituency, required this.ward, required final  List<User> speakers, required final  List<User> participants, @JsonKey(name: 'participants_count') required this.participantsCount, @JsonKey(name: 'muted') required final  List<int> muted, @JsonKey(name: 'has_started') required this.hasStarted, @JsonKey(name: 'has_ended') required this.hasEnded, @RecordingStatusConverter()@JsonKey(name: 'recording_status') required this.recordingStatus, @JsonKey(name: 'recording_url') required this.recordingUrl, @JsonKey(name: 'is_active') required this.isActive, @JsonKey(name: 'start_time') required this.startTime, @JsonKey(name: 'end_time') required this.endTime}): _coHosts = coHosts,_speakers = speakers,_participants = participants,_muted = muted;
+  const _Broadcast({required this.id, required this.host, @BroadcastTypeConverter() required this.type, @JsonKey(name: 'co_hosts') required final  List<User> coHosts, required this.title, required this.description, required this.county, required this.constituency, required this.ward, required final  List<User> speakers, @JsonKey(name: 'speaker_invites') required final  List<SpeakerInvite> speakerInvites, required final  List<User> participants, @JsonKey(name: 'participants_count') required this.participantsCount, @JsonKey(name: 'muted') required final  List<int> muted, @JsonKey(name: 'has_started') required this.hasStarted, @JsonKey(name: 'has_ended') required this.hasEnded, @RecordingStatusConverter()@JsonKey(name: 'recording_status') required this.recordingStatus, @JsonKey(name: 'recording_url') required this.recordingUrl, @JsonKey(name: 'is_active') required this.isActive, @JsonKey(name: 'start_time') required this.startTime, @JsonKey(name: 'end_time') required this.endTime}): _coHosts = coHosts,_speakers = speakers,_speakerInvites = speakerInvites,_participants = participants,_muted = muted;
   factory _Broadcast.fromJson(Map<String, dynamic> json) => _$BroadcastFromJson(json);
 
 @override final  int id;
@@ -290,6 +291,13 @@ class _Broadcast implements Broadcast {
   if (_speakers is EqualUnmodifiableListView) return _speakers;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_speakers);
+}
+
+ final  List<SpeakerInvite> _speakerInvites;
+@override@JsonKey(name: 'speaker_invites') List<SpeakerInvite> get speakerInvites {
+  if (_speakerInvites is EqualUnmodifiableListView) return _speakerInvites;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_speakerInvites);
 }
 
  final  List<User> _participants;
@@ -328,16 +336,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Broadcast&&(identical(other.id, id) || other.id == id)&&(identical(other.host, host) || other.host == host)&&(identical(other.type, type) || other.type == type)&&const DeepCollectionEquality().equals(other._coHosts, _coHosts)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.county, county) || other.county == county)&&(identical(other.constituency, constituency) || other.constituency == constituency)&&(identical(other.ward, ward) || other.ward == ward)&&const DeepCollectionEquality().equals(other._speakers, _speakers)&&const DeepCollectionEquality().equals(other._participants, _participants)&&(identical(other.participantsCount, participantsCount) || other.participantsCount == participantsCount)&&const DeepCollectionEquality().equals(other._muted, _muted)&&(identical(other.hasStarted, hasStarted) || other.hasStarted == hasStarted)&&(identical(other.hasEnded, hasEnded) || other.hasEnded == hasEnded)&&(identical(other.recordingStatus, recordingStatus) || other.recordingStatus == recordingStatus)&&(identical(other.recordingUrl, recordingUrl) || other.recordingUrl == recordingUrl)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Broadcast&&(identical(other.id, id) || other.id == id)&&(identical(other.host, host) || other.host == host)&&(identical(other.type, type) || other.type == type)&&const DeepCollectionEquality().equals(other._coHosts, _coHosts)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.county, county) || other.county == county)&&(identical(other.constituency, constituency) || other.constituency == constituency)&&(identical(other.ward, ward) || other.ward == ward)&&const DeepCollectionEquality().equals(other._speakers, _speakers)&&const DeepCollectionEquality().equals(other._speakerInvites, _speakerInvites)&&const DeepCollectionEquality().equals(other._participants, _participants)&&(identical(other.participantsCount, participantsCount) || other.participantsCount == participantsCount)&&const DeepCollectionEquality().equals(other._muted, _muted)&&(identical(other.hasStarted, hasStarted) || other.hasStarted == hasStarted)&&(identical(other.hasEnded, hasEnded) || other.hasEnded == hasEnded)&&(identical(other.recordingStatus, recordingStatus) || other.recordingStatus == recordingStatus)&&(identical(other.recordingUrl, recordingUrl) || other.recordingUrl == recordingUrl)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,host,type,const DeepCollectionEquality().hash(_coHosts),title,description,county,constituency,ward,const DeepCollectionEquality().hash(_speakers),const DeepCollectionEquality().hash(_participants),participantsCount,const DeepCollectionEquality().hash(_muted),hasStarted,hasEnded,recordingStatus,recordingUrl,isActive,startTime,endTime]);
+int get hashCode => Object.hashAll([runtimeType,id,host,type,const DeepCollectionEquality().hash(_coHosts),title,description,county,constituency,ward,const DeepCollectionEquality().hash(_speakers),const DeepCollectionEquality().hash(_speakerInvites),const DeepCollectionEquality().hash(_participants),participantsCount,const DeepCollectionEquality().hash(_muted),hasStarted,hasEnded,recordingStatus,recordingUrl,isActive,startTime,endTime]);
 
 @override
 String toString() {
-  return 'Broadcast(id: $id, host: $host, type: $type, coHosts: $coHosts, title: $title, description: $description, county: $county, constituency: $constituency, ward: $ward, speakers: $speakers, participants: $participants, participantsCount: $participantsCount, muted: $muted, hasStarted: $hasStarted, hasEnded: $hasEnded, recordingStatus: $recordingStatus, recordingUrl: $recordingUrl, isActive: $isActive, startTime: $startTime, endTime: $endTime)';
+  return 'Broadcast(id: $id, host: $host, type: $type, coHosts: $coHosts, title: $title, description: $description, county: $county, constituency: $constituency, ward: $ward, speakers: $speakers, speakerInvites: $speakerInvites, participants: $participants, participantsCount: $participantsCount, muted: $muted, hasStarted: $hasStarted, hasEnded: $hasEnded, recordingStatus: $recordingStatus, recordingUrl: $recordingUrl, isActive: $isActive, startTime: $startTime, endTime: $endTime)';
 }
 
 
@@ -348,7 +356,7 @@ abstract mixin class _$BroadcastCopyWith<$Res> implements $BroadcastCopyWith<$Re
   factory _$BroadcastCopyWith(_Broadcast value, $Res Function(_Broadcast) _then) = __$BroadcastCopyWithImpl;
 @override @useResult
 $Res call({
- int id, User host,@BroadcastTypeConverter() BroadcastType type,@JsonKey(name: 'co_hosts') List<User> coHosts, String title, String description, County? county, Constituency? constituency, Ward? ward, List<User> speakers, List<User> participants,@JsonKey(name: 'participants_count') int participantsCount,@JsonKey(name: 'muted') List<int> muted,@JsonKey(name: 'has_started') bool hasStarted,@JsonKey(name: 'has_ended') bool hasEnded,@RecordingStatusConverter()@JsonKey(name: 'recording_status') RecordingStatus? recordingStatus,@JsonKey(name: 'recording_url') String? recordingUrl,@JsonKey(name: 'is_active') bool isActive,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'end_time') DateTime? endTime
+ int id, User host,@BroadcastTypeConverter() BroadcastType type,@JsonKey(name: 'co_hosts') List<User> coHosts, String title, String description, County? county, Constituency? constituency, Ward? ward, List<User> speakers,@JsonKey(name: 'speaker_invites') List<SpeakerInvite> speakerInvites, List<User> participants,@JsonKey(name: 'participants_count') int participantsCount,@JsonKey(name: 'muted') List<int> muted,@JsonKey(name: 'has_started') bool hasStarted,@JsonKey(name: 'has_ended') bool hasEnded,@RecordingStatusConverter()@JsonKey(name: 'recording_status') RecordingStatus? recordingStatus,@JsonKey(name: 'recording_url') String? recordingUrl,@JsonKey(name: 'is_active') bool isActive,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'end_time') DateTime? endTime
 });
 
 
@@ -365,7 +373,7 @@ class __$BroadcastCopyWithImpl<$Res>
 
 /// Create a copy of Broadcast
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? host = null,Object? type = null,Object? coHosts = null,Object? title = null,Object? description = null,Object? county = freezed,Object? constituency = freezed,Object? ward = freezed,Object? speakers = null,Object? participants = null,Object? participantsCount = null,Object? muted = null,Object? hasStarted = null,Object? hasEnded = null,Object? recordingStatus = freezed,Object? recordingUrl = freezed,Object? isActive = null,Object? startTime = null,Object? endTime = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? host = null,Object? type = null,Object? coHosts = null,Object? title = null,Object? description = null,Object? county = freezed,Object? constituency = freezed,Object? ward = freezed,Object? speakers = null,Object? speakerInvites = null,Object? participants = null,Object? participantsCount = null,Object? muted = null,Object? hasStarted = null,Object? hasEnded = null,Object? recordingStatus = freezed,Object? recordingUrl = freezed,Object? isActive = null,Object? startTime = null,Object? endTime = freezed,}) {
   return _then(_Broadcast(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,host: null == host ? _self.host : host // ignore: cast_nullable_to_non_nullable
@@ -377,7 +385,8 @@ as String,county: freezed == county ? _self.county : county // ignore: cast_null
 as County?,constituency: freezed == constituency ? _self.constituency : constituency // ignore: cast_nullable_to_non_nullable
 as Constituency?,ward: freezed == ward ? _self.ward : ward // ignore: cast_nullable_to_non_nullable
 as Ward?,speakers: null == speakers ? _self._speakers : speakers // ignore: cast_nullable_to_non_nullable
-as List<User>,participants: null == participants ? _self._participants : participants // ignore: cast_nullable_to_non_nullable
+as List<User>,speakerInvites: null == speakerInvites ? _self._speakerInvites : speakerInvites // ignore: cast_nullable_to_non_nullable
+as List<SpeakerInvite>,participants: null == participants ? _self._participants : participants // ignore: cast_nullable_to_non_nullable
 as List<User>,participantsCount: null == participantsCount ? _self.participantsCount : participantsCount // ignore: cast_nullable_to_non_nullable
 as int,muted: null == muted ? _self._muted : muted // ignore: cast_nullable_to_non_nullable
 as List<int>,hasStarted: null == hasStarted ? _self.hasStarted : hasStarted // ignore: cast_nullable_to_non_nullable

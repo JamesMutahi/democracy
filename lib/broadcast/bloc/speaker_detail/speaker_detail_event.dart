@@ -18,7 +18,7 @@ sealed class SpeakerDetailEvent with _$SpeakerDetailEvent {
     required Broadcast broadcast,
   }) = RequestToSpeak;
 
-  const factory SpeakerDetailEvent.requestToSpeakReceived({
+  const factory SpeakerDetailEvent.requestToSpeakCompleted({
     required Map<String, dynamic> payload,
   }) = _RequestToSpeakCompleted;
 
@@ -31,10 +31,10 @@ sealed class SpeakerDetailEvent with _$SpeakerDetailEvent {
     required Map<String, dynamic> payload,
   }) = SpeakerRequestReceived;
 
-  const factory SpeakerDetailEvent.changeMuteStatus({
+  const factory SpeakerDetailEvent.toggleMute({
     required Broadcast broadcast,
     required bool isMuted,
-  }) = ChangeMuteStatus;
+  }) = _ToggleMute;
 
   const factory SpeakerDetailEvent.muteStatusReceived({
     required Map<String, dynamic> payload,
@@ -49,25 +49,13 @@ sealed class SpeakerDetailEvent with _$SpeakerDetailEvent {
     required Broadcast broadcast,
   }) = MuteEveryone;
 
-  const factory SpeakerDetailEvent.mutedEveryoneReceived({
-    required Map<String, dynamic> payload,
-  }) = _MutedEveryoneReceived;
-
-  const factory SpeakerDetailEvent.manageCoHost({
+  const factory SpeakerDetailEvent.removeCoHost({
     required Broadcast broadcast,
     required User user,
-  }) = ManageCoHost;
+  }) = _RemoveCoHost;
 
-  const factory SpeakerDetailEvent.manageCoHostReceived({
-    required Map<String, dynamic> payload,
-  }) = _ManageCoHostReceived;
-
-  const factory SpeakerDetailEvent.manageSpeaker({
+  const factory SpeakerDetailEvent.removeSpeaker({
     required Broadcast broadcast,
     required User user,
-  }) = ManageSpeaker;
-
-  const factory SpeakerDetailEvent.manageSpeakerReceived({
-    required Map<String, dynamic> payload,
-  }) = _ManageSpeakerReceived;
+  }) = _RemoveSpeaker;
 }

@@ -151,13 +151,13 @@ class _SurveyProcessState extends State<_SurveyProcess> {
               return CustomDialog(
                 title: 'Leave survey?',
                 content: 'Progress is not saved',
-                button1Text: 'Yes',
-                onButton1Pressed: () {
+                elevatedButtonText: 'Yes',
+                onElevatedButtonPressed: () {
                   context.router.popTop();
                   context.router.popTop();
                 },
-                button2Text: 'No',
-                onButton2Pressed: () {
+                textButtonText: 'No',
+                onTextButtonPressed: () {
                   context.router.popTop();
                 },
               );

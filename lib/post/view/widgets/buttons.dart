@@ -183,15 +183,15 @@ class PostPopUp extends StatelessWidget {
       builder: (context) => CustomDialog(
         title: 'Delete',
         content: 'Are you sure you want to delete this post?',
-        button1Text: 'Yes',
-        onButton1Pressed: () {
+        elevatedButtonText: 'Yes',
+        onElevatedButtonPressed: () {
           context.router.popTop();
           context.read<PostDetailBloc>().add(
             PostDetailEvent.delete(post: post),
           );
         },
-        button2Text: 'No',
-        onButton2Pressed: () => context.router.popTop(),
+        textButtonText: 'No',
+        onTextButtonPressed: () => context.router.popTop(),
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:democracy/broadcast/models/speaker_invite.dart';
 import 'package:democracy/geo/models/constituency.dart';
 import 'package:democracy/geo/models/county.dart';
 import 'package:democracy/geo/models/ward.dart';
@@ -20,6 +21,8 @@ sealed class Broadcast with _$Broadcast {
     required Constituency? constituency,
     required Ward? ward,
     required List<User> speakers,
+    @JsonKey(name: 'speaker_invites')
+    required List<SpeakerInvite> speakerInvites,
     required List<User> participants,
     @JsonKey(name: 'participants_count') required int participantsCount,
     @JsonKey(name: 'muted') required List<int> muted,

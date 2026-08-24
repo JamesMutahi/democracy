@@ -155,18 +155,24 @@ class _LiveStreamState extends State<_LiveStream> {
 
   @override
   void dispose() {
-    _leaveChannel();
+    _cleanupAgora();
     super.dispose();
   }
 
-  Future<void> _leaveChannel() async {
+  Future<void> _cleanupAgora() async {
     await AgoraService().leaveCurrent();
     await AgoraService().dispose();
     if (mounted) {
       context.read<BroadcastDetailBloc>().add(
         BroadcastDetailEvent.unsubscribe(broadcast: widget.broadcast),
       );
-      context.router.popTop();
+    }
+  }
+
+  Future<void> _leaveChannel() async {
+    await _cleanupAgora();
+    if (mounted) {
+      context.router.popTop(); // Only navigate here
     }
   }
 
@@ -175,7 +181,16 @@ class _LiveStreamState extends State<_LiveStream> {
       context: context,
       builder: (context) => _isHost
           /* TODO: End broadcast via bloc + leave */
-          ? EndLivestreamDialog(onYesPressed: _leaveChannel)
+          ? EndLivestreamDialog(
+              onYesPressed: () {
+                context.read<BroadcastDetailBloc>().add(
+                  BroadcastDetailEvent.stopRecording(
+                    broadcast: widget.broadcast,
+                  ),
+                );
+                _leaveChannel();
+              },
+            )
           : LeaveLivestreamDialog(onYesPressed: _leaveChannel),
     );
   }
@@ -367,13 +382,13 @@ class EndLivestreamDialog extends StatelessWidget {
     return CustomDialog(
       title: 'End livestream',
       content: 'Are you sure you want to end the livestream?',
-      button1Text: 'Yes',
-      onButton1Pressed: () {
+      elevatedButtonText: 'Yes',
+      onElevatedButtonPressed: () {
         context.router.popTop();
         onYesPressed();
       },
-      button2Text: 'No',
-      onButton2Pressed: () {
+      textButtonText: 'No',
+      onTextButtonPressed: () {
         context.router.popTop();
       },
     );
@@ -390,13 +405,13 @@ class LeaveLivestreamDialog extends StatelessWidget {
     return CustomDialog(
       title: 'Leave livestream',
       content: 'Are you sure you want to leave the livestream?',
-      button1Text: 'Yes',
-      onButton1Pressed: () {
+      elevatedButtonText: 'Yes',
+      onElevatedButtonPressed: () {
         context.router.popTop();
         onYesPressed();
       },
-      button2Text: 'No',
-      onButton2Pressed: () {
+      textButtonText: 'No',
+      onTextButtonPressed: () {
         context.router.popTop();
       },
     );

@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:democracy/app/bloc/repository/api/api_repository.dart';
 import 'package:democracy/app/bloc/services/agora_service.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/bloc/websocket/websocket_bloc.dart';
@@ -12,6 +11,7 @@ import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/broadcast/bloc/speaking_indicator/speaking_indicator_bloc.dart';
+import 'package:democracy/broadcast/models/speaker_invite.dart';
 import 'package:democracy/chat/bloc/chat_detail/chat_detail_bloc.dart';
 import 'package:democracy/broadcast/bloc/listeners/listeners_bloc.dart';
 import 'package:democracy/broadcast/bloc/broadcast/broadcast_bloc.dart';
@@ -59,13 +59,15 @@ class MeetingDetail extends StatelessWidget {
               },
             );
           }
-          return BlocProvider(
-            create: (context) => SpeakerDetailBloc(
-              webSocketService: context.read<WebSocketService>(),
-              apiRepository: context.read<APIRepository>(),
-            ),
-            child: _MeetingDetail(broadcast: state.broadcast!),
-          );
+
+          if (!state.broadcast!.isActive || state.broadcast!.hasEnded) {
+            return Scaffold(
+              appBar: AppBar(leading: AutoLeadingButton()),
+              body: Center(child: Text('This meeting has been closed')),
+            );
+          }
+
+          return _MeetingDetail(broadcast: state.broadcast!);
         },
       ),
     );
@@ -84,7 +86,6 @@ class _MeetingDetail extends StatefulWidget {
 class _MeetingDetailState extends State<_MeetingDetail> {
   final AgoraService agoraService = AgoraService();
   late RtcEngine _engine;
-  late int? _count = widget.broadcast.participantsCount;
   bool _isJoined = false;
   bool _hasRequestedToSpeak = false;
   bool isDeleted = false;
@@ -161,6 +162,19 @@ class _MeetingDetailState extends State<_MeetingDetail> {
                     );
                     if (isMuted != _isMuted) {
                       await _engine.muteLocalAudioStream(isMuted);
+                    }
+
+                    if (state.broadcast.speakerInvites.any(
+                      (invite) =>
+                          invite.userId == me.id && invite.isAccepted == null,
+                    )) {
+                      _showInvitationDialog(
+                        invite: state.broadcast.speakerInvites.firstWhere(
+                          (invite) =>
+                              invite.userId == me.id &&
+                              invite.isAccepted == null,
+                        ),
+                      );
                     }
 
                     if (context.mounted) {
@@ -248,7 +262,7 @@ class _MeetingDetailState extends State<_MeetingDetail> {
               ),
               actions: [
                 TextButton(
-                  onPressed: _isHost ? _showEndDialog : _showExitDialog,
+                  onPressed: _showExitDialog,
                   child: Text(
                     _isHost ? 'End' : 'Leave',
                     style: TextStyle(color: Colors.red),
@@ -256,8 +270,8 @@ class _MeetingDetailState extends State<_MeetingDetail> {
                 ),
               ],
             ),
-            body: isDeleted || !widget.broadcast.isActive
-                ? Center(child: Text('This broadcast has been closed'))
+            body: isDeleted
+                ? Center(child: Text('This meeting has been deleted'))
                 : Container(
                     margin: EdgeInsets.symmetric(horizontal: 15),
                     child: CustomScrollView(
@@ -280,7 +294,7 @@ class _MeetingDetailState extends State<_MeetingDetail> {
                                 child: Text(widget.broadcast.description),
                               ),
                               Text(
-                                'Participants: $_count',
+                                'Participants: ${widget.broadcast.participantsCount}',
                                 style: Theme.of(context).textTheme.labelMedium,
                               ),
                             ],
@@ -354,10 +368,7 @@ class _MeetingDetailState extends State<_MeetingDetail> {
           key: ValueKey(user.id),
           me: me,
           user: user,
-          engine: _engine,
           broadcast: widget.broadcast,
-          canManageCoHosts: _isHost,
-          canManageSpeakers: _isHost || _isCoHost,
           isMuted: isMuted,
           isHost: isHost,
           isCoHost: isCoHost,
@@ -406,7 +417,7 @@ class _MeetingDetailState extends State<_MeetingDetail> {
                         onPressed: isBroadcaster
                             ? () async {
                                 context.read<SpeakerDetailBloc>().add(
-                                  ChangeMuteStatus(
+                                  SpeakerDetailEvent.toggleMute(
                                     broadcast: widget.broadcast,
                                     isMuted: !_isMuted,
                                   ),
@@ -415,9 +426,7 @@ class _MeetingDetailState extends State<_MeetingDetail> {
                             : _hasRequestedToSpeak
                             ? null
                             : () {
-                                context.read<SpeakerDetailBloc>().add(
-                                  RequestToSpeak(broadcast: widget.broadcast),
-                                );
+                                _showRequestToSpeakDialog();
                               },
                       ),
                       SizedBox(height: 5),
@@ -440,7 +449,7 @@ class _MeetingDetailState extends State<_MeetingDetail> {
                       iconSize: 20,
                       icon: Icon(Symbols.people_rounded),
                       onPressed: () {
-                        final bloc = context.read<SpeakerDetailBloc>();
+                        final broadcastBloc = context.read<BroadcastBloc>();
                         showModalBottomSheet<void>(
                           context: context,
                           isScrollControlled: true,
@@ -450,27 +459,25 @@ class _MeetingDetailState extends State<_MeetingDetail> {
                               topRight: Radius.circular(20),
                             ),
                           ),
-                          builder: (_) => BlocProvider.value(
-                            value: bloc,
-                            child: MultiBlocProvider(
-                              providers: [
-                                BlocProvider(
-                                  create: (context) => ParticipantsBloc(
-                                    webSocketService: context
-                                        .read<WebSocketService>(),
-                                  ),
+                          builder: (_) => MultiBlocProvider(
+                            providers: [
+                              BlocProvider.value(value: broadcastBloc),
+                              BlocProvider(
+                                create: (context) => ParticipantsBloc(
+                                  webSocketService: context
+                                      .read<WebSocketService>(),
                                 ),
-                                BlocProvider(
-                                  create: (context) => ListenersBloc(
-                                    webSocketService: context
-                                        .read<WebSocketService>(),
-                                  ),
-                                ),
-                              ],
-                              child: _ParticipantsBottomSheet(
-                                broadcast: widget.broadcast,
-                                isHost: _isHost || _isCoHost,
                               ),
+                              BlocProvider(
+                                create: (context) => ListenersBloc(
+                                  webSocketService: context
+                                      .read<WebSocketService>(),
+                                ),
+                              ),
+                            ],
+                            child: _ParticipantsBottomSheet(
+                              broadcast: widget.broadcast,
+                              isHost: _isHost || _isCoHost,
                             ),
                           ),
                         );
@@ -543,7 +550,7 @@ class _MeetingDetailState extends State<_MeetingDetail> {
               }
             },
             onRtcStats: (connection, stats) {
-              setState(() => _count = stats.userCount);
+              // setState(() => _count = stats.userCount);
             },
             onUserJoined: (RtcConnection connection, int uid, int elapsed) {
               //
@@ -627,24 +634,81 @@ class _MeetingDetailState extends State<_MeetingDetail> {
     }
   }
 
-  void _showExitDialog() {
+  void _showRequestToSpeakDialog() {
     showDialog(
       context: context,
-      builder: (context) => ExitMeetingDialog(onYesPressed: _leaveChannel),
+      builder: (BuildContext context) {
+        return CustomDialog(
+          title: 'Request To Speak?',
+          content: 'A request will be sent to speak in the meeting',
+          elevatedButtonText: 'Yes',
+          onElevatedButtonPressed: () {
+            context.read<SpeakerDetailBloc>().add(
+              RequestToSpeak(broadcast: widget.broadcast),
+            );
+            context.router.popTop();
+          },
+          textButtonText: 'No',
+          onTextButtonPressed: () {
+            context.router.popTop();
+          },
+        );
+      },
     );
   }
 
-  void _showEndDialog() {
+  void _showInvitationDialog({required SpeakerInvite invite}) {
     showDialog(
       context: context,
-      builder: (context) => EndMeetingDialog(
-        onYesPressed: () {
-          context.read<BroadcastDetailBloc>().add(
-            BroadcastDetailEvent.stopRecording(broadcast: widget.broadcast),
-          );
-          _leaveChannel();
-        },
-      ),
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return CustomDialog(
+          title: invite.role == SpeakerRole.speaker
+              ? 'Speaker Invitation'
+              : 'Co-Host Invitation',
+          content: invite.role == SpeakerRole.speaker
+              ? 'You have been invited to speak. Do you want to accept?'
+              : 'You have been invited to co-host. Do you want to accept?',
+          textButtonText: 'Decline',
+          onTextButtonPressed: () {
+            context.read<BroadcastDetailBloc>().add(
+              BroadcastDetailEvent.respondToInvite(
+                invite: invite,
+                isAccepted: false,
+              ),
+            );
+            Navigator.of(context).pop(false);
+          },
+          elevatedButtonText: 'Accept',
+          onElevatedButtonPressed: () {
+            context.read<BroadcastDetailBloc>().add(
+              BroadcastDetailEvent.respondToInvite(
+                invite: invite,
+                isAccepted: true,
+              ),
+            );
+            Navigator.of(context).pop(true);
+          },
+        );
+      },
+    );
+  }
+
+  void _showExitDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => _isHost
+          ? EndMeetingDialog(
+              onYesPressed: () {
+                context.read<BroadcastDetailBloc>().add(
+                  BroadcastDetailEvent.stopRecording(
+                    broadcast: widget.broadcast,
+                  ),
+                );
+                _leaveChannel();
+              },
+            )
+          : ExitMeetingDialog(onYesPressed: _leaveChannel),
     );
   }
 }
@@ -659,13 +723,13 @@ class ExitMeetingDialog extends StatelessWidget {
     return CustomDialog(
       title: 'Leave meeting',
       content: 'Are you sure you want to leave the meeting?',
-      button1Text: 'Yes',
-      onButton1Pressed: () {
+      elevatedButtonText: 'Yes',
+      onElevatedButtonPressed: () {
         Navigator.of(context).pop();
         onYesPressed();
       },
-      button2Text: 'No',
-      onButton2Pressed: () {
+      textButtonText: 'No',
+      onTextButtonPressed: () {
         Navigator.of(context).pop();
       },
     );
@@ -682,13 +746,13 @@ class EndMeetingDialog extends StatelessWidget {
     return CustomDialog(
       title: 'End meeting',
       content: 'Are you sure you want to end the meeting?',
-      button1Text: 'Yes',
-      onButton1Pressed: () {
+      elevatedButtonText: 'Yes',
+      onElevatedButtonPressed: () {
         Navigator.of(context).pop();
         onYesPressed();
       },
-      button2Text: 'No',
-      onButton2Pressed: () {
+      textButtonText: 'No',
+      onTextButtonPressed: () {
         Navigator.of(context).pop();
       },
     );

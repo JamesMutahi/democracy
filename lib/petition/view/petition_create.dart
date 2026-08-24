@@ -523,13 +523,13 @@ class PetitionCreateDialog extends StatelessWidget {
     return CustomDialog(
       title: 'Publish',
       content: 'Are you sure you want to publish this?',
-      button1Text: 'Yes',
-      onButton1Pressed: () {
+      elevatedButtonText: 'Yes',
+      onElevatedButtonPressed: () {
         context.router.popTop();
         onYesPressed();
       },
-      button2Text: 'No',
-      onButton2Pressed: () {
+      textButtonText: 'No',
+      onTextButtonPressed: () {
         context.router.popTop();
       },
     );
@@ -546,13 +546,13 @@ class ExitDialog extends StatelessWidget {
       content:
           'Are you sure you want to leave this page? \n'
           'Progress will not be saved.',
-      button1Text: 'Yes',
-      onButton1Pressed: () {
+      elevatedButtonText: 'Yes',
+      onElevatedButtonPressed: () {
         context.router.popTop();
         context.router.popTop();
       },
-      button2Text: 'No',
-      onButton2Pressed: () {
+      textButtonText: 'No',
+      onTextButtonPressed: () {
         context.router.popTop();
       },
     );
@@ -571,13 +571,13 @@ class PostPetitionDialog extends StatelessWidget {
       content:
           'Do you want to post your petition? \n'
           'This will give your petition more exposure',
-      button1Text: 'Yes',
-      onButton1Pressed: () {
+      elevatedButtonText: 'Yes',
+      onElevatedButtonPressed: () {
         context.router.popTop();
         onYesPressed();
       },
-      button2Text: 'No',
-      onButton2Pressed: () {
+      textButtonText: 'No',
+      onTextButtonPressed: () {
         context.router.popTop();
       },
     );

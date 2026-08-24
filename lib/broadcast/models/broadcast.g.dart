@@ -27,6 +27,9 @@ _Broadcast _$BroadcastFromJson(Map<String, dynamic> json) => _Broadcast(
   speakers: (json['speakers'] as List<dynamic>)
       .map((e) => User.fromJson(e as Map<String, dynamic>))
       .toList(),
+  speakerInvites: (json['speaker_invites'] as List<dynamic>)
+      .map((e) => SpeakerInvite.fromJson(e as Map<String, dynamic>))
+      .toList(),
   participants: (json['participants'] as List<dynamic>)
       .map((e) => User.fromJson(e as Map<String, dynamic>))
       .toList(),
@@ -60,6 +63,7 @@ Map<String, dynamic> _$BroadcastToJson(_Broadcast instance) =>
       'constituency': instance.constituency,
       'ward': instance.ward,
       'speakers': instance.speakers,
+      'speaker_invites': instance.speakerInvites,
       'participants': instance.participants,
       'participants_count': instance.participantsCount,
       'muted': instance.muted,

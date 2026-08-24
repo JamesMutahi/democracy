@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
+import 'package:democracy/broadcast/view/widgets/participant/profile.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/user_tile.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +52,11 @@ class _SpeakersTabState extends State<SpeakersTab>
               showProfileButtons: true,
               selectedUsers: [],
               onTap: () {
-                context.router.push(ProfileRoute(username: user.username));
+                showParticipantProfile(
+                  context: context,
+                  broadcast: widget.broadcast,
+                  user: user,
+                );
               },
             );
           }, childCount: widget.broadcast.coHosts.length),

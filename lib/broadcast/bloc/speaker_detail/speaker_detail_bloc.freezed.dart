@@ -55,7 +55,7 @@ extension SpeakerDetailEventPatterns on SpeakerDetailEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _RequestCreated value)?  requestCreated,TResult Function( _RequestLoaded value)?  requestLoaded,TResult Function( _RequestUpdated value)?  requestUpdated,TResult Function( _RequestDeleted value)?  requestDeleted,TResult Function( RequestToSpeak value)?  requestToSpeak,TResult Function( _RequestToSpeakCompleted value)?  requestToSpeakReceived,TResult Function( HandleSpeakerRequest value)?  handleSpeakerRequest,TResult Function( SpeakerRequestReceived value)?  speakerRequestReceived,TResult Function( ChangeMuteStatus value)?  changeMuteStatus,TResult Function( _MuteStatusReceived value)?  muteStatusReceived,TResult Function( MuteSpeaker value)?  muteSpeaker,TResult Function( MuteEveryone value)?  muteEveryone,TResult Function( _MutedEveryoneReceived value)?  mutedEveryoneReceived,TResult Function( ManageCoHost value)?  manageCoHost,TResult Function( _ManageCoHostReceived value)?  manageCoHostReceived,TResult Function( ManageSpeaker value)?  manageSpeaker,TResult Function( _ManageSpeakerReceived value)?  manageSpeakerReceived,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _RequestCreated value)?  requestCreated,TResult Function( _RequestLoaded value)?  requestLoaded,TResult Function( _RequestUpdated value)?  requestUpdated,TResult Function( _RequestDeleted value)?  requestDeleted,TResult Function( RequestToSpeak value)?  requestToSpeak,TResult Function( _RequestToSpeakCompleted value)?  requestToSpeakCompleted,TResult Function( HandleSpeakerRequest value)?  handleSpeakerRequest,TResult Function( SpeakerRequestReceived value)?  speakerRequestReceived,TResult Function( _ToggleMute value)?  toggleMute,TResult Function( _MuteStatusReceived value)?  muteStatusReceived,TResult Function( MuteSpeaker value)?  muteSpeaker,TResult Function( MuteEveryone value)?  muteEveryone,TResult Function( _RemoveCoHost value)?  removeCoHost,TResult Function( _RemoveSpeaker value)?  removeSpeaker,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _RequestCreated() when requestCreated != null:
@@ -63,19 +63,16 @@ return requestCreated(_that);case _RequestLoaded() when requestLoaded != null:
 return requestLoaded(_that);case _RequestUpdated() when requestUpdated != null:
 return requestUpdated(_that);case _RequestDeleted() when requestDeleted != null:
 return requestDeleted(_that);case RequestToSpeak() when requestToSpeak != null:
-return requestToSpeak(_that);case _RequestToSpeakCompleted() when requestToSpeakReceived != null:
-return requestToSpeakReceived(_that);case HandleSpeakerRequest() when handleSpeakerRequest != null:
+return requestToSpeak(_that);case _RequestToSpeakCompleted() when requestToSpeakCompleted != null:
+return requestToSpeakCompleted(_that);case HandleSpeakerRequest() when handleSpeakerRequest != null:
 return handleSpeakerRequest(_that);case SpeakerRequestReceived() when speakerRequestReceived != null:
-return speakerRequestReceived(_that);case ChangeMuteStatus() when changeMuteStatus != null:
-return changeMuteStatus(_that);case _MuteStatusReceived() when muteStatusReceived != null:
+return speakerRequestReceived(_that);case _ToggleMute() when toggleMute != null:
+return toggleMute(_that);case _MuteStatusReceived() when muteStatusReceived != null:
 return muteStatusReceived(_that);case MuteSpeaker() when muteSpeaker != null:
 return muteSpeaker(_that);case MuteEveryone() when muteEveryone != null:
-return muteEveryone(_that);case _MutedEveryoneReceived() when mutedEveryoneReceived != null:
-return mutedEveryoneReceived(_that);case ManageCoHost() when manageCoHost != null:
-return manageCoHost(_that);case _ManageCoHostReceived() when manageCoHostReceived != null:
-return manageCoHostReceived(_that);case ManageSpeaker() when manageSpeaker != null:
-return manageSpeaker(_that);case _ManageSpeakerReceived() when manageSpeakerReceived != null:
-return manageSpeakerReceived(_that);case _:
+return muteEveryone(_that);case _RemoveCoHost() when removeCoHost != null:
+return removeCoHost(_that);case _RemoveSpeaker() when removeSpeaker != null:
+return removeSpeaker(_that);case _:
   return orElse();
 
 }
@@ -93,7 +90,7 @@ return manageSpeakerReceived(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _RequestCreated value)  requestCreated,required TResult Function( _RequestLoaded value)  requestLoaded,required TResult Function( _RequestUpdated value)  requestUpdated,required TResult Function( _RequestDeleted value)  requestDeleted,required TResult Function( RequestToSpeak value)  requestToSpeak,required TResult Function( _RequestToSpeakCompleted value)  requestToSpeakReceived,required TResult Function( HandleSpeakerRequest value)  handleSpeakerRequest,required TResult Function( SpeakerRequestReceived value)  speakerRequestReceived,required TResult Function( ChangeMuteStatus value)  changeMuteStatus,required TResult Function( _MuteStatusReceived value)  muteStatusReceived,required TResult Function( MuteSpeaker value)  muteSpeaker,required TResult Function( MuteEveryone value)  muteEveryone,required TResult Function( _MutedEveryoneReceived value)  mutedEveryoneReceived,required TResult Function( ManageCoHost value)  manageCoHost,required TResult Function( _ManageCoHostReceived value)  manageCoHostReceived,required TResult Function( ManageSpeaker value)  manageSpeaker,required TResult Function( _ManageSpeakerReceived value)  manageSpeakerReceived,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _RequestCreated value)  requestCreated,required TResult Function( _RequestLoaded value)  requestLoaded,required TResult Function( _RequestUpdated value)  requestUpdated,required TResult Function( _RequestDeleted value)  requestDeleted,required TResult Function( RequestToSpeak value)  requestToSpeak,required TResult Function( _RequestToSpeakCompleted value)  requestToSpeakCompleted,required TResult Function( HandleSpeakerRequest value)  handleSpeakerRequest,required TResult Function( SpeakerRequestReceived value)  speakerRequestReceived,required TResult Function( _ToggleMute value)  toggleMute,required TResult Function( _MuteStatusReceived value)  muteStatusReceived,required TResult Function( MuteSpeaker value)  muteSpeaker,required TResult Function( MuteEveryone value)  muteEveryone,required TResult Function( _RemoveCoHost value)  removeCoHost,required TResult Function( _RemoveSpeaker value)  removeSpeaker,}){
 final _that = this;
 switch (_that) {
 case _RequestCreated():
@@ -102,18 +99,15 @@ return requestLoaded(_that);case _RequestUpdated():
 return requestUpdated(_that);case _RequestDeleted():
 return requestDeleted(_that);case RequestToSpeak():
 return requestToSpeak(_that);case _RequestToSpeakCompleted():
-return requestToSpeakReceived(_that);case HandleSpeakerRequest():
+return requestToSpeakCompleted(_that);case HandleSpeakerRequest():
 return handleSpeakerRequest(_that);case SpeakerRequestReceived():
-return speakerRequestReceived(_that);case ChangeMuteStatus():
-return changeMuteStatus(_that);case _MuteStatusReceived():
+return speakerRequestReceived(_that);case _ToggleMute():
+return toggleMute(_that);case _MuteStatusReceived():
 return muteStatusReceived(_that);case MuteSpeaker():
 return muteSpeaker(_that);case MuteEveryone():
-return muteEveryone(_that);case _MutedEveryoneReceived():
-return mutedEveryoneReceived(_that);case ManageCoHost():
-return manageCoHost(_that);case _ManageCoHostReceived():
-return manageCoHostReceived(_that);case ManageSpeaker():
-return manageSpeaker(_that);case _ManageSpeakerReceived():
-return manageSpeakerReceived(_that);}
+return muteEveryone(_that);case _RemoveCoHost():
+return removeCoHost(_that);case _RemoveSpeaker():
+return removeSpeaker(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -127,7 +121,7 @@ return manageSpeakerReceived(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _RequestCreated value)?  requestCreated,TResult? Function( _RequestLoaded value)?  requestLoaded,TResult? Function( _RequestUpdated value)?  requestUpdated,TResult? Function( _RequestDeleted value)?  requestDeleted,TResult? Function( RequestToSpeak value)?  requestToSpeak,TResult? Function( _RequestToSpeakCompleted value)?  requestToSpeakReceived,TResult? Function( HandleSpeakerRequest value)?  handleSpeakerRequest,TResult? Function( SpeakerRequestReceived value)?  speakerRequestReceived,TResult? Function( ChangeMuteStatus value)?  changeMuteStatus,TResult? Function( _MuteStatusReceived value)?  muteStatusReceived,TResult? Function( MuteSpeaker value)?  muteSpeaker,TResult? Function( MuteEveryone value)?  muteEveryone,TResult? Function( _MutedEveryoneReceived value)?  mutedEveryoneReceived,TResult? Function( ManageCoHost value)?  manageCoHost,TResult? Function( _ManageCoHostReceived value)?  manageCoHostReceived,TResult? Function( ManageSpeaker value)?  manageSpeaker,TResult? Function( _ManageSpeakerReceived value)?  manageSpeakerReceived,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _RequestCreated value)?  requestCreated,TResult? Function( _RequestLoaded value)?  requestLoaded,TResult? Function( _RequestUpdated value)?  requestUpdated,TResult? Function( _RequestDeleted value)?  requestDeleted,TResult? Function( RequestToSpeak value)?  requestToSpeak,TResult? Function( _RequestToSpeakCompleted value)?  requestToSpeakCompleted,TResult? Function( HandleSpeakerRequest value)?  handleSpeakerRequest,TResult? Function( SpeakerRequestReceived value)?  speakerRequestReceived,TResult? Function( _ToggleMute value)?  toggleMute,TResult? Function( _MuteStatusReceived value)?  muteStatusReceived,TResult? Function( MuteSpeaker value)?  muteSpeaker,TResult? Function( MuteEveryone value)?  muteEveryone,TResult? Function( _RemoveCoHost value)?  removeCoHost,TResult? Function( _RemoveSpeaker value)?  removeSpeaker,}){
 final _that = this;
 switch (_that) {
 case _RequestCreated() when requestCreated != null:
@@ -135,19 +129,16 @@ return requestCreated(_that);case _RequestLoaded() when requestLoaded != null:
 return requestLoaded(_that);case _RequestUpdated() when requestUpdated != null:
 return requestUpdated(_that);case _RequestDeleted() when requestDeleted != null:
 return requestDeleted(_that);case RequestToSpeak() when requestToSpeak != null:
-return requestToSpeak(_that);case _RequestToSpeakCompleted() when requestToSpeakReceived != null:
-return requestToSpeakReceived(_that);case HandleSpeakerRequest() when handleSpeakerRequest != null:
+return requestToSpeak(_that);case _RequestToSpeakCompleted() when requestToSpeakCompleted != null:
+return requestToSpeakCompleted(_that);case HandleSpeakerRequest() when handleSpeakerRequest != null:
 return handleSpeakerRequest(_that);case SpeakerRequestReceived() when speakerRequestReceived != null:
-return speakerRequestReceived(_that);case ChangeMuteStatus() when changeMuteStatus != null:
-return changeMuteStatus(_that);case _MuteStatusReceived() when muteStatusReceived != null:
+return speakerRequestReceived(_that);case _ToggleMute() when toggleMute != null:
+return toggleMute(_that);case _MuteStatusReceived() when muteStatusReceived != null:
 return muteStatusReceived(_that);case MuteSpeaker() when muteSpeaker != null:
 return muteSpeaker(_that);case MuteEveryone() when muteEveryone != null:
-return muteEveryone(_that);case _MutedEveryoneReceived() when mutedEveryoneReceived != null:
-return mutedEveryoneReceived(_that);case ManageCoHost() when manageCoHost != null:
-return manageCoHost(_that);case _ManageCoHostReceived() when manageCoHostReceived != null:
-return manageCoHostReceived(_that);case ManageSpeaker() when manageSpeaker != null:
-return manageSpeaker(_that);case _ManageSpeakerReceived() when manageSpeakerReceived != null:
-return manageSpeakerReceived(_that);case _:
+return muteEveryone(_that);case _RemoveCoHost() when removeCoHost != null:
+return removeCoHost(_that);case _RemoveSpeaker() when removeSpeaker != null:
+return removeSpeaker(_that);case _:
   return null;
 
 }
@@ -164,26 +155,23 @@ return manageSpeakerReceived(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  requestCreated,TResult Function( Map<String, dynamic> payload)?  requestLoaded,TResult Function( Map<String, dynamic> payload)?  requestUpdated,TResult Function( Map<String, dynamic> payload)?  requestDeleted,TResult Function( Broadcast broadcast)?  requestToSpeak,TResult Function( Map<String, dynamic> payload)?  requestToSpeakReceived,TResult Function( SpeakerRequest request,  bool isApproved)?  handleSpeakerRequest,TResult Function( Map<String, dynamic> payload)?  speakerRequestReceived,TResult Function( Broadcast broadcast,  bool isMuted)?  changeMuteStatus,TResult Function( Map<String, dynamic> payload)?  muteStatusReceived,TResult Function( Broadcast broadcast,  User user)?  muteSpeaker,TResult Function( Broadcast broadcast)?  muteEveryone,TResult Function( Map<String, dynamic> payload)?  mutedEveryoneReceived,TResult Function( Broadcast broadcast,  User user)?  manageCoHost,TResult Function( Map<String, dynamic> payload)?  manageCoHostReceived,TResult Function( Broadcast broadcast,  User user)?  manageSpeaker,TResult Function( Map<String, dynamic> payload)?  manageSpeakerReceived,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  requestCreated,TResult Function( Map<String, dynamic> payload)?  requestLoaded,TResult Function( Map<String, dynamic> payload)?  requestUpdated,TResult Function( Map<String, dynamic> payload)?  requestDeleted,TResult Function( Broadcast broadcast)?  requestToSpeak,TResult Function( Map<String, dynamic> payload)?  requestToSpeakCompleted,TResult Function( SpeakerRequest request,  bool isApproved)?  handleSpeakerRequest,TResult Function( Map<String, dynamic> payload)?  speakerRequestReceived,TResult Function( Broadcast broadcast,  bool isMuted)?  toggleMute,TResult Function( Map<String, dynamic> payload)?  muteStatusReceived,TResult Function( Broadcast broadcast,  User user)?  muteSpeaker,TResult Function( Broadcast broadcast)?  muteEveryone,TResult Function( Broadcast broadcast,  User user)?  removeCoHost,TResult Function( Broadcast broadcast,  User user)?  removeSpeaker,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RequestCreated() when requestCreated != null:
 return requestCreated(_that.payload);case _RequestLoaded() when requestLoaded != null:
 return requestLoaded(_that.payload);case _RequestUpdated() when requestUpdated != null:
 return requestUpdated(_that.payload);case _RequestDeleted() when requestDeleted != null:
 return requestDeleted(_that.payload);case RequestToSpeak() when requestToSpeak != null:
-return requestToSpeak(_that.broadcast);case _RequestToSpeakCompleted() when requestToSpeakReceived != null:
-return requestToSpeakReceived(_that.payload);case HandleSpeakerRequest() when handleSpeakerRequest != null:
+return requestToSpeak(_that.broadcast);case _RequestToSpeakCompleted() when requestToSpeakCompleted != null:
+return requestToSpeakCompleted(_that.payload);case HandleSpeakerRequest() when handleSpeakerRequest != null:
 return handleSpeakerRequest(_that.request,_that.isApproved);case SpeakerRequestReceived() when speakerRequestReceived != null:
-return speakerRequestReceived(_that.payload);case ChangeMuteStatus() when changeMuteStatus != null:
-return changeMuteStatus(_that.broadcast,_that.isMuted);case _MuteStatusReceived() when muteStatusReceived != null:
+return speakerRequestReceived(_that.payload);case _ToggleMute() when toggleMute != null:
+return toggleMute(_that.broadcast,_that.isMuted);case _MuteStatusReceived() when muteStatusReceived != null:
 return muteStatusReceived(_that.payload);case MuteSpeaker() when muteSpeaker != null:
 return muteSpeaker(_that.broadcast,_that.user);case MuteEveryone() when muteEveryone != null:
-return muteEveryone(_that.broadcast);case _MutedEveryoneReceived() when mutedEveryoneReceived != null:
-return mutedEveryoneReceived(_that.payload);case ManageCoHost() when manageCoHost != null:
-return manageCoHost(_that.broadcast,_that.user);case _ManageCoHostReceived() when manageCoHostReceived != null:
-return manageCoHostReceived(_that.payload);case ManageSpeaker() when manageSpeaker != null:
-return manageSpeaker(_that.broadcast,_that.user);case _ManageSpeakerReceived() when manageSpeakerReceived != null:
-return manageSpeakerReceived(_that.payload);case _:
+return muteEveryone(_that.broadcast);case _RemoveCoHost() when removeCoHost != null:
+return removeCoHost(_that.broadcast,_that.user);case _RemoveSpeaker() when removeSpeaker != null:
+return removeSpeaker(_that.broadcast,_that.user);case _:
   return orElse();
 
 }
@@ -201,7 +189,7 @@ return manageSpeakerReceived(_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  requestCreated,required TResult Function( Map<String, dynamic> payload)  requestLoaded,required TResult Function( Map<String, dynamic> payload)  requestUpdated,required TResult Function( Map<String, dynamic> payload)  requestDeleted,required TResult Function( Broadcast broadcast)  requestToSpeak,required TResult Function( Map<String, dynamic> payload)  requestToSpeakReceived,required TResult Function( SpeakerRequest request,  bool isApproved)  handleSpeakerRequest,required TResult Function( Map<String, dynamic> payload)  speakerRequestReceived,required TResult Function( Broadcast broadcast,  bool isMuted)  changeMuteStatus,required TResult Function( Map<String, dynamic> payload)  muteStatusReceived,required TResult Function( Broadcast broadcast,  User user)  muteSpeaker,required TResult Function( Broadcast broadcast)  muteEveryone,required TResult Function( Map<String, dynamic> payload)  mutedEveryoneReceived,required TResult Function( Broadcast broadcast,  User user)  manageCoHost,required TResult Function( Map<String, dynamic> payload)  manageCoHostReceived,required TResult Function( Broadcast broadcast,  User user)  manageSpeaker,required TResult Function( Map<String, dynamic> payload)  manageSpeakerReceived,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  requestCreated,required TResult Function( Map<String, dynamic> payload)  requestLoaded,required TResult Function( Map<String, dynamic> payload)  requestUpdated,required TResult Function( Map<String, dynamic> payload)  requestDeleted,required TResult Function( Broadcast broadcast)  requestToSpeak,required TResult Function( Map<String, dynamic> payload)  requestToSpeakCompleted,required TResult Function( SpeakerRequest request,  bool isApproved)  handleSpeakerRequest,required TResult Function( Map<String, dynamic> payload)  speakerRequestReceived,required TResult Function( Broadcast broadcast,  bool isMuted)  toggleMute,required TResult Function( Map<String, dynamic> payload)  muteStatusReceived,required TResult Function( Broadcast broadcast,  User user)  muteSpeaker,required TResult Function( Broadcast broadcast)  muteEveryone,required TResult Function( Broadcast broadcast,  User user)  removeCoHost,required TResult Function( Broadcast broadcast,  User user)  removeSpeaker,}) {final _that = this;
 switch (_that) {
 case _RequestCreated():
 return requestCreated(_that.payload);case _RequestLoaded():
@@ -209,18 +197,15 @@ return requestLoaded(_that.payload);case _RequestUpdated():
 return requestUpdated(_that.payload);case _RequestDeleted():
 return requestDeleted(_that.payload);case RequestToSpeak():
 return requestToSpeak(_that.broadcast);case _RequestToSpeakCompleted():
-return requestToSpeakReceived(_that.payload);case HandleSpeakerRequest():
+return requestToSpeakCompleted(_that.payload);case HandleSpeakerRequest():
 return handleSpeakerRequest(_that.request,_that.isApproved);case SpeakerRequestReceived():
-return speakerRequestReceived(_that.payload);case ChangeMuteStatus():
-return changeMuteStatus(_that.broadcast,_that.isMuted);case _MuteStatusReceived():
+return speakerRequestReceived(_that.payload);case _ToggleMute():
+return toggleMute(_that.broadcast,_that.isMuted);case _MuteStatusReceived():
 return muteStatusReceived(_that.payload);case MuteSpeaker():
 return muteSpeaker(_that.broadcast,_that.user);case MuteEveryone():
-return muteEveryone(_that.broadcast);case _MutedEveryoneReceived():
-return mutedEveryoneReceived(_that.payload);case ManageCoHost():
-return manageCoHost(_that.broadcast,_that.user);case _ManageCoHostReceived():
-return manageCoHostReceived(_that.payload);case ManageSpeaker():
-return manageSpeaker(_that.broadcast,_that.user);case _ManageSpeakerReceived():
-return manageSpeakerReceived(_that.payload);}
+return muteEveryone(_that.broadcast);case _RemoveCoHost():
+return removeCoHost(_that.broadcast,_that.user);case _RemoveSpeaker():
+return removeSpeaker(_that.broadcast,_that.user);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -234,26 +219,23 @@ return manageSpeakerReceived(_that.payload);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  requestCreated,TResult? Function( Map<String, dynamic> payload)?  requestLoaded,TResult? Function( Map<String, dynamic> payload)?  requestUpdated,TResult? Function( Map<String, dynamic> payload)?  requestDeleted,TResult? Function( Broadcast broadcast)?  requestToSpeak,TResult? Function( Map<String, dynamic> payload)?  requestToSpeakReceived,TResult? Function( SpeakerRequest request,  bool isApproved)?  handleSpeakerRequest,TResult? Function( Map<String, dynamic> payload)?  speakerRequestReceived,TResult? Function( Broadcast broadcast,  bool isMuted)?  changeMuteStatus,TResult? Function( Map<String, dynamic> payload)?  muteStatusReceived,TResult? Function( Broadcast broadcast,  User user)?  muteSpeaker,TResult? Function( Broadcast broadcast)?  muteEveryone,TResult? Function( Map<String, dynamic> payload)?  mutedEveryoneReceived,TResult? Function( Broadcast broadcast,  User user)?  manageCoHost,TResult? Function( Map<String, dynamic> payload)?  manageCoHostReceived,TResult? Function( Broadcast broadcast,  User user)?  manageSpeaker,TResult? Function( Map<String, dynamic> payload)?  manageSpeakerReceived,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  requestCreated,TResult? Function( Map<String, dynamic> payload)?  requestLoaded,TResult? Function( Map<String, dynamic> payload)?  requestUpdated,TResult? Function( Map<String, dynamic> payload)?  requestDeleted,TResult? Function( Broadcast broadcast)?  requestToSpeak,TResult? Function( Map<String, dynamic> payload)?  requestToSpeakCompleted,TResult? Function( SpeakerRequest request,  bool isApproved)?  handleSpeakerRequest,TResult? Function( Map<String, dynamic> payload)?  speakerRequestReceived,TResult? Function( Broadcast broadcast,  bool isMuted)?  toggleMute,TResult? Function( Map<String, dynamic> payload)?  muteStatusReceived,TResult? Function( Broadcast broadcast,  User user)?  muteSpeaker,TResult? Function( Broadcast broadcast)?  muteEveryone,TResult? Function( Broadcast broadcast,  User user)?  removeCoHost,TResult? Function( Broadcast broadcast,  User user)?  removeSpeaker,}) {final _that = this;
 switch (_that) {
 case _RequestCreated() when requestCreated != null:
 return requestCreated(_that.payload);case _RequestLoaded() when requestLoaded != null:
 return requestLoaded(_that.payload);case _RequestUpdated() when requestUpdated != null:
 return requestUpdated(_that.payload);case _RequestDeleted() when requestDeleted != null:
 return requestDeleted(_that.payload);case RequestToSpeak() when requestToSpeak != null:
-return requestToSpeak(_that.broadcast);case _RequestToSpeakCompleted() when requestToSpeakReceived != null:
-return requestToSpeakReceived(_that.payload);case HandleSpeakerRequest() when handleSpeakerRequest != null:
+return requestToSpeak(_that.broadcast);case _RequestToSpeakCompleted() when requestToSpeakCompleted != null:
+return requestToSpeakCompleted(_that.payload);case HandleSpeakerRequest() when handleSpeakerRequest != null:
 return handleSpeakerRequest(_that.request,_that.isApproved);case SpeakerRequestReceived() when speakerRequestReceived != null:
-return speakerRequestReceived(_that.payload);case ChangeMuteStatus() when changeMuteStatus != null:
-return changeMuteStatus(_that.broadcast,_that.isMuted);case _MuteStatusReceived() when muteStatusReceived != null:
+return speakerRequestReceived(_that.payload);case _ToggleMute() when toggleMute != null:
+return toggleMute(_that.broadcast,_that.isMuted);case _MuteStatusReceived() when muteStatusReceived != null:
 return muteStatusReceived(_that.payload);case MuteSpeaker() when muteSpeaker != null:
 return muteSpeaker(_that.broadcast,_that.user);case MuteEveryone() when muteEveryone != null:
-return muteEveryone(_that.broadcast);case _MutedEveryoneReceived() when mutedEveryoneReceived != null:
-return mutedEveryoneReceived(_that.payload);case ManageCoHost() when manageCoHost != null:
-return manageCoHost(_that.broadcast,_that.user);case _ManageCoHostReceived() when manageCoHostReceived != null:
-return manageCoHostReceived(_that.payload);case ManageSpeaker() when manageSpeaker != null:
-return manageSpeaker(_that.broadcast,_that.user);case _ManageSpeakerReceived() when manageSpeakerReceived != null:
-return manageSpeakerReceived(_that.payload);case _:
+return muteEveryone(_that.broadcast);case _RemoveCoHost() when removeCoHost != null:
+return removeCoHost(_that.broadcast,_that.user);case _RemoveSpeaker() when removeSpeaker != null:
+return removeSpeaker(_that.broadcast,_that.user);case _:
   return null;
 
 }
@@ -658,7 +640,7 @@ int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(
 
 @override
 String toString() {
-  return 'SpeakerDetailEvent.requestToSpeakReceived(payload: $payload)';
+  return 'SpeakerDetailEvent.requestToSpeakCompleted(payload: $payload)';
 }
 
 
@@ -848,8 +830,8 @@ as Map<String, dynamic>,
 /// @nodoc
 
 
-class ChangeMuteStatus implements SpeakerDetailEvent {
-  const ChangeMuteStatus({required this.broadcast, required this.isMuted});
+class _ToggleMute implements SpeakerDetailEvent {
+  const _ToggleMute({required this.broadcast, required this.isMuted});
   
 
  final  Broadcast broadcast;
@@ -859,13 +841,13 @@ class ChangeMuteStatus implements SpeakerDetailEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$ChangeMuteStatusCopyWith<ChangeMuteStatus> get copyWith => _$ChangeMuteStatusCopyWithImpl<ChangeMuteStatus>(this, _$identity);
+_$ToggleMuteCopyWith<_ToggleMute> get copyWith => __$ToggleMuteCopyWithImpl<_ToggleMute>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChangeMuteStatus&&(identical(other.broadcast, broadcast) || other.broadcast == broadcast)&&(identical(other.isMuted, isMuted) || other.isMuted == isMuted));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ToggleMute&&(identical(other.broadcast, broadcast) || other.broadcast == broadcast)&&(identical(other.isMuted, isMuted) || other.isMuted == isMuted));
 }
 
 
@@ -874,15 +856,15 @@ int get hashCode => Object.hash(runtimeType,broadcast,isMuted);
 
 @override
 String toString() {
-  return 'SpeakerDetailEvent.changeMuteStatus(broadcast: $broadcast, isMuted: $isMuted)';
+  return 'SpeakerDetailEvent.toggleMute(broadcast: $broadcast, isMuted: $isMuted)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $ChangeMuteStatusCopyWith<$Res> implements $SpeakerDetailEventCopyWith<$Res> {
-  factory $ChangeMuteStatusCopyWith(ChangeMuteStatus value, $Res Function(ChangeMuteStatus) _then) = _$ChangeMuteStatusCopyWithImpl;
+abstract mixin class _$ToggleMuteCopyWith<$Res> implements $SpeakerDetailEventCopyWith<$Res> {
+  factory _$ToggleMuteCopyWith(_ToggleMute value, $Res Function(_ToggleMute) _then) = __$ToggleMuteCopyWithImpl;
 @useResult
 $Res call({
  Broadcast broadcast, bool isMuted
@@ -893,17 +875,17 @@ $BroadcastCopyWith<$Res> get broadcast;
 
 }
 /// @nodoc
-class _$ChangeMuteStatusCopyWithImpl<$Res>
-    implements $ChangeMuteStatusCopyWith<$Res> {
-  _$ChangeMuteStatusCopyWithImpl(this._self, this._then);
+class __$ToggleMuteCopyWithImpl<$Res>
+    implements _$ToggleMuteCopyWith<$Res> {
+  __$ToggleMuteCopyWithImpl(this._self, this._then);
 
-  final ChangeMuteStatus _self;
-  final $Res Function(ChangeMuteStatus) _then;
+  final _ToggleMute _self;
+  final $Res Function(_ToggleMute) _then;
 
 /// Create a copy of SpeakerDetailEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? broadcast = null,Object? isMuted = null,}) {
-  return _then(ChangeMuteStatus(
+  return _then(_ToggleMute(
 broadcast: null == broadcast ? _self.broadcast : broadcast // ignore: cast_nullable_to_non_nullable
 as Broadcast,isMuted: null == isMuted ? _self.isMuted : isMuted // ignore: cast_nullable_to_non_nullable
 as bool,
@@ -1158,80 +1140,8 @@ $BroadcastCopyWith<$Res> get broadcast {
 /// @nodoc
 
 
-class _MutedEveryoneReceived implements SpeakerDetailEvent {
-  const _MutedEveryoneReceived({required final  Map<String, dynamic> payload}): _payload = payload;
-  
-
- final  Map<String, dynamic> _payload;
- Map<String, dynamic> get payload {
-  if (_payload is EqualUnmodifiableMapView) return _payload;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_payload);
-}
-
-
-/// Create a copy of SpeakerDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$MutedEveryoneReceivedCopyWith<_MutedEveryoneReceived> get copyWith => __$MutedEveryoneReceivedCopyWithImpl<_MutedEveryoneReceived>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MutedEveryoneReceived&&const DeepCollectionEquality().equals(other._payload, _payload));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
-
-@override
-String toString() {
-  return 'SpeakerDetailEvent.mutedEveryoneReceived(payload: $payload)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$MutedEveryoneReceivedCopyWith<$Res> implements $SpeakerDetailEventCopyWith<$Res> {
-  factory _$MutedEveryoneReceivedCopyWith(_MutedEveryoneReceived value, $Res Function(_MutedEveryoneReceived) _then) = __$MutedEveryoneReceivedCopyWithImpl;
-@useResult
-$Res call({
- Map<String, dynamic> payload
-});
-
-
-
-
-}
-/// @nodoc
-class __$MutedEveryoneReceivedCopyWithImpl<$Res>
-    implements _$MutedEveryoneReceivedCopyWith<$Res> {
-  __$MutedEveryoneReceivedCopyWithImpl(this._self, this._then);
-
-  final _MutedEveryoneReceived _self;
-  final $Res Function(_MutedEveryoneReceived) _then;
-
-/// Create a copy of SpeakerDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
-  return _then(_MutedEveryoneReceived(
-payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class ManageCoHost implements SpeakerDetailEvent {
-  const ManageCoHost({required this.broadcast, required this.user});
+class _RemoveCoHost implements SpeakerDetailEvent {
+  const _RemoveCoHost({required this.broadcast, required this.user});
   
 
  final  Broadcast broadcast;
@@ -1241,13 +1151,13 @@ class ManageCoHost implements SpeakerDetailEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$ManageCoHostCopyWith<ManageCoHost> get copyWith => _$ManageCoHostCopyWithImpl<ManageCoHost>(this, _$identity);
+_$RemoveCoHostCopyWith<_RemoveCoHost> get copyWith => __$RemoveCoHostCopyWithImpl<_RemoveCoHost>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ManageCoHost&&(identical(other.broadcast, broadcast) || other.broadcast == broadcast)&&(identical(other.user, user) || other.user == user));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RemoveCoHost&&(identical(other.broadcast, broadcast) || other.broadcast == broadcast)&&(identical(other.user, user) || other.user == user));
 }
 
 
@@ -1256,15 +1166,15 @@ int get hashCode => Object.hash(runtimeType,broadcast,user);
 
 @override
 String toString() {
-  return 'SpeakerDetailEvent.manageCoHost(broadcast: $broadcast, user: $user)';
+  return 'SpeakerDetailEvent.removeCoHost(broadcast: $broadcast, user: $user)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $ManageCoHostCopyWith<$Res> implements $SpeakerDetailEventCopyWith<$Res> {
-  factory $ManageCoHostCopyWith(ManageCoHost value, $Res Function(ManageCoHost) _then) = _$ManageCoHostCopyWithImpl;
+abstract mixin class _$RemoveCoHostCopyWith<$Res> implements $SpeakerDetailEventCopyWith<$Res> {
+  factory _$RemoveCoHostCopyWith(_RemoveCoHost value, $Res Function(_RemoveCoHost) _then) = __$RemoveCoHostCopyWithImpl;
 @useResult
 $Res call({
  Broadcast broadcast, User user
@@ -1275,17 +1185,17 @@ $BroadcastCopyWith<$Res> get broadcast;$UserCopyWith<$Res> get user;
 
 }
 /// @nodoc
-class _$ManageCoHostCopyWithImpl<$Res>
-    implements $ManageCoHostCopyWith<$Res> {
-  _$ManageCoHostCopyWithImpl(this._self, this._then);
+class __$RemoveCoHostCopyWithImpl<$Res>
+    implements _$RemoveCoHostCopyWith<$Res> {
+  __$RemoveCoHostCopyWithImpl(this._self, this._then);
 
-  final ManageCoHost _self;
-  final $Res Function(ManageCoHost) _then;
+  final _RemoveCoHost _self;
+  final $Res Function(_RemoveCoHost) _then;
 
 /// Create a copy of SpeakerDetailEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? broadcast = null,Object? user = null,}) {
-  return _then(ManageCoHost(
+  return _then(_RemoveCoHost(
 broadcast: null == broadcast ? _self.broadcast : broadcast // ignore: cast_nullable_to_non_nullable
 as Broadcast,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as User,
@@ -1316,80 +1226,8 @@ $UserCopyWith<$Res> get user {
 /// @nodoc
 
 
-class _ManageCoHostReceived implements SpeakerDetailEvent {
-  const _ManageCoHostReceived({required final  Map<String, dynamic> payload}): _payload = payload;
-  
-
- final  Map<String, dynamic> _payload;
- Map<String, dynamic> get payload {
-  if (_payload is EqualUnmodifiableMapView) return _payload;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_payload);
-}
-
-
-/// Create a copy of SpeakerDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$ManageCoHostReceivedCopyWith<_ManageCoHostReceived> get copyWith => __$ManageCoHostReceivedCopyWithImpl<_ManageCoHostReceived>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ManageCoHostReceived&&const DeepCollectionEquality().equals(other._payload, _payload));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
-
-@override
-String toString() {
-  return 'SpeakerDetailEvent.manageCoHostReceived(payload: $payload)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$ManageCoHostReceivedCopyWith<$Res> implements $SpeakerDetailEventCopyWith<$Res> {
-  factory _$ManageCoHostReceivedCopyWith(_ManageCoHostReceived value, $Res Function(_ManageCoHostReceived) _then) = __$ManageCoHostReceivedCopyWithImpl;
-@useResult
-$Res call({
- Map<String, dynamic> payload
-});
-
-
-
-
-}
-/// @nodoc
-class __$ManageCoHostReceivedCopyWithImpl<$Res>
-    implements _$ManageCoHostReceivedCopyWith<$Res> {
-  __$ManageCoHostReceivedCopyWithImpl(this._self, this._then);
-
-  final _ManageCoHostReceived _self;
-  final $Res Function(_ManageCoHostReceived) _then;
-
-/// Create a copy of SpeakerDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
-  return _then(_ManageCoHostReceived(
-payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class ManageSpeaker implements SpeakerDetailEvent {
-  const ManageSpeaker({required this.broadcast, required this.user});
+class _RemoveSpeaker implements SpeakerDetailEvent {
+  const _RemoveSpeaker({required this.broadcast, required this.user});
   
 
  final  Broadcast broadcast;
@@ -1399,13 +1237,13 @@ class ManageSpeaker implements SpeakerDetailEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$ManageSpeakerCopyWith<ManageSpeaker> get copyWith => _$ManageSpeakerCopyWithImpl<ManageSpeaker>(this, _$identity);
+_$RemoveSpeakerCopyWith<_RemoveSpeaker> get copyWith => __$RemoveSpeakerCopyWithImpl<_RemoveSpeaker>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ManageSpeaker&&(identical(other.broadcast, broadcast) || other.broadcast == broadcast)&&(identical(other.user, user) || other.user == user));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RemoveSpeaker&&(identical(other.broadcast, broadcast) || other.broadcast == broadcast)&&(identical(other.user, user) || other.user == user));
 }
 
 
@@ -1414,15 +1252,15 @@ int get hashCode => Object.hash(runtimeType,broadcast,user);
 
 @override
 String toString() {
-  return 'SpeakerDetailEvent.manageSpeaker(broadcast: $broadcast, user: $user)';
+  return 'SpeakerDetailEvent.removeSpeaker(broadcast: $broadcast, user: $user)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $ManageSpeakerCopyWith<$Res> implements $SpeakerDetailEventCopyWith<$Res> {
-  factory $ManageSpeakerCopyWith(ManageSpeaker value, $Res Function(ManageSpeaker) _then) = _$ManageSpeakerCopyWithImpl;
+abstract mixin class _$RemoveSpeakerCopyWith<$Res> implements $SpeakerDetailEventCopyWith<$Res> {
+  factory _$RemoveSpeakerCopyWith(_RemoveSpeaker value, $Res Function(_RemoveSpeaker) _then) = __$RemoveSpeakerCopyWithImpl;
 @useResult
 $Res call({
  Broadcast broadcast, User user
@@ -1433,17 +1271,17 @@ $BroadcastCopyWith<$Res> get broadcast;$UserCopyWith<$Res> get user;
 
 }
 /// @nodoc
-class _$ManageSpeakerCopyWithImpl<$Res>
-    implements $ManageSpeakerCopyWith<$Res> {
-  _$ManageSpeakerCopyWithImpl(this._self, this._then);
+class __$RemoveSpeakerCopyWithImpl<$Res>
+    implements _$RemoveSpeakerCopyWith<$Res> {
+  __$RemoveSpeakerCopyWithImpl(this._self, this._then);
 
-  final ManageSpeaker _self;
-  final $Res Function(ManageSpeaker) _then;
+  final _RemoveSpeaker _self;
+  final $Res Function(_RemoveSpeaker) _then;
 
 /// Create a copy of SpeakerDetailEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? broadcast = null,Object? user = null,}) {
-  return _then(ManageSpeaker(
+  return _then(_RemoveSpeaker(
 broadcast: null == broadcast ? _self.broadcast : broadcast // ignore: cast_nullable_to_non_nullable
 as Broadcast,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as User,
@@ -1469,78 +1307,6 @@ $UserCopyWith<$Res> get user {
     return _then(_self.copyWith(user: value));
   });
 }
-}
-
-/// @nodoc
-
-
-class _ManageSpeakerReceived implements SpeakerDetailEvent {
-  const _ManageSpeakerReceived({required final  Map<String, dynamic> payload}): _payload = payload;
-  
-
- final  Map<String, dynamic> _payload;
- Map<String, dynamic> get payload {
-  if (_payload is EqualUnmodifiableMapView) return _payload;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_payload);
-}
-
-
-/// Create a copy of SpeakerDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$ManageSpeakerReceivedCopyWith<_ManageSpeakerReceived> get copyWith => __$ManageSpeakerReceivedCopyWithImpl<_ManageSpeakerReceived>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ManageSpeakerReceived&&const DeepCollectionEquality().equals(other._payload, _payload));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
-
-@override
-String toString() {
-  return 'SpeakerDetailEvent.manageSpeakerReceived(payload: $payload)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$ManageSpeakerReceivedCopyWith<$Res> implements $SpeakerDetailEventCopyWith<$Res> {
-  factory _$ManageSpeakerReceivedCopyWith(_ManageSpeakerReceived value, $Res Function(_ManageSpeakerReceived) _then) = __$ManageSpeakerReceivedCopyWithImpl;
-@useResult
-$Res call({
- Map<String, dynamic> payload
-});
-
-
-
-
-}
-/// @nodoc
-class __$ManageSpeakerReceivedCopyWithImpl<$Res>
-    implements _$ManageSpeakerReceivedCopyWith<$Res> {
-  __$ManageSpeakerReceivedCopyWithImpl(this._self, this._then);
-
-  final _ManageSpeakerReceived _self;
-  final $Res Function(_ManageSpeakerReceived) _then;
-
-/// Create a copy of SpeakerDetailEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
-  return _then(_ManageSpeakerReceived(
-payload: null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>,
-  ));
-}
-
-
 }
 
 /// @nodoc

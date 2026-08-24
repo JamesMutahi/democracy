@@ -487,13 +487,13 @@ class PostUpdateDialog extends StatelessWidget {
     return CustomDialog(
       title: 'Post',
       content: 'Are you sure you want to post this?',
-      button1Text: 'Yes',
-      onButton1Pressed: () {
+      elevatedButtonText: 'Yes',
+      onElevatedButtonPressed: () {
         context.router.popTop();
         onYesPressed();
       },
-      button2Text: 'No',
-      onButton2Pressed: () {
+      textButtonText: 'No',
+      onTextButtonPressed: () {
         context.router.popTop();
       },
     );
@@ -512,13 +512,13 @@ class _SaveDraftDialog extends StatelessWidget {
       content:
           'Do you want to save your changes? \n'
           'You can still post at a later time.',
-      button1Text: 'Yes',
-      onButton1Pressed: () {
+      elevatedButtonText: 'Yes',
+      onElevatedButtonPressed: () {
         context.router.popTop();
         onYesPressed();
       },
-      button2Text: 'No',
-      onButton2Pressed: () {
+      textButtonText: 'No',
+      onTextButtonPressed: () {
         context.router.popTop();
         context.router.popTop();
       },
