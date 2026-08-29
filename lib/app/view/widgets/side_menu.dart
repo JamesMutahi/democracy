@@ -53,8 +53,10 @@ class SideMenu extends StatelessWidget {
                             children: [
                               if (kIsWeb)
                                 Container(
-                                  margin: const EdgeInsets.only(
-                                    left: 11,
+                                  margin: EdgeInsets.only(
+                                    left: responsive.smallerThan(expandSideMenu)
+                                        ? 6
+                                        : 10,
                                     top: 5,
                                   ),
                                   child: InkWell(
@@ -65,7 +67,7 @@ class SideMenu extends StatelessWidget {
                                       menuController.closeDrawer();
                                       context.navigateTo(const HomeRoute());
                                     },
-                                    child: const Logo(width: 40, height: 40),
+                                    child: const Logo(width: 50, height: 50),
                                   ),
                                 )
                               else
@@ -318,36 +320,39 @@ class _ProfileButtonState extends State<_ProfileButton>
     return kIsWeb &&
             !responsive.isMobile &&
             responsive.smallerThan(expandSideMenu)
-        ? MenuAnchor(
-            controller: _menuController,
-            builder: (context, controller, child) {
-              return GestureDetector(
-                onTap: () {
-                  if (controller.isOpen) {
-                    controller.close();
-                  } else {
-                    controller.open();
-                  }
-                },
-                child: ProfileImage(
-                  userId: widget.user.id,
-                  username: widget.user.username,
-                  imageUrl: widget.user.image,
+        ? Container(
+            margin: EdgeInsets.only(bottom: 15),
+            child: MenuAnchor(
+              controller: _menuController,
+              builder: (context, controller, child) {
+                return GestureDetector(
+                  onTap: () {
+                    if (controller.isOpen) {
+                      controller.close();
+                    } else {
+                      controller.open();
+                    }
+                  },
+                  child: ProfileImage(
+                    userId: widget.user.id,
+                    username: widget.user.username,
+                    imageUrl: widget.user.image,
+                  ),
+                );
+              },
+              menuChildren: [
+                _buildProfileButton(
+                  onTap: () {
+                    _menuController.close();
+                  },
                 ),
-              );
-            },
-            menuChildren: [
-              _buildProfileButton(
-                onTap: () {
-                  _menuController.close();
-                },
-              ),
-              _buildLogoutButton(
-                onTap: () {
-                  _menuController.close();
-                },
-              ),
-            ],
+                _buildLogoutButton(
+                  onTap: () {
+                    _menuController.close();
+                  },
+                ),
+              ],
+            ),
           )
         : Column(
             children: [

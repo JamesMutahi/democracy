@@ -26,6 +26,7 @@ sealed class Broadcast with _$Broadcast {
     required List<User> participants,
     @JsonKey(name: 'participants_count') required int participantsCount,
     @JsonKey(name: 'muted') required List<int> muted,
+    @JsonKey(name: 'comments_count') required int commentsCount,
     @JsonKey(name: 'has_started') required bool hasStarted,
     @JsonKey(name: 'has_ended') required bool hasEnded,
     @RecordingStatusConverter()

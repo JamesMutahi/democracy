@@ -217,7 +217,10 @@ class _PostContainer extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                ProfileName(user: post.author),
+                                ProfileName(
+                                  name: post.author.name,
+                                  username: post.author.username,
+                                ),
                                 if (!isDependency)
                                   Container(
                                     margin: EdgeInsets.only(right: 20),

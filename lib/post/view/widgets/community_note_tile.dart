@@ -173,7 +173,10 @@ class CommunityNoteTile extends StatelessWidget {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               ProfileName(
-                                                user: communityNote.author,
+                                                name: communityNote.author.name,
+                                                username: communityNote
+                                                    .author
+                                                    .username,
                                               ),
                                               Text(
                                                 '${timeFormat.format(communityNote.publishedAt)} • '

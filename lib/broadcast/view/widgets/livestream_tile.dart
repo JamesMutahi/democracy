@@ -198,7 +198,10 @@ class _LivestreamTileState extends State<LivestreamTile> {
                       radius: 12,
                     ),
                     SizedBox(width: 5),
-                    ProfileName(user: widget.broadcast.host),
+                    ProfileName(
+                      name: widget.broadcast.host.name,
+                      username: widget.broadcast.host.username,
+                    ),
                   ],
                 ),
                 SizedBox(height: 5),

@@ -48,298 +48,317 @@ class _MessagesState extends State<Messages> {
   }
 
   @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MessagesBloc, MessagesState>(
-      buildWhen: (previous, current) {
-        return current.chatId == widget.chat.id;
-      },
-      builder: (context, state) {
-        if (state.status == MessagesStatus.initial ||
-            state.status == MessagesStatus.loading && state.messages.isEmpty) {
-          return const BottomLoader();
-        }
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<MessagesBloc, MessagesState>(
+          listenWhen: (previous, current) => previous.status != current.status,
+          listener: (context, state) {
+            if (state.status == MessagesStatus.success) {
+              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+                _refreshController.refreshCompleted();
+              }
+              if (_refreshController.footerStatus == LoadStatus.loading) {
+                _refreshController.loadComplete();
+              }
+            } else if (state.status == MessagesStatus.failure) {
+              if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+                _refreshController.refreshFailed();
+              }
+              if (_refreshController.footerStatus == LoadStatus.loading) {
+                _refreshController.loadFailed();
+              }
+            }
+          },
+        ),
+        BlocListener<WebsocketBloc, WebsocketState>(
+          listener: (context, websocketState) {
+            if (websocketState.status == WebsocketStatus.connected) {
+              final state = context.read<MessagesBloc>().state;
+              if (state.chatId == widget.chat.id) {
+                final syncedMessages = state.messages
+                    .where((m) => m.syncStatus == SyncStatus.synced)
+                    .toList();
 
-        if (state.status == MessagesStatus.success) {
-          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-            _refreshController.refreshCompleted();
+                context.read<MessagesBloc>().add(
+                  MessagesEvent.get(
+                    chat: widget.chat,
+                    newestMessage: syncedMessages.isNotEmpty
+                        ? syncedMessages.first
+                        : null,
+                  ),
+                );
+              }
+            }
+          },
+        ),
+        BlocListener<SyncBloc, SyncState>(
+          listener: (context, state) {
+            if (state is MessageSynced &&
+                state.message.chatId == widget.chat.id) {
+              context.read<MessagesBloc>().add(
+                MessagesEvent.update(message: state.message),
+              );
+            }
+          },
+        ),
+      ],
+      child: BlocBuilder<MessagesBloc, MessagesState>(
+        buildWhen: (previous, current) => current.chatId == widget.chat.id,
+        builder: (context, state) {
+          if (state.status == MessagesStatus.initial ||
+              (state.status == MessagesStatus.loading &&
+                  state.messages.isEmpty)) {
+            return const BottomLoader();
           }
-          if (_refreshController.footerStatus == LoadStatus.loading) {
-            _refreshController.loadComplete();
-          }
-        }
 
-        if (state.status == MessagesStatus.failure) {
-          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-            _refreshController.refreshFailed();
-          }
-          if (_refreshController.footerStatus == LoadStatus.loading) {
-            _refreshController.loadFailed();
-          }
-
-          if (state.messages.isEmpty) {
+          if (state.status == MessagesStatus.failure &&
+              state.messages.isEmpty) {
             return FailureRetryButton(
               onPressed: () => context.read<MessagesBloc>().add(
                 MessagesEvent.get(chat: widget.chat),
               ),
             );
           }
-        }
 
-        List<Message> messages = state.messages.toList();
+          final sortedMessages = List<Message>.from(state.messages)
+            ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
-        messages.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+          final now = DateTime.now();
+          final todayStr = DateFormat.yMMMMd().format(now);
+          final yesterdayStr = DateFormat.yMMMMd().format(
+            now.subtract(const Duration(days: 1)),
+          );
 
-        double messageMargin = 10;
+          final groupByDate = groupBy(
+            sortedMessages,
+            (obj) => DateFormat.yMMMMd().format(obj.createdAt),
+          );
 
-        var groupByDate = groupBy(
-          messages,
-          (obj) => DateFormat.yMMMMd().format(obj.createdAt),
-        );
-
-        List<Widget> widgets = [];
-        groupByDate.forEach((date, list) {
-          // ListView is in reverse so objects are set in reverse order as well
-          for (Message message in list) {
-            bool alignedRight = widget.me.id == message.author.id;
-            String text = extractLink(
-              text: message.text,
-              post: message.post,
-              ballot: message.ballot,
-              broadcast: message.broadcast,
-              survey: message.survey,
-              petition: message.petition,
-              section: message.section,
-            );
-            widgets.add(SizedBox(height: messageMargin));
-            if (message.isDeleted) {
-              widgets.add(
-                AlignmentContainer(
-                  message: message,
-                  alignedRight: alignedRight,
-                  verticalPadding: 7,
-                  horizontalPadding: 14,
-                  child: Text(
-                    'Message was deleted',
-                    style: TextStyle(color: Theme.of(context).disabledColor),
-                  ),
-                ),
-              );
-            } else {
-              widgets.add(
-                MessageTime(message: message, alignedRight: alignedRight),
-              );
-              if (text.isNotEmpty) {
-                widgets.add(
-                  AlignmentContainer(
-                    key: ValueKey(message.id),
-                    message: message,
-                    alignedRight: alignedRight,
-                    verticalPadding: 7,
-                    horizontalPadding: 14,
-                    child: Column(
-                      children: [
-                        MessageCard(text: text),
-                        CachedLinkPreview(
-                          text: message.text,
-                          cacheKey: 'message: ${message.id}',
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }
-              if (message.assets.isNotEmpty) {
-                if (text.isNotEmpty) {
-                  widgets.add(SizedBox(height: messageMargin));
-                }
-                widgets.add(
-                  AlignmentContainer(
-                    message: message,
-                    alignedRight: alignedRight,
-                    child: AssetViewer(
-                      key: ValueKey(message.id),
-                      assets: message.assets,
-                    ),
-                  ),
-                );
-              }
-              if (message.location != null) {
-                if (text.isNotEmpty) {
-                  widgets.add(SizedBox(height: messageMargin));
-                }
-                widgets.add(
-                  AlignmentContainer(
-                    message: message,
-                    alignedRight: alignedRight,
-                    child: MapWidget(
-                      key: ValueKey(message.id),
-                      mapCenter: message.location!,
-                    ),
-                  ),
-                );
-              }
-              if (message.post != null) {
-                if (text.isNotEmpty) {
-                  widgets.add(SizedBox(height: messageMargin));
-                }
-                widgets.add(
-                  AlignmentContainer(
-                    message: message,
-                    alignedRight: alignedRight,
-                    child: PostWidgetSelector(
-                      key: ValueKey(message.id),
-                      post: message.post!,
-                      isDependency: true,
-                    ),
-                  ),
-                );
-              }
-              if (message.ballot != null) {
-                if (text.isNotEmpty) {
-                  widgets.add(SizedBox(height: messageMargin));
-                }
-                widgets.add(
-                  AlignmentContainer(
-                    message: message,
-                    alignedRight: alignedRight,
-                    child: BallotTile(
-                      key: ValueKey(message.id),
-                      ballot: message.ballot!,
-                      isDependency: true,
-                    ),
-                  ),
-                );
-              }
-              if (message.survey != null) {
-                if (text.isNotEmpty) {
-                  widgets.add(SizedBox(height: messageMargin));
-                }
-                widgets.add(
-                  AlignmentContainer(
-                    message: message,
-                    alignedRight: alignedRight,
-                    child: SurveyTile(
-                      key: ValueKey(message.id),
-                      survey: message.survey!,
-                      isDependency: true,
-                    ),
-                  ),
-                );
-              }
-              if (message.petition != null) {
-                if (text.isNotEmpty) {
-                  widgets.add(SizedBox(height: messageMargin));
-                }
-                widgets.add(
-                  AlignmentContainer(
-                    message: message,
-                    alignedRight: alignedRight,
-                    child: PetitionTile(
-                      key: ValueKey(message.id),
-                      petition: message.petition!,
-                      isDependency: true,
-                    ),
-                  ),
-                );
-              }
-              if (message.broadcast != null) {
-                if (text.isNotEmpty) {
-                  widgets.add(SizedBox(height: messageMargin));
-                }
-                widgets.add(
-                  AlignmentContainer(
-                    message: message,
-                    alignedRight: alignedRight,
-                    child: BroadcastTile(
-                      key: ValueKey(message.id),
-                      broadcast: message.broadcast!,
-                      isDependency: true,
-                    ),
-                  ),
-                );
-              }
-              if (message.section != null) {
-                if (text.isNotEmpty) {
-                  widgets.add(SizedBox(height: messageMargin));
-                }
-                widgets.add(
-                  AlignmentContainer(
-                    message: message,
-                    alignedRight: alignedRight,
-                    child: SectionTile(
-                      key: ValueKey(message.id),
-                      section: message.section!,
-                      isDependency: true,
-                    ),
-                  ),
-                );
-              }
+          final List<ChatDisplayItem> displayItems = [];
+          groupByDate.forEach((date, list) {
+            for (final message in list) {
+              displayItems.add(ChatDisplayItem.message(message));
             }
-          }
-          widgets.add(SizedBox(height: messageMargin));
-          if (DateFormat.yMMMMd().format(DateTime.now()) == date) {
-            widgets.add(Center(child: Text('Today')));
-          } else if (DateFormat.yMMMMd().format(
-                DateTime.now().subtract(Duration(days: 1)),
-              ) ==
-              date) {
-            widgets.add(Center(child: Text('Yesterday')));
-          } else {
-            widgets.add(Center(child: Text(date)));
-          }
-          widgets.add(SizedBox(height: messageMargin));
-        });
 
-        return MultiBlocListener(
-          listeners: [
-            BlocListener<WebsocketBloc, WebsocketState>(
-              listener: (context, websocketState) {
-                if (websocketState.status == WebsocketStatus.connected) {
-                  context.read<MessagesBloc>().add(
-                    MessagesEvent.get(
-                      chat: widget.chat,
-                      newestMessage: messages
-                          .where((m) => m.syncStatus == SyncStatus.synced)
-                          .first,
-                    ),
-                  );
-                }
-              },
-            ),
-            BlocListener<SyncBloc, SyncState>(
-              listener: (context, state) {
-                if (state is MessageSynced) {
-                  if (state.message.chatId == widget.chat.id) {
-                    context.read<MessagesBloc>().add(
-                      MessagesEvent.update(message: state.message),
-                    );
-                  }
-                }
-              },
-            ),
-          ],
-          child: SmartRefresher(
-            // Messages are listed in reverse, down is up and up is down...lol
+            String displayDate = date;
+            if (date == todayStr) {
+              displayDate = 'Today';
+            } else if (date == yesterdayStr) {
+              displayDate = 'Yesterday';
+            }
+            displayItems.add(ChatDisplayItem.date(displayDate));
+          });
+
+          return SmartRefresher(
             enablePullDown: false,
             enablePullUp: state.hasNext,
             controller: _refreshController,
             onLoading: () {
+              final syncedMessages = sortedMessages
+                  .where((m) => m.syncStatus == SyncStatus.synced)
+                  .toList();
+
               context.read<MessagesBloc>().add(
                 MessagesEvent.get(
                   chat: widget.chat,
-                  oldestMessage: messages
-                      .where((m) => m.syncStatus == SyncStatus.synced)
-                      .last,
+                  oldestMessage: syncedMessages.isNotEmpty
+                      ? syncedMessages.last
+                      : null,
                 ),
               );
             },
-            footer: ClassicFooter(),
-            child: ListView(reverse: true, children: widgets),
-          ),
-        );
-      },
+            footer: const ClassicFooter(),
+            child: ListView.builder(
+              reverse: true,
+              itemCount: displayItems.length,
+              itemBuilder: (context, index) {
+                final item = displayItems[index];
+                if (item.isDateHeader) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 16.0,
+                      horizontal: 8.0,
+                    ),
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12.0,
+                          vertical: 6.0,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.surfaceContainerHighest,
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        child: Text(
+                          item.dateText ?? '',
+                          style: Theme.of(context).textTheme.labelMedium
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                                fontWeight: FontWeight.w600,
+                              ),
+                        ),
+                      ),
+                    ),
+                  );
+                } else {
+                  return _buildMessageContent(
+                    item.message!,
+                    widget.me,
+                    context,
+                  );
+                }
+              },
+            ),
+          );
+        },
+      ),
     );
   }
+
+  Widget _buildMessageContent(Message message, User me, BuildContext context) {
+    final bool alignedRight = me.id == message.author.id;
+
+    if (message.isDeleted) {
+      return AlignmentContainer(
+        message: message,
+        alignedRight: alignedRight,
+        verticalPadding: 7,
+        horizontalPadding: 14,
+        child: Text(
+          'Message was deleted',
+          style: TextStyle(color: Theme.of(context).disabledColor),
+        ),
+      );
+    }
+
+    final List<Widget> contentWidgets = [];
+
+    // Text & Link Preview
+    final String text = extractLink(
+      text: message.text,
+      post: message.post,
+      ballot: message.ballot,
+      broadcast: message.broadcast,
+      survey: message.survey,
+      petition: message.petition,
+      section: message.section,
+    );
+
+    // Helper to add attachments with proper spacing
+    void addAttachment(Widget child, String typeKey) {
+      if (text.isNotEmpty) {
+        contentWidgets.add(const SizedBox(height: 10.0));
+      }
+      contentWidgets.add(
+        AlignmentContainer(
+          key: ValueKey('${message.id}_$typeKey'),
+          message: message,
+          alignedRight: alignedRight,
+          child: child,
+        ),
+      );
+    }
+
+    if (message.assets.isNotEmpty) {
+      addAttachment(AssetViewer(assets: message.assets), 'assets');
+    }
+    if (message.location != null) {
+      addAttachment(MapWidget(mapCenter: message.location!), 'location');
+    }
+    if (message.post != null) {
+      addAttachment(
+        PostWidgetSelector(post: message.post!, isDependency: true),
+        'post',
+      );
+    }
+    if (message.ballot != null) {
+      addAttachment(
+        BallotTile(ballot: message.ballot!, isDependency: true),
+        'ballot',
+      );
+    }
+    if (message.survey != null) {
+      addAttachment(
+        SurveyTile(survey: message.survey!, isDependency: true),
+        'survey',
+      );
+    }
+    if (message.petition != null) {
+      addAttachment(
+        PetitionTile(petition: message.petition!, isDependency: true),
+        'petition',
+      );
+    }
+    if (message.broadcast != null) {
+      addAttachment(
+        BroadcastTile(broadcast: message.broadcast!, isDependency: true),
+        'broadcast',
+      );
+    }
+    if (message.section != null) {
+      addAttachment(
+        SectionTile(section: message.section!, isDependency: true),
+        'section',
+      );
+    }
+
+    if (text.isNotEmpty) {
+      contentWidgets.add(
+        AlignmentContainer(
+          key: ValueKey('${message.id}_text'),
+          message: message,
+          alignedRight: alignedRight,
+          verticalPadding: 7,
+          horizontalPadding: 14,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              MessageCard(text: text),
+              CachedLinkPreview(
+                text: message.text,
+                cacheKey: 'message: ${message.id}',
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // Time
+    contentWidgets.add(
+      MessageTime(message: message, alignedRight: alignedRight),
+    );
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: alignedRight
+          ? CrossAxisAlignment.end
+          : CrossAxisAlignment.start,
+      children: contentWidgets,
+    );
+  }
+}
+
+// --- Helper Model for ListView.builder Performance ---
+class ChatDisplayItem {
+  final bool isDateHeader;
+  final String? dateText;
+  final Message? message;
+
+  ChatDisplayItem.date(this.dateText) : isDateHeader = true, message = null;
+
+  ChatDisplayItem.message(this.message) : isDateHeader = false, dateText = null;
 }
 
 class MessageCard extends StatefulWidget {
@@ -358,6 +377,7 @@ class _MessageCardState extends State<MessageCard> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         CustomText(
           text: widget.text,
@@ -393,7 +413,7 @@ class MessageTime extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var timeFormat = DateFormat('hh:mm a');
+    final timeFormat = DateFormat('hh:mm a');
     return Align(
       alignment: alignedRight ? Alignment.topRight : Alignment.topLeft,
       child: Container(
@@ -404,32 +424,32 @@ class MessageTime extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            message.isEdited
-                ? Text(
-                    'Edited ',
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: Theme.of(context).disabledColor,
-                    ),
-                  )
-                : SizedBox.shrink(),
-            message.syncStatus == SyncStatus.pending
-                ? SpinKitThreeInOut(
-                    color: Theme.of(context).disabledColor,
-                    size: Theme.of(context).textTheme.labelSmall!.fontSize!,
-                  )
-                : message.syncStatus == SyncStatus.failed
-                ? Text(
-                    'Not Delivered',
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: Theme.of(context).colorScheme.error,
-                    ),
-                  )
-                : Text(
-                    timeFormat.format(message.createdAt).toLowerCase(),
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: Theme.of(context).disabledColor,
-                    ),
-                  ),
+            if (message.isEdited)
+              Text(
+                'Edited ',
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: Theme.of(context).disabledColor,
+                ),
+              ),
+            if (message.syncStatus == SyncStatus.pending)
+              SpinKitThreeInOut(
+                color: Theme.of(context).disabledColor,
+                size: Theme.of(context).textTheme.labelSmall!.fontSize!,
+              )
+            else if (message.syncStatus == SyncStatus.failed)
+              Text(
+                'Not Delivered',
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.error,
+                ),
+              )
+            else
+              Text(
+                timeFormat.format(message.createdAt).toLowerCase(),
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: Theme.of(context).disabledColor,
+                ),
+              ),
           ],
         ),
       ),
@@ -458,114 +478,98 @@ class AlignmentContainer extends StatefulWidget {
 }
 
 class _AlignmentContainerState extends State<AlignmentContainer> {
-  double messageMargin = 10;
   Color highlightColor = Colors.transparent;
   bool canTap = false;
 
   @override
   Widget build(BuildContext context) {
     final responsive = ResponsiveBreakpoints.of(context);
-    double messageWidth = responsive.screenWidth < 600
+    final double messageWidth = responsive.screenWidth < 600
         ? MediaQuery.of(context).size.width / 1.5
-        : 400;
+        : 400.0;
+
     return BlocListener<MessageActionsCubit, MessageActionsState>(
+      listenWhen: (previous, current) => previous.status != current.status,
       listener: (context, state) {
         if (state.status == MessageActionsStatus.actionButtonsOpened) {
-          if (state.messages.contains(widget.message)) {
-            setState(() {
-              highlightColor = Theme.of(context).highlightColor;
-            });
-          } else {
-            if (highlightColor != Colors.transparent) {
-              setState(() {
-                highlightColor = Colors.transparent;
-              });
-            }
+          final isHighlighted = state.messages.contains(widget.message);
+          if (isHighlighted && highlightColor == Colors.transparent) {
+            setState(() => highlightColor = Theme.of(context).highlightColor);
+          } else if (!isHighlighted && highlightColor != Colors.transparent) {
+            setState(() => highlightColor = Colors.transparent);
           }
           canTap = true;
-        }
-        if (state.status == MessageActionsStatus.actionButtonsClosed) {
-          setState(() {
-            highlightColor = Colors.transparent;
-            canTap = false;
-          });
+        } else if (state.status == MessageActionsStatus.actionButtonsClosed) {
+          if (highlightColor != Colors.transparent) {
+            setState(() => highlightColor = Colors.transparent);
+          }
+          canTap = false;
         }
       },
       child: GestureDetector(
-        onTap: widget.message.isDeleted
+        onTap: widget.message.isDeleted || !canTap
             ? null
-            : canTap
-            ? () {
-                context.read<MessageActionsCubit>().messageHighlighted(
-                  message: widget.message,
-                );
-              }
-            : null,
+            : () => context.read<MessageActionsCubit>().messageHighlighted(
+                message: widget.message,
+              ),
+        onLongPress: widget.message.isDeleted
+            ? null
+            : () => context.read<MessageActionsCubit>().messageHighlighted(
+                message: widget.message,
+              ),
         child: Container(
-          margin: EdgeInsets.only(top: messageMargin),
+          margin: const EdgeInsets.only(top: 10.0),
           color: highlightColor,
-          child: GestureDetector(
-            onLongPress: widget.message.isDeleted
-                ? null
-                : () {
-                    context.read<MessageActionsCubit>().messageHighlighted(
-                      message: widget.message,
-                    );
-                  },
-            child: Align(
-              alignment: widget.alignedRight
-                  ? Alignment.topRight
-                  : Alignment.topLeft,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: messageWidth),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Flexible(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          vertical: widget.verticalPadding,
-                          horizontal: widget.horizontalPadding,
-                        ),
-                        margin: EdgeInsets.only(
-                          left: widget.alignedRight ? 0 : messageMargin,
-                          right: widget.alignedRight ? messageMargin : 0,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(15),
-                            topRight: Radius.circular(15),
-                            bottomLeft: widget.alignedRight
-                                ? Radius.circular(15)
-                                : Radius.circular(0),
-                            bottomRight: widget.alignedRight
-                                ? Radius.circular(0)
-                                : Radius.circular(15),
+          child: Align(
+            alignment: widget.alignedRight
+                ? Alignment.topRight
+                : Alignment.topLeft,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: messageWidth),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        vertical: widget.verticalPadding,
+                        horizontal: widget.horizontalPadding,
+                      ),
+                      margin: EdgeInsets.only(
+                        left: widget.alignedRight ? 0 : 10.0,
+                        right: widget.alignedRight ? 10.0 : 0,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: const Radius.circular(15),
+                          topRight: const Radius.circular(15),
+                          bottomLeft: Radius.circular(
+                            widget.alignedRight ? 15 : 0,
                           ),
-                          color: widget.alignedRight
-                              ? Theme.of(context).colorScheme.primaryContainer
-                              : Theme.of(
-                                  context,
-                                ).colorScheme.secondaryContainer,
+                          bottomRight: Radius.circular(
+                            widget.alignedRight ? 0 : 15,
+                          ),
                         ),
-                        child: widget.child,
+                        color: widget.alignedRight
+                            ? Theme.of(context).colorScheme.primaryContainer
+                            : Theme.of(context).colorScheme.secondaryContainer,
+                      ),
+                      child: widget.child,
+                    ),
+                  ),
+                  if (widget.message.syncStatus == SyncStatus.failed)
+                    GestureDetector(
+                      onTap: () =>
+                          context.read<SyncBloc>().add(SyncEvent.start()),
+                      child: Container(
+                        margin: const EdgeInsets.only(right: 5.0),
+                        child: Icon(
+                          Icons.error_rounded,
+                          color: Theme.of(context).colorScheme.error,
+                        ),
                       ),
                     ),
-                    if (widget.message.syncStatus == SyncStatus.failed)
-                      Container(
-                        margin: EdgeInsets.only(right: 5),
-                        child: GestureDetector(
-                          onTap: () {
-                            context.read<SyncBloc>().add(SyncEvent.start());
-                          },
-                          child: Icon(
-                            Icons.error_rounded,
-                            color: Theme.of(context).colorScheme.error,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
+                ],
               ),
             ),
           ),

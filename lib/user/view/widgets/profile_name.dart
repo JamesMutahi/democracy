@@ -1,10 +1,10 @@
-import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 
 class ProfileName extends StatelessWidget {
-  const ProfileName({super.key, required this.user});
+  const ProfileName({super.key, required this.name, required this.username});
 
-  final User user;
+  final String name;
+  final String username;
 
   @override
   Widget build(BuildContext context) {
@@ -14,11 +14,11 @@ class ProfileName extends StatelessWidget {
       TextSpan(
         children: [
           TextSpan(
-            text: user.name,
+            text: name,
             style: TextStyle(fontWeight: FontWeight.w500),
           ),
           TextSpan(
-            text: ' @${user.username}',
+            text: ' @$username',
             style: TextStyle(color: Theme.of(context).hintColor),
           ),
         ],

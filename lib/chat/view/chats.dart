@@ -212,7 +212,7 @@ class ChatTile extends StatelessWidget {
         imageUrl: otherUser.image,
         navigateToProfile: true,
       ),
-      title: ProfileName(user: otherUser),
+      title: ProfileName(name: otherUser.name, username: otherUser.username,),
       subtitle: Row(
         children: [
           if (isFromMe && lastMessage.isRead) const _ReadIcon(),

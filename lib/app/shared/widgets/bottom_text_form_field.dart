@@ -18,6 +18,7 @@ import 'package:path_provider/path_provider.dart';
 class BottomTextFormField extends StatefulWidget {
   const BottomTextFormField({
     super.key,
+    this.showExtrasButton = true,
     required this.focusNode,
     required this.showCursor,
     required this.readOnly,
@@ -47,6 +48,7 @@ class BottomTextFormField extends StatefulWidget {
     this.onSend,
   });
 
+  final bool showExtrasButton;
   final FocusNode focusNode;
   final bool showCursor;
   final bool readOnly;
@@ -138,18 +140,21 @@ class _BottomTextFormFieldState extends State<BottomTextFormField>
           _extrasRowWidget(),
           Row(
             children: [
-              GestureDetector(
-                onTap: onExtrasButtonPressed,
-                child: Card(
-                  margin: EdgeInsets.only(left: 10),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: RotationTransition(
-                      turns: Tween<double>(
-                        begin: 0.0,
-                        end: 0.125,
-                      ).animate(_extrasRowAnimationController),
-                      child: const Icon(Icons.add_rounded),
+              Visibility(
+                visible: widget.showExtrasButton,
+                child: GestureDetector(
+                  onTap: onExtrasButtonPressed,
+                  child: Card(
+                    margin: EdgeInsets.only(left: 10),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: RotationTransition(
+                        turns: Tween<double>(
+                          begin: 0.0,
+                          end: 0.125,
+                        ).animate(_extrasRowAnimationController),
+                        child: const Icon(Icons.add_rounded),
+                      ),
                     ),
                   ),
                 ),

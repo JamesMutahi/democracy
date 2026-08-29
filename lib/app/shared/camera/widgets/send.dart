@@ -76,7 +76,7 @@ class Recipient extends StatelessWidget {
             ),
           ),
           SizedBox(width: 5),
-          ProfileName(user: recipient),
+          ProfileName(name: recipient.name, username: recipient.username),
         ],
       ),
     );

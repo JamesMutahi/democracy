@@ -57,7 +57,7 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
         );
         emit(ChatCreated(chat: chat, userId: event.payload['request_id']));
       } else {
-        emit(ChatDetailFailure(error: event.payload['errors'].toString()));
+        emit(ChatDetailFailure(error: event.payload['errors'][0].toString()));
       }
     } catch (error, stackTrace) {
       addError(error, stackTrace);
@@ -74,7 +74,7 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
         );
         emit(ChatLoaded(chat: chat));
       } else {
-        emit(ChatDetailFailure(error: event.payload['errors'].toString()));
+        emit(ChatDetailFailure(error: event.payload['errors'][0].toString()));
       }
     } catch (error, stackTrace) {
       addError(error, stackTrace);
@@ -91,7 +91,7 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
         );
         emit(ChatUpdated(chat: chat));
       } else {
-        emit(ChatDetailFailure(error: event.payload['errors'].toString()));
+        emit(ChatDetailFailure(error: event.payload['errors'][0].toString()));
       }
     } catch (error, stackTrace) {
       addError(error, stackTrace);
@@ -107,7 +107,7 @@ class ChatDetailBloc extends Bloc<ChatDetailEvent, ChatDetailState> {
         await databaseRepository.deleteChat(id: id);
         emit(ChatDeleted(chatId: id));
       } else {
-        emit(ChatDetailFailure(error: event.payload['errors'].toString()));
+        emit(ChatDetailFailure(error: event.payload['errors'][0].toString()));
       }
     } catch (error, stackTrace) {
       addError(error, stackTrace);

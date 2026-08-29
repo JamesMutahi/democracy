@@ -21,7 +21,7 @@ class BottomReplyTextField extends StatefulWidget {
   State<BottomReplyTextField> createState() => _BottomReplyTextFieldState();
 }
 
-class _BottomReplyTextFieldState extends State<BottomReplyTextField>{
+class _BottomReplyTextFieldState extends State<BottomReplyTextField> {
   bool _disableSendButton = true;
   List<File> _media = [];
   File? _document;
@@ -84,14 +84,11 @@ class _BottomReplyTextFieldState extends State<BottomReplyTextField>{
           controller: _controller,
           onTap: () {},
           onChanged: (value) {
-            if (value == '') {
-              setState(() {
-                _disableSendButton = true;
-              });
-            } else {
-              setState(() {
-                _disableSendButton = false;
-              });
+            if (value.isEmpty) {
+              setState(() => _disableSendButton = true);
+            }
+            if (value.isNotEmpty && _disableSendButton) {
+              setState(() => _disableSendButton = false);
             }
           },
           hintText: 'Reply',

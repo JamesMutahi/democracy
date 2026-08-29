@@ -273,7 +273,10 @@ class PetitionAuthorInfo extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ProfileName(user: petition.author),
+            ProfileName(
+              name: petition.author.name,
+              username: petition.author.username,
+            ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1),
               decoration: BoxDecoration(

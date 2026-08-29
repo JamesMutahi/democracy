@@ -162,7 +162,10 @@ class _HostInfo extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ProfileName(user: broadcast.host),
+                ProfileName(
+                  name: broadcast.host.name,
+                  username: broadcast.host.username,
+                ),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1),
                   decoration: BoxDecoration(

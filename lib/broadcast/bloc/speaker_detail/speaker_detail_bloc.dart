@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:democracy/app/bloc/repository/api/api_repository.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
@@ -17,10 +16,8 @@ const String stream = 'broadcasts';
 const String requestId = 'speaker_requests';
 
 class SpeakerDetailBloc extends Bloc<SpeakerDetailEvent, SpeakerDetailState> {
-  SpeakerDetailBloc({
-    required this.webSocketService,
-    required this.apiRepository,
-  }) : super(const SpeakerDetailState.initial()) {
+  SpeakerDetailBloc({required this.webSocketService})
+    : super(const SpeakerDetailState.initial()) {
     _subscription = webSocketService.messages.listen((message) {
       if (message['stream'] == 'broadcasts') {
         switch (message['payload']['action']) {
@@ -293,5 +290,4 @@ class SpeakerDetailBloc extends Bloc<SpeakerDetailEvent, SpeakerDetailState> {
 
   late StreamSubscription _subscription;
   final WebSocketService webSocketService;
-  final APIRepository apiRepository;
 }

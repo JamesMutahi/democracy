@@ -37,6 +37,7 @@ _Broadcast _$BroadcastFromJson(Map<String, dynamic> json) => _Broadcast(
   muted: (json['muted'] as List<dynamic>)
       .map((e) => (e as num).toInt())
       .toList(),
+  commentsCount: (json['comments_count'] as num).toInt(),
   hasStarted: json['has_started'] as bool,
   hasEnded: json['has_ended'] as bool,
   recordingStatus: _$JsonConverterFromJson<String, RecordingStatus>(
@@ -67,6 +68,7 @@ Map<String, dynamic> _$BroadcastToJson(_Broadcast instance) =>
       'participants': instance.participants,
       'participants_count': instance.participantsCount,
       'muted': instance.muted,
+      'comments_count': instance.commentsCount,
       'has_started': instance.hasStarted,
       'has_ended': instance.hasEnded,
       'recording_status': _$JsonConverterToJson<String, RecordingStatus>(
