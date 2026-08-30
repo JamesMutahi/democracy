@@ -129,14 +129,10 @@ class _ProfilePageState extends State<_Profile> {
   void _handleScrolling() {
     if (_scrollController.offset > _expandedHeight &&
         _nameIsScrolled == false) {
-      setState(() {
-        _nameIsScrolled = true;
-      });
+      setState(() => _nameIsScrolled = true);
     }
     if (_scrollController.offset < _expandedHeight && _nameIsScrolled == true) {
-      setState(() {
-        _nameIsScrolled = false;
-      });
+      setState(() => _nameIsScrolled = false);
     }
   }
 

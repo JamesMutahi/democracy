@@ -5,6 +5,7 @@ import 'package:democracy/app/shared/widgets/failure_retry_button.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/survey/bloc/survey/survey_bloc.dart';
 import 'package:democracy/survey/models/choice_answer.dart';
+import 'package:democracy/survey/models/question.dart';
 import 'package:democracy/survey/models/summary.dart';
 import 'package:democracy/survey/models/survey.dart';
 import 'package:democracy/survey/models/text_answer.dart';
@@ -82,50 +83,67 @@ class _SurveyDetail extends StatelessWidget {
 
     return DefaultTabController(
       length: 2,
-      child: Scaffold(
-        body: Column(
-          children: [
-            Visibility(
-              visible: survey.county != null,
+      child: NestedScrollView(
+        headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+          return [
+            SliverToBoxAdapter(
               child: Container(
-                margin: EdgeInsets.only(bottom: 10),
-                child: GeoChipRow(
-                  county: survey.county,
-                  constituency: survey.constituency,
-                  ward: survey.ward,
+                margin: EdgeInsets.symmetric(horizontal: 15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Visibility(
+                      visible: survey.county != null,
+                      child: Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: GeoChipRow(
+                          county: survey.county,
+                          constituency: survey.constituency,
+                          ward: survey.ward,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      survey.title,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    Visibility(
+                      visible: survey.description.isNotEmpty,
+                      child: Container(
+                        margin: EdgeInsets.only(top: 5, bottom: 10),
+                        child: Text(survey.description),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            Text(survey.title, style: Theme.of(context).textTheme.titleLarge),
-            Visibility(
-              visible: survey.description.isNotEmpty,
-              child: Container(
-                margin: EdgeInsets.only(top: 5, bottom: 10),
-                child: Text(survey.description),
+            SliverPersistentHeader(
+              delegate: _TabBarAppBarDelegate(
+                TabBar(
+                  tabs: [
+                    Tab(text: 'Summary'),
+                    Tab(text: 'My Response'),
+                  ],
+                ),
               ),
+              pinned: true,
             ),
-            TabBar(
-              tabs: [
-                Tab(text: 'Summary'),
-                Tab(text: 'My Response'),
-              ],
-            ),
-            Expanded(
-              child: TabBarView(
-                children: [
-                  // TAB 1: SUMMARY
-                  survey.summary != null &&
-                          survey.summary!.status == SummaryStatus.completed
-                      ? SurveySummaryWidget(summary: survey.summary!)
-                      : _buildSummaryPlaceholder(color),
+          ];
+        },
+        body: TabBarView(
+          physics: NeverScrollableScrollPhysics(),
+          children: [
+            // TAB 1: SUMMARY
+            survey.summary != null &&
+                    survey.summary!.status == SummaryStatus.completed
+                ? SurveySummaryTab(survey: survey)
+                : _buildSummaryPlaceholder(color),
 
-                  // TAB 2: MY RESPONSE
-                  survey.response != null
-                      ? _buildMyResponseTab(color)
-                      : _buildNoResponsePlaceholder(),
-                ],
-              ),
-            ),
+            // TAB 2: MY RESPONSE
+            survey.response != null
+                ? _buildMyResponseTab(color)
+                : _buildNoResponsePlaceholder(),
           ],
         ),
       ),
@@ -202,6 +220,15 @@ class _SurveyDetail extends StatelessWidget {
 
   Widget _buildMyResponseTab(Color color) {
     final response = survey.response!;
+    Set<Question> questionsSet = {};
+    for (TextAnswer textAnswer in response.textAnswers) {
+      questionsSet.add(textAnswer.question);
+    }
+    for (ChoiceAnswer choiceAnswer in response.choiceAnswers) {
+      questionsSet.add(choiceAnswer.question);
+    }
+    List<Question> questions = questionsSet.toList();
+    questions.sort((a, b) => a.number.compareTo(b.number));
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -234,87 +261,107 @@ class _SurveyDetail extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-
-          // Text answers
-          if (response.textAnswers.isNotEmpty) ...[
-            Text(
-              'Text Answers',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            ...response.textAnswers.map(
-              (answer) => _buildTextAnswerCard(answer),
-            ),
-            const SizedBox(height: 24),
-          ],
-
-          // Choice answers
-          if (response.choiceAnswers.isNotEmpty) ...[
-            Text(
-              'Choice Answers',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            ...response.choiceAnswers.map(
-              (answer) => _buildChoiceAnswerCard(answer, color),
-            ),
-          ],
+          ListView.builder(
+            shrinkWrap: true,
+            itemBuilder: (BuildContext context, int index) {
+              Question question = questions[index];
+              List<String> answers = [];
+              switch (question.type) {
+                case QuestionType.text:
+                  answers.add(
+                    response.textAnswers
+                        .firstWhere((e) => e.question.id == question.id)
+                        .text,
+                  );
+                case QuestionType.number:
+                  answers.add(
+                    response.textAnswers
+                        .firstWhere((e) => e.question.id == question.id)
+                        .text,
+                  );
+                case QuestionType.singleChoice:
+                  answers.add(
+                    response.choiceAnswers
+                        .firstWhere((e) => e.question.id == question.id)
+                        .choice
+                        .text,
+                  );
+                case QuestionType.multipleChoice:
+                  List<ChoiceAnswer> choiceAnswers = response.choiceAnswers
+                      .where((e) => e.question.id == question.id)
+                      .toList();
+                  for (ChoiceAnswer choiceAnswer in choiceAnswers) {
+                    answers.add(choiceAnswer.choice.text);
+                  }
+              }
+              return _QuestionTile(
+                question: question,
+                answers: answers,
+              );
+            },
+            itemCount: questions.length,
+          ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildTextAnswerCard(TextAnswer answer) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              answer.question.text,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              answer.text,
-              style: const TextStyle(fontSize: 14, height: 1.4),
-            ),
-          ],
-        ),
-      ),
+class _TabBarAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _TabBarAppBarDelegate(this._tabBar);
+
+  final TabBar _tabBar;
+
+  @override
+  double get minExtent => _tabBar.preferredSize.height;
+
+  @override
+  double get maxExtent => _tabBar.preferredSize.height;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: _tabBar,
     );
   }
 
-  Widget _buildChoiceAnswerCard(ChoiceAnswer answer, Color color) {
+  @override
+  bool shouldRebuild(_TabBarAppBarDelegate oldDelegate) {
+    return false;
+  }
+}
+
+class _QuestionTile extends StatelessWidget {
+  const _QuestionTile({required this.question, required this.answers});
+
+  final Question question;
+  final List<String> answers;
+
+  @override
+  Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              answer.question.text,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-            ),
+            Text(question.text, style: TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: color..withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: color..withValues(alpha: 0.3)),
-              ),
-              child: Text(
-                answer.choice.text,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: color,
-                ),
-              ),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (BuildContext context, int index) {
+                String answer = answers[index];
+                return Text(answer);
+              },
+              itemCount: answers.length,
             ),
           ],
         ),

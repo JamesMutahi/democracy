@@ -1,83 +1,87 @@
+import 'package:democracy/survey/models/choice_answer.dart';
+import 'package:democracy/survey/models/question.dart';
 import 'package:democracy/survey/models/summary.dart';
+import 'package:democracy/survey/models/survey.dart';
+import 'package:democracy/survey/models/text_answer.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class SurveySummaryWidget extends StatelessWidget {
-  final SurveySummary summary;
+class SurveySummaryTab extends StatelessWidget {
+  final Survey survey;
 
-  const SurveySummaryWidget({super.key, required this.summary});
+  const SurveySummaryTab({super.key, required this.survey});
 
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).primaryColor;
-
+    final summary = survey.summary!;
+    final response = survey.response!;
+    Set<Question> questionsSet = {};
+    for (TextAnswer textAnswer in response.textAnswers) {
+      questionsSet.add(textAnswer.question);
+    }
+    for (ChoiceAnswer choiceAnswer in response.choiceAnswers) {
+      questionsSet.add(choiceAnswer.question);
+    }
+    List<Question> questions = [];
+    final pages = survey.pages.toList();
+    for (var page in pages) {
+      questions.addAll(page.questions);
+    }
+    questions.sort((a, b) => a.number.compareTo(b.number));
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header
-          _buildHeader(context, color),
+          _buildHeader(context, summary, color),
           const SizedBox(height: 24),
 
           // Executive Summary
-          if (summary.summary.isNotEmpty) _buildSummary(color),
+          if (summary.summary.isNotEmpty) _buildSummary(color, summary.summary),
           const SizedBox(height: 24),
 
-          // Choice Questions
-          if (summary.choiceStats.isNotEmpty) ...[
-            _buildSectionTitle('Choice Questions'),
-            const SizedBox(height: 16),
-            ...summary.choiceStats.map(
-              (stat) => Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: _ChoiceQuestionCard(
-                  context: context,
-                  stat: stat,
-                  color: color,
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-          ],
+          ListView.builder(
+            shrinkWrap: true,
+            itemBuilder: (BuildContext context, int index) {
+              Question question = questions[index];
 
-          // Number Questions
-          if (summary.numberStats.isNotEmpty) ...[
-            _buildSectionTitle('Numeric Questions'),
-            const SizedBox(height: 16),
-            ...summary.numberStats.map(
-              (stat) => Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: _NumberQuestionCard(stat: stat, color: color),
-              ),
-            ),
-            const SizedBox(height: 24),
-          ],
-
-          // Text Themes
-          if (summary.textThemes.isNotEmpty) ...[
-            _buildSectionTitle('Open-Ended Responses'),
-            const SizedBox(height: 16),
-            ...summary.textThemes.map(
-              (theme) => Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: _TextThemeCard(theme: theme, color: color),
-              ),
-            ),
-          ],
+              switch (question.type) {
+                case QuestionType.text:
+                  final textTheme = summary.textThemes.firstWhere(
+                    (t) => t.questionId == question.id,
+                  );
+                  return _TextThemeCard(theme: textTheme, color: color);
+                case QuestionType.number:
+                  final stat = summary.numberStats.firstWhere(
+                    (e) => e.questionId == question.id,
+                  );
+                  return _NumberQuestionCard(stat: stat, color: color);
+                case QuestionType.singleChoice:
+                case QuestionType.multipleChoice:
+                  final stat = summary.choiceStats.firstWhere(
+                    (e) => e.questionId == question.id,
+                  );
+                  return _ChoiceQuestionCard(
+                    context: context,
+                    stat: stat,
+                    color: color,
+                  );
+              }
+            },
+            itemCount: questions.length,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context, Color color) {
+  Widget _buildHeader(
+    BuildContext context,
+    SurveySummary summary,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -100,7 +104,7 @@ class SurveySummaryWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              _StatusBadge(status: summary.status.toString().toUpperCase()),
+              _StatusBadge(status: summary.status.name),
             ],
           ),
           const SizedBox(height: 16),
@@ -177,7 +181,7 @@ class SurveySummaryWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildSummary(Color color) {
+  Widget _buildSummary(Color color, String summary) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -199,10 +203,7 @@ class SurveySummaryWidget extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          Text(
-            summary.summary,
-            style: const TextStyle(fontSize: 14, height: 1.6),
-          ),
+          Text(summary, style: const TextStyle(fontSize: 14, height: 1.6)),
         ],
       ),
     );
@@ -261,6 +262,7 @@ class _ChoiceQuestionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.only(bottom: 24),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.tertiaryContainer,
@@ -342,6 +344,7 @@ class _NumberQuestionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.only(bottom: 24),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.tertiaryContainer,
@@ -431,6 +434,7 @@ class _TextThemeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.only(bottom: 24),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.tertiaryContainer,

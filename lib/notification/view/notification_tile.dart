@@ -135,13 +135,17 @@ class NotificationTile extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
       );
       onTap = () {
-        showModalBottomSheet<void>(
-          context: context,
-          shape: const BeveledRectangleBorder(),
-          builder: (BuildContext context) {
-            return SurveyBottomSheet(survey: notification.survey!);
-          },
-        );
+        notification.survey!.hasEnded
+            ? context.router.push(
+                SurveyDetail(surveyId: notification.survey!.id),
+              )
+            : showModalBottomSheet<void>(
+                context: context,
+                shape: const BeveledRectangleBorder(),
+                builder: (BuildContext context) {
+                  return SurveyBottomSheet(survey: notification.survey!);
+                },
+              );
       };
     } else if (notification.petition != null) {
       icon = Icon(Symbols.assignment_rounded);
