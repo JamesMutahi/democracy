@@ -12,19 +12,19 @@
 import 'package:auto_route/auto_route.dart' as _i48;
 import 'package:collection/collection.dart' as _i60;
 import 'package:democracy/app/shared/pages/location.dart' as _i24;
-import 'package:democracy/app/shared/pages/search_results.dart' as _i41;
+import 'package:democracy/app/shared/pages/search_results.dart' as _i40;
 import 'package:democracy/app/view/pages/chat_page.dart' as _i6;
 import 'package:democracy/app/view/pages/explore_page.dart' as _i16;
 import 'package:democracy/app/view/pages/home_page.dart' as _i20;
 import 'package:democracy/app/view/pages/hub.dart' as _i21;
-import 'package:democracy/app/view/root.dart' as _i40;
+import 'package:democracy/app/view/root.dart' as _i39;
 import 'package:democracy/app/view/widgets/bookmarks.dart' as _i3;
 import 'package:democracy/app/view/widgets/hub_results.dart' as _i22;
-import 'package:democracy/app/view/widgets/settings.dart' as _i42;
+import 'package:democracy/app/view/widgets/settings.dart' as _i41;
 import 'package:democracy/app/view/widgets/wrappers.dart' as _i7;
 import 'package:democracy/auth/view/failure.dart' as _i17;
 import 'package:democracy/auth/view/login.dart' as _i25;
-import 'package:democracy/auth/view/splash.dart' as _i43;
+import 'package:democracy/auth/view/splash.dart' as _i42;
 import 'package:democracy/ballot/models/ballot.dart' as _i54;
 import 'package:democracy/ballot/view/ballot_detail.dart' as _i1;
 import 'package:democracy/ballot/view/ballot_page.dart' as _i2;
@@ -46,7 +46,7 @@ import 'package:democracy/petition/models/petition.dart' as _i56;
 import 'package:democracy/petition/view/petition_create.dart' as _i30;
 import 'package:democracy/petition/view/petition_detail.dart' as _i31;
 import 'package:democracy/petition/view/petition_page.dart' as _i32;
-import 'package:democracy/petition/view/widgets/supporters.dart' as _i44;
+import 'package:democracy/petition/view/widgets/supporters.dart' as _i43;
 import 'package:democracy/post/models/post.dart' as _i53;
 import 'package:democracy/post/view/community_note_create.dart' as _i8;
 import 'package:democracy/post/view/community_note_detail.dart' as _i9;
@@ -57,10 +57,9 @@ import 'package:democracy/post/view/post_detail.dart' as _i34;
 import 'package:democracy/post/view/post_update.dart' as _i35;
 import 'package:democracy/post/view/widgets/reposts.dart' as _i38;
 import 'package:democracy/survey/models/survey.dart' as _i55;
+import 'package:democracy/survey/view/survey_detail.dart' as _i44;
 import 'package:democracy/survey/view/survey_page.dart' as _i45;
 import 'package:democracy/survey/view/survey_process/page.dart' as _i46;
-import 'package:democracy/survey/view/survey_process/response_page.dart'
-    as _i39;
 import 'package:democracy/user/models/user.dart' as _i59;
 import 'package:democracy/user/view/edit_profile.dart' as _i15;
 import 'package:democracy/user/view/pages/follow_recommendations.dart' as _i18;
@@ -1602,58 +1601,7 @@ class RepostsArgs {
 }
 
 /// generated route for
-/// [_i39.ResponsePage]
-class ResponseRoute extends _i48.PageRouteInfo<ResponseRouteArgs> {
-  ResponseRoute({
-    _i49.Key? key,
-    required int surveyId,
-    List<_i48.PageRouteInfo>? children,
-  }) : super(
-         ResponseRoute.name,
-         args: ResponseRouteArgs(key: key, surveyId: surveyId),
-         rawPathParams: {'id': surveyId},
-         initialChildren: children,
-       );
-
-  static const String name = 'ResponseRoute';
-
-  static _i48.PageInfo page = _i48.PageInfo(
-    name,
-    builder: (data) {
-      final pathParams = data.inheritedPathParams;
-      final args = data.argsAs<ResponseRouteArgs>(
-        orElse: () => ResponseRouteArgs(surveyId: pathParams.getInt('id')),
-      );
-      return _i39.ResponsePage(key: args.key, surveyId: args.surveyId);
-    },
-  );
-}
-
-class ResponseRouteArgs {
-  const ResponseRouteArgs({this.key, required this.surveyId});
-
-  final _i49.Key? key;
-
-  final int surveyId;
-
-  @override
-  String toString() {
-    return 'ResponseRouteArgs{key: $key, surveyId: $surveyId}';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! ResponseRouteArgs) return false;
-    return key == other.key && surveyId == other.surveyId;
-  }
-
-  @override
-  int get hashCode => key.hashCode ^ surveyId.hashCode;
-}
-
-/// generated route for
-/// [_i40.RootRoute]
+/// [_i39.RootRoute]
 class RootRoute extends _i48.PageRouteInfo<void> {
   const RootRoute({List<_i48.PageRouteInfo>? children})
     : super(RootRoute.name, initialChildren: children);
@@ -1663,13 +1611,13 @@ class RootRoute extends _i48.PageRouteInfo<void> {
   static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
-      return const _i40.RootRoute();
+      return const _i39.RootRoute();
     },
   );
 }
 
 /// generated route for
-/// [_i41.SearchResults]
+/// [_i40.SearchResults]
 class SearchResults extends _i48.PageRouteInfo<SearchResultsArgs> {
   SearchResults({
     _i49.Key? key,
@@ -1710,7 +1658,7 @@ class SearchResults extends _i48.PageRouteInfo<SearchResultsArgs> {
           filterCount: queryParams.getInt('filterCount', 0),
         ),
       );
-      return _i41.SearchResults(
+      return _i40.SearchResults(
         key: args.key,
         searchTerm: args.searchTerm,
         startDate: args.startDate,
@@ -1766,7 +1714,7 @@ class SearchResultsArgs {
 }
 
 /// generated route for
-/// [_i42.Settings]
+/// [_i41.Settings]
 class Settings extends _i48.PageRouteInfo<void> {
   const Settings({List<_i48.PageRouteInfo>? children})
     : super(Settings.name, initialChildren: children);
@@ -1776,13 +1724,13 @@ class Settings extends _i48.PageRouteInfo<void> {
   static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
-      return const _i42.Settings();
+      return const _i41.Settings();
     },
   );
 }
 
 /// generated route for
-/// [_i43.SplashPage]
+/// [_i42.SplashPage]
 class SplashRoute extends _i48.PageRouteInfo<void> {
   const SplashRoute({List<_i48.PageRouteInfo>? children})
     : super(SplashRoute.name, initialChildren: children);
@@ -1792,13 +1740,13 @@ class SplashRoute extends _i48.PageRouteInfo<void> {
   static _i48.PageInfo page = _i48.PageInfo(
     name,
     builder: (data) {
-      return const _i43.SplashPage();
+      return const _i42.SplashPage();
     },
   );
 }
 
 /// generated route for
-/// [_i44.Supporters]
+/// [_i43.Supporters]
 class Supporters extends _i48.PageRouteInfo<SupportersArgs> {
   Supporters({
     _i49.Key? key,
@@ -1820,7 +1768,7 @@ class Supporters extends _i48.PageRouteInfo<SupportersArgs> {
       final args = data.argsAs<SupportersArgs>(
         orElse: () => SupportersArgs(petitionId: pathParams.getInt('id')),
       );
-      return _i44.Supporters(key: args.key, petitionId: args.petitionId);
+      return _i43.Supporters(key: args.key, petitionId: args.petitionId);
     },
   );
 }
@@ -1846,6 +1794,57 @@ class SupportersArgs {
 
   @override
   int get hashCode => key.hashCode ^ petitionId.hashCode;
+}
+
+/// generated route for
+/// [_i44.SurveyDetail]
+class SurveyDetail extends _i48.PageRouteInfo<SurveyDetailArgs> {
+  SurveyDetail({
+    _i49.Key? key,
+    required int surveyId,
+    List<_i48.PageRouteInfo>? children,
+  }) : super(
+         SurveyDetail.name,
+         args: SurveyDetailArgs(key: key, surveyId: surveyId),
+         rawPathParams: {'id': surveyId},
+         initialChildren: children,
+       );
+
+  static const String name = 'SurveyDetail';
+
+  static _i48.PageInfo page = _i48.PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<SurveyDetailArgs>(
+        orElse: () => SurveyDetailArgs(surveyId: pathParams.getInt('id')),
+      );
+      return _i44.SurveyDetail(key: args.key, surveyId: args.surveyId);
+    },
+  );
+}
+
+class SurveyDetailArgs {
+  const SurveyDetailArgs({this.key, required this.surveyId});
+
+  final _i49.Key? key;
+
+  final int surveyId;
+
+  @override
+  String toString() {
+    return 'SurveyDetailArgs{key: $key, surveyId: $surveyId}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! SurveyDetailArgs) return false;
+    return key == other.key && surveyId == other.surveyId;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ surveyId.hashCode;
 }
 
 /// generated route for

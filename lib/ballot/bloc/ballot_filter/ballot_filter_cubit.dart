@@ -4,32 +4,40 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'ballot_filter_cubit.freezed.dart';
 part 'ballot_filter_state.dart';
 
+const defaultSearchTerm = '';
+const defaultIsOpen = null;
+const defaultFilterByRegion = true;
+const defaultSortBy = 'recent';
+const defaultStartDate = null;
+const defaultEndDate = null;
+
 class BallotFilterCubit extends Cubit<BallotFilterState> {
   BallotFilterCubit()
     : super(
         const BallotFilterState.changed(
           searchTerm: '',
-          isOpen: true,
-          filterByRegion: true,
-          sortBy: 'recent',
-          startDate: null,
-          endDate: null,
+          isOpen: defaultIsOpen,
+          filterByRegion: defaultFilterByRegion,
+          sortBy: defaultSortBy,
+          startDate: defaultStartDate,
+          endDate: defaultEndDate,
           count: 0,
         ),
       );
 
   void searchTermChanged({required String searchTerm}) {
     int count = 0;
-    if (state.isOpen != true) {
+    if (state.isOpen != defaultIsOpen) {
       count += 1;
     }
-    if (state.filterByRegion != true) {
+    if (state.filterByRegion != defaultFilterByRegion) {
       count += 1;
     }
-    if (state.sortBy != 'recent') {
+    if (state.sortBy != defaultSortBy) {
       count += 1;
     }
-    if (state.startDate != null || state.endDate != null) {
+    if (state.startDate != defaultStartDate ||
+        state.endDate != defaultEndDate) {
       count += 1;
     }
     emit(
@@ -53,16 +61,16 @@ class BallotFilterCubit extends Cubit<BallotFilterState> {
     required DateTime? endDate,
   }) {
     int count = 0;
-    if (isOpen != true) {
+    if (isOpen != defaultIsOpen) {
       count += 1;
     }
-    if (filterByRegion != true) {
+    if (filterByRegion != defaultFilterByRegion) {
       count += 1;
     }
-    if (sortBy != 'recent') {
+    if (sortBy != defaultSortBy) {
       count += 1;
     }
-    if (startDate != null || endDate != null) {
+    if (startDate != defaultStartDate || endDate != defaultEndDate) {
       count += 1;
     }
     emit(
@@ -82,11 +90,11 @@ class BallotFilterCubit extends Cubit<BallotFilterState> {
     emit(
       BallotFilterState.changed(
         searchTerm: state.searchTerm,
-        isOpen: true,
-        filterByRegion: true,
-        sortBy: 'recent',
-        startDate: null,
-        endDate: null,
+        isOpen: defaultIsOpen,
+        filterByRegion: defaultFilterByRegion,
+        sortBy: defaultSortBy,
+        startDate: defaultStartDate,
+        endDate: defaultEndDate,
         count: 0,
       ),
     );

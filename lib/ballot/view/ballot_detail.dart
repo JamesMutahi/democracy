@@ -11,6 +11,7 @@ import 'package:democracy/ballot/bloc/ballot_detail/ballot_detail_bloc.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/models/option.dart';
 import 'package:democracy/ballot/view/widgets/ballot_tile.dart';
+import 'package:democracy/ballot/view/widgets/summary.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,17 +36,10 @@ class BallotDetail extends StatelessWidget {
             BlocBuilder<BallotBloc, BallotState>(
               buildWhen: (previous, current) => current.ballotId == ballotId,
               builder: (context, state) {
-                return (state.ballot != null)
+                return state.ballot != null
                     ? Container(
                         margin: EdgeInsets.only(right: 15),
-                        child: context.read<BallotBloc>().state.ballot != null
-                            ? BallotPopUp(
-                                ballot: context
-                                    .read<BallotBloc>()
-                                    .state
-                                    .ballot!,
-                              )
-                            : SizedBox.shrink(),
+                        child: BallotPopUp(ballot: state.ballot!),
                       )
                     : SizedBox.shrink();
               },
@@ -297,30 +291,38 @@ class _BallotDetailState extends State<_BallotDetail> {
                   ),
                 ),
                 SizedBox(height: 10),
-                userHasVoted &&
-                        widget.ballot.isActive &&
-                        !widget.ballot.hasEnded
-                    ? changingVote
-                          ? SizedBox.shrink()
-                          : Align(
-                              alignment: Alignment.topRight,
-                              child: OutlinedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    changingVote = true;
-                                  });
-                                },
-                                child: Text('Change'),
-                              ),
-                            )
-                    : SizedBox.shrink(),
-                SizedBox(height: 20),
-                !changingVote && !widget.ballot.hasEnded
-                    ? ReasonWidget(
+                Visibility(
+                  visible:
+                      userHasVoted &&
+                      widget.ballot.isActive &&
+                      !widget.ballot.hasEnded &&
+                      !changingVote,
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        setState(() => changingVote = true);
+                      },
+                      child: Text('Change'),
+                    ),
+                  ),
+                ),
+                Visibility(
+                  visible: !changingVote && !widget.ballot.hasEnded,
+                  child: Column(
+                    children: [
+                      SizedBox(height: 20),
+                      ReasonWidget(
                         ballot: widget.ballot,
                         controller: _textEditingController,
-                      )
-                    : SizedBox.shrink(),
+                      ),
+                    ],
+                  ),
+                ),
+                Visibility(
+                  visible: widget.ballot.hasEnded,
+                  child: BallotSummaryWidget(summary: widget.ballot.summary!),
+                ),
               ],
             ),
           ),

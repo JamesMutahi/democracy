@@ -25,7 +25,7 @@ class _BallotsState extends State<Ballots> {
   @override
   void initState() {
     context.read<BallotsBloc>().add(
-      BallotsEvent.get(isOpen: true, filterByRegion: true),
+      BallotsEvent.get(isOpen: null, filterByRegion: true),
     );
     super.initState();
   }

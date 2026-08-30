@@ -29,7 +29,7 @@ class _PetitionsState extends State<Petitions>
   @override
   void initState() {
     context.read<PetitionsBloc>().add(
-      PetitionsEvent.get(isOpen: true, filterByRegion: true),
+      PetitionsEvent.get(isOpen: null, filterByRegion: true),
     );
     super.initState();
   }

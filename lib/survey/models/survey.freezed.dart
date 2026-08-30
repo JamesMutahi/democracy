@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Survey {
 
- int get id; String get title; String get description; County? get county; Constituency? get constituency; Ward? get ward;@JsonKey(name: 'start_time') DateTime get startTime;@JsonKey(name: 'end_time') DateTime get endTime;@JsonKey(name: 'is_active') bool get isActive; List<Page> get pages; Response? get response;@JsonKey(name: 'total_responses') int get totalResponses;
+ int get id; String get title; String get description; County? get county; Constituency? get constituency; Ward? get ward;@JsonKey(name: 'start_time') DateTime get startTime;@JsonKey(name: 'end_time') DateTime get endTime;@JsonKey(name: 'has_ended') bool get hasEnded;@JsonKey(name: 'is_active') bool get isActive; List<Page> get pages; Response? get response;@JsonKey(name: 'total_responses') int get totalResponses; SurveySummary? get summary;
 /// Create a copy of Survey
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $SurveyCopyWith<Survey> get copyWith => _$SurveyCopyWithImpl<Survey>(this as Sur
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Survey&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.county, county) || other.county == county)&&(identical(other.constituency, constituency) || other.constituency == constituency)&&(identical(other.ward, ward) || other.ward == ward)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&const DeepCollectionEquality().equals(other.pages, pages)&&(identical(other.response, response) || other.response == response)&&(identical(other.totalResponses, totalResponses) || other.totalResponses == totalResponses));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Survey&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.county, county) || other.county == county)&&(identical(other.constituency, constituency) || other.constituency == constituency)&&(identical(other.ward, ward) || other.ward == ward)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.hasEnded, hasEnded) || other.hasEnded == hasEnded)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&const DeepCollectionEquality().equals(other.pages, pages)&&(identical(other.response, response) || other.response == response)&&(identical(other.totalResponses, totalResponses) || other.totalResponses == totalResponses)&&(identical(other.summary, summary) || other.summary == summary));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,county,constituency,ward,startTime,endTime,isActive,const DeepCollectionEquality().hash(pages),response,totalResponses);
+int get hashCode => Object.hash(runtimeType,id,title,description,county,constituency,ward,startTime,endTime,hasEnded,isActive,const DeepCollectionEquality().hash(pages),response,totalResponses,summary);
 
 @override
 String toString() {
-  return 'Survey(id: $id, title: $title, description: $description, county: $county, constituency: $constituency, ward: $ward, startTime: $startTime, endTime: $endTime, isActive: $isActive, pages: $pages, response: $response, totalResponses: $totalResponses)';
+  return 'Survey(id: $id, title: $title, description: $description, county: $county, constituency: $constituency, ward: $ward, startTime: $startTime, endTime: $endTime, hasEnded: $hasEnded, isActive: $isActive, pages: $pages, response: $response, totalResponses: $totalResponses, summary: $summary)';
 }
 
 
@@ -48,11 +48,11 @@ abstract mixin class $SurveyCopyWith<$Res>  {
   factory $SurveyCopyWith(Survey value, $Res Function(Survey) _then) = _$SurveyCopyWithImpl;
 @useResult
 $Res call({
- int id, String title, String description, County? county, Constituency? constituency, Ward? ward,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'end_time') DateTime endTime,@JsonKey(name: 'is_active') bool isActive, List<Page> pages, Response? response,@JsonKey(name: 'total_responses') int totalResponses
+ int id, String title, String description, County? county, Constituency? constituency, Ward? ward,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'end_time') DateTime endTime,@JsonKey(name: 'has_ended') bool hasEnded,@JsonKey(name: 'is_active') bool isActive, List<Page> pages, Response? response,@JsonKey(name: 'total_responses') int totalResponses, SurveySummary? summary
 });
 
 
-$CountyCopyWith<$Res>? get county;$ConstituencyCopyWith<$Res>? get constituency;$WardCopyWith<$Res>? get ward;$ResponseCopyWith<$Res>? get response;
+$CountyCopyWith<$Res>? get county;$ConstituencyCopyWith<$Res>? get constituency;$WardCopyWith<$Res>? get ward;$ResponseCopyWith<$Res>? get response;$SurveySummaryCopyWith<$Res>? get summary;
 
 }
 /// @nodoc
@@ -65,7 +65,7 @@ class _$SurveyCopyWithImpl<$Res>
 
 /// Create a copy of Survey
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? description = null,Object? county = freezed,Object? constituency = freezed,Object? ward = freezed,Object? startTime = null,Object? endTime = null,Object? isActive = null,Object? pages = null,Object? response = freezed,Object? totalResponses = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? description = null,Object? county = freezed,Object? constituency = freezed,Object? ward = freezed,Object? startTime = null,Object? endTime = null,Object? hasEnded = null,Object? isActive = null,Object? pages = null,Object? response = freezed,Object? totalResponses = null,Object? summary = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -75,11 +75,13 @@ as County?,constituency: freezed == constituency ? _self.constituency : constitu
 as Constituency?,ward: freezed == ward ? _self.ward : ward // ignore: cast_nullable_to_non_nullable
 as Ward?,startTime: null == startTime ? _self.startTime : startTime // ignore: cast_nullable_to_non_nullable
 as DateTime,endTime: null == endTime ? _self.endTime : endTime // ignore: cast_nullable_to_non_nullable
-as DateTime,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
+as DateTime,hasEnded: null == hasEnded ? _self.hasEnded : hasEnded // ignore: cast_nullable_to_non_nullable
+as bool,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
 as bool,pages: null == pages ? _self.pages : pages // ignore: cast_nullable_to_non_nullable
 as List<Page>,response: freezed == response ? _self.response : response // ignore: cast_nullable_to_non_nullable
 as Response?,totalResponses: null == totalResponses ? _self.totalResponses : totalResponses // ignore: cast_nullable_to_non_nullable
-as int,
+as int,summary: freezed == summary ? _self.summary : summary // ignore: cast_nullable_to_non_nullable
+as SurveySummary?,
   ));
 }
 /// Create a copy of Survey
@@ -129,6 +131,18 @@ $ResponseCopyWith<$Res>? get response {
 
   return $ResponseCopyWith<$Res>(_self.response!, (value) {
     return _then(_self.copyWith(response: value));
+  });
+}/// Create a copy of Survey
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SurveySummaryCopyWith<$Res>? get summary {
+    if (_self.summary == null) {
+    return null;
+  }
+
+  return $SurveySummaryCopyWith<$Res>(_self.summary!, (value) {
+    return _then(_self.copyWith(summary: value));
   });
 }
 }
@@ -209,10 +223,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime, @JsonKey(name: 'is_active')  bool isActive,  List<Page> pages,  Response? response, @JsonKey(name: 'total_responses')  int totalResponses)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime, @JsonKey(name: 'has_ended')  bool hasEnded, @JsonKey(name: 'is_active')  bool isActive,  List<Page> pages,  Response? response, @JsonKey(name: 'total_responses')  int totalResponses,  SurveySummary? summary)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Survey() when $default != null:
-return $default(_that.id,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.startTime,_that.endTime,_that.isActive,_that.pages,_that.response,_that.totalResponses);case _:
+return $default(_that.id,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.startTime,_that.endTime,_that.hasEnded,_that.isActive,_that.pages,_that.response,_that.totalResponses,_that.summary);case _:
   return orElse();
 
 }
@@ -230,10 +244,10 @@ return $default(_that.id,_that.title,_that.description,_that.county,_that.consti
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime, @JsonKey(name: 'is_active')  bool isActive,  List<Page> pages,  Response? response, @JsonKey(name: 'total_responses')  int totalResponses)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime, @JsonKey(name: 'has_ended')  bool hasEnded, @JsonKey(name: 'is_active')  bool isActive,  List<Page> pages,  Response? response, @JsonKey(name: 'total_responses')  int totalResponses,  SurveySummary? summary)  $default,) {final _that = this;
 switch (_that) {
 case _Survey():
-return $default(_that.id,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.startTime,_that.endTime,_that.isActive,_that.pages,_that.response,_that.totalResponses);}
+return $default(_that.id,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.startTime,_that.endTime,_that.hasEnded,_that.isActive,_that.pages,_that.response,_that.totalResponses,_that.summary);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -247,10 +261,10 @@ return $default(_that.id,_that.title,_that.description,_that.county,_that.consti
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime, @JsonKey(name: 'is_active')  bool isActive,  List<Page> pages,  Response? response, @JsonKey(name: 'total_responses')  int totalResponses)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String title,  String description,  County? county,  Constituency? constituency,  Ward? ward, @JsonKey(name: 'start_time')  DateTime startTime, @JsonKey(name: 'end_time')  DateTime endTime, @JsonKey(name: 'has_ended')  bool hasEnded, @JsonKey(name: 'is_active')  bool isActive,  List<Page> pages,  Response? response, @JsonKey(name: 'total_responses')  int totalResponses,  SurveySummary? summary)?  $default,) {final _that = this;
 switch (_that) {
 case _Survey() when $default != null:
-return $default(_that.id,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.startTime,_that.endTime,_that.isActive,_that.pages,_that.response,_that.totalResponses);case _:
+return $default(_that.id,_that.title,_that.description,_that.county,_that.constituency,_that.ward,_that.startTime,_that.endTime,_that.hasEnded,_that.isActive,_that.pages,_that.response,_that.totalResponses,_that.summary);case _:
   return null;
 
 }
@@ -262,7 +276,7 @@ return $default(_that.id,_that.title,_that.description,_that.county,_that.consti
 @JsonSerializable()
 
 class _Survey implements Survey {
-  const _Survey({required this.id, required this.title, required this.description, required this.county, required this.constituency, required this.ward, @JsonKey(name: 'start_time') required this.startTime, @JsonKey(name: 'end_time') required this.endTime, @JsonKey(name: 'is_active') required this.isActive, required final  List<Page> pages, required this.response, @JsonKey(name: 'total_responses') required this.totalResponses}): _pages = pages;
+  const _Survey({required this.id, required this.title, required this.description, required this.county, required this.constituency, required this.ward, @JsonKey(name: 'start_time') required this.startTime, @JsonKey(name: 'end_time') required this.endTime, @JsonKey(name: 'has_ended') required this.hasEnded, @JsonKey(name: 'is_active') required this.isActive, required final  List<Page> pages, required this.response, @JsonKey(name: 'total_responses') required this.totalResponses, required this.summary}): _pages = pages;
   factory _Survey.fromJson(Map<String, dynamic> json) => _$SurveyFromJson(json);
 
 @override final  int id;
@@ -273,6 +287,7 @@ class _Survey implements Survey {
 @override final  Ward? ward;
 @override@JsonKey(name: 'start_time') final  DateTime startTime;
 @override@JsonKey(name: 'end_time') final  DateTime endTime;
+@override@JsonKey(name: 'has_ended') final  bool hasEnded;
 @override@JsonKey(name: 'is_active') final  bool isActive;
  final  List<Page> _pages;
 @override List<Page> get pages {
@@ -283,6 +298,7 @@ class _Survey implements Survey {
 
 @override final  Response? response;
 @override@JsonKey(name: 'total_responses') final  int totalResponses;
+@override final  SurveySummary? summary;
 
 /// Create a copy of Survey
 /// with the given fields replaced by the non-null parameter values.
@@ -297,16 +313,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Survey&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.county, county) || other.county == county)&&(identical(other.constituency, constituency) || other.constituency == constituency)&&(identical(other.ward, ward) || other.ward == ward)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&const DeepCollectionEquality().equals(other._pages, _pages)&&(identical(other.response, response) || other.response == response)&&(identical(other.totalResponses, totalResponses) || other.totalResponses == totalResponses));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Survey&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.county, county) || other.county == county)&&(identical(other.constituency, constituency) || other.constituency == constituency)&&(identical(other.ward, ward) || other.ward == ward)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.hasEnded, hasEnded) || other.hasEnded == hasEnded)&&(identical(other.isActive, isActive) || other.isActive == isActive)&&const DeepCollectionEquality().equals(other._pages, _pages)&&(identical(other.response, response) || other.response == response)&&(identical(other.totalResponses, totalResponses) || other.totalResponses == totalResponses)&&(identical(other.summary, summary) || other.summary == summary));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,county,constituency,ward,startTime,endTime,isActive,const DeepCollectionEquality().hash(_pages),response,totalResponses);
+int get hashCode => Object.hash(runtimeType,id,title,description,county,constituency,ward,startTime,endTime,hasEnded,isActive,const DeepCollectionEquality().hash(_pages),response,totalResponses,summary);
 
 @override
 String toString() {
-  return 'Survey(id: $id, title: $title, description: $description, county: $county, constituency: $constituency, ward: $ward, startTime: $startTime, endTime: $endTime, isActive: $isActive, pages: $pages, response: $response, totalResponses: $totalResponses)';
+  return 'Survey(id: $id, title: $title, description: $description, county: $county, constituency: $constituency, ward: $ward, startTime: $startTime, endTime: $endTime, hasEnded: $hasEnded, isActive: $isActive, pages: $pages, response: $response, totalResponses: $totalResponses, summary: $summary)';
 }
 
 
@@ -317,11 +333,11 @@ abstract mixin class _$SurveyCopyWith<$Res> implements $SurveyCopyWith<$Res> {
   factory _$SurveyCopyWith(_Survey value, $Res Function(_Survey) _then) = __$SurveyCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String title, String description, County? county, Constituency? constituency, Ward? ward,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'end_time') DateTime endTime,@JsonKey(name: 'is_active') bool isActive, List<Page> pages, Response? response,@JsonKey(name: 'total_responses') int totalResponses
+ int id, String title, String description, County? county, Constituency? constituency, Ward? ward,@JsonKey(name: 'start_time') DateTime startTime,@JsonKey(name: 'end_time') DateTime endTime,@JsonKey(name: 'has_ended') bool hasEnded,@JsonKey(name: 'is_active') bool isActive, List<Page> pages, Response? response,@JsonKey(name: 'total_responses') int totalResponses, SurveySummary? summary
 });
 
 
-@override $CountyCopyWith<$Res>? get county;@override $ConstituencyCopyWith<$Res>? get constituency;@override $WardCopyWith<$Res>? get ward;@override $ResponseCopyWith<$Res>? get response;
+@override $CountyCopyWith<$Res>? get county;@override $ConstituencyCopyWith<$Res>? get constituency;@override $WardCopyWith<$Res>? get ward;@override $ResponseCopyWith<$Res>? get response;@override $SurveySummaryCopyWith<$Res>? get summary;
 
 }
 /// @nodoc
@@ -334,7 +350,7 @@ class __$SurveyCopyWithImpl<$Res>
 
 /// Create a copy of Survey
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? county = freezed,Object? constituency = freezed,Object? ward = freezed,Object? startTime = null,Object? endTime = null,Object? isActive = null,Object? pages = null,Object? response = freezed,Object? totalResponses = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? county = freezed,Object? constituency = freezed,Object? ward = freezed,Object? startTime = null,Object? endTime = null,Object? hasEnded = null,Object? isActive = null,Object? pages = null,Object? response = freezed,Object? totalResponses = null,Object? summary = freezed,}) {
   return _then(_Survey(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -344,11 +360,13 @@ as County?,constituency: freezed == constituency ? _self.constituency : constitu
 as Constituency?,ward: freezed == ward ? _self.ward : ward // ignore: cast_nullable_to_non_nullable
 as Ward?,startTime: null == startTime ? _self.startTime : startTime // ignore: cast_nullable_to_non_nullable
 as DateTime,endTime: null == endTime ? _self.endTime : endTime // ignore: cast_nullable_to_non_nullable
-as DateTime,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
+as DateTime,hasEnded: null == hasEnded ? _self.hasEnded : hasEnded // ignore: cast_nullable_to_non_nullable
+as bool,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
 as bool,pages: null == pages ? _self._pages : pages // ignore: cast_nullable_to_non_nullable
 as List<Page>,response: freezed == response ? _self.response : response // ignore: cast_nullable_to_non_nullable
 as Response?,totalResponses: null == totalResponses ? _self.totalResponses : totalResponses // ignore: cast_nullable_to_non_nullable
-as int,
+as int,summary: freezed == summary ? _self.summary : summary // ignore: cast_nullable_to_non_nullable
+as SurveySummary?,
   ));
 }
 
@@ -399,6 +417,18 @@ $ResponseCopyWith<$Res>? get response {
 
   return $ResponseCopyWith<$Res>(_self.response!, (value) {
     return _then(_self.copyWith(response: value));
+  });
+}/// Create a copy of Survey
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SurveySummaryCopyWith<$Res>? get summary {
+    if (_self.summary == null) {
+    return null;
+  }
+
+  return $SurveySummaryCopyWith<$Res>(_self.summary!, (value) {
+    return _then(_self.copyWith(summary: value));
   });
 }
 }

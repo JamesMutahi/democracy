@@ -30,6 +30,9 @@ _Ballot _$BallotFromJson(Map<String, dynamic> json) => _Ballot(
       .map((e) => Option.fromJson(e as Map<String, dynamic>))
       .toList(),
   reason: json['reason'] as String?,
+  summary: json['summary'] == null
+      ? null
+      : BallotSummary.fromJson(json['summary'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$BallotToJson(_Ballot instance) => <String, dynamic>{
@@ -48,4 +51,5 @@ Map<String, dynamic> _$BallotToJson(_Ballot instance) => <String, dynamic>{
   'is_active': instance.isActive,
   'options': instance.options,
   'reason': instance.reason,
+  'summary': instance.summary,
 };

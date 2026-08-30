@@ -3,6 +3,7 @@ import 'package:democracy/geo/models/county.dart';
 import 'package:democracy/geo/models/ward.dart';
 import 'package:democracy/survey/models/page.dart';
 import 'package:democracy/survey/models/response.dart';
+import 'package:democracy/survey/models/summary.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'survey.freezed.dart';
@@ -19,10 +20,12 @@ sealed class Survey with _$Survey {
     required Ward? ward,
     @JsonKey(name: 'start_time') required DateTime startTime,
     @JsonKey(name: 'end_time') required DateTime endTime,
+    @JsonKey(name: 'has_ended') required bool hasEnded,
     @JsonKey(name: 'is_active') required bool isActive,
     required List<Page> pages,
     required Response? response,
     @JsonKey(name: 'total_responses') required int totalResponses,
+    required SurveySummary? summary,
   }) = _Survey;
 
   factory Survey.fromJson(Map<String, Object?> json) => _$SurveyFromJson(json);

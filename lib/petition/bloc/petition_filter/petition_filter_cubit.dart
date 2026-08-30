@@ -4,32 +4,40 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'petition_filter_cubit.freezed.dart';
 part 'petition_filter_state.dart';
 
+const defaultSearchTerm = '';
+const defaultIsOpen = null;
+const defaultFilterByRegion = true;
+const defaultSortBy = 'recent';
+const defaultStartDate = null;
+const defaultEndDate = null;
+
 class PetitionFilterCubit extends Cubit<PetitionFilterState> {
   PetitionFilterCubit()
     : super(
         const PetitionFilterState.changed(
-          searchTerm: '',
-          isOpen: true,
-          filterByRegion: true,
-          sortBy: 'popular',
-          startDate: null,
-          endDate: null,
+          searchTerm: defaultSearchTerm,
+          isOpen: defaultIsOpen,
+          filterByRegion: defaultFilterByRegion,
+          sortBy: defaultSortBy,
+          startDate: defaultStartDate,
+          endDate: defaultEndDate,
           count: 0,
         ),
       );
 
   void searchTermChanged({required String searchTerm}) {
     int count = 0;
-    if (state.isOpen != true) {
+    if (state.isOpen != defaultIsOpen) {
       count += 1;
     }
-    if (state.filterByRegion != true) {
+    if (state.filterByRegion != defaultFilterByRegion) {
       count += 1;
     }
-    if (state.sortBy != 'popular') {
+    if (state.sortBy != defaultSortBy) {
       count += 1;
     }
-    if (state.startDate != null || state.endDate != null) {
+    if (state.startDate != defaultStartDate ||
+        state.endDate != defaultEndDate) {
       count += 1;
     }
     emit(
@@ -53,16 +61,16 @@ class PetitionFilterCubit extends Cubit<PetitionFilterState> {
     required DateTime? endDate,
   }) {
     int count = 0;
-    if (isOpen != true) {
+    if (isOpen != defaultIsOpen) {
       count += 1;
     }
-    if (filterByRegion != true) {
+    if (filterByRegion != defaultFilterByRegion) {
       count += 1;
     }
-    if (sortBy != 'popular') {
+    if (sortBy != defaultSortBy) {
       count += 1;
     }
-    if (startDate != null || endDate != null) {
+    if (startDate != defaultStartDate || endDate != defaultEndDate) {
       count += 1;
     }
     emit(
@@ -82,11 +90,11 @@ class PetitionFilterCubit extends Cubit<PetitionFilterState> {
     emit(
       PetitionFilterState.changed(
         searchTerm: state.searchTerm,
-        isOpen: true,
-        filterByRegion: true,
-        sortBy: 'popular',
-        startDate: null,
-        endDate: null,
+        isOpen: defaultIsOpen,
+        filterByRegion: defaultFilterByRegion,
+        sortBy: defaultSortBy,
+        startDate: defaultStartDate,
+        endDate: defaultEndDate,
         count: 0,
       ),
     );

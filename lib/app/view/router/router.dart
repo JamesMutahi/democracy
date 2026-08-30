@@ -144,12 +144,9 @@ final otherRoutes = [
 
   // SURVEYS
   AutoRoute(path: '${kIsWeb ? '' : '/'}surveys', page: SurveyRoute.page),
+  AutoRoute(path: '${kIsWeb ? '' : '/'}survey/:id', page: SurveyDetail.page),
   AutoRoute(
     path: '${kIsWeb ? '' : '/'}survey/:id/process',
     page: SurveyProcess.page,
-  ),
-  AutoRoute(
-    path: '${kIsWeb ? '' : '/'}survey/:id/response',
-    page: ResponseRoute.page,
   ),
 ];

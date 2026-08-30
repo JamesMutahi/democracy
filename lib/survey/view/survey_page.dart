@@ -183,16 +183,14 @@ class _FiltersModalState extends State<_FiltersModal> {
           decoration: InputDecoration(border: InputBorder.none),
           options: [
             FormBuilderFieldOption<bool?>(
-              value: true,
-              child: Text('Open (default)'),
+              value: null,
+              child: Text('Show all (default)'),
             ),
+            FormBuilderFieldOption<bool?>(value: true, child: Text('Open')),
             FormBuilderFieldOption<bool?>(value: false, child: Text('Closed')),
-            FormBuilderFieldOption<bool?>(value: null, child: Text('Show all')),
           ],
           onChanged: (value) {
-            setState(() {
-              isOpen = value;
-            });
+            setState(() => isOpen = value);
           },
         ),
         FilterHeader(text: 'Filter by region'),

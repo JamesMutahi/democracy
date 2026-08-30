@@ -22,13 +22,15 @@ class SurveyTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        showModalBottomSheet<void>(
-          context: context,
-          shape: const BeveledRectangleBorder(),
-          builder: (BuildContext context) {
-            return SurveyBottomSheet(survey: survey);
-          },
-        );
+        survey.hasEnded
+            ? context.router.push(SurveyDetail(surveyId: survey.id))
+            : showModalBottomSheet<void>(
+                context: context,
+                shape: const BeveledRectangleBorder(),
+                builder: (BuildContext context) {
+                  return SurveyBottomSheet(survey: survey);
+                },
+              );
       },
       child: Stack(
         children: [
@@ -159,7 +161,7 @@ class SurveyBottomSheet extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            if (survey.isActive)
+            if (!survey.hasEnded)
               OutlinedButton(
                 onPressed: () {
                   context.router.popTop();
@@ -171,7 +173,7 @@ class SurveyBottomSheet extends StatelessWidget {
               OutlinedButton(
                 onPressed: () {
                   context.router.popTop();
-                  context.router.push(ResponseRoute(surveyId: survey.id));
+                  context.router.push(SurveyDetail(surveyId: survey.id));
                 },
                 child: Text('View response'),
               ),

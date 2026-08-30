@@ -1,4 +1,5 @@
 import 'package:democracy/ballot/models/option.dart';
+import 'package:democracy/ballot/models/summary.dart';
 import 'package:democracy/geo/models/constituency.dart';
 import 'package:democracy/geo/models/county.dart';
 import 'package:democracy/geo/models/ward.dart';
@@ -25,6 +26,7 @@ sealed class Ballot with _$Ballot {
     @JsonKey(name: 'is_active') required bool isActive,
     required List<Option> options,
     required String? reason,
+    required BallotSummary? summary,
   }) = _Ballot;
 
   factory Ballot.fromJson(Map<String, Object?> json) => _$BallotFromJson(json);
