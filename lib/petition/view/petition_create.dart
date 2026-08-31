@@ -99,338 +99,350 @@ class _PetitionCreateState extends State<PetitionCreate> {
                 ),
               ],
             ),
-            body: ListView(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return MediaDialog(
-                          onCameraPressed: () async {
-                            openCamera(
-                              context: context,
-                              recipient: null,
-                              textEditingController: null,
-                              onImageEditingComplete: (newImage) {
-                                setState(() {
-                                  image = newImage;
-                                });
-                              },
-                            );
-                          },
-                          onGalleryPressed: () {
-                            openGallery(
-                              context: context,
-                              maxAssets: 1,
-                              onMedia: (files) {
-                                if (files.isNotEmpty) {
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return MediaDialog(
+                            onCameraPressed: () async {
+                              openCamera(
+                                context: context,
+                                recipient: null,
+                                textEditingController: null,
+                                onImageEditingComplete: (newImage) {
                                   setState(() {
-                                    image = files.first;
+                                    image = newImage;
                                   });
-                                }
-                              },
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
-                  child: Stack(
-                    children: [
-                      Container(
-                        height: imageHeight,
-                        decoration: image == null
-                            ? BoxDecoration(color: Theme.of(context).cardColor)
-                            : BoxDecoration(
-                                image: DecorationImage(
-                                  image: FileImage(image!),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                      ),
-                      Container(
-                        height: imageHeight,
-                        decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.3),
-                        ),
-                      ),
-                      SizedBox(
-                        height: imageHeight,
-                        child: Center(
-                          child: Icon(
-                            Symbols.add_a_photo_rounded,
-                            size: 40,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      PetitionTextFormField(
-                        label: 'Title',
-                        onChanged: (value) {
-                          setState(() {
-                            title = value;
-                          });
-                        },
-                        maxLines: 2,
-                        maxLength: 50,
-                      ),
-                      PetitionTextFormField(
-                        label: 'Description',
-                        onChanged: (value) {
-                          setState(() {
-                            description = value;
-                          });
-                        },
-                        maxLines: 7,
-                        maxLength: 500,
-                      ),
-                      SizedBox(height: 10),
-                      BlocBuilder<GeoBloc, GeoState>(
-                        builder: (context, state) {
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Visibility(
-                                visible: !showCounties,
-                                child: TextButton(
-                                  onPressed: () {
+                                },
+                              );
+                            },
+                            onGalleryPressed: () {
+                              openGallery(
+                                context: context,
+                                maxAssets: 1,
+                                onMedia: (files) {
+                                  if (files.isNotEmpty) {
                                     setState(() {
-                                      showCounties = true;
+                                      image = files.first;
                                     });
-                                    context.read<GeoBloc>().add(
-                                      GeoEvent.getCounties(),
-                                    );
-                                  },
-                                  child: Text(
-                                    'Add county',
-                                    style: TextStyle(color: Colors.blue),
-                                  ),
-                                ),
-                              ),
-                              Visibility(
-                                visible: showCounties,
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text('County: '),
-                                        TextButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              showCounties = false;
-                                              showConstituencies = false;
-                                              showWards = false;
-                                              county = null;
-                                              constituency = null;
-                                              ward = null;
-                                            });
-                                          },
-                                          child: Text(
-                                            'Remove',
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    FormBuilderDropdown<County>(
-                                      name: 'County',
-                                      initialValue: county,
-                                      items: state.counties
-                                          .map(
-                                            (e) => DropdownMenuItem<County>(
-                                              value: e,
-                                              child: Text(e.name),
-                                            ),
-                                          )
-                                          .toList(),
-                                      onChanged: (value) {
-                                        if (value != county) {
-                                          setState(() {
-                                            county = value;
-                                            constituency = null;
-                                            ward = null;
-                                          });
-                                          if (showConstituencies == true) {
-                                            context.read<GeoBloc>().add(
-                                              GeoEvent.getConstituencies(
-                                                county: county!,
-                                              ),
-                                            );
-                                          }
-                                        }
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: 5),
-                              Visibility(
-                                visible: !showConstituencies && showCounties,
-                                child: TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      showConstituencies = true;
-                                    });
-                                    if (county != null) {
-                                      context.read<GeoBloc>().add(
-                                        GeoEvent.getConstituencies(
-                                          county: county!,
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  child: Text(
-                                    'Add constituency',
-                                    style: TextStyle(color: Colors.blue),
-                                  ),
-                                ),
-                              ),
-                              Visibility(
-                                visible: showCounties && showConstituencies,
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text('Constituency: '),
-                                        TextButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              showConstituencies = false;
-                                              showWards = false;
-                                              constituency = null;
-                                              ward = null;
-                                            });
-                                          },
-                                          child: Text(
-                                            'Remove',
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    FormBuilderDropdown<Constituency>(
-                                      name: 'Constituency',
-                                      initialValue: constituency,
-                                      items: state.constituencies
-                                          .map(
-                                            (e) =>
-                                                DropdownMenuItem<Constituency>(
-                                                  value: e,
-                                                  child: Text(e.name),
-                                                ),
-                                          )
-                                          .toList(),
-                                      onChanged: (value) {
-                                        if (value != constituency) {
-                                          setState(() {
-                                            constituency = value;
-                                            ward = null;
-                                          });
-                                          if (showWards == true) {
-                                            context.read<GeoBloc>().add(
-                                              GeoEvent.getWards(
-                                                constituency: constituency!,
-                                              ),
-                                            );
-                                          }
-                                        }
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: 5),
-                              Visibility(
-                                visible: !showWards && showConstituencies,
-                                child: TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      showWards = true;
-                                    });
-                                    if (constituency != null) {
-                                      context.read<GeoBloc>().add(
-                                        GeoEvent.getWards(
-                                          constituency: constituency!,
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  child: Text(
-                                    'Add ward',
-                                    style: TextStyle(color: Colors.blue),
-                                  ),
-                                ),
-                              ),
-                              Visibility(
-                                visible:
-                                    showCounties &&
-                                    showConstituencies &&
-                                    showWards,
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text('Ward: '),
-                                        TextButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              showWards = false;
-                                              ward = null;
-                                            });
-                                          },
-                                          child: Text(
-                                            'Remove',
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    FormBuilderDropdown<Ward>(
-                                      name: 'Ward',
-                                      initialValue: ward,
-                                      items: state.wards
-                                          .map(
-                                            (e) => DropdownMenuItem<Ward>(
-                                              value: e,
-                                              child: Text(e.name),
-                                            ),
-                                          )
-                                          .toList(),
-                                      onChanged: (value) {
-                                        if (value != ward) {
-                                          setState(() {
-                                            ward = value;
-                                          });
-                                        }
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                                  }
+                                },
+                              );
+                            },
                           );
                         },
-                      ),
-                    ],
+                      );
+                    },
+                    child: Stack(
+                      children: [
+                        Container(
+                          height: imageHeight,
+                          decoration: image == null
+                              ? BoxDecoration(
+                                  color: Theme.of(context).cardColor,
+                                )
+                              : BoxDecoration(
+                                  image: DecorationImage(
+                                    image: FileImage(image!),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                        ),
+                        Container(
+                          height: imageHeight,
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.3),
+                          ),
+                        ),
+                        SizedBox(
+                          height: imageHeight,
+                          child: Center(
+                            child: Icon(
+                              Symbols.add_a_photo_rounded,
+                              size: 40,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        PetitionTextFormField(
+                          label: 'Title',
+                          onChanged: (value) {
+                            setState(() {
+                              title = value;
+                            });
+                          },
+                          maxLines: 2,
+                          maxLength: 50,
+                        ),
+                        PetitionTextFormField(
+                          label: 'Description',
+                          onChanged: (value) {
+                            setState(() {
+                              description = value;
+                            });
+                          },
+                          maxLines: 7,
+                          maxLength: 500,
+                        ),
+                        SizedBox(height: 10),
+                        BlocBuilder<GeoBloc, GeoState>(
+                          builder: (context, state) {
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Visibility(
+                                  visible: !showCounties,
+                                  child: TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        showCounties = true;
+                                      });
+                                      context.read<GeoBloc>().add(
+                                        GeoEvent.getCounties(),
+                                      );
+                                    },
+                                    child: Text(
+                                      'Add county',
+                                      style: TextStyle(color: Colors.blue),
+                                    ),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: showCounties,
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text('County: '),
+                                          TextButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                showCounties = false;
+                                                showConstituencies = false;
+                                                showWards = false;
+                                                county = null;
+                                                constituency = null;
+                                                ward = null;
+                                              });
+                                            },
+                                            child: Text(
+                                              'Remove',
+                                              style: TextStyle(
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      FormBuilderDropdown<County>(
+                                        name: 'County',
+                                        initialValue: county,
+                                        items: state.counties
+                                            .map(
+                                              (e) => DropdownMenuItem<County>(
+                                                value: e,
+                                                child: Text(e.name),
+                                              ),
+                                            )
+                                            .toList(),
+                                        onChanged: (value) {
+                                          if (value != county) {
+                                            setState(() {
+                                              county = value;
+                                              constituency = null;
+                                              ward = null;
+                                            });
+                                            if (showConstituencies == true) {
+                                              context.read<GeoBloc>().add(
+                                                GeoEvent.getConstituencies(
+                                                  county: county!,
+                                                ),
+                                              );
+                                            }
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Visibility(
+                                  visible: !showConstituencies && showCounties,
+                                  child: TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        showConstituencies = true;
+                                      });
+                                      if (county != null) {
+                                        context.read<GeoBloc>().add(
+                                          GeoEvent.getConstituencies(
+                                            county: county!,
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    child: Text(
+                                      'Add constituency',
+                                      style: TextStyle(color: Colors.blue),
+                                    ),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: showCounties && showConstituencies,
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text('Constituency: '),
+                                          TextButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                showConstituencies = false;
+                                                showWards = false;
+                                                constituency = null;
+                                                ward = null;
+                                              });
+                                            },
+                                            child: Text(
+                                              'Remove',
+                                              style: TextStyle(
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      FormBuilderDropdown<Constituency>(
+                                        name: 'Constituency',
+                                        initialValue: constituency,
+                                        items: state.constituencies
+                                            .map(
+                                              (e) =>
+                                                  DropdownMenuItem<
+                                                    Constituency
+                                                  >(
+                                                    value: e,
+                                                    child: Text(e.name),
+                                                  ),
+                                            )
+                                            .toList(),
+                                        onChanged: (value) {
+                                          if (value != constituency) {
+                                            setState(() {
+                                              constituency = value;
+                                              ward = null;
+                                            });
+                                            if (showWards == true) {
+                                              context.read<GeoBloc>().add(
+                                                GeoEvent.getWards(
+                                                  constituency: constituency!,
+                                                ),
+                                              );
+                                            }
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Visibility(
+                                  visible: !showWards && showConstituencies,
+                                  child: TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        showWards = true;
+                                      });
+                                      if (constituency != null) {
+                                        context.read<GeoBloc>().add(
+                                          GeoEvent.getWards(
+                                            constituency: constituency!,
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    child: Text(
+                                      'Add ward',
+                                      style: TextStyle(color: Colors.blue),
+                                    ),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible:
+                                      showCounties &&
+                                      showConstituencies &&
+                                      showWards,
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text('Ward: '),
+                                          TextButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                showWards = false;
+                                                ward = null;
+                                              });
+                                            },
+                                            child: Text(
+                                              'Remove',
+                                              style: TextStyle(
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      FormBuilderDropdown<Ward>(
+                                        name: 'Ward',
+                                        initialValue: ward,
+                                        items: state.wards
+                                            .map(
+                                              (e) => DropdownMenuItem<Ward>(
+                                                value: e,
+                                                child: Text(e.name),
+                                              ),
+                                            )
+                                            .toList(),
+                                        onChanged: (value) {
+                                          if (value != ward) {
+                                            setState(() {
+                                              ward = value;
+                                            });
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

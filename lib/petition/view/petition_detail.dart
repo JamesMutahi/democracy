@@ -160,124 +160,128 @@ class _PetitionDetailState extends State<_PetitionDetail> {
             ? Center(
                 child: Text('This petition has been deleted by the author'),
               )
-            : ListView(
+            : SingleChildScrollView(
                 padding: EdgeInsets.symmetric(vertical: 15),
-                children: [
-                  Stack(
-                    children: [
-                      Container(
-                        height: MediaQuery.of(context).size.height / 4,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: CachedNetworkImageProvider(
-                              widget.petition.image,
-                              cacheKey: widget.petition.id.toString(),
-                            ),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      if (widget.petition.views > 0)
-                        Positioned(
-                          right: 0,
-                          bottom: 0,
-                          child: Container(
-                            margin: EdgeInsets.only(bottom: 5, right: 5),
-                            padding: EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: Colors.black.withAlpha(50),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  '${widget.petition.views} ${widget.petition.views > 1 ? 'views' : 'view'}',
-                                  style: TextStyle(
-                                    color: Colors.black.withAlpha(75),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 10, left: 15, right: 15),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                child: Column(
+                  children: [
+                    Stack(
                       children: [
-                        if (widget.petition.county != null)
-                          Container(
-                            margin: EdgeInsets.only(bottom: 10),
-                            child: GeoChipRow(
-                              county: widget.petition.county,
-                              constituency: widget.petition.constituency,
-                              ward: widget.petition.ward,
+                        Container(
+                          height: MediaQuery.of(context).size.height / 4,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: CachedNetworkImageProvider(
+                                widget.petition.image,
+                                cacheKey: widget.petition.id.toString(),
+                              ),
+                              fit: BoxFit.cover,
                             ),
                           ),
-                        Text(
-                          widget.petition.title,
-                          style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        SizedBox(height: 10),
-                        GestureDetector(
-                          onTap: () {
-                            context.router.push(
-                              ProfileRoute(
-                                username: widget.petition.author.username,
+                        if (widget.petition.views > 0)
+                          Positioned(
+                            right: 0,
+                            bottom: 0,
+                            child: Container(
+                              margin: EdgeInsets.only(bottom: 5, right: 5),
+                              padding: EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withAlpha(50),
+                                borderRadius: BorderRadius.circular(20),
                               ),
-                            );
-                          },
-                          child: PetitionAuthorInfo(petition: widget.petition),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                context.router.push(
-                                  Supporters(petitionId: widget.petition.id),
-                                );
-                              },
-                              child: PetitionSupportersRow(
-                                petition: widget.petition,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    '${widget.petition.views} ${widget.petition.views > 1 ? 'views' : 'view'}',
+                                    style: TextStyle(
+                                      color: Colors.black.withAlpha(75),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            widget.petition.isOpen
-                                ? SupportButton(petition: widget.petition)
-                                : Card.outlined(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: Text(
-                                        'Closed',
-                                        style: TextStyle(
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.error,
+                          ),
+                      ],
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: 10, left: 15, right: 15),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (widget.petition.county != null)
+                            Container(
+                              margin: EdgeInsets.only(bottom: 10),
+                              child: GeoChipRow(
+                                county: widget.petition.county,
+                                constituency: widget.petition.constituency,
+                                ward: widget.petition.ward,
+                              ),
+                            ),
+                          Text(
+                            widget.petition.title,
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          SizedBox(height: 10),
+                          GestureDetector(
+                            onTap: () {
+                              context.router.push(
+                                ProfileRoute(
+                                  username: widget.petition.author.username,
+                                ),
+                              );
+                            },
+                            child: PetitionAuthorInfo(
+                              petition: widget.petition,
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  context.router.push(
+                                    Supporters(petitionId: widget.petition.id),
+                                  );
+                                },
+                                child: PetitionSupportersRow(
+                                  petition: widget.petition,
+                                ),
+                              ),
+                              widget.petition.isOpen
+                                  ? SupportButton(petition: widget.petition)
+                                  : Card.outlined(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Text(
+                                          'Closed',
+                                          style: TextStyle(
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.error,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          'The problem',
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        CustomText(
-                          text: widget.petition.description,
-                          style: Theme.of(context).textTheme.bodyMedium!,
-                          showAllText: true,
-                          suffix: '',
-                        ),
-                      ],
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            'The problem',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          CustomText(
+                            text: widget.petition.description,
+                            style: Theme.of(context).textTheme.bodyMedium!,
+                            showAllText: true,
+                            suffix: '',
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
       ),
     );

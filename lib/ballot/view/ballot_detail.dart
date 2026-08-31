@@ -324,24 +324,27 @@ class _BallotDetailState extends State<_BallotDetail> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Visibility(
-                            visible: widget.ballot.reason != null,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Your reason',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium!
-                                      .copyWith(fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(height: 10),
-                                Text(widget.ballot.reason!),
-                              ],
+                      SizedBox(
+                        width: double.infinity,
+                        child: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Visibility(
+                              visible: widget.ballot.reason != null,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Your reason',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium!
+                                        .copyWith(fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(height: 10),
+                                  Text(widget.ballot.reason!),
+                                ],
+                              ),
                             ),
                           ),
                         ),

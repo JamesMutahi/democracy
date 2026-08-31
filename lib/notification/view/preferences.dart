@@ -73,184 +73,187 @@ class _PreferencesPageState extends State<PreferencesPage> {
               ? BottomLoader()
               : Container(
                   margin: const EdgeInsets.only(left: 15, right: 15),
-                  child: ListView(
+                  child: SingleChildScrollView(
                     padding: const EdgeInsets.only(top: 10, bottom: 20),
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Notifications',
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          Switch(
-                            value: preferences.allowNotifications,
-                            onChanged: (value) {
-                              updatePreferences(
-                                allowNotifications: value,
-                                allowTagNotifications: value,
-                                allowLikeNotifications: value,
-                                allowReplyNotifications: value,
-                                allowRepostNotifications: value,
-                                allowMessageNotifications: value,
-                                allowFollowNotifications: value,
-                                allowPetitionNotifications: value,
-                                allowPetitionSupporterNotifications: value,
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                      const Text(
-                        'New followers, tags, replies, likes, the latest posts on '
-                        'the people you follow... Turn on notifications and never '
-                        'miss an update again!',
-                      ),
-                      const SizedBox(height: 20),
-                      AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 300),
-                        child: (!preferences.allowNotifications)
-                            ? const SizedBox()
-                            : Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Push notifications',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.titleMedium,
-                                  ),
-                                  SwitchRow(
-                                    text:
-                                    'Allow background notifications',
-                                    value: false,
-                                    onChanged: (value) {
-                                      if (value) {
-
-                                      }
-                                    },
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    'Posts',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.titleMedium,
-                                  ),
-                                  const SizedBox(height: 10),
-                                  const Text(
-                                    'Select which post activity you would like to '
-                                    'receive notifications on.',
-                                  ),
-                                  SwitchRow(
-                                    text: 'Tags',
-                                    value: preferences.allowTagNotifications,
-                                    onChanged: (value) {
-                                      updatePreferences(
-                                        allowTagNotifications: value,
-                                      );
-                                    },
-                                  ),
-                                  SwitchRow(
-                                    text: 'Likes',
-                                    value: preferences.allowLikeNotifications,
-                                    onChanged: (value) {
-                                      updatePreferences(
-                                        allowLikeNotifications: value,
-                                      );
-                                    },
-                                  ),
-                                  SwitchRow(
-                                    text: 'Replies',
-                                    value: preferences.allowReplyNotifications,
-                                    onChanged: (value) {
-                                      updatePreferences(
-                                        allowReplyNotifications: value,
-                                      );
-                                    },
-                                  ),
-                                  SwitchRow(
-                                    text: 'Reposts',
-                                    value: preferences.allowRepostNotifications,
-                                    onChanged: (value) {
-                                      updatePreferences(
-                                        allowRepostNotifications: value,
-                                      );
-                                    },
-                                  ),
-                                  const SizedBox(height: 20),
-                                  Text(
-                                    'Messages',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.titleMedium,
-                                  ),
-                                  SwitchRow(
-                                    text:
-                                        'Receive notifications on new messages',
-                                    value:
-                                        preferences.allowMessageNotifications,
-                                    onChanged: (value) {
-                                      updatePreferences(
-                                        allowMessageNotifications: value,
-                                      );
-                                    },
-                                  ),
-                                  const SizedBox(height: 20),
-                                  Text(
-                                    'Followers',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.titleMedium,
-                                  ),
-                                  SwitchRow(
-                                    text:
-                                        'Receive notifications on new followers',
-                                    value: preferences.allowFollowNotifications,
-                                    onChanged: (value) {
-                                      updatePreferences(
-                                        allowFollowNotifications: value,
-                                      );
-                                    },
-                                  ),
-                                  const SizedBox(height: 20),
-                                  Text(
-                                    'Petitions',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.titleMedium,
-                                  ),
-                                  const SizedBox(height: 10),
-                                  const Text(
-                                    'Select which petition activity you would like to '
-                                    'receive notifications on.',
-                                  ),
-                                  const SizedBox(height: 10),
-                                  SwitchRow(
-                                    text: 'Petitions (from people you follow)',
-                                    value:
-                                        preferences.allowPetitionNotifications,
-                                    onChanged: (value) {
-                                      updatePreferences(
-                                        allowPetitionNotifications: value,
-                                      );
-                                    },
-                                  ),
-                                  SwitchRow(
-                                    text: 'Supporters (of your petitions)',
-                                    value: preferences
-                                        .allowPetitionSupporterNotifications,
-                                    onChanged: (value) {
-                                      updatePreferences(
-                                        allowPetitionSupporterNotifications:
-                                            value,
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
-                      ),
-                    ],
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Notifications',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            Switch(
+                              value: preferences.allowNotifications,
+                              onChanged: (value) {
+                                updatePreferences(
+                                  allowNotifications: value,
+                                  allowTagNotifications: value,
+                                  allowLikeNotifications: value,
+                                  allowReplyNotifications: value,
+                                  allowRepostNotifications: value,
+                                  allowMessageNotifications: value,
+                                  allowFollowNotifications: value,
+                                  allowPetitionNotifications: value,
+                                  allowPetitionSupporterNotifications: value,
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                        const Text(
+                          'New followers, tags, replies, likes, the latest posts on '
+                          'the people you follow... Turn on notifications and never '
+                          'miss an update again!',
+                        ),
+                        const SizedBox(height: 20),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child: (!preferences.allowNotifications)
+                              ? const SizedBox()
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Push notifications',
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.titleMedium,
+                                    ),
+                                    SwitchRow(
+                                      text: 'Allow background notifications',
+                                      value: false,
+                                      onChanged: (value) {
+                                        if (value) {}
+                                      },
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      'Posts',
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.titleMedium,
+                                    ),
+                                    const SizedBox(height: 10),
+                                    const Text(
+                                      'Select which post activity you would like to '
+                                      'receive notifications on.',
+                                    ),
+                                    SwitchRow(
+                                      text: 'Tags',
+                                      value: preferences.allowTagNotifications,
+                                      onChanged: (value) {
+                                        updatePreferences(
+                                          allowTagNotifications: value,
+                                        );
+                                      },
+                                    ),
+                                    SwitchRow(
+                                      text: 'Likes',
+                                      value: preferences.allowLikeNotifications,
+                                      onChanged: (value) {
+                                        updatePreferences(
+                                          allowLikeNotifications: value,
+                                        );
+                                      },
+                                    ),
+                                    SwitchRow(
+                                      text: 'Replies',
+                                      value:
+                                          preferences.allowReplyNotifications,
+                                      onChanged: (value) {
+                                        updatePreferences(
+                                          allowReplyNotifications: value,
+                                        );
+                                      },
+                                    ),
+                                    SwitchRow(
+                                      text: 'Reposts',
+                                      value:
+                                          preferences.allowRepostNotifications,
+                                      onChanged: (value) {
+                                        updatePreferences(
+                                          allowRepostNotifications: value,
+                                        );
+                                      },
+                                    ),
+                                    const SizedBox(height: 20),
+                                    Text(
+                                      'Messages',
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.titleMedium,
+                                    ),
+                                    SwitchRow(
+                                      text:
+                                          'Receive notifications on new messages',
+                                      value:
+                                          preferences.allowMessageNotifications,
+                                      onChanged: (value) {
+                                        updatePreferences(
+                                          allowMessageNotifications: value,
+                                        );
+                                      },
+                                    ),
+                                    const SizedBox(height: 20),
+                                    Text(
+                                      'Followers',
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.titleMedium,
+                                    ),
+                                    SwitchRow(
+                                      text:
+                                          'Receive notifications on new followers',
+                                      value:
+                                          preferences.allowFollowNotifications,
+                                      onChanged: (value) {
+                                        updatePreferences(
+                                          allowFollowNotifications: value,
+                                        );
+                                      },
+                                    ),
+                                    const SizedBox(height: 20),
+                                    Text(
+                                      'Petitions',
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.titleMedium,
+                                    ),
+                                    const SizedBox(height: 10),
+                                    const Text(
+                                      'Select which petition activity you would like to '
+                                      'receive notifications on.',
+                                    ),
+                                    const SizedBox(height: 10),
+                                    SwitchRow(
+                                      text:
+                                          'Petitions (from people you follow)',
+                                      value: preferences
+                                          .allowPetitionNotifications,
+                                      onChanged: (value) {
+                                        updatePreferences(
+                                          allowPetitionNotifications: value,
+                                        );
+                                      },
+                                    ),
+                                    SwitchRow(
+                                      text: 'Supporters (of your petitions)',
+                                      value: preferences
+                                          .allowPetitionSupporterNotifications,
+                                      onChanged: (value) {
+                                        updatePreferences(
+                                          allowPetitionSupporterNotifications:
+                                              value,
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
         },

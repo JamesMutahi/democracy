@@ -13,26 +13,28 @@ class Settings extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Settings')),
-      body: ListView(
-        children: [
-          ThemeModeListTile(),
-          ListTile(
-            leading: const Icon(Icons.volume_mute),
-            title: const Text('Mute and block'),
-            subtitle: const Text("Manage accounts you've muted and blocked"),
-            onTap: () {
-              context.router.push(MutedAndBlocked());
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.tune_rounded),
-            title: const Text('Preferences'),
-            subtitle: const Text("Manage your notification preferences"),
-            onTap: () {
-              context.pushRoute(PreferencesRoute());
-            },
-          ),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            ThemeModeListTile(),
+            ListTile(
+              leading: const Icon(Icons.volume_mute),
+              title: const Text('Mute and block'),
+              subtitle: const Text("Manage accounts you've muted and blocked"),
+              onTap: () {
+                context.router.push(MutedAndBlocked());
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.tune_rounded),
+              title: const Text('Preferences'),
+              subtitle: const Text("Manage your notification preferences"),
+              onTap: () {
+                context.pushRoute(PreferencesRoute());
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

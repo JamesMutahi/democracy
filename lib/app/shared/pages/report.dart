@@ -85,60 +85,64 @@ class _ReportModalState extends State<ReportModal> {
         body: RadioGroup<Issue>(
           groupValue: _issue,
           onChanged: setIssue,
-          child: ListView(
+          child: SingleChildScrollView(
             padding: const EdgeInsets.only(left: 20.0, top: 20.0, bottom: 20.0),
-            children: [
-              Text(
-                "What type of issue are you reporting?",
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 8),
-              _buildOption(
-                value: Issue.spam,
-                title: 'Spam',
-                subtitle: 'Fake engagement, scams, fake accounts, malicious links',
-              ),
-              _buildOption(
-                value: Issue.hate,
-                title: 'Hate',
-                subtitle:
-                'Slurs, racist or sexist stereotypes, dehumanization, '
-                    'incitement of fear or discrimination, hateful symbols & logos',
-                isThreeLine: true,
-              ),
-              _buildOption(
-                value: Issue.abuseAndHarassment,
-                title: 'Abuse & Harassment',
-                subtitle:
-                'Insults, targeted harassment and inciting harassment',
-              ),
-              _buildOption(
-                value: Issue.violentSpeech,
-                title: 'Violent Speech',
-                subtitle:
-                'Violent threats, wish of harm, glorification of violence, '
-                    'incitement of violence, coded incitement of violence',
-              ),
-              _buildOption(
-                value: Issue.childSafety,
-                title: 'Child Safety',
-                subtitle: 'Child sexual exploitation, grooming, physical child abuse',
-              ),
-              _buildOption(
-                value: Issue.privacy,
-                title: 'Privacy',
-                subtitle:
-                'Sharing private information, threatening to share/expose '
-                    'private information',
-              ),
-              _buildOption(
-                value: Issue.suicideOrSelfHarm,
-                title: 'Suicide or self-harm',
-                subtitle:
-                'Encouraging, promoting, providing instructions or sharing '
-                    'strategies for self-harm',
-              ),
-            ],
+            child: Column(
+              children: [
+                Text(
+                  "What type of issue are you reporting?",
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 8),
+                _buildOption(
+                  value: Issue.spam,
+                  title: 'Spam',
+                  subtitle:
+                      'Fake engagement, scams, fake accounts, malicious links',
+                ),
+                _buildOption(
+                  value: Issue.hate,
+                  title: 'Hate',
+                  subtitle:
+                      'Slurs, racist or sexist stereotypes, dehumanization, '
+                      'incitement of fear or discrimination, hateful symbols & logos',
+                  isThreeLine: true,
+                ),
+                _buildOption(
+                  value: Issue.abuseAndHarassment,
+                  title: 'Abuse & Harassment',
+                  subtitle:
+                      'Insults, targeted harassment and inciting harassment',
+                ),
+                _buildOption(
+                  value: Issue.violentSpeech,
+                  title: 'Violent Speech',
+                  subtitle:
+                      'Violent threats, wish of harm, glorification of violence, '
+                      'incitement of violence, coded incitement of violence',
+                ),
+                _buildOption(
+                  value: Issue.childSafety,
+                  title: 'Child Safety',
+                  subtitle:
+                      'Child sexual exploitation, grooming, physical child abuse',
+                ),
+                _buildOption(
+                  value: Issue.privacy,
+                  title: 'Privacy',
+                  subtitle:
+                      'Sharing private information, threatening to share/expose '
+                      'private information',
+                ),
+                _buildOption(
+                  value: Issue.suicideOrSelfHarm,
+                  title: 'Suicide or self-harm',
+                  subtitle:
+                      'Encouraging, promoting, providing instructions or sharing '
+                      'strategies for self-harm',
+                ),
+              ],
+            ),
           ),
         ),
         bottomNavigationBar: Container(
@@ -159,13 +163,13 @@ class _ReportModalState extends State<ReportModal> {
             onPressed: _disabled
                 ? null
                 : () {
-              context.read<PostDetailBloc>().add(
-                PostDetailEvent.report(
-                  issue: issues[_issue]!,
-                  post: widget.post,
-                ),
-              );
-            },
+                    context.read<PostDetailBloc>().add(
+                      PostDetailEvent.report(
+                        issue: issues[_issue]!,
+                        post: widget.post,
+                      ),
+                    );
+                  },
             child: const Text('Report'),
           ),
         ),
