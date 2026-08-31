@@ -1,8 +1,6 @@
-import 'package:democracy/survey/models/choice_answer.dart';
 import 'package:democracy/survey/models/question.dart';
 import 'package:democracy/survey/models/summary.dart';
 import 'package:democracy/survey/models/survey.dart';
-import 'package:democracy/survey/models/text_answer.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -15,14 +13,6 @@ class SurveySummaryTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = Theme.of(context).primaryColor;
     final summary = survey.summary!;
-    final response = survey.response!;
-    Set<Question> questionsSet = {};
-    for (TextAnswer textAnswer in response.textAnswers) {
-      questionsSet.add(textAnswer.question);
-    }
-    for (ChoiceAnswer choiceAnswer in response.choiceAnswers) {
-      questionsSet.add(choiceAnswer.question);
-    }
     List<Question> questions = [];
     final pages = survey.pages.toList();
     for (var page in pages) {
@@ -271,42 +261,56 @@ class _ChoiceQuestionCard extends StatelessWidget {
                 style: TextStyle(fontSize: 12, color: Colors.grey[600]),
               ),
               const SizedBox(height: 16),
-              ...stat.choices.map(
-                (choice) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
+              Card.outlined(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(15, 20, 15, 10),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              choice.text,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
+                      ...stat.choices.map(
+                        (choice) => Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      choice.text,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    '${choice.percent.toStringAsFixed(1)}%',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: color,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
+                              const SizedBox(height: 6),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(4),
+                                child: LinearProgressIndicator(
+                                  value: choice.percent / 100,
+                                  backgroundColor: Theme.of(
+                                    context,
+                                  ).highlightColor,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    color,
+                                  ),
+                                  minHeight: 6,
+                                ),
+                              ),
+                            ],
                           ),
-                          Text(
-                            '${choice.percent.toStringAsFixed(1)}%',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: color,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 6),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: LinearProgressIndicator(
-                          value: choice.percent / 100,
-                          backgroundColor: Theme.of(context).highlightColor,
-                          valueColor: AlwaysStoppedAnimation<Color>(color),
-                          minHeight: 6,
                         ),
                       ),
                     ],
@@ -330,7 +334,6 @@ class _NumberQuestionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: 24),
-
       child: Card.filled(
         child: Padding(
           padding: const EdgeInsets.all(15),
@@ -441,7 +444,10 @@ class _TextThemeCard extends StatelessWidget {
               const SizedBox(height: 16),
               Card.outlined(
                 child: Padding(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 15,
+                    vertical: 12,
+                  ),
                   child: Text(
                     theme.summary,
                     style: const TextStyle(fontSize: 14, height: 1.5),

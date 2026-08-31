@@ -61,9 +61,9 @@ class BallotSummaryWidget extends StatelessWidget {
   }
 
   Widget _buildSummary(BuildContext context, Color color) {
-    return Card(
+    return Card.filled(
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -206,7 +206,7 @@ class _OptionThemeGroupCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Card.filled(
       child: Padding(
         padding: const EdgeInsets.all(15),
         child: Column(

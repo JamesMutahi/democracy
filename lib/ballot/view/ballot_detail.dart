@@ -324,13 +324,12 @@ class _BallotDetailState extends State<_BallotDetail> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Visibility(
-                              visible: widget.ballot.reason != null,
+                      if (widget.ballot.reason != null)
+                        SizedBox(
+                          width: double.infinity,
+                          child: Card.filled(
+                            child: Padding(
+                              padding: const EdgeInsets.all(15.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -348,7 +347,6 @@ class _BallotDetailState extends State<_BallotDetail> {
                             ),
                           ),
                         ),
-                      ),
                       BallotSummaryWidget(summary: widget.ballot.summary!),
                     ],
                   ),
