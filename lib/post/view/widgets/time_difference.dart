@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 class TimeDifferenceInfo extends StatefulWidget {
@@ -12,80 +11,53 @@ class TimeDifferenceInfo extends StatefulWidget {
 }
 
 class _TimeDifferenceInfoState extends State<TimeDifferenceInfo> {
-  Timer? timer;
-  String timeSince = '';
+  Timer? _timer;
+  String _timeSince = '';
 
   @override
   void initState() {
     super.initState();
-    getTimeSince();
-    timer = Timer.periodic(Duration(minutes: 1), (Timer t) => getTimeSince());
+    _updateTime();
+
+    _timer = Timer.periodic(const Duration(minutes: 1), (_) => _updateTime());
   }
 
   @override
   void dispose() {
-    timer?.cancel();
+    _timer?.cancel();
     super.dispose();
   }
 
-  void getTimeSince() {
-    Duration diff = DateTime.now().difference(widget.publishedAt);
+  void _updateTime() {
+    if (!mounted) return;
+
+    final diff = DateTime.now().difference(widget.publishedAt);
+
     setState(() {
-      var diffSeconds = diff.inSeconds;
-      var unit = 's';
-      var difference = diffSeconds;
-      if (diffSeconds > 1 || diffSeconds < 1) {
-        unit = 's';
-      }
-      if (diffSeconds > 59) {
-        final diffMinutes = diff.inMinutes;
-        difference = diffMinutes;
-        unit = 'min';
-        if (diffMinutes > 1) {
-          unit = 'min';
-        }
-        if (diffMinutes > 59) {
-          final diffHours = diff.inHours;
-          difference = diffHours;
-          unit = 'h';
-          if (diffHours > 1) {
-            unit = 'h';
-          }
-          if (diffHours > 24) {
-            final diffDays = diff.inDays;
-            difference = diffDays;
-            unit = 'd';
-            if (diffDays > 1) {
-              unit = 'd';
-            }
-            if (diffDays > 30) {
-              final diffMonths = (diffDays / 30).floor();
-              difference = diffMonths;
-              unit = 'm';
-              if (diffMonths > 1) {
-                unit = 'm';
-              }
-              if (diffDays > 365) {
-                final diffYears = (diffDays / 365).floor();
-                difference = diffYears;
-                unit = 'y';
-                if (diffYears > 1) {
-                  unit = 'yrs';
-                }
-              }
-            }
-          }
-        }
-      }
-      timeSince = '$difference$unit';
+      _timeSince = _formatTimeAgo(diff);
     });
+  }
+
+  String _formatTimeAgo(Duration diff) {
+    // Handle edge case where device clock is slightly behind server time
+    if (diff.isNegative || diff.inSeconds < 60) return 'Just now';
+    if (diff.inMinutes < 60) return '${diff.inMinutes}m';
+    if (diff.inHours < 24) return '${diff.inHours}h';
+    if (diff.inDays < 7) return '${diff.inDays}d';
+    if (diff.inDays < 30) return '${(diff.inDays / 7).floor()}w';
+    if (diff.inDays < 365) return '${(diff.inDays / 30).floor()}mo';
+
+    return '${(diff.inDays / 365).floor()}y';
   }
 
   @override
   Widget build(BuildContext context) {
     return Text(
-      timeSince,
-      style: TextStyle(color: Theme.of(context).colorScheme.outline),
+      _timeSince,
+      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+        color: Theme.of(context).colorScheme.outline,
+        fontWeight: FontWeight.w500,
+      ),
     );
   }
 }

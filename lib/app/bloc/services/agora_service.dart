@@ -7,14 +7,20 @@ class AgoraService {
   AgoraService._internal();
 
   RtcEngine? _engine;
-  int? _currentBroadcast;
+  int? currentBroadcast;
 
   Future<RtcEngine> getEngine() async {
     if (_engine == null) {
       _engine = createAgoraRtcEngine();
-      await _engine!.initialize(
-        RtcEngineContext(appId: const String.fromEnvironment('AGORA_ID')),
-      );
+      try {
+        await _engine!.initialize(
+          const RtcEngineContext(appId: String.fromEnvironment('AGORA_ID')),
+        );
+      } catch (e) {
+        // Reset to null on failure so the next attempt tries to initialize again
+        _engine = null;
+        rethrow;
+      }
     }
     return _engine!;
   }
@@ -24,13 +30,14 @@ class AgoraService {
     required Broadcast broadcast,
     required Function(RtcEngine) onEngineReady,
   }) async {
-    if (_currentBroadcast == broadcast.id) return; // Already in this channel
+    if (currentBroadcast == broadcast.id) return; // Already in this channel
 
     final engine = await getEngine();
 
-    await engine.leaveChannel(); // Leave previous
+    try {
+      await engine.leaveChannel();
+    } catch (_) {}
 
-    await engine.enableAudio();
     await engine.enableAudioVolumeIndication(
       interval: 200,
       smooth: 3,
@@ -44,13 +51,10 @@ class AgoraService {
           ? ClientRoleType.clientRoleBroadcaster
           : ClientRoleType.clientRoleAudience,
     );
-    if (isBroadcaster) {
-      await engine.muteLocalAudioStream(true);
-    }
 
     onEngineReady(engine);
 
-    _currentBroadcast = broadcast.id;
+    currentBroadcast = broadcast.id;
   }
 
   Future<void> joinLiveStream({
@@ -58,11 +62,14 @@ class AgoraService {
     required Broadcast broadcast,
     required Function(RtcEngine) onEngineReady,
   }) async {
-    if (_currentBroadcast == broadcast.id) return; // Already in this channel
+    // Already in this channel
+    if (currentBroadcast == broadcast.id) return; // Already in this channel
 
     final engine = await getEngine();
 
-    await engine.leaveChannel(); // Leave previous
+    try {
+      await engine.leaveChannel();
+    } catch (_) {}
 
     if (isHost) {
       await engine.setVideoEncoderConfiguration(
@@ -84,45 +91,46 @@ class AgoraService {
           ? ClientRoleType.clientRoleBroadcaster
           : ClientRoleType.clientRoleAudience,
     );
-    await engine.setClientRole(role: ClientRoleType.clientRoleAudience);
     await engine.enableVideo();
-    await engine.enableAudio();
 
     onEngineReady(engine);
 
-    _currentBroadcast = broadcast.id;
+    currentBroadcast = broadcast.id;
   }
 
   Future<void> joinMiniStream({
     required Broadcast broadcast,
     required Function(RtcEngine) onEngineReady,
   }) async {
-    if (_currentBroadcast == broadcast.id) return; // Already in this channel
+    if (currentBroadcast == broadcast.id) return; // Already in this channel
 
     final engine = await getEngine();
 
-    await engine.leaveChannel(); // Leave previous
+    try {
+      await engine.leaveChannel();
+    } catch (_) {}
 
     await engine.setChannelProfile(
       ChannelProfileType.channelProfileLiveBroadcasting,
     );
     await engine.setClientRole(role: ClientRoleType.clientRoleAudience);
     await engine.enableVideo();
-    await engine.enableAudio();
 
     onEngineReady(engine);
 
-    _currentBroadcast = broadcast.id;
+    currentBroadcast = broadcast.id;
   }
 
   Future<void> leaveCurrent() async {
-    await _engine?.leaveChannel();
-    _currentBroadcast = null;
+    try {
+      await _engine?.leaveChannel();
+    } catch (_) {}
+    currentBroadcast = null;
   }
 
   Future<void> dispose() async {
     await _engine?.release();
     _engine = null;
-    _currentBroadcast = null;
+    currentBroadcast = null;
   }
 }

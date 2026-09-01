@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:democracy/app/shared/camera/camera.dart';
-import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/utils/media_tools.dart';
+import 'package:democracy/app/shared/widgets/dialogs.dart';
 import 'package:democracy/app/shared/widgets/loader_overlay_widgets.dart';
 import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
@@ -12,12 +12,12 @@ import 'package:democracy/geo/models/constituency.dart';
 import 'package:democracy/geo/models/county.dart';
 import 'package:democracy/geo/models/ward.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
+import 'package:democracy/petition/models/petition.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 @RoutePage()
 class PetitionCreate extends StatefulWidget {
@@ -28,42 +28,68 @@ class PetitionCreate extends StatefulWidget {
 }
 
 class _PetitionCreateState extends State<PetitionCreate> {
-  File? image;
-  String title = '';
-  String description = '';
-  bool showCounties = false;
-  bool showConstituencies = false;
-  bool showWards = false;
-  County? county;
-  Constituency? constituency;
-  Ward? ward;
+  final _formKey = GlobalKey<FormBuilderState>();
+  File? _image;
+
+  // Track selected geo entities to manage cascading dropdowns
+  County? _selectedCounty;
+  Constituency? _selectedConstituency;
+  Ward? _selectedWard;
+
+  // Use a ValueNotifier to track form validity for the submit button
+  final ValueNotifier<bool> _isFormValid = ValueNotifier(false);
 
   @override
   void initState() {
-    context.read<GeoBloc>().add(GeoEvent.started());
     super.initState();
+    context.read<GeoBloc>().add(GeoEvent.getCounties());
+  }
+
+  @override
+  void dispose() {
+    _isFormValid.dispose(); // Clean up the notifier
+    super.dispose();
+  }
+
+  // Helper method to check validity
+  void _checkValidity() {
+    final isValid = _formKey.currentState?.saveAndValidate() ?? false;
+    _isFormValid.value = isValid && _image != null;
   }
 
   @override
   Widget build(BuildContext context) {
-    final imageHeight = MediaQuery.of(context).size.height / 4;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return BlocListener<PetitionDetailBloc, PetitionDetailState>(
       listener: (context, state) {
         if (state is PetitionCreated) {
-          context.router.popTop();
-          final snackBar = getSnackBar(
-            context: context,
-            message: 'Petition published',
-            status: SnackBarStatus.success,
+          context.loaderOverlay.hide();
+          context.router.maybePop();
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            getSnackBar(
+              context: context,
+              message: 'Petition published successfully',
+              status: SnackBarStatus.success,
+            ),
           );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          // Show dialog to ask the user if they want to post their petition
-          showDialog(
-            context: context,
-            builder: (context) => PostPetitionDialog(
-              onYesPressed: () {
-                context.router.push(PostCreateRoute(petition: state.petition));
-              },
+
+          if (context.mounted) {
+            showDialog(
+              context: context,
+              builder: (context) =>
+                  PostPetitionDialog(petition: state.petition),
+            );
+          }
+        }
+        if (state is PetitionDetailFailure) {
+          context.loaderOverlay.hide();
+          ScaffoldMessenger.of(context).showSnackBar(
+            getSnackBar(
+              context: context,
+              message: state.error,
+              status: SnackBarStatus.failure,
             ),
           );
         }
@@ -71,377 +97,265 @@ class _PetitionCreateState extends State<PetitionCreate> {
       child: PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, result) {
-          if (didPop) {
-            return;
-          }
-          showDialog(context: context, builder: (context) => ExitDialog());
+          if (didPop) return;
+          showDialog(
+            context: context,
+            builder: (context) => const ExitDialog(),
+          );
         },
         child: LoaderOverlay(
-          overlayWidgetBuilder: (_) {
-            return LoaderOverlayLoading(progress: '');
-          },
+          overlayWidgetBuilder: (_) => const LoaderOverlayLoading(progress: ''),
           child: Scaffold(
             appBar: AppBar(
+              title: const Text('Create Petition'),
+              centerTitle: true,
               leading: IconButton(
-                onPressed: () {
-                  context.router.popTop();
-                },
-                icon: Icon(Symbols.close),
-              ),
-              actionsPadding: EdgeInsets.only(right: 10),
-              actions: [
-                OutlinedButton(
-                  onPressed:
-                      (image == null || title.isEmpty || description.isEmpty)
-                      ? null
-                      : _publishPetition,
-                  child: Text('Publish'),
+                icon: const Icon(Icons.close_rounded),
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (context) => const ExitDialog(),
                 ),
-              ],
+              ),
             ),
-            body: SingleChildScrollView(
-              child: Column(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return MediaDialog(
-                            onCameraPressed: () async {
-                              openCamera(
-                                context: context,
-                                recipient: null,
-                                textEditingController: null,
-                                onImageEditingComplete: (newImage) {
-                                  setState(() {
-                                    image = newImage;
-                                  });
-                                },
-                              );
-                            },
-                            onGalleryPressed: () {
-                              openGallery(
-                                context: context,
-                                maxAssets: 1,
-                                onMedia: (files) {
-                                  if (files.isNotEmpty) {
-                                    setState(() {
-                                      image = files.first;
-                                    });
-                                  }
-                                },
-                              );
-                            },
-                          );
-                        },
-                      );
-                    },
-                    child: Stack(
-                      children: [
-                        Container(
-                          height: imageHeight,
-                          decoration: image == null
-                              ? BoxDecoration(
-                                  color: Theme.of(context).cardColor,
-                                )
-                              : BoxDecoration(
-                                  image: DecorationImage(
-                                    image: FileImage(image!),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                        ),
-                        Container(
-                          height: imageHeight,
-                          decoration: BoxDecoration(
-                            color: Colors.black.withValues(alpha: 0.3),
-                          ),
-                        ),
-                        SizedBox(
-                          height: imageHeight,
-                          child: Center(
-                            child: Icon(
-                              Symbols.add_a_photo_rounded,
-                              size: 40,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
+            body: FormBuilder(
+              key: _formKey,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildImagePicker(colorScheme),
+                    const SizedBox(height: 24),
+
+                    Text(
+                      'Petition Details',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.primary,
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        PetitionTextFormField(
-                          label: 'Title',
-                          onChanged: (value) {
-                            setState(() {
-                              title = value;
-                            });
-                          },
-                          maxLines: 2,
-                          maxLength: 50,
+                    const SizedBox(height: 12),
+                    FormBuilderTextField(
+                      name: 'title',
+                      maxLines: 2,
+                      maxLength: 50,
+                      textInputAction: TextInputAction.next,
+                      onChanged: (val) => _checkValidity(),
+                      decoration: InputDecoration(
+                        labelText: 'Title',
+                        hintText: 'e.g., Fix the potholes on Main Street',
+                        filled: true,
+                        fillColor: colorScheme.surfaceContainerHighest,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
                         ),
-                        PetitionTextFormField(
-                          label: 'Description',
-                          onChanged: (value) {
-                            setState(() {
-                              description = value;
-                            });
-                          },
-                          maxLines: 7,
-                          maxLength: 500,
+                      ),
+                      validator: FormBuilderValidators.required(
+                        errorText: 'Title is required',
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    FormBuilderTextField(
+                      name: 'description',
+                      maxLines: 6,
+                      maxLength: 500,
+                      textInputAction: TextInputAction.newline,
+                      onChanged: (val) => _checkValidity(),
+                      decoration: InputDecoration(
+                        labelText: 'Description',
+                        hintText:
+                            'Explain the issue and what you want to achieve...',
+                        alignLabelWithHint: true,
+                        filled: true,
+                        fillColor: colorScheme.surfaceContainerHighest,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
                         ),
-                        SizedBox(height: 10),
-                        BlocBuilder<GeoBloc, GeoState>(
-                          builder: (context, state) {
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Visibility(
-                                  visible: !showCounties,
-                                  child: TextButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        showCounties = true;
-                                      });
-                                      context.read<GeoBloc>().add(
-                                        GeoEvent.getCounties(),
-                                      );
-                                    },
-                                    child: Text(
-                                      'Add county',
-                                      style: TextStyle(color: Colors.blue),
+                      ),
+                      validator: FormBuilderValidators.required(
+                        errorText: 'Description is required',
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    Text(
+                      'Target Location (Optional)',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.primary,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    BlocBuilder<GeoBloc, GeoState>(
+                      builder: (context, state) {
+                        return Column(
+                          children: [
+                            FormBuilderDropdown<County>(
+                              name: 'county',
+                              decoration: InputDecoration(
+                                labelText: 'County',
+                                prefixIcon: const Icon(
+                                  Icons.location_on_outlined,
+                                  size: 20,
+                                ),
+                                filled: true,
+                                fillColor: colorScheme.surfaceContainerHighest,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                              items: state.counties
+                                  .map(
+                                    (e) => DropdownMenuItem(
+                                      value: e,
+                                      child: Text(e.name),
                                     ),
-                                  ),
+                                  )
+                                  .toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedCounty = value;
+                                  _selectedConstituency = null;
+                                  _selectedWard = null;
+                                  _formKey.currentState?.fields['constituency']
+                                      ?.reset();
+                                  _formKey.currentState?.fields['ward']
+                                      ?.reset();
+                                });
+                                if (value != null) {
+                                  context.read<GeoBloc>().add(
+                                    GeoEvent.getConstituencies(county: value),
+                                  );
+                                }
+                                _checkValidity();
+                              },
+                            ),
+                            const SizedBox(height: 12),
+                            FormBuilderDropdown<Constituency>(
+                              name: 'constituency',
+                              decoration: InputDecoration(
+                                labelText: 'Constituency',
+                                prefixIcon: const Icon(
+                                  Icons.map_outlined,
+                                  size: 20,
                                 ),
-                                Visibility(
-                                  visible: showCounties,
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text('County: '),
-                                          TextButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                showCounties = false;
-                                                showConstituencies = false;
-                                                showWards = false;
-                                                county = null;
-                                                constituency = null;
-                                                ward = null;
-                                              });
-                                            },
-                                            child: Text(
-                                              'Remove',
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      FormBuilderDropdown<County>(
-                                        name: 'County',
-                                        initialValue: county,
-                                        items: state.counties
-                                            .map(
-                                              (e) => DropdownMenuItem<County>(
-                                                value: e,
-                                                child: Text(e.name),
-                                              ),
-                                            )
-                                            .toList(),
-                                        onChanged: (value) {
-                                          if (value != county) {
-                                            setState(() {
-                                              county = value;
-                                              constituency = null;
-                                              ward = null;
-                                            });
-                                            if (showConstituencies == true) {
-                                              context.read<GeoBloc>().add(
-                                                GeoEvent.getConstituencies(
-                                                  county: county!,
-                                                ),
-                                              );
-                                            }
-                                          }
-                                        },
-                                      ),
-                                    ],
-                                  ),
+                                filled: true,
+                                fillColor: _selectedCounty == null
+                                    ? colorScheme.surfaceContainerHighest
+                                          .withValues(alpha: 0.5)
+                                    : colorScheme.surfaceContainerHighest,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide.none,
                                 ),
-                                SizedBox(height: 5),
-                                Visibility(
-                                  visible: !showConstituencies && showCounties,
-                                  child: TextButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        showConstituencies = true;
-                                      });
-                                      if (county != null) {
-                                        context.read<GeoBloc>().add(
-                                          GeoEvent.getConstituencies(
-                                            county: county!,
-                                          ),
-                                        );
-                                      }
-                                    },
-                                    child: Text(
-                                      'Add constituency',
-                                      style: TextStyle(color: Colors.blue),
+                              ),
+                              items: state.constituencies
+                                  .map(
+                                    (e) => DropdownMenuItem(
+                                      value: e,
+                                      child: Text(e.name),
                                     ),
-                                  ),
-                                ),
-                                Visibility(
-                                  visible: showCounties && showConstituencies,
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text('Constituency: '),
-                                          TextButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                showConstituencies = false;
-                                                showWards = false;
-                                                constituency = null;
-                                                ward = null;
-                                              });
-                                            },
-                                            child: Text(
-                                              'Remove',
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      FormBuilderDropdown<Constituency>(
-                                        name: 'Constituency',
-                                        initialValue: constituency,
-                                        items: state.constituencies
-                                            .map(
-                                              (e) =>
-                                                  DropdownMenuItem<
-                                                    Constituency
-                                                  >(
-                                                    value: e,
-                                                    child: Text(e.name),
-                                                  ),
-                                            )
-                                            .toList(),
-                                        onChanged: (value) {
-                                          if (value != constituency) {
-                                            setState(() {
-                                              constituency = value;
-                                              ward = null;
-                                            });
-                                            if (showWards == true) {
-                                              context.read<GeoBloc>().add(
-                                                GeoEvent.getWards(
-                                                  constituency: constituency!,
-                                                ),
-                                              );
-                                            }
-                                          }
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(height: 5),
-                                Visibility(
-                                  visible: !showWards && showConstituencies,
-                                  child: TextButton(
-                                    onPressed: () {
+                                  )
+                                  .toList(),
+                              onChanged: _selectedCounty == null
+                                  ? null
+                                  : (value) {
                                       setState(() {
-                                        showWards = true;
+                                        _selectedConstituency = value;
+                                        _selectedWard = null;
+                                        _formKey.currentState?.fields['ward']
+                                            ?.reset();
                                       });
-                                      if (constituency != null) {
+                                      if (value != null) {
                                         context.read<GeoBloc>().add(
                                           GeoEvent.getWards(
-                                            constituency: constituency!,
+                                            constituency: value,
                                           ),
                                         );
                                       }
+                                      _checkValidity();
                                     },
-                                    child: Text(
-                                      'Add ward',
-                                      style: TextStyle(color: Colors.blue),
+                            ),
+                            const SizedBox(height: 12),
+                            FormBuilderDropdown<Ward>(
+                              name: 'ward',
+                              decoration: InputDecoration(
+                                labelText: 'Ward',
+                                prefixIcon: const Icon(
+                                  Icons.pin_drop_outlined,
+                                  size: 20,
+                                ),
+                                filled: true,
+                                fillColor: _selectedConstituency == null
+                                    ? colorScheme.surfaceContainerHighest
+                                          .withValues(alpha: 0.5)
+                                    : colorScheme.surfaceContainerHighest,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                              items: state.wards
+                                  .map(
+                                    (e) => DropdownMenuItem(
+                                      value: e,
+                                      child: Text(e.name),
                                     ),
-                                  ),
-                                ),
-                                Visibility(
-                                  visible:
-                                      showCounties &&
-                                      showConstituencies &&
-                                      showWards,
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text('Ward: '),
-                                          TextButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                showWards = false;
-                                                ward = null;
-                                              });
-                                            },
-                                            child: Text(
-                                              'Remove',
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      FormBuilderDropdown<Ward>(
-                                        name: 'Ward',
-                                        initialValue: ward,
-                                        items: state.wards
-                                            .map(
-                                              (e) => DropdownMenuItem<Ward>(
-                                                value: e,
-                                                child: Text(e.name),
-                                              ),
-                                            )
-                                            .toList(),
-                                        onChanged: (value) {
-                                          if (value != ward) {
-                                            setState(() {
-                                              ward = value;
-                                            });
-                                          }
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      ],
+                                  )
+                                  .toList(),
+                              onChanged: _selectedConstituency == null
+                                  ? null
+                                  : (value) {
+                                      setState(() => _selectedWard = value);
+                                      _checkValidity();
+                                    },
+                            ),
+                          ],
+                        );
+                      },
                     ),
+                    const SizedBox(height: 80),
+                  ],
+                ),
+              ),
+            ),
+
+            bottomNavigationBar: Container(
+              padding: EdgeInsets.only(
+                left: 20,
+                right: 20,
+                top: 16,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+              ),
+              decoration: BoxDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, -5),
                   ),
                 ],
+              ),
+              child: ValueListenableBuilder<bool>(
+                valueListenable: _isFormValid,
+                builder: (context, isValid, child) {
+                  return FilledButton.icon(
+                    onPressed: isValid ? _showPublishDialog : null,
+                    icon: const Icon(Icons.send_rounded),
+                    label: const Text('Publish Petition'),
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 56),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           ),
@@ -450,7 +364,120 @@ class _PetitionCreateState extends State<PetitionCreate> {
     );
   }
 
-  void _publishPetition() {
+  Widget _buildImagePicker(ColorScheme colorScheme) {
+    return GestureDetector(
+      onTap: _pickImage,
+      child: Container(
+        width: double.infinity,
+        height: 200,
+        decoration: BoxDecoration(
+          color: colorScheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: colorScheme.outline.withValues(alpha: 0.5),
+            width: 1.5,
+            style: BorderStyle.solid,
+          ),
+        ),
+        child: _image == null
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.add_photo_alternate_outlined,
+                    size: 48,
+                    color: colorScheme.primary,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Tap to add a cover image',
+                    style: TextStyle(
+                      color: colorScheme.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Recommended: 1200 x 630 px',
+                    style: TextStyle(color: colorScheme.outline, fontSize: 12),
+                  ),
+                ],
+              )
+            : Stack(
+                fit: StackFit.expand,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Image.file(_image!, fit: BoxFit.cover),
+                  ),
+                  Positioned(
+                    top: 12,
+                    right: 12,
+                    child: Material(
+                      color: Colors.black54,
+                      shape: const CircleBorder(),
+                      child: InkWell(
+                        onTap: () {
+                          setState(() => _image = null);
+                          _checkValidity();
+                        },
+                        customBorder: const CircleBorder(),
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.close,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+      ),
+    );
+  }
+
+  Future<void> _pickImage() async {
+    showDialog(
+      context: context,
+      builder: (context) => MediaDialog(
+        onCameraPressed: () async {
+          context.router.maybePop();
+          openCamera(
+            context: context,
+            recipient: null,
+            textEditingController: null,
+            onImageEditingComplete: (newImage) {
+              setState(() {
+                _image = newImage;
+                _checkValidity();
+              });
+            },
+          );
+        },
+        onGalleryPressed: () {
+          context.router.maybePop();
+          openGallery(
+            context: context,
+            maxAssets: 1,
+            onMedia: (files) {
+              if (files.isNotEmpty) {
+                setState(() {
+                  _image = files.first;
+                  _checkValidity();
+                });
+              }
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  void _showPublishDialog() {
+    final formData = _formKey.currentState!.value;
     showDialog(
       context: context,
       builder: (context) => PetitionCreateDialog(
@@ -458,18 +485,16 @@ class _PetitionCreateState extends State<PetitionCreate> {
           context.loaderOverlay.show();
           context.read<PetitionDetailBloc>().add(
             PetitionDetailEvent.create(
-              title: title,
-              imagePath: image!.path,
-              description: description,
-              county: county,
-              constituency: constituency,
-              ward: ward,
+              title: formData['title'],
+              imagePath: _image!.path,
+              description: formData['description'],
+              county: _selectedCounty,
+              constituency: _selectedConstituency,
+              ward: _selectedWard,
             ),
           );
-          Future.delayed(Duration(seconds: 10), () {
-            if (context.mounted) {
-              context.loaderOverlay.hide();
-            }
+          Future.delayed(const Duration(seconds: 10), () {
+            if (context.mounted) context.loaderOverlay.hide();
           });
         },
       ),
@@ -477,53 +502,7 @@ class _PetitionCreateState extends State<PetitionCreate> {
   }
 }
 
-class PetitionTextFormField extends StatelessWidget {
-  const PetitionTextFormField({
-    super.key,
-    required this.label,
-    required this.onChanged,
-    required this.maxLines,
-    required this.maxLength,
-  });
-
-  final String label;
-  final void Function(String) onChanged;
-  final int maxLines;
-  final int maxLength;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      onChanged: onChanged,
-      onTapOutside: (event) {
-        FocusManager.instance.primaryFocus?.unfocus();
-      },
-      autofocus: false,
-      minLines: 1,
-      maxLines: maxLines,
-      keyboardType: TextInputType.multiline,
-      maxLength: maxLength,
-      maxLengthEnforcement: MaxLengthEnforcement.enforced,
-      decoration: InputDecoration(
-        label: Text(label),
-        filled: true,
-        fillColor: Theme.of(context).scaffoldBackgroundColor,
-        hintStyle: TextStyle(color: Theme.of(context).hintColor),
-        prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
-        border: InputBorder.none,
-        focusedBorder: UnderlineInputBorder(
-          borderRadius: BorderRadius.circular(0),
-          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
-        ),
-        enabledBorder: UnderlineInputBorder(
-          borderRadius: BorderRadius.circular(0),
-          borderSide: BorderSide(color: Theme.of(context).colorScheme.outline),
-        ),
-        hoverColor: Colors.transparent,
-      ),
-    );
-  }
-}
+// --- Dialogs ---
 
 class PetitionCreateDialog extends StatelessWidget {
   const PetitionCreateDialog({super.key, required this.onYesPressed});
@@ -533,17 +512,16 @@ class PetitionCreateDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomDialog(
-      title: 'Publish',
-      content: 'Are you sure you want to publish this?',
-      elevatedButtonText: 'Yes',
+      title: 'Publish Petition',
+      content:
+          'Are you sure you want to publish this petition? It will be visible to the public.',
+      elevatedButtonText: 'Yes, Publish',
       onElevatedButtonPressed: () {
-        context.router.popTop();
+        context.router.maybePop();
         onYesPressed();
       },
-      textButtonText: 'No',
-      onTextButtonPressed: () {
-        context.router.popTop();
-      },
+      textButtonText: 'Cancel',
+      onTextButtonPressed: () => context.router.maybePop(),
     );
   }
 }
@@ -554,17 +532,16 @@ class ExitDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomDialog(
-      title: 'Leave',
+      title: 'Discard Changes?',
       content:
-          'Are you sure you want to leave this page? \n'
-          'Progress will not be saved.',
-      elevatedButtonText: 'Yes',
-      onElevatedButtonPressed: () {
+          'Are you sure you want to leave? Your progress will not be saved.',
+      textButtonText: 'Yes, Discard',
+      onTextButtonPressed: () {
         context.router.popTop();
         context.router.popTop();
       },
-      textButtonText: 'No',
-      onTextButtonPressed: () {
+      elevatedButtonText: 'Keep Editing',
+      onElevatedButtonPressed: () {
         context.router.popTop();
       },
     );
@@ -572,26 +549,23 @@ class ExitDialog extends StatelessWidget {
 }
 
 class PostPetitionDialog extends StatelessWidget {
-  const PostPetitionDialog({super.key, required this.onYesPressed});
+  final Petition petition;
 
-  final VoidCallback onYesPressed;
+  const PostPetitionDialog({super.key, required this.petition});
 
   @override
   Widget build(BuildContext context) {
     return CustomDialog(
-      title: 'Post your petition',
+      title: 'Amplify your Petition',
       content:
-          'Do you want to post your petition? \n'
-          'This will give your petition more exposure',
-      elevatedButtonText: 'Yes',
+          'Do you want to create a post about this petition? This will give it more exposure in the feed.',
+      elevatedButtonText: 'Yes, Create Post',
       onElevatedButtonPressed: () {
-        context.router.popTop();
-        onYesPressed();
+        context.router.maybePop();
+        context.router.push(PostCreateRoute(petition: petition));
       },
-      textButtonText: 'No',
-      onTextButtonPressed: () {
-        context.router.popTop();
-      },
+      textButtonText: 'No, Thanks',
+      onTextButtonPressed: () => context.router.maybePop(),
     );
   }
 }

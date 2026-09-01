@@ -12,12 +12,10 @@ import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/broadcast/bloc/broadcast/broadcast_bloc.dart';
 import 'package:democracy/broadcast/bloc/broadcast_detail/broadcast_detail_bloc.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
-import 'package:democracy/user/bloc/user_detail/user_detail_bloc.dart';
 import 'package:democracy/user/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 @RoutePage()
@@ -67,12 +65,15 @@ class _LiveStream extends StatefulWidget {
 }
 
 class _LiveStreamState extends State<_LiveStream> {
-  bool isDeleted = false;
+  final AgoraService _agoraService = AgoraService();
   late RtcEngine _engine;
+
+  bool isDeleted = false;
   bool _isJoined = false;
   bool _isMuted = false;
-  late User me = context.read<AuthBloc>().state.user!;
-  late final bool _isHost = me.id == widget.broadcast.host.id;
+  bool _isCameraOn = true;
+  User get me => context.read<AuthBloc>().state.user!;
+  bool get _isHost => me.id == widget.broadcast.host.id;
 
   // Track remote users (especially the host for audience)
   int? _hostUid; // or main broadcaster UID
@@ -87,15 +88,26 @@ class _LiveStreamState extends State<_LiveStream> {
 
   Future<void> _initAgora() async {
     if (_isHost) {
-      await [Permission.microphone, Permission.camera].request();
+      final status = await [Permission.microphone, Permission.camera].request();
+      if (status[Permission.microphone] != PermissionStatus.granted ||
+          status[Permission.camera] != PermissionStatus.granted) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Microphone and Camera permissions are required'),
+            ),
+          );
+          context.router.popTop();
+        }
+        return;
+      }
     }
-    await AgoraService().joinLiveStream(
+
+    await _agoraService.joinLiveStream(
       isHost: _isHost,
       broadcast: widget.broadcast,
       onEngineReady: (engine) {
-        setState(() {
-          _engine = engine;
-        });
+        _engine = engine;
 
         _engine.registerEventHandler(
           RtcEngineEventHandler(
@@ -142,13 +154,15 @@ class _LiveStreamState extends State<_LiveStream> {
           ),
         );
 
-        context.read<BroadcastDetailBloc>().add(
-          BroadcastDetailEvent.join(
-            engine: _engine,
-            broadcast: widget.broadcast,
-            user: me,
-          ),
-        );
+        if (mounted) {
+          context.read<BroadcastDetailBloc>().add(
+            BroadcastDetailEvent.join(
+              engine: _engine,
+              broadcast: widget.broadcast,
+              user: me,
+            ),
+          );
+        }
       },
     );
   }
@@ -160,8 +174,10 @@ class _LiveStreamState extends State<_LiveStream> {
   }
 
   Future<void> _cleanupAgora() async {
-    await AgoraService().leaveCurrent();
-    await AgoraService().dispose();
+    // 🚨 CRITICAL: Only leave the channel. Do NOT call dispose() globally
+    // unless the user is completely closing the app.
+    await _agoraService.leaveCurrent();
+
     if (mounted) {
       context.read<BroadcastDetailBloc>().add(
         BroadcastDetailEvent.unsubscribe(broadcast: widget.broadcast),
@@ -195,6 +211,24 @@ class _LiveStreamState extends State<_LiveStream> {
     );
   }
 
+  Future<void> _toggleMute() async {
+    final newMuteState = !_isMuted;
+    setState(() => _isMuted = newMuteState);
+    await _engine.muteLocalAudioStream(newMuteState);
+  }
+
+  Future<void> _toggleCamera() async {
+    final newCameraState = !_isCameraOn;
+    setState(() => _isCameraOn = newCameraState);
+
+    await _engine.enableLocalVideo(newCameraState);
+    if (newCameraState) {
+      await _engine.startPreview();
+    } else {
+      await _engine.stopPreview();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
@@ -214,12 +248,6 @@ class _LiveStreamState extends State<_LiveStream> {
         BlocListener<BroadcastDetailBloc, BroadcastDetailState>(
           listener: (context, state) {
             switch (state) {
-              case BroadcastLoaded(:final broadcast):
-                if (broadcast.id == widget.broadcast.id) {
-                  context.read<BroadcastBloc>().add(
-                    BroadcastEvent.updated(broadcast: state.broadcast),
-                  );
-                }
               case BroadcastUpdated():
                 if (state.broadcast.id == widget.broadcast.id) {
                   context.read<BroadcastBloc>().add(
@@ -240,66 +268,233 @@ class _LiveStreamState extends State<_LiveStream> {
             }
           },
         ),
-        BlocListener<UserDetailBloc, UserDetailState>(
-          listener: (context, state) {
-            if (state is UserRetrieved) {
-              //
-            }
-          },
-        ),
       ],
       child: PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, result) {
-          if (didPop) {
-            return;
-          }
+          if (didPop) return;
           _showExitDialog();
         },
         child: Scaffold(
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            centerTitle: true,
-            title: Text(
-              widget.broadcast.title,
-              style: TextStyle(overflow: TextOverflow.fade),
-            ),
-            actions: [
-              TextButton(
-                onPressed: _showExitDialog,
-                child: Text(
-                  _isHost ? 'End' : 'Leave',
-                  style: TextStyle(color: Colors.red),
-                ),
-              ),
-            ],
-            bottom: PreferredSize(
-              preferredSize: Size.fromHeight(10.0),
-              child: Text(widget.broadcast.description),
-            ),
-          ),
+          backgroundColor: Colors.black,
           body: isDeleted || !widget.broadcast.isActive
-              ? Center(child: Text('This broadcast has been closed'))
-              : !_isJoined
-              ? BottomLoader()
-              : _buildLiveStream(),
-          bottomNavigationBar: !_isJoined
-              ? SizedBox.shrink()
-              : _buildHostControls(),
+              ? const Center(
+                  child: Text(
+                    'This broadcast has been closed',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                )
+              : Stack(
+                  children: [
+                    // 1. Video Layer (Full Screen)
+                    Positioned.fill(
+                      child: !_isJoined
+                          ? const Center(child: BottomLoader())
+                          : _isHost
+                          ? _localVideoView()
+                          : _remoteVideoView(),
+                    ),
+
+                    // 2. UI Overlay Layer
+                    Positioned.fill(child: _buildOverlay()),
+                  ],
+                ),
         ),
       ),
     );
   }
 
-  Widget _buildLiveStream() {
-    return Stack(
+  Widget _buildOverlay() {
+    return Column(
       children: [
-        // Main video area
-        Center(
-          child: _isHost
-              ? _localVideoView() // Host sees their own preview
-              : _remoteVideoView(), // Audience sees host
+        // Top Bar (Back, Viewer Count, Leave)
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 8.0,
+            ),
+            child: Row(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.4),
+                    shape: BoxShape.circle,
+                  ),
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.white),
+                    onPressed: _showExitDialog,
+                  ),
+                ),
+                const Spacer(),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.4),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.remove_red_eye,
+                        color: Colors.white,
+                        size: 18,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${widget.broadcast.participantsCount}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                TextButton(
+                  onPressed: _showExitDialog,
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.red.withValues(alpha: 0.8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: Text(
+                    _isHost ? 'End' : 'Leave',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
+
+        // Title & Host Info (Top Left)
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.4),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.broadcast.title,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 12,
+                          backgroundColor:
+                              Colors.grey.shade700, // Replace with host image
+                          child: const Icon(
+                            Icons.person,
+                            size: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          widget.broadcast.host.name,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const Spacer(),
+
+        // Bottom Controls
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  if (_isHost) ...[
+                    _ControlButton(
+                      icon: _isMuted ? Icons.mic_off : Icons.mic,
+                      label: _isMuted ? 'Unmute' : 'Mute',
+                      isActive: !_isMuted,
+                      onPressed: _toggleMute,
+                    ),
+                    _ControlButton(
+                      icon: _isCameraOn ? Icons.videocam : Icons.videocam_off,
+                      label: _isCameraOn ? 'Cam Off' : 'Cam On',
+                      isActive: _isCameraOn,
+                      onPressed: _toggleCamera,
+                    ),
+                    _ControlButton(
+                      icon: Icons.flip_camera_ios,
+                      label: 'Flip',
+                      isActive: true,
+                      onPressed: () => _engine.switchCamera(),
+                    ),
+                  ] else ...[
+                    _ControlButton(
+                      icon: Icons.handshake,
+                      label: 'Request',
+                      isActive: true,
+                      onPressed: () {
+                        // TODO: Trigger Request to Speak BLoC event
+                      },
+                    ),
+                  ],
+                  _ControlButton(
+                    icon: Icons.share,
+                    label: 'Share',
+                    isActive: true,
+                    onPressed: () {
+                      showModalBottomSheet<void>(
+                        context: context,
+                        isScrollControlled: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(15),
+                          ),
+                        ),
+                        builder: (_) =>
+                            ShareBottomSheet(broadcast: widget.broadcast),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20), // Safe area padding
       ],
     );
   }
@@ -323,51 +518,73 @@ class _LiveStreamState extends State<_LiveStream> {
         ),
       );
     }
-    return const Center(
-      child: Text('Waiting for host...', style: TextStyle(color: Colors.white)),
+
+    // Graceful placeholder when waiting for host
+    return Container(
+      color: Colors.black87,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const CircleAvatar(
+              radius: 40,
+              backgroundColor: Colors.grey,
+              child: Icon(Icons.person, size: 40, color: Colors.white),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Waiting for ${widget.broadcast.host.name} to start...',
+              style: const TextStyle(color: Colors.white, fontSize: 16),
+            ),
+            const SizedBox(height: 16),
+            const CircularProgressIndicator(color: Colors.white),
+          ],
+        ),
+      ),
     );
   }
+}
 
-  Widget _buildHostControls() {
-    return BottomAppBar(
-      height: 80,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          // Mute
-          IconButton(
-            icon: Icon(_isMuted ? Icons.mic_off : Icons.mic),
-            onPressed: () async {
-              setState(() => _isMuted = !_isMuted);
-              await _engine.muteLocalAudioStream(_isMuted);
-            },
+class _ControlButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool isActive;
+  final VoidCallback onPressed;
+
+  const _ControlButton({
+    required this.icon,
+    required this.label,
+    required this.isActive,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: isActive
+                ? Colors.white.withValues(alpha: 0.2)
+                : Colors.red.withValues(alpha: 0.8),
+            shape: BoxShape.circle,
           ),
-          // Camera switch (host only)
-          if (_isHost)
-            IconButton(
-              icon: const Icon(Icons.flip_camera_ios),
-              onPressed: () => _engine.switchCamera(),
-            ),
-          // Share
-          IconButton.filledTonal(
-            iconSize: 20,
-            icon: Icon(Symbols.share_rounded),
-            onPressed: () {
-              showModalBottomSheet<void>(
-                context: context,
-                isScrollControlled: true,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(15),
-                    topRight: Radius.circular(15),
-                  ),
-                ),
-                builder: (_) => ShareBottomSheet(broadcast: widget.broadcast),
-              );
-            },
+          child: IconButton(
+            icon: Icon(icon, color: Colors.white, size: 28),
+            onPressed: onPressed,
           ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
     );
   }
 }

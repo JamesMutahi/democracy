@@ -30,18 +30,17 @@ class _HubState extends State<HubPage> {
   @override
   Widget build(BuildContext context) {
     final responsive = ResponsiveBreakpoints.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return BlocProvider(
       create: (context) => HubFilterCubit(),
       child: Scaffold(
         body: SafeArea(
           child: BlocBuilder<HubFilterCubit, HubFilterState>(
-            buildWhen: (previous, current) {
-              return current.onHubPage;
-            },
+            buildWhen: (previous, current) => current.onHubPage,
             builder: (context, state) {
               return NestedScrollView(
-                headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+                headerSliverBuilder: (context, innerBoxIsScrolled) {
                   final cubit = context.read<HubFilterCubit>();
                   return [
                     if (responsive.isMobile)
@@ -69,41 +68,55 @@ class _HubState extends State<HubPage> {
                       ),
                   ];
                 },
-                body: GridView.count(
-                  padding: EdgeInsets.all(padding),
-                  crossAxisCount: 2,
-                  mainAxisSpacing: padding,
-                  crossAxisSpacing: padding,
-                  children: [
-                    _HubCard(
-                      onTap: () {
-                        context.router.push(const BallotRoute());
-                      },
-                      asset: 'assets/icons/ballot-box.svg',
-                      text: 'Ballots',
-                    ),
-                    _HubCard(
-                      onTap: () {
-                        context.router.push(const SurveyRoute());
-                      },
-                      asset: 'assets/icons/question.svg',
-                      text: 'Surveys',
-                    ),
-                    _HubCard(
-                      onTap: () {
-                        context.router.push(const MeetingRoute());
-                      },
-                      asset: 'assets/icons/meeting.svg',
-                      text: 'Meetings',
-                    ),
-                    _HubCard(
-                      onTap: () {
-                        context.router.push(const PetitionRoute());
-                      },
-                      asset: 'assets/icons/signature.svg',
-                      text: 'Petitions',
-                    ),
-                  ],
+                body: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final crossAxisCount = responsive.smallerThan(TABLET)
+                        ? 2
+                        : 3;
+
+                    return GridView.count(
+                      padding: EdgeInsets.all(padding),
+                      crossAxisCount: crossAxisCount,
+                      mainAxisSpacing: padding,
+                      crossAxisSpacing: padding,
+                      children: [
+                        _HubCard(
+                          onTap: () => context.router.push(const BallotRoute()),
+                          asset: 'assets/icons/ballot-box.svg',
+                          title: 'Ballots',
+                          description: 'Cast your vote on important decisions',
+                          color: Colors.green.withValues(alpha: 0.25),
+                          iconColor: colorScheme.primary,
+                        ),
+                        _HubCard(
+                          onTap: () => context.router.push(const SurveyRoute()),
+                          asset: 'assets/icons/question.svg',
+                          title: 'Surveys',
+                          description: 'Share your opinions and feedback',
+                          color: Colors.cyan.withValues(alpha: 0.25),
+                          iconColor: colorScheme.secondary,
+                        ),
+                        _HubCard(
+                          onTap: () =>
+                              context.router.push(const MeetingRoute()),
+                          asset: 'assets/icons/meeting.svg',
+                          title: 'Meetings',
+                          description: 'Join live discussions and events',
+                          color: Colors.blue.withValues(alpha: 0.25),
+                          iconColor: colorScheme.tertiary,
+                        ),
+                        _HubCard(
+                          onTap: () =>
+                              context.router.push(const PetitionRoute()),
+                          asset: 'assets/icons/signature.svg',
+                          title: 'Petitions',
+                          description: 'Support causes you care about',
+                          color: Colors.teal.withValues(alpha: 0.25),
+                          iconColor: colorScheme.error,
+                        ),
+                      ],
+                    );
+                  },
                 ),
               );
             },
@@ -116,7 +129,7 @@ class _HubState extends State<HubPage> {
   Widget _buildSearchBar(HubFilterCubit cubit, HubFilterState state) {
     return CustomSearchBar(
       controller: _controller,
-      hintText: 'Search',
+      hintText: 'Search ballots, surveys, meetings...',
       filterCount: state.count,
       onSubmitted: (value) async {
         if (_controller.text.trim().isNotEmpty) {
@@ -147,16 +160,13 @@ class _HubState extends State<HubPage> {
                 isScrollControlled: true,
                 shape: const BeveledRectangleBorder(),
                 useSafeArea: true,
-                builder: (context) {
-                  return filters;
-                },
+                builder: (context) => filters,
               )
             : showGeneralDialog(
                 context: context,
                 transitionDuration: const Duration(milliseconds: 300),
-                pageBuilder: (context, animation, secondaryAnimation) {
-                  return filters;
-                },
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                    filters,
               );
       },
     );
@@ -167,25 +177,65 @@ class _HubCard extends StatelessWidget {
   const _HubCard({
     required this.onTap,
     required this.asset,
-    required this.text,
+    required this.title,
+    required this.description,
+    required this.color,
+    required this.iconColor,
   });
 
   final VoidCallback onTap;
   final String asset;
-  final String text;
+  final String title;
+  final String description;
+  final Color color;
+  final Color iconColor;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Card.filled(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.asset(asset, width: 60, height: 60),
-            SizedBox(height: 10),
-            Text(text, style: Theme.of(context).textTheme.titleMedium),
-          ],
+    return Material(
+      color: color,
+      borderRadius: BorderRadius.circular(20),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: iconColor.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: SvgPicture.asset(asset, width: 32, height: 32),
+              ),
+              const Spacer(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    description,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

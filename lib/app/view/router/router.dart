@@ -22,7 +22,7 @@ class AppRouter extends RootStackRouter {
           children: [
             AutoRoute(path: '', page: HubRoute.page),
             AutoRoute(path: 'results', page: HubResults.page),
-            RedirectRoute(path: '', redirectTo: '/'),
+            RedirectRoute(path: '*', redirectTo: '/hub'),
           ],
         ),
 
@@ -46,11 +46,7 @@ final otherRoutes = [
     path: '${kIsWeb ? '' : '/'}preferences',
     page: PreferencesRoute.page,
   ),
-  AutoRoute(
-    path: '${kIsWeb ? '' : '/'}settings',
-    page: Settings.page,
-    children: [],
-  ),
+  AutoRoute(path: '${kIsWeb ? '' : '/'}settings', page: Settings.page),
   AutoRoute(path: '${kIsWeb ? '' : '/'}location', page: Location.page),
   AutoRoute(
     path: '${kIsWeb ? '' : '/'}search-results',

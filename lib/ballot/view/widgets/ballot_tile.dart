@@ -1,14 +1,14 @@
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:democracy/app/shared/widgets/share_bottom_sheet.dart';
 import 'package:democracy/app/shared/widgets/more_pop_up.dart';
+import 'package:democracy/app/shared/widgets/share_bottom_sheet.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/ballot/models/ballot.dart';
 import 'package:democracy/ballot/models/option.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class BallotTile extends StatelessWidget {
@@ -25,77 +25,379 @@ class BallotTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isClosed = DateTime.now().isAfter(ballot.endTime);
+
     return GestureDetector(
-      onTap: () {
-        context.router.push(BallotDetail(ballotId: ballot.id));
-      },
-      child: Stack(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            decoration: BoxDecoration(
-              color: isDependency
-                  ? Colors.transparent
-                  : Theme.of(context).colorScheme.tertiaryContainer,
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (ballot.county != null)
+      onTap: () => context.router.push(BallotDetail(ballotId: ballot.id)),
+      child: Container(
+        decoration: BoxDecoration(
+          color: isDependency
+              ? colorScheme.surfaceContainerLow
+              : colorScheme.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: isDependency
+              ? Border.all(
+                  color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+                )
+              : null,
+          boxShadow: isDependency
+              ? null
+              : [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.04),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 1. Header: Status Icon & Popup
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+              child: Row(
+                children: [
                   Container(
-                    margin: EdgeInsets.only(bottom: 10),
-                    child: GeoChipRow(
-                      county: ballot.county,
-                      constituency: ballot.constituency,
-                      ward: ballot.ward,
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: isClosed
+                          ? colorScheme.errorContainer
+                          : colorScheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      isClosed
+                          ? Icons.lock_clock_rounded
+                          : Icons.how_to_vote_rounded,
+                      color: isClosed
+                          ? colorScheme.onErrorContainer
+                          : colorScheme.onPrimaryContainer,
+                      size: 20,
                     ),
                   ),
-                Container(
-                  margin: EdgeInsets.only(right: isDependency ? 0 : 20),
-                  child: Text(
-                    ballot.title,
-                    style: Theme.of(context).textTheme.titleLarge,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          isClosed ? 'Closed' : 'Active',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: isClosed
+                                ? colorScheme.onErrorContainer
+                                : colorScheme.onPrimaryContainer,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
+                  if (!isDependency) BallotPopUp(ballot: ballot),
+                ],
+              ),
+            ),
+
+            // 2. Location Chips
+            if (ballot.county != null) ...[
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: GeoChipRow(
+                  county: ballot.county,
+                  constituency: ballot.constituency,
+                  ward: ballot.ward,
                 ),
-                SizedBox(height: 5),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TimeLeft(
-                      key: ValueKey('ballot ${ballot.id}'),
+              ),
+            ],
+
+            // 3. Title
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              child: Text(
+                ballot.title,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+
+            // 4. Meta Row (Time & Votes)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TimeLeft(
+                      key: ValueKey('ballot_${ballot.id}'),
                       startTime: ballot.startTime,
                       endTime: ballot.endTime,
                     ),
-                    if (!isDependency)
-                      Text(
-                        '${ballot.totalVotes} ${ballot.totalVotes == 1 ? 'vote' : 'votes'}',
-                        style: TextStyle(
-                          color: Theme.of(context).disabledColor,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.how_to_vote_outlined,
+                          size: 14,
+                          color: colorScheme.onSurfaceVariant,
                         ),
-                      ),
-                  ],
-                ),
-                SizedBox(height: 10),
-                ...ballot.options.map((option) {
+                        const SizedBox(width: 4),
+                        Text(
+                          NumberFormat.compact().format(ballot.totalVotes),
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // 5. Voting Options
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+              child: Column(
+                children: ballot.options.map((option) {
                   return BallotPercentIndicator(
-                    key: ValueKey(option.id),
+                    key: ValueKey('option_${option.id}'),
                     ballot: ballot,
                     option: option,
                     animateToInitialPercent: animateToInitialPercent,
                   );
-                }),
-              ],
+                }).toList(),
+              ),
             ),
-          ),
-          if (!isDependency)
-            Align(
-              alignment: Alignment.topRight,
-              child: BallotPopUp(ballot: ballot),
-            ),
-        ],
+          ],
+        ),
       ),
+    );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Ballot Percent Indicator
+// -----------------------------------------------------------------------------
+
+class BallotPercentIndicator extends StatelessWidget {
+  const BallotPercentIndicator({
+    super.key,
+    required this.ballot,
+    required this.option,
+    required this.animateToInitialPercent,
+  });
+
+  final Ballot ballot;
+  final Option option;
+  final bool animateToInitialPercent;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isVoted = ballot.votedOption == option.id;
+    final percent = ballot.totalVotes == 0
+        ? 0.0
+        : option.votes / ballot.totalVotes;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: isVoted
+            ? Border.all(color: colorScheme.primary, width: 1.5)
+            : null,
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: LinearPercentIndicator(
+        lineHeight: 52,
+        padding: EdgeInsets.zero,
+        percent: percent,
+        animation: animateToInitialPercent,
+        animationDuration: 600,
+        backgroundColor: colorScheme.surfaceContainerHighest,
+        progressColor: isVoted
+            ? colorScheme.primary.withValues(alpha: 0.15)
+            : colorScheme.primary.withValues(alpha: 0.08),
+        barRadius: const Radius.circular(12),
+        center: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  option.text,
+                  style: TextStyle(
+                    fontWeight: isVoted ? FontWeight.w600 : FontWeight.normal,
+                    color: colorScheme.onSurface,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              if (isVoted) ...[
+                const SizedBox(width: 8),
+                Icon(
+                  Icons.check_circle_rounded,
+                  color: colorScheme.primary,
+                  size: 20,
+                ),
+              ],
+              const SizedBox(width: 12),
+              Text(
+                ballot.totalVotes == 0
+                    ? '0%'
+                    : '${(percent * 100).toStringAsFixed(1)}%',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurface,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Time Left Badge
+// -----------------------------------------------------------------------------
+
+class TimeLeft extends StatefulWidget {
+  const TimeLeft({super.key, required this.startTime, required this.endTime});
+
+  final DateTime startTime;
+  final DateTime endTime;
+
+  @override
+  State<TimeLeft> createState() => _TimeLeftState();
+}
+
+class _TimeLeftState extends State<TimeLeft> {
+  Timer? _timer;
+  String _displayText = '';
+  String _status = 'upcoming'; // 'upcoming', 'active', or 'closed'
+
+  @override
+  void initState() {
+    super.initState();
+    _updateTime();
+    // 🚨 OPTIMIZATION: Update every 30 seconds instead of 1 second to save battery/CPU
+    _timer = Timer.periodic(const Duration(seconds: 30), (_) => _updateTime());
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _updateTime() {
+    if (!mounted) return;
+
+    final now = DateTime.now();
+
+    if (now.isBefore(widget.startTime)) {
+      final diff = widget.startTime.difference(now);
+      setState(() {
+        _displayText = _formatDuration(diff, 'Opens');
+        _status = 'upcoming';
+      });
+    } else if (now.isBefore(widget.endTime)) {
+      final diff = widget.endTime.difference(now);
+      setState(() {
+        _displayText = _formatDuration(diff, 'Closes');
+        _status = 'active';
+      });
+    } else {
+      setState(() {
+        _displayText = 'Closed';
+        _status = 'closed';
+      });
+      _timer?.cancel(); // Stop timer once closed
+    }
+  }
+
+  String _formatDuration(Duration duration, String prefix) {
+    if (duration.inDays > 365) {
+      final years = (duration.inDays / 365).floor();
+      return '$prefix in $years ${years == 1 ? "year" : "years"}';
+    }
+    if (duration.inDays > 30) {
+      final months = (duration.inDays / 30).floor();
+      return '$prefix in $months ${months == 1 ? "month" : "months"}';
+    }
+    if (duration.inDays > 0) {
+      final days = duration.inDays;
+      return '$prefix in $days ${days == 1 ? "day" : "days"}';
+    }
+    if (duration.inHours > 0) {
+      final hours = duration.inHours;
+      return '$prefix in $hours ${hours == 1 ? "hour" : "hours"}';
+    }
+    if (duration.inMinutes > 0) {
+      final minutes = duration.inMinutes;
+      return '$prefix in $minutes ${minutes == 1 ? "minute" : "minutes"}';
+    }
+    return '$prefix in ${duration.inSeconds} seconds';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // 🚨 FIX: Theme lookup now happens safely inside build()
+    final colorScheme = Theme.of(context).colorScheme;
+
+    Color textColor;
+    IconData icon;
+
+    switch (_status) {
+      case 'upcoming':
+        textColor = colorScheme.tertiary;
+        icon = Icons.schedule_rounded;
+        break;
+      case 'active':
+        textColor = colorScheme.primary;
+        icon = Icons.timer_rounded;
+        break;
+      case 'closed':
+      default:
+        textColor = colorScheme.error;
+        icon = Icons.lock_clock_rounded;
+        break;
+    }
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 16, color: textColor),
+        const SizedBox(width: 6),
+        Text(
+          _displayText,
+          style: TextStyle(
+            color: textColor,
+            fontWeight: FontWeight.w600,
+            fontSize: 13,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -115,201 +417,14 @@ class BallotPopUp extends StatelessWidget {
           case 'Share':
             showModalBottomSheet<void>(
               context: context,
-              shape: const BeveledRectangleBorder(),
-              builder: (BuildContext context) {
-                return ShareBottomSheet(ballot: ballot);
-              },
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              builder: (context) => ShareBottomSheet(ballot: ballot),
             );
         }
       },
-      texts: ['Post', 'Share'],
-    );
-  }
-}
-
-class BallotPercentIndicator extends StatelessWidget {
-  const BallotPercentIndicator({
-    super.key,
-    required this.ballot,
-    required this.option,
-    required this.animateToInitialPercent,
-  });
-
-  final Ballot ballot;
-  final Option option;
-  final bool animateToInitialPercent;
-
-  @override
-  Widget build(BuildContext context) {
-    double optionHeight = 40;
-    double percent = ballot.totalVotes == 0
-        ? 0
-        : option.votes / ballot.totalVotes;
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 5),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(const Radius.circular(8)),
-      ),
-      child: LinearPercentIndicator(
-        lineHeight: optionHeight,
-        barRadius: const Radius.circular(8),
-        padding: EdgeInsets.zero,
-        percent: percent,
-        animation: true,
-        animateFromLastPercent: true,
-        animateToInitialPercent: animateToInitialPercent,
-        animationDuration: 500,
-        backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-        progressColor: ballot.totalVotes == 0
-            ? Colors.blue.withValues(alpha: 0.0)
-            : Colors.blue.withValues(
-                alpha: (option.votes / ballot.totalVotes) / 2,
-              ),
-        center: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 14),
-          child: Row(
-            children: [
-              Text(option.text),
-              SizedBox(width: 20),
-              if (ballot.votedOption == option.id)
-                const Icon(Icons.check_circle_outline_rounded, size: 16),
-              const Spacer(),
-              Text(
-                ballot.totalVotes == 0
-                    ? "0 votes"
-                    : '${(option.votes / ballot.totalVotes * 100).toStringAsFixed(1)}%',
-                // style: votedPercentageTextStyle,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class TimeLeft extends StatefulWidget {
-  const TimeLeft({
-    super.key,
-    required this.startTime,
-    required this.endTime,
-    this.alignCenter = false,
-  });
-
-  final DateTime startTime;
-  final DateTime endTime;
-  final bool alignCenter;
-
-  @override
-  State<TimeLeft> createState() => _TimeLeftState();
-}
-
-class _TimeLeftState extends State<TimeLeft> {
-  Timer? timer;
-  String timeLeft = '';
-  Color color = Colors.transparent;
-
-  @override
-  void initState() {
-    super.initState();
-    timer = Timer.periodic(Duration(seconds: 1), (Timer t) => getTimeLeft());
-  }
-
-  @override
-  void dispose() {
-    timer?.cancel();
-    super.dispose();
-  }
-
-  void getTimeLeft() {
-    Duration diff = widget.startTime.difference(DateTime.now());
-    bool started = false;
-    if (diff.inSeconds < 0) {
-      diff = widget.endTime.difference(DateTime.now());
-      started = true;
-    }
-    setState(() {
-      if (started) {
-        color = Colors.green;
-      } else {
-        color = Colors.amber;
-      }
-      var diffSeconds = diff.inSeconds;
-      var unit = 'second';
-      var difference = diffSeconds;
-      if (diffSeconds > 1 || diffSeconds < 1) {
-        unit = 'seconds';
-      }
-      if (diffSeconds > 59) {
-        final diffMinutes = diff.inMinutes;
-        difference = diffMinutes;
-        unit = 'minute';
-        if (diffMinutes > 1) {
-          unit = 'minutes';
-        }
-        if (diffMinutes > 59) {
-          final diffHours = diff.inHours;
-          difference = diffHours;
-          unit = 'hour';
-          if (diffHours > 1) {
-            unit = 'hours';
-          }
-          if (diffHours > 24) {
-            final diffDays = diff.inDays;
-            difference = diffDays;
-            unit = 'day';
-            if (diffDays > 1) {
-              unit = 'days';
-            }
-            if (diffDays > 30) {
-              final diffMonths = (diffDays / 30).floor();
-              difference = diffMonths;
-              unit = 'month';
-              if (diffMonths > 1) {
-                unit = 'months';
-              }
-              if (diffDays > 365) {
-                final diffYears = (diffDays / 365).floor();
-                difference = diffYears;
-                unit = 'year';
-                if (diffYears > 1) {
-                  unit = 'years';
-                }
-              }
-            }
-          }
-        }
-      }
-      if (diffSeconds < 0) {
-        if (started) {
-          timeLeft = 'Closed';
-          color = Colors.red;
-        }
-      } else {
-        timeLeft = '${started ? 'Closes' : 'Opens'} in $difference $unit';
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: widget.alignCenter
-          ? MainAxisAlignment.center
-          : MainAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            SpinKitPianoWave(color: color, size: 15.0),
-            SizedBox(width: 5),
-          ],
-        ),
-        Text(
-          timeLeft,
-          style: TextStyle(color: Theme.of(context).disabledColor),
-        ),
-      ],
+      texts: const ['Post', 'Share'],
     );
   }
 }

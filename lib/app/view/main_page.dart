@@ -11,7 +11,9 @@ import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/app/view/widgets/bottom_nav_bar.dart';
 import 'package:democracy/app/view/widgets/side_menu.dart';
 import 'package:democracy/app/view/widgets/side_panel.dart';
+import 'package:democracy/broadcast/bloc/broadcast_view/broadcast_view_cubit.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
+import 'package:democracy/broadcast/view/widgets/minimized.dart';
 import 'package:democracy/chat/bloc/chats/chats_bloc.dart';
 import 'package:democracy/broadcast/bloc/broadcast_detail/broadcast_detail_bloc.dart';
 import 'package:democracy/notification/bloc/notification_detail/notification_detail_bloc.dart';
@@ -39,16 +41,20 @@ class _MainPageState extends State<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<NotificationsBloc>().add(NotificationsEvent.get());
+        context.read<SyncBloc>().add(SyncEvent.start());
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider.value(
-          value: context.read<NotificationsBloc>()
-            ..add(NotificationsEvent.get()),
-        ),
-        BlocProvider.value(
-          value: context.read<SyncBloc>()..add(SyncEvent.start()),
-        ),
         BlocProvider(
           create: (context) =>
               ForYouBloc(webSocketService: context.read<WebSocketService>()),
@@ -92,13 +98,37 @@ class _Mobile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AutoTabsScaffold(
-      scaffoldKey: scaffoldKey,
-      drawer: Drawer(child: SideMenu()),
-      routes: const [HomeRoute(), ExploreRoute(), HubWrapper(), ChatRoute()],
-      bottomNavigationBuilder: (_, tabsRouter) {
-        return BottomNavBar(tabsRouter: tabsRouter);
-      },
+    return Stack(
+      children: [
+        AutoTabsScaffold(
+          scaffoldKey: scaffoldKey,
+          drawer: Drawer(child: SideMenu()),
+          routes: const [
+            HomeRoute(),
+            ExploreRoute(),
+            HubWrapper(),
+            ChatRoute(),
+          ],
+          bottomNavigationBuilder: (_, tabsRouter) {
+            return BottomNavBar(tabsRouter: tabsRouter);
+          },
+        ),
+        BlocBuilder<BroadcastViewCubit, BroadcastViewState>(
+          builder: (context, state) {
+            if (state.view == BroadcastView.minimized) {
+              return Positioned(
+                bottom:
+                    MediaQuery.of(context).padding.bottom +
+                    kBottomNavigationBarHeight,
+                left: 16,
+                right: 16,
+                child: MinimizedBroadcastBar(broadcast: state.broadcast!),
+              );
+            }
+            return const SizedBox.shrink();
+          },
+        ),
+      ],
     );
   }
 }
@@ -115,7 +145,7 @@ class _Web extends StatelessWidget {
     return Scaffold(
       key: scaffoldKey,
       resizeToAvoidBottomInset: false,
-      drawer: Drawer(child: SideMenu()),
+      drawer: responsive.isMobile ? Drawer(child: SideMenu()): null,
       body: SafeArea(
         child: Row(
           mainAxisAlignment: kIsWeb
@@ -152,7 +182,26 @@ class _Web extends StatelessWidget {
                 ),
                 child: Container(
                   padding: EdgeInsets.only(top: 10),
-                  child: AutoRouter(),
+                  child: Stack(
+                    children: [
+                      AutoRouter(),
+                      BlocBuilder<BroadcastViewCubit, BroadcastViewState>(
+                        builder: (context, state) {
+                          if (state.view == BroadcastView.minimized) {
+                            return Positioned(
+                              bottom: 24,
+                              left: 16,
+                              right: 16,
+                              child: MinimizedBroadcastBar(
+                                broadcast: state.broadcast!,
+                              ),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

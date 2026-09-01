@@ -110,10 +110,7 @@ class _PostDetail extends StatefulWidget {
   State<_PostDetail> createState() => _PostDetailState();
 }
 
-class _PostDetailState extends State<_PostDetail>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
+class _PostDetailState extends State<_PostDetail> {
   final RefreshController _refreshController = RefreshController();
   final ValueKey _centerKey = ValueKey('Center');
   bool _isDeleted = false;
@@ -129,7 +126,6 @@ class _PostDetailState extends State<_PostDetail>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return MultiBlocProvider(
       providers: [
         BlocProvider(

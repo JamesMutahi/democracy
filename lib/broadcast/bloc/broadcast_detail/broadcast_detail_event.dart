@@ -47,11 +47,11 @@ sealed class BroadcastDetailEvent with _$BroadcastDetailEvent {
   const factory BroadcastDetailEvent.inviteToSpeakCompleted({
     required Map<String, dynamic> payload,
   }) = _InviteToSpeakCompleted;
-    const factory BroadcastDetailEvent.inviteToCoHost({
+  const factory BroadcastDetailEvent.inviteToCoHost({
     required Broadcast broadcast,
     required User user,
   }) = _InviteToCoHost;
-    const factory BroadcastDetailEvent.cancelInvite({
+  const factory BroadcastDetailEvent.cancelInvite({
     required SpeakerInvite invite,
   }) = _CancelInvite;
   const factory BroadcastDetailEvent.respondToInvite({
@@ -61,4 +61,5 @@ sealed class BroadcastDetailEvent with _$BroadcastDetailEvent {
   const factory BroadcastDetailEvent.respondToInviteCompleted({
     required Map<String, dynamic> payload,
   }) = _RespondToInviteCompleted;
+  const factory BroadcastDetailEvent.end() = _End;
 }

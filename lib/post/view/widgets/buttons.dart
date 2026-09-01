@@ -62,10 +62,13 @@ class PostPopUp extends StatelessWidget {
 
         final List<String> menuItems = _buildMenuItems(currentUser, post);
 
-        return MorePopUp(
-          onSelected: (selected) =>
-              _handleMenuSelection(context, selected, post, currentUser),
-          texts: menuItems,
+        return Padding(
+          padding: EdgeInsets.all(10),
+          child: MorePopUp(
+            onSelected: (selected) =>
+                _handleMenuSelection(context, selected, post, currentUser),
+            texts: menuItems,
+          ),
         );
       },
     );

@@ -14,22 +14,18 @@ class MorePopUp extends StatelessWidget {
       menuPadding: EdgeInsets.zero,
       onSelected: onSelected,
       borderRadius: BorderRadius.circular(50),
-      itemBuilder:
-          (BuildContext context) => [
-            ...texts.map((text) {
-              return PopupMenuItem<String>(
-                value: text,
-                child: Text(text, textAlign: TextAlign.center),
-              );
-            }),
-          ],
-      child: Padding(
-        padding: EdgeInsets.all(10),
-        child: Icon(
-          Symbols.more_vert_rounded,
-          color: Theme.of(context).colorScheme.outline,
-          size: 20,
-        ),
+      itemBuilder: (BuildContext context) => [
+        ...texts.map((text) {
+          return PopupMenuItem<String>(
+            value: text,
+            child: Text(text, textAlign: TextAlign.center),
+          );
+        }),
+      ],
+      child: Icon(
+        Symbols.more_vert_rounded,
+        color: Theme.of(context).colorScheme.outline,
+        size: 20,
       ),
     );
   }

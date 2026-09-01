@@ -10,7 +10,6 @@ import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
 import 'package:democracy/geo/view/widgets/geo_chip.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
-import 'package:democracy/user/models/user.dart';
 import 'package:democracy/user/view/widgets/profile_image.dart';
 import 'package:democracy/user/view/widgets/profile_name.dart';
 import 'package:flutter/material.dart';
@@ -30,18 +29,17 @@ class PetitionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return GestureDetector(
-      onTap: () {
-        context.router.push(PetitionDetail(petitionId: petition.id));
-      },
+      onTap: () => context.router.push(PetitionDetail(petitionId: petition.id)),
       child: VisibilityDetector(
-        key: Key('${petition.id}'),
+        key: Key('petition_${petition.id}'),
         onVisibilityChanged: (visibilityInfo) {
-          var visibilityPercentage = visibilityInfo.visibleFraction * 100;
-          if (visibilityPercentage == 100) {
-            Map<String, int> viewedPetition = {'Petition': petition.id};
+          if (visibilityInfo.visibleFraction == 1.0) {
+            final viewedPetition = {'Petition': petition.id};
             final globalCubit = context.read<GlobalCubit>();
-            bool exists = globalCubit.state.viewedPosts.any(
+            final exists = globalCubit.state.viewedPosts.any(
               (element) => const DeepCollectionEquality().equals(
                 element,
                 viewedPetition,
@@ -55,81 +53,195 @@ class PetitionTile extends StatelessWidget {
             }
           }
         },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 200,
-              decoration: BoxDecoration(
-                color: isDependency
-                    ? Colors.transparent
-                    : Theme.of(context).colorScheme.tertiaryContainer,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  topRight: Radius.circular(10),
+        child: isDependency
+            ? _buildDependencyCard(context, colorScheme)
+            : _buildFullCard(context, colorScheme),
+      ),
+    );
+  }
+
+  Widget _buildFullCard(BuildContext context, ColorScheme colorScheme) {
+    return Card(
+      elevation: 2,
+      shadowColor: Colors.black.withValues(alpha: 0.1),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Image Section
+          Stack(
+            children: [
+              Container(
+                height: 200,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceContainerHighest,
                 ),
-                image: DecorationImage(
-                  image: CachedNetworkImageProvider(
-                    petition.image,
-                    cacheKey: petition.id.toString(),
-                  ),
+                child: CachedNetworkImage(
+                  imageUrl: petition.image,
                   fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              decoration: BoxDecoration(
-                color: isDependency
-                    ? Colors.transparent
-                    : Theme.of(context).colorScheme.tertiaryContainer,
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(10),
-                  bottomRight: Radius.circular(10),
-                ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (petition.county != null)
-                    Container(
-                      margin: EdgeInsets.only(bottom: 10),
-                      child: GeoChipRow(
-                        county: petition.county,
-                        constituency: petition.constituency,
-                        ward: petition.ward,
-                      ),
-                    ),
-                  Text(
-                    petition.title,
-                    maxLines: 3,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      overflow: TextOverflow.ellipsis,
+                  placeholder: (context, url) =>
+                      const Center(child: CircularProgressIndicator()),
+                  errorWidget: (context, url, error) => const Center(
+                    child: Icon(
+                      Icons.broken_image,
+                      size: 50,
+                      color: Colors.grey,
                     ),
                   ),
-                  if (!isDependency) SizedBox(height: 5),
-                  if (!isDependency && petition.views > 0)
-                    Container(
-                      margin: EdgeInsets.only(bottom: 5),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            '${petition.views} ${petition.views > 1 ? 'views' : 'view'}',
-                            style: TextStyle(color: Colors.black.withAlpha(75)),
-                          ),
-                        ],
-                      ),
+                ),
+              ),
+              // Gradient overlay for better contrast
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 80,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withValues(alpha: 0.6),
+                      ],
                     ),
-                  if (!isDependency) PetitionAuthorInfo(petition: petition),
+                  ),
+                ),
+              ),
+              // Views badge
+              if (petition.views > 0)
+                Positioned(
+                  bottom: 12,
+                  right: 12,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.7),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.visibility_rounded,
+                          color: Colors.white,
+                          size: 14,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          NumberFormat.compact().format(petition.views),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+
+          // Content Section
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Location chips
+                if (petition.county != null) ...[
+                  GeoChipRow(
+                    county: petition.county,
+                    constituency: petition.constituency,
+                    ward: petition.ward,
+                  ),
+                  const SizedBox(height: 12),
                 ],
+
+                // Title
+                Text(
+                  petition.title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 12),
+
+                // Author info
+                PetitionAuthorInfo(petition: petition),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDependencyCard(BuildContext context, ColorScheme colorScheme) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: colorScheme.outlineVariant),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Compact image
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+            child: CachedNetworkImage(
+              imageUrl: petition.image,
+              height: 150,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              placeholder: (context, url) => Container(
+                height: 150,
+                color: colorScheme.surfaceContainerHighest,
+                child: const Center(child: CircularProgressIndicator()),
+              ),
+              errorWidget: (context, url, error) => Container(
+                height: 150,
+                color: colorScheme.surfaceContainerHighest,
+                child: const Icon(Icons.broken_image, size: 40),
               ),
             ),
-          ],
-        ),
+          ),
+
+          // Compact content
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (petition.county != null) ...[
+                  GeoChipRow(
+                    county: petition.county,
+                    constituency: petition.constituency,
+                    ward: petition.ward,
+                  ),
+                  const SizedBox(height: 8),
+                ],
+                Text(
+                  petition.title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -142,35 +254,57 @@ class PetitionSupportersRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var numberFormat = NumberFormat.compact(locale: "en_UK");
+    final numberFormat = NumberFormat.compact(locale: "en_US");
+    final supporters = petition.recentSupporters;
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Stack(
-          children: [
-            ...petition.recentSupporters.map((user) {
-              return Container(
-                margin: EdgeInsets.only(
-                  left: petition.recentSupporters.indexOf(user) * 15,
-                ),
-                child: CircleAvatar(
-                  radius: 17,
-                  backgroundColor: Theme.of(context).cardColor,
-                  child: ProfileImage(
-                    userId: user.id,
-                    username: user.username,
-                    imageUrl: user.image,
+        // Avatar stack
+        SizedBox(
+          height: 34,
+          width: supporters.isEmpty ? 0 : 20.0 + (supporters.length * 20.0),
+          child: Stack(
+            children: supporters.asMap().entries.map((entry) {
+              final index = entry.key;
+              final user = entry.value;
+              return Positioned(
+                left: index * 20.0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      width: 2,
+                    ),
+                  ),
+                  child: CircleAvatar(
                     radius: 15,
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerHighest,
+                    child: ProfileImage(
+                      userId: user.id,
+                      username: user.username,
+                      imageUrl: user.image,
+                      radius: 13,
+                    ),
                   ),
                 ),
               );
-            }),
-          ],
+            }).toList(),
+          ),
         ),
-        if (petition.supporters > 0) SizedBox(width: 10),
-        Text(
-          '${numberFormat.format(petition.supporters)} ${petition.supporters == 1 ? 'supporter' : 'supporters'}',
-        ),
+
+        if (petition.supporters > 0) ...[
+          const SizedBox(width: 10),
+          Text(
+            '${numberFormat.format(petition.supporters)} ${petition.supporters == 1 ? 'supporter' : 'supporters'}',
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+          ),
+        ],
       ],
     );
   }
@@ -185,7 +319,15 @@ class PetitionPopUpMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
-        User user = state.user!;
+        final user = state.user!;
+        final isAuthor = user.id == petition.author.id;
+
+        final menuItems = [
+          'Post',
+          'Share',
+          if (isAuthor) (petition.isOpen ? 'Close' : 'Open'),
+        ];
+
         return MorePopUp(
           onSelected: (selected) {
             switch (selected) {
@@ -195,62 +337,37 @@ class PetitionPopUpMenu extends StatelessWidget {
                 showModalBottomSheet<void>(
                   context: context,
                   shape: const BeveledRectangleBorder(),
-                  builder: (BuildContext context) {
-                    return ShareBottomSheet(petition: petition);
-                  },
+                  builder: (context) => ShareBottomSheet(petition: petition),
                 );
               case 'Close':
-                showDialog(
-                  context: context,
-                  builder: (context) => CustomDialog(
-                    title: 'Close petition',
-                    content:
-                        'Are you sure you want to close this petition?'
-                        '\nYour petition will no longer allow any supporters',
-                    elevatedButtonText: 'Yes',
-                    onElevatedButtonPressed: () {
-                      context.read<PetitionDetailBloc>().add(
-                        PetitionDetailEvent.changeStatus(petition: petition),
-                      );
-                      context.router.popTop();
-                    },
-                    textButtonText: 'No',
-                    onTextButtonPressed: () {
-                      context.router.popTop();
-                    },
-                  ),
-                );
               case 'Open':
-                showDialog(
-                  context: context,
-                  builder: (context) => CustomDialog(
-                    title: 'Open petition',
-                    content:
-                        'Are you sure you want to open this petition?'
-                        '\nPeople will be able to add and remove support',
-                    elevatedButtonText: 'Yes',
-                    onElevatedButtonPressed: () {
-                      context.read<PetitionDetailBloc>().add(
-                        PetitionDetailEvent.changeStatus(petition: petition),
-                      );
-                      context.router.popTop();
-                    },
-                    textButtonText: 'No',
-                    onTextButtonPressed: () {
-                      context.router.popTop();
-                    },
-                  ),
-                );
+                _showStatusChangeDialog(context, selected == 'Close');
             }
           },
-          texts: [
-            'Post',
-            'Share',
-            if (user.id == petition.author.id)
-              if (petition.isOpen) 'Close' else 'Open',
-          ],
+          texts: menuItems,
         );
       },
+    );
+  }
+
+  void _showStatusChangeDialog(BuildContext context, bool isClosing) {
+    showDialog(
+      context: context,
+      builder: (context) => CustomDialog(
+        title: isClosing ? 'Close petition' : 'Open petition',
+        content: isClosing
+            ? 'Are you sure you want to close this petition?\nYour petition will no longer allow any supporters'
+            : 'Are you sure you want to open this petition?\nPeople will be able to add and remove support',
+        elevatedButtonText: 'Yes',
+        onElevatedButtonPressed: () {
+          context.read<PetitionDetailBloc>().add(
+            PetitionDetailEvent.changeStatus(petition: petition),
+          );
+          context.router.popTop();
+        },
+        textButtonText: 'No',
+        onTextButtonPressed: () => context.router.popTop(),
+      ),
     );
   }
 }
@@ -262,6 +379,8 @@ class PetitionAuthorInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Row(
       children: [
         ProfileImage(
@@ -269,23 +388,44 @@ class PetitionAuthorInfo extends StatelessWidget {
           username: petition.author.username,
           imageUrl: petition.author.image,
         ),
-        SizedBox(width: 5),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ProfileName(
-              name: petition.author.name,
-              username: petition.author.username,
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.tertiaryContainer,
-                borderRadius: const BorderRadius.all(Radius.circular(5)),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ProfileName(
+                name: petition.author.name,
+                username: petition.author.username,
               ),
-              child: Text('Author'),
-            ),
-          ],
+              const SizedBox(height: 4),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.verified_rounded,
+                      size: 12,
+                      color: colorScheme.onPrimaryContainer,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Author',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );

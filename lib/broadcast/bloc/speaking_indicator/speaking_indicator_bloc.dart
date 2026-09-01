@@ -1,5 +1,6 @@
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:bloc/bloc.dart';
+import 'package:democracy/app/shared/utils/transformers.dart';
 import 'package:equatable/equatable.dart';
 
 part 'speaking_indicator_event.dart';
@@ -7,7 +8,10 @@ part 'speaking_indicator_state.dart';
 
 class SpeakingIndicatorBloc extends Bloc<SpeakingEvent, SpeakingState> {
   SpeakingIndicatorBloc() : super(const SpeakingState()) {
-    on<UpdateSpeakingUsers>(_onUpdateSpeakingUsers);
+    on<UpdateSpeakingUsers>(
+      (event, emit) => _onUpdateSpeakingUsers(event, emit),
+      transformer: debounce(),
+    );
   }
 
   void _onUpdateSpeakingUsers(

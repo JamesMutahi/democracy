@@ -21,10 +21,9 @@ class BroadcastCreate extends StatefulWidget {
 }
 
 class _BroadcastCreateState extends State<BroadcastCreate> {
-  final _controller = TextEditingController();
   final _formKey = GlobalKey<FormBuilderState>();
+  final _titleController = TextEditingController();
   bool _setStartTime = false;
-
   late BroadcastType _type;
 
   @override
@@ -39,13 +38,15 @@ class _BroadcastCreateState extends State<BroadcastCreate> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    _titleController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    bool isLivestream = _type == BroadcastType.livestream;
+    final bool isLivestream = _type == BroadcastType.livestream;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return BlocListener<BroadcastDetailBloc, BroadcastDetailState>(
       listener: (context, state) {
         if (state is BroadcastCreated) {
@@ -76,79 +77,200 @@ class _BroadcastCreateState extends State<BroadcastCreate> {
         }
       },
       child: LoaderOverlay(
-        overlayWidgetBuilder: (_) {
-          return LoaderOverlayLoading(progress: '');
-        },
+        overlayWidgetBuilder: (_) => const LoaderOverlayLoading(progress: ''),
         child: Scaffold(
           appBar: AppBar(
-            titleSpacing: 0,
-            title: Text(isLivestream ? 'Live Stream' : 'Meeting'),
-            actionsPadding: EdgeInsets.only(right: 15),
+            title: Text(
+              isLivestream ? 'Start a Live Stream' : 'Create a Meeting',
+            ),
+            centerTitle: true,
           ),
-          body: Container(
-            margin: EdgeInsets.only(left: 15, right: 15, top: 15),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(24.0),
             child: FormBuilder(
               key: _formKey,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Header
+                  Text(
+                    'What\'s this ${isLivestream ? 'stream' : 'meeting'} about?',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    isLivestream
+                        ? 'Give your audience a catchy title to draw them in.'
+                        : 'Set a clear title so participants know what to expect.',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.outline,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+
+                  // Title Field
                   FormBuilderTextField(
                     name: 'title',
-                    controller: _controller,
-                    decoration: InputDecoration(label: Text('Title')),
+                    controller: _titleController,
+                    textInputAction: TextInputAction.next,
+                    decoration: InputDecoration(
+                      labelText: 'Title',
+                      hintText: isLivestream
+                          ? 'e.g., Weekly Tech Talk'
+                          : 'e.g., Team Sync',
+                      prefixIcon: const Icon(Icons.edit_outlined),
+                      filled: true,
+                      fillColor: colorScheme.surfaceContainerHighest,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
                     maxLength: 50,
                     validator: FormBuilderValidators.required(
                       errorText: 'Title is required',
                     ),
                   ),
-                  SizedBox(height: 15),
+                  const SizedBox(height: 24),
+
+                  // Description Field
                   FormBuilderTextField(
-                    initialValue: '',
                     name: 'description',
-                    decoration: InputDecoration(label: Text('Description')),
-                    maxLength: 100,
-                    maxLines: 2,
-                  ),
-                  SizedBox(height: 15),
-                  if (_setStartTime && !isLivestream)
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {
-                          setState(() => _setStartTime = false);
-                        },
-                        child: Text(
-                          'Remove',
-                          style: TextStyle(color: Colors.red),
-                        ),
+                    textInputAction: TextInputAction.newline,
+                    maxLines: 3,
+                    decoration: InputDecoration(
+                      labelText: 'Description (Optional)',
+                      hintText:
+                          'Add a brief description of what will be covered...',
+                      prefixIcon: const Icon(Icons.description_outlined),
+                      alignLabelWithHint: true,
+                      filled: true,
+                      fillColor: colorScheme.surfaceContainerHighest,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
                       ),
                     ),
-                  if (!isLivestream)
-                    _setStartTime
-                        ? FormBuilderDateTimePicker(
-                            name: 'start time',
-                            initialValue: DateTime.now(),
-                            decoration: InputDecoration(prefixText: 'Start:  '),
-                          )
-                        : OutlinedButton(
-                            onPressed: () {
-                              setState(() => _setStartTime = true);
-                            },
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(Icons.access_time_rounded),
-                                SizedBox(width: 10),
-                                Text('Schedule'),
-                              ],
-                            ),
+                    maxLength: 250,
+                  ),
+
+                  // Schedule Section (Meetings only)
+                  if (!isLivestream) ...[
+                    const SizedBox(height: 32),
+                    Text(
+                      'Scheduling',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    AnimatedCrossFade(
+                      firstChild: OutlinedButton.icon(
+                        onPressed: () => setState(() => _setStartTime = true),
+                        icon: const Icon(Icons.access_time_rounded),
+                        label: const Text('Schedule for later'),
+                        style: OutlinedButton.styleFrom(
+                          minimumSize: const Size(double.infinity, 50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
+                        ),
+                      ),
+                      secondChild: Card(
+                        elevation: 0,
+                        color: colorScheme.surfaceContainerHighest,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Start Time',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.titleSmall,
+                                  ),
+                                  TextButton.icon(
+                                    onPressed: () =>
+                                        setState(() => _setStartTime = false),
+                                    icon: const Icon(Icons.close, size: 18),
+                                    label: const Text('Remove'),
+                                    style: TextButton.styleFrom(
+                                      foregroundColor: Colors.red,
+                                      padding: EdgeInsets.zero,
+                                      minimumSize: Size.zero,
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              FormBuilderDateTimePicker(
+                                name: 'startTime',
+                                initialValue: DateTime.now(),
+                                inputType: InputType.both,
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  prefixIcon: Icon(Icons.calendar_today),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      crossFadeState: _setStartTime
+                          ? CrossFadeState.showSecond
+                          : CrossFadeState.showFirst,
+                      duration: const Duration(milliseconds: 300),
+                    ),
+                  ],
+
+                  const SizedBox(height: 40),
                 ],
               ),
             ),
           ),
-          bottomNavigationBar: FilledButton.tonal(
-            onPressed: _submitForm,
-            child: Text('Submit'),
+
+          // Smart Submit Button
+          bottomNavigationBar: Container(
+            padding: EdgeInsets.only(
+              left: 24,
+              right: 24,
+              top: 16,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+            ),
+            child: ValueListenableBuilder<TextEditingValue>(
+              valueListenable: _titleController,
+              builder: (context, value, child) {
+                final isValid = value.text.trim().isNotEmpty;
+                return FilledButton.icon(
+                  onPressed: isValid ? _submitForm : null,
+                  icon: Icon(
+                    isLivestream
+                        ? Icons.videocam_rounded
+                        : Icons.calendar_today,
+                  ),
+                  label: Text(isLivestream ? 'Go Live Now' : 'Create Meeting'),
+                  style: FilledButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 56),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ),
@@ -157,23 +279,25 @@ class _BroadcastCreateState extends State<BroadcastCreate> {
 
   void _submitForm() {
     final isValid = _formKey.currentState?.saveAndValidate() ?? false;
+    if (!isValid) return;
+
     final formData = _formKey.currentState!.value;
 
-    if (isValid) {
-      context.loaderOverlay.show();
-      context.read<BroadcastDetailBloc>().add(
-        BroadcastDetailEvent.create(
-          type: _type,
-          title: formData['title'],
-          description: formData['description'],
-          startTime: formData['start time'],
-        ),
-      );
-      Future.delayed(Duration(seconds: 10), () {
-        if (mounted) {
-          context.loaderOverlay.hide();
-        }
-      });
-    }
+    context.loaderOverlay.show();
+    context.read<BroadcastDetailBloc>().add(
+      BroadcastDetailEvent.create(
+        type: _type,
+        title: formData['title'],
+        description: formData['description'] ?? '',
+        startTime: formData['startTime'],
+      ),
+    );
+
+    // Safety timeout fallback
+    Future.delayed(const Duration(seconds: 10), () {
+      if (mounted) {
+        context.loaderOverlay.hide();
+      }
+    });
   }
 }

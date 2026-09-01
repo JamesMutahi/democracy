@@ -13,7 +13,7 @@ import 'package:democracy/petition/bloc/petition/petition_bloc.dart';
 import 'package:democracy/petition/bloc/petition_detail/petition_detail_bloc.dart';
 import 'package:democracy/petition/models/petition.dart';
 import 'package:democracy/petition/view/widgets/petition_tile.dart'
-    show PetitionSupportersRow, PetitionPopUpMenu, PetitionAuthorInfo;
+    show PetitionPopUpMenu, PetitionAuthorInfo;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,35 +30,24 @@ class PetitionDetail extends StatelessWidget {
           PetitionBloc(webSocketService: context.read<WebSocketService>())
             ..add(PetitionEvent.load(petitionId: petitionId)),
       child: Scaffold(
-        appBar: AppBar(
-          leading: AutoLeadingButton(),
-          title: Text('Petition'),
-          actions: [
-            BlocBuilder<PetitionBloc, PetitionState>(
-              builder: (context, state) {
-                return state.petition != null
-                    ? PetitionPopUpMenu(petition: state.petition!)
-                    : SizedBox.shrink();
-              },
-            ),
-          ],
-        ),
         body: BlocBuilder<PetitionBloc, PetitionState>(
           buildWhen: (previous, current) => current.petitionId == petitionId,
           builder: (context, state) {
             if (state.status == PetitionStatus.initial ||
                 (state.status == PetitionStatus.loading &&
                     state.petition == null)) {
-              return BottomLoader();
+              return const Center(child: BottomLoader());
             }
             if (state.status == PetitionStatus.failure &&
                 state.petition == null) {
-              return FailureRetryButton(
-                onPressed: () {
-                  context.read<PetitionBloc>().add(
-                    PetitionEvent.load(petitionId: petitionId),
-                  );
-                },
+              return Center(
+                child: FailureRetryButton(
+                  onPressed: () {
+                    context.read<PetitionBloc>().add(
+                      PetitionEvent.load(petitionId: petitionId),
+                    );
+                  },
+                ),
               );
             }
             return _PetitionDetail(petition: state.petition!);
@@ -91,13 +80,15 @@ class _PetitionDetailState extends State<_PetitionDetail> {
 
   @override
   Widget build(BuildContext context) {
+    final petition = widget.petition;
+
     return MultiBlocListener(
       listeners: [
         BlocListener<WebsocketBloc, WebsocketState>(
           listener: (context, state) {
             if (state.status == WebsocketStatus.connected) {
               context.read<PetitionDetailBloc>().add(
-                PetitionDetailEvent.retrieve(petition: widget.petition),
+                PetitionDetailEvent.retrieve(petition: petition),
               );
             }
           },
@@ -106,7 +97,7 @@ class _PetitionDetailState extends State<_PetitionDetail> {
           listener: (context, state) {
             switch (state) {
               case PetitionUpdated():
-                if (widget.petition.id == state.petitionId) {
+                if (petition.id == state.petitionId) {
                   context.read<PetitionBloc>().add(
                     PetitionEvent.detailUpdated(
                       title: state.title,
@@ -125,7 +116,7 @@ class _PetitionDetailState extends State<_PetitionDetail> {
                   );
                 }
               case PetitionSupported():
-                if (widget.petition.id == state.petitionId) {
+                if (petition.id == state.petitionId) {
                   context.read<PetitionBloc>().add(
                     PetitionEvent.supportUpdated(
                       isSupported: state.isSupported,
@@ -134,17 +125,20 @@ class _PetitionDetailState extends State<_PetitionDetail> {
                   );
                 }
               case PetitionDeleted():
-                if (widget.petition.id == state.petitionId) {
+                if (petition.id == state.petitionId) {
                   setState(() => isDeleted = true);
                 }
               case PetitionDetailFailure():
-                final snackBar = getSnackBar(
-                  context: context,
-                  message: state.error,
-                  status: SnackBarStatus.failure,
-                );
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                if (mounted) {
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    getSnackBar(
+                      context: context,
+                      message: state.error,
+                      status: SnackBarStatus.failure,
+                    ),
+                  );
+                }
             }
           },
         ),
@@ -153,157 +147,249 @@ class _PetitionDetailState extends State<_PetitionDetail> {
         canPop: true,
         onPopInvokedWithResult: (_, _) {
           context.read<PetitionDetailBloc>().add(
-            PetitionDetailEvent.unsubscribe(petition: widget.petition),
+            PetitionDetailEvent.unsubscribe(petition: petition),
           );
         },
         child: isDeleted
-            ? Center(
-                child: Text('This petition has been deleted by the author'),
+            ? Scaffold(
+                appBar: AppBar(leading: const AutoLeadingButton()),
+                body: const Center(
+                  child: Text('This petition has been deleted by the author'),
+                ),
               )
-            : SingleChildScrollView(
-                padding: EdgeInsets.symmetric(vertical: 15),
-                child: Column(
-                  children: [
-                    Stack(
-                      children: [
-                        Container(
-                          height: MediaQuery.of(context).size.height / 4,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: CachedNetworkImageProvider(
-                                widget.petition.image,
-                                cacheKey: widget.petition.id.toString(),
-                              ),
-                              fit: BoxFit.cover,
+            : CustomScrollView(
+                slivers: [
+                  SliverAppBar(
+                    expandedHeight: 240,
+                    pinned: true,
+                    backgroundColor: Colors.transparent,
+                    leading: CircleAvatar(
+                      radius: 35,
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.tertiaryContainer.withValues(alpha: 0.6),
+                      child: AutoLeadingButton(),
+                    ),
+                    actions: [
+                      CircleAvatar(
+                        radius: 35,
+                        backgroundColor: Theme.of(
+                          context,
+                        ).colorScheme.tertiaryContainer.withValues(alpha: 0.6),
+                        child: PetitionPopUpMenu(petition: petition),
+                      ),
+                    ],
+                    flexibleSpace: FlexibleSpaceBar(
+                      background: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          CachedNetworkImage(
+                            imageUrl: petition.image,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => const Center(
+                              child: CircularProgressIndicator(),
                             ),
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.broken_image, size: 50),
                           ),
-                        ),
-                        if (widget.petition.views > 0)
-                          Positioned(
-                            right: 0,
-                            bottom: 0,
-                            child: Container(
-                              margin: EdgeInsets.only(bottom: 5, right: 5),
-                              padding: EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: Colors.black.withAlpha(50),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    '${widget.petition.views} ${widget.petition.views > 1 ? 'views' : 'view'}',
-                                    style: TextStyle(
-                                      color: Colors.black.withAlpha(75),
-                                    ),
-                                  ),
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.transparent,
+                                  Colors.black.withValues(alpha: 0.7),
                                 ],
                               ),
                             ),
                           ),
-                      ],
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: 10, left: 15, right: 15),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (widget.petition.county != null)
-                            Container(
-                              margin: EdgeInsets.only(bottom: 10),
-                              child: GeoChipRow(
-                                county: widget.petition.county,
-                                constituency: widget.petition.constituency,
-                                ward: widget.petition.ward,
-                              ),
-                            ),
-                          Text(
-                            widget.petition.title,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          SizedBox(height: 10),
-                          GestureDetector(
-                            onTap: () {
-                              context.router.push(
-                                ProfileRoute(
-                                  username: widget.petition.author.username,
-                                ),
-                              );
-                            },
-                            child: PetitionAuthorInfo(
-                              petition: widget.petition,
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  context.router.push(
-                                    Supporters(petitionId: widget.petition.id),
-                                  );
-                                },
-                                child: PetitionSupportersRow(
-                                  petition: widget.petition,
-                                ),
-                              ),
-                              widget.petition.isOpen
-                                  ? SupportButton(petition: widget.petition)
-                                  : Card.outlined(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Text(
-                                          'Closed',
-                                          style: TextStyle(
-                                            color: Theme.of(
-                                              context,
-                                            ).colorScheme.error,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            'The problem',
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          CustomText(
-                            text: widget.petition.description,
-                            style: Theme.of(context).textTheme.bodyMedium!,
-                            showAllText: true,
-                            suffix: '',
+                          // Views Badge
+                          Positioned(
+                            bottom: 16,
+                            right: 16,
+                            child: _buildViewsBadge(petition.views),
                           ),
                         ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Location Chips
+                          if (petition.county != null) ...[
+                            GeoChipRow(
+                              county: petition.county,
+                              constituency: petition.constituency,
+                              ward: petition.ward,
+                            ),
+                            const SizedBox(height: 16),
+                          ],
+
+                          // Title
+                          Text(
+                            petition.title,
+                            style: Theme.of(context).textTheme.headlineSmall
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Author Info
+                          GestureDetector(
+                            onTap: () => context.router.push(
+                              ProfileRoute(username: petition.author.username),
+                            ),
+                            child: PetitionAuthorInfo(petition: petition),
+                          ),
+                          const SizedBox(height: 24),
+
+                          // Supporters Count
+                          GestureDetector(
+                            onTap: () => context.router.push(
+                              Supporters(petitionId: petition.id),
+                            ),
+                            child: _buildSupportersInfo(petition),
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Support Button
+                          _buildSupportAction(petition),
+
+                          const SizedBox(height: 32),
+
+                          // Description Section
+                          Text(
+                            'The Problem',
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 8),
+                          CustomText(
+                            text: petition.description,
+                            style: Theme.of(context).textTheme.bodyMedium!,
+                            showAllText: true,
+                            suffix: '',
+                          ),
+                          const SizedBox(height: 24),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
       ),
     );
   }
-}
 
-class SupportButton extends StatelessWidget {
-  const SupportButton({super.key, required this.petition});
+  // --- UI Helper Widgets ---
 
-  final Petition petition;
+  Widget _buildViewsBadge(int views) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.6),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.visibility_rounded, color: Colors.white, size: 16),
+          const SizedBox(width: 6),
+          Text(
+            '$views',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return OutlinedButton(
-      onPressed: petition.isActive
-          ? () {
-              context.read<PetitionDetailBloc>().add(
-                PetitionDetailEvent.support(petition: petition),
-              );
-            }
-          : null,
-      child: Text(petition.isSupported ? 'Remove support' : 'Support'),
+  Widget _buildSupportersInfo(Petition petition) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.how_to_reg_rounded,
+            size: 18,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            '${petition.supporters} Supporter${petition.supporters == 1 ? '' : 's'}',
+            style: Theme.of(
+              context,
+            ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(width: 4),
+          const Icon(Icons.chevron_right, size: 18),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSupportAction(Petition petition) {
+    if (!petition.isOpen) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.errorContainer,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.lock_clock,
+              color: Theme.of(context).colorScheme.onErrorContainer,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              'This petition is closed',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onErrorContainer,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return SizedBox(
+      width: double.infinity,
+      height: 56,
+      child: petition.isSupported
+          ? FilledButton.tonalIcon(
+              onPressed: () => _toggleSupport(petition),
+              icon: const Icon(Icons.check_circle_rounded),
+              label: const Text('Supported'),
+            )
+          : FilledButton.icon(
+              onPressed: () => _toggleSupport(petition),
+              icon: const Icon(Icons.how_to_reg_rounded),
+              label: const Text('Support this Petition'),
+            ),
+    );
+  }
+
+  void _toggleSupport(Petition petition) {
+    context.read<PetitionDetailBloc>().add(
+      PetitionDetailEvent.support(petition: petition),
     );
   }
 }

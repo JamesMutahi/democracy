@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:bloc/bloc.dart';
 import 'package:democracy/app/bloc/repository/api/api_repository.dart';
+import 'package:democracy/app/bloc/services/agora_service.dart';
 import 'package:democracy/app/bloc/services/websocket_service.dart';
 import 'package:democracy/app/shared/constants/variables.dart';
 import 'package:democracy/broadcast/models/broadcast.dart';
@@ -59,6 +60,7 @@ class BroadcastDetailBloc
     on<_CancelInvite>(_onCancelInvite);
     on<_RespondToInvite>(_onRespondToInvite);
     on<_RespondToInviteCompleted>(_onRespondToInviteCompleted);
+    on<_End>((event, emit) async => await _onEnd(event, emit));
   }
 
   void _onCreated(_Created event, Emitter<BroadcastDetailState> emit) {
@@ -67,7 +69,9 @@ class BroadcastDetailBloc
       Broadcast broadcast = Broadcast.fromJson(event.payload['data']);
       emit(BroadcastCreated(broadcast: broadcast));
     } else {
-      emit(BroadcastDetailFailure(error: event.payload['errors'].toString()));
+      emit(
+        BroadcastDetailFailure(error: event.payload['errors'][0].toString()),
+      );
     }
   }
 
@@ -77,7 +81,9 @@ class BroadcastDetailBloc
       Broadcast broadcast = Broadcast.fromJson(event.payload['data']);
       emit(BroadcastLoaded(broadcast: broadcast));
     } else {
-      emit(BroadcastDetailFailure(error: event.payload['errors'].toString()));
+      emit(
+        BroadcastDetailFailure(error: event.payload['errors'][0].toString()),
+      );
     }
   }
 
@@ -87,7 +93,9 @@ class BroadcastDetailBloc
       Broadcast broadcast = Broadcast.fromJson(event.payload['data']);
       emit(BroadcastUpdated(broadcast: broadcast));
     } else {
-      emit(BroadcastDetailFailure(error: event.payload['errors'].toString()));
+      emit(
+        BroadcastDetailFailure(error: event.payload['errors'][0].toString()),
+      );
     }
   }
 
@@ -96,7 +104,9 @@ class BroadcastDetailBloc
     if (event.payload['response_status'] == 200) {
       emit(BroadcastDeleted(broadcastId: event.payload['pk']));
     } else {
-      emit(BroadcastDetailFailure(error: event.payload['errors'].toString()));
+      emit(
+        BroadcastDetailFailure(error: event.payload['errors'][0].toString()),
+      );
     }
   }
 
@@ -129,14 +139,20 @@ class BroadcastDetailBloc
       final data = await apiRepository.getBroadcastToken(
         broadcast: event.broadcast,
       );
+
+      final bool isHost = event.broadcast.host.id == event.user.id;
+
       await event.engine.joinChannel(
         token: data['token'],
         channelId: event.broadcast.id.toString(),
         uid: event.user.id,
         options: ChannelMediaOptions(
-          clientRoleType: event.broadcast.id == event.user.id
+          clientRoleType: isHost
               ? ClientRoleType.clientRoleBroadcaster
               : ClientRoleType.clientRoleAudience,
+          publishMicrophoneTrack: false,
+          publishCameraTrack:
+              isHost && event.broadcast.type == BroadcastType.livestream,
         ),
       );
       emit(BroadcastJoined(broadcast: event.broadcast));
@@ -345,6 +361,12 @@ class BroadcastDetailBloc
     } else {
       emit(BroadcastDetailFailure(error: event.payload['errors'].toString()));
     }
+  }
+
+  Future<void> _onEnd(_End event, Emitter<BroadcastDetailState> emit) async {
+    await AgoraService().leaveCurrent();
+    await AgoraService().dispose();
+    emit(BroadcastEnded());
   }
 
   @override

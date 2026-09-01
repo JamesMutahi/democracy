@@ -252,33 +252,29 @@ class _PostContainer extends StatelessWidget {
                             if (post.repostOf != null && !isDependency)
                               PostDependency(post: post),
                             if (post.ballot != null)
-                              DependencyContainer(
-                                child: BallotTile(
-                                  ballot: post.ballot!,
-                                  isDependency: true,
-                                ),
+                              BallotTile(
+                                ballot: post.ballot!,
+                                isDependency: true,
                               ),
+
                             if (post.survey != null)
-                              DependencyContainer(
-                                child: SurveyTile(
-                                  survey: post.survey!,
-                                  isDependency: true,
-                                ),
+                              SurveyTile(
+                                survey: post.survey!,
+                                isDependency: true,
                               ),
+
                             if (post.petition != null)
-                              DependencyContainer(
-                                child: PetitionTile(
-                                  petition: post.petition!,
-                                  isDependency: true,
-                                ),
+                              PetitionTile(
+                                petition: post.petition!,
+                                isDependency: true,
                               ),
+
                             if (post.broadcast != null)
-                              DependencyContainer(
-                                child: BroadcastTile(
-                                  broadcast: post.broadcast!,
-                                  isDependency: true,
-                                ),
+                              BroadcastTile(
+                                broadcast: post.broadcast!,
+                                isDependency: true,
                               ),
+
                             if (post.section != null)
                               DependencyContainer(
                                 child: SectionTile(

@@ -18,22 +18,17 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     final responsive = ResponsiveBreakpoints.of(context);
 
-    return Scaffold(
-      body: SafeArea(
-        child: DefaultTabController(
-          length: 2,
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        body: SafeArea(
           child: NestedScrollView(
-            headerSliverBuilder: (context, bool innerBoxIsScrolled) {
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
               return [
                 if (!kIsWeb || responsive.isMobile)
                   SliverAppBar(
@@ -84,7 +79,7 @@ class _HomePageState extends State<HomePage>
                   ),
               ];
             },
-            body: TabBarView(
+            body: const TabBarView(
               physics: NeverScrollableScrollPhysics(),
               children: [ForYouTab(), FollowingTab()],
             ),
@@ -98,6 +93,9 @@ class _HomePageState extends State<HomePage>
     return TabBar(
       dividerColor: Theme.of(context).colorScheme.outlineVariant,
       labelStyle: Theme.of(context).textTheme.titleMedium,
+      unselectedLabelStyle: Theme.of(
+        context,
+      ).textTheme.titleMedium,
       tabs: [
         Tab(text: 'For You'),
         Tab(text: 'Following'),
@@ -122,69 +120,67 @@ class _ForYouTabState extends State<ForYouTab>
 
   @override
   void initState() {
-    final posts = context.read<ForYouBloc>().state.posts;
-    if (posts.isEmpty) {
-      context.read<ForYouBloc>().add(ForYouEvent.get());
-    }
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final posts = context.read<ForYouBloc>().state.posts;
+      if (posts.isEmpty) {
+        context.read<ForYouBloc>().add(ForYouEvent.get());
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Scaffold(
-      body: BlocBuilder<ForYouBloc, ForYouState>(
-        builder: (context, state) {
-          final posts = state.posts.toList();
+    return BlocBuilder<ForYouBloc, ForYouState>(
+      builder: (context, state) {
+        final posts = state.posts.toList();
 
-          if (state.status == ForYouStatus.success) {
-            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-              _refreshController.refreshCompleted();
-            }
-            if (_refreshController.footerStatus == LoadStatus.loading) {
-              _refreshController.loadComplete();
-            }
+        if (state.status == ForYouStatus.success) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshCompleted();
           }
-
-          if (state.status == ForYouStatus.failure) {
-            if (_refreshController.headerStatus == RefreshStatus.refreshing) {
-              _refreshController.refreshFailed();
-            }
-            if (_refreshController.footerStatus == LoadStatus.loading) {
-              _refreshController.loadFailed();
-            }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadComplete();
           }
+        } else if (state.status == ForYouStatus.failure) {
+          if (_refreshController.headerStatus == RefreshStatus.refreshing) {
+            _refreshController.refreshFailed();
+          }
+          if (_refreshController.footerStatus == LoadStatus.loading) {
+            _refreshController.loadFailed();
+          }
+        }
 
-          return PostListView(
-            posts: posts,
-            loading:
-                state.status == ForYouStatus.initial ||
-                (state.status == ForYouStatus.loading && posts.isEmpty),
-            failure: state.posts.isNotEmpty
-                ? false
-                : state.status == ForYouStatus.failure,
-            onPostsUpdated: (posts) {
-              context.read<ForYouBloc>().add(ForYouEvent.update(posts: posts));
-            },
-            refreshController: _refreshController,
-            enablePullDown: true,
-            enablePullUp: state.hasNext,
-            checkVisibility: true,
-            onRefresh: () {
-              context.read<ForYouBloc>().add(ForYouEvent.get());
-            },
-            onLoading: () {
-              context.read<ForYouBloc>().add(
-                ForYouEvent.get(previousPosts: posts),
-              );
-            },
-            onFailure: () {
-              context.read<ForYouBloc>().add(ForYouEvent.get());
-            },
-            origin: 'For You',
-          );
-        },
-      ),
+        return PostListView(
+          posts: posts,
+          loading:
+              state.status == ForYouStatus.initial ||
+              (state.status == ForYouStatus.loading && posts.isEmpty),
+          failure: state.posts.isEmpty && state.status == ForYouStatus.failure,
+          onPostsUpdated: (updatedPosts) {
+            context.read<ForYouBloc>().add(
+              ForYouEvent.update(posts: updatedPosts),
+            );
+          },
+          refreshController: _refreshController,
+          enablePullDown: true,
+          enablePullUp: state.hasNext,
+          checkVisibility: true,
+          onRefresh: () => context.read<ForYouBloc>().add(ForYouEvent.get()),
+          onLoading: () => context.read<ForYouBloc>().add(
+            ForYouEvent.get(previousPosts: posts),
+          ),
+          onFailure: () => context.read<ForYouBloc>().add(ForYouEvent.get()),
+          origin: 'For You',
+        );
+      },
     );
   }
 }
@@ -196,22 +192,33 @@ class FollowingTab extends StatefulWidget {
   State<FollowingTab> createState() => _FollowingTabState();
 }
 
-class _FollowingTabState extends State<FollowingTab> {
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
+class _FollowingTabState extends State<FollowingTab>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  final RefreshController _refreshController = RefreshController();
 
   @override
   void initState() {
-    final posts = context.read<FollowingPostsBloc>().state.posts;
-    if (posts.isEmpty) {
-      context.read<FollowingPostsBloc>().add(FollowingPostsEvent.get());
-    }
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final posts = context.read<FollowingPostsBloc>().state.posts;
+      if (posts.isEmpty) {
+        context.read<FollowingPostsBloc>().add(FollowingPostsEvent.get());
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BlocBuilder<FollowingPostsBloc, FollowingPostsState>(
       builder: (context, state) {
         final posts = state.posts.toList();
@@ -223,9 +230,7 @@ class _FollowingTabState extends State<FollowingTab> {
           if (_refreshController.footerStatus == LoadStatus.loading) {
             _refreshController.loadComplete();
           }
-        }
-
-        if (state.status == FollowingPostsStatus.failure) {
+        } else if (state.status == FollowingPostsStatus.failure) {
           if (_refreshController.headerStatus == RefreshStatus.refreshing) {
             _refreshController.refreshFailed();
           }
@@ -239,29 +244,25 @@ class _FollowingTabState extends State<FollowingTab> {
           loading:
               state.status == FollowingPostsStatus.initial ||
               (state.status == FollowingPostsStatus.loading && posts.isEmpty),
-          failure: state.posts.isNotEmpty
-              ? false
-              : state.status == FollowingPostsStatus.failure,
-          onPostsUpdated: (posts) {
+          failure:
+              state.posts.isEmpty &&
+              state.status == FollowingPostsStatus.failure,
+          onPostsUpdated: (updatedPosts) {
             context.read<FollowingPostsBloc>().add(
-              FollowingPostsEvent.update(posts: posts),
+              FollowingPostsEvent.update(posts: updatedPosts),
             );
           },
           refreshController: _refreshController,
           enablePullDown: true,
           enablePullUp: state.hasNext,
           checkVisibility: true,
-          onRefresh: () {
-            context.read<FollowingPostsBloc>().add(FollowingPostsEvent.get());
-          },
-          onLoading: () {
-            context.read<FollowingPostsBloc>().add(
-              FollowingPostsEvent.get(previousPosts: posts),
-            );
-          },
-          onFailure: () {
-            context.read<FollowingPostsBloc>().add(FollowingPostsEvent.get());
-          },
+          onRefresh: () =>
+              context.read<FollowingPostsBloc>().add(FollowingPostsEvent.get()),
+          onLoading: () => context.read<FollowingPostsBloc>().add(
+            FollowingPostsEvent.get(previousPosts: posts),
+          ),
+          onFailure: () =>
+              context.read<FollowingPostsBloc>().add(FollowingPostsEvent.get()),
           origin: 'Following',
         );
       },

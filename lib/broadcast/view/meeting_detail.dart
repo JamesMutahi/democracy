@@ -10,6 +10,7 @@ import 'package:democracy/app/shared/widgets/snack_bar_content.dart';
 import 'package:democracy/app/view/router/router.gr.dart';
 import 'package:democracy/app/view/widgets/custom_appbar.dart';
 import 'package:democracy/auth/bloc/auth/auth_bloc.dart';
+import 'package:democracy/broadcast/bloc/broadcast_view/broadcast_view_cubit.dart';
 import 'package:democracy/broadcast/bloc/comments/comments_bloc.dart';
 import 'package:democracy/broadcast/bloc/speaking_indicator/speaking_indicator_bloc.dart';
 import 'package:democracy/broadcast/models/speaker_invite.dart';
@@ -53,34 +54,33 @@ class MeetingDetail extends StatelessWidget {
         ),
         BlocProvider(create: (_) => SpeakingIndicatorBloc()),
       ],
-      child: BlocBuilder<BroadcastBloc, BroadcastState>(
-        buildWhen: (previous, current) => current.broadcastId == broadcastId,
-        builder: (context, state) {
-          if (state.status == BroadcastStatus.initial ||
-              (state.status == BroadcastStatus.loading &&
-                  state.broadcast == null)) {
-            return BottomLoader();
-          }
-          if (state.status == BroadcastStatus.failure &&
-              state.broadcast == null) {
-            return FailureRetryButton(
-              onPressed: () {
-                context.read<BroadcastBloc>().add(
-                  BroadcastEvent.load(broadcastId: broadcastId),
-                );
-              },
-            );
-          }
+      child: Scaffold(
+        body: BlocBuilder<BroadcastBloc, BroadcastState>(
+          buildWhen: (previous, current) => current.broadcastId == broadcastId,
+          builder: (context, state) {
+            if (state.status == BroadcastStatus.initial ||
+                (state.status == BroadcastStatus.loading &&
+                    state.broadcast == null)) {
+              return BottomLoader();
+            }
+            if (state.status == BroadcastStatus.failure &&
+                state.broadcast == null) {
+              return FailureRetryButton(
+                onPressed: () {
+                  context.read<BroadcastBloc>().add(
+                    BroadcastEvent.load(broadcastId: broadcastId),
+                  );
+                },
+              );
+            }
 
-          if (!state.broadcast!.isActive || state.broadcast!.hasEnded) {
-            return Scaffold(
-              appBar: AppBar(leading: AutoLeadingButton()),
-              body: Center(child: Text('This meeting has been closed')),
-            );
-          }
+            if (!state.broadcast!.isActive || state.broadcast!.hasEnded) {
+              return Center(child: Text('This meeting has been closed'));
+            }
 
-          return _MeetingDetail(broadcast: state.broadcast!);
-        },
+            return _MeetingDetail(broadcast: state.broadcast!);
+          },
+        ),
       ),
     );
   }
@@ -115,13 +115,19 @@ class _MeetingDetailState extends State<_MeetingDetail> {
   @override
   void initState() {
     super.initState();
-    _initAgora();
+    if (agoraService.currentBroadcast == widget.broadcast.id) {
+      _subscribe();
+      setState(() => _isJoined = true);
+    } else {
+      _initAgora();
+    }
   }
 
-  @override
-  void dispose() {
-    _cleanupAgora();
-    super.dispose();
+  void _minimize() {
+    context.read<BroadcastViewCubit>().minimized(broadcast: widget.broadcast);
+
+    // Navigate away. The widget will dispose, but the Singleton engine survives.
+    context.router.popTop();
   }
 
   @override
@@ -262,9 +268,7 @@ class _MeetingDetailState extends State<_MeetingDetail> {
         child: Scaffold(
           appBar: AppBar(
             leading: IconButton(
-              onPressed: () {
-                //  TODO: Minimize
-              },
+              onPressed: _minimize,
               icon: Icon(Icons.keyboard_arrow_down_rounded),
             ),
             actions: [
@@ -565,28 +569,20 @@ class _MeetingDetailState extends State<_MeetingDetail> {
       isBroadcaster: _isHost || _isCoHost || _isSpeaker,
       broadcast: widget.broadcast,
       onEngineReady: (engine) {
-        setState(() {
-          _engine = engine;
-        });
+        _engine = engine;
 
         _engine.registerEventHandler(
           RtcEngineEventHandler(
             onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
               setState(() => _isJoined = true);
-              if (widget.broadcast.recordingStatus == null &&
-                  (_isHost || _isCoHost || _isSpeaker)) {
+              if (widget.broadcast.recordingStatus == null && _isHost) {
                 context.read<BroadcastDetailBloc>().add(
                   BroadcastDetailEvent.startRecording(
                     broadcast: widget.broadcast,
                   ),
                 );
               }
-              context.read<BroadcastDetailBloc>().add(
-                BroadcastDetailEvent.subscribe(
-                  broadcast: widget.broadcast,
-                  isMuted: _isHost || _isCoHost || _isSpeaker,
-                ),
-              );
+              _subscribe();
             },
             onError: (ErrorCodeType err, String message) {
               if (mounted) {
@@ -601,21 +597,6 @@ class _MeetingDetailState extends State<_MeetingDetail> {
             onRtcStats: (connection, stats) {
               // setState(() => _count = stats.userCount);
             },
-            onUserJoined: (RtcConnection connection, int uid, int elapsed) {
-              //
-            },
-            onUserOffline:
-                (
-                  RtcConnection connection,
-                  int uid,
-                  UserOfflineReasonType reason,
-                ) {
-                  if (reason ==
-                      UserOfflineReasonType.userOfflineBecomeAudience) {
-                    //
-                  }
-                  //
-                },
             onAudioVolumeIndication:
                 (
                   RtcConnection connection,
@@ -627,29 +608,6 @@ class _MeetingDetailState extends State<_MeetingDetail> {
                     context.read<SpeakingIndicatorBloc>().add(
                       UpdateSpeakingUsers(speakers: speakers),
                     );
-                  }
-                },
-            onActiveSpeaker: (RtcConnection connection, int uid) {
-              //
-            },
-            onUserMuteAudio: (RtcConnection connection, int uid, bool muted) {
-              //
-            },
-            onRemoteAudioStateChanged:
-                (
-                  RtcConnection connection,
-                  int uid,
-                  RemoteAudioState state,
-                  RemoteAudioStateReason reason,
-                  int elapsed,
-                ) {
-                  // Catching states that onUserMuteAudio might miss
-                  if (reason ==
-                      RemoteAudioStateReason.remoteAudioReasonRemoteMuted) {
-                    //
-                  } else if (reason ==
-                      RemoteAudioStateReason.remoteAudioReasonRemoteUnmuted) {
-                    //
                   }
                 },
           ),
@@ -666,21 +624,24 @@ class _MeetingDetailState extends State<_MeetingDetail> {
     );
   }
 
-  Future<void> _cleanupAgora() async {
+  Future<void> _leaveChannel() async {
+    context.read<BroadcastDetailBloc>().add(
+      BroadcastDetailEvent.unsubscribe(broadcast: widget.broadcast),
+    );
     await agoraService.leaveCurrent();
     await agoraService.dispose();
     if (mounted) {
-      context.read<BroadcastDetailBloc>().add(
-        BroadcastDetailEvent.unsubscribe(broadcast: widget.broadcast),
-      );
+      context.router.popTop(); // Only navigate here
     }
   }
 
-  Future<void> _leaveChannel() async {
-    await _cleanupAgora();
-    if (mounted) {
-      context.router.popTop(); // Only navigate here
-    }
+  void _subscribe() {
+    context.read<BroadcastDetailBloc>().add(
+      BroadcastDetailEvent.subscribe(
+        broadcast: widget.broadcast,
+        isMuted: _isHost || _isCoHost || _isSpeaker,
+      ),
+    );
   }
 
   void _showRequestToSpeakDialog() {

@@ -28,6 +28,8 @@ class BroadcastDetailState with _$BroadcastDetailState {
     required bool isAccepted,
   }) = RespondedToInvite;
 
+  const factory BroadcastDetailState.ended() = BroadcastEnded;
+
   const factory BroadcastDetailState.deleted({required int broadcastId}) =
       BroadcastDeleted;
 

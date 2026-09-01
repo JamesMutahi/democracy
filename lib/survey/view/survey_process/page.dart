@@ -200,7 +200,6 @@ class _SurveyProcessState extends State<_SurveyProcess> {
                       SizedBox(height: 10),
                       TimeLeft(
                         key: ValueKey('survey ${widget.survey.id}'),
-                        alignCenter: true,
                         startTime: widget.survey.startTime,
                         endTime: widget.survey.endTime,
                       ),

@@ -55,7 +55,7 @@ extension BroadcastDetailEventPatterns on BroadcastDetailEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Loaded value)?  loaded,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Create value)?  create,TResult Function( _Join value)?  join,TResult Function( _Retrieve value)?  retrieve,TResult Function( _Subscribe value)?  subscribe,TResult Function( _Unsubscribe value)?  unsubscribe,TResult Function( _StartRecording value)?  startRecording,TResult Function( _StopRecording value)?  stopRecording,TResult Function( _InviteToSpeak value)?  inviteToSpeak,TResult Function( _InviteToSpeakCompleted value)?  inviteToSpeakCompleted,TResult Function( _InviteToCoHost value)?  inviteToCoHost,TResult Function( _CancelInvite value)?  cancelInvite,TResult Function( _RespondToInvite value)?  respondToInvite,TResult Function( _RespondToInviteCompleted value)?  respondToInviteCompleted,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Created value)?  created,TResult Function( _Loaded value)?  loaded,TResult Function( _Updated value)?  updated,TResult Function( _Deleted value)?  deleted,TResult Function( _Create value)?  create,TResult Function( _Join value)?  join,TResult Function( _Retrieve value)?  retrieve,TResult Function( _Subscribe value)?  subscribe,TResult Function( _Unsubscribe value)?  unsubscribe,TResult Function( _StartRecording value)?  startRecording,TResult Function( _StopRecording value)?  stopRecording,TResult Function( _InviteToSpeak value)?  inviteToSpeak,TResult Function( _InviteToSpeakCompleted value)?  inviteToSpeakCompleted,TResult Function( _InviteToCoHost value)?  inviteToCoHost,TResult Function( _CancelInvite value)?  cancelInvite,TResult Function( _RespondToInvite value)?  respondToInvite,TResult Function( _RespondToInviteCompleted value)?  respondToInviteCompleted,TResult Function( _End value)?  end,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
@@ -75,7 +75,8 @@ return inviteToSpeakCompleted(_that);case _InviteToCoHost() when inviteToCoHost 
 return inviteToCoHost(_that);case _CancelInvite() when cancelInvite != null:
 return cancelInvite(_that);case _RespondToInvite() when respondToInvite != null:
 return respondToInvite(_that);case _RespondToInviteCompleted() when respondToInviteCompleted != null:
-return respondToInviteCompleted(_that);case _:
+return respondToInviteCompleted(_that);case _End() when end != null:
+return end(_that);case _:
   return orElse();
 
 }
@@ -93,7 +94,7 @@ return respondToInviteCompleted(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Loaded value)  loaded,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Create value)  create,required TResult Function( _Join value)  join,required TResult Function( _Retrieve value)  retrieve,required TResult Function( _Subscribe value)  subscribe,required TResult Function( _Unsubscribe value)  unsubscribe,required TResult Function( _StartRecording value)  startRecording,required TResult Function( _StopRecording value)  stopRecording,required TResult Function( _InviteToSpeak value)  inviteToSpeak,required TResult Function( _InviteToSpeakCompleted value)  inviteToSpeakCompleted,required TResult Function( _InviteToCoHost value)  inviteToCoHost,required TResult Function( _CancelInvite value)  cancelInvite,required TResult Function( _RespondToInvite value)  respondToInvite,required TResult Function( _RespondToInviteCompleted value)  respondToInviteCompleted,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Created value)  created,required TResult Function( _Loaded value)  loaded,required TResult Function( _Updated value)  updated,required TResult Function( _Deleted value)  deleted,required TResult Function( _Create value)  create,required TResult Function( _Join value)  join,required TResult Function( _Retrieve value)  retrieve,required TResult Function( _Subscribe value)  subscribe,required TResult Function( _Unsubscribe value)  unsubscribe,required TResult Function( _StartRecording value)  startRecording,required TResult Function( _StopRecording value)  stopRecording,required TResult Function( _InviteToSpeak value)  inviteToSpeak,required TResult Function( _InviteToSpeakCompleted value)  inviteToSpeakCompleted,required TResult Function( _InviteToCoHost value)  inviteToCoHost,required TResult Function( _CancelInvite value)  cancelInvite,required TResult Function( _RespondToInvite value)  respondToInvite,required TResult Function( _RespondToInviteCompleted value)  respondToInviteCompleted,required TResult Function( _End value)  end,}){
 final _that = this;
 switch (_that) {
 case _Created():
@@ -113,7 +114,8 @@ return inviteToSpeakCompleted(_that);case _InviteToCoHost():
 return inviteToCoHost(_that);case _CancelInvite():
 return cancelInvite(_that);case _RespondToInvite():
 return respondToInvite(_that);case _RespondToInviteCompleted():
-return respondToInviteCompleted(_that);}
+return respondToInviteCompleted(_that);case _End():
+return end(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -127,7 +129,7 @@ return respondToInviteCompleted(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Create value)?  create,TResult? Function( _Join value)?  join,TResult? Function( _Retrieve value)?  retrieve,TResult? Function( _Subscribe value)?  subscribe,TResult? Function( _Unsubscribe value)?  unsubscribe,TResult? Function( _StartRecording value)?  startRecording,TResult? Function( _StopRecording value)?  stopRecording,TResult? Function( _InviteToSpeak value)?  inviteToSpeak,TResult? Function( _InviteToSpeakCompleted value)?  inviteToSpeakCompleted,TResult? Function( _InviteToCoHost value)?  inviteToCoHost,TResult? Function( _CancelInvite value)?  cancelInvite,TResult? Function( _RespondToInvite value)?  respondToInvite,TResult? Function( _RespondToInviteCompleted value)?  respondToInviteCompleted,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Created value)?  created,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Updated value)?  updated,TResult? Function( _Deleted value)?  deleted,TResult? Function( _Create value)?  create,TResult? Function( _Join value)?  join,TResult? Function( _Retrieve value)?  retrieve,TResult? Function( _Subscribe value)?  subscribe,TResult? Function( _Unsubscribe value)?  unsubscribe,TResult? Function( _StartRecording value)?  startRecording,TResult? Function( _StopRecording value)?  stopRecording,TResult? Function( _InviteToSpeak value)?  inviteToSpeak,TResult? Function( _InviteToSpeakCompleted value)?  inviteToSpeakCompleted,TResult? Function( _InviteToCoHost value)?  inviteToCoHost,TResult? Function( _CancelInvite value)?  cancelInvite,TResult? Function( _RespondToInvite value)?  respondToInvite,TResult? Function( _RespondToInviteCompleted value)?  respondToInviteCompleted,TResult? Function( _End value)?  end,}){
 final _that = this;
 switch (_that) {
 case _Created() when created != null:
@@ -147,7 +149,8 @@ return inviteToSpeakCompleted(_that);case _InviteToCoHost() when inviteToCoHost 
 return inviteToCoHost(_that);case _CancelInvite() when cancelInvite != null:
 return cancelInvite(_that);case _RespondToInvite() when respondToInvite != null:
 return respondToInvite(_that);case _RespondToInviteCompleted() when respondToInviteCompleted != null:
-return respondToInviteCompleted(_that);case _:
+return respondToInviteCompleted(_that);case _End() when end != null:
+return end(_that);case _:
   return null;
 
 }
@@ -164,7 +167,7 @@ return respondToInviteCompleted(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( BroadcastType type,  String title,  String description,  DateTime? startTime)?  create,TResult Function( RtcEngine engine,  Broadcast broadcast,  User user)?  join,TResult Function( Broadcast broadcast)?  retrieve,TResult Function( Broadcast broadcast,  bool isMuted)?  subscribe,TResult Function( Broadcast broadcast)?  unsubscribe,TResult Function( Broadcast broadcast)?  startRecording,TResult Function( Broadcast broadcast)?  stopRecording,TResult Function( Broadcast broadcast,  User user)?  inviteToSpeak,TResult Function( Map<String, dynamic> payload)?  inviteToSpeakCompleted,TResult Function( Broadcast broadcast,  User user)?  inviteToCoHost,TResult Function( SpeakerInvite invite)?  cancelInvite,TResult Function( SpeakerInvite invite,  bool isAccepted)?  respondToInvite,TResult Function( Map<String, dynamic> payload)?  respondToInviteCompleted,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> payload)?  created,TResult Function( Map<String, dynamic> payload)?  loaded,TResult Function( Map<String, dynamic> payload)?  updated,TResult Function( Map<String, dynamic> payload)?  deleted,TResult Function( BroadcastType type,  String title,  String description,  DateTime? startTime)?  create,TResult Function( RtcEngine engine,  Broadcast broadcast,  User user)?  join,TResult Function( Broadcast broadcast)?  retrieve,TResult Function( Broadcast broadcast,  bool isMuted)?  subscribe,TResult Function( Broadcast broadcast)?  unsubscribe,TResult Function( Broadcast broadcast)?  startRecording,TResult Function( Broadcast broadcast)?  stopRecording,TResult Function( Broadcast broadcast,  User user)?  inviteToSpeak,TResult Function( Map<String, dynamic> payload)?  inviteToSpeakCompleted,TResult Function( Broadcast broadcast,  User user)?  inviteToCoHost,TResult Function( SpeakerInvite invite)?  cancelInvite,TResult Function( SpeakerInvite invite,  bool isAccepted)?  respondToInvite,TResult Function( Map<String, dynamic> payload)?  respondToInviteCompleted,TResult Function()?  end,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
@@ -183,7 +186,8 @@ return inviteToSpeakCompleted(_that.payload);case _InviteToCoHost() when inviteT
 return inviteToCoHost(_that.broadcast,_that.user);case _CancelInvite() when cancelInvite != null:
 return cancelInvite(_that.invite);case _RespondToInvite() when respondToInvite != null:
 return respondToInvite(_that.invite,_that.isAccepted);case _RespondToInviteCompleted() when respondToInviteCompleted != null:
-return respondToInviteCompleted(_that.payload);case _:
+return respondToInviteCompleted(_that.payload);case _End() when end != null:
+return end();case _:
   return orElse();
 
 }
@@ -201,7 +205,7 @@ return respondToInviteCompleted(_that.payload);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( BroadcastType type,  String title,  String description,  DateTime? startTime)  create,required TResult Function( RtcEngine engine,  Broadcast broadcast,  User user)  join,required TResult Function( Broadcast broadcast)  retrieve,required TResult Function( Broadcast broadcast,  bool isMuted)  subscribe,required TResult Function( Broadcast broadcast)  unsubscribe,required TResult Function( Broadcast broadcast)  startRecording,required TResult Function( Broadcast broadcast)  stopRecording,required TResult Function( Broadcast broadcast,  User user)  inviteToSpeak,required TResult Function( Map<String, dynamic> payload)  inviteToSpeakCompleted,required TResult Function( Broadcast broadcast,  User user)  inviteToCoHost,required TResult Function( SpeakerInvite invite)  cancelInvite,required TResult Function( SpeakerInvite invite,  bool isAccepted)  respondToInvite,required TResult Function( Map<String, dynamic> payload)  respondToInviteCompleted,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> payload)  created,required TResult Function( Map<String, dynamic> payload)  loaded,required TResult Function( Map<String, dynamic> payload)  updated,required TResult Function( Map<String, dynamic> payload)  deleted,required TResult Function( BroadcastType type,  String title,  String description,  DateTime? startTime)  create,required TResult Function( RtcEngine engine,  Broadcast broadcast,  User user)  join,required TResult Function( Broadcast broadcast)  retrieve,required TResult Function( Broadcast broadcast,  bool isMuted)  subscribe,required TResult Function( Broadcast broadcast)  unsubscribe,required TResult Function( Broadcast broadcast)  startRecording,required TResult Function( Broadcast broadcast)  stopRecording,required TResult Function( Broadcast broadcast,  User user)  inviteToSpeak,required TResult Function( Map<String, dynamic> payload)  inviteToSpeakCompleted,required TResult Function( Broadcast broadcast,  User user)  inviteToCoHost,required TResult Function( SpeakerInvite invite)  cancelInvite,required TResult Function( SpeakerInvite invite,  bool isAccepted)  respondToInvite,required TResult Function( Map<String, dynamic> payload)  respondToInviteCompleted,required TResult Function()  end,}) {final _that = this;
 switch (_that) {
 case _Created():
 return created(_that.payload);case _Loaded():
@@ -220,7 +224,8 @@ return inviteToSpeakCompleted(_that.payload);case _InviteToCoHost():
 return inviteToCoHost(_that.broadcast,_that.user);case _CancelInvite():
 return cancelInvite(_that.invite);case _RespondToInvite():
 return respondToInvite(_that.invite,_that.isAccepted);case _RespondToInviteCompleted():
-return respondToInviteCompleted(_that.payload);}
+return respondToInviteCompleted(_that.payload);case _End():
+return end();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -234,7 +239,7 @@ return respondToInviteCompleted(_that.payload);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( BroadcastType type,  String title,  String description,  DateTime? startTime)?  create,TResult? Function( RtcEngine engine,  Broadcast broadcast,  User user)?  join,TResult? Function( Broadcast broadcast)?  retrieve,TResult? Function( Broadcast broadcast,  bool isMuted)?  subscribe,TResult? Function( Broadcast broadcast)?  unsubscribe,TResult? Function( Broadcast broadcast)?  startRecording,TResult? Function( Broadcast broadcast)?  stopRecording,TResult? Function( Broadcast broadcast,  User user)?  inviteToSpeak,TResult? Function( Map<String, dynamic> payload)?  inviteToSpeakCompleted,TResult? Function( Broadcast broadcast,  User user)?  inviteToCoHost,TResult? Function( SpeakerInvite invite)?  cancelInvite,TResult? Function( SpeakerInvite invite,  bool isAccepted)?  respondToInvite,TResult? Function( Map<String, dynamic> payload)?  respondToInviteCompleted,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> payload)?  created,TResult? Function( Map<String, dynamic> payload)?  loaded,TResult? Function( Map<String, dynamic> payload)?  updated,TResult? Function( Map<String, dynamic> payload)?  deleted,TResult? Function( BroadcastType type,  String title,  String description,  DateTime? startTime)?  create,TResult? Function( RtcEngine engine,  Broadcast broadcast,  User user)?  join,TResult? Function( Broadcast broadcast)?  retrieve,TResult? Function( Broadcast broadcast,  bool isMuted)?  subscribe,TResult? Function( Broadcast broadcast)?  unsubscribe,TResult? Function( Broadcast broadcast)?  startRecording,TResult? Function( Broadcast broadcast)?  stopRecording,TResult? Function( Broadcast broadcast,  User user)?  inviteToSpeak,TResult? Function( Map<String, dynamic> payload)?  inviteToSpeakCompleted,TResult? Function( Broadcast broadcast,  User user)?  inviteToCoHost,TResult? Function( SpeakerInvite invite)?  cancelInvite,TResult? Function( SpeakerInvite invite,  bool isAccepted)?  respondToInvite,TResult? Function( Map<String, dynamic> payload)?  respondToInviteCompleted,TResult? Function()?  end,}) {final _that = this;
 switch (_that) {
 case _Created() when created != null:
 return created(_that.payload);case _Loaded() when loaded != null:
@@ -253,7 +258,8 @@ return inviteToSpeakCompleted(_that.payload);case _InviteToCoHost() when inviteT
 return inviteToCoHost(_that.broadcast,_that.user);case _CancelInvite() when cancelInvite != null:
 return cancelInvite(_that.invite);case _RespondToInvite() when respondToInvite != null:
 return respondToInvite(_that.invite,_that.isAccepted);case _RespondToInviteCompleted() when respondToInviteCompleted != null:
-return respondToInviteCompleted(_that.payload);case _:
+return respondToInviteCompleted(_that.payload);case _End() when end != null:
+return end();case _:
   return null;
 
 }
@@ -1555,6 +1561,38 @@ as Map<String, dynamic>,
 }
 
 /// @nodoc
+
+
+class _End implements BroadcastDetailEvent {
+  const _End();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _End);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'BroadcastDetailEvent.end()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
 mixin _$BroadcastDetailState {
 
 
@@ -1598,7 +1636,7 @@ extension BroadcastDetailStatePatterns on BroadcastDetailState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( BroadcastDetailInitial value)?  initial,TResult Function( BroadcastDetailLoading value)?  loading,TResult Function( BroadcastCreated value)?  created,TResult Function( BroadcastJoined value)?  joined,TResult Function( BroadcastLoaded value)?  loaded,TResult Function( BroadcastUpdated value)?  updated,TResult Function( InvitedToSpeak value)?  invitedToSpeak,TResult Function( RespondedToInvite value)?  respondedToInvite,TResult Function( BroadcastDeleted value)?  deleted,TResult Function( BroadcastDetailFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( BroadcastDetailInitial value)?  initial,TResult Function( BroadcastDetailLoading value)?  loading,TResult Function( BroadcastCreated value)?  created,TResult Function( BroadcastJoined value)?  joined,TResult Function( BroadcastLoaded value)?  loaded,TResult Function( BroadcastUpdated value)?  updated,TResult Function( InvitedToSpeak value)?  invitedToSpeak,TResult Function( RespondedToInvite value)?  respondedToInvite,TResult Function( BroadcastEnded value)?  ended,TResult Function( BroadcastDeleted value)?  deleted,TResult Function( BroadcastDetailFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case BroadcastDetailInitial() when initial != null:
@@ -1609,7 +1647,8 @@ return joined(_that);case BroadcastLoaded() when loaded != null:
 return loaded(_that);case BroadcastUpdated() when updated != null:
 return updated(_that);case InvitedToSpeak() when invitedToSpeak != null:
 return invitedToSpeak(_that);case RespondedToInvite() when respondedToInvite != null:
-return respondedToInvite(_that);case BroadcastDeleted() when deleted != null:
+return respondedToInvite(_that);case BroadcastEnded() when ended != null:
+return ended(_that);case BroadcastDeleted() when deleted != null:
 return deleted(_that);case BroadcastDetailFailure() when failure != null:
 return failure(_that);case _:
   return orElse();
@@ -1629,7 +1668,7 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( BroadcastDetailInitial value)  initial,required TResult Function( BroadcastDetailLoading value)  loading,required TResult Function( BroadcastCreated value)  created,required TResult Function( BroadcastJoined value)  joined,required TResult Function( BroadcastLoaded value)  loaded,required TResult Function( BroadcastUpdated value)  updated,required TResult Function( InvitedToSpeak value)  invitedToSpeak,required TResult Function( RespondedToInvite value)  respondedToInvite,required TResult Function( BroadcastDeleted value)  deleted,required TResult Function( BroadcastDetailFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( BroadcastDetailInitial value)  initial,required TResult Function( BroadcastDetailLoading value)  loading,required TResult Function( BroadcastCreated value)  created,required TResult Function( BroadcastJoined value)  joined,required TResult Function( BroadcastLoaded value)  loaded,required TResult Function( BroadcastUpdated value)  updated,required TResult Function( InvitedToSpeak value)  invitedToSpeak,required TResult Function( RespondedToInvite value)  respondedToInvite,required TResult Function( BroadcastEnded value)  ended,required TResult Function( BroadcastDeleted value)  deleted,required TResult Function( BroadcastDetailFailure value)  failure,}){
 final _that = this;
 switch (_that) {
 case BroadcastDetailInitial():
@@ -1640,7 +1679,8 @@ return joined(_that);case BroadcastLoaded():
 return loaded(_that);case BroadcastUpdated():
 return updated(_that);case InvitedToSpeak():
 return invitedToSpeak(_that);case RespondedToInvite():
-return respondedToInvite(_that);case BroadcastDeleted():
+return respondedToInvite(_that);case BroadcastEnded():
+return ended(_that);case BroadcastDeleted():
 return deleted(_that);case BroadcastDetailFailure():
 return failure(_that);case _:
   throw StateError('Unexpected subclass');
@@ -1659,7 +1699,7 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( BroadcastDetailInitial value)?  initial,TResult? Function( BroadcastDetailLoading value)?  loading,TResult? Function( BroadcastCreated value)?  created,TResult? Function( BroadcastJoined value)?  joined,TResult? Function( BroadcastLoaded value)?  loaded,TResult? Function( BroadcastUpdated value)?  updated,TResult? Function( InvitedToSpeak value)?  invitedToSpeak,TResult? Function( RespondedToInvite value)?  respondedToInvite,TResult? Function( BroadcastDeleted value)?  deleted,TResult? Function( BroadcastDetailFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( BroadcastDetailInitial value)?  initial,TResult? Function( BroadcastDetailLoading value)?  loading,TResult? Function( BroadcastCreated value)?  created,TResult? Function( BroadcastJoined value)?  joined,TResult? Function( BroadcastLoaded value)?  loaded,TResult? Function( BroadcastUpdated value)?  updated,TResult? Function( InvitedToSpeak value)?  invitedToSpeak,TResult? Function( RespondedToInvite value)?  respondedToInvite,TResult? Function( BroadcastEnded value)?  ended,TResult? Function( BroadcastDeleted value)?  deleted,TResult? Function( BroadcastDetailFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case BroadcastDetailInitial() when initial != null:
@@ -1670,7 +1710,8 @@ return joined(_that);case BroadcastLoaded() when loaded != null:
 return loaded(_that);case BroadcastUpdated() when updated != null:
 return updated(_that);case InvitedToSpeak() when invitedToSpeak != null:
 return invitedToSpeak(_that);case RespondedToInvite() when respondedToInvite != null:
-return respondedToInvite(_that);case BroadcastDeleted() when deleted != null:
+return respondedToInvite(_that);case BroadcastEnded() when ended != null:
+return ended(_that);case BroadcastDeleted() when deleted != null:
 return deleted(_that);case BroadcastDetailFailure() when failure != null:
 return failure(_that);case _:
   return null;
@@ -1689,7 +1730,7 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Broadcast broadcast)?  created,TResult Function( Broadcast broadcast)?  joined,TResult Function( Broadcast broadcast)?  loaded,TResult Function( Broadcast broadcast)?  updated,TResult Function( int broadcastId,  int userId)?  invitedToSpeak,TResult Function( int inviteId,  bool isAccepted)?  respondedToInvite,TResult Function( int broadcastId)?  deleted,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( Broadcast broadcast)?  created,TResult Function( Broadcast broadcast)?  joined,TResult Function( Broadcast broadcast)?  loaded,TResult Function( Broadcast broadcast)?  updated,TResult Function( int broadcastId,  int userId)?  invitedToSpeak,TResult Function( int inviteId,  bool isAccepted)?  respondedToInvite,TResult Function()?  ended,TResult Function( int broadcastId)?  deleted,TResult Function( String error)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case BroadcastDetailInitial() when initial != null:
 return initial();case BroadcastDetailLoading() when loading != null:
@@ -1699,7 +1740,8 @@ return joined(_that.broadcast);case BroadcastLoaded() when loaded != null:
 return loaded(_that.broadcast);case BroadcastUpdated() when updated != null:
 return updated(_that.broadcast);case InvitedToSpeak() when invitedToSpeak != null:
 return invitedToSpeak(_that.broadcastId,_that.userId);case RespondedToInvite() when respondedToInvite != null:
-return respondedToInvite(_that.inviteId,_that.isAccepted);case BroadcastDeleted() when deleted != null:
+return respondedToInvite(_that.inviteId,_that.isAccepted);case BroadcastEnded() when ended != null:
+return ended();case BroadcastDeleted() when deleted != null:
 return deleted(_that.broadcastId);case BroadcastDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return orElse();
@@ -1719,7 +1761,7 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Broadcast broadcast)  created,required TResult Function( Broadcast broadcast)  joined,required TResult Function( Broadcast broadcast)  loaded,required TResult Function( Broadcast broadcast)  updated,required TResult Function( int broadcastId,  int userId)  invitedToSpeak,required TResult Function( int inviteId,  bool isAccepted)  respondedToInvite,required TResult Function( int broadcastId)  deleted,required TResult Function( String error)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( Broadcast broadcast)  created,required TResult Function( Broadcast broadcast)  joined,required TResult Function( Broadcast broadcast)  loaded,required TResult Function( Broadcast broadcast)  updated,required TResult Function( int broadcastId,  int userId)  invitedToSpeak,required TResult Function( int inviteId,  bool isAccepted)  respondedToInvite,required TResult Function()  ended,required TResult Function( int broadcastId)  deleted,required TResult Function( String error)  failure,}) {final _that = this;
 switch (_that) {
 case BroadcastDetailInitial():
 return initial();case BroadcastDetailLoading():
@@ -1729,7 +1771,8 @@ return joined(_that.broadcast);case BroadcastLoaded():
 return loaded(_that.broadcast);case BroadcastUpdated():
 return updated(_that.broadcast);case InvitedToSpeak():
 return invitedToSpeak(_that.broadcastId,_that.userId);case RespondedToInvite():
-return respondedToInvite(_that.inviteId,_that.isAccepted);case BroadcastDeleted():
+return respondedToInvite(_that.inviteId,_that.isAccepted);case BroadcastEnded():
+return ended();case BroadcastDeleted():
 return deleted(_that.broadcastId);case BroadcastDetailFailure():
 return failure(_that.error);case _:
   throw StateError('Unexpected subclass');
@@ -1748,7 +1791,7 @@ return failure(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Broadcast broadcast)?  created,TResult? Function( Broadcast broadcast)?  joined,TResult? Function( Broadcast broadcast)?  loaded,TResult? Function( Broadcast broadcast)?  updated,TResult? Function( int broadcastId,  int userId)?  invitedToSpeak,TResult? Function( int inviteId,  bool isAccepted)?  respondedToInvite,TResult? Function( int broadcastId)?  deleted,TResult? Function( String error)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( Broadcast broadcast)?  created,TResult? Function( Broadcast broadcast)?  joined,TResult? Function( Broadcast broadcast)?  loaded,TResult? Function( Broadcast broadcast)?  updated,TResult? Function( int broadcastId,  int userId)?  invitedToSpeak,TResult? Function( int inviteId,  bool isAccepted)?  respondedToInvite,TResult? Function()?  ended,TResult? Function( int broadcastId)?  deleted,TResult? Function( String error)?  failure,}) {final _that = this;
 switch (_that) {
 case BroadcastDetailInitial() when initial != null:
 return initial();case BroadcastDetailLoading() when loading != null:
@@ -1758,7 +1801,8 @@ return joined(_that.broadcast);case BroadcastLoaded() when loaded != null:
 return loaded(_that.broadcast);case BroadcastUpdated() when updated != null:
 return updated(_that.broadcast);case InvitedToSpeak() when invitedToSpeak != null:
 return invitedToSpeak(_that.broadcastId,_that.userId);case RespondedToInvite() when respondedToInvite != null:
-return respondedToInvite(_that.inviteId,_that.isAccepted);case BroadcastDeleted() when deleted != null:
+return respondedToInvite(_that.inviteId,_that.isAccepted);case BroadcastEnded() when ended != null:
+return ended();case BroadcastDeleted() when deleted != null:
 return deleted(_that.broadcastId);case BroadcastDetailFailure() when failure != null:
 return failure(_that.error);case _:
   return null;
@@ -2267,6 +2311,38 @@ as bool,
 
 
 }
+
+/// @nodoc
+
+
+class BroadcastEnded implements BroadcastDetailState {
+  const BroadcastEnded();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BroadcastEnded);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'BroadcastDetailState.ended()';
+}
+
+
+}
+
+
+
 
 /// @nodoc
 
